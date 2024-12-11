@@ -97,7 +97,8 @@ function BusinessSection() {
             <Grid container spacing={2} sx={{ mt: "auto" }}>
               <Grid item xs={6}>
                 <Button
-                  variant="outlined"
+                  variant="contained"
+                  color="primary"
                   fullWidth
                   href="https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
                   target="_blank"
@@ -107,7 +108,8 @@ function BusinessSection() {
               </Grid>
               <Grid item xs={6}>
                 <Button
-                  variant="outlined"
+                  variant="contained"
+                  color="primary"
                   fullWidth
                   href="https://apps.apple.com/pk/app/enatega-multivendor-restaurant/id1526672537"
                   target="_blank"
