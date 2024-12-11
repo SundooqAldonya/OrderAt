@@ -36,6 +36,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import VerifyPhone from "./screens/VerifyPhone/VerifyPhone";
 import UserContext from "./context/User";
 import BusinessSignup from "./screens/BusinessSignup/BusinessSignup";
+import DriverSignup from "./screens/DriverSignup/DriverSignup";
 import { useTranslation } from "react-i18next";
 //import { fetchConfiguration } from "./utils/helper";
 
@@ -341,7 +342,8 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/business-form" element={<BusinessSignup />} />
+          <Route path="/business-signup" element={<BusinessSignup />} />
+          <Route path="/driver-signup" element={<DriverSignup />} />
         </Routes>
       </GoogleMapsLoader>
     </HashRouter>
