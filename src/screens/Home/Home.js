@@ -29,10 +29,10 @@ import AppComponent from "../../components/HomeScreen/AppComponent";
 import BusinessSection from "../../components/HomeScreen/BusinessSection";
 import Banner2 from "../../assets/images/banner-2.png";
 import Banner1 from "../../assets/images/banner-1.png";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 function Home() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const classes = useStyles();
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
@@ -42,7 +42,6 @@ function Home() {
   const [open, setOpen] = useState(!!error);
   const { isLoggedIn } = useContext(UserContext);
   let check = false;
-
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -57,7 +56,6 @@ function Home() {
       check = true;
     }
   }, [error]);
-
 
   return (
     <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
@@ -78,38 +76,17 @@ function Home() {
         {/* app container (2nd) */}
         <Box className={classes.appContainer}>
           <Box
-            className={classes.appWrapper}
-            style={{
-              paddingTop: medium ? "8rem" : 0,
-              zIndex: 10,
-            }}
+          // className={classes.appWrapper}
+          // style={{
+          //   // paddingTop: medium ? "8rem" : 0,
+          //   // zIndex: -10,
+          // }}
           >
-            <img src={Fruits2} alt="fruits2" className={classes.upperFruits} />
-            {!medium && (
-              <Box
-                className={classes.bannerContainer}
-                display={"flex"}
-                alignItems={"flex-start"}
-              >
-                <img
-                  src={Banner2}
-                  alt="banner2"
-                  className={classes.bannerOne}
-                />
-                <img
-                  src={Banner1}
-                  alt="banner1"
-                  className={classes.bannerTwo}
-                />
-              </Box>
-            )}
-
-            {/* <AppComponent /> */}
-            {/* <BusinessSection /> */}
+            <BusinessSection />
           </Box>
         </Box>
         {/* card container (3rd) */}
-        <Box className={classes.cardContainer}>
+        <Box className={classes.cardContainer} sx={{ mt: 8 }}>
           <Box className={classes.cardWrapper}>
             <Typography
               className={small ? classes.bgTextSmall : classes.bgText}
@@ -128,8 +105,8 @@ function Home() {
                       title={"Rider App"}
                       image={RiderApp}
                       description={[
-                        "• " + t('findingAddress'),
-                        "• " + t('zonesFunctionality'),
+                        "• " + t("findingAddress"),
+                        "• " + t("zonesFunctionality"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multirider"
@@ -151,8 +128,8 @@ function Home() {
                       title={"Restaurant App"}
                       image={RestaurantApp}
                       description={[
-                        "• " + t('multipleRestaurants'),
-                        "• " + t('realTimeOrder'),
+                        "• " + t("multipleRestaurants"),
+                        "• " + t("realTimeOrder"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
@@ -175,8 +152,8 @@ function Home() {
                       title={"Customer App"}
                       image={CustApp}
                       description={[
-                        "• " + t('differentSections'),
-                        "• " + t('previousOrder'),
+                        "• " + t("differentSections"),
+                        "• " + t("previousOrder"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multivendor"
@@ -195,8 +172,8 @@ function Home() {
                     title={"Admin Dashboard"}
                     image={Dashboard}
                     description={[
-                      "• " + t('findingAddress'),
-                      "• " + t('zonesFunctionality'),
+                      "• " + t("findingAddress"),
+                      "• " + t("zonesFunctionality"),
                     ]}
                     web={true}
                     link={"https://multivendor-admin.enatega.com/"}
@@ -210,8 +187,8 @@ function Home() {
                       title={"Product Page"}
                       image={WebApp}
                       description={[
-                        "• " + t('ourDelivery'),
-                        "• " + t('builtOnCommunity'),
+                        "• " + t("ourDelivery"),
+                        "• " + t("builtOnCommunity"),
                       ]}
                       web={true}
                       link={"https://enatega.com/"}
