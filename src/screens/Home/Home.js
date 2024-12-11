@@ -26,6 +26,7 @@ import Dashboard from "../../assets/images/dashboard.png";
 import Footer from "../../components/Footer/Footer";
 import Fruits2 from "../../assets/images/fruits-2.png";
 import AppComponent from "../../components/HomeScreen/AppComponent";
+import BusinessSection from "../../components/HomeScreen/BusinessSection";
 import Banner2 from "../../assets/images/banner-2.png";
 import Banner1 from "../../assets/images/banner-1.png";
 import { useTranslation } from 'react-i18next';
@@ -104,6 +105,7 @@ function Home() {
             )}
 
             {/* <AppComponent /> */}
+            {/* <BusinessSection /> */}
           </Box>
         </Box>
         {/* card container (3rd) */}
