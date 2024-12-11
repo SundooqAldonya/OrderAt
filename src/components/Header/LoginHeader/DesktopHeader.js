@@ -42,9 +42,34 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
             onChange={handleLanguageChange}
             variant="standard"
             className={classes.languageSelect}
+            sx={{
+              "& .MuiMenuItem-root:hover": {
+                color: "black",
+              },
+            }}
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="ar">عربي</MenuItem>
+            <MenuItem
+              sx={{
+                backgroundColor: "#8BC34A",
+                "&:hover": {
+                  color: "black",
+                },
+              }}
+              value="en"
+            >
+              English
+            </MenuItem>
+            <MenuItem
+              sx={{
+                backgroundColor: "#8BC34A",
+                "&:hover": {
+                  color: "black",
+                },
+              }}
+              value="ar"
+            >
+              عربي
+            </MenuItem>
           </Select>
           {showIcon && (
             <>
