@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-weight:400;
+  font-size:15px;
+  line-height:24px;
+
+  /*font-family: "Montserrat", sans-serif;*/
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+code {
+  font-family: "Roboto", sans-serif;
+  /*font-family: "Montserrat", sans-serif;*/
+}
+
+/*body p, .MuiBox-root.css-zupw4a p.makeStyles-fontContainer-57{font-weight:400 !important;}
+body p.makeStyles-bgText-61, body p.makeStyles-bgText-12, .MuiBox-root.css-zupw4a p{font-weight:600 !important;}
+.MuiBox-root.css-zupw4a p{font-weight:600 !important; text-transform:capitalize;}
+.MuiBox-root.css-zupw4a p.makeStyles-fontContainer-57{text-transform:math-auto;}
+.css-1f9vrjp-MuiInputBase-input-MuiOutlinedInput-input{font-family: "Roboto", sans-serif !important;}*/
+
+.css-k8pahr-MuiButtonBase-root-MuiButton-root:hover{text-decoration: none; background-color: rgb(6, 193, 103);}
+.makeStyles-bottom-65 p, .makeStyles-left-68 p, .makeStyles-footerContainer-20 .MuiBox-root a p, .makeStyles-footerContainer-20 .MuiDivider-fullWidth + p.css-amh780-MuiTypography-root{font-weight:400 !important;}
+.css-amh780-MuiTypography-root, .css-7uawd8-MuiTypography-root{font-size:14px; line-height:24px; color:#000;}
+p.makeStyles-MV3-9, ul.makeStyles-bullet-7, p.makeStyles-MV2-10{margin-top:4px;}
+
