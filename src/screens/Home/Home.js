@@ -24,11 +24,7 @@ import RiderApp from "../../assets/images/rider-app.png";
 import RestaurantApp from "../../assets/images/restaurant-app.png";
 import Dashboard from "../../assets/images/dashboard.png";
 import Footer from "../../components/Footer/Footer";
-import Fruits2 from "../../assets/images/fruits-2.png";
-import AppComponent from "../../components/HomeScreen/AppComponent";
 import BusinessSection from "../../components/HomeScreen/BusinessSection";
-import Banner2 from "../../assets/images/banner-2.png";
-import Banner1 from "../../assets/images/banner-1.png";
 import { useTranslation } from "react-i18next";
 
 function Home() {
@@ -75,15 +71,7 @@ function Home() {
         </Box>
         {/* app container (2nd) */}
         <Box className={classes.appContainer}>
-          <Box
-          // className={classes.appWrapper}
-          // style={{
-          //   // paddingTop: medium ? "8rem" : 0,
-          //   // zIndex: -10,
-          // }}
-          >
-            <BusinessSection />
-          </Box>
+          <BusinessSection />
         </Box>
         {/* card container (3rd) */}
         <Box className={classes.cardContainer} sx={{ mt: 8 }}>
