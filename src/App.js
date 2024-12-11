@@ -132,6 +132,7 @@ const GoogleMapsLoader = ({
     id: "google-map-script",
     googleMapsApiKey: GOOGLE_MAPS_KEY,
     libraries: LIBRARIES,
+    language: i18n.language,
   });
   console.log("isLoaded ", isLoaded);
   if (!isLoaded) {
