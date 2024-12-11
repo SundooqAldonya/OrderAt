@@ -103,7 +103,7 @@ function Home() {
               </Box>
             )}
 
-            <AppComponent />
+            {/* <AppComponent /> */}
           </Box>
         </Box>
         {/* card container (3rd) */}
@@ -126,8 +126,8 @@ function Home() {
                       title={"Rider App"}
                       image={RiderApp}
                       description={[
-                        "• "+t('findingAddress'),
-                        "• "+t('zonesFunctionality'),
+                        "• " + t('findingAddress'),
+                        "• " + t('zonesFunctionality'),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multirider"
@@ -149,8 +149,8 @@ function Home() {
                       title={"Restaurant App"}
                       image={RestaurantApp}
                       description={[
-                        "• "+t('multipleRestaurants'),
-                        "• "+t('realTimeOrder'),
+                        "• " + t('multipleRestaurants'),
+                        "• " + t('realTimeOrder'),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
@@ -173,8 +173,8 @@ function Home() {
                       title={"Customer App"}
                       image={CustApp}
                       description={[
-                        "• "+t('differentSections'),
-                        "• "+t('previousOrder'),
+                        "• " + t('differentSections'),
+                        "• " + t('previousOrder'),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multivendor"
@@ -193,8 +193,8 @@ function Home() {
                     title={"Admin Dashboard"}
                     image={Dashboard}
                     description={[
-                      "• "+t('findingAddress'),
-                      "• "+t('zonesFunctionality'),
+                      "• " + t('findingAddress'),
+                      "• " + t('zonesFunctionality'),
                     ]}
                     web={true}
                     link={"https://multivendor-admin.enatega.com/"}
@@ -208,8 +208,8 @@ function Home() {
                       title={"Product Page"}
                       image={WebApp}
                       description={[
-                        "• "+t('ourDelivery'),
-                        "• "+t('builtOnCommunity'),
+                        "• " + t('ourDelivery'),
+                        "• " + t('builtOnCommunity'),
                       ]}
                       web={true}
                       link={"https://enatega.com/"}
