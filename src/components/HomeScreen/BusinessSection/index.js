@@ -16,7 +16,6 @@ function BusinessSection() {
 
   const sectionStyle = {
     padding: "40px 0",
-    // backgroundColor: '#f6f6f6',
   };
 
   const cardStyle = {
@@ -47,11 +46,10 @@ function BusinessSection() {
           <Box sx={cardStyle}>
             <BusinessIcon sx={iconStyle} />
             <Typography variant="h6" gutterBottom>
-              Add your business
+              {t("addYourBusiness")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Partner with Orderat and reach more customers. We handle delivery,
-              so you can focus on the food.
+              {t("addYourBusinessDesc")}
             </Typography>
             <Button
               variant="contained"
@@ -59,7 +57,7 @@ function BusinessSection() {
               onClick={() => navigate("/business-signup")}
               sx={{ mt: "auto" }}
             >
-              Get Started
+              {t("getStarted")}
             </Button>
           </Box>
         </Grid>
@@ -68,11 +66,10 @@ function BusinessSection() {
           <Box sx={cardStyle}>
             <DeliveryDiningIcon sx={iconStyle} />
             <Typography variant="h6" gutterBottom>
-              Drive with Orderat
+              {t("driveWithOrderat")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Set your own schedule, be your own boss, and earn money by
-              delivering with Orderat.
+              {t("driveWithOrderatDesc")}
             </Typography>
             <Button
               variant="contained"
@@ -80,7 +77,7 @@ function BusinessSection() {
               onClick={() => navigate("/driver-signup")}
               sx={{ mt: "auto" }}
             >
-              Sign up to deliver
+              {t("signUpToDeliver")}
             </Button>
           </Box>
         </Grid>
@@ -89,10 +86,10 @@ function BusinessSection() {
           <Box sx={cardStyle}>
             <GetAppIcon sx={iconStyle} />
             <Typography variant="h6" gutterBottom>
-              Download our app
+              {t("downloadOurApp")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Get the best Orderat experience with our mobile app.
+              {t("downloadOurAppDesc")}
             </Typography>
             <Grid container spacing={2} sx={{ mt: "auto" }}>
               <Grid item xs={6}>
@@ -103,7 +100,7 @@ function BusinessSection() {
                   href="https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
                   target="_blank"
                 >
-                  Android
+                  {t("android")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -114,7 +111,7 @@ function BusinessSection() {
                   href="https://apps.apple.com/pk/app/enatega-multivendor-restaurant/id1526672537"
                   target="_blank"
                 >
-                  iOS
+                  {t("ios")}
                 </Button>
               </Grid>
             </Grid>

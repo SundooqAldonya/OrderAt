@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Grid, 
-  TextField, 
-  Typography, 
-  Button, 
-  Box, 
+import {
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Box,
   Container,
   RadioGroup,
   FormControlLabel,
@@ -27,10 +27,10 @@ function DriverSignup() {
   const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
-    if (!formData.name) return "Name is required";
-    if (!formData.phoneNumber) return "Phone number is required";
-    if (!/^\+?[\d\s-]{8,}$/.test(formData.phoneNumber)) return "Invalid phone number";
-    if (!formData.vehicleType) return "Vehicle type is required";
+    if (!formData.name) return t("nameRequired");
+    if (!formData.phoneNumber) return t("phoneNumberRequired");
+    if (!/^\+?[\d\s-]{8,}$/.test(formData.phoneNumber)) return t("invalidPhoneNumber");
+    if (!formData.vehicleType) return t("vehicleTypeRequired");
     return null;
   };
 
@@ -42,15 +42,14 @@ function DriverSignup() {
       return;
     }
     setLoading(true);
-    
+
     try {
-      // Here you would make your API call to submit the driver application
+      // Giả sử gọi API
       console.log('Submitting driver application:', formData);
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setError('Application submitted successfully!');
+      setError(t("applicationSuccess"));
     } catch (err) {
-      setError('Failed to submit application. Please try again.');
+      setError(t("applicationFail"));
     } finally {
       setLoading(false);
     }
@@ -62,18 +61,18 @@ function DriverSignup() {
       <Container maxWidth="md" sx={{ mt: 12, mb: 8 }}>
         {error && (
           <FlashMessage
-            severity={error.includes('successfully') ? 'success' : 'error'}
+            severity={error.includes(t("applicationSuccess")) ? 'success' : 'error'}
             alertMessage={error}
             open={!!error}
             handleClose={() => setError('')}
           />
         )}
-        
+
         <Typography variant="h4" gutterBottom>
-          Drive with Orderat
+          {t("driveWithOrderatTitle")}
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Join our delivery team and earn money on your own schedule
+          {t("driveWithOrderatDesc")}
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -82,31 +81,31 @@ function DriverSignup() {
               <TextField
                 required
                 fullWidth
-                label="Full Name"
+                label={t("fullNameLabel")}
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 required
                 fullWidth
-                label="Phone Number"
+                label={t("phoneNumberLabel")}
                 value={formData.phoneNumber}
-                onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-                helperText="Enter phone number with country code"
+                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                helperText={t("phoneNumberHelper")}
               />
             </Grid>
             <Grid item xs={12}>
               <FormControl component="fieldset">
-                <FormLabel component="legend">Vehicle Type</FormLabel>
+                <FormLabel component="legend">{t("vehicleTypeLabel")}</FormLabel>
                 <RadioGroup
                   value={formData.vehicleType}
-                  onChange={(e) => setFormData({...formData, vehicleType: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
                 >
-                  <FormControlLabel value="bicycle" control={<Radio />} label="Bicycle" />
-                  <FormControlLabel value="motorcycle" control={<Radio />} label="Motorcycle" />
-                  <FormControlLabel value="car" control={<Radio />} label="Car" />
+                  <FormControlLabel value="bicycle" control={<Radio />} label={t("bicycleLabel")} />
+                  <FormControlLabel value="motorcycle" control={<Radio />} label={t("motorcycleLabel")} />
+                  <FormControlLabel value="car" control={<Radio />} label={t("carLabel")} />
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -119,7 +118,7 @@ function DriverSignup() {
                 fullWidth
                 disabled={loading}
               >
-                {loading ? 'Submitting...' : 'Submit Application'}
+                {loading ? t("submitting") : t("submitApplication")}
               </Button>
             </Grid>
           </Grid>
