@@ -51,8 +51,6 @@ const GoogleMapsLoader = ({
   const [message, setMessage] = useState(null);
   const { t, i18n } = useTranslation();
 
-
-
   //Handlers
   /*   const onWindowUpdateAmplitude = async () => {
     const { webAmplitudeApiKey } = await fetchConfiguration();
@@ -134,7 +132,6 @@ const GoogleMapsLoader = ({
     id: "google-map-script",
     googleMapsApiKey: GOOGLE_MAPS_KEY,
     libraries: LIBRARIES,
-    // language: i18n.language || "en"
   });
   console.log("isLoaded ", isLoaded);
   if (!isLoaded) {

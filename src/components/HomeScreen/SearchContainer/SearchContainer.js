@@ -140,6 +140,7 @@ function SearchContainer({
     fetchRef.current = true;
   }, [location]);
 
+
   const handleLocationButtonClick = () => {
     setLoading(true);
     getCurrentLocation(locationCallback);
@@ -168,6 +169,7 @@ function SearchContainer({
                 flex: 1,
                 //zIndex: 10
               }}
+              
               zoom={13} // Adjusted zoom level for better city view
               center={{
                 lat: 31.1106593, // Kafr El-Shaikh coordinates
@@ -390,6 +392,7 @@ function SearchContainer({
                       }}
                     >
                       <Button
+                        id="find-restaurants"
                         variant="contained"
                         color="primary"
                         fullWidth

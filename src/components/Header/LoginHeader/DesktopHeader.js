@@ -14,6 +14,7 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../i18n";
+import { SearchHeader } from "./SearchHeader";
 
 function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   const { t } = useTranslation();
@@ -30,12 +31,16 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   return (
     <AppBar elevation={0} position="fixed">
       <Toolbar className={classes.toolbar}>
-        <RouterLink
-          to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
-          className={classes.linkDecoration}
-        >
-          <Logo height={37} width={169} />
-        </RouterLink>
+        <Box sx={{ display: "flex", justifyContent: "start", gap: 10 }}>
+          <RouterLink
+            to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
+            className={classes.linkDecoration}
+          >
+            <Logo height={37} width={169} />
+          </RouterLink>
+
+          <SearchHeader/>
+        </Box>
         <Box className={classes.flex}>
           <Select
             value={i18n.language}
