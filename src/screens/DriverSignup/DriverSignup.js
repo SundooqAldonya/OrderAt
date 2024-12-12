@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Grid,
   TextField,
@@ -16,11 +16,14 @@ import { useTranslation } from 'react-i18next';
 import Header from '../../components/Header/Header';
 import Footer from "../../components/Footer/Footer";
 import FlashMessage from '../../components/FlashMessage';
+import { LoginHeader } from "../../components/Header";
+import UserContext from "../../context/User";
 import useStyles from "./styles";
 
 function DriverSignup() {
   const { t } = useTranslation();
   const classes = useStyles();
+  const { isLoggedIn } = useContext(UserContext);
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
@@ -61,7 +64,7 @@ function DriverSignup() {
 
   return (
     <Grid container>
-      <Header />
+      {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
       <Container maxWidth="md" sx={{ mt: 12, mb: 8 }}>
         {error && (
           <FlashMessage

@@ -77,9 +77,7 @@ export const SearchHeader = () => {
   // Update options whenever inputValue changes
   useEffect(() => {
     let active = true;
-    if (!autocompleteService.current) {
-      return undefined;
-    }
+    if (!autocompleteService.current) return undefined;
 
     if (inputValue === "") {
       setOptions(value ? [value] : []);
@@ -88,10 +86,7 @@ export const SearchHeader = () => {
 
     fetch({ input: inputValue }, (results) => {
       if (active) {
-        let newOptions = [];
-        if (value) {
-          newOptions = [value];
-        }
+        let newOptions = value ? [value] : [];
         if (results) {
           newOptions = [...newOptions, ...results];
         }
@@ -111,43 +106,76 @@ export const SearchHeader = () => {
 
   return (
     <>
-      {isSearchVisible ? (
-        <></>
-      ) : (
-        <div onClick={onChangeModal}>
-          <Box
-            sx={{
-              width: isSmallScreen ? "180px" : "222px",
-              height: 36,
-              backgroundColor: "black",
-              borderRadius: 36,
-              color: "white",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 1,
-              cursor: "pointer",
-              fontSize: isSmallScreen ? "0.8rem" : "1rem",
-              padding: isSmallScreen ? "0 8px" : "0 16px"
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <title>Location marker</title>
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 1c2.4 0 4.9.9 6.7 2.8 3.7 3.7 3.7 9.8 0 13.4L12 24l-6.7-6.7c-3.7-3.7-3.7-9.8 0-13.5C7.1 1.9 9.6 1 12 1Zm0 18.8 4.6-4.6c2.5-2.6 2.5-6.7 0-9.3C15.4 4.7 13.7 4 12 4c-1.7 0-3.4.7-4.6 1.9-2.5 2.6-2.5 6.7 0 9.3l4.6 4.6Zm2-9.3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
-                fill="currentColor"
-              ></path>
-            </svg>
-            <Typography
-              variant="body2"
-              component="p"
-              sx={{ margin: 0, fontSize: isSmallScreen ? "0.7rem" : "1rem" }}
+      {isSearchVisible ? null : (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {search && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                maxWidth: isSmallScreen ? "100px" : "200px",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+              title={search}
             >
-              Enter delivery address
-            </Typography>
-          </Box>
+              <LocationOnIcon
+                sx={{
+                  color: "black",
+                  fontSize: isSmallScreen ? "1rem" : "1.5rem",
+                  marginRight: "4px",
+                }}
+              />
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: isSmallScreen ? "0.75rem" : "1rem",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  color: "black",
+                }}
+              >
+                {search}
+              </Typography>
+            </Box>
+          )}
+
+          <div onClick={onChangeModal}>
+            <Box
+              sx={{
+                width: isSmallScreen ? "180px" : "222px",
+                height: 36,
+                backgroundColor: "black",
+                borderRadius: 36,
+                color: "white",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+                cursor: "pointer",
+                fontSize: isSmallScreen ? "0.8rem" : "1rem",
+                padding: isSmallScreen ? "0 8px" : "0 16px",
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <title>Location marker</title>
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 1c2.4 0 4.9.9 6.7 2.8 3.7 3.7 3.7 9.8 0 13.4L12 24l-6.7-6.7c-3.7-3.7-3.7-9.8 0-13.5C7.1 1.9 9.6 1 12 1Zm0 18.8 4.6-4.6c2.5-2.6 2.5-6.7 0-9.3C15.4 4.7 13.7 4 12 4c-1.7 0-3.4.7-4.6 1.9-2.5 2.6-2.5 6.7 0 9.3l4.6 4.6Zm2-9.3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+              <Typography
+                variant="body2"
+                component="p"
+                sx={{ margin: 0, fontSize: isSmallScreen ? "0.7rem" : "1rem" }}
+              >
+                Enter delivery address
+              </Typography>
+            </Box>
+          </div>
           <Modal
             open={open}
             onClose={onChangeModal}
@@ -167,7 +195,7 @@ export const SearchHeader = () => {
                 left: 0,
                 right: 0,
                 padding: isSmallScreen ? "10px" : "0",
-                backgroundColor: "rgba(0,0,0,0.3)"
+                backgroundColor: "rgba(0,0,0,0.3)",
               }}
             >
               <Box
@@ -190,7 +218,7 @@ export const SearchHeader = () => {
                   sx={{
                     fontSize: isSmallScreen ? "18px" : "24px",
                     fontWeight: "bold",
-                    textAlign: "center"
+                    textAlign: "center",
                   }}
                 >
                   Enter delivery address
@@ -226,6 +254,8 @@ export const SearchHeader = () => {
                           longitude: loc.lng(),
                         });
                         setSearch(newValue.description);
+                        // Đóng modal sau khi chọn option
+                        onChangeModal();
                       });
                     } else {
                       setSearch("");
@@ -243,9 +273,7 @@ export const SearchHeader = () => {
                       placeholder="Enter your full address"
                       onKeyPress={(event) => {
                         if (event.key === "Enter") {
-                          if (location) {
-                            navigateTo("/restaurant-list");
-                          }
+                          onChangeModal();
                         }
                       }}
                       InputProps={{
@@ -281,8 +309,8 @@ export const SearchHeader = () => {
                         ),
                         style: {
                           borderRadius: "36px",
-                          color: "black"
-                        }
+                          color: "black",
+                        },
                       }}
                     />
                   )}
@@ -303,7 +331,10 @@ export const SearchHeader = () => {
                     return (
                       <li {...props} style={{ display: "flex", alignItems: "center" }}>
                         <LocationOnIcon
-                          style={{ marginRight: 8, color: theme.palette.text.secondary }}
+                          style={{
+                            marginRight: 8,
+                            color: theme.palette.text.secondary,
+                          }}
                         />
                         <div>
                           {parts
@@ -330,7 +361,7 @@ export const SearchHeader = () => {
               </Box>
             </Box>
           </Modal>
-        </div>
+        </Box>
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext,useState } from "react";
 import {
   Grid,
   TextField,
@@ -10,6 +10,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { Autocomplete } from "@react-google-maps/api";
 import Header from "../../components/Header/Header";
+import { LoginHeader } from "../../components/Header";
+import UserContext from "../../context/User";
 import FlashMessage from "../../components/FlashMessage";
 import Footer from "../../components/Footer/Footer";
 import useStyles from "./styles";
@@ -17,6 +19,7 @@ import useStyles from "./styles";
 function BusinessSignup() {
   const { t } = useTranslation();
   const classes = useStyles();
+  const { isLoggedIn } = useContext(UserContext);
   const [formData, setFormData] = useState({
     businessName: "",
     address: "",
@@ -59,7 +62,7 @@ function BusinessSignup() {
 
   return (
     <Grid container>
-      <Header />
+      {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
       <Container maxWidth="md" sx={{ mt: 12, mb: 8 }}>
         {error && (
           <FlashMessage
