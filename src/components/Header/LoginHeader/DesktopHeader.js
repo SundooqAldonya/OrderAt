@@ -43,7 +43,7 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
         </Box>
         <Box className={classes.flex}>
           {/* Language Toggle */}
-          <Button
+          {/* <Button
             onClick={handleLanguageToggle}
             className={classes.languageToggle}
             aria-controls="simple-menu" aria-haspopup="true"
@@ -53,7 +53,29 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
               "&:hover": { backgroundColor: "#e0e0e0" },
             }}
           >
-            {i18n.language === "en" ? "عربي" : "English"}
+            {i18n.language === "en" ? "Arabic (عربي)" : "English"}
+          </Button> */}
+          {/* Language Toggle */}
+          <Button
+            onClick={handleLanguageToggle}
+            aria-controls="language-menu"
+            aria-haspopup="true"
+            className={classes.languageToggle}
+            sx={{
+              textTransform: "none",
+              display: "flex",
+              alignItems: "center",
+              color: theme.palette.text.secondary,
+              fontWeight: 700, // Match Login button font weight
+            }}
+          >
+            <Typography
+              variant="button"
+              color="textSecondary"
+              className={classes.font700}
+            >
+              {i18n.language === "en" ? "Arabic (عربي)" : "English"}
+            </Typography>
           </Button>
           {showIcon && (
             <>
