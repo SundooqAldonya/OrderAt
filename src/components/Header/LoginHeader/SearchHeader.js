@@ -1,4 +1,4 @@
-import { Box, TextField, Modal, Typography } from "@mui/material";
+import { Box, TextField, Modal, Typography, useMediaQuery } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import parse from "autosuggest-highlight/parse";
@@ -35,6 +35,8 @@ export const SearchHeader = () => {
       autocompleteService.current.getPlacePredictions(request, callback);
     }, 200)
   ).current;
+
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const locationCallback = (error, data) => {
     setLoading(false);
@@ -115,7 +117,7 @@ export const SearchHeader = () => {
         <div onClick={onChangeModal}>
           <Box
             sx={{
-              width: 222,
+              width: isSmallScreen ? "180px" : "222px",
               height: 36,
               backgroundColor: "black",
               borderRadius: 36,
@@ -125,6 +127,8 @@ export const SearchHeader = () => {
               alignItems: "center",
               gap: 1,
               cursor: "pointer",
+              fontSize: isSmallScreen ? "0.8rem" : "1rem",
+              padding: isSmallScreen ? "0 8px" : "0 16px"
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -136,7 +140,13 @@ export const SearchHeader = () => {
                 fill="currentColor"
               ></path>
             </svg>
-            <p> Enter delivery address </p>
+            <Typography
+              variant="body2"
+              component="p"
+              sx={{ margin: 0, fontSize: isSmallScreen ? "0.7rem" : "1rem" }}
+            >
+              Enter delivery address
+            </Typography>
           </Box>
           <Modal
             open={open}
@@ -145,7 +155,8 @@ export const SearchHeader = () => {
             aria-describedby="modal-modal-description"
           >
             <Box
-              style={{
+              onClick={onChangeModal}
+              sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -155,164 +166,168 @@ export const SearchHeader = () => {
                 bottom: 0,
                 left: 0,
                 right: 0,
+                padding: isSmallScreen ? "10px" : "0",
+                backgroundColor: "rgba(0,0,0,0.3)"
               }}
-              onClick={onChangeModal}
             >
-              <div onClick={(event) => event.stopPropagation()}>
-                <Box
-                  style={{
-                    width: 500,
-                    backgroundColor: "white",
-                    borderRadius: 36,
-                    padding: 24,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 10,
+              <Box
+                onClick={(event) => event.stopPropagation()}
+                sx={{
+                  width: isSmallScreen ? "90%" : "500px",
+                  maxWidth: "500px",
+                  backgroundColor: "white",
+                  borderRadius: isSmallScreen ? "20px" : "36px",
+                  padding: isSmallScreen ? "16px" : "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h4"
+                  sx={{
+                    fontSize: isSmallScreen ? "18px" : "24px",
+                    fontWeight: "bold",
+                    textAlign: "center"
                   }}
                 >
-                  <Typography
-                    id="modal-modal-title"
-                    variant="h6"
-                    component="h4"
-                    style={{ fontSize: 24, fontWeight: "bold" }}
-                  >
-                    Enter delivery address
-                  </Typography>
-                  <Autocomplete
-                    id="google-map-modal"
-                    getOptionLabel={(option) =>
-                      typeof option === "string"
-                        ? option
-                        : option.description
-                    }
-                    filterOptions={(x) => x}
-                    options={options}
-                    autoComplete
-                    includeInputInList
-                    filterSelectedOptions
-                    value={
-                      loading
-                        ? "Loading ..."
-                        : search
-                          ? search
-                          : location
-                            ? location.deliveryAddress
-                            : ""
-                    }
-                    onChange={(event, newValue) => {
-                      if (newValue) {
-                        const geocoder = new window.google.maps.Geocoder();
-                        geocoder.geocode({ placeId: newValue.place_id }, (res) => {
-                          const loc = res[0].geometry.location;
-                          setLocation({
-                            label: "Home",
-                            deliveryAddress: newValue.description,
-                            latitude: loc.lat(),
-                            longitude: loc.lng(),
-                          });
-                          setSearch(newValue.description);
+                  Enter delivery address
+                </Typography>
+                <Autocomplete
+                  id="google-map-modal"
+                  getOptionLabel={(option) =>
+                    typeof option === "string" ? option : option.description
+                  }
+                  filterOptions={(x) => x}
+                  options={options}
+                  autoComplete
+                  includeInputInList
+                  filterSelectedOptions
+                  value={
+                    loading
+                      ? "Loading ..."
+                      : search
+                        ? search
+                        : location
+                          ? location.deliveryAddress
+                          : ""
+                  }
+                  onChange={(event, newValue) => {
+                    if (newValue) {
+                      const geocoder = new window.google.maps.Geocoder();
+                      geocoder.geocode({ placeId: newValue.place_id }, (res) => {
+                        const loc = res[0].geometry.location;
+                        setLocation({
+                          label: "Home",
+                          deliveryAddress: newValue.description,
+                          latitude: loc.lat(),
+                          longitude: loc.lng(),
                         });
-                      } else {
-                        setSearch("");
-                      }
-                      setOptions(newValue ? [...options] : options);
-                      setValue(newValue);
-                    }}
-                    onInputChange={(event, newInputValue) => {
-                      setInputValue(newInputValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        placeholder="Enter your full address"
-                        onKeyPress={(event) => {
-                          if (event.key === "Enter") {
-                            if (location) {
-                              navigateTo("/restaurant-list");
-                            }
+                        setSearch(newValue.description);
+                      });
+                    } else {
+                      setSearch("");
+                    }
+                    setOptions(newValue ? [...options] : options);
+                    setValue(newValue);
+                  }}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Enter your full address"
+                      onKeyPress={(event) => {
+                        if (event.key === "Enter") {
+                          if (location) {
+                            navigateTo("/restaurant-list");
                           }
-                        }}
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {params.InputProps.endAdornment}
-                              <Box
+                        }
+                      }}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {params.InputProps.endAdornment}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {loading ? (
+                                <SyncLoader
+                                  color={theme.palette.primary.main}
+                                  size={5}
+                                  speedMultiplier={0.7}
+                                  margin={1}
+                                />
+                              ) : (
+                                <LocationIcon
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setLoading(true);
+                                    getCurrentLocation(locationCallback);
+                                  }}
+                                />
+                              )}
+                            </Box>
+                          </>
+                        ),
+                        style: {
+                          borderRadius: "36px",
+                          color: "black"
+                        }
+                      }}
+                    />
+                  )}
+                  renderOption={(props, option) => {
+                    const matches =
+                      option.structured_formatting?.main_text_matched_substrings;
+                    let parts = null;
+                    if (matches) {
+                      parts = parse(
+                        option.structured_formatting.main_text,
+                        matches.map((match) => [
+                          match.offset,
+                          match.offset + match.length,
+                        ])
+                      );
+                    }
+
+                    return (
+                      <li {...props} style={{ display: "flex", alignItems: "center" }}>
+                        <LocationOnIcon
+                          style={{ marginRight: 8, color: theme.palette.text.secondary }}
+                        />
+                        <div>
+                          {parts
+                            ? parts.map((part, index) => (
+                              <span
+                                key={index}
                                 style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  cursor: "pointer",
+                                  fontWeight: part.highlight ? 700 : 400,
+                                  color: "black",
                                 }}
                               >
-                                {loading ? (
-                                  <SyncLoader
-                                    color={theme.palette.primary.main}
-                                    size={5}
-                                    speedMultiplier={0.7}
-                                    margin={1}
-                                  />
-                                ) : (
-                                  <LocationIcon
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      setLoading(true);
-                                      getCurrentLocation(locationCallback);
-                                    }}
-                                  />
-                                )}
-                              </Box>
-                            </>
-                          ),
-                          style: {
-                            borderRadius: "36px", color: "black"
-                          }
-                        }}
-                      />
-                    )}
-                    renderOption={(props, option) => {
-                      const matches =
-                        option.structured_formatting?.main_text_matched_substrings;
-                      let parts = null;
-                      if (matches) {
-                        parts = parse(
-                          option.structured_formatting.main_text,
-                          matches.map((match) => [
-                            match.offset,
-                            match.offset + match.length,
-                          ])
-                        );
-                      }
-
-                      return (
-                        <li {...props} style={{ display: "flex", alignItems: "center" }}>
-                          <LocationOnIcon
-                            style={{ marginRight: 8, color: theme.palette.text.secondary }}
-                          />
-                          <div>
-                            {parts
-                              ? parts.map((part, index) => (
-                                <span
-                                  key={index}
-                                  style={{
-                                    fontWeight: part.highlight ? 700 : 400,
-                                    color: "black",
-                                  }}
-                                >
-                                  {part.text}
-                                </span>
-                              ))
-                              : option.structured_formatting?.main_text}
-                            <Typography variant="body2" color="textSecondary">
-                              {option.structured_formatting?.secondary_text}
-                            </Typography>
-                          </div>
-                        </li>
-                      );
-                    }}
-                  />
-                </Box>
-              </div>
+                                {part.text}
+                              </span>
+                            ))
+                            : option.structured_formatting?.main_text}
+                          <Typography variant="body2" color="textSecondary">
+                            {option.structured_formatting?.secondary_text}
+                          </Typography>
+                        </div>
+                      </li>
+                    );
+                  }}
+                />
+              </Box>
             </Box>
           </Modal>
         </div>

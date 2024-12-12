@@ -29,7 +29,7 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   return (
     <AppBar elevation={0} position="fixed">
       <Toolbar className={classes.toolbar}>
-        <Box sx={{ display: "flex", justifyContent: "start", gap: 10 }}>
+        <Box sx={{ display: "flex", justifyContent: "start", gap: 1 }}>
           <RouterLink
             to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
             className={classes.linkDecoration}

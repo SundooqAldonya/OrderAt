@@ -13,19 +13,20 @@ function BusinessSection() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   const cardStyle = {
-    padding: "24px",
+    padding: isSmall ? "16px" : "24px",
     backgroundColor: "#f6f6f6",
     borderRadius: "10px",
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between", // Ensures equal spacing
-    alignItems: "center", // Centers items horizontally
+    justifyContent: "space-between",
+    alignItems: "center",
     textAlign: "center",
     transition: "transform 0.2s",
-    marginBottom: isMobile ? "32px" : "0", // Add spacing between cards on mobile
+    marginBottom: isMobile ? "32px" : "0",
     "&:hover": {
       transform: "translateY(-4px)",
       boxShadow: theme.shadows[4],
@@ -33,104 +34,111 @@ function BusinessSection() {
   };
 
   const iconStyle = {
-    fontSize: "48px",
+    fontSize: isSmall ? "36px" : "48px",
     color: theme.palette.primary.main,
     marginBottom: "16px",
   };
 
   const textStyle = {
-    flexGrow: 1, // Makes the text area flexible
+    flexGrow: 1,
     display: "flex",
-    alignItems: "center", // Centers text vertically
-    justifyContent: "center", // Centers text horizontally
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: isSmall ? "0.85rem" : "1rem",
   };
 
   const buttonStyle = {
-    marginTop: "auto", // Pushes the button to the bottom
+    marginTop: "auto",
+    fontSize: isSmall ? "0.75rem" : "1rem",
   };
 
   return (
-    <Box sx={{ backgroundColor: "#ffffff", padding: "40px 0" }}>
+    <Box sx={{ backgroundColor: "#ffffff", padding: isSmall ? "20px 0" : "40px 0" }}>
       <Container>
-        <Grid container spacing={4}>
-          {/* Add Your Business Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Box sx={cardStyle}>
-              <BusinessIcon sx={iconStyle} />
-              <Box sx={textStyle}>
-                <Typography variant="body2" color="text.secondary">
-                  {t("addYourBusinessDesc")}
-                </Typography>
+        {/* Box này sẽ bao toàn bộ các card */}
+        <Box>
+          <Grid container spacing={2}>
+            {/* Add Your Business Card */}
+            <Grid item xs={12} sm={6} md={4} sx={{ marginTop: "50px" }}>
+              <Box sx={cardStyle}>
+                <BusinessIcon sx={iconStyle} />
+                <Box sx={textStyle}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("addYourBusinessDesc")}
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate("/business-signup")}
+                  fullWidth={isMobile}
+                  sx={buttonStyle}
+                >
+                  {t("getStarted")}
+                </Button>
               </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => navigate("/business-signup")}
-                fullWidth={isMobile}
-                sx={buttonStyle}
-              >
-                {t("getStarted")}
-              </Button>
-            </Box>
-          </Grid>
+            </Grid>
 
-          {/* Drive With Us Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Box sx={cardStyle}>
-              <DeliveryDiningIcon sx={iconStyle} />
-              <Box sx={textStyle}>
-                <Typography variant="body2" color="text.secondary">
-                  {t("driveWithOrderatDesc")}
-                </Typography>
+            {/* Drive With Us Card */}
+            <Grid item xs={12} sm={6} md={4} sx={{ marginTop: "50px" }}>
+              <Box sx={cardStyle}>
+                <DeliveryDiningIcon sx={iconStyle} />
+                <Box sx={textStyle}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("driveWithOrderatDesc")}
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate("/driver-signup")}
+                  fullWidth={isMobile}
+                  sx={buttonStyle}
+                >
+                  {t("signUpToDeliver")}
+                </Button>
               </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => navigate("/driver-signup")}
-                fullWidth={isMobile}
-                sx={buttonStyle}
-              >
-                {t("signUpToDeliver")}
-              </Button>
-            </Box>
-          </Grid>
+            </Grid>
 
-          {/* Download App Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Box sx={cardStyle}>
-              <GetAppIcon sx={iconStyle} />
-              <Box sx={textStyle}>
-                <Typography variant="body2" color="text.secondary">
-                  {t("downloadOurAppDesc")}
-                </Typography>
+            {/* Download App Card */}
+            <Grid item xs={12} sm={6} md={4} sx={{ marginTop: "50px" }}>
+              <Box sx={cardStyle}>
+                <GetAppIcon sx={iconStyle} />
+                <Box sx={textStyle}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("downloadOurAppDesc")}
+                  </Typography>
+                </Box>
+                <Grid container spacing={2} sx={{ marginTop: "auto" }}>
+                  <Grid item xs={12} sm={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      href="https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
+                      target="_blank"
+                      sx={{ fontSize: isSmall ? "0.75rem" : "1rem" }}
+                    >
+                      {t("android")}
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      href="https://apps.apple.com/pk/app/enatega-multivendor-restaurant/id1526672537"
+                      target="_blank"
+                      sx={{ fontSize: isSmall ? "0.75rem" : "1rem" }}
+                    >
+                      {t("ios")}
+                    </Button>
+                  </Grid>
+                </Grid>
               </Box>
-              <Grid container spacing={2} sx={{ marginTop: "auto" }}>
-                <Grid item xs={12} sm={6}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    href="https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
-                    target="_blank"
-                  >
-                    {t("android")}
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    href="https://apps.apple.com/pk/app/enatega-multivendor-restaurant/id1526672537"
-                    target="_blank"
-                  >
-                    {t("ios")}
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       </Container>
     </Box>
   );
