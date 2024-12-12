@@ -169,8 +169,8 @@ function SearchContainer({
                 flex: 1,
                 //zIndex: 10
               }}
-              
-              zoom={13} // Adjusted zoom level for better city view
+
+              zoom={15}
               center={{
                 lat: 31.1106593, // Kafr El-Shaikh coordinates
                 lng: 30.9387799,
@@ -250,10 +250,10 @@ function SearchContainer({
                           loading
                             ? "Loading ..."
                             : search
-                            ? search
-                            : location
-                            ? location.deliveryAddress
-                            : ""
+                              ? search
+                              : location
+                                ? location.deliveryAddress
+                                : ""
                         }
                         onChange={(event, newValue) => {
                           if (newValue) {
@@ -445,10 +445,10 @@ function SearchContainer({
                       loading
                         ? "Loading ..."
                         : search
-                        ? search
-                        : location
-                        ? location.deliveryAddress
-                        : ""
+                          ? search
+                          : location
+                            ? location.deliveryAddress
+                            : ""
                     }
                     onChange={(event, newValue) => {
                       if (newValue) {
