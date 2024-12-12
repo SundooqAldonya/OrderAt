@@ -3,8 +3,6 @@ import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import useStyle from "./styles";
@@ -42,19 +40,6 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
           <SearchHeader />
         </Box>
         <Box className={classes.flex}>
-          {/* Language Toggle */}
-          {/* <Button
-            onClick={handleLanguageToggle}
-            className={classes.languageToggle}
-            aria-controls="simple-menu" aria-haspopup="true"
-            sx={{
-              textTransform: "none",
-              color: theme.palette.common.black,
-              "&:hover": { backgroundColor: "#e0e0e0" },
-            }}
-          >
-            {i18n.language === "en" ? "Arabic (عربي)" : "English"}
-          </Button> */}
           {/* Language Toggle */}
           <Button
             onClick={handleLanguageToggle}

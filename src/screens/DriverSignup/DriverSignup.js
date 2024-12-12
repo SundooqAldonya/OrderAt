@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 import Header from '../../components/Header/Header';
 import Footer from "../../components/Footer/Footer";
 import FlashMessage from '../../components/FlashMessage';
-import Login from "../Login/Login";
 import useStyles from "./styles";
 
 function DriverSignup() {

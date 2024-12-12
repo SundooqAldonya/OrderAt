@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Grid,
-  Container,
   Box,
-  useTheme,
-  useMediaQuery,
-  Typography,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import FlashMessage from "../../components/FlashMessage";
@@ -17,22 +13,11 @@ import { useLocation } from "../../hooks";
 // import Analytics from "../../utils/analytics";
 import useStyles from "./styles";
 import * as Sentry from "@sentry/react";
-import CategoryCards from "../../components/HomeScreen/CategoryCards";
-import WebApp from "../../assets/images/webapp.png";
-import CustApp from "../../assets/images/cust-app.png";
-import RiderApp from "../../assets/images/rider-app.png";
-import RestaurantApp from "../../assets/images/restaurant-app.png";
-import Dashboard from "../../assets/images/dashboard.png";
 import Footer from "../../components/Footer/Footer";
 import BusinessSection from "../../components/HomeScreen/BusinessSection";
-import { useTranslation } from "react-i18next";
 
 function Home() {
-  const { t } = useTranslation();
   const classes = useStyles();
-  const theme = useTheme();
-  const small = useMediaQuery(theme.breakpoints.down("md"));
-  const medium = useMediaQuery(theme.breakpoints.down("lg"));
 
   const { error, loading } = useLocation();
   const [open, setOpen] = useState(!!error);

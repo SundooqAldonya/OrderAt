@@ -227,7 +227,6 @@ const ar = {
     phoneNumberRequired: "رقم الهاتف مطلوب",
     invalidPhoneNumber: "رقم هاتف غير صالح",
     driveWithOrderatTitle: "قد مع Orderat",
-    driveWithOrderatDesc: "انضم إلى فريق التوصيل لدينا واكسب المال بجدولك الخاص",
     fullNameLabel: "الاسم الكامل",
     vehicleTypeLabel: "نوع المركبة",
     bicycleLabel: "دراجة",

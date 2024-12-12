@@ -3,7 +3,6 @@ import Web from "../../assets/images/web.png";
 import Blog from "../../assets/images/blog-bg.png";
 import Contact from "../../assets/images/contact-pg.png";
 import Categories from "../../assets/images/categories-bg.png";
-import Price from "../../assets/images/price-bg.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
