@@ -22,10 +22,10 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   const theme = useTheme();
   const location = useLocation();
 
-  const handleLanguageChange = (event) => {
-    const lang = event.target.value;
-    i18n.changeLanguage(lang);
-    localStorage.setItem("enatega-language", lang);
+  const handleLanguageToggle = () => {
+    const newLang = i18n.language === "en" ? "ar" : "en";
+    i18n.changeLanguage(newLang);
+    localStorage.setItem("enatega-language", newLang);
   };
 
   return (
@@ -39,43 +39,22 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
             <Logo height={37} width={169} />
           </RouterLink>
 
-          <SearchHeader/>
+          <SearchHeader />
         </Box>
         <Box className={classes.flex}>
-          <Select
-            value={i18n.language}
-            onChange={handleLanguageChange}
-            variant="standard"
-            className={classes.languageSelect}
+          {/* Language Toggle */}
+          <Button
+            onClick={handleLanguageToggle}
+            className={classes.languageToggle}
+            aria-controls="simple-menu" aria-haspopup="true"
             sx={{
-              "& .MuiMenuItem-root:hover": {
-                color: "black",
-              },
+              textTransform: "none",
+              color: theme.palette.common.black,
+              "&:hover": { backgroundColor: "#e0e0e0" },
             }}
           >
-            <MenuItem
-              sx={{
-                backgroundColor: "#8BC34A",
-                "&:hover": {
-                  color: "black",
-                },
-              }}
-              value="en"
-            >
-              English
-            </MenuItem>
-            <MenuItem
-              sx={{
-                backgroundColor: "#8BC34A",
-                "&:hover": {
-                  color: "black",
-                },
-              }}
-              value="ar"
-            >
-              عربي
-            </MenuItem>
-          </Select>
+            {i18n.language === "en" ? "عربي" : "English"}
+          </Button>
           {showIcon && (
             <>
               <Divider flexItem orientation="vertical" light />
