@@ -14,11 +14,14 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Header from '../../components/Header/Header';
+import Footer from "../../components/Footer/Footer";
 import FlashMessage from '../../components/FlashMessage';
 import Login from "../Login/Login";
+import useStyles from "./styles";
 
 function DriverSignup() {
   const { t } = useTranslation();
+  const classes = useStyles();
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
@@ -126,6 +129,11 @@ function DriverSignup() {
           </Grid>
         </Box>
       </Container>
+      <Box className={classes.footerContainer}>
+        <Box className={classes.footerWrapper}>
+          <Footer />
+        </Box>
+      </Box>
     </Grid>
   );
 }

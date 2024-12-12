@@ -11,9 +11,12 @@ import { useTranslation } from "react-i18next";
 import { Autocomplete } from "@react-google-maps/api";
 import Header from "../../components/Header/Header";
 import FlashMessage from "../../components/FlashMessage";
+import Footer from "../../components/Footer/Footer";
+import useStyles from "./styles";
 
 function BusinessSignup() {
   const { t } = useTranslation();
+  const classes = useStyles();
   const [formData, setFormData] = useState({
     businessName: "",
     address: "",
@@ -138,6 +141,11 @@ function BusinessSignup() {
           </Grid>
         </Box>
       </Container>
+      <Box className={classes.footerContainer}>
+        <Box className={classes.footerWrapper}>
+          <Footer />
+        </Box>
+      </Box>
     </Grid>
   );
 }
