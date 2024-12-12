@@ -228,7 +228,8 @@ const en = {
     businessAddressRequired: "Business address is required",
     contactNameRequired: "Contact name is required",
     phoneNumberRequired: "Phone number is required",
-    invalidPhoneNumber: "Invalid phone number"
+    invalidPhoneNumber: "Invalid phone number",
+    enterDeliveryAddress: "Enter delivery address",
   },
 };
 export default en;

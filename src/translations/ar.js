@@ -233,7 +233,8 @@ const ar = {
     motorcycleLabel: "دراجة نارية",
     carLabel: "سيارة",
     nameRequired: "الاسم مطلوب",
-    vehicleTypeRequired: "نوع المركبة مطلوب"
+    vehicleTypeRequired: "نوع المركبة مطلوب",
+    enterDeliveryAddress: "أدخل عنوان التوصيل"
   },
 };
 export default ar;

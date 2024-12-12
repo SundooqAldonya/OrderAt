@@ -155,6 +155,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "auto",
     borderTopLeftRadius: "5rem",
     borderBottomLeftRadius: "5rem",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    },
   },
   searchWrapper: {
     width: "100%",

@@ -9,13 +9,13 @@ import { useLocation } from "../../../hooks";
 import SyncLoader from "react-spinners/SyncLoader";
 import LocationIcon from "../../../assets/icons/LocationIcon";
 import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const autocompleteService = { current: null };
 
 export const SearchHeader = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
-  const navigateTo = useNavigate();
 
   const [isSearchVisible, setIsSearchVisible] = useState(true);
   const [open, setOpen] = useState(false);
@@ -99,11 +99,6 @@ export const SearchHeader = () => {
     };
   }, [value, inputValue, fetch]);
 
-  const handleLocationButtonClick = () => {
-    setLoading(true);
-    getCurrentLocation(locationCallback);
-  };
-
   return (
     <>
       {isSearchVisible ? null : (
@@ -172,7 +167,7 @@ export const SearchHeader = () => {
                 component="p"
                 sx={{ margin: 0, fontSize: isSmallScreen ? "0.7rem" : "1rem" }}
               >
-                Enter delivery address
+                {t("enterDeliveryAddress")}
               </Typography>
             </Box>
           </div>

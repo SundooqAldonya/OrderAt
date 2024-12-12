@@ -29,9 +29,9 @@ function Footer() {
   const [hoveredLink, setHoveredLink] = useState(null);
 
   const links = [
-    { id: 1, to: "/", label: "Home" },
-    { id: 2, to: "/privacy", label: "Privacy and policy" },
-    { id: 3, to: "/terms", label: "Terms and condition" }, // New link
+    { id: 1, to: "/", label: t("footerLinkHome") },
+    { id: 2, to: "/privacy", label: t("footerLinkPP") },
+    { id: 3, to: "/terms", label: t("footerLinkTC") },
   ];
 
   const redirectHandler = (link) => {
@@ -58,7 +58,7 @@ function Footer() {
       <Grid
         item
         xs={12}
-        md={2.5}
+        md={2}
         align="center"
         style={{ padding: small ? "3rem" : 0 }}
       >
