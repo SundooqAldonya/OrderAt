@@ -140,7 +140,6 @@ function SearchContainer({
     fetchRef.current = true;
   }, [location]);
 
-
   const handleLocationButtonClick = () => {
     setLoading(true);
     getCurrentLocation(locationCallback);
@@ -169,11 +168,10 @@ function SearchContainer({
                 flex: 1,
                 //zIndex: 10
               }}
-
               zoom={15}
               center={{
-                lat: 31.1106593, // Kafr El-Shaikh coordinates
-                lng: 30.9387799,
+                lat: parseFloat(location?.latitude) || 31.1106593,
+                lng: parseFloat(location?.longitude) || 30.9387799,
               }}
               options={{
                 styles: mapStyles,
@@ -250,10 +248,10 @@ function SearchContainer({
                           loading
                             ? "Loading ..."
                             : search
-                              ? search
-                              : location
-                                ? location.deliveryAddress
-                                : ""
+                            ? search
+                            : location
+                            ? location.deliveryAddress
+                            : ""
                         }
                         onChange={(event, newValue) => {
                           if (newValue) {
@@ -392,7 +390,6 @@ function SearchContainer({
                       }}
                     >
                       <Button
-                        id="find-restaurants"
                         variant="contained"
                         color="primary"
                         fullWidth
@@ -445,10 +442,10 @@ function SearchContainer({
                       loading
                         ? "Loading ..."
                         : search
-                          ? search
-                          : location
-                            ? location.deliveryAddress
-                            : ""
+                        ? search
+                        : location
+                        ? location.deliveryAddress
+                        : ""
                     }
                     onChange={(event, newValue) => {
                       if (newValue) {
