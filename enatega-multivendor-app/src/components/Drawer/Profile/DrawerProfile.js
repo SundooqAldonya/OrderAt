@@ -8,6 +8,7 @@ import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { alignment } from '../../../utils/alignment'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../../utils/colors'
 
 function DrawerProfile(props) {
   const { t } = useTranslation()
@@ -17,37 +18,26 @@ function DrawerProfile(props) {
 
   if (loadingProfile) return <TextDefault>{t('loading')}</TextDefault>
   return (
-    <View style={styles(currentTheme).mainContainer}>
-      {!isLoggedIn && (
-        <View style={styles().logInContainer}>
-          <TouchableOpacity
-            style={{ ...alignment.PTxSmall, ...alignment.PBxSmall }}
-            onPress={() => {
-              props.navigation.navigate({ name: 'CreateAccount' })
-            }}>
-            <TextDefault
-              style={styles(currentTheme).alignLeft}
-              textColor={currentTheme.black}
-              bold
-              H5>
-              {t('loginOrCreateAccount')}
-            </TextDefault>
-          </TouchableOpacity>
-        </View>
-      )}
+    <View style={[styles(currentTheme).mainContainer, { backgroundColor: colors.background, borderWidth: 0 }]}>
+
+
       <View style={styles().loggedInContainer}>
-        {isLoggedIn && profile && (
-          <View style={styles().subContainer}>
-            <View style={styles(currentTheme).imgContainer}>
-              <TextDefault textColor={currentTheme.tagColor} bold H1>
-                {profile.name.substr(0, 1).toUpperCase()}
-              </TextDefault>
-            </View>
-            <TextDefault textColor={currentTheme.color4} bolder H2>
-              {profile.name}
+        <View style={styles().subContainer}>
+          <View style={styles(currentTheme).imgContainer}>
+            <TextDefault textColor={currentTheme.tagColor} bold H1>
+              {profile?.name?.substr(0, 1)?.toUpperCase() ?? 'G'}
             </TextDefault>
           </View>
-        )}
+          <View style={{flex:1}}>
+
+            <TextDefault textColor={colors.dark} bolder H2>
+              {profile?.name ?? 'Mohammadaitia'}
+            </TextDefault>
+            <TextDefault textColor={colors.dark} H5  >
+              {profile?.email ?? 'guest@gmail.com'}
+            </TextDefault>
+          </View>
+        </View>
       </View>
     </View>
   )

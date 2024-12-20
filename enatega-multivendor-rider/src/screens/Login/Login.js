@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from './styles'
 import colors from '../../utilities/colors'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import RiderLogin from '../../assets/svg/RiderLogin.png'
+const RiderLogin = require('../../assets/svg/RiderLogin.png')
 import { FontAwesome } from '@expo/vector-icons'
 import Spinner from '../../components/Spinner/Spinner'
 import useLogin from './useLogin'

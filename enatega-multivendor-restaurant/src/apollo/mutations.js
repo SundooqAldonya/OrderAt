@@ -1,3 +1,5 @@
+import { gql } from "@apollo/client"
+
 export const login = `mutation RestaurantLogin($username:String!,$password:String!){
     restaurantLogin(username:$username,password:$password){
         token
@@ -43,3 +45,44 @@ export const toggleAvailability = `mutation ToggleAvailability{
 export const muteRingOrder = `mutation muteRing($orderId:String){
   muteRing(orderId:$orderId)
 }`
+
+export const FIND_OR_CREATE_USER = gql`
+  mutation FindOrCreateUser($userInput: UserInput!) {
+    findOrCreateUser(userInput: $userInput) {
+      _id
+      name
+      phone
+      addresses {
+        _id
+        deliveryAddress
+        details
+        label
+        selected
+      }
+    }
+  }
+`;
+
+export const CHECK_OUT_PLACE_ORDER = gql`mutation CheckOutPlaceOrder($userId: ID!, $addressId: ID!, $orderAmount: Float!, $resId: String!) {
+  CheckOutPlaceOrder(userId: $userId, addressId: $addressId, orderAmount: $orderAmount, resId: $resId) {
+    _id
+    orderId
+    user {
+      _id
+      name
+      phone
+    }
+    deliveryAddress {
+      id
+      deliveryAddress
+      details
+      label
+    }
+    orderAmount
+    paymentStatus
+    orderStatus
+    isActive
+    createdAt
+    updatedAt
+  }
+}`;

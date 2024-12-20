@@ -13,6 +13,7 @@ const ar = {
     linksTitle: "روابط",
     subTotal: "المجموع الفرعي",
     deliveryFee: "رسوم التوصيل",
+    MinimumDeliveryFee: "رسوم التوصيل الدنيا",
     haveVoucher: "هل لديك قسيمة ؟",
     remove: "إزالة",
     change: "يتغيرون",

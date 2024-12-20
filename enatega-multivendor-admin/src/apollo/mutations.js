@@ -295,6 +295,7 @@ export const saveDeliveryRateConfiguration = `mutation SaveDeliveryRateConfigura
     _id
     deliveryRate
     costType
+    minimumDeliveryFee
   }
 }`;
 
@@ -867,5 +868,49 @@ export const updateWithdrawReqStatus = `mutation UpdateWithdrawRequest($id:ID!, 
         status
       }
     }
+  }
+}`
+
+export const findOrCreateUser = `
+    mutation FindOrCreateUser($userInput: UserInput!) {
+       findOrCreateUser(userInput: $userInput) {
+        _id
+        name
+        phone
+        governate
+        address_free_text
+        addresses {
+         _id
+         deliveryAddress
+         details
+         label
+         selected
+         isActive
+      }
+    }
+  }`
+
+  export const CheckOutPlaceOrder = `
+mutation CheckOutPlaceOrder($userId: ID!, $addressId: ID!, $orderAmount: Float!) {
+  CheckOutPlaceOrder(userId: $userId, addressId: $addressId, orderAmount: $orderAmount) {
+    _id
+    orderId
+    user {
+      _id
+      name
+      phone
+    }
+    deliveryAddress {
+      id
+      deliveryAddress
+      details
+      label
+    }
+    orderAmount
+    paymentStatus
+    orderStatus
+    isActive
+    createdAt
+    updatedAt
   }
 }`

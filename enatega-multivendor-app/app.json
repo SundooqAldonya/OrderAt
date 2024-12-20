@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Customer",
+    "name": "Orderat",
     "scheme": "Customermultivendor",
-    "version": "1.0.60",
+    "version": "1.0.64",
     "description": "Customer is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
     "slug": "enatega-customer-app-latest",
     "owner": "mahmoudattia",
@@ -10,15 +10,24 @@
     "androidStatusBar": {
       "backgroundColor": "#000"
     },
-    "platforms": ["ios", "android"],
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#90E36D"
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "google": {
+      "iosClientId": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
+      "androidClientId": "133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com"
     },
-    "assetBundlePatterns": ["**/*"],
+    "orientation": "portrait",
+    "icon": "./assets/icon2.png",
+    "splash": {
+      "image": "./assets/splash2.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
@@ -30,7 +39,9 @@
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use location to determine the delivery address for your orders.",
-        "UIBackgroundModes": ["remote-notification"],
+        "UIBackgroundModes": [
+          "remote-notification"
+        ],
         "NSUserTrackingUsageDescription": "Allow this app to collect app-related data that can be used for tracking you or your device.",
         "CFBundleURLTypes": [
           {
@@ -49,7 +60,7 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 60,
+      "versionCode": 62,
       "package": "com.customer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
@@ -66,16 +77,7 @@
       ]
     },
     "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "ninjas-code",
-            "project": "Customer-multivendor-app",
-            "authToken": "744ed798e04a40a896b0269c25f945de0e166db8362e41969b64d5e07ca80e65"
-          }
-        }
-      ]
+      "postPublish": []
     },
     "plugins": [
       "@react-native-google-signin/google-signin",
@@ -88,7 +90,7 @@
       [
         "expo-updates",
         {
-          "username": "mahmoudattia_code"
+          "username": "mahmoudattia"
         }
       ],
       [
@@ -102,7 +104,11 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $Customer Multivendor to use your location."
         }
-      ]
+      ],
+      [
+        "expo-font"
+      ],
+      "sentry-expo"
     ],
     "extra": {
       "eas": {

@@ -17,6 +17,7 @@ import { FontAwesome, SimpleLineIcons } from '@expo/vector-icons'
 import CountryPicker from 'react-native-country-picker-modal'
 import useRegister from './useRegister'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 function Register(props) {
   const {
@@ -224,6 +225,7 @@ function Register(props) {
                     style={[
                       styles(currentTheme).textField,
                       styles().phoneNumber,
+                      {alignItems:'flex-start'},
                       phoneError && styles(currentTheme).errorInput
                     ]}
                   >
@@ -256,7 +258,7 @@ function Register(props) {
               <TouchableOpacity
                 onPress={() => registerAction()}
                 activeOpacity={0.7}
-                style={styles(currentTheme).btn}
+                style={[styles(currentTheme).btn,{backgroundColor:colors?.primary}]}
               >
                 <TextDefault H4 textColor={currentTheme.black} bold>
                   {t('createAccount')}

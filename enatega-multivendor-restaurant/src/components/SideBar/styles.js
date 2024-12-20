@@ -3,7 +3,8 @@ import { colors } from '../../utilities'
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    
   },
   item: {
     aspectRatio: 1,
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000bf'
+    backgroundColor: '#000000'
   },
   profileContainer: {
     display: 'flex',
@@ -26,11 +27,11 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.5,
-    backgroundColor: '#000000bf'
+    backgroundColor: '#000000'
   },
   lowerContainer: {
     flex: 0.15,
-    backgroundColor: '#000000bf'
+    backgroundColor: '#000000'
   },
   avatar: {
     width: 100,

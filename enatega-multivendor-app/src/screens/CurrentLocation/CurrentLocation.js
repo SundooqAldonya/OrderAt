@@ -13,6 +13,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import { useTranslation } from 'react-i18next'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { customMapStyle } from '../../utils/customMapStyles'
+import { colors } from '../../utils/colors'
 export default function CurrentLocation() {
   const Analytics = analytics()
   const { t } = useTranslation()
@@ -31,18 +32,18 @@ export default function CurrentLocation() {
   }, [])
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.white)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle( 'dark-content')
+    StatusBar.setBarStyle('light-content')
   })
   const initialRegion = {
-    latitude: 31.0461,
-    longitude: 34.8516,
+    latitude: 30.044420,
+    longitude: 31.235712,
     latitudeDelta: 1,
     longitudeDelta: 1
   }
-  const markerCoordinate = { latitude: 31.0461, longitude: 34.8516 }
-
+  const markerCoordinate = { latitude: 30.044420, longitude: 31.235712 }
+  
   const setCurrentLocation = async() => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()

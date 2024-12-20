@@ -15,6 +15,7 @@ import analytics from '../../utils/analytics'
 
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
+import { colors } from '../../utils/colors'
 
 const datas = [
   {
@@ -89,11 +90,9 @@ function SidebBar(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
 
@@ -108,12 +107,10 @@ function SidebBar(props) {
         }
       ]}>
       <View style={{ flexGrow: 1 }}>
-        <View style={styles(currentTheme).topContainer}>
-          <SideDrawerProfile navigation={props.navigation} />
-        </View>
+        <SideDrawerProfile navigation={props.navigation} />
         <View style={styles(currentTheme).botContainer}>
           {datas.map((dataItem, ind) => (
-            <View key={ind} style={styles().item}>
+            <View key={ind} style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
               <SideDrawerItems
                 style={styles(currentTheme).iconContainer}
                 onPress={async () => {
@@ -128,15 +125,24 @@ function SidebBar(props) {
               />
             </View>
           ))}
-          {isLoggedIn && (
-            <View style={styles().item}>
+          {isLoggedIn ? (
+            <View style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
               <SideDrawerItems
                 onPress={logoutClick}
                 icon={'logout'}
                 title={t('titleLogout')}
               />
             </View>
-          )}
+          ) :
+            (
+              <View style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
+                <SideDrawerItems
+                  onPress={() => props.navigation.navigate("CreateAccount")}
+                  icon={'login'}
+                  title={t('login')}
+                />
+              </View>
+            )}
         </View>
       </View>
 

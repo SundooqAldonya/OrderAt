@@ -13,7 +13,8 @@ import {
   LogBox,
   StyleSheet,
   ActivityIndicator,
-  I18nManager
+  I18nManager,
+  Text
 } from 'react-native'
 import { ApolloProvider } from '@apollo/client'
 import { exitAlert } from './src/utils/androidBackButton'
@@ -37,6 +38,28 @@ import ReviewModal from './src/components/Review'
 import { NOTIFICATION_TYPES } from './src/utils/enums'
 import { useColorScheme } from 'react-native'
 import useWatchLocation from './src/ui/hooks/useWatchLocation'
+import {
+  useFonts,
+  Montserrat_100Thin,
+  Montserrat_200ExtraLight,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_800ExtraBold,
+  Montserrat_900Black,
+  Montserrat_100Thin_Italic,
+  Montserrat_200ExtraLight_Italic,
+  Montserrat_300Light_Italic,
+  Montserrat_400Regular_Italic,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold_Italic,
+  Montserrat_700Bold_Italic,
+  Montserrat_800ExtraBold_Italic,
+  Montserrat_900Black_Italic,
+} from '@expo-google-fonts/montserrat';
+import { colors } from './src/utils/colors'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -67,6 +90,29 @@ export default function App() {
   // Theme Reducer
   const [theme, themeSetter] = useReducer(ThemeReducer, systemTheme === 'dark' ? 'Dark' : 'Pink')
   const [isUpdating, setIsUpdating] = useState(false)
+
+  let [fontsLoaded] = useFonts({
+    Montserrat_100Thin,
+    Montserrat_200ExtraLight,
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+    Montserrat_800ExtraBold,
+    Montserrat_900Black,
+    Montserrat_100Thin_Italic,
+    Montserrat_200ExtraLight_Italic,
+    Montserrat_300Light_Italic,
+    Montserrat_400Regular_Italic,
+    Montserrat_500Medium_Italic,
+    Montserrat_600SemiBold_Italic,
+    Montserrat_700Bold_Italic,
+    Montserrat_800ExtraBold_Italic,
+    Montserrat_900Black_Italic,
+  });
+
+  
   useWatchLocation()
   useEffect(() => {
     const loadAppData = async () => {
@@ -79,7 +125,19 @@ export default function App() {
       await Font.loadAsync({
         MuseoSans300: require('./src/assets/font/MuseoSans/MuseoSans300.ttf'),
         MuseoSans500: require('./src/assets/font/MuseoSans/MuseoSans500.ttf'),
-        MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf')
+        MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf'),
+        'Roboto-Black': require("./src/assets/font/roboto/Roboto-Black.ttf",),
+        'Roboto-BlackItalic': require("./src/assets/font/roboto/Roboto-BlackItalic.ttf",),
+        'Roboto-Bold': require("./src/assets/font/roboto/Roboto-Bold.ttf",),
+        'Roboto-BoldItalic': require("./src/assets/font/roboto/Roboto-BoldItalic.ttf",),
+        'Roboto-Italic': require("./src/assets/font/roboto/Roboto-Italic.ttf",),
+        'Roboto-Light': require("./src/assets/font/roboto/Roboto-Light.ttf",),
+        'Roboto-LightItalic': require("./src/assets/font/roboto/Roboto-LightItalic.ttf",),
+        'Roboto-Medium': require("./src/assets/font/roboto/Roboto-Medium.ttf",),
+        'Roboto-MediumItalic': require("./src/assets/font/roboto/Roboto-MediumItalic.ttf",),
+        'Roboto-Regular': require("./src/assets/font/roboto/Roboto-Regular.ttf",),
+        'Roboto-Thin': require("./src/assets/font/roboto/Roboto-Thin.ttf",),
+        'Roboto-ThinItalic': require("./src/assets/font/roboto/Roboto-ThinItalic.ttf"),
       })
       // await permissionForPushNotificationsAsync()
       await getActiveLocation()
@@ -136,7 +194,7 @@ export default function App() {
     I18nManager.forceRTL(shouldBeRTL);
     Updates.reloadAsync();
   }
- 
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
@@ -221,29 +279,29 @@ export default function App() {
   if (appIsReady) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ApolloProvider client={client}>
-          <ThemeContext.Provider
-            value={{ ThemeValue: theme, dispatch: themeSetter }}>
-            <StatusBar
-              backgroundColor={Theme[theme].menuBar}
-              barStyle={theme === 'Dark' ? 'light-content' : 'dark-content'}
-            />
-            <LocationProvider>
-              <ConfigurationProvider>
-                <AuthProvider>
-                  <UserProvider>
-                    <OrdersProvider>
-                      <AppContainer />
-                      <ReviewModal ref={reviewModalRef} onOverlayPress={onOverlayPress} theme={Theme[theme]} orderId={orderId} />
-                    </OrdersProvider>
-                  </UserProvider>
-                </AuthProvider>
-              </ConfigurationProvider>
-            </LocationProvider>
-            <FlashMessage MessageComponent={MessageComponent} />
-          </ThemeContext.Provider>
-        </ApolloProvider>
-      </GestureHandlerRootView>
+      <ApolloProvider client={client}>
+        <ThemeContext.Provider
+          value={{ ThemeValue: theme, dispatch: themeSetter }}>
+          <StatusBar
+            backgroundColor={colors.primary}
+            barStyle={'light-content'}
+          />
+          <LocationProvider>
+            <ConfigurationProvider>
+              <AuthProvider>
+                <UserProvider>
+                  <OrdersProvider>
+                    <AppContainer />
+                    <ReviewModal ref={reviewModalRef} onOverlayPress={onOverlayPress} theme={Theme[theme]} orderId={orderId} />
+                  </OrdersProvider>
+                </UserProvider>
+              </AuthProvider>
+            </ConfigurationProvider>
+          </LocationProvider>
+          <FlashMessage MessageComponent={MessageComponent} />
+        </ThemeContext.Provider>
+      </ApolloProvider>
+    </GestureHandlerRootView>
     )
   } else {
     return null

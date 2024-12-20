@@ -55,6 +55,7 @@ import { IMAGE_LINK } from '../../utils/constants'
 import { LocationContext } from '../../context/Location'
 import PopularIcon from '../../assets/SVG/popular'
 import {escapeRegExp} from '../../utils/regex'
+import { colors } from '../../utils/colors'
 
 const { height } = Dimensions.get('screen')
 
@@ -170,11 +171,9 @@ function Restaurant(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {

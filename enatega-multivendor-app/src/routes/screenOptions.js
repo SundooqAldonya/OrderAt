@@ -22,7 +22,7 @@ const screenOptions = props => {
     headerTitleStyle: {
       color: props.textColor,
       ...textStyles.Bolder,
-      ...textStyles.B700,
+      ...textStyles.Bold,
       backgroundColor: 'transparent'
     },
     headerTitleContainerStyle: {

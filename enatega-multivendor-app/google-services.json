@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:b9f2e7a5b37ce1341996918",
+        "mobilesdk_app_id": "1:133710632137:android:b9f2e7a5b37ce341996918",
         "android_client_info": {
           "package_name": "com.customer.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZ1dGP_Gocask"
+          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:c1ae77eeedd154df9996918",
+        "mobilesdk_app_id": "1:133710632137:android:c1ae77eeedd54df9996918",
         "android_client_info": {
           "package_name": "com.restaurant.app"
         }
@@ -34,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090xlXzZdGP_Gocask"
+          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
         }
       ],
       "services": {
@@ -45,7 +45,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:63aa3kf6b3cdb01e4996918",
+        "mobilesdk_app_id": "1:133710632137:android:63aa3f6b3cdb01e4996918",
         "android_client_info": {
           "package_name": "com.rider.app"
         }
@@ -53,7 +53,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090olXzZdGP_Gocask"
+          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
         }
       ],
       "services": {

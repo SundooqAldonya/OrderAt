@@ -15,6 +15,7 @@ import screenOptions from './screenOptions'
 import { useResetYourPassword } from './useResetYourPassword'
 import { useTranslation } from 'react-i18next'
 import { Feather } from '@expo/vector-icons'
+import { colors } from '../../utils/colors'
 
 function ForgotPassword(props) {
   const {
@@ -43,12 +44,10 @@ function ForgotPassword(props) {
 
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar
-        backgroundColor={currentTheme.themeBackground}
-        barStyle={
-          themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-        }
-      />
+           <StatusBar
+              backgroundColor={colors.primary}
+              barStyle={'light-content'}
+            />
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().logoContainer}>

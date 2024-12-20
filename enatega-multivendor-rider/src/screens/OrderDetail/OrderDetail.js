@@ -8,9 +8,9 @@ import styles from './styles'
 import colors from '../../utilities/colors'
 import Status from '../../components/OrderDetail/Status/Status'
 import Details from '../../components/OrderDetail/Details/Details'
-import RestIcon from '../../assets/rest_icon.png'
-import HomeIcon from '../../assets/home_icon.png'
-import RiderIcon from '../../assets/rider_icon.png'
+const RestIcon = require('../../assets/rest_icon.png')
+const HomeIcon = require('../../assets/home_icon.png')
+const RiderIcon = require('../../assets/rider_icon.png')
 import { linkToMapsApp } from '../../utilities/links'
 import { MapStyles } from '../../utilities/mapStyles'
 import useOrderDetail from './useOrderDetail'

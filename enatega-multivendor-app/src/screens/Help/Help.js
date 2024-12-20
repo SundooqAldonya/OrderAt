@@ -14,6 +14,7 @@ import { scale } from '../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import Accordion from '../../components/Accordion/Accordion'
 import { FontAwesome } from '@expo/vector-icons'
+import { colors } from '../../utils/colors'
 
 const FAQs = [
   {
@@ -64,11 +65,9 @@ const Help = props => {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useEffect(() => {
@@ -123,10 +122,10 @@ const Help = props => {
       edges={['bottom', 'right', 'left']}
       style={styles(currentTheme).flex}
     >
-      <StatusBar
-        barStyle='light-content'
-        backgroundColor={currentTheme.themeBackground}
-      />
+           <StatusBar
+              backgroundColor={colors.primary}
+              barStyle={'light-content'}
+            />
       <View
         style={[styles(currentTheme).flex, styles(currentTheme).mainContainer]}
       >

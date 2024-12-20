@@ -13,6 +13,7 @@ const fr = {
     linksTitle: "Liens",
     subTotal: "Total",
     deliveryFee: "Frais de livraison",
+    MinimumDeliveryFee:'Frais de livraison minimum',
     haveVoucher: "Avez-vous un bon",
     remove: "Retirer",
     change: "Changement",

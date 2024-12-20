@@ -27,6 +27,7 @@ import { useLocation } from '../../ui/hooks'
 import UserContext from '../../context/User'
 import { t } from 'i18n-js'
 import useGeocoding from '../../ui/hooks/useGeocoding'
+import { scale } from '../../utils/scaling'
 
 const LATITUDE = 33.699265
 const LONGITUDE = 72.974575
@@ -81,6 +82,13 @@ export default function AddNewAddress(props) {
   }, [])
 
   const onSelectCity = (item) => {
+    setSelectedValue({
+      city: item?.name,
+      address: '',
+      latitude: item?.latitude,
+      longitude: item?.longitude
+    })
+    console.log(item)
     setCoordinates({
       latitude: +item.latitude,
       longitude: +item.longitude
@@ -93,6 +101,7 @@ export default function AddNewAddress(props) {
       coordinates.latitude,
       coordinates.longitude
     )
+    console.log(response,'response')
     setSelectedValue({
       city: response.city,
       address: response.formattedAddress,
@@ -115,6 +124,7 @@ export default function AddNewAddress(props) {
   }, [])
 
   const onSelectLocation = () => {
+    console.log(selectedValue)
     setLocation({
       label: 'Location',
       deliveryAddress: selectedValue.address,
@@ -193,13 +203,15 @@ export default function AddNewAddress(props) {
               <Text
                 style={{
                   color: currentTheme.newFontcolor,
-                  overflow: 'scroll'
+                  overflow: 'scroll',
+                  fontSize:scale(12)
                 }}
               >
                 {selectedValue.address || t('address')}
               </Text>
             </TouchableOpacity>
           </View>
+          <View style={{flex:1}}/>
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles(currentTheme).emptyButton}
@@ -213,7 +225,13 @@ export default function AddNewAddress(props) {
           <SearchModal
             visible={searchModalVisible}
             onClose={() => setSearchModalVisible(false)}
-            onSubmit={(description, coords) => {
+            onSubmit={(description, coords,details) => {
+              setSelectedValue({
+                city: details?.vicinity,
+                address: description,
+                latitude: coords.lat,
+                longitude: coords.lng
+              })
               setSearchModalVisible(false)
               setCoordinates({
                 latitude: coords.lat,
@@ -243,6 +261,7 @@ const CityModal = React.memo(
           style={styles().button1}
           onPress={() => {
             setCityModalVisible(true)
+            console.log(selectedValue)
           }}
         >
           {selectedValue && (

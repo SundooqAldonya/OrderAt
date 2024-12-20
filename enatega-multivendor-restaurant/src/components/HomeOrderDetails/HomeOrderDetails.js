@@ -10,6 +10,7 @@ import moment from 'moment'
 import { subscriptionOrder } from '../../apollo'
 import CountDown from 'react-native-countdown-component'
 import {useTranslation} from 'react-i18next'
+import { getAccessToken } from '../../utilities/apiServices'
 
 function HomeOrderDetails(props) {
   const { activeBar, navigation } = props

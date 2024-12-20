@@ -2,6 +2,7 @@ import { verticalScale, scale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const windowWidth = Dimensions.get('window').width
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -50,7 +51,7 @@ const styles = (props = null) =>
       ...alignment.MLsmall
     },
     addressbtn: {
-      backgroundColor: props != null ? props.lightHorizontalLine : '#f0f0f0',
+      backgroundColor: colors.primary,
       marginLeft: scale(10),
       marginRight: scale(10),
       marginBottom: scale(10),

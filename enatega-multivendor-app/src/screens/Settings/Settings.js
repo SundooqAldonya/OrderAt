@@ -40,6 +40,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const languageTypes = [
   { value: 'English', code: 'en', index: 0 },
@@ -100,11 +101,9 @@ function Settings(props) {
   }, [])
   useEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   }, [])
 
   useEffect(() => {
@@ -292,14 +291,14 @@ function Settings(props) {
               <View>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={currentTheme.fontSecondColor}
+                  textColor={colors.border2}
                 >
                   {t('language')}
                 </TextDefault>
               </View>
             </View>
             <TextDefault
-              textColor={currentTheme.fontMainColor}
+              textColor={colors.dark}
               bolder
               H5
               B700
@@ -314,7 +313,7 @@ function Settings(props) {
               onPress={() => modalVisibleSetter(true)}
               style={styles().button}
             >
-              <TextDefault H5 bold textColor={currentTheme.editProfileButton}>
+              <TextDefault H5 bold textColor={colors.blue}>
                 {t('edit')}
               </TextDefault>
             </TouchableOpacity>
@@ -346,7 +345,7 @@ function Settings(props) {
               <View style={styles().notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={currentTheme.darkBgFont}
+                  textColor={colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}
@@ -385,7 +384,7 @@ function Settings(props) {
               <View style={styles(currentTheme).notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={currentTheme.darkBgFont}
+                  textColor={colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}
@@ -412,7 +411,7 @@ function Settings(props) {
               <View style={styles().notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={currentTheme.darkBgFont}
+                  textColor={colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}

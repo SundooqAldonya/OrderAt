@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { scale } from '../../utils/scaling'
 
@@ -43,7 +43,7 @@ const styles = (props = null) =>
       height: scale(100)
     },
     welcomeHeading: {
-      fontSize: scale(30),
+      fontSize:  scale(30),
       ...alignment.MTlarge
     },
     descriptionEmpty: {

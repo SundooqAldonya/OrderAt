@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { EvilIcons, Feather } from '@expo/vector-icons'
 import { alignment } from '../../../utils/alignment'
 import { scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 function Location({
   navigation,
@@ -54,7 +55,7 @@ function Location({
     <TouchableOpacity onPress={onLocationPress} style={{ marginHorizontal: scale(10) }}>
       <View style={styles(currentTheme).headerTitleContainer}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: scale(10), gap: 5 }}>
-          <View style={[styles().locationIcon, locationIconGray]}>
+          <View style={[styles().locationIcon, locationIconGray,{marginTop:scale(8)}]}>
             <EvilIcons
               name="location"
               size={scale(20)}
@@ -64,11 +65,11 @@ function Location({
           <View style={styles(currentTheme).headerContainer}>
             <View
               style={styles.textContainer}>
-              <TextDefault textColor={locationParam} numberOfLines={1} H5 bolder>
+              <TextDefault textColor={colors?.background} small   numberOfLines={1} H5 bolder>
                 {translatedAddress?.slice(0, 40)}...
               </TextDefault>
             </View>
-            <TextDefault textColor={locationLabel} left>
+            <TextDefault textColor={colors?.background} left>
               {''}
               {t(translatedLabel)}
             </TextDefault>
@@ -76,7 +77,7 @@ function Location({
           {forwardIcon && <Feather
             name='chevron-right'
             size={20}
-            color={currentTheme.secondaryText}
+            color={colors.background}
           />}
         </View>
       </View>

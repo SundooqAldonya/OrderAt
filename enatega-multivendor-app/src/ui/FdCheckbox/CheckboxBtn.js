@@ -6,6 +6,7 @@ import styles from './styles'
 import { scale } from '../../utils/scaling'
 import ThemeContext from '../ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
+import { colors } from '../../utils/colors'
 
 function CheckboxBtn(props) {
   const themeContext = useContext(ThemeContext)
@@ -16,14 +17,14 @@ function CheckboxBtn(props) {
       style={[
         styles(currentTheme).mainContainer,
         props.checked
-          ? { backgroundColor: currentTheme.main, borderColor: 'transparent' }
-          : { backgroundColor: currentTheme.themeBackground }
+          ? { backgroundColor: colors.primary, borderColor: 'transparent' }
+          : { backgroundColor: colors.background }
       ]}>
       {props.checked ? (
         <FontAwesome
           name="check"
           size={scale(13)}
-          color={currentTheme.fontWhite}
+          color={colors.background}
         />
       ) : null}
     </TouchableOpacity>

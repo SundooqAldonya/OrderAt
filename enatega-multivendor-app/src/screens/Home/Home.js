@@ -55,6 +55,7 @@ import MapSection from '../MapSection/index'
 import { useTranslation } from 'react-i18next'
 
 import { escapeRegExp } from '../../utils/regex'
+import { colors } from '../../utils/colors'
 
 const RESTAURANTS = gql`
   ${restaurantList}
@@ -101,11 +102,9 @@ function Main(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.newheaderColor)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {

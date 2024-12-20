@@ -30,7 +30,7 @@ const useEmailOtp = () => {
   const navigation = useNavigation()
   const configuration = useContext(ConfigurationContext)
   const route = useRoute()
-  const [otp, setOtp] = useState('')
+  const [otp, setOtp] = useState('000000')
   const [otpError, setOtpError] = useState(false)
   const otpFrom = useRef(null)
   const [seconds, setSeconds] = useState(5)

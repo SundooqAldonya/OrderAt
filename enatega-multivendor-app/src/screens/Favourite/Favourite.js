@@ -29,6 +29,7 @@ import { useTranslation } from 'react-i18next'
 import navigationService from '../../routes/navigationService'
 import ErrorView from '../../components/ErrorView/ErrorView'
 import EmptyView from '../../components/EmptyView/EmptyView'
+import { colors } from '../../utils/colors'
 
 const RESTAURANTS = gql`
   ${FavouriteRestaurant}
@@ -60,11 +61,9 @@ function Favourite() {
   }, [])
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useEffect(() => {

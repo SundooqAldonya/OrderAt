@@ -57,6 +57,7 @@ import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmen
 import MainModalize from '../../components/Main/Modalize/MainModalize'
 
 import { escapeRegExp } from '../../utils/regex'
+import { colors } from '../../utils/colors'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -107,9 +108,9 @@ function Main(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.newheaderColor)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('dark-content')
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {
@@ -165,15 +166,24 @@ function Main(props) {
     mutate({ variables: { id: address._id } })
     modalRef.current.close()
   }
+  async function getAddress(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching address:", error);
+    }
+}
 
   const setCurrentLocation = async () => {
     setBusy(true)
     const { error, coords } = await getCurrentLocation()
-
-    const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
+    console.log(coords)
+    const data = getAddress(coords.latitude, coords.longitude)
+        console.log(data,'data')
         if (data.error) {
           console.log('Reverse geocoding request failed:', data.error)
         } else {
@@ -195,10 +205,7 @@ function Main(props) {
           }
           console.log(address)
         }
-      })
-      .catch((error) => {
         console.error('Error fetching reverse geocoding data:', error)
-      })
   }
 
   const modalHeader = () => (
@@ -256,11 +263,11 @@ function Main(props) {
                 ...locationData
               })
             } else {
+              navigation.navigate('AddNewAddress', {
+                ...locationData
+              })
               const modal = modalRef.current
               modal?.close()
-              props.navigation.navigate({
-                name: 'CreateAccount'
-              })
             }
           }}
         >
@@ -305,7 +312,7 @@ function Main(props) {
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
               <View style={[styles().flex, styles().subContainer]}>
-                <View style={styles(currentTheme).searchbar}>
+                <View style={[styles(currentTheme).searchbar,{backgroundColor:colors.primary}]}>
                   <Search
                     setSearch={setSearch}
                     search={search}

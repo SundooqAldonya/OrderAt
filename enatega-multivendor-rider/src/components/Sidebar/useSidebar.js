@@ -13,10 +13,10 @@ const PROFILE = gql`
   ${profile}
 `
 
-const PRODUCT_URL = 'https://enatega.com/enatega-multi-vendor/'
-const PRIVACY_URL = 'https://enatega.com/privacy-policy/'
+const PRODUCT_URL = 'https://orderat.ai'
+const PRIVACY_URL = 'https://orderat.ai/#/privacy'
 
-const ABOUT_URL = 'https://ninjascode.com/'
+const ABOUT_URL = 'https://orderat.ai'
 
 // constants
 /*const datas = [

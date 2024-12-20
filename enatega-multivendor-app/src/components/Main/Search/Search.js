@@ -6,6 +6,7 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { scale } from '../../../utils/scaling'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../../utils/colors'
 
 function Search(props) {
   const { t } = useTranslation()
@@ -14,22 +15,20 @@ function Search(props) {
 
 
   return (
-    <View style={styles(currentTheme, props.newheaderColor).mainContainerHolder}>
+    <View style={[styles(currentTheme, props.newheaderColor).mainContainerHolder, { backgroundColor: colors.primary }]}>
       <View style={styles(currentTheme, props.cartContainer).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().leftContainer}>
-            <View style={styles().searchContainer}>
               <Ionicons
                 name="search"
                 color={currentTheme.gray500}
                 size={scale(20)}
               />
-            </View>
             <View style={styles().inputContainer}>
               <TextInput
                 style={styles(currentTheme).bodyStyleOne}
                 placeholder={props.placeHolder}
-                placeholderTextColor={currentTheme.gray500}
+                placeholderTextColor={colors.border1}
                 onChangeText={text => props.setSearch(text)}
                 value={props.search}
               />
@@ -43,7 +42,7 @@ function Search(props) {
                 }}>
                 <AntDesign
                   name="closecircleo"
-                  size={20}
+                  size={scale(18)}
                   color={currentTheme.fontSecondColor}
                 />
               </TouchableOpacity>

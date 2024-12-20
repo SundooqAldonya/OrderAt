@@ -58,6 +58,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import MainModalize from '../../components/Main/Modalize/MainModalize'
 
 import { escapeRegExp } from '../../utils/regex'
+import { colors } from '../../utils/colors'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -146,9 +147,9 @@ function Menu({ route, props }) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.newheaderColor)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('dark-content')
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {
@@ -494,7 +495,7 @@ function Menu({ route, props }) {
                   renderItem={({ item }) => <Item item={item} />}
                 />
                 <CollapsibleSubHeaderAnimator translateY={translateY}>
-                  <View style={styles(currentTheme).searchbar}>
+                  <View style={[styles(currentTheme).searchbar,{backgroundColor:colors.primary}]}>
                     <Search
                       setSearch={setSearch}
                       search={search}

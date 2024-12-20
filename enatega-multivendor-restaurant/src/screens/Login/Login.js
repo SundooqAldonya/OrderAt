@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -6,7 +6,9 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Dimensions,
-  Platform
+  Platform,
+  TextInput,
+  TouchableOpacity
 } from 'react-native'
 import { TextDefault, Spinner } from '../../components'
 import { useLogin } from '../../ui/hooks'
@@ -14,6 +16,8 @@ import { colors } from '../../utilities'
 import styles from './styles'
 import { Image, Button, Input, Icon } from 'react-native-elements'
 import {useTranslation} from 'react-i18next'
+import { FontAwesome } from '@expo/vector-icons'
+
 
 const { height } = Dimensions.get('window')
 export default function Login() {
@@ -27,12 +31,11 @@ export default function Login() {
     username,
     password
   } = useLogin()
-
   const [showPassword, setShowPassword] = useState(false)
   const {t} = useTranslation()
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
+      style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' , zIndex:99999999999999999}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled>
       <ScrollView
@@ -57,53 +60,36 @@ export default function Login() {
                 {t('signInWithEmail')}
               </Text>
             </View>
-            <View style={{ flex: 0.5, alignSelf: 'center' }}>
-              <Input
-                placeholder={t('email')}
-                onChangeText={text => setUserName(text)}
-                inputContainerStyle={styles.inputStyle}
-                errorMessage={
-                  errors && errors.username ? errors.username.join(',') : ''
-                }
-                onBlur={isValid}
-                autoCapitalize="none"
-                errorStyle={{ color: colors.textErrorColor }}
-                keyboardType="email-address"
-                defaultValue={username}
-                returnKeyType="next"
-                style={{ paddingLeft: 8 }}
-              />
-              <Input
-                placeholder={t('password')}
-                onChangeText={text => setPassword(text)}
-                inputContainerStyle={styles.inputStyle}
-                returnKeyType="go"
-                style={{ paddingLeft: 8 }}
-                containerStyle={{ marginTop: 15 }}
-                secureTextEntry={!showPassword}
-                rightIconContainerStyle={{ marginRight: 10 }}
-                errorMessage={
-                  errors && errors.password ? errors.password.join(',') : ''
-                }
-                onBlur={isValid}
-                autoCapitalize="none"
-                errorStyle={{ color: colors.textErrorColor }}
-                defaultValue={password}
-                rightIcon={
-                  <Icon
-                    onPress={() => setShowPassword(!showPassword)}
-                    type="font-awesome"
-                    color="gray"
-                    name={showPassword ? 'eye' : 'eye-slash'}
-                    size={20}
-                  />
-                }
-              />
+            <View style={{ flex: 0.5 }}>
+            <TextInput
+            style={[styles.textInput]}
+            placeholder={t('username')}
+            value={username}
+            onChangeText={e => setUserName(e)}
+          />
+    <View style={styles.passwordField}>
+            <TextInput
+              secureTextEntry={showPassword}
+              placeholder={t('password')}
+              style={[
+                styles.textInput,
+                styles.passwordInput,
+              ]}
+              value={password}
+              onChangeText={e => setPassword(e)}
+            />
+            <FontAwesome
+              onPress={() => setShowPassword(!showPassword)}
+              name={showPassword ? 'eye' : 'eye-slash'}
+              size={24}
+              style={styles.eyeBtn}
+            />
+            {console.log(username)}
+          </View>
             </View>
             <View
               style={{
                 justifyContent: 'flex-start',
-                alignItems: 'center',
                 flex: 0.2
               }}>
               <Button
@@ -111,12 +97,13 @@ export default function Login() {
                 disabled={loading}
                 onPress={onLogin}
                 buttonStyle={{
-                  backgroundColor: '#FFFF',
+                  backgroundColor: '#000',
                   borderColor: 'transparent',
                   borderWidth: 0,
                   borderRadius: 5,
-                  width: 250,
-                  height: 50
+                  height: 50,
+                  marginHorizontal:10,
+                  
                 }}
                 style={{
                   shadowColor: '#000',
@@ -129,11 +116,11 @@ export default function Login() {
 
                   elevation: 3
                 }}
-                titleStyle={{ color: 'black' }}>
+                titleStyle={{ color: 'white' }}>
                 {loading ? (
                   <Spinner spinnerColor={colors.buttonText} />
                 ) : (
-                  <TextDefault textColor={colors.buttonText} H3 bold>
+                  <TextDefault textColor={colors.white} H3 bold>
                     {t('login')}
                   </TextDefault>
                 )}

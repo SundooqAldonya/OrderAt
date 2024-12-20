@@ -13,6 +13,7 @@ const zh = {
     linksTitle: "链接",
     subTotal: "小计",
     deliveryFee: "快递费",
+    MinimumDeliveryFee:'最低配送费',
     haveVoucher: "你有优惠券吗",
     remove: "去掉",
     change: "更改",

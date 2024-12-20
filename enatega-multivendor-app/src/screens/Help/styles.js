@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { scale, verticalScale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 const styles = (props = null) =>
   StyleSheet.create({
     flex: {
@@ -55,7 +56,7 @@ const styles = (props = null) =>
       alignSelf: 'center'
     },
     addButton: {
-      backgroundColor: props !== null ? props.newheaderColor : 'transparent',
+      backgroundColor: props !== null ? colors.primary : 'transparent',
       width: '100%',
       height: scale(40),
       borderRadius: 50,

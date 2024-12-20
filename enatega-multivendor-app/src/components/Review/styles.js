@@ -52,6 +52,6 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
     color: theme !== null ? theme.newFontcolor : '#f9f9f9',
-    fontFamily: fontStyles.MuseoSans500
+    fontFamily: 'Montserrat_500Medium'
   })
 })

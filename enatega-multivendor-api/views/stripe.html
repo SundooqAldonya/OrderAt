@@ -1,0 +1,91 @@
+<head><meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"></head><script src="https://checkout.stripe.com/checkout.js"></script>
+
+<script>
+
+    var paymentStatus=false;
+
+    var handler = StripeCheckout.configure({
+
+        key: 'pk_test_lEaBbVGnTkzja2FyFiNlbqtw',
+
+        image: 'http://icons.iconarchive.com/icons/visualpharm/must-have/256/User-icon.png',
+
+        locale: 'auto',
+
+        token: function(token) {
+
+            paymentStatus=true
+
+            fetch('http://localhost:8000/stripe/charge?id=FXLCH-34', {
+
+                method: 'POST',
+
+                mode: 'cors',
+
+                cache: 'no-cache',
+
+                credentials: 'same-origin',
+
+                headers: {
+
+                    'Content-Type': 'application/json'
+
+                },
+
+                redirect: 'follow',
+
+
+
+                body: JSON.stringify(token)
+
+            })
+
+                .then(response => response.json())
+
+                .then(result => {
+
+                    if(result.redirect)
+
+                        window.location='http://localhost:8000/'+result.redirect
+
+                        })
+
+                .catch(error => { alert(error) });
+
+        },
+
+    });
+
+
+
+    window.onload = function() {
+
+        handler.open({
+
+            image: 'http://icons.iconarchive.com/icons/visualpharm/must-have/256/User-icon.png',
+
+            name: 'enatega',
+
+        description: 'description',
+
+        amount: 24800,
+
+            currency: 'USD',
+
+        allowRememberMe: true,
+
+            email: 'danyal@gmail.com',
+
+        closed: function() {
+
+            if(!paymentStatus)
+
+                window.location='http://localhost:8000/stripe/cancel'
+
+        }
+
+    });
+
+    };
+
+</script>

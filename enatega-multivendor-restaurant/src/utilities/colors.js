@@ -1,10 +1,11 @@
 export const colors = {
-  themeBackground: '#FAFAFA',
+  themeBackground: '#06C167',
   iconColor: '#333333',
   tagColor: '#6FCF97',
   iconPink: '#6FCF97',
   radioColor: '#FFF',
   radioOuterColor: '#6FCF97',
+  borderColor:'#F6F6F6',
   spinnerColor: '#6FCF97',
   orderComplete: '#1DB20D',
   orderUncomplete: '#fe0000',
@@ -20,7 +21,15 @@ export const colors = {
   startColor: '#6FCF97',
   white: '#FFF',
   dimWhite: '#d0d0d0',
-  green: '#90EA93',
+  green: '#06C167',
   darkgreen: '#6FCF97',
   rounded: '#3E6F52'
 }
+// export const colors = {
+//   primary:'#06C167',
+//   dark:'#000000',
+//   background:'#FFFFFF',
+//   border1:'F6F6F6',
+//   border2:'#4A4A4A',
+//   blue:'#4285F4'
+// }

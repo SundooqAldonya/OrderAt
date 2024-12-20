@@ -58,12 +58,12 @@ const styles = (props = null) =>
     title: {
       color: props !== null ? props.statusSecondColor : 'grey',
       fontSize: verticalScale(15),
-      fontFamily: fontStyles.MuseoSans500
+      fontFamily: 'Montserrat_500Medium'
     },
     description: {
       color: props !== null ? props.fontMainColor : '#000',
       fontSize: verticalScale(15),
-      fontFamily: fontStyles.MuseoSans500,
+      fontFamily: 'Montserrat_500Medium',
       paddingLeft: scale(5),
       paddingTop: scale(3),
       fontWeight: '700'

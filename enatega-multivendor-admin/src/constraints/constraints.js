@@ -48,6 +48,11 @@ const constraints = {
       allowEmpty: false
     }
   },
+  minimumDeliveryFee: {
+    presence: {
+      allowEmpty: false
+    }
+  },
   deliveryTime: {
     presence: {
       allowEmpty: false

@@ -22,6 +22,7 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import { textStyles } from '../../utils/textStyles'
+import { colors } from '../../utils/colors'
 
 function Payment(props) {
   const Analytics = analytics()
@@ -56,11 +57,9 @@ function Payment(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useLayoutEffect(() => {

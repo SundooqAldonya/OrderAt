@@ -34,9 +34,10 @@ import { Feather } from '@expo/vector-icons'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
 import { MaterialIcons } from '@expo/vector-icons'
 import { fetchAddressFromCoordinates } from '../../utils/geocoding'
+import { colors } from '../../utils/colors'
 
-const LATITUDE = 33.699265
-const LONGITUDE = 72.974575
+const LATITUDE = 30.044420
+const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 40
 const LONGITUDE_DELTA = 40
 
@@ -114,8 +115,8 @@ export default function AddNewAddress(props) {
       })
     )
   }, [])
-
-  StatusBar.setBarStyle('dark-content')
+  StatusBar.setBackgroundColor(colors.primary)
+  StatusBar.setBarStyle('light-content')
 
   const setCurrentLocation = async () => {
     // Check if longitude and latitude are available in props

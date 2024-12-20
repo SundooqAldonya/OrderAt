@@ -1,6 +1,7 @@
 import { scale } from '../../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
+import { theme } from '../../../utils/themeColors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -26,7 +27,9 @@ const styles = (props = null) =>
     subContainer: {
       width: '85%',
       height: '70%',
-      justifyContent: 'space-between',
+      flexDirection:'row',
+      alignItems:"center",
+      gap:20,
       ...alignment.MBlarge
     },
     imgContainer: {
@@ -35,7 +38,7 @@ const styles = (props = null) =>
       borderRadius: scale(35),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: props !== null ? props.fontWhite : 'transparent',
+      backgroundColor: theme.Pink.gray100,
       ...alignment.MTlarge
     }
   })

@@ -35,6 +35,7 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const DELETE_ADDRESS = gql`
   ${deleteAddress}
@@ -58,11 +59,9 @@ function Addresses() {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {
@@ -122,7 +121,7 @@ function Addresses() {
         <View>
           <View style={styles().descriptionEmpty}>
             <View style={styles().viewTitle}>
-              <TextDefault textColor={currentTheme.fontMainColor} bolder>
+              <TextDefault textColor={colors.dark} bolder>
                 {t('emptyHere')}
               </TextDefault>
             </View>

@@ -28,6 +28,8 @@ export const ConfigurationProvider = ({ children }) => {
     setConfiguration(configuration);
   };
 
+  console.log(configuration , 'configuration')
+
   // Use Effect
   useEffect(() => {
     onFetchConfiguration();

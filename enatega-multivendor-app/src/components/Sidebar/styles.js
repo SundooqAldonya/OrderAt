@@ -5,7 +5,7 @@ import { theme } from '../../utils/themeColors'
 const styles = (props = null) => {
   return StyleSheet.create({
     flex: {
-      flex: 1
+      flex: 1,
     },
     topContainer: {
       height: '30%',
@@ -23,7 +23,7 @@ const styles = (props = null) => {
       ...alignment.MBxSmall
     },
     iconContainer: {
-      backgroundColor: theme.Pink.deleteButton
+      backgroundColor: theme.Pink.deleteButton,
     }
   })
 }

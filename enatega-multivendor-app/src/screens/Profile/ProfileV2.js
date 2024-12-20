@@ -33,6 +33,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const UPDATEUSER = gql`
   ${updateUser}
@@ -61,7 +62,7 @@ function Profile(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.headerBackground)
+      StatusBar.setBackgroundColor(colors.primary)
     }
     StatusBar.setBarStyle('light-content')
   })

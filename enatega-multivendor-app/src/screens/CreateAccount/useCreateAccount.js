@@ -16,8 +16,9 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import analytics from '../../utils/analytics'
 import AuthContext from '../../context/Auth'
 import { useTranslation } from 'react-i18next'
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
+// import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import * as Google from 'expo-auth-session/providers/google'
+import { colors } from '../../utils/colors'
 
 
 const LOGIN = gql`
@@ -41,17 +42,17 @@ export const useCreateAccount = () => {
     PRIVACY_POLICY
   } = useEnvVars()
 
-  const configureGoogleSignin = () => {
-    GoogleSignin.configure({
-      iosClientId:
-        '967541328677-nf8h4ou7rhmq9fahs87p057rggo95eah.apps.googleusercontent.com',
-      androidClientId:
-        '967541328677-7264tf7tkdtoufk844rck9mimrve135c.apps.googleusercontent.com'
-    })
-  }
+  // const configureGoogleSignin = () => {
+  //   GoogleSignin.configure({
+  //     iosClientId:
+  //       '967541328677-nf8h4ou7rhmq9fahs87p057rggo95eah.apps.googleusercontent.com',
+  //     androidClientId:
+  //       '967541328677-7264tf7tkdtoufk844rck9mimrve135c.apps.googleusercontent.com'
+  //   })
+  // }
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID_GOOGLE,
+    androidClientId: '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',
     iosClientId: IOS_CLIENT_ID_GOOGLE
   })
 
@@ -277,11 +278,9 @@ export const useCreateAccount = () => {
   }
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   const openTerms = () => {
     Linking.openURL(TERMS_AND_CONDITIONS)

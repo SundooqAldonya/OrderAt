@@ -40,6 +40,7 @@ export default function SideBar() {
   useEffect(() => {
     const checkToken = async () => {
       if (restaurantData) {
+        console.log(restaurantData)
         setNotificationStatus(restaurantData.restaurant.enableNotification)
         if (
           restaurantData.restaurant.enableNotification &&
@@ -113,7 +114,7 @@ export default function SideBar() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ImageBackground source={bg} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../../assets/restBackground.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.topContainer}>
           <View style={styles.profileContainer}>
             <View style={styles.avatar}>
@@ -206,11 +207,14 @@ export default function SideBar() {
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(
-                'https://enatega.com/privacy-policy/'
+                'https://orderat.ai/#/privacy'
+                // 'https://enatega.com/privacy-policy/'
               ).then(() => {
                 Linking.openURL(
-                  'https://enatega.com/privacy-policy/'
+                  'https://orderat.ai/#/privacy'
                 )
+              }).catch(() =>{
+                Linking.openURL('https://orderat.ai')
               })
             }>
             <View style={styles.icon}>

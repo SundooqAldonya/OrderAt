@@ -36,6 +36,7 @@ import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon'
 import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const DELETE_ADDRESS = gql`
   ${deleteAddress}
@@ -53,7 +54,7 @@ function Addresses() {
   const { t } = useTranslation()
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.headerBackground)
+      StatusBar.setBackgroundColor(colors.primary)
     }
     StatusBar.setBarStyle('light-content')
   })

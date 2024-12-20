@@ -26,7 +26,7 @@ const tabIcon = route => ({
   tabBarStyle: {
     position: 'absolute',
     height: Platform.OS === 'android' ? 70 : height * 0.12,
-    backgroundColor: '#2c2c2c',
+    backgroundColor: '#000',
     borderColor: 'black',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15

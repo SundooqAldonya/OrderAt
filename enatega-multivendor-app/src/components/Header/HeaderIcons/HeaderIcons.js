@@ -23,24 +23,24 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { HeaderBackButton } from '@react-navigation/elements'
 import UserContext from '../../../context/User'
-
+import { colors } from '../../../utils/colors'
 const rippleColor = '#6FCF97'
 function BackButton(props) {
   if (props.icon === 'leftArrow') {
     return (
       <Ionicons
         name='arrow-back'
-        size={18}
+        size={scale(18)}
         style={styles().leftIconPadding}
-        color={props.iconColor}
+        color={colors.background}
       />
     )
   } else if (props.icon === 'menu') {
     return (
       <SimpleLineIcons
         name='menu'
-        size={20}
-        color={props.iconColorDark}
+        size={scale(20)}
+        color={colors.background}
         style={styles().leftIconPadding}
       />
     )
@@ -48,23 +48,23 @@ function BackButton(props) {
     return (
       <MaterialCommunityIcons
         name='dots-vertical'
-        size={25}
-        color={props.iconColor}
+        size={scale(25)}
+        color={colors?.background}
       />
     )
   } else if (props.icon === 'target') {
     return (
-      <MaterialIcons name='my-location' size={16} color={props.iconColor} />
+      <MaterialIcons name='my-location' size={scale(16)} color={colors?.background} />
     )
   } else if (props.icon === 'fav') {
-    return <AntDesign name='hearto' size={20} color={props.iconColorDark} />
+    return <AntDesign name='hearto' size={scale(20)} color={colors?.background} />
   } else {
     return (
       <EvilIcons
         name='close'
-        size={16}
+        size={scale(16)}
         style={styles().leftIconPadding}
-        color={props.newIconColor}
+        color={colors?.background}
       />
     )
   }
@@ -77,7 +77,7 @@ function LeftButton(props) {
       <HeaderBackButton
         truncatedLabel=''
         backImage={() =>
-          BackButton({ iconColor: props.newIconColor, icon: 'leftArrow' })
+          BackButton({ iconColor: colors?.background, icon: 'leftArrow' })
         }
         onPress={() => {
           navigationService.goBack()
@@ -91,7 +91,7 @@ function LeftButton(props) {
         pressColorAndroid={rippleColor}
         labelVisible={false}
         backImage={() =>
-          BackButton({ iconColor: props.newIconColor, icon: 'close' })
+          BackButton({ iconColor: colors?.background, icon: 'close' })
         }
         onPress={() => {
           navigation.dispatch((state) => {
@@ -112,7 +112,7 @@ function LeftButton(props) {
         labelVisible={false}
         backImage={() =>
           BackButton({
-            iconColor: props.newIconColor,
+            iconColor: colors?.background,
             icon: props.toggleValue ? 'leftArrow' : 'close'
           })
         }
@@ -130,7 +130,7 @@ function LeftButton(props) {
         pressColorAndroid={rippleColor}
         labelVisible={false}
         backImage={() =>
-          BackButton({ iconColor: props.newIconColor, icon: 'menu' })
+          BackButton({ iconColor: colors?.background, icon: 'menu' })
         }
         onPress={() => navigation.toggleDrawer()}
       />
@@ -161,18 +161,18 @@ function RightButton(props) {
       <View style={styles().rightContainer}>
         <SimpleLineIcons
           name='handbag'
-          size={24}
-          color={currentTheme.black}
+          size={scale(20)}
+          color={colors.background}
         />
         <View
           style={
-            styles(route.name === 'Main' ? 'black' : currentTheme.white)
-              .absoluteContainer
+           [ styles(route.name === 'Main' ? 'black' : currentTheme.white)
+              .absoluteContainer,{alignItems:'center', justifyContent:'center'}]
           }
         >
           <TextDefault
-            textColor={currentTheme.white}
-            style={{ fontSize: scale(12) }}
+            textColor={colors.background}
+            style={{ fontSize: scale(10) }}
             center
             bolder
           >
@@ -204,7 +204,7 @@ function RightButton(props) {
             <View style={styles(currentTheme.cartContainer).titlePasswordText}>
               <TextDefault
                 style={{ fontSize: scale(11) }}
-                textColor={currentTheme.fontMainColor}
+                textColor={colors.background}
                 bold
               >
                 {t('changePassword')}
@@ -217,7 +217,7 @@ function RightButton(props) {
             labelVisible={false}
             backImage={() => (
               <View style={styles().rightContainer}>
-                {BackButton({ iconColor: props.textColor, icon: 'dots' })}
+                {BackButton({ iconColor: colors.background, icon: 'dots' })}
               </View>
             )}
             onPress={showPasswordButton}
@@ -234,7 +234,7 @@ function RightButton(props) {
           labelVisible={false}
           backImage={() => (
             <View style={styles().favContainer}>
-              {BackButton({ iconColor: currentTheme.darkBgFont, icon: 'fav' })}
+              {BackButton({ iconColor: colors.background, icon: 'fav' })}
             </View>
           )}
           bolder
@@ -263,7 +263,7 @@ function RightButton(props) {
         labelVisible={false}
         backImage={() => (
           <View style={[styles().rightContainer]}>
-            {BackButton({ iconColor: props.iconColor, icon: 'target' })}
+            {BackButton({ iconColor:colors.background, icon: 'target' })}
           </View>
         )}
         onPress={props.onPressRight}
@@ -288,7 +288,7 @@ function DarkBackButton(props) {
         name='close-circle-outline'
         size={20}
         style={styles().darkBackArrow}
-        color={currentTheme.newIconColor}
+        color={colors.background}
       />
     </View>
   )
@@ -298,7 +298,7 @@ function HelpButton(props) {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: props.iconBackground,
+        backgroundColor: colors.background,
         borderRadius: scale(10),
         margin: scale(5)
       }}

@@ -26,6 +26,7 @@ function AppContainer() {
 
   return (
     <NavigationContainer>
+      {/* {isLoggedIn ? <AuthStack />:<MainStack />  } */}
       {isLoggedIn ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   )

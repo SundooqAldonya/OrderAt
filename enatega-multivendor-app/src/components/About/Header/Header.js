@@ -10,6 +10,7 @@ import Animated from 'react-native-reanimated'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../../utils/colors'
 const AnimatedIon = Animated.createAnimatedComponent(Ionicons)
 function ImageHeader(props) {
   const { t } = useTranslation()
@@ -18,12 +19,10 @@ function ImageHeader(props) {
   const navigation = useNavigation()
   return (
     <>
-        <StatusBar
-    backgroundColor={currentTheme.themeBackground}
-    barStyle={
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    }
-  />
+           <StatusBar
+              backgroundColor={colors.primary}
+              barStyle={'light-content'}
+            />
     <View style={styles(currentTheme).mainContainer}>
       <View style={styles().topBar}>
         <TouchableOpacity

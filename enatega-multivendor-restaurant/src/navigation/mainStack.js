@@ -17,6 +17,8 @@ import { SelectLanguage } from '../screens/Setting'
 import moment from 'moment'
 import {useTranslation} from 'react-i18next'
 import { MAX_TIME } from '../utilities'
+import RegisterUser from '../screens/Login/RegisterUser'
+import Checkout from '../screens/Login/Checkout'
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -139,6 +141,8 @@ function StackNavigator() {
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
       <Stack.Screen name="Orders" component={OrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="RegisterUser" component={RegisterUser} />
+      <Stack.Screen name="Checkout" component={Checkout} />
     </Stack.Navigator>
   )
 }

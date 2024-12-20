@@ -72,6 +72,7 @@ const styles = (props = null) =>
       padding: 10
     },
     cityField: {
+      fontSize:scale(12),
       color:props != null ? props.newFontcolor : '#E5E7EB',
     },
     icon1: {
@@ -118,7 +119,7 @@ const styles = (props = null) =>
       alignItems: 'center',
       alignSelf: 'center',
       borderRadius: scale(28),
-      marginTop: scale(50)
+      // marginTop: scale(50)
     },
     mainContainer: {
       width: scale(50),

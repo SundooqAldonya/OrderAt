@@ -32,7 +32,7 @@ function AdminFooter(props) {
         }}>
         <Typography className={classes.text}>©2022</Typography>
 
-        <Link
+        {/* <Link
           className={classes.link}
           href="https://multivendor.enatega.com/"
           target="_blank"
@@ -52,7 +52,7 @@ function AdminFooter(props) {
           target="_blank"
           underline="none">
           {t('Blog')}
-        </Link>
+        </Link> */}
       </BottomNavigation>
     </Box>
   )

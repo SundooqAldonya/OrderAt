@@ -3,9 +3,9 @@ import React, { useContext, useState, useEffect } from 'react'
 import styles from './style'
 import colors from '../../../utilities/colors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
-import Tick from '../../../assets/svg/tick.png'
-import Restaurant from '../../../assets/svg/restaurant.png'
-import DeliveryBoy from '../../../assets/svg/DeliveryBoy.png'
+const Tick =  require('../../../assets/svg/tick.png')
+const  Restaurant =  require('../../../assets/svg/restaurant.png')
+const DeliveryBoy = require('../../../assets/svg/DeliveryBoy.png')
 import UserContext from '../../../context/user'
 import {useTranslation} from 'react-i18next'
 

@@ -1,6 +1,6 @@
 const colors = {
-  primary: '#90EA93',
-  themeBackground: '#FAFAFA',
+  primary: '#06C167',
+  themeBackground: '#ffffff',
   iconColor: '#333333',
   tagColor: '#6FCF97',
   iconPink: '#6FCF97',
@@ -16,13 +16,21 @@ const colors = {
   buttonTextPink: '#FFF',
   textErrorColor: '#FA7751',
   headerBackground: '#FFF',
-  headerText: '#2a2a2a',
-  fontMainColor: '#212121',
-  fontSecondColor: '#949393',
+  headerText: '#000',
+  fontMainColor: '#000',
+  fontSecondColor: '#4A4A4A',
+  borderColor:'#F6F6F6',
   cartContainer: '#FFF',
   startColor: '#6FCF97',
   white: '#FFF',
   black: '#000'
 }
-
+// export const colors = {
+//   primary:'#06C167',
+//   dark:'#000000',
+//   background:'#FFFFFF',
+//   border1:'F6F6F6',
+//   border2:'#4A4A4A',
+//   blue:'#4285F4'
+// }
 export default colors

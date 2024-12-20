@@ -2,6 +2,8 @@ import { verticalScale, scale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const windowWidth = Dimensions.get('window').width
 import { alignment } from '../../utils/alignment'
+import { theme } from '../../utils/themeColors'
+import { colors } from '../../utils/colors'
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height
 const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
@@ -72,7 +74,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       ...alignment.PBsmall
     },
     addButton: {
-      backgroundColor: props !== null ? props.newheaderColor : 'transparent',
+      backgroundColor: colors.primary,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

@@ -19,6 +19,7 @@ import {  AntDesign } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { useRestaurant } from '../../ui/hooks'
 import ReorderItem from '../../components/ReorderItem/ReorderItem'
+import { colors } from '../../utils/colors'
 
 function Reorder(props) {
   const analytics = Analytics()
@@ -33,11 +34,9 @@ function Reorder(props) {
   const inset = useSafeAreaInsets()
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   const [selectedItems, setItems] = useState([])
 

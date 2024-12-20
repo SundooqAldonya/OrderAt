@@ -63,8 +63,7 @@ export const LocationProvider = ({ children }) => {
   }, [])
 
   const { loading, error, data } = useQuery(GET_CITIES, {
-    variables: { iso: country || 'US' },
-    skip: !country // Skip the query if country is not provided
+    variables: { iso: 'EG' },
   })
   //console.log('cities Data inside context', cities)
   // useEffect(() => {

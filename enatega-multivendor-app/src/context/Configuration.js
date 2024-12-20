@@ -76,6 +76,7 @@ export const ConfigurationProvider = (props) => {
             '967541328677-d46sl62t52g5r3o5m0mnl2hpptr242nl.apps.googleusercontent.com',
           androidClientID:
             '967541328677-7264tf7tkdtoufk844rck9mimrve135c.apps.googleusercontent.com',
+            // '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',//new id
           iOSClientID:
             '967541328677-nf8h4ou7rhmq9fahs87p057rggo95eah.apps.googleusercontent.com'
         }

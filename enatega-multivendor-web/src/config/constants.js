@@ -7,6 +7,7 @@ const ConfigurableValues = () => {
 
   // const SERVER_URL = "https://enatega-multivendor.up.railway.app/";
   // const WS_SERVER_URL = "wss://enatega-multivendor.up.railway.app/";
+  //const SERVER_URL = 'https://query.orderat.ai/'
   const SERVER_URL = 'https://query.orderat.ai/'
   const WS_SERVER_URL = 'wss://query.orderat.ai/'
 

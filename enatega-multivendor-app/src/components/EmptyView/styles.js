@@ -1,6 +1,7 @@
 import { scale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -24,7 +25,7 @@ const styles = (props = null) =>
       ...alignment.Plarge
     },
     emptyButton: {
-      backgroundColor: props !== null ? props.newheaderColor : 'transparent',
+      backgroundColor: colors.primary,
       width: '70%',
       height: scale(40),
       borderRadius: 50,

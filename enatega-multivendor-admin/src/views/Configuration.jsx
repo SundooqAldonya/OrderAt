@@ -82,6 +82,7 @@ const Configuration = props => {
                 <DeliveryRateConfiguration
                   deliveryRate={data && data?.configuration?.deliveryRate}
                   costType={data && data?.configuration?.costType}
+                  minimumDeliveryFee={data && data?.configuration?.minimumDeliveryFee}
               />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>

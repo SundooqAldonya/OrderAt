@@ -78,12 +78,11 @@ function SidebBar(props) {
         }
       ]}>
       <View style={{ flexGrow: 1 }}>
-        <View style={styles(currentTheme).topContainer}>
+        {isLoggedIn &&<View style={styles(currentTheme).topContainer}>
           <SideDrawerProfile navigation={props.navigation} />
-        </View>
+        </View>}
         <View style={styles(currentTheme).botContainer}>
           {datas.map((dataItem, ind) => (
-            <View key={ind} style={styles().item}>
               <SideDrawerItems
                 style={styles().iconContainer}
                 onPress={async () => {
@@ -96,9 +95,8 @@ function SidebBar(props) {
                 icon={dataItem.icon}
                 title={t(dataItem.title)}
               />
-            </View>
           ))}
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <View style={styles().item}>
               <SideDrawerItems
                 onPress={async () => {
@@ -111,8 +109,21 @@ function SidebBar(props) {
                 icon={'logout'}
                 title={t('titleLogout')}
               />
+            </View>) :
+            (<View style={styles().item}>
+              <SideDrawerItems
+                onPress={async () => {
+                  await Analytics.track(Analytics.events.USER_LOGGED_OUT)
+                  await Analytics.identify(null, null)
+
+                  logout()
+                  props.navigation.closeDrawer()
+                }}
+                icon={'logout'}
+                title={t('titleLogout')}
+              />
             </View>
-          )}
+            )}
         </View>
       </View>
     </View>

@@ -17,7 +17,7 @@ export const en = {
     'Age does not diminish the extreme disappointment of having a scoop of ice cream fall from the cone',
   getStarted: 'Get Started!',
   welcome:
-    "Welcome to Enatega, sometimes all you need is love. But a little food now and then doesn't hurt.",
+    "Welcome to Orderat Drive, sometimes all you need is love. But a little food now and then doesn't hurt.",
   loginBtn: 'Login',
   registerBtn: 'Register',
   name: 'Name',
@@ -196,11 +196,11 @@ export const en = {
     'Location permissions are required to use this app. Kindly open settings to allow location access.',
   allowLocation: 'Allow Location',
   enategaLocationText:
-    'Enatega uses your location for features like finding orders nearby and tracking customer orders!',
+    'Orderat Drive uses your location for features like finding orders nearby and tracking customer orders!',
   emptyUsernameError: 'Username is required!',
   emptyPasswordError: 'Password is required!',
   loginFlashMsg: 'Logged in',
-  enategaCash: 'Enatega Cash',
+  enategaCash: 'Orderat Drive Cash',
   ASSIGNED: 'ASSIGNED',
   PICKED: 'PICKED',
   contactCustomer: 'Contact Customer',

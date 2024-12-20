@@ -49,6 +49,7 @@ import {
   
   import { useTranslation } from 'react-i18next'
   import { ItemCard } from '../../components/ItemCards/ItemCards'
+import { colors } from '../../utils/colors'
   
   // Animated Section List component
   const AnimatedSectionList = Animated.createAnimatedComponent(SectionList)
@@ -97,11 +98,9 @@ import {
   
     useFocusEffect(() => {
       if (Platform.OS === 'android') {
-        StatusBar.setBackgroundColor(currentTheme.menuBar)
+        StatusBar.setBackgroundColor(colors.primary)
       }
-      StatusBar.setBarStyle(
-        themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-      )
+      StatusBar.setBarStyle('light-content')
     })
     useEffect(() => {
       async function Track() {

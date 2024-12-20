@@ -132,14 +132,14 @@ function Language() {
               <RadioButton
                 animation={'bounceIn'}
                 size={13}
-                outerColor={colors.radioOuterColor}
-                innerColor={colors.radioColor}
+                outerColor={colors.primary}
+                innerColor={colors.primary}
                 isSelected={activeRadio === item.index}
                 onPress={() => setActiveRadio(item.index)}
               />
               <TextDefault
                 numberOfLines={1}
-                textColor={colors.fontMainColor}
+                textColor={colors.fontSecondColor}
                 bold
                 style={alignment.MLsmall}>
                 {item.value}
@@ -153,7 +153,7 @@ function Language() {
               onPress={() => modalVisibleSetter(false)}>
               <TextDefault
                 numberOfLines={1}
-                textColor={colors.tagColor}
+                textColor={colors.fontSecondColor}
                 bolder
                 uppercase>
                 {t('cancel')}
@@ -163,7 +163,7 @@ function Language() {
               activeOpacity={0.7}
               style={styles.modalButtons}
               onPress={() => onSelectedLanguage()}>
-              <TextDefault textColor={colors.tagColor} bolder uppercase>
+              <TextDefault textColor={colors.primary} bolder uppercase>
                 {t('select')}
               </TextDefault>
             </TouchableOpacity>

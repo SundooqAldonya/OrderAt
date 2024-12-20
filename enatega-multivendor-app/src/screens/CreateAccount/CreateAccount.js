@@ -10,6 +10,7 @@ import { useCreateAccount } from './useCreateAccount'
 import { useTranslation } from 'react-i18next'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 const { height } = Dimensions.get('window')
 
 const CreateAccount = (props) => {
@@ -147,11 +148,11 @@ const CreateAccount = (props) => {
               H4
               bolder
               textColor={currentTheme.newFontcolor}
-              style={{ marginBottom: scale(7) }}
+              style={{ marginBottom: scale(7), color:colors?.dark, fontSize:20 }}
             >
               {t('signUporSignIn')}
             </TextDefault>
-            <TextDefault textColor={currentTheme.newFontcolor}>
+            <TextDefault textColor={colors?.dark}>
               {t('signUpDiscount')}
             </TextDefault>
           </View>
@@ -169,7 +170,7 @@ const CreateAccount = (props) => {
               <TextDefault
                 H4
                 bolder
-                textColor={currentTheme.newFontcolor}
+                textColor={colors?.border2}
                 style={{ width: 50, textAlign: 'center' }}
               >
                 {t('or')}
@@ -179,7 +180,7 @@ const CreateAccount = (props) => {
           </View>
           <TouchableOpacity
             activeOpacity={0.7}
-            style={styles(currentTheme).guestButton}
+            style={[styles(currentTheme).guestButton,{backgroundColor:colors?.primary, borderColor:colors?.primary}]}
             onPress={() => {
               navigation.navigate('Main')
             }}
@@ -193,7 +194,7 @@ const CreateAccount = (props) => {
               <>
                 <TextDefault
                   H4
-                  textColor={currentTheme.newFontcolor}
+                  textColor={colors?.dark}
                   style={alignment.MLsmall}
                   bold
                 >

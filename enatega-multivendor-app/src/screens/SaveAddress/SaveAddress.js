@@ -33,6 +33,7 @@ import { useMutation } from '@apollo/client'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../components/Spinner/Spinner'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
+import { colors } from '../../utils/colors'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -85,11 +86,9 @@ function SaveAddress(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useLayoutEffect(() => {

@@ -1,6 +1,7 @@
 import { scale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -39,7 +40,7 @@ const styles = (props = null) =>
     emptyButton: {
       width: '60%',
       height: scale(40),
-      backgroundColor: props !== null ? props.buttonBackground : 'transparent',
+      backgroundColor: colors.primary,
       borderRadius: scale(10),
       justifyContent: 'center',
       alignItems: 'center',

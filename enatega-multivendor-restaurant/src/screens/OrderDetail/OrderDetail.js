@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { View, ActivityIndicator, ImageBackground } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { View, ActivityIndicator, ImageBackground, ScrollView } from 'react-native'
 import { Spinner, TextDefault } from '../../components'
 import { colors, MAX_TIME } from '../../utilities'
 import styles from './styles'
@@ -48,16 +47,16 @@ export default function OrderDetail({ navigation, route }) {
   const decision = !isAcceptButtonVisible
     ? acceptTime
     : remainingTime > 0
-    ? remainingTime
-    : 0
+      ? remainingTime
+      : 0
 
   // image path
   const order = data.restaurantOrders.find(o => o._id === _id)
-  const imagePath =
-    activeBar === 2
-      ? require('../../assets/shop.png')
-      : require('../../assets/bowl.png')
-
+  // const imagePath =
+  //   activeBar === 2
+  //     ? require('../../assets/shop.png')
+  //     : require('../../assets/bowl.png')
+  const imagePath = require('../../assets/bowl.png')
   const toggleOverlay = () => {
     setPrint(false)
     setOverlayVisible(!overlayVisible)

@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StatusBar, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from './style'
-import RiderLogin from '../../assets/svg/RiderLogin.png'
+const RiderLogin = require('../../assets/svg/RiderLogin.png')
 
 const ScreenBackground = ({ children }) => {
   return (

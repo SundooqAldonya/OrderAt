@@ -16,11 +16,21 @@ export default function useLogin() {
     gql`
       ${loginQuery}
     `,
-    { onCompleted, onError }
+    { 
+      onCompleted: (data) => {
+        console.log('Mutation Success:', data)
+        onCompleted(data)
+      },
+      // Call onError when the mutation fails
+      onError: (err) => {
+        console.log('Mutation Error:', err)
+        onError(err)
+      }
+    }
   )
-  
   useQuery(gql`${defaultRestaurantCreds}`, { onCompleted, onError })
   function onCompleted({ restaurantLogin, lastOrderCreds }) {
+    console.log(restaurantLogin, lastOrderCreds, 'onCompleted')
     if (lastOrderCreds) {
       if ((lastOrderCreds.restaurantUsername !== null || lastOrderCreds.restaurantUsername !== undefined) && lastOrderCreds.restaurantPassword) {
         setUserName(lastOrderCreds.restaurantUsername || '')
@@ -28,11 +38,12 @@ export default function useLogin() {
       }
     } else {
       login(restaurantLogin.token, restaurantLogin.restaurantId)
-      setUserName(lastOrderCreds.restaurantUsername || '')
+      setUserName(username || '')
     }
   }
 
   function onError(error) {
+    console.log('error', error)
     FlashMessage({ message: error ? 'Server Error' : 'Server Error' })
   }
 
@@ -41,16 +52,19 @@ export default function useLogin() {
     // const password = await passwordRef.current
     const errors = validateLogin({ username, password })
     console.log(username + password)
-    setErrors(errors)
-    if (errors) return false
+    // setErrors(errors)
+    // if (errors) return false
     return true
   }
 
   const onLogin = async () => {
-    if (isValid()) {
+    console.log("login calleldddddddddddd")
+    const valid = await isValid()
+    if (valid) {
+      console.log("1111111111", valid)
       // const username = await usernameRef.current.value
       // const password = await passwordRef.current.value
-      
+      console.log("username", username, password)
       mutate({ variables: { username, password } })
     }
   }

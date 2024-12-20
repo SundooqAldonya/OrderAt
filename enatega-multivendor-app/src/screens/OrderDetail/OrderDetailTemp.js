@@ -25,6 +25,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import analytics from '../../utils/analytics'
 
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 function calculatePrice(food) {
   var foodPrice = food.variation.price
@@ -85,11 +86,9 @@ function OrderDetail(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   function timeConvert(n) {

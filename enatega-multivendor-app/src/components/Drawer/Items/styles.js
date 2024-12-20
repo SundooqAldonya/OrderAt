@@ -21,7 +21,8 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: props !== null ? props.gray100 : 'transparent',
-      borderRadius: 25
+      borderRadius: 25,
+      marginHorizontal:20,
     },
     img: {
       width: '100%',
@@ -29,6 +30,7 @@ const styles = (props = null) =>
     },
     rightContainer: {
       height: '80%',
+      marginLeft:10,
       width: '75%',
       justifyContent: 'center'
     },

@@ -14,14 +14,16 @@ const SAVE_DELIVERY_RATE_CONFIGURATION = gql`
 function Currency(props) {
   const { t } = props;
   const [deliveryRate, setDeliveryRate] = useState(props.deliveryRate || 0);
+  const [minimumDeliveryFee, setMinimumDeliveryFee] = useState(props.minimumDeliveryFee || 0);
   const [costType, setCostType] = useState(props?.costType || 'perKM');
   const [deliveryRateError, setDeliveryRateError] = useState(null);
   const [mutate, { loading }] = useMutation(SAVE_DELIVERY_RATE_CONFIGURATION);
 
   const validateInput = () => {
     const deliveryRateErrors = !validateFunc({ deliveryRate: deliveryRate }, 'deliveryRate');
+    const minimumDeliveryFeeErrors = !validateFunc({ minimumDeliveryFee: minimumDeliveryFee }, 'minimumDeliveryFee');
     setDeliveryRateError(deliveryRateErrors);
-    return deliveryRateErrors;
+    return deliveryRateErrors || minimumDeliveryFeeErrors; // If either validation fails, return true
   };
 
   const classes = useStyles();
@@ -123,6 +125,32 @@ function Currency(props) {
           </Box>
 
           <Box>
+            <Typography className={classes.labelText}>
+              {t('MinimumDeliveryFee')}
+            </Typography>
+            <Input
+              style={{ marginTop: -1 }}
+              id="input-minimum-delivery-fee"
+              name="input-minimum-delivery-fee"
+              placeholder={t('MinimumDeliveryFee')}
+              type="number"
+              value={minimumDeliveryFee}
+              onChange={(e) => {
+                setMinimumDeliveryFee(e.target.value); 
+              }} 
+              disableUnderline
+              className={[
+                globalClasses.input,
+                deliveryRateError === false
+                  ? globalClasses.inputError
+                  : deliveryRateError === true
+                    ? globalClasses.inputSuccess
+                    : '',
+              ]}
+            />
+          </Box>
+         
+          <Box>
             <Button
               className={globalClasses.button}
               disabled={loading}
@@ -134,6 +162,7 @@ function Currency(props) {
                       configurationInput: {
                         deliveryRate: Number(deliveryRate),
                         costType: costType,
+                        minimumDeliveryFee: Number(minimumDeliveryFee),
                       },
                     },
                     onCompleted: (data) => {

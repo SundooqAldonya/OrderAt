@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StatusBar, Image, Dimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './style'
-import WalletBg from '../../assets/svg/WalletBg.png'
+const WalletBg = require('../../assets/svg/WalletBg.png')
 import { Ionicons } from '@expo/vector-icons'
 import colors from '../../utilities/colors'
 import { useNavigation } from '@react-navigation/native'

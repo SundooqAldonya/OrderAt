@@ -12,18 +12,18 @@ const links = [
   {
     title: ('productPage'),
     url:
-      'https://market.nativebase.io/view/enatega-multivendor-food-backend-app'
+      'https://orderat.ai'
   },
   {
     title: ('docs'),
-    url: 'https://enatega-multi.gitbook.io/enatega-multivendor/'
+    url: 'https://orderat.ai'
   },
   {
     title: ('blog'),
     url:
-      'https://blog.geekyants.com/enatega-multivendor-foodpanda-clone-v1-0-0-e4b4f21ba1c1'
+      'https://orderat.ai'
   },
-  { title: ('aboutUs'), url: 'https://ninjascode.com/pages/ourteam.html' }
+  { title: ('aboutUs'), url: 'https://orderat.ai' }
 ]
 function Help() {
   const {t} = useTranslation()

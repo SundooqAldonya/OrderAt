@@ -130,7 +130,7 @@ export default function SearchModal({
           <TouchableOpacity style={styles().modalTextBtn} onPress={close}>
             <AntDesign
               name='arrowleft'
-              size={24}
+              size={scale(24)}
               color={currentTheme.newIconColor}
             />
           </TouchableOpacity>
@@ -151,8 +151,8 @@ export default function SearchModal({
                   </View>
               )
             } //
-            onPress={(data, details = null) => {
-              onSubmit(data.description, details.geometry.location)
+            onPress={(data, details) => {
+              onSubmit(data.description, details.geometry.location,details)
             }}
             getDefaultValue={() => {
               return '' // text input default value
@@ -183,10 +183,12 @@ export default function SearchModal({
                 backgroundColor: currentTheme.themeBackground
               },
               textInput: {
+      fontSize:scale(12),
+                
                 ...alignment.MTxSmall,
                 color: currentTheme.newFontcolor,
                 backgroundColor: currentTheme.themeBackground,
-                height: 38
+                height: scale(38)
               }
             }}
             nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch

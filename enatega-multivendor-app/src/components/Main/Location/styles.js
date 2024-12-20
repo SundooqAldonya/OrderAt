@@ -5,7 +5,6 @@ const styles = (props = null) => {
   return StyleSheet.create({
     headerTitleContainer: {
       flex: 1,
-      height: '100%',
       width: '95%',
       justifyContent: 'center',
       paddingBottom: scale(8),
@@ -19,7 +18,6 @@ const styles = (props = null) => {
       alignItems: 'center',
     },
     headerContainer: {
-      height: '100%',
       width: '90%',
       paddingLeft: scale(5),
       marginTop: scale(10)

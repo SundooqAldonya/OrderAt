@@ -23,7 +23,8 @@ const styles = (props = null) =>
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'space-between',
-      ...alignment.MBlarge
+      ...alignment.MBlarge,
+      marginBottom:0
     },
     formSubContainer: {
       borderRadius: scale(8),

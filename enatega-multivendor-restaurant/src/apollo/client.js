@@ -15,6 +15,7 @@ import {
 export let clientRef = null
 function setupApolloClient() {
   const { GRAPHQL_URL, WS_GRAPHQL_URL } = getEnvVars()
+  console.log("graph,", GRAPHQL_URL, WS_GRAPHQL_URL)
   const wsLink = new WebSocketLink({
     uri: WS_GRAPHQL_URL,
     options: {
@@ -33,6 +34,7 @@ function setupApolloClient() {
 
   const request = async operation => {
     const token = await SecureStore.getItemAsync('token')
+    console.log(token,'token')
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : ''

@@ -1,0 +1,344 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style id="applicationStylesheet" type="text/css">
+    body {
+      font-family: 'Roboto', sans-serif !important;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      width: 600px;
+    }
+
+    table {
+      border-spacing: 0;
+      width: 600px;
+      margin: auto;
+    }
+
+    a {
+      color: #052e16;
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    p {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <table>
+    <tbody>
+      <!-- Enatega nav -->
+      <tr>
+        <td style="font-size: 6px; line-height: 10px; padding: 12px 0px 12px 0px; text-align: center;" align="center">
+          <a href="https://enatega.com/">
+            <img width="250"
+              src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/92dd1499-2a9a-4f65-a4ff-87f64ef0a36a/2223x593.png" />
+          </a>
+        </td>
+      </tr>
+
+      <!-- Enatega header -->
+      <tr>
+        <td>
+          <table
+            style="margin:auto; background: url('http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/c7ad3f09-094e-45a1-a35a-489b395a89a3/1200x270.png'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%;">
+            <tr>
+              <td style="text-align: center; padding-top: 24px;">
+                <a href="https://enatega.com/">
+                  <img
+                    src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/f6174c4c-8a58-42fa-af86-1dd3d8c1c45e/80x81.png"
+                    width="40">
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="font-family: 'Roboto', sans-serif; font-size: 26px; color: #18181b; font-weight: 800; text-align: center; padding:10px 0 20px 0;">
+                Thank you! For Your Order
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- details top section -->
+      <tr>
+        <td align="center">
+          <table align="center" width="100%" align="center" border="0" style="max-width: 552px;">
+            <tr>
+              <td>
+                <table align="center" width="100%"
+                  style="width: auto; text-align: center; margin: 24px auto 16px auto;">
+                  <tr>
+                    <td
+                      style="border-radius: 5px; border: 1px solid rgba(26, 46, 5, 0.10); box-shadow: 0px 4px 8px 2px rgba(26, 46, 5, 0.06), inset 0 0 0 1px rgba(26, 46, 5, 0.10);">
+                      <p
+                        style="font-family: 'Roboto', sans-serif; padding: 8px; color: #18181B; font-size: 18px; font-style: normal; font-weight: 700; line-height: normal;">
+                        Order ID: <%= params[0]%>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100%;">
+                <table align="center" width="100%" style="max-width: 100%; text-align: center;">
+                  <tr>
+                    <td align="center">
+                      <p
+                        style="font-family: 'Roboto', sans-serif; color: #18181B; text-align: center; font-size: 14px; font-style: normal; font-weight: 600; margin: 2px 0px; text-transform: uppercase;">
+                        Delivery Address
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center">
+                      <p
+                        style="font-family: 'Roboto', sans-serif; color: #18181B; text-align: center; font-size: 16px; font-style: normal; font-weight: 400; margin: 2px 0px;">
+                        <%= params[2]%>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- main details -->
+      <tr>
+        <td align="center">
+          <table align="center" width="100%" align="center" bgcolor='#F7F7F4' border="0" bgcolor="#ffffff"
+            style="margin: 19px; max-width: 552px; min-height: 345px; border-radius: 12px; border: 1px solid rgba(26, 46, 5, 0.10); background: #F7F7F4; box-shadow: 0px 4px 8px 2px rgba(26, 46, 5, 0.06), inset 0 0 0 1px rgba(26, 46, 5, 0.10);  word-wrap: break-word;">
+            <tr>
+              <td style="padding: 24px 0px 16px 24px;">
+                <span
+                  style="font-family: 'Roboto', sans-serif; color: #18181B; font-size: 14px; font-style: normal; font-weight: 600; line-height: normal; text-transform: uppercase;">
+                  Items:
+                </span>
+              </td>
+
+            </tr>
+            <% params[1].map(function(param) { %>
+              <tr>
+                <td align="left" style="padding-left: 24px;">
+                  <p
+                    style="font-family: 'Roboto', sans-serif; color: #18181B; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;">
+                    <%= param.quantity + " x " + param.title + "  " + param.variation.title %>
+                  </p>
+                </td>
+                <td align="right" style="padding-right: 24px;">
+                  <p
+                    style="font-family: 'Roboto', sans-serif; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+                    <%= params[8]+ " " + (param.quantity*param.variation.price).toFixed(2) %>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td align='left' style="font-family: 'Roboto', sans-serif;">
+                  <% if(param.addons.length>0) { %>
+              <tr>
+                <td style="padding-left: 10px; font-family: 'Roboto', sans-serif;">AddOns:</td>
+              </tr>
+              <% } %>
+
+                <% param.addons.map(function(addon) { %>
+                  <% addon.options.map(function(option) { %>
+                    <tr>
+                      <td align="left" style="padding-left: 40px;">
+                        <span
+                          style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">
+                          <%= option.title %>
+                        </span>
+                      </td>
+                    </tr>
+                    <br />
+                    <% }); %>
+                      <% }); %>
+        </td>
+
+        <td align="right">
+
+          <br />
+
+          <% param.addons.map(function(addon) { %>
+            <% addon.options.map(function(option) { %>
+              <br />
+              <% }); %>
+                <% }); %>
+        </td>
+      </tr>
+      <% }); %>
+
+        <tr>
+          <td colspan="2" style="padding: 0 24px;">
+            <hr>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding-left: 24px ;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;">
+              Cost
+            </p>
+          </td>
+          <td align="right" style="padding-right:24px ;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+              <%= params[3]%>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;">
+              Tip
+            </p>
+          </td>
+          <td align="right" style="padding-right: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+              <%= params[4]%>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;">
+              Tax
+            </p>
+          </td>
+          <td align="right" style="padding-right: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+              <%= params[5]%>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;">
+              Total Charges
+            </p>
+          </td>
+          <td align="right" style="padding-right: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; padding: 2px 0px; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+              <%= params[6]%>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding: 0 24px;">
+            <hr>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-left: 24px; padding-bottom: 24px;">
+            <p style="font-family: 'Roboto', sans-serif; color: #18181B; font-size: 16px; font-style: normal; font-weight: 700; line-height: normal;">
+              Total Charges
+
+            </p>
+          </td>
+
+
+          <td align="right" style="padding-right: 24px; padding-bottom: 24px;">
+            <p
+              style="font-family: 'Roboto', sans-serif; color: #18181B; text-align: right; font-size: 16px; font-style: normal; font-weight: 600; line-height: normal;">
+              <%= params[7]%>
+            </p>
+
+            </p>
+          </td>
+        </tr>
+  </table>
+  </td>
+  </tr>
+
+  <!-- Connect with us -->
+  <tr style="background: #EFFBF1;">
+    <td style=" padding:30px 0" align="center">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 100%;">
+        <tr>
+          <td>
+            <h2 style="text-align: center; color: #18181b; font-size: 16px; font-family: 'Roboto', sans-serif; font-weight: 600">CONNECT
+              WITH US:</h2>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table style="margin:auto; padding: 5px 0; width: 170px;">
+              <tr>
+                <td style="padding: 0 9px;"><a href="http://www.youtube.com/@ninjascode509" target="_blank"><img
+                      class="max-width" border="0"
+                      style="display:block; color:#000000; text-decoration:none; font-size:16px;" width="25" height="25"
+                      alt="" data-proportionally-constrained="true" data-responsive="false"
+                      src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/e12c98f9-0a51-4918-ba99-a5e93530dc88/40x40.png"></a>
+                </td>
+                <td style="padding: 0 9px;"><a href="https://www.facebook.com/enatega" target="_blank"><img
+                      class="max-width" border="0"
+                      style="display:block; color:#000000; text-decoration:none; font-size:16px;" width="25" height="25"
+                      alt="" data-proportionally-constrained="true" data-responsive="false"
+                      src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/d6f01e3a-ad31-438e-b49a-fcff6fcfbecb/40x40.png"></a>
+                </td>
+                <td style="padding: 0 9px;"><a href="https://www.instagram.com/enatega.nb/" target="_blank"><img
+                      class="max-width" border="0"
+                      style="display:block; color:#000000; text-decoration:none; font-size:16px;" width="25" height="25"
+                      alt="" data-proportionally-constrained="true" data-responsive="false"
+                      src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/e705f1ac-2ffb-4a24-b1e4-1fef9ccb5c74/40x40.png"></a>
+                </td>
+                <td style="padding: 0 9px;"> <a href="https://twitter.com/EnategaA" target="_blank"><img
+                      class="max-width" border="0"
+                      style="display:block; color:#000000; text-decoration:none; font-size:16px;" width="25" height="25"
+                      alt="" data-proportionally-constrained="true" data-responsive="false"
+                      src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/c40abdbb-7c7c-4a84-89de-1769770642a5/40x40.png"></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center">
+            <a href="https://enatega.com/"
+              style="font-family: 'Lato', sans-serif; color: #18181b; font-size: 14px; font-weight: 400">www.enatega.com</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr style="background: #052E16;">
+    <td style="line-height:10px; padding:25px 0px 25px 0px;" align="center">
+      <a href="https://enatega.com/"><img class="max-width" style="text-decoration:none;" width="160" alt="Enatega"
+          data-proportionally-constrained="true" data-responsive="false"
+          src="http://cdn.mcauto-images-production.sendgrid.net/c6db57d8e09f410b/510d32c0-1105-4f74-ad8b-c047a05e089f/248x58.png"
+          height="37">
+      </a>
+    </td>
+  </tr>
+  </tbody>
+  </table>
+</body>
+
+</html>

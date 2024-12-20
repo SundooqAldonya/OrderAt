@@ -6,12 +6,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import navigationService from './navigationService'
 import * as Notifications from 'expo-notifications'
-// import Login from '../screens/Login/Login'
 import Login from '../screens/Login/Login'
 import Register from '../screens/Register/Register'
 import ForgotPassword from '../screens/ForgotPassword/ForgotPassword'
 import SetYourPassword from '../screens/ForgotPassword/SetYourPassword'
-// import CreateAccount from '../screens/CreateAccount/CreateAccount'
 import CreateAccount from '../screens/CreateAccount/CreateAccount'
 import SideBar from '../components/Sidebar/Sidebar'
 import ItemDetail from '../screens/ItemDetail/ItemDetail'
@@ -67,7 +65,11 @@ function Drawer() {
 
  
   return (
-    <SideDrawer.Navigator drawerContent={(props) => <SideBar {...props} />}>
+    <SideDrawer.Navigator  screenOptions={{
+      drawerStyle:{
+        width:"80%"
+      }
+    }} drawerContent={(props) => <SideBar {...props} />}>
       <SideDrawer.Screen
         options={{ headerShown: false }}
         name='NoDrawer'
@@ -245,7 +247,7 @@ function AppContainer() {
           navigationService.setGlobalRef(ref)
         }}
       >
-        {!location ? (
+       {!location ? (
           <LocationStack />
         ) : (
           <MainStack.Navigator initialRouteName='Drawer'>

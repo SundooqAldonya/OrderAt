@@ -10,10 +10,10 @@ export default function Button({
   textProps
 }) {
   return (
-    <TouchableOpacity {...buttonProps} style={buttonStyles}>
+    // <TouchableOpacity {...buttonProps} style={buttonStyles}>
       <TextDefault {...textProps} style={textStyles} bolder>
         {text}
       </TextDefault>
-    </TouchableOpacity>
+    // </TouchableOpacity>
   )
 }

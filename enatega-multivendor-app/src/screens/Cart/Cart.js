@@ -40,6 +40,7 @@ import navigationService from '../../routes/navigationService'
 import { useTranslation } from 'react-i18next'
 import WouldYouLikeToAddThese from './Section'
 import { SpecialInstructions } from '../../components/Cart/SpecialInstructions'
+import { colors } from '../../utils/colors'
 
 // Constants
 const TIPPING = gql`
@@ -128,11 +129,9 @@ function Cart(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useLayoutEffect(() => {

@@ -11,6 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import navigationService from '../../routes/navigationService'
 import { scale } from '../../utils/scaling'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const Help = props => {
   const { t } = useTranslation()
@@ -20,19 +21,19 @@ const Help = props => {
   const [links, setLinks] = useState([
     {
       title: t('titleProductPage'),
-      url: 'https://enatega.com/enatega-multi-vendor/'
+      url: 'https://orderat.ai'
     },
     {
       title: t('titleDocs'),
-      url: 'https://enatega.com/multi-vendor-doc/'
+      url: 'https://orderat.ai'
     },
     {
       title: t('titleBlog'),
-      url: 'https://enatega.com/blog/'
+      url: 'https://orderat.ai'
     },
     {
       title: t('titleAboutUs'),
-      url: 'https://ninjascode.com/about-us/'
+      url: 'https://orderat.ai'
     }
   ])
 
@@ -49,21 +50,21 @@ const Help = props => {
       {
         title: t('titleProductPage'),
         url:
-          'https://enatega.com/enatega-multivendor-open-source-food-delivery-solution/'
+          'https://orderat.ai'
       },
       {
         title: t('titleDocs'),
-        url: 'https://enatega.com/multivendor-documentation/'
+        url: 'https://orderat.ai'
       },
       {
         title: t('titleBlog'),
         url:
-          'https://enatega.com/blogs-enatega-open-source-food-delivery-solutions/'
+          'https://orderat.ai'
       },
       {
         title: t('titleAboutUs'),
 
-        url: 'https://ninjascode.com/'
+        url: 'https://orderat.ai'
       }
     ])
   }, [])
@@ -106,8 +107,8 @@ const Help = props => {
       edges={['bottom', 'right', 'left']}
       style={styles(currentTheme).flex}>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={currentTheme.themeBackground}
+        backgroundColor={colors.primary}
+        barStyle={'light-content'}
       />
       <View style={styles(currentTheme).flex}>
         <View style={styles(currentTheme).mainContainer}>

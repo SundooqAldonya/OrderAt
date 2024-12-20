@@ -1,6 +1,7 @@
 import { scale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 const { height } = Dimensions.get('window')
 
 const styles = (props = null) =>
@@ -77,7 +78,7 @@ const styles = (props = null) =>
     },
     buttonBackground: {
       width: '100%',
-      backgroundColor: props !== null ? props.newFontcolor : '#000',
+      backgroundColor: '#000',
       alignItems: 'center'
     },
     appleBtn: {
@@ -92,7 +93,7 @@ const styles = (props = null) =>
     line: {
       flex: 1,
       height: 1,
-      backgroundColor: props !== null ? props.color6 : '#9B9A9A'
+      backgroundColor: colors?.border2
     },
     guestButton: {
       width: '90%',

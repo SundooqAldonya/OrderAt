@@ -5,6 +5,7 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import styles from './styles'
+import { colors } from '../../../utils/colors'
 
 const LogoutModal = ({ visible, onCancel, onLogout }) => {
   const { t } = useTranslation()
@@ -22,12 +23,12 @@ const LogoutModal = ({ visible, onCancel, onLogout }) => {
           </Text>
           <View style={styles(currentTheme).modalButtonsContainer}>
             <TouchableOpacity onPress={onCancel}>
-              <TextDefault textColor={currentTheme.tagColor} bolder>
+              <TextDefault textColor={colors.primary} bolder>
                 {t('Cancel')}
               </TextDefault>
             </TouchableOpacity>
             <TouchableOpacity onPress={onLogout}>
-              <TextDefault textColor={currentTheme.tagColor} bolder>
+              <TextDefault textColor={colors.primary} bolder>
                 {t('Logout')}
               </TextDefault>
             </TouchableOpacity>

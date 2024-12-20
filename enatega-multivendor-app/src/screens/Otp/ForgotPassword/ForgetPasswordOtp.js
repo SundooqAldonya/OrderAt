@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { Feather } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { useRoute } from '@react-navigation/native'
+import { colors } from '../../../utils/colors'
 
 function ForgotPasswordOtp(props) {
   const {
@@ -43,12 +44,10 @@ function ForgotPasswordOtp(props) {
 
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar
-        backgroundColor={currentTheme.themeBackground}
-        barStyle={
-          themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-        }
-      />
+           <StatusBar
+              backgroundColor={colors.primary}
+              barStyle={'light-content'}
+            />
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().logoContainer}>

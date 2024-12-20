@@ -9,6 +9,7 @@ import {
   getFocusedRouteNameFromRoute,
   useRoute
 } from '@react-navigation/native'
+import { width } from 'deprecated-react-native-prop-types/DeprecatedImagePropType'
 
 const screenOptions = props => {
   const route = useRoute()
@@ -46,17 +47,19 @@ const tabOptions = () => ({
   tabBarInactiveTintColor: colors.white,
   tabBarItemStyle: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   tabBarLabelStyle: {
     ...textStyles.Bold,
     ...textStyles.Center,
-    ...textStyles.Small
+    ...textStyles.Small,
+    marginBottom:7
   },
   tabBarStyle: {
-    backgroundColor: '#2c2c2c',
+    backgroundColor: colors.black,
     borderTopLeftRadius: 15,
-    borderTopRightRadius: 15
+    borderTopRightRadius: 15,
+    height: 60
   }
 })
 

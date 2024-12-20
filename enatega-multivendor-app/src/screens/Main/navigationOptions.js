@@ -4,15 +4,18 @@ import { LeftButton } from '../../components/Header/HeaderIcons/HeaderIcons'
 import SelectedLocation from '../../components/Main/Location/Location'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
+import { colors } from '../../utils/colors'
+import { scale } from '../../utils/scaling'
 
 const navigationOptions = props => ({
   headerStyle: {
-    backgroundColor: props != null ? props.headerMenuBackground : 'white',
+    height:scale(50),
+    backgroundColor:colors.primary,
     shadowColor: 'transparent',
-    shadowRadius: 0
+    shadowRadius: 0,
   },
   headerTitleStyle: {
-    color: props.fontMainColor,
+    color: colors.background,
     ...alignment.PTlarge
   },
   headerTitleContainerStyle: {
@@ -20,12 +23,12 @@ const navigationOptions = props => ({
     ...alignment.MLxSmall
   },
   headerTitleAlign: 'left',
-  headerLeft: () => <LeftButton icon={props.icon} iconColor={props.fontMainColor} />,
+  headerLeft: () => <LeftButton icon={props.icon} iconColor={colors?.background}  />,
   headerTitle: headerProp => (
     <SelectedLocation
       {...headerProp}
       modalOn={() => props.open()}
-      linkColor={props.fontMainColor}
+      linkColor={colors.background}
       navigation={props.navigation}
     />
   )

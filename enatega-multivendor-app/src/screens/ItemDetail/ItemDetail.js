@@ -22,7 +22,7 @@ import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import UserContext from '../../context/User'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import { TextField } from 'react-native-material-textfield'
+//import { TextField } from 'react-native-material-textfield'
 import analytics from '../../utils/analytics'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -40,6 +40,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { scale } from '../../utils/scaling'
 import { Card } from 'react-native-paper'
+import { colors } from '../../utils/colors'
 const { height } = Dimensions.get('window')
 const TOP_BAR_HEIGHT = height * 0.08
 const HEADER_MAX_HEIGHT = height * 0.34
@@ -84,11 +85,9 @@ function ItemDetail(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {
@@ -448,7 +447,7 @@ function ItemDetail(props) {
                 subTitle={t('anySpecificPreferences')}
                 status={t('optional')}
               />
-              <TextField
+              {/* <TextField
                 style={styles(currentTheme).input}
                 placeholder={t('noMayo')}
                 textAlignVertical='center'
@@ -460,7 +459,7 @@ function ItemDetail(props) {
                 errorColor={currentTheme.textErrorColor}
                 tintColor={currentTheme.themeBackground}
                 placeholderTextColor={currentTheme.fontGrayNew}
-              />
+              /> */}
             </View>
             {/** frequently bought together */}
             <FrequentlyBoughtTogether

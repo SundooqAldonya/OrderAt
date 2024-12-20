@@ -12,17 +12,18 @@ const getEnvVars = (env = Updates.channel) => {
 
   console.log('configuration', configuration)
 
-  if (env === 'production' || env === 'staging') {
-    return {
-      GRAPHQL_URL: 'https://query.orderat.ai/graphql',
-      WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
-      SENTRY_DSN: configuration.restaurantAppSentryUrl
-    }
-  }
+  // if (env === 'production' || env === 'staging') {
+  //   return {
+  //     GRAPHQL_URL: 'https://query.orderat.ai/graphql',
+  //     WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
+  //     SERVER_URL: 'https://query.orderat.ai/',
+  //     SENTRY_DSN: configuration.restaurantAppSentryUrl
+  //   }
+  // }
   return {
     GRAPHQL_URL: 'https://query.orderat.ai/graphql',
     WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
-    SERVER_URL: 'https://orderat.ai/',
+    SERVER_URL: 'https://query.orderat.ai/',
 
     // GRAPHQL_URL: 'https://enatega-multivendor.up.railway.app/graphql',
     // WS_GRAPHQL_URL: 'wss://enatega-multivendor.up.railway.app/graphql',

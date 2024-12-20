@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -17,6 +17,7 @@ import usePhoneOtp from './usePhoneOtp'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 function PhoneOtp(props) {
   const {
@@ -32,7 +33,12 @@ function PhoneOtp(props) {
     currentTheme,
     themeContext
   } = usePhoneOtp()
-
+  const [code, setCode] = useState('')
+  useEffect(() =>{
+    if(otp){
+      setCode(otp)
+    }
+  },[otp])
   const { t } = useTranslation()
   useLayoutEffect(() => {
     props.navigation.setOptions(
@@ -48,22 +54,20 @@ function PhoneOtp(props) {
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
       <StatusBar
-        backgroundColor={currentTheme.themeBackground}
-        barStyle={
-          themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-        }
+        backgroundColor={colors.primary}
+        barStyle={'light-content'}
       />
 
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().logoContainer}>
-            <Ionicons name='phone-portrait-outline' size={30}  color={currentTheme.newIconColor}/>
+            <Ionicons name='phone-portrait-outline' size={30} color={currentTheme.newIconColor} />
           </View>
           <View>
             <TextDefault
               H3
               bolder
-               textColor={currentTheme.newFontcolor}
+              textColor={currentTheme.newFontcolor}
               style={{
                 ...alignment.MTlarge,
                 ...alignment.MBmedium
@@ -97,8 +101,8 @@ function PhoneOtp(props) {
                 borderColor: currentTheme.iconColorPink
               }}
               autoFocusOnLoad
-              code={otp}
-              onCodeChanged={(code) => setOtp(code)}
+              code={code}
+              onCodeChanged={(code) => setCode(code)}
               onCodeFilled={(code) => {
                 onCodeFilled(code)
               }}
@@ -133,8 +137,8 @@ function PhoneOtp(props) {
           <View>
             {loading || updateUserLoading ? (
               <Spinner
-              backColor={currentTheme.color3}
-              spinnerColor={currentTheme.color3}
+                backColor={currentTheme.color3}
+                spinnerColor={currentTheme.color3}
                 size='small'
               />
             ) : (

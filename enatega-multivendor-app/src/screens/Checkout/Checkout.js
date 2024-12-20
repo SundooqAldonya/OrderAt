@@ -61,6 +61,7 @@ import ArrowForwardIcon from '../../assets/SVG/arrow-forward-icon'
 import PickUp from '../../components/Pickup'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
 import { PaymentModeOption } from '../../components/Checkout/PaymentOption'
+import { colors } from '../../utils/colors'
 
 
 // Constants
@@ -235,11 +236,9 @@ function Checkout(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
 
   useEffect(() => {

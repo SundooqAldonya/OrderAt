@@ -13,6 +13,7 @@ const de = {
     linksTitle: "Verknüpfungen",
     subTotal: "Zwischensumme",
     deliveryFee: "Liefergebühr",
+    MinimumDeliveryFee:'Mindestliefergebühr',
     haveVoucher: "Hast du einen Gutschein?",
     remove: "Entfernen",
     change: "Veränderung",

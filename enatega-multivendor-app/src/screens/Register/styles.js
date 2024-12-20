@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { scale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -49,14 +50,16 @@ const styles = (props = null) =>
       width: '100%'
     },
     textField: {
-      borderColor: props !== null ? props.borderColor : '#efefef',
+      fontSize:scale(12),
+      borderColor: colors?.border1,
       borderWidth: scale(1),
       borderRadius: scale(10),
       backgroundColor: props !== null ? props.themeBackground : 'white',
       padding: scale(12),
       color: props !==null ? props.newFontcolor : 'red',
       ...alignment.MBxSmall,
-      ...alignment.MTxSmall
+      ...alignment.MTxSmall,
+      alignItems:'center'
     },
     passwordField: {
       display: 'flex',
@@ -97,9 +100,12 @@ const styles = (props = null) =>
     },
     phoneFieldInner: {
       flexDirection: 'row',
-      alignItems: 'center'
+      alignItems: 'center',
+      alignItemCenter:'center'
     },
     phoneField:{
+      fontSize:scale(12),
+
      color: props !== null ? props.newFontcolor : 'red',
     },
     error: {

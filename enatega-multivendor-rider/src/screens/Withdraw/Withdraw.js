@@ -13,7 +13,7 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import Amount from '../../components/Amount/Amount'
 import colors from '../../utilities/colors'
 import styles from './style'
-import DoneIcon from '../../assets/svg/doneIcon.png'
+const DoneIcon = require('../../assets/svg/doneIcon.png')
 import Spinner from '../../components/Spinner/Spinner'
 import { useWithdrawRequest } from './useWithdrawRequest'
 import { useTranslation } from 'react-i18next'

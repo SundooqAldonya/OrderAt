@@ -1,0 +1,75 @@
+{
+  "name": "enatega-api",
+  "version": "2.0.0",
+  "description": "enatega api",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "node seed/user-seeder.js && node seed/configuration-seeder.js",
+    "start": "node app.js",
+    "start:dev": "node app.js --watch",
+    "dev": "SET NODE_ENV=development && nodemon app",
+    "prod": "export NODE_ENV=production && nodemon app.js",
+    "staging": "export NODE_ENV=staging && nodemon app.js",
+    "format": "prettier --write '**/*.js'",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    },
+    "ignore": [
+      "build",
+      "build-nov17"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run format",
+      "npm run lint:fix"
+    ]
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^8.3.1",
+    "@sendgrid/mail": "^7.7.0",
+    "@sentry/node": "^6.19.7",
+    "@sentry/tracing": "^6.19.7",
+    "apollo-server-express": "^3.6.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "bull": "^4.12.2",
+    "consolidate": "^0.15.1",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "expo-server-sdk": "^3.6.0",
+    "express": "^4.17.2",
+    "firebase-admin": "^10.0.1",
+    "graphql": "^16.2.0",
+    "graphql-subscriptions": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.4",
+    "nodemailer": "^6.7.2",
+    "otp-generator": "^4.0.0",
+    "paypal-rest-sdk": "^1.8.1",
+    "randomstring": "^1.2.1",
+    "stripe": "^8.195.0",
+    "subscriptions-transport-ws": "^0.11.0",
+    "twilio": "^3.73.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.1.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.7",
+    "metro-react-native-babel-preset": "^0.54.1",
+    "nodemon": "^1.19.4",
+    "prettier": "2.0.5",
+    "prettier-config-standard": "^1.0.1"
+  }
+}

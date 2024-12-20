@@ -10,6 +10,7 @@ import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
+import { useNavigation } from '@react-navigation/native'
 
 const RIDER_LOGIN = gql`
   ${riderLogin}
@@ -26,7 +27,7 @@ const useLogin = () => {
   const [usernameError, setUsernameError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const { height } = Dimensions.get('window')
-
+  const navigation = useNavigation()
   const { setTokenAsync } = useContext(AuthContext)
 
   const [mutate, { loading }] = useMutation(RIDER_LOGIN, {
@@ -57,6 +58,7 @@ const useLogin = () => {
       FlashMessage({ message: t('loginFlashMsg') })
       await AsyncStorage.setItem('rider-id', riderLogin.userId)
       await setTokenAsync(riderLogin.token)
+      navigation.navigate("Home")
     } else {
       if (
         lastOrderCreds &&
@@ -73,7 +75,7 @@ const useLogin = () => {
   }
   function onError(error) {
     let message = 'Check internet connection'
-    console.log("going in")
+    console.log("going in", error)
     try {
       message = error.message
     } catch (error) {}
@@ -82,7 +84,9 @@ const useLogin = () => {
   }
 
   async function onSubmit() {
+    console.log(validateForm(),'form da')
     if (validateForm()) {
+      console.log('inside form da')
       // Get notification permissions
       const settings = await Notifications.getPermissionsAsync()
       let notificationPermissions = { ...settings }

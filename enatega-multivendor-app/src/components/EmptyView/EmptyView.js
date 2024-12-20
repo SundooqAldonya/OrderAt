@@ -8,6 +8,7 @@ import styles from './styles'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
+import { colors } from '../../utils/colors'
 
 const EmptyView = ({ title, description, buttonText }) => {
   const { t } = useTranslation()
@@ -24,7 +25,7 @@ const EmptyView = ({ title, description, buttonText }) => {
           <TextDefault bolder center B700 textColor={currentTheme.newFontcolor}>
             {t(title)}
           </TextDefault>
-          <TextDefault center textColor={currentTheme.newFontcolor}>{t(description)}</TextDefault>
+          <TextDefault center textColor={colors.dark}>{t(description)}</TextDefault>
         </View>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -36,7 +37,7 @@ const EmptyView = ({ title, description, buttonText }) => {
             })
           }>
           <TextDefault
-            textColor={currentTheme.black}
+            textColor={colors.dark}
             bolder
             B700
             center

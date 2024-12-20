@@ -2,6 +2,7 @@ import { verticalScale, scale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -14,7 +15,7 @@ const styles = (props = null) =>
     },
     searchbar: {
       ...alignment.PBmedium,
-      backgroundColor: props != null ? props.main : '#FFF'
+      backgroundColor: colors.primary
     },
 
     mainContentContainer: {
@@ -58,7 +59,7 @@ const styles = (props = null) =>
       ...alignment.PBsmall
     },
     addButton: {
-      backgroundColor: props !== null ? props.newheaderColor : 'transparent',
+      backgroundColor:colors.primary,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

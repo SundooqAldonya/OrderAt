@@ -27,6 +27,7 @@ import { HeaderBackButton } from '@react-navigation/elements'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import navigationService from '../../routes/navigationService'
+import { colors } from '../../utils/colors'
 
 const RESTAURANTS = gql`
   ${FavouriteRestaurant}
@@ -58,7 +59,7 @@ function Favourite() {
   }, [])
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.headerBackground)
+      StatusBar.setBackgroundColor(colors.primary)
     }
     StatusBar.setBarStyle('light-content')
   })
@@ -138,7 +139,7 @@ function Favourite() {
               })
             }>
             <TextDefault
-              textColor={currentTheme.black}
+              textColor={colors.dark}
               bolder
               B700
               center

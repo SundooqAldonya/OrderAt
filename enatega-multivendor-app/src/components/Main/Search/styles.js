@@ -7,9 +7,10 @@ import { theme } from '../../../utils/themeColors'
 const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
   StyleSheet.create({
     bodyStyleOne: {
-      fontFamily: fontStyles.MuseoSans500,
-      fontSize: scale(14),
-      color: props != null ? props.fontMainColor : 'black'
+      fontFamily: 'Montserrat_500Medium',
+      fontSize: scale(12),
+      color:  '#000',
+      flex:1
     },
     mainContainerHolder: {
       zIndex: 333,
@@ -52,6 +53,7 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     },
     leftContainer: {
       flexDirection: 'row',
+      alignItems:'center',
       width: '90%',
     },
     searchContainer: {
@@ -59,6 +61,8 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     },
     inputContainer: {
       width: '100%',
+      height: scale(36),
+      
       justifyContent: 'center',
       ...alignment.MLxSmall,
       ...alignment.MRxSmall

@@ -9,6 +9,7 @@ import ThemeContext from '../../ThemeContext/ThemeContext'
 import { alignment } from '../../../utils/alignment'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../../utils/colors'
 
 const FdEmailBtn = props => {
   const { t } = useTranslation()
@@ -17,7 +18,7 @@ const FdEmailBtn = props => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      style={styles(currentTheme).mainContainer}
+      style={[styles(currentTheme).mainContainer,{backgroundColor:colors?.primary, borderColor:colors?.primary}]}
       onPress={props.onPress}>
       {props.loadingIcon ? (
         <Spinner backColor="rgba(0,0,0,0.1)" spinnerColor={currentTheme.main} />
@@ -26,11 +27,11 @@ const FdEmailBtn = props => {
           <MaterialIcons
             name="mail-outline"
             size={scale(18)}
-            color={currentTheme.newIconColor}
+            color={colors?.dark}
           />
           <TextDefault
             H4
-            textColor={currentTheme.newFontcolor}
+            textColor={colors?.dark}
             style={alignment.MLlarge}
             bold>
             {t('ContinueWithEmail')}

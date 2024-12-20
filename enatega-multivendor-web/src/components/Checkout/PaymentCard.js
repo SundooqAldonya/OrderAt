@@ -207,7 +207,10 @@ function PaymentCard({
             borderRadius: 20,
           }}
           onClick={() => {
-            if (validateOrder()) onPayment();
+            
+            if (validateOrder()) 
+              
+              onPayment();
           }}
         >
           {loading ? (

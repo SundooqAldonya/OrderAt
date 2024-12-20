@@ -54,6 +54,7 @@ const styles = (props = null) =>
       justifyContent: 'space-between'
     },
     textField: {
+      fontSize:scale(12),
       borderColor: props !== null ? props.borderColor : '#efefef',
       borderWidth: scale(1),
       borderRadius: scale(6),

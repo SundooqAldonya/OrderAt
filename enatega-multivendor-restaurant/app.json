@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "Enatega Multivendor Restaurant",
+    "name": "Orderat Business",
     "slug": "enatega-restaurant-app-latest",
-    "version": "1.0.60",
+    "version": "1.0.70",
+    "logging": true,
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon3.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash2.png",
       "resizeMode": "cover",
-      "backgroundColor": "#6FCF97"
+      "backgroundColor": "#06C167"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,13 +24,17 @@
       }
     },
     "android": {
-      "versionCode": 60,
+      "versionCode": 63,
       "package": "com.restaurant.app",
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
-      ]
+        "ACCESS_FINE_LOCATION",
+        "INTERNET"
+      ],
+      "config": {
+        "usesCleartextTraffic": true
+      }
     },
     "hooks": {
       "postPublish": [
@@ -38,7 +43,7 @@
           "config": {
             "organization": "ninjas-code",
             "project": "enatega-multivendor-app",
-            "authToken": "744ed798e04a40a896b025569c25f945de0e166db8362e41969b644d5e07ca80e65"
+            "authToken": "744ed798e04a40a896b0269c25f945de0e166db8362e41969b64d5e07ca80e65"
           }
         }
       ]
@@ -48,14 +53,15 @@
     },
     "extra": {
       "eas": {
-        "projectId": "321c14237-c038-47fa-aae2-35882254cf938"
+        "projectId": "321c1437-c038-47fa-aae2-3588254cf938"
       }
     },
     "owner": "mahmoudattia",
     "plugins": [
       "expo-localization",
       "expo-secure-store",
-      "sentry-expo"
+      "sentry-expo",
+      "expo-font"
     ]
   }
 }

@@ -13,6 +13,7 @@ const en = {
     linksTitle: "Links",
     subTotal: "SubTotal",
     deliveryFee: "Delivery Fee",
+    MinimumDeliveryFee: 'Minimum Delivery Fee',
     haveVoucher: "Do you have a voucher ?",
     remove: "Remove",
     change: "Change",

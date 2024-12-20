@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApolloProvider } from '@apollo/client'
 import { StatusBar } from 'expo-status-bar'
 import FlashMessage from 'react-native-flash-message'
-import { useFonts } from '@use-expo/font'
+// import { useFonts } from '@use-expo/font'
 import * as Updates from 'expo-updates'
 import { AuthContext, Configuration } from './src/ui/context'
 import AppContainer from './src/navigation'
@@ -12,8 +12,28 @@ import setupApolloClient from './src/apollo/client'
 import { Spinner, TextDefault } from './src/components'
 import { colors } from './src/utilities'
 import { ActivityIndicator, StyleSheet, View, LogBox } from 'react-native'
-import 'react-native-gesture-handler'
 import * as SecureStore from 'expo-secure-store'
+import {
+  useFonts,
+  Montserrat_100Thin,
+  Montserrat_200ExtraLight,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_800ExtraBold,
+  Montserrat_900Black,
+  Montserrat_100Thin_Italic,
+  Montserrat_200ExtraLight_Italic,
+  Montserrat_300Light_Italic,
+  Montserrat_400Regular_Italic,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold_Italic,
+  Montserrat_700Bold_Italic,
+  Montserrat_800ExtraBold_Italic,
+  Montserrat_900Black_Italic,
+} from '@expo-google-fonts/montserrat';
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -30,6 +50,26 @@ export default function App() {
 
   const client = setupApolloClient()
 
+  let [fontsLoaded] = useFonts({
+    Montserrat_100Thin,
+    Montserrat_200ExtraLight,
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+    Montserrat_800ExtraBold,
+    Montserrat_900Black,
+    Montserrat_100Thin_Italic,
+    Montserrat_200ExtraLight_Italic,
+    Montserrat_300Light_Italic,
+    Montserrat_400Regular_Italic,
+    Montserrat_500Medium_Italic,
+    Montserrat_600SemiBold_Italic,
+    Montserrat_700Bold_Italic,
+    Montserrat_800ExtraBold_Italic,
+    Montserrat_900Black_Italic,
+  });
 
 
   useEffect(() => {
@@ -38,24 +78,20 @@ export default function App() {
       if (token) setToken(token)
       setIsAppReady(true)
     })()
-  }, [])107790055481567420245
+  }, [])
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
     ;(async () => {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
-        try {
           setIsUpdating(true)
           const { isNew } = await Updates.fetchUpdateAsync()
           if (isNew) {
              await Updates.reloadAsync()
           }
-        } catch (error) {
-          console.log('error while updating app', JSON.stringify(error))
-        } finally {
           setIsUpdating(false)
-        }
       }
     })()
   }, [])

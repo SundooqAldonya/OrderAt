@@ -24,9 +24,10 @@ import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
 import Spinner from '../../components/Spinner/Spinner'
+import { colors } from '../../utils/colors'
 
-const LATITUDE = 33.699265
-const LONGITUDE = 72.974575
+const LATITUDE = 30.044420
+const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 40
 const LONGITUDE_DELTA = 40
 
@@ -71,7 +72,8 @@ export default function SelectLocation(props) {
     )
   })
 
-  StatusBar.setBarStyle('dark-content')
+  StatusBar.setBackgroundColor(colors.primary)
+  StatusBar.setBarStyle('light-content')
 
   const setCurrentLocation = async () => {
     setLoading(true)

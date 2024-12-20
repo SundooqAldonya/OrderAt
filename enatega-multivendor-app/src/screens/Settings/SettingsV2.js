@@ -49,6 +49,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const languageTypes = [
   { value: 'English', code: 'en', index: 0 },
@@ -114,7 +115,7 @@ function Settings(props) {
   }, [])
   useEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.firstHeaderBackground)
+      StatusBar.setBackgroundColor(colors.primary)
     }
     StatusBar.setBarStyle('light-content')
   }, [])

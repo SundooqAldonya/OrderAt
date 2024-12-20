@@ -5,7 +5,7 @@ import Profile from './Profile/Profile'
 import styles from './styles'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
-import rider from '../../assets/rider.png'
+const rider = require('../../assets/rider.png')
 import useSidebar from './useSidebar'
 import {useTranslation} from 'react-i18next'
 

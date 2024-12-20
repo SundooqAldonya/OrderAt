@@ -27,13 +27,13 @@ export const textStyles = {
     fontSize: scale(8)
   },
   Regular: {
-    fontFamily: fontStyles.MuseoSans300
+    fontFamily: 'Montserrat_400Regular'
   },
   Bold: {
-    fontFamily: fontStyles.MuseoSans500
+    fontFamily: 'Montserrat_600SemiBold'
   },
   Bolder: {
-    fontFamily: fontStyles.MuseoSans700
+    fontFamily: 'Montserrat_800ExtraBold'
   },
   Center: {
     textAlign: 'center'

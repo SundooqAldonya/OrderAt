@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { View, TouchableOpacity, StatusBar, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from '../styles'
@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { SimpleLineIcons } from '@expo/vector-icons'
 import { useRoute } from '@react-navigation/native'
 import { scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 function EmailOtp(props) {
   const {
@@ -26,7 +27,13 @@ function EmailOtp(props) {
     currentTheme,
     themeContext
   } = useEmailOtp()
+  const [code, setCode] = useState('')
 
+  useEffect(() =>{
+    if(otp){
+      setCode(otp)
+    }
+  },[otp])
   const route = useRoute()
   const userData = route.params?.user
 
@@ -45,10 +52,8 @@ function EmailOtp(props) {
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
       <StatusBar
-        backgroundColor={currentTheme.themeBackground}
-        barStyle={
-          themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-        }
+        backgroundColor={colors.primary}
+        barStyle={'light-content'}
       />
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
@@ -77,12 +82,13 @@ function EmailOtp(props) {
             >
               {t('otpSentToEmail')}
             </TextDefault>
-            <TextDefault H5 bold  textColor={currentTheme.newFontcolor}>
+            <TextDefault H5 bold textColor={currentTheme.newFontcolor}>
               {userData.email}
             </TextDefault>
           </View>
           <View>
             <OTPInputView
+
               pinCount={6}
               style={styles().otpInput}
               codeInputFieldStyle={[
@@ -93,8 +99,8 @@ function EmailOtp(props) {
                 borderColor: currentTheme.main
               }}
               autoFocusOnLoad
-              code={otp}
-              onCodeChanged={(code) => setOtp(code)}
+              code={code}
+              onCodeChanged={(code) => setCode(code)}
               onCodeFilled={(code) => {
                 onCodeFilled(code)
               }}
@@ -143,8 +149,8 @@ function EmailOtp(props) {
             <Spinner
               backColor={currentTheme.color3}
               spinnerColor={currentTheme.color3}
-                size='small'
-              />
+              size='small'
+            />
           ) : (
             <TouchableOpacity
               activeOpacity={0.7}

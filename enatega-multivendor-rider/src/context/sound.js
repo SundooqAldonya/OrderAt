@@ -15,24 +15,24 @@ export const SoundContextProvider = ({ children }) => {
     }
   }, [assignedOrders])
   const playSound = async () => {
-    if (active === 'NewOrders') {
-      await stopSound()
-      const { sound } = await Audio.Sound.createAsync(
-        require('../assets/beep3.mp3')
-      )
-      await sound.setIsLoopingAsync(true)
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: true,
-        interruptionModeIOS: (Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS = 2),
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: (Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS = 2),
-        playThroughEarpieceAndroid: false
-      })
-      await sound.playAsync()
-      setSound(sound)
-    }
+    // if (active === 'NewOrders') {
+    //   await stopSound()
+    //   const { sound } = await Audio.Sound.createAsync(
+    //     require('../assets/beep3.mp3')
+    //   )
+    //   await sound.setIsLoopingAsync(true)
+    //   await Audio.setAudioModeAsync({
+    //     allowsRecordingIOS: false,
+    //     staysActiveInBackground: true,
+    //     interruptionModeIOS: (Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS = 2),
+    //     playsInSilentModeIOS: true,
+    //     shouldDuckAndroid: true,
+    //     interruptionModeAndroid: (Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS = 2),
+    //     playThroughEarpieceAndroid: false
+    //   })
+    //   await sound.playAsync()
+    //   setSound(sound)
+    // }
   }
   const stopSound = async () => {
     await sound?.unloadAsync()

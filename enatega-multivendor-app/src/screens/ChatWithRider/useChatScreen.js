@@ -13,6 +13,7 @@ import { useUserContext } from '../../context/User'
 import { useTranslation } from 'react-i18next'
 import { alignment } from '../../utils/alignment'
 import { useFocusEffect } from '@react-navigation/native'
+import { colors } from '../../utils/colors'
 
 export const useChatScreen = ({ navigation, route }) => {
   const { id: orderId, orderNo, total } = route.params
@@ -69,11 +70,9 @@ export const useChatScreen = ({ navigation, route }) => {
   const currentTheme = theme[themeContext.ThemeValue]
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.themeBackground)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useLayoutEffect(() => {
     navigation.setOptions({

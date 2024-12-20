@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "Rider",
-    "description": "Enatega is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
-    "version": "1.1.40",
+    "name": "Orderat Drive",
+    "description": "Orderat Drive is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
+    "version": "1.1.43",
     "slug": "enatega-rider-app-latest",
     "privacy": "public",
+    "logging": true,
     "plugins": [
       [
         "expo-updates",
@@ -24,11 +25,11 @@
       "android"
     ],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon2.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash2.png",
       "resizeMode": "cover",
-      "backgroundColor": "#6FCF97"
+      "backgroundColor": "#06C167"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -37,7 +38,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.rider.app",
       "config": {
-        "googleMapsApiKey": "AIzaSgdfgyCaXzEgiEKTtgfdQgQhy0yPuBDA4bD7BFoPOY"
+        "googleMapsApiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
       },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "$(PRODUCT_NAME) uses your location for features like finding orders nearby and tracking customer orders!.",
@@ -53,25 +54,27 @@
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "INTERNET"
       ],
       "config": {
+        "usesCleartextTraffic": true,
         "googleMaps": {
-          "apiKey": "AIzaSyCaXzEgiEKTtQgdfggQhy0yPuBDA4bD7BFoPOY"
+          "apiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
         }
       },
       "package": "com.rider.app"
     },
     "extra": {
       "eas": {
-        "projectId": "417dbabb-e049-4341-b2f3-88f1cd3gfdgf491d"
+        "projectId": "417dbabb-e049-4341-b2f3-88f1cd3f491d"
       }
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/417dbabb-e049-4341-b2f3-88f1cfgd3f491d"
+      "url": "https://u.expo.dev/417dbabb-e049-4341-b2f3-88f1cd3f491d"
     }
   },
   "hooks": {
@@ -81,7 +84,7 @@
         "config": {
           "organization": "ninjas-code",
           "project": "enatega-multivendor-app",
-          "authToken": "744ed798e04a40a896b0269c25f945de0e1665as3db8362e41969b64d5e07ca80e65"
+          "authToken": "744ed798e04a40a896b0269c25f945de0e166db8362e41969b64d5e07ca80e65"
         }
       }
     ]

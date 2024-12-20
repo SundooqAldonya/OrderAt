@@ -5,13 +5,14 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext.js'
 import { theme } from '../../../utils/themeColors.js'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { SimpleLineIcons } from '@expo/vector-icons'
-import { verticalScale } from '../../../utils/scaling.js'
+import { scale, verticalScale } from '../../../utils/scaling.js'
+import { colors } from '../../../utils/colors.js'
 
 function DrawerItems(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   return (
-    <View style={styles().flex}>
+    <View style={[styles().flex,{borderBottomWidth:0}]}>
       <TouchableOpacity
         activeOpacity={1}
         style={styles().container}
@@ -19,14 +20,14 @@ function DrawerItems(props) {
         <View style={styles(currentTheme).leftContainer}>
           <SimpleLineIcons
             name={props.icon}
-            size={verticalScale(15)}
+            size={verticalScale(18)}
             color={currentTheme.darkBgFont}
           />
         </View>
         <View style={styles().rightContainer}>
           <TextDefault
-            style={styles().drawerContainer}
-            textColor={currentTheme.fontMainColor}
+            style={[styles().drawerContainer,{fontSize:scale(12), fontWeight:"600", color:colors.dark}]}
+            textColor={colors.dark}
             small
             bold>
             {props.title}

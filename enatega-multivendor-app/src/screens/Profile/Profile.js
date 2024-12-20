@@ -17,7 +17,7 @@ import {
 } from 'react-native'
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
-import { TextField, OutlinedTextField } from 'react-native-material-textfield'
+//import { TextField, OutlinedTextField } from 'react-native-material-textfield'
 import { scale } from '../../utils/scaling'
 import { updateUser, login, Deactivate } from '../../apollo/mutations'
 import ChangePassword from './ChangePassword'
@@ -40,6 +40,7 @@ import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
 import { useTranslation } from 'react-i18next'
 import Spinner from '../../components/Spinner/Spinner'
+import { colors } from '../../utils/colors'
 
 const UPDATEUSER = gql`
   ${updateUser}
@@ -106,11 +107,9 @@ function Profile(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(currentTheme.menuBar)
+      StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle(
-      themeContext.ThemeValue === 'Dark' ? 'light-content' : 'dark-content'
-    )
+    StatusBar.setBarStyle('light-content')
   })
   useEffect(() => {
     async function Track() {
@@ -124,7 +123,7 @@ function Profile(props) {
       headerRight: null,
       headerTitleAlign: 'center',
       headerTitleStyle: {
-        color: currentTheme.newFontcolor,
+        color: colors.background,
         fontWeight: 'bold'
       },
       headerTitleContainerStyle: {
@@ -135,7 +134,7 @@ function Profile(props) {
         marginLeft: 0
       },
       headerStyle: {
-        backgroundColor: currentTheme.newheaderBG,
+        backgroundColor: colors.newheaderBG,
         elevation: 0
       },
       passChecker: showPass,
@@ -295,8 +294,8 @@ function Profile(props) {
                 styles().verifiedButton,
                 {
                   backgroundColor: profile?.emailIsVerified
-                    ? currentTheme.newheaderColor
-                    : currentTheme.buttonText
+                    ? colors.primary
+                    : colors.dark
                 }
               ]}
             >
@@ -315,7 +314,7 @@ function Profile(props) {
       <>
         <View style={styles(currentTheme).containerInfo}>
           <TextDefault
-            textColor={currentTheme.iconColor}
+            textColor={colors.dark}
             style={{ fontSize: scale(13) }}
             bolder
           >
@@ -425,7 +424,7 @@ function Profile(props) {
                         </View>
                       </View>
                       <View style={{ marginTop: 10 }}>
-                        <OutlinedTextField
+                        {/* <OutlinedTextField
                           ref={refName}
                           defaultValue={profile?.name}
                           autoFocus={true}
@@ -437,7 +436,7 @@ function Profile(props) {
                             !nameError ? currentTheme.newFontcolor : 'red'
                           }
                           error={nameError}
-                        />
+                        /> */}
                       </View>
 
                       <TouchableOpacity
@@ -457,7 +456,7 @@ function Profile(props) {
                     style={styles().headingButton}
                     onPress={handleNamePress}
                   >
-                    <TextDefault textColor={currentTheme.editProfileButton}>
+                    <TextDefault textColor={colors.blue}>
                       {t('edit')}
                     </TextDefault>
                   </TouchableOpacity>
@@ -511,7 +510,7 @@ function Profile(props) {
                     style={{ ...styles().headingButton }}
                     onPress={showModal}
                   >
-                    <TextDefault textColor={currentTheme.editProfileButton}>
+                    <TextDefault textColor={colors.blue}>
                       {t('change')}
                     </TextDefault>
                   </TouchableOpacity>
@@ -626,14 +625,14 @@ function Profile(props) {
                       })
                     }
                   >
-                    <TextDefault textColor={currentTheme.editProfileButton}>
+                    <TextDefault textColor={colors.blue}>
                       {t('edit')}
                     </TextDefault>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', padding:10 }}>
               <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
                 <TextDefault
                   bolder

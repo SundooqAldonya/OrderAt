@@ -18,6 +18,7 @@ import { useLogin } from './useLogin'
 import screenOptions from './screenOptions'
 import { useTranslation } from 'react-i18next'
 import { scale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 
 function Login(props) {
   const {
@@ -100,7 +101,7 @@ function Login(props) {
                       ]}
                       placeholderTextColor={currentTheme.fontSecondColor}
                       // value={email}
-                      defaultValue='demo-customer@enatega.com'
+                      defaultValue='demo-customer@orderat.com'
                       onChangeText={e => setEmail(e.toLowerCase().trim())}
                     />
                     {emailError !== null && (
@@ -175,7 +176,7 @@ function Login(props) {
                         : checkEmailExist()
                     }
                     activeOpacity={0.7}
-                    style={styles(currentTheme).btn}>
+                    style={[styles(currentTheme).btn,{backgroundColor:colors.primary}]}>
                     <TextDefault
                       H4
                       textColor={currentTheme.black}

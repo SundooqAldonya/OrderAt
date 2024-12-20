@@ -13,7 +13,8 @@ const PROFILE = gql`
   ${profile}
 `
 
-function Profile() {
+function 
+Profile() {
   const {t} = useTranslation()
   const { data, loading, error } = useQuery(PROFILE)
 
