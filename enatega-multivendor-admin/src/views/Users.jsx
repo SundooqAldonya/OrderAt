@@ -79,7 +79,9 @@ const Users = props => {
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  const filtered =
+
+  
+  let filtered =
     searchQuery.length < 3
       ? data && data.users
       : data &&
@@ -92,6 +94,13 @@ const Users = props => {
               : false)
           )
         })
+
+  if (!filtered){
+    filtered = []
+  }
+  
+  // console.log('filtered', filtered);
+  
   const globalClasses = useGlobalStyles()
   return (
     <>
