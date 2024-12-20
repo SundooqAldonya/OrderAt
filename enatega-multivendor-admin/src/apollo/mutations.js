@@ -891,10 +891,11 @@ export const findOrCreateUser = `
   }`
 
   export const CheckOutPlaceOrder = `
-mutation CheckOutPlaceOrder($userId: ID!, $addressId: ID!, $orderAmount: Float!) {
-  CheckOutPlaceOrder(userId: $userId, addressId: $addressId, orderAmount: $orderAmount) {
+mutation CheckOutPlaceOrder($userId: ID!, $resId : String! ,  $addressId: ID!, $orderAmount: Float!) {
+  CheckOutPlaceOrder(userId: $userId, resId :$resId , addressId: $addressId, orderAmount: $orderAmount) {
     _id
     orderId
+    resId
     user {
       _id
       name

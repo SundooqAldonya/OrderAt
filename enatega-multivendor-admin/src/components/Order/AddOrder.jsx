@@ -13,10 +13,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 import useGlobalStyles from '../../utils/globalStyles'
 const CHECKOUT_PLACE_ORDER = gql`
-  mutation CheckOutPlaceOrder($userId: ID!, $addressId: ID!, $orderAmount: Float!) {
-    CheckOutPlaceOrder(userId: $userId, addressId: $addressId, orderAmount: $orderAmount) {
+  mutation CheckOutPlaceOrder($userId: ID!, $resId : String! ,  $addressId: ID!, $orderAmount: Float!) {
+    CheckOutPlaceOrder(userId: $userId, resId : $resId , addressId: $addressId, orderAmount: $orderAmount) {
       _id
       orderId
+      resId
       user {
         _id
         name
@@ -229,6 +230,9 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     }
   };
   const handleSubmitOrder = async() => {
+
+    const restaurantId = localStorage.getItem('restaurantId')
+
     try {
       if (!cost || !selectedCustomer || !selectedAddress) {
         throw new Error("Cost, customer details, and address are required!");
@@ -255,6 +259,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         variables: {
           userId: _id,
           addressId,
+          resId:restaurantId,
           orderAmount,
         },
       });

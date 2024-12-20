@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import { withTranslation } from 'react-i18next'
 import { useQuery, useMutation, useSubscription, gql } from '@apollo/client'
 import DataTable from 'react-data-table-component'
@@ -11,6 +11,7 @@ import {
   assignRider
 } from '../apollo'
 import Header from '../components/Headers/Header'
+import { useParams } from 'react-router-dom'
 import CustomLoader from '../components/Loader/CustomLoader'
 import { transformToNewline } from '../utils/stringManipulations'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -40,12 +41,23 @@ const GET_ACTIVE_ORDERS = gql`
 
 const Orders = props => {
   const theme = useTheme()
+  const params = useParams()
   const { t } = props
   const [searchQuery, setSearchQuery] = useState('')
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const [mutateUpdate] = useMutation(UPDATE_STATUS)
   const globalClasses = useGlobalStyles()
   const [mutateAssign] = useMutation(ASSIGN_RIDER)
+
+ 
+ 
+
+  const [restaurantId, seteRestaurantId] = useState(
+    localStorage.getItem('restaurantId')
+  )
+  useEffect(() => {
+    if (params.id) seteRestaurantId(params.id)
+  }, [])
 
   const riderFunc = row => {
     const { data: dataZone } = useQuery(GET_RIDERS_BY_ZONE, {
@@ -100,7 +112,12 @@ const Orders = props => {
     error: errorOrders,
     loading: loadingOrders,
     refetch: refetchOrders
-  } = useQuery(GET_ACTIVE_ORDERS, { pollInterval: 3000 })
+  } = useQuery(GET_ACTIVE_ORDERS, {
+    variables: { restaurantId },
+    pollInterval: 3000,
+    skip: restaurantId === null
+  })
+  
 
   const statusFunc = row => {
     const handleStatusSuccessNotification = status => {
