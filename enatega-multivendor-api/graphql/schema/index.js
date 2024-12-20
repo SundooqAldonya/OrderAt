@@ -308,6 +308,7 @@ const typeDefs = gql`
   type Order {
     _id: ID!
     orderId: String!
+    resId: String!
     restaurant: RestaurantDetail!
     deliveryAddress: OrderAddress!
     items: [Item!]!
@@ -1223,8 +1224,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    CheckOutPlaceOrder(userId: ID!, addressId: ID!, orderAmount: Float!): Order!
-    
+    CheckOutPlaceOrder(userId: ID!, addressId: ID!, resId: String! , orderAmount: Float!): Order!
     createWithdrawRequest(amount: Float!): WithdrawRequest!
     updateWithdrawReqStatus(id: ID!, status: String!): UpdateWithdrawResponse!
     createEarning(earningsInput: EarningsInput): Earnings!

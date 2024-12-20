@@ -27,6 +27,10 @@ const orderSchema = new Schema(
       type: String,
       //required: true
     },
+    resId: {
+      type: String,
+      //required: true
+    },
     deliveryAddress: {
       location: {
         type: pointSchema

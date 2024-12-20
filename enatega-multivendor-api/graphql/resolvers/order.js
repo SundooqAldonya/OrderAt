@@ -307,7 +307,7 @@ module.exports = {
     }
   },
   Mutation: {
-    CheckOutPlaceOrder: async (_, { userId, addressId, orderAmount, isPickedUp, tipping }, { req }) => {
+    CheckOutPlaceOrder: async (_, { userId, addressId, resId ,  orderAmount, isPickedUp, tipping }, { req }) => {
       console.log("Entered CheckOutPlaceOrder resolver");
     
       try {
@@ -320,7 +320,8 @@ module.exports = {
         if (!address) throw new Error('Address not found');
     
         // Fetch the restaurant details
-        const restaurant = await Restaurant.findOne({ /* your filter logic */ });
+        const restaurant = await Restaurant.findOne({_id:resId});
+
         if (!restaurant) throw new Error('Restaurant not found');
     
         // Fetch the zone details
@@ -356,6 +357,8 @@ module.exports = {
         const order = new Order({
           orderId: newOrderId,
           user: userId,
+          resId : resId,
+          orderStatus: 'PENDING',
           orderAmount: orderAmount, // The original order amount (before additional fees)
           deliveryAddress: address,
           items: [], // Add items logic if applicable
@@ -376,6 +379,7 @@ module.exports = {
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,
+          resId: savedOrder.resId,
           paidAmount: 0,
           orderStatus: 'PENDING',
           paymentMethod:'COD',
