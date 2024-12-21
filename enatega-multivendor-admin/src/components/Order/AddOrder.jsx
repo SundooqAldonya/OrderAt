@@ -81,6 +81,8 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [PhoneError, setPhoneError] = useState(false)
   const [searchTrigger, setSearchTrigger] = useState('');
   const [openModal, setOpenModal] = useState(false);
+  const [longitude , setLongitude] = useState();
+  const [latitude , setLatitude] = useState();
   const [newCustomer, setNewCustomer] = useState({
     name: '',
     phoneNumber: '',
@@ -145,10 +147,16 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     setOpenModal(true);
   };
   const handleInputChange = (event) => {
-    const { name, governate , address_free_text , address , value } = event.target;
+    const { name, governate , address_free_text , address , latitude , longitude , value } = event.target;
 
-    console.log(name, governate , address_free_text , address , value)
+    console.log(name, governate , address_free_text , address , value , latitude , longitude , 'uiusdiuaiduai')
   
+    if(latitude){
+      setLatitude(latitude)
+    }
+    if(longitude){
+      setLongitude(longitude)
+    }
     // Regular expression to allow only alphabets and spaces
     const regex = /^[A-Za-z\s]*$/;
   
@@ -192,6 +200,8 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
             phone: searchQuery,
             addresses: [
               {
+                latitude:latitude,
+                longitude:longitude,
                 deliveryAddress: newCustomer.address,
                 label: 'Home',
                 selected: true,
@@ -591,10 +601,16 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY" // Replace this with your Google API key
     onPlaceSelected={(place) => {
       const selectedAddress = place.formatted_address || place.name;
+
+      const latitude = place.geometry?.location?.lat() ?? null; // Get latitude
+      const longitude = place.geometry?.location?.lng() ?? null; // Get longitude
+
       handleInputChange({
         target: {
           name: "address",
           value: selectedAddress,
+          latitude: latitude,
+          longitude: longitude,
         },
       });
     }}

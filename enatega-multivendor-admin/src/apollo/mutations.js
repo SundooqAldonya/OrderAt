@@ -886,6 +886,8 @@ export const findOrCreateUser = `
          label
          selected
          isActive
+         latitude
+         longitude
       }
     }
   }`

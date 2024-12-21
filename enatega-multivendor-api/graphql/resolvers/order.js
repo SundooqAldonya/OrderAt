@@ -318,6 +318,8 @@ module.exports = {
         // Find the delivery address
         const address = user.addresses.find(addr => addr._id.toString() === addressId);
         if (!address) throw new Error('Address not found');
+
+        console.log(address , 'Address@1233333333')
     
         // Fetch the restaurant details
         const restaurant = await Restaurant.findOne({_id:resId});
@@ -335,12 +337,82 @@ module.exports = {
         restaurant.orderId = Number(restaurant.orderId) + 1;
         await restaurant.save();
     
-        // Calculate delivery charges (if it's not picked up, apply delivery charges)
-        let deliveryCharges = 0;
-        if (!isPickedUp) {
-          // Delivery charge might depend on the zone or the restaurant
-          deliveryCharges = zone.deliveryCharge || 0; // Default delivery charge if not found in zone
+      
+
+        // get previous orderid from db
+        let configuration = await Configuration.findOne()
+
+        if (!configuration) {
+          configuration = new Configuration()
+          await configuration.save()
         }
+
+      
+        const latOrigin = +restaurant.location.coordinates[1]
+        console.log(latOrigin , 'lonOrigin#$')
+        const lonOrigin = +restaurant.location.coordinates[0]
+        console.log(lonOrigin , 'lonOrigin#$')
+
+        const latDest = +address.location.coordinates[0]
+        console.log(latDest , 'latDest#$')
+        const longDest = +address.location.coordinates[1]
+        console.log(longDest , 'longDest#$')
+
+        const distance = calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+
+        console.log(distance , 'Distance@1223333--=========killl')
+
+        const costType = configuration.costType
+
+       
+        let deliveryCharges= 0 ;
+
+         // if (costType === 'fixed') {
+        //     // Calculate delivery charges (if it's not picked up, apply delivery charges)
+        //   deliveryCharges = configuration.deliveryRate
+        // } else {
+        //   deliveryCharges = Math.ceil(distance) * configuration.deliveryRate
+        // }
+
+        //deliveryCharges = configuration.minimumDeliveryFee;
+
+        if(costType === 'fixed'){
+          deliveryCharges = configuration.deliveryRate
+          if(deliveryCharges <= configuration.minimumDeliveryFee){
+            deliveryCharges = configuration.minimumDeliveryFee
+          }
+        }
+        else{
+           if((Math.ceil(distance) * configuration.deliveryRate) <= (configuration.minimumDeliveryFee)){
+            deliveryCharges = configuration.minimumDeliveryFee
+        }
+        else{
+          deliveryCharges = Math.ceil(distance) * configuration.deliveryRate
+          
+        }
+        }
+
+
+        // if(Math.ceil(distance) * configuration.deliveryRate < configuration.minimumDeliveryFee){
+        //   deliveryCharges = Math.ceil(distance) * configuration.deliveryRate 
+        // }
+        // else{
+        //   deliveryCharges = configuration.minimumDeliveryFee
+        // }
+       
+        
+       
+        console.log(deliveryCharges , 'deliveryCharges@###!@##121313')
+
+        // if (!isPickedUp) {
+        //   // Delivery charge might depend on the zone or the restaurant
+        //   deliveryCharges = zone.deliveryCharge || 0; // Default delivery charge if not found in zone
+        // }
     
         // Calculate taxation amount (This is typically a percentage of the order amount)
         let taxationAmount = 0;
@@ -352,6 +424,9 @@ module.exports = {
     
         // Calculate total order amount including delivery charges, taxation, and tipping
         const totalOrderAmount = orderAmount + deliveryCharges + taxationAmount + tipping;
+
+        console.log(deliveryCharges , 'deliveryCharges@1233337777777777777777777777')
+        console.log(totalOrderAmount , 'totalOrderAmount77777777777777777777')
     
         // Create and save the order
         const order = new Order({
@@ -359,14 +434,15 @@ module.exports = {
           user: userId,
           resId : resId,
           orderStatus: 'PENDING',
-          orderAmount: orderAmount, // The original order amount (before additional fees)
+          //orderAmount: orderAmount, // The original order amount (before additional fees)
+          orderAmount: totalOrderAmount,
           deliveryAddress: address,
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: tipping, // Store tipping amount
           taxationAmount: taxationAmount, // Store taxation amount
           deliveryCharges: deliveryCharges, // Store delivery charges
-          totalAmount: totalOrderAmount, // The final total amount including all fees
+          //totalAmount: totalOrderAmount, // The final total amount including all fees
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           restaurant: restaurant._id,  // Adding restaurant ID to order
@@ -392,7 +468,9 @@ module.exports = {
             phone: user.phone,
           },
           deliveryAddress: savedOrder.deliveryAddress,
-          orderAmount: savedOrder.orderAmount,
+          //orderAmount: savedOrder.orderAmount,
+          orderAmount: savedOrder.totalOrderAmount,
+          //totalAmount: savedOrder.totalAmount,
           paymentStatus: savedOrder.paymentStatus,
           deliveryCharges: deliveryCharges,
           taxationAmount: taxationAmount,
@@ -426,6 +504,7 @@ module.exports = {
       }
       try {
         const restaurant = await Restaurant.findById(args.restaurant)
+
         const location = new Point({
           type: 'Point',
           coordinates: [+args.address.longitude, +args.address.latitude]
@@ -683,6 +762,7 @@ module.exports = {
         throw err
       }
     },
+
     editOrder: async(_, args, { req, res }) => {
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')
@@ -707,6 +787,7 @@ module.exports = {
         throw err
       }
     },
+
     updateOrderStatus: async(_, args, context) => {
       console.log('updateOrderStatus')
       try {
@@ -736,6 +817,7 @@ module.exports = {
         throw err
       }
     },
+
     updatePaymentStatus: async(_, args, context) => {
       console.log('updatePaymentStatus', args.id, args.status)
       try {
@@ -749,6 +831,7 @@ module.exports = {
         throw error
       }
     },
+
     muteRing: async(_, args, { req }) => {
       try {
         const order = await Order.findOne({ orderId: args.orderId })
@@ -760,6 +843,7 @@ module.exports = {
         throw error
       }
     },
+    
     abortOrder: async(_, args, { req }) => {
       console.log('abortOrder', args)
       if (!req.isAuth) {

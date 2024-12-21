@@ -140,6 +140,19 @@ module.exports = {
             addresses: existingUser.addresses,
           };
         }
+
+        const address = userInput.addresses?.length ? userInput.addresses[0] : {} ;
+
+        address['location'] = {
+          type: 'Point',
+          coordinates: [address.latitude, address.longitude]
+        }
+
+        delete address['latitude']
+        delete address['longitude']
+
+        console.log("address@@@@@@@@@@", address)
+
     
         // If the user doesn't exist, create a new user
         const newUser = new User({
@@ -147,7 +160,7 @@ module.exports = {
           phone: userInput.phone,
           governate: userInput.governate,
           address_free_text: userInput.address_free_text,
-          addresses: userInput.addresses || [],  // Including both main and additional address
+          addresses: address || [],  // Including both main and additional address
           email: userInput.email || "",
           userType: 'default', // Default user type
           emailIsVerified: userInput.email ? true : false, 
