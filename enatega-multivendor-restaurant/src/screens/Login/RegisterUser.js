@@ -73,13 +73,24 @@ const RegisterUser = () => {
         const addresses = [{deliveryAddress:`${userData.address}, ${userData.governate}`,
           details: locationAddress || "APT 1" ,
           label: "Home",
-          selected: true }]
+          selected: true,
+          latitude:selectedLocation.latitude,
+          longitude:selectedLocation.longitude,
+        }]
         findOrCreateUser({
           variables: {
             userInput: { name:userData.name, phone:userData.phone, addresses },
           },
         }).then(res=> {
           if(res?.data?.findOrCreateUser){
+            setUserData({
+              name: "",
+              governate: "",
+              phone: "",
+              address: "",
+            })
+            setLocationAddress('')
+            setSelectedLocation(null)
             Alert.alert("User Created!", "User successfully created.")
             navigation.navigate("Checkout",{userData:res.data?.findOrCreateUser})
           }

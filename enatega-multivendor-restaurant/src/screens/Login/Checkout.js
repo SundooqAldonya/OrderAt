@@ -20,6 +20,7 @@ const Checkout = () => {
     const [selectedAddress, setSelectedAddress] = useState({})
     const [amount, setAmount] = useState(null)
     useEffect(() =>{
+        console.log("sellllllllllllllct@@@@@@@@", userData.addresses[0])
         setSelectedAddress(userData.addresses[0])
         console.log(userData)
     },[])
@@ -29,14 +30,14 @@ const Checkout = () => {
         },
       });
       const createOrder = async () =>{
-        console.log("helllll", userData, selectedAddress, amount)
+        console.log("helllll", userData, selectedAddress, amount, !amount)
         if (!userData._id || !selectedAddress._id || !amount) {
-            console.log('Error', 'Please fill all fields');
+            Alert.alert("Error",`Please fill all fields`)
             return;
           }
 
           const restaurant = await AsyncStorage.getItem('restaurantId')
-      console.log('restaurant@@@@@@@@@#$%', restaurant)
+      console.log('restaurant@@@@@@@@@#$%', restaurant, selectedAddress?._id)
           // Execute the mutation
           checkoutPlaceOrder({
             variables: {
@@ -58,8 +59,8 @@ const Checkout = () => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
             <ScrollView>
-            <Image source={require('../../assets/orders.png')} style={{ width: width, height: scale(width/2) , backgroundColor:"#fff"}} />
-            <TextDefault H3 bold textColor={colors.fontMainColor} style={{ marginHorizontal: 10, marginVertical:10 }}>Confirm Order</TextDefault>
+            <Image source={require('../../assets/orders.png')} style={{ width: width, height: scale(width/3) , backgroundColor:"#fff"}} />
+            <TextDefault H3 bold textColor={colors.fontMainColor} style={{ marginHorizontal: 10, marginVertical:7 }}>Confirm Order</TextDefault>
             <View style={{ backgroundColor: "#fff", padding: 10, borderRadius: 10, margin: 10 }}>
                 <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                     <Ionicons name='person-circle' size={scale(18)} /><TextDefault H5>{userData?.name}</TextDefault>

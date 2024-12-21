@@ -292,7 +292,11 @@ const Orders = props => {
                   <TextDefault style={{ marginVertical: scale(20), textAlign: 'center' }} H3>Customer Not Found</TextDefault>
                   <TouchableOpacity onPress={() => {
                     setIsVisible(false);
-                    navigation.navigate("RegisterUser", { phone: search })
+                    const search1 = search;
+                    setSearch('')
+                    setShowResults(false)
+                    setCustomers([])
+                    navigation.navigate("RegisterUser", { phone: search1 })
                   }} style={{ backgroundColor: "#000", flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10, padding: 10, borderRadius: 10 }}>
                     <FontAwesome name='user' color={'#fff'} size={scale(20)} />
                     <TextDefault H4 bold textColor={"#fff"} style={{ marginLeft: 10 }} >Add new customer</TextDefault></TouchableOpacity>

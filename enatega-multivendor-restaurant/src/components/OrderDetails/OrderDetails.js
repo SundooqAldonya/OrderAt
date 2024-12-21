@@ -43,6 +43,7 @@ export default function OrderDetails({ orderData }) {
 }
 function OrderItems({ orderData }) {
   const { t } = useTranslation()
+  console.log("order@@@@@@@@", orderData)
   const {
     items,
     orderAmount,
@@ -51,12 +52,11 @@ function OrderItems({ orderData }) {
     taxationAmount
   } = orderData
   const configuration = useContext(Configuration.Context)
-  let subTotal = 0
+  let subTotal = orderAmount - deliveryCharges - tipping - taxationAmount
   return (
     <View style={[styles.cardContainer, { marginTop: 30, marginBottom: 45 }]}>
       {items &&
         items.map((item, index) => {
-          subTotal = subTotal + item.variation.price
           return (
             <View style={styles.itemRowBar} key={index}>
               <TextDefault
