@@ -1,4 +1,10 @@
-import { Box, TextField, Modal, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Modal,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import parse from "autosuggest-highlight/parse";
@@ -70,7 +76,8 @@ export const SearchHeader = () => {
   // Initialize AutocompleteService when Google maps is loaded
   useEffect(() => {
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      autocompleteService.current =
+        new window.google.maps.places.AutocompleteService();
     }
   }, []);
 
@@ -232,26 +239,29 @@ export const SearchHeader = () => {
                     loading
                       ? "Loading ..."
                       : search
-                        ? search
-                        : location
-                          ? location.deliveryAddress
-                          : ""
+                      ? search
+                      : location
+                      ? location.deliveryAddress
+                      : ""
                   }
                   onChange={(event, newValue) => {
                     if (newValue) {
                       const geocoder = new window.google.maps.Geocoder();
-                      geocoder.geocode({ placeId: newValue.place_id }, (res) => {
-                        const loc = res[0].geometry.location;
-                        setLocation({
-                          label: "Home",
-                          deliveryAddress: newValue.description,
-                          latitude: loc.lat(),
-                          longitude: loc.lng(),
-                        });
-                        setSearch(newValue.description);
-                        // Đóng modal sau khi chọn option
-                        onChangeModal();
-                      });
+                      geocoder.geocode(
+                        { placeId: newValue.place_id },
+                        (res) => {
+                          const loc = res[0].geometry.location;
+                          setLocation({
+                            label: "Home",
+                            deliveryAddress: newValue.description,
+                            latitude: loc.lat(),
+                            longitude: loc.lng(),
+                          });
+                          setSearch(newValue.description);
+                          // Đóng modal sau khi chọn option
+                          onChangeModal();
+                        }
+                      );
                     } else {
                       setSearch("");
                     }
@@ -311,7 +321,8 @@ export const SearchHeader = () => {
                   )}
                   renderOption={(props, option) => {
                     const matches =
-                      option.structured_formatting?.main_text_matched_substrings;
+                      option.structured_formatting
+                        ?.main_text_matched_substrings;
                     let parts = null;
                     if (matches) {
                       parts = parse(
@@ -324,7 +335,10 @@ export const SearchHeader = () => {
                     }
 
                     return (
-                      <li {...props} style={{ display: "flex", alignItems: "center" }}>
+                      <li
+                        {...props}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
                         <LocationOnIcon
                           style={{
                             marginRight: 8,
@@ -334,16 +348,16 @@ export const SearchHeader = () => {
                         <div>
                           {parts
                             ? parts.map((part, index) => (
-                              <span
-                                key={index}
-                                style={{
-                                  fontWeight: part.highlight ? 700 : 400,
-                                  color: "black",
-                                }}
-                              >
-                                {part.text}
-                              </span>
-                            ))
+                                <span
+                                  key={index}
+                                  style={{
+                                    fontWeight: part.highlight ? 700 : 400,
+                                    color: "black",
+                                  }}
+                                >
+                                  {part.text}
+                                </span>
+                              ))
                             : option.structured_formatting?.main_text}
                           <Typography variant="body2" color="textSecondary">
                             {option.structured_formatting?.secondary_text}

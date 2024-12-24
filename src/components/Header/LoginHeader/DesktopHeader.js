@@ -13,18 +13,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../i18n";
 import { SearchHeader } from "./SearchHeader";
+import LanguageToggle from "../../Language/LanguageToggle";
 
 function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   const { t } = useTranslation();
   const classes = useStyle();
   const theme = useTheme();
   const location = useLocation();
-
-  const handleLanguageToggle = () => {
-    const newLang = i18n.language === "en" ? "ar" : "en";
-    i18n.changeLanguage(newLang);
-    localStorage.setItem("enatega-language", newLang);
-  };
 
   return (
     <AppBar elevation={0} position="fixed">
@@ -40,28 +35,7 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
           <SearchHeader />
         </Box>
         <Box className={classes.flex}>
-          {/* Language Toggle */}
-          <Button
-            onClick={handleLanguageToggle}
-            aria-controls="language-menu"
-            aria-haspopup="true"
-            className={classes.languageToggle}
-            sx={{
-              textTransform: "none",
-              display: "flex",
-              alignItems: "center",
-              color: theme.palette.text.secondary,
-              fontWeight: 700, // Match Login button font weight
-            }}
-          >
-            <Typography
-              variant="button"
-              color="textSecondary"
-              className={classes.font700}
-            >
-              {i18n.language === "en" ? "Arabic (عربي)" : "English"}
-            </Typography>
-          </Button>
+          <LanguageToggle classes={classes} />
           {showIcon && (
             <>
               <Divider flexItem orientation="vertical" light />
