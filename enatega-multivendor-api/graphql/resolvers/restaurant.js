@@ -813,7 +813,7 @@ module.exports = {
       if (!restaurant) throw new Error('Invalid credentials')
       const token = jwt.sign(
         { restaurantId: restaurant.id },
-        'somesupersecretkey' // TODO: move this key to .env and use that everywhere
+        process.env.SECRETKEY // TODO: move this key to .env and use that everywhere
       )
       return { token, restaurantId: restaurant.id }
     },

@@ -26,8 +26,8 @@ export const useLogin = () => {
   const Analytics = analytics()
 
   const navigation = useNavigation()
-  const emailRef = useRef('demo-customer@orderat.com')
-  const [password, setPassword] = useState('123123')
+  const emailRef = useRef('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(true)
   const [emailError, setEmailError] = useState(null)
   const [passwordError, setPasswordError] = useState(null)
@@ -59,11 +59,11 @@ export const useLogin = () => {
       setEmailError(t('emailErr1'))
       result = false
     } else {
-      const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/
-      if (emailRegex.test(emailRef.current) !== true) {
-        setEmailError(t('emailErr2'))
-        result = false
-      }
+      // const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/
+      // if (emailRegex.test(emailRef.current) !== true) {
+      //   setEmailError(t('emailErr2'))
+      //   result = false
+      // }
     }
     if (!password && registeredEmail) {
       setPasswordError(t('passErr1'))

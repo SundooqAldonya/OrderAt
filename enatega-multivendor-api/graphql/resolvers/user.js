@@ -317,7 +317,7 @@ module.exports = {
             userId: result.id,
             email: result.email || result.appleId
           },
-          'somesupersecretkey'
+          process.env.SECRETKEY
         )
         console.log({
           ...result._doc,

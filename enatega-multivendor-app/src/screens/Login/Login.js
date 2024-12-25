@@ -38,6 +38,7 @@ function Login(props) {
     emailRef
   } = useLogin()
   const { t } = useTranslation()
+
   useLayoutEffect(() => {
     props.navigation.setOptions(
       screenOptions({
@@ -52,19 +53,26 @@ function Login(props) {
   return (
     <SafeAreaView
       edges={['bottom', 'left', 'right']}
-      style={styles(currentTheme).safeAreaViewStyles}>
+      style={styles(currentTheme).safeAreaViewStyles}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles().flex}>
+        style={styles().flex}
+      >
         <ScrollView
           style={styles().flex}
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
-          alwaysBounceVertical={false}>
+          alwaysBounceVertical={false}
+        >
           <View style={styles(currentTheme).mainContainer}>
             <View style={styles().subContainer}>
               <View style={styles().logoContainer}>
-                <SimpleLineIcons name="envelope" size={30} color={currentTheme.newIconColor} />
+                <SimpleLineIcons
+                  name='envelope'
+                  size={30}
+                  color={currentTheme.newIconColor}
+                />
               </View>
               <View>
                 <TextDefault
@@ -74,7 +82,8 @@ function Login(props) {
                   style={{
                     ...alignment.MTlarge,
                     ...alignment.MBmedium
-                  }}>
+                  }}
+                >
                   {registeredEmail
                     ? t('enterEmailPassword')
                     : t('whatsYourEmail')}
@@ -84,7 +93,8 @@ function Login(props) {
                   H5
                   bold
                   textColor={currentTheme.horizontalLine}
-                  style={{ ...alignment.MBmedium }}>
+                  style={{ ...alignment.MBmedium }}
+                >
                   {registeredEmail ? t('emailExists') : t('checkAccount')}
                 </TextDefault>
               </View>
@@ -92,7 +102,7 @@ function Login(props) {
                 <View>
                   <View>
                     <TextInput
-                      placeholder={t('email')}
+                      placeholder={t('emailphone')}
                       style={[
                         styles(currentTheme).textField,
                         emailError !== null
@@ -101,14 +111,15 @@ function Login(props) {
                       ]}
                       placeholderTextColor={currentTheme.fontSecondColor}
                       // value={email}
-                      defaultValue='demo-customer@orderat.com'
-                      onChangeText={e => setEmail(e.toLowerCase().trim())}
+                      defaultValue=''
+                      onChangeText={(e) => setEmail(e.toLowerCase().trim())}
                     />
                     {emailError !== null && (
                       <TextDefault
                         style={styles().error}
                         bold
-                        textColor={currentTheme.textErrorColor}>
+                        textColor={currentTheme.textErrorColor}
+                      >
                         {emailError}
                       </TextDefault>
                     )}
@@ -128,7 +139,7 @@ function Login(props) {
                           ]}
                           placeholderTextColor={currentTheme.fontSecondColor}
                           value={password}
-                          onChangeText={e => setPassword(e)}
+                          onChangeText={(e) => setPassword(e)}
                         />
                         <FontAwesome
                           onPress={() => setShowPassword(!showPassword)}
@@ -147,7 +158,8 @@ function Login(props) {
                           <TextDefault
                             style={styles().error}
                             bold
-                            textColor={currentTheme.textErrorColor}>
+                            textColor={currentTheme.textErrorColor}
+                          >
                             {passwordError}
                           </TextDefault>
                         </View>
@@ -156,12 +168,16 @@ function Login(props) {
                         style={alignment.MBsmall}
                         activeOpacity={0.7}
                         onPress={() =>
-                          props.navigation.navigate('ForgotPassword', { email : emailRef.current})
-                        }>
+                          props.navigation.navigate('ForgotPassword', {
+                            email: emailRef.current
+                          })
+                        }
+                      >
                         <TextDefault
                           textColor={currentTheme.main}
                           style={alignment.MTsmall}
-                          bolder>
+                          bolder
+                        >
                           {t('forgotPassword')}
                         </TextDefault>
                       </TouchableOpacity>
@@ -176,16 +192,17 @@ function Login(props) {
                         : checkEmailExist()
                     }
                     activeOpacity={0.7}
-                    style={[styles(currentTheme).btn,{backgroundColor:colors.primary}]}>
-                    <TextDefault
-                      H4
-                      textColor={currentTheme.black}
-                      bold>
+                    style={[
+                      styles(currentTheme).btn,
+                      { backgroundColor: colors.primary }
+                    ]}
+                  >
+                    <TextDefault H4 textColor={currentTheme.black} bold>
                       {loading || loginLoading ? (
                         <Spinner
-                        backColor='transparent'
-                        spinnerColor={currentTheme.white}
-                          size="small"
+                          backColor='transparent'
+                          spinnerColor={currentTheme.white}
+                          size='small'
                         />
                       ) : registeredEmail ? (
                         t('loginBtn')
