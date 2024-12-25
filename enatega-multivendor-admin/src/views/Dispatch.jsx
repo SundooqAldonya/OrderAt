@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState , useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withTranslation } from 'react-i18next'
 import { useQuery, useMutation, useSubscription, gql } from '@apollo/client'
 import DataTable from 'react-data-table-component'
@@ -49,9 +49,6 @@ const Orders = props => {
   const globalClasses = useGlobalStyles()
   const [mutateAssign] = useMutation(ASSIGN_RIDER)
 
- 
- 
-
   const [restaurantId, seteRestaurantId] = useState(
     localStorage.getItem('restaurantId')
   )
@@ -59,54 +56,6 @@ const Orders = props => {
     if (params.id) seteRestaurantId(params.id)
   }, [])
 
-  const riderFunc = row => {
-    const { data: dataZone } = useQuery(GET_RIDERS_BY_ZONE, {
-      variables: { id: row.zone._id }
-    })
-    return (
-      <Select
-        id="input-rider"
-        name="input-rider"
-        value=""
-        displayEmpty
-        inputProps={{ 'aria-label': 'Without label' }}
-        style={{ width: '50px' }}
-        className={globalClasses.selectInput}>
-        {dataZone &&
-          dataZone.ridersByZone.map(rider => (
-            <MenuItem
-              style={{ color: 'black' }}
-              onClick={() => {
-                mutateAssign({
-                  variables: {
-                    id: row._id,
-                    riderId: rider._id
-                  },
-                  onCompleted: data => {
-                    console.error('Mutation success data:', data)
-                    NotificationManager.success(
-                      'Successful',
-                      'Rider updated!',
-                      3000
-                    )
-                  },
-                  onError: error => {
-                    console.error('Mutation error:', error)
-                    NotificationManager.error(
-                      'Error',
-                      'Failed to update rider!',
-                      3000
-                    )
-                  }
-                })
-              }}
-              key={rider._id}>
-              {rider.name}
-            </MenuItem>
-          ))}
-      </Select>
-    )
-  }
   const {
     data: dataOrders,
     error: errorOrders,
@@ -117,7 +66,6 @@ const Orders = props => {
     pollInterval: 3000,
     skip: restaurantId === null
   })
-  
 
   const statusFunc = row => {
     const handleStatusSuccessNotification = status => {
@@ -156,7 +104,7 @@ const Orders = props => {
                   },
                   onError: error => {
                     console.error('Mutation error:', error)
-                    handleStatusErrorNotification('Error');
+                    handleStatusErrorNotification('Error')
                   }
                 })
               }}>
@@ -180,7 +128,7 @@ const Orders = props => {
                   },
                   onError: error => {
                     console.error('Mutation error:', error)
-                    handleStatusErrorNotification('Error');
+                    handleStatusErrorNotification('Error')
                   }
                 })
               }}>
@@ -204,7 +152,7 @@ const Orders = props => {
                   },
                   onError: error => {
                     console.error('Mutation error:', error)
-                    handleStatusErrorNotification('Error');
+                    handleStatusErrorNotification('Error')
                   }
                 })
               }}>
@@ -264,7 +212,7 @@ const Orders = props => {
           <br />
           {!row.isPickedUp &&
             !['CANCELLED', 'DELIVERED'].includes(row.orderStatus) &&
-            riderFunc(row)}
+            RiderFunc(row)}
         </div>
       )
     },
@@ -347,6 +295,55 @@ const Orders = props => {
         )}
       </Container>
     </>
+  )
+}
+
+const RiderFunc = row => {
+  const { data: dataZone } = useQuery(GET_RIDERS_BY_ZONE, {
+    variables: { id: row.zone._id }
+  })
+  return (
+    <Select
+      id="input-rider"
+      name="input-rider"
+      value=""
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      style={{ width: '50px' }}
+      className={globalClasses.selectInput}>
+      {dataZone &&
+        dataZone.ridersByZone.map(rider => (
+          <MenuItem
+            style={{ color: 'black' }}
+            onClick={() => {
+              mutateAssign({
+                variables: {
+                  id: row._id,
+                  riderId: rider._id
+                },
+                onCompleted: data => {
+                  console.error('Mutation success data:', data)
+                  NotificationManager.success(
+                    'Successful',
+                    'Rider updated!',
+                    3000
+                  )
+                },
+                onError: error => {
+                  console.error('Mutation error:', error)
+                  NotificationManager.error(
+                    'Error',
+                    'Failed to update rider!',
+                    3000
+                  )
+                }
+              })
+            }}
+            key={rider._id}>
+            {rider.name}
+          </MenuItem>
+        ))}
+    </Select>
   )
 }
 export default withTranslation()(Orders)

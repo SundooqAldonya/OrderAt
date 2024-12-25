@@ -139,7 +139,7 @@ const ar = {
     privacyPolicy: "سياسة الخصوصية",
     bySigningUp: "بالتسجيل، أنت توافق على ",
     and: " و ",
-    whatsYourEmail: "ما هو بريدك الإلكتروني؟",
+    whatsYourEmail: "ما هو بريدك الإلكتروني او رقم الهاتف؟",
     checkAccount: "سنتحقق مما إذا كان لديك حساب",
     continue: "استمر",
     invalidEmail: "بريد إلكتروني غير صالح",

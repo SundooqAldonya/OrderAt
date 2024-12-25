@@ -4,11 +4,15 @@ import ConfigurationContext from '../context/Configuration'
 const ConfigurableValues = () => {
   const configuration = useContext(ConfigurationContext)
 
-  const SERVER_URL = 'https://query.orderat.ai'
-  const WS_SERVER_URL = 'wss://query.orderat.ai'
- // const SERVER_URL = 'http://192.168.0.101:8001' 
- // const WS_SERVER_URL = 'ws://192.168.0.101:8001'
-  const GOOGLE_MAPS_KEY = configuration.googleApiKey ??  '' 
+  let SERVER_URL, WS_SERVER_URL
+  if (process.env.NODE_ENV === 'development') {
+    SERVER_URL = 'http://localhost:8001'
+    WS_SERVER_URL = 'ws://localhost:8001'
+  } else {
+    SERVER_URL = 'https://query.orderat.ai'
+    WS_SERVER_URL = 'wss://query.orderat.ai'
+  }
+  const GOOGLE_MAPS_KEY = configuration.googleApiKey ?? ''
   const FIREBASE_KEY = configuration.firebaseKey
   const APP_ID = configuration.appId
   const AUTH_DOMAIN = configuration.authDomain

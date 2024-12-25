@@ -35,10 +35,20 @@ const {
   sendNotificationToUser,
   sendNotificationToRider
 } = require('../../helpers/notifications')
+const { GraphqlUpload } = require('graphql-upload')
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+  cloud_name: 'djh6rjqp0',
+  api_key: '374324763112167',
+  api_secret: 'psXgMn901Y_sqcB0EgqWw6Mi4O8'
+})
 
 module.exports = {
+  Upload: GraphqlUpload,
+
   Query: {
-    nearByRestaurants: async(_, args) => {
+    nearByRestaurants: async (_, args) => {
       console.log('nearByRestaurants', args)
 
       try {
@@ -97,7 +107,7 @@ module.exports = {
         throw err
       }
     },
-    nearByRestaurantsPreview: async(_, args) => {
+    nearByRestaurantsPreview: async (_, args) => {
       console.log('nearByRestaurantsPreview', args)
       try {
         const { shopType } = args
@@ -172,7 +182,7 @@ module.exports = {
         throw error
       }
     },
-    restaurantByOwner: async(_, args, { req }) => {
+    restaurantByOwner: async (_, args, { req }) => {
       console.log('restaurantByOwner')
       try {
         const id = args.id || req.userId
@@ -186,7 +196,8 @@ module.exports = {
       console.log('restaurants')
       try {
         const restaurants = await Restaurant.find()
-        return transformRestaurants(restaurants)
+        // return transformRestaurants(restaurants)
+        return restaurants
       } catch (e) {
         throw e
       }
@@ -200,7 +211,7 @@ module.exports = {
         throw e
       }
     },
-    restaurant: async(_, args, { req }) => {
+    restaurant: async (_, args, { req }) => {
       console.log('restaurant', args)
       try {
         const filters = {}
@@ -220,7 +231,7 @@ module.exports = {
         throw e
       }
     },
-    restaurantPreview: async(_, args, { req }) => {
+    restaurantPreview: async (_, args, { req }) => {
       console.log('restaurantPreview', args)
       try {
         const filters = {}
@@ -240,7 +251,7 @@ module.exports = {
         throw e
       }
     },
-    restaurantOrders: async(_, args, { req }) => {
+    restaurantOrders: async (_, args, { req }) => {
       console.log('restaurantOrders', req.restaurantId)
       const date = new Date()
       date.setDate(date.getDate() - 1)
@@ -252,7 +263,7 @@ module.exports = {
       }).sort({ createdAt: 'descending' }) // today and yesterday instead of limit 50
       return orders.map(transformOrder)
     },
-    recentOrderRestaurants: async(_, args, { req }) => {
+    recentOrderRestaurants: async (_, args, { req }) => {
       console.log('recentOrderRestaurants', args, req.userId)
       const { longitude, latitude } = args
       if (!req.isAuth) throw new Error('Unauthenticated')
@@ -291,7 +302,7 @@ module.exports = {
       })
       return restaurants.map(transformRestaurant)
     },
-    recentOrderRestaurantsPreview: async(_, args, { req }) => {
+    recentOrderRestaurantsPreview: async (_, args, { req }) => {
       console.log('recentOrderRestaurantsPreview', args, req.userId)
       const { longitude, latitude } = args
       if (!req.isAuth) throw new Error('Unauthenticated')
@@ -330,7 +341,7 @@ module.exports = {
       })
       return restaurants.map(transformMinimalRestaurantData)
     },
-    mostOrderedRestaurants: async(_, args, { req }) => {
+    mostOrderedRestaurants: async (_, args, { req }) => {
       console.log('mostOrderedRestaurants', args, req.userId)
       const { longitude, latitude } = args
       const restaurants = await Restaurant.aggregate([
@@ -378,7 +389,7 @@ module.exports = {
 
       return restaurants.map(r => transformRestaurant(new Restaurant(r)))
     },
-    mostOrderedRestaurantsPreview: async(_, args, { req }) => {
+    mostOrderedRestaurantsPreview: async (_, args, { req }) => {
       console.log('mostOrderedRestaurantsPreview', args, req.userId)
       const { longitude, latitude } = args
       const restaurants = await Restaurant.aggregate([
@@ -428,7 +439,7 @@ module.exports = {
         transformMinimalRestaurantData(new Restaurant(r))
       )
     },
-    relatedItems: async(_, args, { req }) => {
+    relatedItems: async (_, args, { req }) => {
       console.log('relatedItems', args, req.userId)
       try {
         const { itemId, restaurantId } = args
@@ -470,7 +481,7 @@ module.exports = {
         throw error
       }
     },
-    popularItems: async(_, args) => {
+    popularItems: async (_, args) => {
       console.log('popularItems', args)
       try {
         const { restaurantId } = args
@@ -493,7 +504,7 @@ module.exports = {
         console.log('popularItems errored', error)
       }
     },
-    topRatedVendors: async(_, args, { req }) => {
+    topRatedVendors: async (_, args, { req }) => {
       console.log('topRatedVendors', args)
       try {
         const { longitude, latitude } = args
@@ -546,7 +557,7 @@ module.exports = {
         console.log('topRatedVendors error', error)
       }
     },
-    topRatedVendorsPreview: async(_, args, { req }) => {
+    topRatedVendorsPreview: async (_, args, { req }) => {
       console.log('topRatedVendorsPreview', args)
       try {
         const { longitude, latitude } = args
@@ -601,7 +612,7 @@ module.exports = {
     }
   },
   Mutation: {
-    createRestaurant: async(_, args, { req }) => {
+    createRestaurant: async (_, args, { req }) => {
       console.log('createRestanrant', args)
       try {
         if (!req.userId) throw new Error('Unauthenticated')
@@ -644,7 +655,7 @@ module.exports = {
         throw err
       }
     },
-    editRestaurant: async(_, args) => {
+    editRestaurant: async (_, args) => {
       console.log('editRestaurant')
       try {
         const restaurantByNameExists = await Restaurant.findOne({
@@ -710,7 +721,77 @@ module.exports = {
         throw err
       }
     },
-    deleteRestaurant: async(_, { id }, { req }) => {
+    async uploadFile(_, { id, file }) {
+      console.log({ file })
+      try {
+        const {
+          createReadStream,
+          filename,
+          mimetype,
+          encoding
+        } = await file.file
+        const stream = createReadStream()
+
+        const image = await cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'auto'
+          },
+          async (error, result) => {
+            if (error) {
+              throw new Error('Upload failed')
+            }
+            console.log({ image: result.secure_url })
+            const restaurant = await Restaurant.findById(id)
+            console.log({ restaurant })
+            restaurant.image = result.secure_url
+            await restaurant.save()
+            return result.secure_url // Return the URL of the uploaded image
+          }
+        )
+
+        stream.pipe(image)
+        // console.log({ image: image })
+        return { message: 'uploaded' }
+      } catch (err) {
+        throw err
+      }
+    },
+    async uploadRestaurantLogo(_, { id, file }) {
+      console.log({ file })
+      try {
+        const {
+          createReadStream,
+          filename,
+          mimetype,
+          encoding
+        } = await file.file
+        const stream = createReadStream()
+
+        const image = await cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'auto'
+          },
+          async (error, result) => {
+            if (error) {
+              throw new Error('Upload failed')
+            }
+            console.log({ image: result.secure_url })
+            const restaurant = await Restaurant.findById(id)
+            console.log({ restaurant })
+            restaurant.logo = result.secure_url
+            await restaurant.save()
+            return result.secure_url // Return the URL of the uploaded image
+          }
+        )
+
+        stream.pipe(image)
+        // console.log({ image: image })
+        return { message: 'uploaded' }
+      } catch (err) {
+        throw err
+      }
+    },
+    deleteRestaurant: async (_, { id }, { req }) => {
       console.log('deleteRestaurant', req.userId)
       try {
         const owner = await Owner.findOne({
@@ -726,7 +807,7 @@ module.exports = {
         throw err
       }
     },
-    restaurantLogin: async(_, args) => {
+    restaurantLogin: async (_, args) => {
       console.log('restaurantLogin')
       const restaurant = await Restaurant.findOne({ ...args })
       if (!restaurant) throw new Error('Invalid credentials')
@@ -736,7 +817,7 @@ module.exports = {
       )
       return { token, restaurantId: restaurant.id }
     },
-    acceptOrder: async(_, args, { req }) => {
+    acceptOrder: async (_, args, { req }) => {
       var newDateObj = await new Date(
         Date.now() + (parseInt(args.time) || 0) * 60000
       )
@@ -775,7 +856,7 @@ module.exports = {
         throw err
       }
     },
-    cancelOrder: async(_, args, { req }) => {
+    cancelOrder: async (_, args, { req }) => {
       console.log('cancelOrder')
       if (!req.restaurantId) {
         throw new Error('Unauthenticated!')
@@ -807,7 +888,7 @@ module.exports = {
         throw err
       }
     },
-    saveRestaurantToken: async(_, args, { req }) => {
+    saveRestaurantToken: async (_, args, { req }) => {
       console.log('saveRestaurantToken', req.restaurantId, args)
       try {
         const restaurant = await Restaurant.findById(req.restaurantId)
@@ -820,7 +901,7 @@ module.exports = {
         console.log('error', error)
       }
     },
-    updateTimings: async(_, args) => {
+    updateTimings: async (_, args) => {
       console.log('updateTimings', args)
       try {
         const restaurant = await Restaurant.findById(args.id)
@@ -831,7 +912,7 @@ module.exports = {
         throw err
       }
     },
-    toggleAvailability: async(_, args, { req }) => {
+    toggleAvailability: async (_, args, { req }) => {
       console.log('toggleAvailablity')
       try {
         if (!req.restaurantId) {
@@ -845,7 +926,7 @@ module.exports = {
         throw err
       }
     },
-    updateCommission: async(_, args) => {
+    updateCommission: async (_, args) => {
       console.log('updateCommission')
       try {
         const { id, commissionRate } = args
@@ -864,7 +945,7 @@ module.exports = {
         throw error
       }
     },
-    orderPickedUp: async(_, args, { req }) => {
+    orderPickedUp: async (_, args, { req }) => {
       console.log('orderPickedUp')
       if (!req.restaurantId) {
         throw new Error('Unauthenticated!')
@@ -900,7 +981,7 @@ module.exports = {
         throw err
       }
     },
-    updateDeliveryBoundsAndLocation: async(_, args) => {
+    updateDeliveryBoundsAndLocation: async (_, args) => {
       console.log('updateDeliveryBoundsAndLocation')
       const { id, bounds: newBounds, location: newLocation } = args
       try {

@@ -16,7 +16,7 @@ const { v4 } = require('uuid')
 
 module.exports = {
   Mutation: {
-    vendorResetPassword: async(_, args, { req, res }) => {
+    vendorResetPassword: async (_, args, { req, res }) => {
       console.log('Change Passsword!')
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')
@@ -39,7 +39,7 @@ module.exports = {
         throw error
       }
     },
-    ownerLogin: async(_, { email, password }, context) => {
+    ownerLogin: async (_, { email, password }, context) => {
       console.log('ownerLogin')
       const owner = await Owner.findOne({ email: email })
       if (!owner) {
@@ -56,7 +56,7 @@ module.exports = {
           email: owner.email,
           userType: owner.userType
         },
-        'somesupersecretkey' // TODO: move this key to .env and use that everywhere
+        process.env.SECRETKEY
       )
       const result = await transformOwner(owner)
       return {
@@ -64,7 +64,7 @@ module.exports = {
         token: token
       }
     },
-    login: async(
+    login: async (
       _,
       { appleId, email, password, type, name, notificationToken },
       context
@@ -106,7 +106,8 @@ module.exports = {
         })
       }
       if (!user) {
-        user = await User.findOne({ phone: email })
+        // user = await User.findOne({ phone: email })
+        user = await User.findOne({ $or: [{ email }, { phone: email }] })
         if (!user) throw new Error('User does not exist!')
       }
       if (type === 'default') {
@@ -121,10 +122,10 @@ module.exports = {
 
       const token = jwt.sign(
         {
-          userId: result.id,
+          userId: result._id,
           email: result.email || result.appleId
         },
-        'somesupersecretkey'
+        process.env.SECRETKEY
       )
       if (isNewUser) {
         const attachment = path.join(
@@ -140,13 +141,13 @@ module.exports = {
       return {
         ...result._doc,
         email: result.email || result.appleId,
-        userId: result.id,
+        userId: result._id,
         token: token,
         tokenExpiration: 1,
         isNewUser
       }
     },
-    riderLogin: async(_, args, context) => {
+    riderLogin: async (_, args, context) => {
       console.log('riderLogin', args.username, args.password)
       const rider = await Rider.findOne({ username: args.username })
       if (!rider) throw new Error('Invalid credentials')
@@ -159,7 +160,7 @@ module.exports = {
 
       const token = jwt.sign(
         { userId: rider.id, email: rider.username },
-        'somesupersecretkey'
+        process.env.SECRETKEY
       )
       return {
         ...rider._doc,
@@ -170,7 +171,7 @@ module.exports = {
         tokenExpiration: 1
       }
     },
-    pushToken: async(_, args, { req, res }) => {
+    pushToken: async (_, args, { req, res }) => {
       if (!req.isAuth) throw new Error('Unauthenticated')
       try {
         console.log(args.token)
@@ -183,7 +184,7 @@ module.exports = {
         throw err
       }
     },
-    forgotPassword: async(_, { email, otp }, context) => {
+    forgotPassword: async (_, { email, otp }, context) => {
       console.log('Forgot password: ', email, ' ', otp)
       const user = await User.findOne({ email: email })
       if (!user) {
@@ -216,7 +217,7 @@ module.exports = {
         result: true
       }
     },
-    resetPassword: async(_, { password, email }, context) => {
+    resetPassword: async (_, { password, email }, context) => {
       console.log(password, email)
       const user = await User.findOne({ email: email })
       if (!user) {
@@ -235,7 +236,7 @@ module.exports = {
         result: true
       }
     },
-    changePassword: async(_, { oldPassword, newPassword }, { req, res }) => {
+    changePassword: async (_, { oldPassword, newPassword }, { req, res }) => {
       console.log('changePassword')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -256,7 +257,7 @@ module.exports = {
         return false
       }
     },
-    uploadToken: async(_, args, context) => {
+    uploadToken: async (_, args, context) => {
       console.log(args.pushToken)
       const user = await Owner.findById(args.id)
       if (!user) {

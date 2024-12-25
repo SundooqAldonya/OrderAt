@@ -214,8 +214,7 @@ function Food(props) {
       // Enforce non-negative discounted price
       const newValue = Math.max(0, parseFloat(event.target.value))
       // variations[index][type] = newValue
-      if (newValue > 0)
-      {
+      if (newValue > 0) {
         variations[index][type] = newValue
         variationSetter([...variations])
       }
@@ -305,7 +304,7 @@ function Food(props) {
     variationSetter([...variations])
   }
 
-  const uploadImageToCloudinary = async() => {
+  const uploadImageToCloudinary = async () => {
     if (imgMenu === '') return imgMenu
     if (props.food && props.food.image === imgMenu) return imgMenu
 
@@ -328,6 +327,7 @@ function Food(props) {
       console.log(e)
     }
   }
+
   const { t } = props
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -412,7 +412,7 @@ function Food(props) {
                 {dataCategories &&
                   dataCategories.restaurant.categories
                     .filter(category => {
-                      return category.title !== 'Default Category' 
+                      return category.title !== 'Default Category'
                     })
                     .map(category => (
                       <MenuItem
@@ -593,32 +593,30 @@ function Food(props) {
                       {errorAddons && t('ErrorDots')}
                       {dataAddons &&
                         dataAddons.restaurant.addons
-                        .filter(
-                          addon => addon.title !== 'Default Addon'
-                        )
-                        .map(addon => (
-                          <Grid
-                            item
-                            xs={12}
-                            md={6}
-                            key={addon._id}
-                            style={{ textAlign: 'left', paddingLeft: 20 }}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  value={addon._id}
-                                  checked={variation[index].addons.includes(
-                                    addon._id
-                                  )}
-                                  onChange={() =>
-                                    onSelectAddon(index, addon._id)
-                                  }
-                                />
-                              }
-                              label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
-                            />
-                          </Grid>
-                        ))}
+                          .filter(addon => addon.title !== 'Default Addon')
+                          .map(addon => (
+                            <Grid
+                              item
+                              xs={12}
+                              md={6}
+                              key={addon._id}
+                              style={{ textAlign: 'left', paddingLeft: 20 }}>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    value={addon._id}
+                                    checked={variation[index].addons.includes(
+                                      addon._id
+                                    )}
+                                    onChange={() =>
+                                      onSelectAddon(index, addon._id)
+                                    }
+                                  />
+                                }
+                                label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
+                              />
+                            </Grid>
+                          ))}
                     </Box>
                     <Button
                       className={classes.button}

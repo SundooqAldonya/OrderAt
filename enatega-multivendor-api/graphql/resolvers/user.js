@@ -17,7 +17,7 @@ const Configuration = require('../../models/configuration')
 
 module.exports = {
   Query: {
-    profile: async(_, args, { req, res }) => {
+    profile: async (_, args, { req, res }) => {
       if (!req.isAuth) {
         throw new Error('Unauthenticated')
       }
@@ -45,27 +45,27 @@ module.exports = {
     // },
     search_users: async (_, args, context) => {
       try {
-        let query = {};
-    
+        let query = {}
+
         if (args.search) {
-          const searchRegex = { $regex: args.search, $options: 'i' };  // Case-insensitive search
+          const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
           query = {
             $or: [
               { name: searchRegex },
               { email: searchRegex },
-              { phone: searchRegex },
+              { phone: searchRegex }
             ]
-          };
+          }
         }
-    
+
         // Fetch the users based on the query
-        const users = await User.find(query); // Fetch users from DB
-    
+        const users = await User.find(query) // Fetch users from DB
+
         // Check if any users were found
         if (!users || users.length === 0) {
-          throw new Error('No users found matching the search criteria.');
+          throw new Error('No users found matching the search criteria.')
         }
-    
+
         // Transform the user data
         return users.map(user => {
           // Map over the user's addresses to get separate latitude and longitude
@@ -74,28 +74,26 @@ module.exports = {
             addresses: user.addresses.map(address => {
               if (address.location && address.location.coordinates) {
                 // Extract longitude and latitude from the coordinates array
-                const [longitude, latitude] = address.location.coordinates;
+                const [longitude, latitude] = address.location.coordinates
                 return {
-                  ...address.toObject(),  // Convert address to plain object
-                  longitude,  // Add longitude
-                  latitude    // Add latitude
-                };
+                  ...address.toObject(), // Convert address to plain object
+                  longitude, // Add longitude
+                  latitude // Add latitude
+                }
               }
-              return address;  // If no coordinates, return the address as is
+              return address // If no coordinates, return the address as is
             })
-          };
-    
-          return transformedUser;  // Return the transformed user object
-        });
-    
-      } catch (err) {
-        console.error('Error occurred while searching users:', err);
-        throw new Error('Error occurred while searching users: ' + err.message);
-      }
-    },    
-    
+          }
 
-    userFavourite: async(_, args, { res, req }) => {
+          return transformedUser // Return the transformed user object
+        })
+      } catch (err) {
+        console.error('Error occurred while searching users:', err)
+        throw new Error('Error occurred while searching users: ' + err.message)
+      }
+    },
+
+    userFavourite: async (_, args, { res, req }) => {
       if (!req.isAuth) {
         throw new Error('Unauthenticated')
       }
@@ -122,13 +120,13 @@ module.exports = {
   },
   Mutation: {
     findOrCreateUser: async (_, { userInput }, context) => {
-      console.log("findOrCreateUser", userInput);
-    
+      console.log('findOrCreateUser', userInput)
+
       try {
         let existingUser = await User.findOne({
-          phone: userInput.phone,
-        });
-    
+          phone: userInput.phone
+        })
+
         if (existingUser) {
           // If user already exists, return the user data along with the addresses
           return {
@@ -137,11 +135,13 @@ module.exports = {
             phone: existingUser.phone,
             governate: existingUser.governate,
             address_free_text: existingUser.address_free_text,
-            addresses: existingUser.addresses,
-          };
+            addresses: existingUser.addresses
+          }
         }
 
-        const address = userInput.addresses?.length ? userInput.addresses[0] : {} ;
+        const address = userInput.addresses?.length
+          ? userInput.addresses[0]
+          : {}
 
         address['location'] = {
           type: 'Point',
@@ -151,26 +151,25 @@ module.exports = {
         delete address['latitude']
         delete address['longitude']
 
-        console.log("address@@@@@@@@@@", address)
+        console.log('address@@@@@@@@@@', address)
 
-    
         // If the user doesn't exist, create a new user
         const newUser = new User({
           name: userInput.name,
           phone: userInput.phone,
           governate: userInput.governate,
           address_free_text: userInput.address_free_text,
-          addresses: address || [],  // Including both main and additional address
-          email: userInput.email || "",
+          addresses: address || [], // Including both main and additional address
+          email: userInput.email || '',
           userType: 'default', // Default user type
-          emailIsVerified: userInput.email ? true : false, 
+          emailIsVerified: userInput.email ? true : false,
           phoneIsVerified: false, // Assuming phone is not verified initially
-          isActive: true, // Default active status
-        });
-    
+          isActive: true // Default active status
+        })
+
         // Save the new user to the database
-        const savedUser = await newUser.save();
-    
+        const savedUser = await newUser.save()
+
         // Return the newly created user with the addresses array (including additional address)
         return {
           _id: savedUser._id,
@@ -178,15 +177,16 @@ module.exports = {
           phone: savedUser.phone,
           governate: savedUser.governate,
           address_free_text: savedUser.address_free_text,
-          addresses: savedUser.addresses,
-        };
-    
+          addresses: savedUser.addresses
+        }
       } catch (err) {
-        console.error("Error in findOrCreateUser:", err);
-        throw new Error("Error occurred while creating or finding user: " + err.message);
+        console.error('Error in findOrCreateUser:', err)
+        throw new Error(
+          'Error occurred while creating or finding user: ' + err.message
+        )
       }
     },
-    sendFormSubmission: async(_, args) => {
+    sendFormSubmission: async (_, args) => {
       console.log('sendFormSubmission', args)
       try {
         const { name, email, message } = args.formSubmissionInput
@@ -220,11 +220,13 @@ module.exports = {
         throw new Error(`Error when sending Email ${err}`)
       }
     },
-    emailExist: async(_, args, { res, req }) => {
+    emailExist: async (_, args, { res, req }) => {
       console.log('CheckingEmail')
       console.log(args)
       try {
-        const emailExist = await User.findOne({ email: args.email })
+        const emailExist = await User.findOne({
+          or: [{ email: args.email }, { phone: args.email }]
+        })
         if (emailExist) {
           return emailExist
         } else {
@@ -235,7 +237,7 @@ module.exports = {
         throw err
       }
     },
-    phoneExist: async(_, args, { res, req }) => {
+    phoneExist: async (_, args, { res, req }) => {
       console.log('CheckingPhone')
       try {
         const phoneExist = await User.findOne({ phone: args.phone })
@@ -249,7 +251,7 @@ module.exports = {
         throw err
       }
     },
-    createUser: async(_, args, context) => {
+    createUser: async (_, args, context) => {
       console.log('createUser', args.userInput)
       try {
         if (args.userInput.appleId) {
@@ -333,7 +335,7 @@ module.exports = {
         throw err
       }
     },
-    Deactivate: async(_, args, { req, res }) => {
+    Deactivate: async (_, args, { req, res }) => {
       const deactivateByEmail = await User.findOne({
         email: args.email
       })
@@ -342,7 +344,7 @@ module.exports = {
       await deactivateByEmail.save()
       return deactivateByEmail
     },
-    updateUser: async(_, args, { req, res }) => {
+    updateUser: async (_, args, { req, res }) => {
       console.log('Update user: ', args.updateUserInput, req.userId)
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')
@@ -374,7 +376,7 @@ module.exports = {
         )
       }
     },
-    updateNotificationStatus: async(_, args, { req, res }) => {
+    updateNotificationStatus: async (_, args, { req, res }) => {
       console.log('updateNotificationStatus')
       try {
         const user = await User.findById(req.userId)
@@ -389,7 +391,7 @@ module.exports = {
         return false
       }
     },
-    addFavourite: async(_, args, { res, req }) => {
+    addFavourite: async (_, args, { res, req }) => {
       console.log('UpdateFavourite')
       try {
         if (!req.isAuth || !args.id) {
@@ -411,7 +413,7 @@ module.exports = {
         throw err
       }
     },
-    sendOtpToEmail: async(_, args, { res, req }) => {
+    sendOtpToEmail: async (_, args, { res, req }) => {
       console.log('Send otp to email: ', args.email, args.otp)
       try {
         if (!args.email) throw new Error('Email is required')
@@ -436,7 +438,7 @@ module.exports = {
         throw err
       }
     },
-    sendOtpToPhoneNumber: async(_, args, { res, req }) => {
+    sendOtpToPhoneNumber: async (_, args, { res, req }) => {
       console.log('Send otp to phone: ', args.phone, args.otp)
       try {
         if (!args.phone) throw new Error('Phone is required')

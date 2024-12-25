@@ -39,6 +39,21 @@ const CUISINES = gql`
   ${getCuisines}
 `
 
+const UPLOAD_FILE = gql`
+  mutation uploadFile($id: ID!, $file: Upload!) {
+    uploadFile(id: $id, file: $file) {
+      message
+    }
+  }
+`
+const UPLOAD_LOGO = gql`
+  mutation uploadRestaurantLogo($id: ID!, $file: Upload!) {
+    uploadRestaurantLogo(id: $id, file: $file) {
+      message
+    }
+  }
+`
+
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -52,10 +67,12 @@ const MenuProps = {
 
 const VendorProfile = () => {
   const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues()
-
+  // console.log('here')
   const { t } = useTranslation()
+  const [uploadFile] = useMutation(UPLOAD_FILE)
+  const [uploadRestaurantLogo] = useMutation(UPLOAD_LOGO)
 
-  const restaurantId = localStorage.getItem('restaurantId')
+  const restaurantId = localStorage.getItem('restaurant_id')
   const [showPassword, setShowPassword] = useState(false)
   const [imgUrl, setImgUrl] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
@@ -70,6 +87,8 @@ const VendorProfile = () => {
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
   const [restaurantCuisines, setRestaurantCuisines] = useState([])
+  const [image, setImage] = useState({})
+  const [logo, setLogo] = useState({})
 
   const onCompleted = data => {
     setNameError(null)
@@ -113,7 +132,6 @@ const VendorProfile = () => {
       variables: { id: restaurantId }
     }
   )
-
   const restaurantImage = data?.restaurant?.image
   const restaurantLogo = data?.restaurant?.logo
 
@@ -126,6 +144,13 @@ const VendorProfile = () => {
   const formRef = useRef(null)
 
   const handleFileSelect = (event, type) => {
+    setImage(event.target.files[0])
+    let result
+    result = filterImage(event)
+    if (result) imageToBase64(result, type)
+  }
+  const handleLogoSelect = (event, type) => {
+    setLogo(event.target.files[0])
     let result
     result = filterImage(event)
     if (result) imageToBase64(result, type)
@@ -150,29 +175,6 @@ const VendorProfile = () => {
       }
     }
     fileReader.readAsDataURL(imgUrl)
-  }
-
-  const uploadImageToCloudinary = async uploadType => {
-    if (!uploadType) return
-
-    const apiUrl = CLOUDINARY_UPLOAD_URL
-    const data = {
-      file: uploadType,
-      upload_preset: CLOUDINARY_FOOD
-    }
-    try {
-      const result = await fetch(apiUrl, {
-        body: JSON.stringify(data),
-        headers: {
-          'content-type': 'application/json'
-        },
-        method: 'POST'
-      })
-      const imageData = await result.json()
-      return imageData.secure_url
-    } catch (e) {
-      console.log(e)
-    }
   }
 
   const onSubmitValidaiton = data => {
@@ -272,6 +274,51 @@ const VendorProfile = () => {
     if (restaurantImage) setImgUrl(restaurantImage)
     if (restaurantLogo) setLogoUrl(restaurantLogo)
   }, [restaurantImage, restaurantLogo])
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (image) {
+      const restaurantImage = await uploadFile({
+        variables: { id: restaurantId, file: image }
+      })
+      console.log('File uploaded:', restaurantImage.data)
+    }
+    if (logo) {
+      const restaurantLogo = await uploadRestaurantLogo({
+        variables: { id: restaurantId, file: logo }
+      })
+      console.log('Logo uploaded:', restaurantLogo.data)
+    }
+    if (onSubmitValidaiton()) {
+      const form = formRef.current
+      const name = form.name.value
+      const address = form.address.value
+      const prefix = form.prefix.value // can we not update this?
+      const deliveryTime = form.deliveryTime.value
+      const minimumOrder = form.minimumOrder.value
+      const username = form.username.value
+      const password = form.password.value
+      const salesTax = form.salesTax.value
+      const shopType = form.shopType.value
+      mutate({
+        variables: {
+          restaurantInput: {
+            _id: restaurantId,
+            name,
+            address,
+            orderPrefix: prefix,
+            deliveryTime: Number(deliveryTime),
+            minimumOrder: Number(minimumOrder),
+            username: username,
+            password: password,
+            salesTax: +salesTax,
+            shopType,
+            cuisines: restaurantCuisines
+          }
+        }
+      })
+    }
+  }
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -519,7 +566,7 @@ const VendorProfile = () => {
                       title={t('Shop Category')}
                       values={Object.values(SHOP_TYPE)}
                       defaultValue={
-                        data.restaurant.shopType || SHOP_TYPE.RESTAURANT
+                        data?.restaurant.shopType || SHOP_TYPE.RESTAURANT
                       }
                       id={'shop-type'}
                       name={'shopType'}
@@ -586,8 +633,8 @@ const VendorProfile = () => {
                         id="file-upload"
                         type="file"
                         accept="image/*"
-                        onChange={event => {
-                          handleFileSelect(event, 'image')
+                        onChange={e => {
+                          handleFileSelect(e, 'image')
                         }}
                       />
                     </Box>
@@ -613,8 +660,8 @@ const VendorProfile = () => {
                         id="logo-upload"
                         type="file"
                         accept="image/*"
-                        onChange={event => {
-                          handleFileSelect(event, 'logo')
+                        onChange={e => {
+                          handleLogoSelect(e, 'logo')
                         }}
                       />
                     </Box>
@@ -625,47 +672,7 @@ const VendorProfile = () => {
                   <Button
                     className={globalClasses.button}
                     disabled={loading}
-                    onClick={async e => {
-                      e.preventDefault()
-                      if (onSubmitValidaiton()) {
-                        const imgUpload = await uploadImageToCloudinary(imgUrl)
-                        const logoUpload = await uploadImageToCloudinary(
-                          logoUrl
-                        )
-                        const form = formRef.current
-                        const name = form.name.value
-                        const address = form.address.value
-                        const prefix = form.prefix.value // can we not update this?
-                        const deliveryTime = form.deliveryTime.value
-                        const minimumOrder = form.minimumOrder.value
-                        const username = form.username.value
-                        const password = form.password.value
-                        const salesTax = form.salesTax.value
-                        const shopType = form.shopType.value
-                        mutate({
-                          variables: {
-                            restaurantInput: {
-                              _id: restaurantId,
-                              name,
-                              address,
-                              image:
-                                imgUpload ||
-                                data.restaurant.image ||
-                                'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp',
-                              logo: logoUpload || defaultLogo,
-                              orderPrefix: prefix,
-                              deliveryTime: Number(deliveryTime),
-                              minimumOrder: Number(minimumOrder),
-                              username: username,
-                              password: password,
-                              salesTax: +salesTax,
-                              shopType,
-                              cuisines: restaurantCuisines
-                            }
-                          }
-                        })
-                      }
-                    }}>
+                    onClick={handleSubmit}>
                     {t('Save')}
                   </Button>
                 </Box>

@@ -32,16 +32,16 @@ const restaurantSchema = new Schema(
       default: 'Default Address'
     },
     categories: {
-      type: [categorySchema],
-      default: defaultCategoryFood
+      type: [categorySchema]
+      // default: defaultCategoryFood
     },
     addons: {
-      type: [addonSchema],
-      default: defaultAddons
+      type: [addonSchema]
+      // default: defaultAddons
     },
     options: {
-      type: [optionSchema],
-      default: defaultOptions
+      type: [optionSchema]
+      // default: defaultOptions
     },
     orderPrefix: {
       type: String
@@ -146,5 +146,6 @@ restaurantSchema.post('save', async doc => {
     tags
   })
 })
+
 restaurantSchema.index({ deliveryBounds: '2dsphere' })
 module.exports = mongoose.model('Restaurant', restaurantSchema)

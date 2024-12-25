@@ -30,8 +30,8 @@ const LOGIN = gql`
 const Login = props => {
   const [showPassword, setShowPassword] = useState(false)
   const [stateData, setStateData] = useState({
-    email: 'admin@gmail.com',
-    password: '123123',
+    email: '',
+    password: '',
     emailError: null,
     passwordError: null,
     error: null,
@@ -118,7 +118,8 @@ const Login = props => {
   }
   const [mutate] = useMutation(LOGIN, { onError, onCompleted })
 
-  const loginFunc = async() => {
+  const loginFunc = e => {
+    e.preventDefault()
     if (validate()) {
       mutate({ variables: { ...stateData } })
     }
@@ -182,7 +183,7 @@ const Login = props => {
             </Box>
 
             <Box className={classes.form}>
-              <form ref={formRef}>
+              <form ref={formRef} onSubmit={loginFunc}>
                 <Box>
                   <Typography className={classes.labelText}>
                     {t('Email')}
@@ -281,8 +282,10 @@ const Login = props => {
                 </Box>
                 <Box>
                   <Button
+                    type="submit"
                     className={globalClasses.button100}
-                    onClick={loginFunc}>
+                    // onClick={loginFunc}
+                  >
                     {t('Login')}
                   </Button>
                 </Box>

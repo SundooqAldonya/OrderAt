@@ -31,6 +31,7 @@ const demo = require('./demo')
 const rootResolver = {
   Query: {
     ...dashboardResolver.Query,
+    ...categoryResolver.Query,
     ...orderResolver.Query,
     ...configurationResolver.Query,
     ...riderResolver.Query,

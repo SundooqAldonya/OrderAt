@@ -13,6 +13,10 @@ const categorySchema = new Schema(
       type: Boolean,
       default: true
     },
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant'
+    },
     foods: {
       type: [foodSchema],
       default: []
@@ -21,5 +25,6 @@ const categorySchema = new Schema(
   { timestamps: true }
 )
 
-const myModule = (module.exports = mongoose.model('Category', categorySchema))
-myModule.categorySchema = categorySchema
+module.exports = mongoose.model('Category', categorySchema)
+// const myModule = (module.exports = mongoose.model('Category', categorySchema))
+// myModule.categorySchema = categorySchema

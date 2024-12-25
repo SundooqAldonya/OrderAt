@@ -29,10 +29,10 @@ const Restaurants = props => {
   const [error, setError] = useState(null)
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const globalClasses = useGlobalStyles()
-
+  console.log('restaurants here list')
   const [mutate, { loading }] = useMutation(DELETE_RESTAURANT, {
-    onError: (error)=> {
-      setError(error.graphQLErrors[0].message || 'Something went wrong') 
+    onError: error => {
+      setError(error.graphQLErrors[0].message || 'Something went wrong')
     }
   })
   const {
@@ -72,7 +72,7 @@ const Restaurants = props => {
               }}
               onClick={() => {
                 localStorage.setItem('restaurant_id', row._id)
-                props.history.push('/admin/dashboard')
+                props.history.push(`/admin/dashboard`)
               }}
             />
           )}
@@ -153,24 +153,34 @@ const Restaurants = props => {
     }
   ]
 
-  const regex = useMemo(()=>(
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
-  ),[searchQuery])
+  const regex = useMemo(
+    () =>
+      searchQuery.length > 2
+        ? new RegExp(searchQuery.toLowerCase(), 'g')
+        : null,
+    [searchQuery]
+  )
 
-  const filtered = useMemo(()=>(
-    searchQuery.length < 3
-      ? data && data.restaurants
-      : data &&
-        data.restaurants.filter(restaurant => {
-          return (
-            (restaurant.name && restaurant.name.toLowerCase().search(regex) > -1) ||
-            (restaurant.orderPrefix && restaurant.orderPrefix.toLowerCase().search(regex) > -1) ||
-            (restaurant.owner && restaurant.owner.email.toLowerCase().search(regex) > -1) ||
-            (restaurant.address && restaurant.address.toLowerCase().search(regex) > -1)
-          )
-        })
-  ), [searchQuery, data, regex])
-    
+  const filtered = useMemo(
+    () =>
+      searchQuery.length < 3
+        ? data && data.restaurants
+        : data &&
+          data.restaurants.filter(restaurant => {
+            return (
+              (restaurant.name &&
+                restaurant.name.toLowerCase().search(regex) > -1) ||
+              (restaurant.orderPrefix &&
+                restaurant.orderPrefix.toLowerCase().search(regex) > -1) ||
+              (restaurant.owner &&
+                restaurant.owner.email.toLowerCase().search(regex) > -1) ||
+              (restaurant.address &&
+                restaurant.address.toLowerCase().search(regex) > -1)
+            )
+          }),
+    [searchQuery, data, regex]
+  )
+
   return (
     <>
       <Header />
@@ -200,7 +210,9 @@ const Restaurants = props => {
             sortFunction={customSort}
             defaultSortField="name"
             onRowClicked={row => {
+              console.log({ rowID: row._id })
               localStorage.setItem('restaurantId', row._id)
+              localStorage.setItem('restaurant_id', row._id)
               localStorage.setItem('restaurantImage', row.image)
               localStorage.setItem('restaurantName', row.name)
               props.history.push(`/admin/dashboard/${row.slug}`)
@@ -212,7 +224,7 @@ const Restaurants = props => {
         <Snackbar
           open={error}
           autoHideDuration={5000}
-          onClose={()=>setError(null)}
+          onClose={() => setError(null)}
           message={error}
         />
       </Container>

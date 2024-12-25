@@ -80,7 +80,7 @@ const Cuisines = props => {
               row.image ||
               'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
             }
-            alt=''
+            alt=""
           />
         </>
       )
@@ -102,7 +102,7 @@ const Cuisines = props => {
     },
     {
       name: t('Action'),
-      cell: row => <>{actionButtons(row)}</>
+      cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
     }
   ]
   const regex =
@@ -115,62 +115,6 @@ const Cuisines = props => {
           return cuisine.name.toLowerCase().search(regex) > -1
         })
 
-  const actionButtons = row => {
-    const [anchorEl, setAnchorEl] = React.useState(null)
-    const open = Boolean(anchorEl)
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
-    const handleClose = () => {
-      setAnchorEl(null)
-    }
-    return (
-      <>
-        <div>
-          <IconButton
-            aria-label="more"
-            id="long-button"
-            aria-haspopup="true"
-            onClick={handleClick}>
-            <MoreVertIcon fontSize="small" />
-          </IconButton>
-          <Paper>
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                'aria-labelledby': 'long-button'
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}>
-              <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  toggleModal(row)
-                }}
-                style={{ height: 25 }}>
-                <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
-                </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  mutateDelete({ variables: { id: row._id } })
-                }}
-                style={{ height: 25 }}>
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" style={{ color: 'red' }} />
-                </ListItemIcon>
-                <Typography color="red">{t('Delete')}</Typography>
-              </MenuItem>
-            </Menu>
-          </Paper>
-        </div>
-      </>
-    )
-  }
   const globalClasses = useGlobalStyles()
   return (
     <>
@@ -227,6 +171,63 @@ const Cuisines = props => {
           <CuisineComponent cuisine={cuisine} />
         </Modal>
       </Container>
+    </>
+  )
+}
+
+const ActionButtons = (row, toggleModal, t, mutateDelete) => {
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  return (
+    <>
+      <div>
+        <IconButton
+          aria-label="more"
+          id="long-button"
+          aria-haspopup="true"
+          onClick={handleClick}>
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+        <Paper>
+          <Menu
+            id="long-menu"
+            MenuListProps={{
+              'aria-labelledby': 'long-button'
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}>
+            <MenuItem
+              onClick={e => {
+                e.preventDefault()
+                toggleModal(row)
+              }}
+              style={{ height: 25 }}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" style={{ color: 'green' }} />
+              </ListItemIcon>
+              <Typography color="green">{t('Edit')}</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={e => {
+                e.preventDefault()
+                mutateDelete({ variables: { id: row._id } })
+              }}
+              style={{ height: 25 }}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+              </ListItemIcon>
+              <Typography color="red">{t('Delete')}</Typography>
+            </MenuItem>
+          </Menu>
+        </Paper>
+      </div>
     </>
   )
 }

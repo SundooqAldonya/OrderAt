@@ -14,7 +14,7 @@ const typeDefs = gql`
     selected: Boolean
     isActive: Boolean
     createdAt: String
-    updatedAt: String 
+    updatedAt: String
   }
 
   type OrderAddress {
@@ -22,7 +22,7 @@ const typeDefs = gql`
     deliveryAddress: String!
     details: String
     label: String!
-    id: String !
+    id: String!
   }
 
   type Item {
@@ -46,6 +46,13 @@ const typeDefs = gql`
     foods: [Food!]
     createdAt: String!
     updatedAt: String!
+  }
+
+  type Categories {
+    _id: ID!
+    title: String!
+    createdAt: String
+    updatedAt: String
   }
 
   type ReviewData {
@@ -139,6 +146,7 @@ const typeDefs = gql`
     reviewAverage: Float
     restaurantUrl: String
     phone: String
+    createdAt: String
   }
 
   type OpeningTimes {
@@ -804,7 +812,7 @@ const typeDefs = gql`
   }
 
   input PointInput {
-    type: String!  
+    type: String!
     coordinates: [String!]
   }
 
@@ -1099,7 +1107,7 @@ const typeDefs = gql`
   type Query {
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
-    categories: [Category!]!
+    categories: [Categories!]
     foods: [Food!]!
     orders(offset: Int): [Order!]!
     undeliveredOrders(offset: Int): [Order!]!
@@ -1223,10 +1231,29 @@ const typeDefs = gql`
     lastOrderCreds: DemoCredentails
   }
 
+  scalar Upload
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
+  type Message {
+    message: String!
+  }
+
   type Mutation {
-    CheckOutPlaceOrder(userId: ID!, addressId: ID!, resId: String! , orderAmount: Float!): Order!
+    CheckOutPlaceOrder(
+      userId: ID!
+      addressId: ID!
+      resId: String!
+      orderAmount: Float!
+    ): Order!
     createWithdrawRequest(amount: Float!): WithdrawRequest!
     updateWithdrawReqStatus(id: ID!, status: String!): UpdateWithdrawResponse!
+    uploadFile(id: ID!, file: Upload!): Message!
+    uploadRestaurantLogo(id: ID!, file: Upload!): Message!
     createEarning(earningsInput: EarningsInput): Earnings!
     sendOtpToEmail(email: String!, otp: String!): Otp!
     sendOtpToPhoneNumber(phone: String!, otp: String!): Otp!

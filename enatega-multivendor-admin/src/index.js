@@ -21,6 +21,7 @@ import App from './app'
 import { RestProvider } from './context/Restaurant'
 import { ThemeProvider, StyledEngineProvider } from '@mui/material'
 import theme from './utils/theme'
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues()
@@ -74,8 +75,15 @@ function Main() {
     return kind === 'OperationDefinition' && operation === 'subscription'
   }, wsLink)
 
+  const uploadLink = createUploadLink({
+    uri: `${SERVER_URL}/graphql`
+  })
+
   const client = new ApolloClient({
-    link: concat(ApolloLink.from([terminatingLink, requestLink]), httpLink),
+    link: concat(
+      ApolloLink.from([uploadLink, terminatingLink, requestLink]),
+      httpLink
+    ),
     cache,
     resolvers: {},
     connectToDevTools: true

@@ -6,7 +6,7 @@ const { transformRestaurant } = require('./merge')
 
 module.exports = {
   Mutation: {
-    createFood: async(_, args, context) => {
+    createFood: async (_, args, context) => {
       console.log('createFood')
       const restId = args.foodInput.restaurant
       const categoryId = args.foodInput.category
@@ -14,12 +14,15 @@ module.exports = {
         return new Variation(variation)
       })
 
-      const food = await new Food({
+      const food = new Food({
         title: args.foodInput.title,
         variations: variations,
         description: args.foodInput.description,
-        image: args.foodInput.image
+        image: args.foodInput.image,
+        restaurant: args.restaurant_id
       })
+
+      await food.save()
 
       try {
         await Restaurant.updateOne(
@@ -38,7 +41,7 @@ module.exports = {
         throw err
       }
     },
-    editFood: async(_, args, context) => {
+    editFood: async (_, args, context) => {
       // console.log('args: ', args)
       const foodId = args.foodInput._id
       const restId = args.foodInput.restaurant
@@ -100,7 +103,42 @@ module.exports = {
         throw err
       }
     },
-    deleteFood: async(_, { id, restaurant, categoryId }, context) => {
+    // async uploadFoodImage(_, { id, file }) {
+    //   console.log({ file })
+    //   try {
+    //     const {
+    //       createReadStream,
+    //       filename,
+    //       mimetype,
+    //       encoding
+    //     } = await file.file
+    //     const stream = createReadStream()
+
+    //     const image = await cloudinary.uploader.upload_stream(
+    //       {
+    //         resource_type: 'auto'
+    //       },
+    //       async (error, result) => {
+    //         if (error) {
+    //           throw new Error('Upload failed')
+    //         }
+    //         console.log({ image: result.secure_url })
+    //         const food = await Food.findById(id)
+    //         console.log({ food })
+    //         food.image = result.secure_url
+    //         await food.save()
+    //         return result.secure_url // Return the URL of the uploaded image
+    //       }
+    //     )
+
+    //     stream.pipe(image)
+    //     // console.log({ image: image })
+    //     return { message: 'uploaded' }
+    //   } catch (err) {
+    //     throw err
+    //   }
+    // },
+    deleteFood: async (_, { id, restaurant, categoryId }, context) => {
       console.log('deleteFood')
       try {
         const restaurants = await Restaurant.findOne({ _id: restaurant })

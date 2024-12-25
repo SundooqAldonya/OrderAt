@@ -37,7 +37,7 @@ const DELETE_ZONE = gql`
 
 const Zones = props => {
   const { t } = props
-  const {PAID_VERSION} = ConfigurableValues()
+  const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
   const [zones, setZone] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -85,79 +85,13 @@ const Zones = props => {
     },
     {
       name: t('Action'),
-      cell: row => <>{actionButtons(row)}</>
+      cell: row => (
+        <>
+          {ActionButtons(row, PAID_VERSION, toggleModal, setIsOpen, t, mutate)}
+        </>
+      )
     }
   ]
-  const actionButtons = row => {
-    const [anchorEl, setAnchorEl] = React.useState(null)
-    const open = Boolean(anchorEl)
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
-    const handleClose = () => {
-      setAnchorEl(null)
-    }
-    return (
-      <>
-        <div>
-          <IconButton
-            aria-label="more"
-            id="long-button"
-            aria-haspopup="true"
-            onClick={handleClick}>
-            <MoreVertIcon fontSize="small" />
-          </IconButton>
-          <Paper>
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                'aria-labelledby': 'long-button'
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}>
-              <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  if(PAID_VERSION)
-                  toggleModal(row)
-                else{
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
-                }}
-                style={{ height: 25 }}>
-                <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
-                </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  if(PAID_VERSION)
-                  mutate({ variables: { id: row._id } })
-                  else{
-                    setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 2000)
-                }
-                }}
-                style={{ height: 25 }}>
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" style={{ color: 'red' }} />
-                </ListItemIcon>
-                <Typography color="red">{t('Delete')}</Typography>
-              </MenuItem>
-            </Menu>
-          </Paper>
-        </div>
-      </>
-    )
-  }
 
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
@@ -220,6 +154,82 @@ const Zones = props => {
           <ZoneComponent zone={zones} onClose={closeEditModal} />
         </Modal>
       </Container>
+    </>
+  )
+}
+
+const ActionButtons = (
+  row,
+  PAID_VERSION,
+  toggleModal,
+  setIsOpen,
+  t,
+  mutate
+) => {
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  return (
+    <>
+      <div>
+        <IconButton
+          aria-label="more"
+          id="long-button"
+          aria-haspopup="true"
+          onClick={handleClick}>
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+        <Paper>
+          <Menu
+            id="long-menu"
+            MenuListProps={{
+              'aria-labelledby': 'long-button'
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}>
+            <MenuItem
+              onClick={e => {
+                e.preventDefault()
+                if (PAID_VERSION) toggleModal(row)
+                else {
+                  setIsOpen(true)
+                  setTimeout(() => {
+                    setIsOpen(false)
+                  }, 5000)
+                }
+              }}
+              style={{ height: 25 }}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" style={{ color: 'green' }} />
+              </ListItemIcon>
+              <Typography color="green">{t('Edit')}</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={e => {
+                e.preventDefault()
+                if (PAID_VERSION) mutate({ variables: { id: row._id } })
+                else {
+                  setIsOpen(true)
+                  setTimeout(() => {
+                    setIsOpen(false)
+                  }, 2000)
+                }
+              }}
+              style={{ height: 25 }}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+              </ListItemIcon>
+              <Typography color="red">{t('Delete')}</Typography>
+            </MenuItem>
+          </Menu>
+        </Paper>
+      </div>
     </>
   )
 }
