@@ -17,13 +17,17 @@ module.exports = {
         if (!user) {
           throw new Error('User not found')
         }
+
+        console.log(typeof(addressInput.longitude) , 'hello-1')
+        console.log(typeof(addressInput.latitude) , 'hello-2')
+
         const address = new Address({
           ...addressInput,
           location: new Point({
             type: 'Point',
             coordinates: [
-              Number(addressInput.longitude),
-              Number(addressInput.latitude)
+              addressInput.longitude,
+              addressInput.latitude
             ]
           })
         })
@@ -43,6 +47,10 @@ module.exports = {
         if (!user) {
           throw new Error('User not found')
         }
+
+        console.log(typeof(addressInput.longitude) , 'hello-1')
+        console.log(typeof(addressInput.latitude) , 'hello-2')
+
         const location = new Point({
           type: 'Point',
           coordinates: [

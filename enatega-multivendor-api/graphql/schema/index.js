@@ -915,12 +915,12 @@ const typeDefs = gql`
   }
   input AddressInput {
     _id: String
-    longitude: Float
-    latitude: Float
+    longitude: String
+    latitude: String
     deliveryAddress: String!
     details: String
     label: String!
-    selected: Boolean!
+    selected: Boolean
   }
   input CartFoodInput {
     _id: String
