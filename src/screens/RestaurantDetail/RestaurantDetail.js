@@ -34,8 +34,12 @@ import { useRestaurant } from "../../hooks";
 import { DAYS } from "../../utils/constantValues";
 import useStyles from "./styles";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { useTranslation } from "react-i18next";
+import { detectLanguageDir } from "../../helpers";
 
 function RestaurantDetail() {
+  const { i18n } = useTranslation();
+  const dir = detectLanguageDir(i18n.language);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down("lg"));
   const classes = useStyles();
@@ -229,7 +233,7 @@ function RestaurantDetail() {
   }
 
   return (
-    <>
+    <div dir={dir}>
       <FlashMessage
         open={Boolean(mainError.type)}
         severity={mainError.type}
@@ -240,7 +244,7 @@ function RestaurantDetail() {
         style={{
           backgroundColor: theme.palette.grey[200],
           scrollBehavior: "smooth",
-          marginTop:'20px',
+          marginTop: "20px",
         }}
       >
         <Grid container>
@@ -281,7 +285,7 @@ function RestaurantDetail() {
                       color: theme.palette.common.white,
                       borderRadius: 20,
                       padding: 2,
-                      marginTop:5,
+                      marginTop: 5,
                     }}
                   />
                 </Button>
@@ -314,7 +318,11 @@ function RestaurantDetail() {
               >
                 <div className={classes.tabContainer}>
                   <Container
-                    style={{ marginLeft: "0px", justifyContent: "center" }}
+                    style={{
+                      marginLeft: "0px",
+                      justifyContent: "center",
+                      marginInline: "auto",
+                    }}
                   >
                     <Scrollspy
                       offset={-220}
@@ -396,7 +404,7 @@ function RestaurantDetail() {
           <MRestaurantCart showMessage={showMessage} />
         )}
       </div>
-    </>
+    </div>
   );
 }
 

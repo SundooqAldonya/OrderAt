@@ -4,23 +4,24 @@ import Card from "../Card/Card";
 import Title from "../Title/Title";
 import useStyles from "./styles";
 import { ReactComponent as EmptyIcon } from "../../../assets/images/empty-search.svg";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { detectLanguageDir } from "../../../helpers";
 
 function RestaurantGrid(props) {
-  const { t  } = useTranslation();
+  const { i18n, t } = useTranslation();
   const theme = useTheme();
   const extraSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles(extraSmall);
-
+  const dir = detectLanguageDir(i18n.language);
   return (
     <Box className={classes.mainContainer}>
       <Grid container style={{ paddingTop: "60px", paddingBottom: "2rem" }}>
         <Grid item sm={1} />
         <Grid item xs={12} sm={10}>
           <Box className={classes.divider} />
-          <Title title= {t('allRestaurant')}/>
+          <Title title={t("allRestaurant")} />
           <Box mt={5} />
-          <Grid container rowSpacing={8} columnSpacing={{ xs: 0, md: 4 }} >
+          <Grid container rowSpacing={8} columnSpacing={{ xs: 0, md: 4 }}>
             {props.restaurants.length < 1 ? (
               <Grid container item xs={12} justifyContent="center">
                 <Box display="flex" flexDirection="column" alignItems="center">
