@@ -20,9 +20,11 @@ import useNotification from '../../ui/hooks/useNotification'
 import { PRODUCT_URL, ABOUT_URL } from '../../utilities'
 import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
+import { useNavigation } from '@react-navigation/native'
 
 export default function SideBar() {
   const { t } = useTranslation()
+  const navigator = useNavigation()
   const notificationRef = useRef(true)
   const openSettingsRef = useRef(false)
   const { logout, data, toggleSwitch, isAvailable } = useAccount()
@@ -49,7 +51,11 @@ export default function SideBar() {
           const permissionStatus = await getPermission()
           if (permissionStatus.granted) {
             setNotificationStatus(true)
-            const token = (await getExpoPushToken({ projectId: Constants.expoConfig.extra.eas.projectId })).data
+            const token = (
+              await getExpoPushToken({
+                projectId: Constants.expoConfig.extra.eas.projectId
+              })
+            ).data
             sendTokenToBackend({ variables: { token, isEnabled: true } })
           }
         }
@@ -72,7 +78,11 @@ export default function SideBar() {
             openSettingsRef.current
           ) {
             setNotificationStatus(true)
-            const token = (await getExpoPushToken({ projectId: Constants.expoConfig.extra.eas.projectId })).data
+            const token = (
+              await getExpoPushToken({
+                projectId: Constants.expoConfig.extra.eas.projectId
+              })
+            ).data
             sendTokenToBackend({ variables: { token, isEnabled: true } })
           }
         }
@@ -91,13 +101,21 @@ export default function SideBar() {
       const permissionStatus = await getPermission()
       if (permissionStatus.granted) {
         setNotificationStatus(true)
-        const token = (await getExpoPushToken({ projectId: Constants.expoConfig.extra.eas.projectId })).data
+        const token = (
+          await getExpoPushToken({
+            projectId: Constants.expoConfig.extra.eas.projectId
+          })
+        ).data
         sendTokenToBackend({ variables: { token, isEnabled: true } })
       } else if (permissionStatus.canAskAgain) {
         const result = await requestPermission()
         if (result.granted) {
           setNotificationStatus(true)
-          const token = (await getExpoPushToken({ projectId: Constants.expoConfig.extra.eas.projectId })).data
+          const token = (
+            await getExpoPushToken({
+              projectId: Constants.expoConfig.extra.eas.projectId
+            })
+          ).data
           sendTokenToBackend({ variables: { token, isEnabled: true } })
         }
       } else {
@@ -114,7 +132,10 @@ export default function SideBar() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ImageBackground source={require('../../assets/restBackground.png')} resizeMode="cover" style={styles.image}>
+      <ImageBackground
+        source={require('../../assets/restBackground.png')}
+        resizeMode="cover"
+        style={styles.image}>
         <View style={styles.topContainer}>
           <View style={styles.profileContainer}>
             <View style={styles.avatar}>
@@ -185,6 +206,22 @@ export default function SideBar() {
           <TouchableOpacity
             style={styles.logout}
             activeOpacity={0.8}
+            onPress={() => navigator.navigate('SelectLanguage')}>
+            <View style={styles.icon}>
+              <Icon
+                type="font-awesome"
+                color="white"
+                name="language"
+                size={26}
+              />
+            </View>
+            <TextDefault H4 bolder style={styles.text}>
+              {t('language')}
+            </TextDefault>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.logout}
+            activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(PRODUCT_URL).then(() => {
                 Linking.openURL(PRODUCT_URL)
@@ -209,13 +246,13 @@ export default function SideBar() {
               Linking.canOpenURL(
                 'https://orderat.ai/#/privacy'
                 // 'https://enatega.com/privacy-policy/'
-              ).then(() => {
-                Linking.openURL(
-                  'https://orderat.ai/#/privacy'
-                )
-              }).catch(() =>{
-                Linking.openURL('https://orderat.ai')
-              })
+              )
+                .then(() => {
+                  Linking.openURL('https://orderat.ai/#/privacy')
+                })
+                .catch(() => {
+                  Linking.openURL('https://orderat.ai')
+                })
             }>
             <View style={styles.icon}>
               <Icon type="font-awesome" color="white" name="lock" size={26} />
@@ -245,7 +282,6 @@ export default function SideBar() {
               {t('aboutUs')}
             </TextDefault>
           </TouchableOpacity>
-
         </View>
         <View style={styles.lowerContainer}>
           <TouchableOpacity style={styles.logout} onPress={logout}>

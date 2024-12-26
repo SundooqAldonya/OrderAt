@@ -24,8 +24,24 @@ const Styles = {
     borderTopLeftRadius: 30
   },
   scrollView: {
-    backgroundColor: 'transparent',
-    marginBottom: Platform === 'ios' ? height * 0.1 : height * 0.1
+    backgroundColor: 'transparent'
+    // marginBottom: Platform === 'ios' ? height * 0.1 : height * 0.1
+  },
+  hamburger: {
+    // backgroundColor: 'red',
+    width: 30,
+    height: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    top: 80,
+    left: 30
+  },
+  line: {
+    height: 2,
+    backgroundColor: '#000',
+    width: '100%'
   }
 }
 

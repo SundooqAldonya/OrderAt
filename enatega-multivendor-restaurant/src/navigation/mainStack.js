@@ -15,7 +15,7 @@ import { orders } from '../apollo'
 import { useNavigation } from '@react-navigation/native'
 import { SelectLanguage } from '../screens/Setting'
 import moment from 'moment'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { MAX_TIME } from '../utilities'
 import RegisterUser from '../screens/Login/RegisterUser'
 import Checkout from '../screens/Login/Checkout'
@@ -31,7 +31,7 @@ const Tabs = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 export default function MainStack() {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const client = useApolloClient()
   const navigation = useNavigation()
   const lastNotificationResponse = Notifications.useLastNotificationResponse()
@@ -103,18 +103,20 @@ function DrawerNavigator() {
         }
       }}
       drawerContent={props => <SideBar {...props} />}>
-      <Drawer.Screen name="ProfileDrawer" component={TabNavigator} />
+      {/* <Drawer.Screen name="ProfileDrawer" component={TabNavigator} /> */}
+      <Drawer.Screen name="ProfileDrawer" component={StackNavigator} />
     </Drawer.Navigator>
   )
 }
+
 function TabNavigator() {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <Tabs.Navigator
       initialRouteName={t('titleHome')}
       screenOptions={({ route }) => tabIcon(route)}
       tabBarLabelStyle={{
-        color: colors.green 
+        color: colors.green
       }}>
       <Tabs.Screen
         name={t('titleProfile')}
@@ -122,17 +124,20 @@ function TabNavigator() {
         listeners={({ navigation }) => ({
           tabPress: e => {
             e.preventDefault()
-
             navigation.openDrawer()
           }
         })}
       />
       <Tabs.Screen name={t('titleHome')} component={StackNavigator} />
       {/* {Platform.OS === 'ios' ? null :  */}
-      <Tabs.Screen name='Language' options={{
+      {/* <Tabs.Screen
+        name="Language"
+        options={{
           tabBarLabel: t('language')
-        }} component={SelectLanguage} />
-        {/* } */}
+        }}
+        component={SelectLanguage}
+      /> */}
+      {/* } */}
     </Tabs.Navigator>
   )
 }
@@ -143,6 +148,7 @@ function StackNavigator() {
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
       <Stack.Screen name="RegisterUser" component={RegisterUser} />
       <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
     </Stack.Navigator>
   )
 }
