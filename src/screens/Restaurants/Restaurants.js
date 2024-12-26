@@ -30,6 +30,8 @@ import UserContext from "../../context/User";
 import useStyles from "./styles";
 import DetailedOrderCard from "../../components/Orders/DetailedOrderCard/DetailedOrderCard";
 import { ACTIVE_STATUS } from "../../utils/constantValues";
+import { detectLanguageDir } from "../../helpers";
+import { useTranslation } from "react-i18next";
 
 const RESTAURANTS = gql`
   ${restaurantList}
@@ -37,6 +39,8 @@ const RESTAURANTS = gql`
 
 function Restaurants() {
   const navigate = useNavigate();
+  const { i18n, t } = useTranslation();
+
   const { location } = useLocationContext();
   const [message, setMessage] = useState({});
   const [search, setSearch] = useState("");
@@ -54,6 +58,7 @@ function Restaurants() {
   const activeOrders = orders.filter((o) =>
     ACTIVE_STATUS.includes(o.orderStatus)
   );
+  const dir = detectLanguageDir(i18n.language);
   const navigateClearCart = useCallback(async () => {
     await clearCart();
     navigate(`/restaurant/${navigateData.slug}`, { state: navigateData });
@@ -148,75 +153,79 @@ function Restaurants() {
     return data;
   };
   return (
-    <Grid container>
-      <FlashMessage
-        open={Boolean(message.type)}
-        severity={message.type}
-        alertMessage={message.message}
-        handleClose={toggleSnackbar}
-      />
-      {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
-      <Subheader />
-      <Box className={classes.searchWrapper}>
-        <Grid container item>
-          <SearchContainer
-            loading={loading}
-            isHome={false}
-            search={search}
-            setSearch={setSearch}
-          />
-        </Grid>
-      </Box>
-      {activeOrders.length > 0 ? (
-        <Box
-          style={{
-            backgroundColor: theme.palette.button.lightest,
-            padding: mobile ? "10px" : "80px 90px",
-            width: "100%",
-          }}
-        >
-          <Grid container spacing={2}>
-            {activeOrders.map((item) => (
-              <Grid key={item.id} item sm={12} xl={6} lg={6}>
-                {mobile ? null : <DetailedOrderCard key={item._id} {...item} />}
-              </Grid>
-            ))}
+    <div dir={dir}>
+      <Grid container>
+        <FlashMessage
+          open={Boolean(message.type)}
+          severity={message.type}
+          alertMessage={message.message}
+          handleClose={toggleSnackbar}
+        />
+        {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
+        <Subheader />
+        <Box className={classes.searchWrapper}>
+          <Grid container item>
+            <SearchContainer
+              loading={loading}
+              isHome={false}
+              search={search}
+              setSearch={setSearch}
+            />
           </Grid>
         </Box>
-      ) : null}
-      {restaurantSections.length < 1 ? null : (
-        <Box className={classes.topRestContainer}>
-          <Box className={classes.topRestWrapper}>
-            <Grid container item>
-              <RestaurantRow
-                checkCart={checkCart}
-                restaurantSections={restaurantSections}
-                showMessage={showMessage}
-              />
+        {activeOrders.length > 0 ? (
+          <Box
+            style={{
+              backgroundColor: theme.palette.button.lightest,
+              padding: mobile ? "10px" : "80px 90px",
+              width: "100%",
+            }}
+          >
+            <Grid container spacing={2}>
+              {activeOrders.map((item) => (
+                <Grid key={item.id} item sm={12} xl={6} lg={6}>
+                  {mobile ? null : (
+                    <DetailedOrderCard key={item._id} {...item} />
+                  )}
+                </Grid>
+              ))}
             </Grid>
           </Box>
-        </Box>
-      )}
+        ) : null}
+        {restaurantSections.length < 1 ? null : (
+          <Box className={classes.topRestContainer}>
+            <Box className={classes.topRestWrapper}>
+              <Grid container item>
+                <RestaurantRow
+                  checkCart={checkCart}
+                  restaurantSections={restaurantSections}
+                  showMessage={showMessage}
+                />
+              </Grid>
+            </Box>
+          </Box>
+        )}
 
-      <Box style={{ width: "100%", minHeight: "100vh" }}>
-        <RestaurantGrid
-          checkCart={checkCart}
-          restaurants={search ? searchRestaurants(search) : restaurants}
-          showMessage={showMessage}
-          search={search}
-        />
-      </Box>
-      <Box className={classes.footerContainer}>
-        <Box className={classes.footerWrapper}>
-          <Footer />
+        <Box style={{ width: "100%", minHeight: "100vh" }}>
+          <RestaurantGrid
+            checkCart={checkCart}
+            restaurants={search ? searchRestaurants(search) : restaurants}
+            showMessage={showMessage}
+            search={search}
+          />
         </Box>
-      </Box>
-      <ClearCart
-        isVisible={clearModal}
-        toggleModal={toggleClearCart}
-        action={navigateClearCart}
-      />
-    </Grid>
+        <Box className={classes.footerContainer}>
+          <Box className={classes.footerWrapper}>
+            <Footer />
+          </Box>
+        </Box>
+        <ClearCart
+          isVisible={clearModal}
+          toggleModal={toggleClearCart}
+          action={navigateClearCart}
+        />
+      </Grid>
+    </div>
   );
 }
 

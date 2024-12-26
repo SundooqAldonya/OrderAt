@@ -384,7 +384,7 @@ function SearchContainer({
                       xs={12}
                       md={3}
                       style={{
-                        paddingLeft: "10px",
+                        paddingInlineStart: "10px",
                         textAlign: "center",
                         marginBottom: mobile ? 20 : 0,
                       }}
@@ -580,7 +580,7 @@ function SearchContainer({
                   item
                   xs={12}
                   sm={3}
-                  style={{ paddingLeft: "10px", textAlign: "center" }}
+                  style={{ paddingInlineStart: "10px", textAlign: "center" }}
                 >
                   <Button
                     variant="contained"

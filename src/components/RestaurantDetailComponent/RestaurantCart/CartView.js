@@ -14,9 +14,11 @@ import CartItem from "./CartItem";
 import PricingView from "./PricingView";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
+import { detectLanguageDir } from "../../../helpers";
 
 function CartView(props) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const dir = detectLanguageDir(i18n.language);
   const classes = useStyles();
   const theme = useTheme();
   const [loadingData, setLoadingData] = useState(true);
@@ -126,14 +128,20 @@ function CartView(props) {
       >
         <Box display="flex" alignItems="center" justifyContent="center">
           {/* <DeliveryIcon /> */}
-          <img src={RiderImage} alt="rider" />
+          <img
+            src={RiderImage}
+            alt="rider"
+            style={{
+              transform: dir === "rtl" ? "rotateY(180deg)" : "unset",
+            }}
+          />
         </Box>
         <Box
           display="flex"
           justifyContent="center"
           flexDirection="column"
           style={{
-            marginLeft: "5px",
+            marginInlineStart: "5px",
           }}
         >
           <Typography

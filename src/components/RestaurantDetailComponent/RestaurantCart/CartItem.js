@@ -63,7 +63,7 @@ function CartItem(props) {
         display="flex"
         flexDirection="column"
         flexGrow={1}
-        ml={1}
+        marginInlineStart={1}
         justifyContent="flex-end"
       >
         <Box

@@ -1,8 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Grid,
-  Box,
-} from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import FlashMessage from "../../components/FlashMessage";
 import { LoginHeader } from "../../components/Header";
@@ -15,10 +12,14 @@ import useStyles from "./styles";
 import * as Sentry from "@sentry/react";
 import Footer from "../../components/Footer/Footer";
 import BusinessSection from "../../components/HomeScreen/BusinessSection";
+import { useTranslation } from "react-i18next";
+import { detectLanguageDir } from "../../helpers";
 
 function Home() {
   const classes = useStyles();
-
+  const { i18n } = useTranslation();
+  const dir = detectLanguageDir(i18n?.language);
+  console.log({ dir });
   const { error, loading } = useLocation();
   const [open, setOpen] = useState(!!error);
   const { isLoggedIn } = useContext(UserContext);
@@ -40,7 +41,7 @@ function Home() {
 
   return (
     <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
-      <Box className={classes.root}>
+      <Box dir={dir} className={classes.root}>
         <FlashMessage
           severity={loading ? "info" : "error"}
           alertMessage={error}

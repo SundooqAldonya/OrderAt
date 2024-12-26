@@ -60,6 +60,8 @@ import { useLocation } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 import moment from "moment";
+import { detectLanguageDir } from "../../helpers";
+import i18n from "../../i18n";
 
 const PLACEORDER = gql`
   ${placeOrder}
@@ -147,7 +149,11 @@ function Checkout() {
           longDest
         );
         let costType = configuration.costType;
-        let amount = calculateAmount(costType, configuration.deliveryRate, distance);
+        let amount = calculateAmount(
+          costType,
+          configuration.deliveryRate,
+          distance
+        );
         setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate);
       }
     })();
@@ -295,7 +301,7 @@ function Checkout() {
     const delivery = isPickUp ? 0 : deliveryCharges;
     const amount = +calculatePrice(delivery, true);
     const taxAmount = ((amount / 100) * tax).toFixed(2);
-    console.log("tax:", {taxAmount, deliveryCharges, tax, amount})
+    console.log("tax:", { taxAmount, deliveryCharges, tax, amount });
     return taxAmount;
   }
   async function onCompleted(data) {
@@ -328,14 +334,14 @@ function Checkout() {
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0;
     cart.forEach((cartItem) => {
-      console.log(cartItem)
+      console.log(cartItem);
       itemTotal += cartItem.price * cartItem.quantity;
     });
     if (withDiscount && coupon && coupon.discount) {
       itemTotal = itemTotal - (coupon.discount / 100) * itemTotal;
     }
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0;
-    console.log("price:", {itemTotal, deliveryAmount})
+    console.log("price:", { itemTotal, deliveryAmount });
     return (itemTotal + deliveryAmount).toFixed(2);
   }
 
@@ -508,9 +514,10 @@ function Checkout() {
     }
     return true;
   }
+  const dir = detectLanguageDir(i18n.language);
   // console.log("isPickUp", isPickUp, selectedDate);
   return (
-    <Grid container className={classes.root}>
+    <Grid dir={dir} container className={classes.root}>
       <FlashMessage
         open={Boolean(mainError.type)}
         severity={mainError.type}
@@ -608,7 +615,7 @@ function Checkout() {
                 <Button
                   variant="contained"
                   style={{
-                    marginLeft: theme.spacing(1),
+                    marginInlineStart: theme.spacing(1),
                     backgroundColor: "black",
                     borderRadius: theme.spacing(1.5),
                   }}
