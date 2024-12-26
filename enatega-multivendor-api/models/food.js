@@ -20,15 +20,15 @@ const foodSchema = new Schema(
     isActive: {
       type: Boolean,
       default: true
-    },
-    restaurant: {
-      type: Schema.Types.ObjectId,
-      ref: 'Restaurant'
-    },
-    category: {
-      type: Schema.Types.ObjectId,
-      ref: 'Category'
     }
+    // restaurant: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'Restaurant'
+    // },
+    // category: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'Category'
+    // }
   },
   { timestamps: true }
 )

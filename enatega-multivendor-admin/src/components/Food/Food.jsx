@@ -49,6 +49,8 @@ function Food(props) {
   const [category, setCategory] = useState(
     props.food ? props.food.categoryId : ''
   )
+  const [editModal, setEditModal] = useState(false)
+
   const [imgMenu, imgMenuSetter] = useState(props.food ? props.food.image : '')
   const [variationIndex, variationIndexSetter] = useState(0)
   const [mainError, mainErrorSetter] = useState('')
@@ -326,6 +328,10 @@ function Food(props) {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const closeEditModal = () => {
+    setEditModal(false)
   }
 
   const { t } = props
@@ -696,7 +702,10 @@ function Food(props) {
         onClose={() => {
           toggleModal()
         }}>
-        <AddonComponent updateAddonsList={updateAddonsList} />
+        <AddonComponent
+          updateAddonsList={updateAddonsList}
+          onClose={closeEditModal}
+        />
       </Modal>
     </Box>
   )

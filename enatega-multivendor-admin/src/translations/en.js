@@ -131,7 +131,7 @@ const en = {
     DeliveryFee: 'Delivery Fee',
     MinimumDeliveryFee: 'Minimum Delivery Fee',
     TaxCharges: 'Tax Charges',
-    Addorder:'Add Order',
+    Addorder: 'Add Order',
     Tip: 'Tip',
     Total: 'Total',
     PaymentMethod: 'Payment Method',
@@ -166,13 +166,13 @@ const en = {
     PHRiderName: 'Rider name',
     Number: 'Number',
     PhoneNumber: 'Phone Number',
-    Customerdoesnotexist:'Customer does not exist',
-    SearchCustomer:'Search Customer',
-    AddCustomer:'Add Customer',
-    Area:'Area',
-    GoogleSearchOptional:'Google Search Optional',
+    Customerdoesnotexist: 'Customer does not exist',
+    SearchCustomer: 'Search Customer',
+    AddCustomer: 'Add Customer',
+    Area: 'Area',
+    GoogleSearchOptional: 'Google Search Optional',
     RiderZone: 'Rider Zone',
-    Cost:'Cost',
+    Cost: 'Cost',
     SectionUpdatedSuccessfully: 'Section updated successfully',
     SectionAddedSuccessfully: 'Section added successfully',
     EditSection: 'Edit Section',
@@ -325,17 +325,17 @@ const en = {
     UploadaLogo: 'Upload a logo',
 
     StatusUpdated: 'Status Updated!',
-    "Status updated to {{status}}": "Status updated to {{status}}",
-    "Failed to update status!": "Failed to update status!",
-    UpdateSuccessful: "Update Successful",
-    UpdateError: "Update Error",
-    "The value Should not be in the negative": "The value should not be negative",
+    'Status updated to {{status}}': 'Status updated to {{status}}',
+    'Failed to update status!': 'Failed to update status!',
+    UpdateSuccessful: 'Update Successful',
+    UpdateError: 'Update Error',
+    'The value Should not be in the negative':
+      'The value should not be negative',
 
     CostType: 'Cost Type',
     PerKM: 'Per KM',
     FixedCost: 'Fixed Cost',
-    
-
+    add_addons: 'Add addons'
   }
 }
 
