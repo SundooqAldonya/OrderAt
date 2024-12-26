@@ -11,7 +11,13 @@ import AppContainer from './src/navigation'
 import setupApolloClient from './src/apollo/client'
 import { Spinner, TextDefault } from './src/components'
 import { colors } from './src/utilities'
-import { ActivityIndicator, StyleSheet, View, LogBox } from 'react-native'
+import {
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  LogBox,
+  I18nManager
+} from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import {
   useFonts,
@@ -32,8 +38,9 @@ import {
   Montserrat_600SemiBold_Italic,
   Montserrat_700Bold_Italic,
   Montserrat_800ExtraBold_Italic,
-  Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
+  Montserrat_900Black_Italic
+} from '@expo-google-fonts/montserrat'
+import { useTranslation } from 'react-i18next'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -45,8 +52,10 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false)
   const [token, setToken] = useState(null)
+  const { i18n } = useTranslation()
   const [isUpdating, setIsUpdating] = useState(false)
-
+  console.log({ isRTL: I18nManager.isRTL })
+  console.log({ language: i18n.language })
 
   const client = setupApolloClient()
 
@@ -68,9 +77,15 @@ export default function App() {
     Montserrat_600SemiBold_Italic,
     Montserrat_700Bold_Italic,
     Montserrat_800ExtraBold_Italic,
-    Montserrat_900Black_Italic,
-  });
+    Montserrat_900Black_Italic
+  })
 
+  useEffect(() => {
+    if (i18n.language === 'ar' && !I18nManager.isRTL) {
+      I18nManager.allowRTL(true)
+      I18nManager.forceRTL(true)
+    }
+  }, [i18n.language])
 
   useEffect(() => {
     ;(async () => {
@@ -86,12 +101,12 @@ export default function App() {
     ;(async () => {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
-          setIsUpdating(true)
-          const { isNew } = await Updates.fetchUpdateAsync()
-          if (isNew) {
-             await Updates.reloadAsync()
-          }
-          setIsUpdating(false)
+        setIsUpdating(true)
+        const { isNew } = await Updates.fetchUpdateAsync()
+        if (isNew) {
+          await Updates.reloadAsync()
+        }
+        setIsUpdating(false)
       }
     })()
   }, [])

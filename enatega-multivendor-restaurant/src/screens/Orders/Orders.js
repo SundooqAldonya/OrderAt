@@ -29,6 +29,7 @@ import { useNavigation } from '@react-navigation/native'
 import { auth_token, getAccessToken } from '../../utilities/apiServices'
 import { AuthContext, Configuration, Restaurant } from '../../ui/context'
 import { Icon } from 'react-native-elements'
+import { detectLanguageDir } from '../../../helpers'
 const Orders = props => {
   const {
     loading,
@@ -44,7 +45,8 @@ const Orders = props => {
   const client = useApolloClient()
   const navigation = useNavigation()
   const { loading: mutateLoading } = useAcceptOrder()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const dir = detectLanguageDir(i18n.language)
   const [search, setSearch] = useState('')
   const [isVisible, setIsVisible] = useState(false)
   const [showResults, setShowResults] = useState(false)
