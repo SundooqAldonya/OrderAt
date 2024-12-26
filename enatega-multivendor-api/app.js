@@ -78,6 +78,7 @@ async function startApolloServer() {
     // plugins: [SentryConfig],
     formatError: (formattedError, error) => {
       console.log({ formattedError })
+      console.log({ errorLocation: formattedError.locations[0] })
       // console.log({ formattedError: formattedError.locations });
       // console.log({ formattedError: formattedError.extensions.exception });
     }

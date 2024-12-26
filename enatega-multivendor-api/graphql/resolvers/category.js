@@ -24,7 +24,7 @@ module.exports = {
         const category = new Category({
           title: args.category.title
         })
-        await category.save()
+        // await category.save()
         const restaurant = await Restaurant.findOne({
           _id: args.category.restaurant
         })

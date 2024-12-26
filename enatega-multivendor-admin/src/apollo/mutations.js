@@ -297,7 +297,7 @@ export const saveDeliveryRateConfiguration = `mutation SaveDeliveryRateConfigura
     costType
     minimumDeliveryFee
   }
-}`;
+}`
 
 export const savePaypalConfiguration = `mutation SavePaypalConfiguration($configurationInput:PaypalConfigurationInput!){
   savePaypalConfiguration(configurationInput:$configurationInput){
@@ -892,7 +892,7 @@ export const findOrCreateUser = `
     }
   }`
 
-  export const CheckOutPlaceOrder = `
+export const CheckOutPlaceOrder = `
 mutation CheckOutPlaceOrder($userId: ID!, $resId : String! ,  $addressId: ID!, $orderAmount: Float!) {
   CheckOutPlaceOrder(userId: $userId, resId :$resId , addressId: $addressId, orderAmount: $orderAmount) {
     _id
