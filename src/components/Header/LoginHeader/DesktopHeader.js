@@ -11,8 +11,7 @@ import { useTheme } from "@emotion/react";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../i18n";
-import { SearchHeader } from "./SearchHeader";
+import { Subheader } from "../../RestaurantComponent";
 import LanguageToggle from "../../Language/LanguageToggle";
 
 function LoginDesktopHeader({ title, showIcon, showCart = false }) {
@@ -31,8 +30,7 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
           >
             <Logo height={37} width={169} />
           </RouterLink>
-
-          <SearchHeader />
+          <Subheader />
         </Box>
         <Box className={classes.flex}>
           <LanguageToggle classes={classes} />

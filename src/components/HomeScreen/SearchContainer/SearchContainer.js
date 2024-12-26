@@ -168,7 +168,7 @@ function SearchContainer({
                 flex: 1,
                 //zIndex: 10
               }}
-              zoom={15}
+              zoom={14}
               center={{
                 lat: parseFloat(location?.latitude) || 31.1106593,
                 lng: parseFloat(location?.longitude) || 30.9387799,
