@@ -172,6 +172,10 @@ const calculateDistance = (latS, lonS, latD, lonD) => {
   return d
 }
 
+const calculateAmount = (costType, deliveryRate, distance) => {
+  return costType === 'fixed' ? deliveryRate : Math.ceil(distance) * deliveryRate;
+}
+
 exports.saveImageToDisk = saveImageToDisk
 exports.processUpload = processUpload
 exports.storeUpload = storeUpload
@@ -179,3 +183,4 @@ exports.sendNotification = sendNotification
 exports.checkPhoneAlreadyUsed = checkPhoneAlreadyUsed
 exports.sendNotificationMobile = sendNotificationMobile
 exports.calculateDistance = calculateDistance
+exports.calculateAmount = calculateAmount
