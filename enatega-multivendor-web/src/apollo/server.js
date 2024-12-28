@@ -544,7 +544,6 @@ export const getConfiguration = `query Configuration{
     currency
     currencySymbol
     deliveryRate
-    minimumDeliveryFee
     twilioEnabled
     webClientID
     googleApiKey
@@ -558,7 +557,6 @@ export const getConfiguration = `query Configuration{
     skipMobileVerification
     costType
     vapidKey
-    minimumDeliveryFee
   }
 }`;
 

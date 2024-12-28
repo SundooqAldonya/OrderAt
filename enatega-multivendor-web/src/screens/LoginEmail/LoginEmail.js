@@ -28,6 +28,7 @@ function LoginEmail() {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, loginError, setLoading, setLoginError, mutateLogin } =
     useRegistration();
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -54,11 +55,11 @@ function LoginEmail() {
     let validate = true;
     const emailValue = formRef.current["userEmail"].value;
     const passValue = formRef.current["userPass"].value;
-    // if (!isValidEmailAddress(emailValue)) {
-    //   setEmailError("Invalid Email");
-    //   validate = false;
-    //   return;
-    // }
+    if (!isValidEmailAddress(emailValue)) {
+      setEmailError("Invalid Email");
+      validate = false;
+      return;
+    }
     if (!passValue) {
       setPassError("Password required");
       validate = false;
@@ -107,7 +108,7 @@ function LoginEmail() {
         </Box>
         <Box mt={theme.spacing(2)} />
         <Typography variant="h5" className={classes.font700}>
-          Sign in with your email or phone
+          Sign in with your email
         </Typography>
         <Typography
           variant="caption"
@@ -123,7 +124,7 @@ function LoginEmail() {
           helperText={emailError}
           fullWidth
           variant="outlined"
-          label="Email or phone"
+          label="Email"
           InputLabelProps={{
             style: {
               color: theme.palette.grey[600],
@@ -165,9 +166,7 @@ function LoginEmail() {
           label="Password"
           type={showPassword ? "text" : "password"}
         />
-        <RouterLink
-          to="/forgot-password"
-          state={{ email: state?.email }}
+        <RouterLink to="/forgot-password" state={{email: state?.email}}
           style={{ textDecoration: "none", display: "flex" }}
         >
           <Button>

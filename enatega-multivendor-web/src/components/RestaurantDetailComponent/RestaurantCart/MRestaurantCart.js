@@ -138,11 +138,9 @@ function MRestaurantCart(props) {
       let total = 0;
       total += +calculatePrice();
       total += +taxCalculation();
-      total += +configuration.minimumDeliveryFee;
       return parseFloat(total).toFixed(2);
     },
-    // configuration.minimumDeliveryFee
-    [calculatePrice, taxCalculation,configuration.minimumDeliveryFee]
+    [calculatePrice, taxCalculation]
   );
 
   return (

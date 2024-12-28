@@ -16,13 +16,13 @@ import { getMessaging, isSupported } from "firebase/messaging";
 //   measurementId: "G-KLBJSEHRYQ",
 // };
 const firebaseConfig = {
-  apiKey: "AIzaSyDcKw9rbtOlxw9mV1K6XK_rGaPIxnETlfE",
-  authDomain: "enatega-app-91880.firebaseapp.com",
+  apiKey: "AIzaSyDcKw9rbtOlxwrwQmV1K6XK_rGaPIxnETlfE",
+  authDomain: "enatega-app-918840.firebaseapp.com",
   projectId: "enatega-app-91880",
   storageBucket: "enatega-app-91880.firebasestorage.app",
   messagingSenderId: "450265085695",
-  appId: "1:450265085695:web:3178a3321a1dbc34f2beca",
-  measurementId: "G-XQCB8E1RKS"
+  appId: "1:450265085695:web:3178a333321a1dbc34f2beca",
+  measurementId: "G-XQCB8E1RRKS"
 };
 
 export const initialize = () => {

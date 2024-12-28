@@ -3,7 +3,6 @@ import Web from "../../assets/images/web.png";
 import Blog from "../../assets/images/blog-bg.png";
 import Contact from "../../assets/images/contact-pg.png";
 import Categories from "../../assets/images/categories-bg.png";
-import Price from "../../assets/images/price-bg.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,64 +65,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appContainer: {
-    backgroundColor: theme.palette.common.white,
+    background: theme.palette.common.white,
     borderRadius: "0px",
     width: "100%",
     height: "auto",
   },
-  contactContainer: {
-    background:
-      "linear-gradient(180deg, theme.palette.secondary.lightest 0%, theme.palette.primary.main 100%)",
-    borderRadius: "0px",
-    width: "100%",
-    [theme.breakpoints.down("md")]: {
-      background: theme.palette.primary.main,
-    },
-  },
-  leftWrapper: {
-    background:
-      "linear-gradient(180deg, theme.palette.common.whiteShade 0%, theme.palette.common.white 100%)",
-    width: "80%",
-    minHeight: "80vh",
-    borderTopRightRadius: "5rem",
-    borderBottomRightRadius: "5rem",
-    position: "relative",
-  },
-  appWrapper: {
-    background:
-      "linear-gradient(180deg, theme.palette.common.white 0%, theme.palette.common.whiteShade 100%)",
-    width: "80%",
-    minHeight: "110vh",
-    borderTopRightRadius: "5rem",
-    borderBottomRightRadius: "5rem",
-    position: "relative",
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "center",
-    [theme.breakpoints.down("md")]: {
-      width: "90%",
-    },
-  },
-  priceContainer: {
-    backgroundColor: theme.palette.primary.main,
-    borderRadius: "0px",
-    width: "100%",
-    clear: "both",
-  },
-  priceWrapper: {
-    background: "white",
-    width: "90%",
-    minHeight: "90vh",
-    borderTopRightRadius: "5rem",
-    borderBottomRightRadius: "5rem",
-    display: "flex",
-    alignItems: "center",
-    position: "relative",
-    backgroundImage: `url(${Price})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  },
+
   bgText: {
     position: "absolute",
     bottom: 100,
@@ -208,6 +155,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "auto",
     borderTopLeftRadius: "5rem",
     borderBottomLeftRadius: "5rem",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    },
   },
   searchWrapper: {
     width: "100%",

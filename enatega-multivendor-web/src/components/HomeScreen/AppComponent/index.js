@@ -65,9 +65,9 @@ export default function AppComponent() {
           display="flex"
           alignItems="center"
           justifyContent={"center"}
-          style={{ backgroundColor: "transparent", marginTop: small ? "0px" : "25px", marginBottom: medium ? "25px" : "0px"}}
+          style={{ backgroundColor: "transparent", marginTop: small ? "0px" : "25px", marginBottom: medium ? "25px" : "0px" }}
 
-          //mt={5}
+        //mt={5}
         >
           <Button
             className={classes.btn}
