@@ -56,6 +56,9 @@ const Food = props => {
       }
     }
   )
+
+  console.log({ data })
+
   const toggleModal = food => {
     setEditModal(!editModal)
     setFood(food)

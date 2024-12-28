@@ -144,6 +144,8 @@ function Food(props) {
     }
   })
 
+  console.log({ dataCategories })
+
   const {
     data: dataAddons,
     error: errorAddons,
@@ -426,19 +428,18 @@ function Food(props) {
                     {t('SelectCategory')}
                   </MenuItem>
                 )}
-                {dataCategories &&
-                  dataCategories.restaurant.categories
-                    .filter(category => {
-                      return category.title !== 'Default Category'
-                    })
-                    .map(category => (
-                      <MenuItem
-                        value={category._id}
-                        key={category._id}
-                        style={{ color: 'black' }}>
-                        {category.title}
-                      </MenuItem>
-                    ))}
+                {dataCategories?.categoriesByRestaurant
+                  .filter(category => {
+                    return category.title !== 'Default Category'
+                  })
+                  .map(category => (
+                    <MenuItem
+                      value={category._id}
+                      key={category._id}
+                      style={{ color: 'black' }}>
+                      {category.title}
+                    </MenuItem>
+                  ))}
               </Select>
             </Box>
             <Box
@@ -608,33 +609,32 @@ function Food(props) {
                     </Box>
                     <Box>
                       {loadingAddons && t('LoadingDots')}
-                      {errorAddons && t('ErrorDots')}
-                      {dataAddons &&
-                        dataAddons.restaurant.addons
-                          .filter(addon => addon.title !== 'Default Addon')
-                          .map(addon => (
-                            <Grid
-                              item
-                              xs={12}
-                              md={6}
-                              key={addon._id}
-                              style={{ textAlign: 'left', paddingLeft: 20 }}>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    value={addon._id}
-                                    checked={variation[index].addons.includes(
-                                      addon._id
-                                    )}
-                                    onChange={() =>
-                                      onSelectAddon(index, addon._id)
-                                    }
-                                  />
-                                }
-                                label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
-                              />
-                            </Grid>
-                          ))}
+                      {/* {errorAddons && t('ErrorDots')} */}
+                      {dataAddons?.restaurant?.addons
+                        .filter(addon => addon.title !== 'Default Addon')
+                        .map(addon => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            key={addon._id}
+                            style={{ textAlign: 'left', paddingLeft: 20 }}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  value={addon._id}
+                                  checked={variation[index].addons.includes(
+                                    addon._id
+                                  )}
+                                  onChange={() =>
+                                    onSelectAddon(index, addon._id)
+                                  }
+                                />
+                              }
+                              label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
+                            />
+                          </Grid>
+                        ))}
                     </Box>
                     <Button
                       className={classes.button}
