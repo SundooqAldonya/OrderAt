@@ -14,6 +14,8 @@ import { ReactComponent as FavoriteBorderIcon } from "../../assets/icons/favouri
 import { ReactComponent as LocalMallIcon } from "../../assets/icons/cart.svg";
 
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
+import LanguageToggle from "../Language/LanguageToggle";
+import { SearchHeader } from "./LoginHeader/SearchHeader";
 
 function DHeader({
   navitems,
@@ -48,10 +50,11 @@ function DHeader({
           className={classes.linkDecoration}
         >
           <Logo height={37} width={169} />
-
-          
+          <SearchHeader />
         </RouterLink>
+
         <Box className={classes.flex}>
+          <LanguageToggle classes={classes} />
           <Button
             aria-controls="simple-menu"
             aria-haspopup="true"

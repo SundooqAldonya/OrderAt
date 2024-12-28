@@ -40,7 +40,8 @@ const theme = createTheme({
   },
   typography: {
     // fontFamily: ["Poppins", "Open Sans", "sans-serif"].join(),
-    fontFamily: ["Roboto", "sans-serif"].join(),
+    // fontFamily: ["Roboto", "sans-serif"].join(),
+    fontFamily: ["Tajawal", "sans-serif"].join(),
     htmlFontSize: 16,
     fontSize: 14,
     fontWeightLight: 300,
