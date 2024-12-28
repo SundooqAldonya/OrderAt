@@ -50,6 +50,8 @@ function Food(props) {
     props.food ? props.food.categoryId : ''
   )
   const [editModal, setEditModal] = useState(false)
+  // const [uploadFoodImage] = useMutation(UPLOAD_FILE)
+  const [image, setImage] = useState({})
 
   const [imgMenu, imgMenuSetter] = useState(props.food ? props.food.image : '')
   const [variationIndex, variationIndexSetter] = useState(0)
@@ -306,28 +308,32 @@ function Food(props) {
     variationSetter([...variations])
   }
 
-  const uploadImageToCloudinary = async () => {
-    if (imgMenu === '') return imgMenu
-    if (props.food && props.food.image === imgMenu) return imgMenu
+  // const uploadImageToCloudinary = async () => {
+  // if (imgMenu === '') return imgMenu
+  // if (props.food && props.food.image === imgMenu) return imgMenu
 
-    const apiUrl = CLOUDINARY_UPLOAD_URL
-    const data = {
-      file: imgMenu,
-      upload_preset: CLOUDINARY_FOOD
-    }
-    try {
-      const result = await fetch(apiUrl, {
-        body: JSON.stringify(data),
-        headers: {
-          'content-type': 'application/json'
-        },
-        method: 'POST'
-      })
-      const imageData = await result.json()
-      return imageData.secure_url
-    } catch (e) {
-      console.log(e)
-    }
+  // const apiUrl = CLOUDINARY_UPLOAD_URL
+  // const data = {
+  //   file: imgMenu,
+  //   upload_preset: CLOUDINARY_FOOD
+  // }
+  // try {
+  //   const result = await fetch(apiUrl, {
+  //     body: JSON.stringify(data),
+  //     headers: {
+  //       'content-type': 'application/json'
+  //     },
+  //     method: 'POST'
+  //   })
+  //   const imageData = await result.json()
+  //   return imageData.secure_url
+  // } catch (e) {
+  //   console.log(e)
+  // }
+  // }
+
+  const handleImageChange = e => {
+    setImage(e.target.files[0])
   }
 
   const closeEditModal = () => {
@@ -452,8 +458,9 @@ function Food(props) {
                 id={props.food ? 'edit-food-image' : 'add-food-image'}
                 type="file"
                 accept="image/*"
-                onChange={event => {
-                  selectImage(event, 'imgMenu')
+                onChange={e => {
+                  selectImage(e, 'imgMenu')
+                  setImage(e.target.files[0])
                 }}
               />
             </Box>
@@ -648,7 +655,8 @@ function Food(props) {
                         _id: props.food ? props.food._id : '',
                         title: formRef.current['input-title'].value,
                         description: formRef.current['input-description'].value,
-                        image: await uploadImageToCloudinary(),
+                        // image: await uploadImageToCloudinary(),
+                        file: image,
                         category: formRef.current['input-category'].value,
                         variations: variation.map(
                           ({ title, price, discounted, addons }) => {
@@ -663,6 +671,9 @@ function Food(props) {
                       }
                     }
                   })
+                  // await uploadFoodImage({
+                  //   variables: { id: props.food._id, file: image }
+                  // })
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
                     props.onClose() // Close the modal

@@ -36,13 +36,7 @@ const {
   sendNotificationToRider
 } = require('../../helpers/notifications')
 const { GraphqlUpload } = require('graphql-upload')
-const cloudinary = require('cloudinary').v2
-
-cloudinary.config({
-  cloud_name: 'djh6rjqp0',
-  api_key: '374324763112167',
-  api_secret: 'psXgMn901Y_sqcB0EgqWw6Mi4O8'
-})
+const { cloudinary } = require('../../helpers/cloudinary')
 
 module.exports = {
   Upload: GraphqlUpload,

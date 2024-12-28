@@ -1,4 +1,9 @@
 // const cons = require('consolidate')
+const {
+  cloudinaryClient,
+  uploadFoodImage,
+  uploadFoodImage2
+} = require('../../helpers/cloudinary')
 const Food = require('../../models/food')
 const Restaurant = require('../../models/restaurant')
 const Variation = require('../../models/variation')
@@ -8,6 +13,11 @@ module.exports = {
   Mutation: {
     createFood: async (_, args, context) => {
       console.log('createFood')
+      console.log({ args })
+      const { createReadStream, filename, mimetype, encoding } = await args
+        .foodInput.file.file
+      const stream = createReadStream()
+
       const restId = args.foodInput.restaurant
       const categoryId = args.foodInput.category
       const variations = await args.foodInput.variations.map(variation => {
@@ -18,10 +28,16 @@ module.exports = {
         title: args.foodInput.title,
         variations: variations,
         description: args.foodInput.description,
-        image: args.foodInput.image,
+        // image: args.foodInput.image,
         restaurant: args.restaurant_id
       })
+      const newFood = await uploadFoodImage({
+        id: food._id,
+        file: args.foodInput.file,
+        food
+      })
 
+      console.log({ newFood })
       await food.save()
 
       try {
@@ -29,7 +45,7 @@ module.exports = {
           { _id: restId, 'categories._id': categoryId },
           {
             $push: {
-              'categories.$.foods': food
+              'categories.$.foods': newFood
             }
           }
         )
@@ -103,6 +119,7 @@ module.exports = {
         throw err
       }
     },
+
     // async uploadFoodImage(_, { id, file }) {
     //   console.log({ file })
     //   try {

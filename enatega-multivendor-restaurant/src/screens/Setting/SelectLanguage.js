@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native'
 import i18next from '../../../i18n'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useTranslation } from 'react-i18next'
+import { I18nManager } from 'react-native'
 
 const { height } = Dimensions.get('window')
 export default function SelectLanguage() {
@@ -58,6 +59,16 @@ export default function SelectLanguage() {
     var lang = await AsyncStorage.getItem('enatega-language')
     console.log(lang)
     setLoader(false)
+    // if (language === 'ar') {
+    //   const rtl = I18nManager.isRTL(language)
+    //   await AsyncStorage.setItem('enatega-language', language)
+    //   await i18next.changeLanguage(language)
+    //   I18nManager.forceRTL(rtl)
+
+    //   if (rtl !== I18nManager.isRTL) {
+    //     DevSettings.reload()
+    //   }
+    // }
   }
   return (
     <KeyboardAvoidingView

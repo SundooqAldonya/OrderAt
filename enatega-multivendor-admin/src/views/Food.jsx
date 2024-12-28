@@ -139,13 +139,15 @@ const Food = props => {
       categories.forEach(category => {
         if (category.foods && category.foods.length) {
           return category.foods.map(item => {
+            console.log({ item })
             list.push({
               ...item,
               category: category.title,
               categoryId: category._id,
               ...category,
               _id: item._id,
-              title: item.title
+              title: item.title,
+              image: item.image
             })
 
             return {
@@ -154,7 +156,8 @@ const Food = props => {
               categoryId: category._id,
               ...category,
               _id: item._id,
-              title: item.title
+              title: item.title,
+              image: item.image
             }
           })
         }
@@ -180,7 +183,12 @@ const Food = props => {
           )
         })
   const globalClasses = useGlobalStyles()
-
+  const foodId = '676e8e1e750a3e0d3f4d9e95'
+  const findFood = data?.restaurant.categories.map(item => {
+    return item.foods.find(food => food._id === foodId)
+  })
+  console.log({ data: data?.restaurant.categories })
+  console.log({ findFood })
   return (
     <>
       <Header />

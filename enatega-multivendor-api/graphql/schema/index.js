@@ -184,8 +184,8 @@ const typeDefs = gql`
 
   type Food {
     _id: ID!
-    title: String!
-    description: String!
+    title: String
+    description: String
     variations: [Variation!]!
     image: String
     isActive: Boolean!
@@ -765,7 +765,7 @@ const typeDefs = gql`
     category: String!
     title: String!
     description: String
-    image: String
+    file: Upload
     variations: [VariationInput!]!
   }
 
@@ -1254,6 +1254,7 @@ const typeDefs = gql`
     updateWithdrawReqStatus(id: ID!, status: String!): UpdateWithdrawResponse!
     uploadFile(id: ID!, file: Upload!): Message!
     uploadRestaurantLogo(id: ID!, file: Upload!): Message!
+    uploadFoodImage(id: ID!, file: Upload!): Message!
     createEarning(earningsInput: EarningsInput): Earnings!
     sendOtpToEmail(email: String!, otp: String!): Otp!
     sendOtpToPhoneNumber(phone: String!, otp: String!): Otp!

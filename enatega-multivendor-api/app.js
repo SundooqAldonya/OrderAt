@@ -41,6 +41,8 @@ async function startApolloServer() {
     .catch(err => {
       console.log(`Couldn't connect to DB!\n`, err)
     })
+  // mongoose.set('strictPopulate', false)
+
   // Ensure to call this before requiring any other modules!
   // initializing bug reporting platform i.e Sentry
   // Sentry.init({
@@ -64,6 +66,10 @@ async function startApolloServer() {
 
   const server = new ApolloServer({
     schema,
+    uploads: {
+      maxFileSize: 10000000, // 10 MB
+      maxFieldSize: 10000000 // 10 MB
+    },
     introspection: config.NODE_ENV !== 'production',
     context: ({ req, res }) => {
       if (!req) return {}

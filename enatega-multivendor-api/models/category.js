@@ -18,8 +18,7 @@ const categorySchema = new Schema(
     //   ref: 'Restaurant'
     // },
     foods: {
-      type: [foodSchema],
-      default: []
+      type: [foodSchema]
     }
   },
   { timestamps: true }

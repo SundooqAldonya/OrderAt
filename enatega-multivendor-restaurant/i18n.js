@@ -22,6 +22,7 @@ export const languageResources = {
 const getStoredLanguage = async () => {
   const lng = await AsyncStorage.getItem('enatega-language')
   console.log({ lng })
+  // const language = RNLocalize.getLocales()[0].languageCode
   i18next.use(initReactI18next).init({
     compatibilityJSON: 'v3',
     lng: lng,
@@ -32,16 +33,16 @@ const getStoredLanguage = async () => {
 // if (Platform.OS === 'android') {
 getStoredLanguage()
 
-if (Platform.OS === 'ios') {
-  i18next.locale = Localization.locale
-  i18next.use(initReactI18next).init({
-    compatibilityJSON: 'v3',
-    lng: i18next.locale,
-    fallbackLng: 'en',
-    resources: languageResources
-  })
-  console.log('language:', Localization.locale)
-  i18next.changeLanguage(i18next.locale)
-}
+// if (Platform.OS === 'ios') {
+i18next.locale = Localization.locale
+i18next.use(initReactI18next).init({
+  // compatibilityJSON: 'v3',
+  lng: i18next.locale,
+  fallbackLng: 'en',
+  resources: languageResources
+})
+console.log('language:', Localization.locale)
+i18next.changeLanguage(i18next.locale)
+// }
 
 export default i18next
