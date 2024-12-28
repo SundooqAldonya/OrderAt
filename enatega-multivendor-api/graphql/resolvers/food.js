@@ -14,44 +14,43 @@ module.exports = {
     createFood: async (_, args, context) => {
       console.log('createFood')
       console.log({ args })
-      const { createReadStream, filename, mimetype, encoding } = await args
-        .foodInput.file.file
-      const stream = createReadStream()
-
-      const restId = args.foodInput.restaurant
-      const categoryId = args.foodInput.category
-      const variations = await args.foodInput.variations.map(variation => {
-        return new Variation(variation)
-      })
-
-      const food = new Food({
-        title: args.foodInput.title,
-        variations: variations,
-        description: args.foodInput.description,
-        // image: args.foodInput.image,
-        restaurant: args.restaurant_id
-      })
-      const newFood = await uploadFoodImage({
-        id: food._id,
-        file: args.foodInput.file,
-        food
-      })
-
-      console.log({ newFood })
-      await food.save()
-
       try {
-        await Restaurant.updateOne(
-          { _id: restId, 'categories._id': categoryId },
-          {
-            $push: {
-              'categories.$.foods': newFood
-            }
-          }
-        )
+        const { createReadStream, filename, mimetype, encoding } = await args
+          .foodInput.file.file
+        const stream = createReadStream()
 
-        const latestRest = await Restaurant.findOne({ _id: restId })
-        return await transformRestaurant(latestRest)
+        const restId = args.foodInput.restaurant
+        const categoryId = args.foodInput.category
+        const variations = await args.foodInput.variations.map(variation => {
+          return new Variation(variation)
+        })
+
+        const food = new Food({
+          title: args.foodInput.title,
+          variations: variations,
+          description: args.foodInput.description,
+          // image: args.foodInput.image,
+          restaurant: args.restaurant_id
+        })
+        const newFood = await uploadFoodImage({
+          id: food._id,
+          file: args.foodInput.file
+        })
+
+        console.log({ newFood })
+        await food.save()
+        return food
+        // await Restaurant.updateOne(
+        //   { _id: restId, 'categories._id': categoryId },
+        //   {
+        //     $push: {
+        //       'categories.$.foods': newFood
+        //     }
+        //   }
+        // )
+
+        // const latestRest = await Restaurant.findOne({ _id: restId })
+        // return await transformRestaurant(latestRest)
       } catch (err) {
         console.log(err)
         throw err

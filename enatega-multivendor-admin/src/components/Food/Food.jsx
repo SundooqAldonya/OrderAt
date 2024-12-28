@@ -3,7 +3,12 @@ import { useQuery, useMutation, gql } from '@apollo/client'
 import { validateFunc } from '../../constraints/constraints'
 import { withTranslation } from 'react-i18next'
 import ConfigurableValues from '../../config/constants'
-import { getRestaurantDetail, createFood, editFood } from '../../apollo'
+import {
+  getRestaurantDetail,
+  createFood,
+  editFood,
+  categoriesByRestaurants
+} from '../../apollo'
 import AddonComponent from '../Addon/Addon'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -30,7 +35,7 @@ const EDIT_FOOD = gql`
   ${editFood}
 `
 const GET_CATEGORIES = gql`
-  ${getRestaurantDetail}
+  ${categoriesByRestaurants}
 `
 const GET_ADDONS = gql`
   ${getRestaurantDetail}

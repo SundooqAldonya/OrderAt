@@ -24,6 +24,7 @@ function Category(props) {
   )
   const restaurantId = localStorage.getItem('restaurantId')
   const onCompleted = data => {
+    props.updateCategories(data.createCategory)
     const message = props.category
       ? t('CategoryUpdatedSuccessfully')
       : t('CategoryAddedSuccessfully')

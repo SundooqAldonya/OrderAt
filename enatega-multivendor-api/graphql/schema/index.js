@@ -48,9 +48,21 @@ const typeDefs = gql`
     updatedAt: String!
   }
 
+  type RestaurantId {
+    restaurant: String!
+  }
+
   type Categories {
     _id: ID!
     title: String!
+    restaurant: RestaurantId
+    createdAt: String
+    updatedAt: String
+  }
+  type CategoriesByRestaurant {
+    _id: ID!
+    title: String!
+    restaurant: RestaurantId
     createdAt: String
     updatedAt: String
   }
@@ -1108,6 +1120,7 @@ const typeDefs = gql`
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
+    categoriesByRestaurant(id: String!): [CategoriesByRestaurant!]
     foods: [Food!]!
     orders(offset: Int): [Order!]!
     undeliveredOrders(offset: Int): [Order!]!

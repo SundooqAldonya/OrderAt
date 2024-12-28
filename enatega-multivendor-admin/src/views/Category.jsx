@@ -1,12 +1,16 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, useMutation, gql } from '@apollo/client'
 import { withTranslation } from 'react-i18next'
 import CategoryComponent from '../components/Category/Category'
 import CustomLoader from '../components/Loader/CustomLoader'
 // core components
 import Header from '../components/Headers/Header'
-import { getRestaurantDetail, deleteCategory } from '../apollo'
+import {
+  getRestaurantDetail,
+  deleteCategory,
+  categoriesByRestaurants
+} from '../apollo'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -31,7 +35,7 @@ import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 
 const GET_CATEGORIES = gql`
-  ${getRestaurantDetail}
+  ${categoriesByRestaurants}
 `
 const DELETE_CATEGORY = gql`
   ${deleteCategory}
@@ -40,6 +44,7 @@ const Category = props => {
   const { t } = props
   const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
+  const [categories, setCategories] = useState(null)
   const [category, setCategory] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
@@ -65,6 +70,15 @@ const Category = props => {
       }
     }
   )
+
+  useEffect(() => {
+    setCategories(data?.categoriesByRestaurant)
+  }, [data])
+
+  const updateCategories = item => {
+    setCategories([...categories, item])
+  }
+
   const customSort = (rows, field, direction) => {
     const handleField = row => {
       if (row[field]) {
@@ -74,6 +88,9 @@ const Category = props => {
     }
     return orderBy(rows, handleField, direction)
   }
+
+  console.log({ data })
+
   const columns = [
     {
       name: t('Title'),
@@ -102,19 +119,19 @@ const Category = props => {
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  const filtered =
-    searchQuery.length < 3
-      ? data &&
-        data.restaurant.categories.filter(
-          category => category.title !== 'Default Category'
-        )
-      : data &&
-        data.restaurant.categories.filter(category => {
-          return (
-            category.title.toLowerCase().search(regex) > -1 &&
-            category.title !== 'Default Category'
-          )
-        })
+  // const filtered =
+  //   searchQuery.length < 3
+  //     ? data &&
+  //       data.restaurant.categories.filter(
+  //         category => category.title !== 'Default Category'
+  //       )
+  //     : data &&
+  //       data.restaurant.categories.filter(category => {
+  //         return (
+  //           category.title.toLowerCase().search(regex) > -1 &&
+  //           category.title !== 'Default Category'
+  //         )
+  //       })
 
   const globalClasses = useGlobalStyles()
   return (
@@ -127,7 +144,7 @@ const Category = props => {
       <Container className={globalClasses.flex} fluid>
         <Grid container mb={3}>
           <Grid item xs={12} md={7}>
-            <CategoryComponent />
+            <CategoryComponent updateCategories={updateCategories} />
           </Grid>
         </Grid>
         {errorQuery ? <span>{`Error! ${errorQuery.message}`}</span> : null}
@@ -145,7 +162,7 @@ const Category = props => {
             }
             title={<TableHeader title={t('Categories')} />}
             columns={columns}
-            data={filtered}
+            data={categories}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}

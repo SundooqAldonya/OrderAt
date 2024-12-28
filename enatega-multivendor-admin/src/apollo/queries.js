@@ -432,7 +432,7 @@ export const getCoupons = `query Coupons{
     }
   }`
 
-  export const getCuisines = `query Cuisines{
+export const getCuisines = `query Cuisines{
     cuisines {
       _id
       name
@@ -442,7 +442,7 @@ export const getCoupons = `query Coupons{
     }
   }`
 
-  export const getBanners = `query Banners{
+export const getBanners = `query Banners{
     banners {
       _id
       title
@@ -453,7 +453,7 @@ export const getCoupons = `query Coupons{
       parameters
     }
   }`
-  export const getBannerActions = `query BannerActions{
+export const getBannerActions = `query BannerActions{
     bannerActions
   }`
 
@@ -580,6 +580,13 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       shopType
       cuisines
     }
+}`
+
+export const categoriesByRestaurants = `query CategoriesByRestaurant($id:String!){
+  categoriesByRestaurant(id: $id){
+    _id
+    title    
+  }  
 }`
 
 export const getRestaurantDetail = `query Restaurant($id:String){
@@ -723,7 +730,7 @@ export const withdrawRequestQuery = `query GetWithdrawRequests($offset:Int){
       }
   }`
 
-  export const getUsersBySearch = `
+export const getUsersBySearch = `
   query Users($search: String) {
     search_users(search: $search) {
       _id

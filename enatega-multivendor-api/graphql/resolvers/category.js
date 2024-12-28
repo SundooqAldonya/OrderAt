@@ -4,11 +4,13 @@ const { transformRestaurant } = require('./merge')
 
 module.exports = {
   Query: {
-    categories: async () => {
+    categoriesByRestaurant: async (_, args) => {
       console.log('categories')
+      console.log({ args })
       try {
-        const categories = await Category.find()
-        // const categories = [{ _id: '1', title: 'category' }]
+        const categories = await Category.find({
+          restaurant: args.restaurant_id
+        })
         console.log({ categories })
         return categories
       } catch (err) {

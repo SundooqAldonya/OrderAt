@@ -87,28 +87,10 @@ export const createCategory = `
 mutation CreateCategory($category:CategoryInput){
   createCategory(category:$category){
     _id
-    categories{
-      _id
-      title
-      foods{
-        _id
-        title
-        description
-        variations{
-          _id
-          title
-          price
-          discounted
-          addons
-        }
-        image
-        isActive
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    title
+    createdAt
+    updatedAt
+    
   }
 }`
 
