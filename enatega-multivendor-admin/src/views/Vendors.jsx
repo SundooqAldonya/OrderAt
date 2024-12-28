@@ -96,7 +96,7 @@ const Vendors = props => {
       name: t('Email'),
       sortable: true,
       selector: 'email',
-      cell: row => <>{row.email.length}</>
+      cell: row => <>{row.email}</>
     },
     {
       name: t('TotalRestaurants'),

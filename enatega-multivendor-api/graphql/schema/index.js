@@ -198,7 +198,9 @@ const typeDefs = gql`
     _id: ID!
     title: String
     description: String
-    variations: [Variation!]!
+    # variations: [Variation!]
+    restaurant: String!
+    category: String!
     image: String
     isActive: Boolean!
     createdAt: String!
@@ -778,7 +780,7 @@ const typeDefs = gql`
     title: String!
     description: String
     file: Upload
-    variations: [VariationInput!]!
+    # variations: [VariationInput!]!
   }
 
   input RiderInput {
@@ -1120,6 +1122,7 @@ const typeDefs = gql`
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
+    foodListByRestaurant(id: String!): [Food!]
     categoriesByRestaurant(id: String!): [CategoriesByRestaurant!]
     foods: [Food!]!
     orders(offset: Int): [Order!]!
@@ -1297,7 +1300,7 @@ const typeDefs = gql`
     ): User!
     createCategory(category: CategoryInput): Category!
     editCategory(category: CategoryInput): Category!
-    createFood(foodInput: FoodInput): Restaurant!
+    createFood(foodInput: FoodInput): Food!
     editFood(foodInput: FoodInput): Restaurant!
     placeOrder(
       restaurant: String!

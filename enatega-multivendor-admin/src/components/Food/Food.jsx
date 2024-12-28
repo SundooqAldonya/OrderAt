@@ -37,9 +37,9 @@ const EDIT_FOOD = gql`
 const GET_CATEGORIES = gql`
   ${categoriesByRestaurants}
 `
-const GET_ADDONS = gql`
-  ${getRestaurantDetail}
-`
+// const GET_ADDONS = gql`
+//   ${getRestaurantDetail}
+// `
 
 function Food(props) {
   const theme = useTheme()
@@ -146,15 +146,15 @@ function Food(props) {
 
   console.log({ dataCategories })
 
-  const {
-    data: dataAddons,
-    error: errorAddons,
-    loading: loadingAddons
-  } = useQuery(GET_ADDONS, {
-    variables: {
-      id: restaurantId
-    }
-  })
+  // const {
+  //   data: dataAddons,
+  //   error: errorAddons,
+  //   loading: loadingAddons
+  // } = useQuery(GET_ADDONS, {
+  //   variables: {
+  //     id: restaurantId
+  //   }
+  // })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -608,9 +608,9 @@ function Food(props) {
                       />
                     </Box>
                     <Box>
-                      {loadingAddons && t('LoadingDots')}
+                      {/* {loadingAddons && t('LoadingDots')} */}
                       {/* {errorAddons && t('ErrorDots')} */}
-                      {dataAddons?.restaurant?.addons
+                      {/* {dataAddons?.restaurant?.addons
                         .filter(addon => addon.title !== 'Default Addon')
                         .map(addon => (
                           <Grid
@@ -634,7 +634,7 @@ function Food(props) {
                               label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
                             />
                           </Grid>
-                        ))}
+                        ))} */}
                     </Box>
                     <Button
                       className={classes.button}
@@ -662,17 +662,17 @@ function Food(props) {
                         description: formRef.current['input-description'].value,
                         // image: await uploadImageToCloudinary(),
                         file: image,
-                        category: formRef.current['input-category'].value,
-                        variations: variation.map(
-                          ({ title, price, discounted, addons }) => {
-                            return {
-                              title,
-                              price: +price,
-                              discounted: +discounted,
-                              addons
-                            }
-                          }
-                        )
+                        category: formRef.current['input-category'].value
+                        // variations: variation.map(
+                        //   ({ title, price, discounted, addons }) => {
+                        //     return {
+                        //       title,
+                        //       price: +price,
+                        //       discounted: +discounted,
+                        //       addons
+                        //     }
+                        //   }
+                        // )
                       }
                     }
                   })

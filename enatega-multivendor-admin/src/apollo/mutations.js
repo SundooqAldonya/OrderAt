@@ -1,31 +1,17 @@
 export const createFood = `
   mutation CreateFood($foodInput:FoodInput!){
-      createFood(
-          foodInput:$foodInput
-      ){
-        _id
-      categories{
-        _id
-        title
-        foods{
-          _id
-          title
-          description
-          variations{
-            _id
-            title
-            price
-            discounted
-            addons
-          }
-          image
-          isActive
-        }
-        createdAt
-        updatedAt
-      }
-      }
-    }`
+    createFood(
+      foodInput:$foodInput
+    ){
+      _id
+      title
+      description
+      image
+      isActive
+      createdAt
+      updatedAt
+    }
+}`
 
 export const editFood = `
     mutation EditFood($foodInput:FoodInput!){
@@ -90,7 +76,6 @@ mutation CreateCategory($category:CategoryInput){
     title
     createdAt
     updatedAt
-    
   }
 }`
 

@@ -589,6 +589,20 @@ export const categoriesByRestaurants = `query CategoriesByRestaurant($id:String!
   }  
 }`
 
+export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!) {
+  foodListByRestaurant(id: $id) {
+    _id
+    title
+    description
+    image
+    restaurant
+    category
+    isActive
+    createdAt
+    updatedAt
+  }
+}`
+
 export const getRestaurantDetail = `query Restaurant($id:String){
       restaurant(id:$id){
       _id

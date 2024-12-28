@@ -10,47 +10,44 @@ const Variation = require('../../models/variation')
 const { transformRestaurant } = require('./merge')
 
 module.exports = {
+  Query: {
+    async foodListByRestaurant(_, args, context) {
+      console.log({ argsFood: args })
+      try {
+        const foodList = await Food.find({ restaurant: args.id })
+        console.log({ foodList })
+        return foodList
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    }
+  },
   Mutation: {
     createFood: async (_, args, context) => {
       console.log('createFood')
       console.log({ args })
       try {
-        const { createReadStream, filename, mimetype, encoding } = await args
-          .foodInput.file.file
-        const stream = createReadStream()
+        const createReadStream = await args?.foodInput?.file?.file
+          ?.createReadStream
 
-        const restId = args.foodInput.restaurant
-        const categoryId = args.foodInput.category
-        const variations = await args.foodInput.variations.map(variation => {
-          return new Variation(variation)
-        })
+        // const variations = await args.foodInput.variations.map(variation => {
+        //   return new Variation(variation)
+        // })
 
         const food = new Food({
           title: args.foodInput.title,
-          variations: variations,
           description: args.foodInput.description,
-          // image: args.foodInput.image,
-          restaurant: args.restaurant_id
+          restaurant: args.foodInput.restaurant,
+          category: args.foodInput.category
         })
-        const newFood = await uploadFoodImage({
-          id: food._id,
-          file: args.foodInput.file
-        })
-
-        console.log({ newFood })
+        // await uploadFoodImage({
+        //   id: food._id,
+        //   file: args.foodInput.file
+        // })
+        console.log({ food })
         await food.save()
         return food
-        // await Restaurant.updateOne(
-        //   { _id: restId, 'categories._id': categoryId },
-        //   {
-        //     $push: {
-        //       'categories.$.foods': newFood
-        //     }
-        //   }
-        // )
-
-        // const latestRest = await Restaurant.findOne({ _id: restId })
-        // return await transformRestaurant(latestRest)
       } catch (err) {
         console.log(err)
         throw err

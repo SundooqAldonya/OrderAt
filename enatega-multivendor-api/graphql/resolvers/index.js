@@ -27,6 +27,7 @@ const countries = require('./countries')
 const cuisine = require('./cuisine')
 const banner = require('./banner')
 const demo = require('./demo')
+const food = require('./food')
 
 const rootResolver = {
   Query: {
@@ -54,7 +55,8 @@ const rootResolver = {
     ...countries.Query,
     ...cuisine.Query,
     ...banner.Query,
-    ...demo.Query
+    ...demo.Query,
+    ...food.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
