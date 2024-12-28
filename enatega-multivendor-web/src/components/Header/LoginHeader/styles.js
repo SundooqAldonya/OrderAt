@@ -36,6 +36,14 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     display: "inline-flex",
   },
+  languageSelect: {
+    marginRight: theme.spacing(2),
+    minWidth: 100,
+    '& .MuiSelect-select': {
+      paddingTop: 5,
+      paddingBottom: 5,
+    }
+  },
 }));
 
 export default useStyles;

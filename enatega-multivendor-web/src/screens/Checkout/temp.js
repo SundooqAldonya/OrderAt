@@ -93,38 +93,24 @@ function Checkout() {
     }
   }, []);
 
-useEffect(() => {
-  (async () => {
-    if (data && data.restaurant && location) {
-      const latOrigin = Number(data.restaurant.location.coordinates[1]);
-      const lonOrigin = Number(data.restaurant.location.coordinates[0]);
-      const latDest = Number(location.latitude);
-      const longDest = Number(location.longitude);
-      
-      // Calculate the distance between the restaurant and destination
-      const distance = await calculateDistance(latOrigin, lonOrigin, latDest, longDest);
-      
-      // Declare a variable to hold the delivery charge
-      let calculatedDeliveryCharge;
-      
-      // If the distance is less than 2 km, set the delivery charge to the minimumDeliveryFee
-      if (distance < 2) {
-        calculatedDeliveryCharge = configuration.minimumDeliveryFee;
-      } else {
-        // Calculate delivery charge based on distance and deliveryRate
+  useEffect(() => {
+    (async () => {
+      if (data && !!data.restaurant) {
+        const latOrigin = Number(data.restaurant.location.coordinates[1]);
+        const lonOrigin = Number(data.restaurant.location.coordinates[0]);
+        const latDest = Number(location.latitude);
+        const longDest = Number(location.longitude);
+        const distance = await calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        );
         const amount = Math.ceil(distance) * configuration.deliveryRate;
-        
-        // Ensure the calculated amount is not lower than the minimum
-        calculatedDeliveryCharge = amount > 0 ? amount : configuration.deliveryRate;
+        setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate);
       }
-
-      // Set the delivery charges
-      setDeliveryCharges(calculatedDeliveryCharge);
-    }
-  })();
-}, [data, location, configuration]); // Dependencies to trigger the effect
-
-  
+    })();
+  }, [data, location]);
 
   const isOpen = () => {
     const date = new Date();
@@ -299,7 +285,6 @@ useEffect(() => {
     total += +calculatePrice(delivery, true);
     total += +taxCalculation();
     total += +calculateTip();
-    total += +configuration.minimumDeliveryFee;
     return parseFloat(total).toFixed(2);
   }
 

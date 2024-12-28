@@ -11,24 +11,29 @@ import { useTheme } from "@emotion/react";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { useTranslation } from "react-i18next";
+import { Subheader } from "../../RestaurantComponent";
+import LanguageToggle from "../../Language/LanguageToggle";
 
 function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   const { t } = useTranslation();
   const classes = useStyle();
   const theme = useTheme();
   const location = useLocation();
+
   return (
     <AppBar elevation={0} position="fixed">
       <Toolbar className={classes.toolbar}>
-        <RouterLink
-          to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
-          className={classes.linkDecoration}
-        >
-          <Logo height={37} width={169} />
-
-          
-        </RouterLink>
+        <Box sx={{ display: "flex", justifyContent: "start", gap: 1 }}>
+          <RouterLink
+            to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
+            className={classes.linkDecoration}
+          >
+            <Logo height={37} width={169} />
+          </RouterLink>
+          <Subheader />
+        </Box>
         <Box className={classes.flex}>
+          <LanguageToggle classes={classes} />
           {showIcon && (
             <>
               <Divider flexItem orientation="vertical" light />

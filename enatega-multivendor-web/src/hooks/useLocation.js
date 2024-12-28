@@ -4,14 +4,23 @@ import ConfigurableValues from "../config/constants";
 
 export default function useLocation() {
   const { GOOGLE_MAPS_KEY } = ConfigurableValues();
+  const DEFAULT_LAT = 31.1106593; // Kafr El-Shaikh coordinates
+  const DEFAULT_LNG = 30.9387799;
 
   Geocode.setApiKey(GOOGLE_MAPS_KEY);
   Geocode.setLanguage("en");
   Geocode.enableDebug(false);
+
   const latLngToGeoString = async ({ latitude, longitude }) => {
-    const location = await Geocode.fromLatLng(latitude, longitude);
-    return location.results[0].formatted_address;
+    try {
+      const location = await Geocode.fromLatLng(latitude, longitude);
+      return location.results[0].formatted_address;
+    } catch (error) {
+      console.error("Error in latLngToGeoString:", error);
+      return "Kafr El-Shaikh, Egypt"; // Default address if geocoding fails
+    }
   };
+
   const getCurrentLocation = (callback) => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -25,15 +34,27 @@ export default function useLocation() {
             deliveryAddress: location.results[0].formatted_address,
           });
         } catch (error) {
-          callback(error);
+          // Fallback to default location if there's an error
+          callback(null, {
+            label: "Home",
+            latitude: DEFAULT_LAT,
+            longitude: DEFAULT_LNG,
+            deliveryAddress: "Kafr El-Shaikh, Egypt",
+          });
         }
       },
       (error) => {
-        callback(error.message);
-        console.log(error.message);
+        // Fallback to default location if geolocation fails
+        callback(null, {
+          label: "Home",
+          latitude: DEFAULT_LAT,
+          longitude: DEFAULT_LNG,
+          deliveryAddress: "Kafr El-Shaikh, Egypt",
+        });
       }
     );
   };
+
   return {
     getCurrentLocation,
     latLngToGeoString,

@@ -133,8 +133,8 @@ function OrderDetail() {
     [restCoordinates, destCoordinates]
   );
 
-  const { loadingOrders, errorOrders, orders, clearCart } = useContext(UserContext);
-  console.log(orders , 'ORDERS------11111111111111111111111111111111111')
+  const { loadingOrders, errorOrders, orders, clearCart } =
+    useContext(UserContext);
 
   useEffect(async () => {
     // await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {

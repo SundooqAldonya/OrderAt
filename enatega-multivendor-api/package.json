@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "node seed/user-seeder.js && node seed/configuration-seeder.js",
-    "start": "node app.js",
-    "start:dev": "node app.js --watch",
-    "dev": "SET NODE_ENV=development && nodemon app",
+    "start": "node init && node app.js",
+    "start:dev": "node init && node app.js --watch",
+    "dev": "node init && SET NODE_ENV=development && nodemon app",
     "prod": "export NODE_ENV=production && nodemon app.js",
     "staging": "export NODE_ENV=staging && nodemon app.js",
     "format": "prettier --write '**/*.js'",
