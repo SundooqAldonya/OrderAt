@@ -13,7 +13,7 @@ const {
 const { polygonSchema } = require('./zone')
 const { SHOP_TYPE } = require('../helpers/enum')
 
-const Schema = mongoose.Schema
+const { Schema } = mongoose
 
 const restaurantSchema = new Schema(
   {
@@ -31,18 +31,24 @@ const restaurantSchema = new Schema(
       type: String,
       default: 'Default Address'
     },
-    categories: {
-      type: [categorySchema]
-      // default: defaultCategoryFood
-    },
-    addons: {
-      type: [addonSchema]
-      // default: defaultAddons
-    },
-    options: {
-      type: [optionSchema]
-      // default: defaultOptions
-    },
+    // categories: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Category'
+    //   }
+    // ],
+    // addons: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Addon'
+    //   }
+    // ],
+    // options: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Option'
+    //   }
+    // ],
     orderPrefix: {
       type: String
     },
@@ -122,30 +128,30 @@ const restaurantSchema = new Schema(
 
   { timestamps: true }
 )
-restaurantSchema.post('save', async doc => {
-  const keywords = []
-  const tags = []
-  keywords.push(doc.name)
+// restaurantSchema.post('save', async doc => {
+//   const keywords = []
+//   const tags = []
+//   keywords.push(doc.name)
 
-  doc.categories.map(category => {
-    keywords.push(category.title)
-    tags.push(category.title)
-    category.foods.map(food => {
-      keywords.push(food.title)
-    })
-  })
-  doc.options.map(option => {
-    keywords.push(option.title)
-  })
-  doc.addons.map(addon => {
-    keywords.push(addon.title)
-  })
-  const RestaurantModel = mongoose.model('Restaurant', restaurantSchema)
-  await RestaurantModel.findByIdAndUpdate(doc.id, {
-    keywords,
-    tags
-  })
-})
+//   doc.categories.map(category => {
+//     keywords.push(category.title)
+//     tags.push(category.title)
+//     category.foods.map(food => {
+//       keywords.push(food.title)
+//     })
+//   })
+//   doc.options.map(option => {
+//     keywords.push(option.title)
+//   })
+//   doc.addons.map(addon => {
+//     keywords.push(addon.title)
+//   })
+//   const RestaurantModel = mongoose.model('Restaurant', restaurantSchema)
+//   await RestaurantModel.findByIdAndUpdate(doc.id, {
+//     keywords,
+//     tags
+//   })
+// })
 
 restaurantSchema.index({ deliveryBounds: '2dsphere' })
 module.exports = mongoose.model('Restaurant', restaurantSchema)

@@ -13,6 +13,7 @@ const RESTAURANT_BY_OWNER = gql`
   ${restaurantByOwner}
 `
 const Restaurant = props => {
+  console.log('here')
   const theme = useTheme()
   const { t } = props
   const [owner, setOwner] = useState()
@@ -96,7 +97,7 @@ const Restaurant = props => {
             marginLeft: '18%',
             overflowY: 'auto'
           }}>
-          <CreateRestaurant owner={owner} onClose = {toggleModal}/>
+          <CreateRestaurant owner={owner} onClose={toggleModal} />
         </Modal>
       </Container>
     </>

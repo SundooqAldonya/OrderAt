@@ -25,6 +25,14 @@ const addonSchema = new Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant'
+    },
+    variation: {
+      type: Schema.Types.ObjectId,
+      ref: 'Variation'
     }
   },
   { timestamps: true }

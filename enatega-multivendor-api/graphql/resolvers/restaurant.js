@@ -609,15 +609,16 @@ module.exports = {
     createRestaurant: async (_, args, { req }) => {
       console.log('createRestanrant', args)
       try {
-        if (!req.userId) throw new Error('Unauthenticated')
+        // console.log({ authenticatedCreate: req.isAuth })
+        // if (!req.isAuth) throw new Error('Unauthenticated')
         const restaurantExists = await Restaurant.exists({
           name: { $regex: new RegExp('^' + args.restaurant.name + '$', 'i') }
         })
         if (restaurantExists) {
           throw Error('Restaurant by this name already exists')
         }
-        const owner = await Owner.findById(args.owner)
-        if (!owner) throw new Error('Owner does not exist')
+        // const owner = await Owner.findById(args.owner)
+        // if (!owner) throw new Error('Owner does not exist')
         const orderPrefix = randomstring.generate({
           length: 5,
           capitalization: 'uppercase'
@@ -642,9 +643,11 @@ module.exports = {
         console.log('New Restaurant: ', restaurant)
 
         const result = await restaurant.save()
-        owner.restaurants.push(result.id)
-        await owner.save()
-        return transformRestaurant(result)
+        console.log({ result })
+        // owner.restaurants.push(result.id)
+        // await owner.save()
+        // return transformRestaurant(result)
+        return result
       } catch (err) {
         throw err
       }

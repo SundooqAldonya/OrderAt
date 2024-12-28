@@ -21,8 +21,6 @@ const UPLOAD_TOKEN = gql`
   ${uploadToken}
 `
 
-
-
 const App = () => {
   const {
     VAPID_KEY,
@@ -36,9 +34,7 @@ const App = () => {
     GOOGLE_MAPS_KEY,
     SENTRY_DSN
   } = ConfigurableValues()
- 
 
-  
   const client = useApolloClient()
   const [user] = useState(localStorage.getItem('user-enatega'))
   const userType = localStorage.getItem('user-enatega')
@@ -46,7 +42,7 @@ const App = () => {
     : null
   useEffect(() => {
     if (user) {
-      const initializeFirebase = async() => {
+      const initializeFirebase = async () => {
         if (await isFirebaseSupported()) {
           const messaging = initialize(
             FIREBASE_KEY,
@@ -85,7 +81,7 @@ const App = () => {
             })
             .catch(console.log)
 
-          onMessage(messaging, function(payload) {
+          onMessage(messaging, function (payload) {
             console.log(payload)
             // Customize notification here
             // const { title, body } = payload.notification
@@ -96,7 +92,7 @@ const App = () => {
               icon: 'https://multivendor-admin.ninjascode.com/favicon.png'
             }
             const nt = new Notification(notificationTitle, notificationOptions)
-            nt.onclick = function(event) {
+            nt.onclick = function (event) {
               event.preventDefault() // prevent the browser from focusing the Notification's tab
               window.open('https://multivendor-admin.ninjascode.com/dashboard')
               nt.close()
@@ -120,8 +116,6 @@ const App = () => {
       })
     }
   }, [SENTRY_DSN])
-
-
 
   const route = userType
     ? userType === 'VENDOR'

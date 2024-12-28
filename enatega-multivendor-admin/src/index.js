@@ -36,10 +36,11 @@ function Main() {
       reconnect: true
     }
   })
+  let token = null
+
   const request = async operation => {
     const data = localStorage.getItem('user-enatega')
 
-    let token = null
     if (data) {
       token = JSON.parse(data).token
     }
@@ -49,6 +50,7 @@ function Main() {
       }
     })
   }
+  console.log({ token })
 
   const requestLink = new ApolloLink(
     (operation, forward) =>
@@ -120,4 +122,9 @@ function Main() {
 }
 
 // eslint-disable-next-line react/no-deprecated
-ReactDOM.render(<Main />, document.getElementById('root'))
+ReactDOM.render(
+  <React.StrictMode>
+    <Main />
+  </React.StrictMode>,
+  document.getElementById('root')
+)

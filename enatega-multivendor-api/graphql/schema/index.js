@@ -116,9 +116,9 @@ const typeDefs = gql`
     logo: String
     address: String
     location: Point
-    categories: [Category!]
-    options: [Option!]
-    addons: [Addon!]
+    # categories: [Category!]
+    # options: [Option!]
+    # addons: [Addon!]
     reviewData: ReviewData
     zone: Zone
     username: String
@@ -1282,8 +1282,8 @@ const typeDefs = gql`
       offerNotification: Boolean!
       orderNotification: Boolean!
     ): User!
-    createCategory(category: CategoryInput): Restaurant!
-    editCategory(category: CategoryInput): Restaurant!
+    createCategory(category: CategoryInput): Category!
+    editCategory(category: CategoryInput): Category!
     createFood(foodInput: FoodInput): Restaurant!
     editFood(foodInput: FoodInput): Restaurant!
     placeOrder(
@@ -1364,7 +1364,7 @@ const typeDefs = gql`
     forgotPassword(email: String!, otp: String!): ForgotPassword!
     resetPassword(password: String!, email: String!): ForgotPassword!
     vendorResetPassword(oldPassword: String!, newPassword: String!): Boolean!
-    deleteCategory(id: String!, restaurant: String!): Restaurant!
+    deleteCategory(id: String!, restaurant: String!): Message!
     deleteFood(
       id: String!
       restaurant: String!

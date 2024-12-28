@@ -85,6 +85,7 @@ async function startApolloServer() {
     formatError: (formattedError, error) => {
       console.log({ formattedError })
       console.log({ errorLocation: formattedError.locations[0] })
+      console.log({ errorLocation: formattedError.extensions.exception })
       // console.log({ formattedError: formattedError.locations });
       // console.log({ formattedError: formattedError.extensions.exception });
     }
@@ -158,15 +159,15 @@ async function startApolloServer() {
   //   )
   // )
 
-  // Serialize user into the session
-  passport.serializeUser((user, done) => {
-    done(null, user)
-  })
+  // // Serialize user into the session
+  // passport.serializeUser((user, done) => {
+  //   done(null, user)
+  // })
 
-  // Deserialize user from the session
-  passport.deserializeUser((obj, done) => {
-    done(null, obj)
-  })
+  // // Deserialize user from the session
+  // passport.deserializeUser((obj, done) => {
+  //   done(null, obj)
+  // })
 
   app.use('/paypal', paypal)
   app.use('/stripe', stripe)

@@ -144,8 +144,7 @@ const SuperAdminDashboard = props => {
                     variant="contained"
                     sx={{
                       width: '30%',
-                      fontFamily:"Roboto",
-
+                      fontFamily: 'Roboto'
                     }}
                     className={globalClasses.button}>
                     {t('ViewSite')}
@@ -192,7 +191,7 @@ const SuperAdminDashboard = props => {
             <BoxCard>
               <Typography sx={headSty}>{t('TotalUsers')}</Typography>
               <Typography sx={sty}>
-                {loadingUsers ? '...' : users.users.length}
+                {loadingUsers ? '...' : users?.users?.length}
               </Typography>
               <img
                 src={UserStat}

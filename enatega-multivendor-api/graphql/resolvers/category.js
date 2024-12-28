@@ -22,16 +22,18 @@ module.exports = {
       try {
         console.log(args.category)
         const category = new Category({
-          title: args.category.title
+          title: args.category.title,
+          restaurant: args.restaurantId
         })
-        // await category.save()
-        const restaurant = await Restaurant.findOne({
-          _id: args.category.restaurant
-        })
-        restaurant.categories.push(category)
-        await restaurant.save()
+        await category.save()
+        // const restaurant = await Restaurant.findOne({
+        //   _id: args.category.restaurant
+        // })
+        // restaurant.categories.push(category)
+        // await restaurant.save()
 
-        return transformRestaurant(restaurant)
+        // return transformRestaurant(restaurant)
+        return category
       } catch (err) {
         throw err
       }
@@ -39,15 +41,19 @@ module.exports = {
     editCategory: async (_, args, context) => {
       console.log('editCategory')
       try {
-        const restaurant = await Restaurant.findOne({
-          _id: args.category.restaurant
-        })
-        restaurant.categories.id(args.category._id).set({
-          title: args.category.title
-        })
-        await restaurant.save()
+        const category = await Category.findById(args.categoryId)
+        category.title = args.title
+        await category.save()
+        // const restaurant = await Restaurant.findOne({
+        //   _id: args.category.restaurant
+        // })
+        // restaurant.categories.id(args.category._id).set({
+        //   title: args.category.title
+        // })
+        // await restaurant.save()
 
-        return transformRestaurant(restaurant)
+        // return transformRestaurant(restaurant)
+        return category
       } catch (err) {
         throw err
       }
@@ -55,10 +61,12 @@ module.exports = {
     deleteCategory: async (_, { id, restaurant }, context) => {
       console.log('deleteCategory')
       try {
-        const restaurants = await Restaurant.findOne({ _id: restaurant })
-        restaurants.categories.id(id).remove()
-        await restaurants.save()
-        return transformRestaurant(restaurants)
+        const category = await Category.findByIdAndDelete(id)
+        return { message: 'Removed category successfully!' }
+        // const restaurants = await Restaurant.findOne({ _id: restaurant })
+        // restaurants.categories.id(id).remove()
+        // await restaurants.save()
+        // return transformRestaurant(restaurants)
       } catch (err) {
         throw err
       }

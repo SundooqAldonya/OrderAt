@@ -13,10 +13,8 @@ import { useParams } from 'react-router-dom'
 import { customStyles } from '../utils/tableCustomStyles'
 import useGlobalStyles from '../utils/globalStyles'
 import TableHeader from '../components/TableHeader'
+import SubscribeFunc from '../components/SubscribeFunc'
 
-const SUBSCRIPTION_ORDER = gql`
-  ${subscriptionOrder}
-`
 const UPDATE_STATUS = gql`
   ${updateStatus}
 `
@@ -217,20 +215,6 @@ const DispatchRestaurant = props => {
         )}
       </Container>
     </>
-  )
-}
-
-const SubscribeFunc = row => {
-  const { data: dataSubscription } = useSubscription(SUBSCRIPTION_ORDER, {
-    variables: { id: row._id }
-  })
-  console.log(dataSubscription)
-  return (
-    <div style={{ overflow: 'visible', whiteSpace: 'pre' }}>
-      {row.orderId}
-      <br />
-      {transformToNewline(row.deliveryAddress.deliveryAddress, 3)}
-    </div>
   )
 }
 

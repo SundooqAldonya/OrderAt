@@ -22,18 +22,13 @@ import { ReactComponent as DispatchIcon } from '../assets/svg/svg/Dispatch.svg'
 import TableHeader from '../components/TableHeader'
 import { NotificationContainer, NotificationManager } from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
+import RiderFunc from '../components/RiderFunc'
 
 const SUBSCRIPTION_ORDER = gql`
   ${subscriptionOrder}
 `
 const UPDATE_STATUS = gql`
   ${updateStatus}
-`
-const ASSIGN_RIDER = gql`
-  ${assignRider}
-`
-const GET_RIDERS_BY_ZONE = gql`
-  ${getRidersByZone}
 `
 const GET_ACTIVE_ORDERS = gql`
   ${getActiveOrders}
@@ -47,7 +42,7 @@ const Orders = props => {
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const [mutateUpdate] = useMutation(UPDATE_STATUS)
   const globalClasses = useGlobalStyles()
-  const [mutateAssign] = useMutation(ASSIGN_RIDER)
+  // const [mutateAssign] = useMutation(ASSIGN_RIDER)
 
   const [restaurantId, seteRestaurantId] = useState(
     localStorage.getItem('restaurantId')
@@ -298,52 +293,4 @@ const Orders = props => {
   )
 }
 
-const RiderFunc = row => {
-  const { data: dataZone } = useQuery(GET_RIDERS_BY_ZONE, {
-    variables: { id: row.zone._id }
-  })
-  return (
-    <Select
-      id="input-rider"
-      name="input-rider"
-      value=""
-      displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
-      style={{ width: '50px' }}
-      className={globalClasses.selectInput}>
-      {dataZone &&
-        dataZone.ridersByZone.map(rider => (
-          <MenuItem
-            style={{ color: 'black' }}
-            onClick={() => {
-              mutateAssign({
-                variables: {
-                  id: row._id,
-                  riderId: rider._id
-                },
-                onCompleted: data => {
-                  console.error('Mutation success data:', data)
-                  NotificationManager.success(
-                    'Successful',
-                    'Rider updated!',
-                    3000
-                  )
-                },
-                onError: error => {
-                  console.error('Mutation error:', error)
-                  NotificationManager.error(
-                    'Error',
-                    'Failed to update rider!',
-                    3000
-                  )
-                }
-              })
-            }}
-            key={rider._id}>
-            {rider.name}
-          </MenuItem>
-        ))}
-    </Select>
-  )
-}
 export default withTranslation()(Orders)

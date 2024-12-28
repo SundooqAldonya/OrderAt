@@ -11,24 +11,21 @@ const foodSchema = new Schema(
     description: {
       type: String
     },
-    variations: [variationSchema],
-    // can we store base64 image in mongodb, research,
-    // if so can we use it here and how would it affect apollo server schema
     image: {
       type: String
     },
     isActive: {
       type: Boolean,
       default: true
+    },
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant'
+    },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category'
     }
-    // restaurant: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'Restaurant'
-    // },
-    // category: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'Category'
-    // }
   },
   { timestamps: true }
 )

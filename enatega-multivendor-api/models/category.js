@@ -13,13 +13,13 @@ const categorySchema = new Schema(
       type: Boolean,
       default: true
     },
-    // restaurant: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'Restaurant'
-    // },
-    foods: {
-      type: [foodSchema]
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant'
     }
+    // foods: {
+    //   type: [foodSchema]
+    // }
   },
   { timestamps: true }
 )
