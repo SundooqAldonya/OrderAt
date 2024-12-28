@@ -117,12 +117,19 @@ export default function AmountCard(props) {
                   variant="body2"
                   className={clsx(classes.disabledText, classes.smallText)}
                 >
-                  {`${configuration.currencySymbol} ${parseFloat(
+                  {/* {`${configuration.currencySymbol} ${parseFloat(
                     props.orderAmount -
                     deliveryChargesdata -
                       props.taxationAmount -
                       props.tipping
-                  ).toFixed(2)}`}
+                  ).toFixed(2)}`} */}
+                   {`${configuration.currencySymbol} ${parseFloat(
+                    props.orderAmount -
+                    props.deliveryCharges -
+                      props.taxationAmount -
+                      props.tipping
+                  ).toFixed(2)}`} 
+                  
                 </Typography>
               </Grid>
             </Grid>
@@ -184,7 +191,7 @@ export default function AmountCard(props) {
                       className={clsx(classes.disabledText, classes.smallText)}
                     >
                       {`${configuration.currencySymbol} ${parseFloat(
-                        deliveryChargesdata
+                        props.deliveryCharges
                       ).toFixed(2)}`}
                     </Typography>
                   </Grid>

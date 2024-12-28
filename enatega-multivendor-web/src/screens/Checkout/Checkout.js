@@ -405,8 +405,10 @@ function calculateTotal() {
             label: location.label,
             deliveryAddress: location.deliveryAddress,
             details: location.details,
-            longitude:  location.longitude,
-            latitude:   location.latitude,
+            // longitude:  location.longitude,
+            // latitude:   location.latitude,
+            longitude: location.longitude.toString(), // Convert longitude to string
+            latitude: location.latitude.toString(),   // Convert latitude to string
             selected: true,
           },
           orderDate: selectedDate,

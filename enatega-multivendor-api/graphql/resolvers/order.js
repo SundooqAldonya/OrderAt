@@ -20,7 +20,8 @@ const {
 const { sendEmail } = require('../../helpers/email')
 const {
   sendNotification,
-  calculateDistance
+  calculateDistance,
+  calculateAmount
 } = require('../../helpers/utilities')
 const { placeOrderTemplate } = require('../../helpers/templates')
 const { sendNotificationToRestaurant } = require('../../helpers/notifications')
@@ -370,7 +371,7 @@ module.exports = {
         const costType = configuration.costType
 
        
-        let deliveryCharges= 0 ;
+       // let deliveryCharges= 0 ;
 
          // if (costType === 'fixed') {
         //     // Calculate delivery charges (if it's not picked up, apply delivery charges)
@@ -381,21 +382,29 @@ module.exports = {
 
         //deliveryCharges = configuration.minimumDeliveryFee;
 
-        if(costType === 'fixed'){
-          deliveryCharges = configuration.deliveryRate
-          if(deliveryCharges <= configuration.minimumDeliveryFee){
-            deliveryCharges = configuration.minimumDeliveryFee
-          }
+
+        let amount = calculateAmount(costType, configuration.deliveryRate, distance);
+        let deliveryCharges = amount
+        if(parseFloat(amount) <= configuration.minimumDeliveryFee){
+          deliveryCharges = configuration.minimumDeliveryFee
         }
-        else{
-           if((Math.ceil(distance) * configuration.deliveryRate) <= (configuration.minimumDeliveryFee)){
-            deliveryCharges = configuration.minimumDeliveryFee
-        }
-        else{
-          deliveryCharges = Math.ceil(distance) * configuration.deliveryRate
+
+
+        // if(costType === 'fixed'){
+        //   deliveryCharges = configuration.deliveryRate
+        //   if(deliveryCharges <= configuration.minimumDeliveryFee){
+        //     deliveryCharges = configuration.minimumDeliveryFee
+        //   }
+        // }
+        // else{
+        //    if((Math.ceil(distance) * configuration.deliveryRate) <= (configuration.minimumDeliveryFee)){
+        //     deliveryCharges = configuration.minimumDeliveryFee
+        // }
+        // else{
+        //   deliveryCharges = Math.ceil(distance) * configuration.deliveryRate
           
-        }
-        }
+        // }
+        // }
 
 
         // if(Math.ceil(distance) * configuration.deliveryRate < configuration.minimumDeliveryFee){
@@ -625,16 +634,26 @@ module.exports = {
         // } else {
         //   DELIVERY_CHARGES = configuration.minimumDeliveryFee;
         // }
-        let DELIVERY_CHARGES = 0;
-        if (distance > 2) {
-          if (costType === 'fixed') {
-            DELIVERY_CHARGES = configuration.deliveryRate;
-          } else {
-            DELIVERY_CHARGES = Math.ceil(distance) * configuration.deliveryRate;
-          }
-        } else {
-          DELIVERY_CHARGES = configuration.minimumDeliveryFee;
+
+
+        let amount = calculateAmount(costType, configuration.deliveryRate, distance);
+        let DELIVERY_CHARGES = amount
+        if(parseFloat(amount) <= configuration.minimumDeliveryFee){
+          DELIVERY_CHARGES = configuration.minimumDeliveryFee
         }
+
+
+
+        // let DELIVERY_CHARGES = 0;
+        // if (distance > 2) {
+        //   if (costType === 'fixed') {
+        //     DELIVERY_CHARGES = configuration.deliveryRate;
+        //   } else {
+        //     DELIVERY_CHARGES = Math.ceil(distance) * configuration.deliveryRate;
+        //   }
+        // } else {
+        //   DELIVERY_CHARGES = configuration.minimumDeliveryFee;
+        // }
 
         console.log(`Delivery Charges: ${DELIVERY_CHARGES}`);
         let price = 0.0

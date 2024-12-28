@@ -200,8 +200,8 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
             phone: searchQuery,
             addresses: [
               {
-                latitude:latitude,
-                longitude:longitude,
+                latitude:latitude.toString(),
+                longitude:longitude.toString(),
                 deliveryAddress: newCustomer.address,
                 label: 'Home',
                 selected: true,
