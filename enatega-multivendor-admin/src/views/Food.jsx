@@ -110,7 +110,7 @@ const Food = props => {
       name: t('Category'),
       sortable: true,
       selector: 'category.category',
-      cell: row => <>{row.category}</>
+      cell: row => <>{row.category.title}</>
     },
     {
       name: t('Image'),

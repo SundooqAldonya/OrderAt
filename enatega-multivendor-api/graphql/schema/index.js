@@ -206,6 +206,18 @@ const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
   }
+  type FoodListByRestaurant {
+    _id: ID!
+    title: String
+    description: String
+    # variations: [Variation!]
+    restaurant: String!
+    category: Category!
+    image: String
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
 
   type CartFood {
     _id: ID!
@@ -1122,7 +1134,7 @@ const typeDefs = gql`
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
-    foodListByRestaurant(id: String!): [Food!]
+    foodListByRestaurant(id: String!): [FoodListByRestaurant!]
     categoriesByRestaurant(id: String!): [CategoriesByRestaurant!]
     foods: [Food!]!
     orders(offset: Int): [Order!]!

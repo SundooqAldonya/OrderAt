@@ -14,7 +14,9 @@ module.exports = {
     async foodListByRestaurant(_, args, context) {
       console.log({ argsFood: args })
       try {
-        const foodList = await Food.find({ restaurant: args.id })
+        const foodList = await Food.find({ restaurant: args.id }).populate(
+          'category'
+        )
         console.log({ foodList })
         return foodList
       } catch (err) {
