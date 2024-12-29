@@ -206,6 +206,20 @@ const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
   }
+
+  type NewFood {
+    _id: ID!
+    title: String
+    description: String
+    # variations: [Variation!]
+    restaurant: String!
+    category: Category!
+    image: String
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+
   type FoodListByRestaurant {
     _id: ID!
     title: String
@@ -1312,8 +1326,8 @@ const typeDefs = gql`
     ): User!
     createCategory(category: CategoryInput): Category!
     editCategory(category: CategoryInput): Category!
-    createFood(foodInput: FoodInput): Food!
-    editFood(foodInput: FoodInput): Restaurant!
+    createFood(foodInput: FoodInput): NewFood!
+    editFood(foodInput: FoodInput): NewFood!
     placeOrder(
       restaurant: String!
       orderInput: [OrderInput!]!

@@ -30,26 +30,21 @@ module.exports = {
       console.log('createFood')
       console.log({ args })
       try {
-        const createReadStream = await args?.foodInput?.file?.file
-          ?.createReadStream
-
-        // const variations = await args.foodInput.variations.map(variation => {
-        //   return new Variation(variation)
-        // })
-
         const food = new Food({
           title: args.foodInput.title,
           description: args.foodInput.description,
           restaurant: args.foodInput.restaurant,
           category: args.foodInput.category
         })
-        // await uploadFoodImage({
-        //   id: food._id,
-        //   file: args.foodInput.file
-        // })
+        await uploadFoodImage({
+          id: food._id,
+          file: args.foodInput.file
+        })
         console.log({ food })
         await food.save()
-        return food
+        const newFood = await food.populate('category')
+        console.log({ newFood })
+        return newFood
       } catch (err) {
         console.log(err)
         throw err

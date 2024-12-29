@@ -7,6 +7,10 @@ export const createFood = `
       title
       description
       image
+      category {
+        _id
+        title
+      }
       isActive
       createdAt
       updatedAt

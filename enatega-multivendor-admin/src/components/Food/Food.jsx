@@ -65,29 +65,28 @@ function Food(props) {
   const [titleError, titleErrorSetter] = useState(null)
   const [categoryError, categoryErrorSetter] = useState(null)
   const [addonModal, addonModalSetter] = useState(false)
-  const [variation, variationSetter] = useState(
-    props.food
-      ? props.food.variations.map(({ title, price, discounted, addons }) => {
-          return {
-            title,
-            price,
-            discounted,
-            addons,
-            titleError: null,
-            priceError: null
-          }
-        })
-      : [
-          {
-            title: '',
-            price: '',
-            discounted: '',
-            addons: [],
-            titleError: null,
-            priceError: null
-          }
-        ]
-  )
+  const [variation, variationSetter] = useState(null)
+  // props.food
+  //   ? props.food.variations.map(({ title, price, discounted, addons }) => {
+  //       return {
+  //         title,
+  //         price,
+  //         discounted,
+  //         addons,
+  //         titleError: null,
+  //         priceError: null
+  //       }
+  //     })
+  //   : [
+  //       {
+  //         title: '',
+  //         price: '',
+  //         discounted: '',
+  //         addons: [],
+  //         titleError: null,
+  //         priceError: null
+  //       }
+  //     ]
 
   const restaurantId = localStorage.getItem('restaurantId')
 
@@ -119,6 +118,8 @@ function Food(props) {
     setTimeout(onDismiss, 3000)
   }
   const onCompleted = data => {
+    console.log({ data })
+
     if (!props.food) clearFields()
     const message = props.food
       ? t('FoodUpdatedSuccessfully')
@@ -127,8 +128,10 @@ function Food(props) {
     successSetter(message)
     setTitle('')
     setDescription('')
+    props.updateFoodList(data.createFood)
     setTimeout(onDismiss, 3000)
   }
+
   const [mutate, { loading: mutateLoading }] = useMutation(mutation, {
     onError,
     onCompleted
@@ -480,7 +483,7 @@ function Food(props) {
                 </Box>
               </Box>
               <Box classes={classes.form}>
-                {variation.map((variationItem, index) => (
+                {variation?.map((variationItem, index) => (
                   <Box key={variationItem._id} pl={1} pr={1}>
                     <Box className={globalClasses.flexRow}>
                       <Grid container>
@@ -660,7 +663,6 @@ function Food(props) {
                         _id: props.food ? props.food._id : '',
                         title: formRef.current['input-title'].value,
                         description: formRef.current['input-description'].value,
-                        // image: await uploadImageToCloudinary(),
                         file: image,
                         category: formRef.current['input-category'].value
                         // variations: variation.map(

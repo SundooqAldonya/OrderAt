@@ -146,6 +146,10 @@ const Food = props => {
     }
   ]
 
+  const updateFoodList = item => {
+    setFoodList([...foodList, item])
+  }
+
   // const foodsList = categories => {
   //   const list = []
   //   categories &&
@@ -210,7 +214,10 @@ const Food = props => {
         <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
       )}
       <Container className={globalClasses.flex} fluid>
-        <FoodComponent onClose={closeEditModal} />
+        <FoodComponent
+          updateFoodList={updateFoodList}
+          onClose={closeEditModal}
+        />
         {errorQuery && <span>`Error! ${errorQuery.message}`</span>}
         {loadingQuery ? (
           <CustomLoader />
