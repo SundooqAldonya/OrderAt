@@ -130,6 +130,8 @@ function SearchContainer({
   }, [value, inputValue, fetch]);
 
   useEffect(() => {
+
+
     if (!location) return;
     if (fetchRef.current) return;
     const variables = {
@@ -160,6 +162,7 @@ function SearchContainer({
           handleClose={handleClose}
         />
         <Grid className={classes.temp}>
+          
           {map && (
             <GoogleMap
               mapContainerStyle={{
@@ -168,10 +171,10 @@ function SearchContainer({
                 flex: 1,
                 //zIndex: 10
               }}
-              zoom={14}
+              zoom={10}
               center={{
-                lat: parseFloat(location?.latitude) || 31.1106593,
-                lng: parseFloat(location?.longitude) || 30.9387799,
+                lat: parseFloat(location?.latitude) || 33.6844,
+                lng: parseFloat(location?.longitude) || 73.0479,
               }}
               options={{
                 styles: mapStyles,
@@ -479,13 +482,11 @@ function SearchContainer({
                         }}
                         variant="outlined"
                         placeholder="Enter your full address"
-                        onKeyPress={(event) => {
-                          if (event.key === "Enter") {
-                            if (location) {
-                              navigateTo("/restaurant-list");
-                            }
+                        onKeyPress={(event) => { if(event.key === 'Enter'){
+                          if (location) {
+                            navigateTo("/restaurant-list");
                           }
-                        }}
+                         } }}
                         InputLabelProps={{ style: { display: "none" } }}
                         fullWidth
                         InputProps={{
@@ -581,6 +582,7 @@ function SearchContainer({
                   xs={12}
                   sm={3}
                   style={{ paddingLeft: "10px", textAlign: "center" }}
+                  
                 >
                   <Button
                     variant="contained"

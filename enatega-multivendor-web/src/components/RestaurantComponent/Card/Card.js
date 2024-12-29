@@ -106,9 +106,14 @@ function PricingDelivery({
           {deliveryCharges > 0 ? "delivery fee" : ""}
         </Typography>
       </Box>
+      
     </Box>
+    
   );
+  
 }
+
+
 function Card(props) {
   const { t } = useTranslation();
   const item = props.data ?? null;

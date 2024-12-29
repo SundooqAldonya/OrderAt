@@ -6,7 +6,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -26,13 +26,14 @@ function Footer() {
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
-  const [hoveredLink, setHoveredLink] = useState(null);
+   const [hovered, setHovered] = useState(false);
+    const [hoveredLink, setHoveredLink] = useState(null);
 
-  const links = [
-    { id: 1, to: "/", label: t("footerLinkHome") },
-    { id: 2, to: "/privacy", label: t("footerLinkPP") },
-    { id: 3, to: "/terms", label: t("footerLinkTC") },
-  ];
+    const links = [
+      { id: 1, to: "/", label: "Home" },
+      { id: 2, to: "/privacy", label: "Privacy and policy" },
+      { id: 3, to: "/terms", label: "Terms and condition" }, // New link
+    ];
 
   const redirectHandler = (link) => {
     window.open(link, "_blank");
@@ -42,15 +43,15 @@ function Footer() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const handleButtonClick = () => {
-    try {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
-      console.error("Smooth scroll failed", error);
+  const handleButtonClick = () => {  
+    try {  
+      window.scrollTo({ top: 0, behavior: 'smooth' });  
+    } catch (error) {  
+      console.error("Smooth scroll failed", error);  
       // Fallback to instant scroll  
-      window.scrollTo(0, 0);
-    }
-  };
+      window.scrollTo(0, 0);  
+    }  
+  };  
 
 
   return (
@@ -58,7 +59,7 @@ function Footer() {
       <Grid
         item
         xs={12}
-        md={2}
+        md={2.5}
         align="center"
         style={{ padding: small ? "3rem" : 0 }}
       >
@@ -77,7 +78,7 @@ function Footer() {
           <Typography
             variant="body2"
             style={{
-
+              
               color: theme.palette.common.white,
               fontSize: 15,
             }}
@@ -94,26 +95,26 @@ function Footer() {
           >
             {t("linksTitle")}
           </Typography>
-          {links.map((link) => (
-            <RouterLink
-              key={link.id}
-              to={link.to}
-              onClick={handleButtonClick}
-              style={{ textDecoration: "none" }}
-              onMouseEnter={() => setHoveredLink(link.id)}
-              onMouseLeave={() => setHoveredLink(null)}
-            >
-              <Typography
-                variant="body2"
-                style={{
-                  marginTop: 10,
-                  color: hoveredLink === link.id ? "#8BC34A" : "#000",
-                }}
-              >
-                {t ? t(link.label) : link.label}
-              </Typography>
-            </RouterLink>
-          ))}
+         {links.map((link) => (
+        <RouterLink
+          key={link.id}
+          to={link.to}
+          onClick={handleButtonClick}
+          style={{ textDecoration: "none" }}
+          onMouseEnter={() => setHoveredLink(link.id)}
+          onMouseLeave={() => setHoveredLink(null)}
+        >
+          <Typography
+            variant="body2"
+            style={{
+              marginTop: 10,
+              color: hoveredLink === link.id ? "#8BC34A" : "#000",
+            }}
+          >
+            {t ? t(link.label) : link.label}
+          </Typography>
+        </RouterLink>
+      ))}
 
           <Divider
             style={{
@@ -198,7 +199,7 @@ function Footer() {
             <GitHubIcon style={{ color: theme.palette.common.white }} />
           </Box>
         </Box>
-
+        
 
         <Divider
           style={{

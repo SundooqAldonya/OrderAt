@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import { useJsApiLoader } from "@react-google-maps/api";
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect,useContext, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { getToken, onMessage } from "firebase/messaging";
 import { initialize, isFirebaseSupported } from "./firebase";
@@ -35,10 +35,9 @@ import AuthRoute from "./routes/AuthRoute";
 import PrivateRoute from "./routes/PrivateRoute";
 import VerifyPhone from "./screens/VerifyPhone/VerifyPhone";
 import UserContext from "./context/User";
-import BusinessSignup from "./screens/BusinessSignup/BusinessSignup";
-import DriverSignup from "./screens/DriverSignup/DriverSignup";
 import { useTranslation } from "react-i18next";
 //import { fetchConfiguration } from "./utils/helper";
+
 
 //import { Integrations } from "@sentry/tracing";
 
@@ -52,7 +51,7 @@ const GoogleMapsLoader = ({
   const { t, i18n } = useTranslation();
 
   //Handlers
-  /*   const onWindowUpdateAmplitude = async () => {
+/*   const onWindowUpdateAmplitude = async () => {
     const { webAmplitudeApiKey } = await fetchConfiguration();
 
     if (webAmplitudeApiKey) {
@@ -120,6 +119,9 @@ const GoogleMapsLoader = ({
       }
     };
     initializeFirebase();
+
+  
+
   }, [t, i18n, VAPID_KEY]);
 
   /* ß */
@@ -163,21 +165,23 @@ const GoogleMapsLoader = ({
 };
 
 function App() {
-  const { GOOGLE_MAPS_KEY, LIBRARIES, VAPID_KEY, SENTRY_DSN } =
-    ConfigurableValues();
+  const { GOOGLE_MAPS_KEY, LIBRARIES, VAPID_KEY,SENTRY_DSN } = ConfigurableValues();
   const { isLoggedIn } = useContext(UserContext);
 
   useEffect(() => {
+  
     if (SENTRY_DSN) {
       Sentry.init({
         dsn: SENTRY_DSN,
-        //SENTRY_DSN  integrations: [new Integrations.BrowserTracing()],
+      //SENTRY_DSN  integrations: [new Integrations.BrowserTracing()],
         environment: "development",
         enableInExpoDevelopment: true,
         debug: true,
         tracesSampleRate: 1.0, // to be changed to 0.2 in production
       });
+   
     }
+
   }, [SENTRY_DSN]);
 
   return GOOGLE_MAPS_KEY ? (
@@ -342,8 +346,6 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/business-signup" element={<BusinessSignup />} />
-          <Route path="/driver-signup" element={<DriverSignup />} />
         </Routes>
       </GoogleMapsLoader>
     </HashRouter>
