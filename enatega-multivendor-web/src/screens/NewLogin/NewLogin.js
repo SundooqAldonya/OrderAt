@@ -13,7 +13,7 @@ import EmailImage from "../../assets/images/email.png";
 import FlashMessage from "../../components/FlashMessage";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 function isValidEmailAddress(address) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(address);
@@ -61,12 +61,13 @@ function NewLogin() {
 
   const handleAction = () => {
     const emailValue = formRef.current["email"].value;
-    if (isValidEmailAddress(emailValue)) {
-      setError("");
-      EmailEixst({ variables: { email: emailValue } });
-    } else {
-      setError("Invalid Email");
-    }
+    EmailEixst({ variables: { email: emailValue } });
+    // if (isValidEmailAddress(emailValue)) {
+    //   setError("");
+    //   EmailEixst({ variables: { email: emailValue } });
+    // } else {
+    //   setError("Invalid Email");
+    // }
   };
 
   const toggleSnackbar = useCallback(() => {
@@ -98,14 +99,14 @@ function NewLogin() {
       </Box>
       <Box mt={theme.spacing(1)} />
       <Typography variant="h5" className={classes.font700}>
-        {t('whatsYourEmail')}
+        {t("whatsYourEmail")}
       </Typography>
       <Box mt={theme.spacing(1)} />
       <Typography
         variant="caption"
         className={`${classes.caption} ${classes.fontGrey}`}
       >
-        {t('checkAccount')}
+        {t("checkAccount")}
       </Typography>
       <Box mt={theme.spacing(4)} />
       <form ref={formRef}>
@@ -114,8 +115,8 @@ function NewLogin() {
           error={Boolean(error)}
           helperText={error}
           variant="outlined"
-          defaultValue={"demo-customer@enatega.com"}
-          label="Email"
+          defaultValue={""}
+          label="Email or phone"
           type={"email"}
           fullWidth
           InputLabelProps={{
@@ -144,7 +145,7 @@ function NewLogin() {
               variant="caption"
               className={`${classes.caption} ${classes.font700}`}
             >
-              {t('continue')}
+              {t("continue")}
             </Typography>
           )}
         </Button>

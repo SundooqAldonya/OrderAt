@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { GoogleLogin } from "react-google-login";
-import { gapi } from 'gapi-script';
+import { gapi } from "gapi-script";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -14,13 +14,17 @@ import FlashMessage from "../../components/FlashMessage";
 import useRegistration from "../../hooks/useRegistration";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { LoginSocialFacebook } from "reactjs-social-login";
+import { FacebookLoginButton } from "react-social-login-buttons";
 
 function Login() {
   const { GOOGLE_CLIENT_ID } = ConfigurableValues();
   const { t } = useTranslation();
   const theme = useTheme();
   const [mainError, setMainError] = useState({});
+  const [profile, setProfile] = useState({});
+  const [provider, setProvider] = useState({});
   const classes = useStyles();
   const {
     goolgeSuccess,
@@ -50,10 +54,10 @@ function Login() {
     function start() {
       gapi.client.init({
         clientId: GOOGLE_CLIENT_ID,
-        scope: 'email',
+        scope: "email",
       });
     }
-    gapi.load('client:auth2', start);
+    gapi.load("client:auth2", start);
   }, [GOOGLE_CLIENT_ID]);
 
   const callGoogle = useCallback(
@@ -71,6 +75,17 @@ function Login() {
     setMainError({});
   }, []);
 
+  const onLoginStart = useCallback(() => {
+    console.log("login start");
+  }, []);
+  console.log({ provider, profile });
+
+  const onLogoutSuccess = useCallback(() => {
+    setProfile(null);
+    setProvider("");
+    alert("logout success");
+  }, []);
+
   return (
     <LoginWrapper>
       <FlashMessage
@@ -80,15 +95,30 @@ function Login() {
         handleClose={toggleSnackbar}
       />
       <Typography variant="h5" className={classes.font700}>
-        {t('welcome')}
+        {t("welcome")}
       </Typography>
 
       <Typography
         variant="caption"
         className={`${classes.caption} ${classes.fontSubHead} ${classes.font700} `}
       >
-        {t('signUpOrLogin')}
+        {t("signUpOrLogin")}
       </Typography>
+      <LoginSocialFacebook
+        // appId={"3511551789148450"}
+        appId={"922954276598263"}
+        onLoginStart={onLoginStart}
+        onResolve={({ provider, data }) => {
+          console.log({ provider, data });
+          setProvider(provider);
+          setProfile(data);
+        }}
+        onReject={(err) => {
+          console.log(err);
+        }}
+      >
+        <FacebookLoginButton />
+      </LoginSocialFacebook>
       <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         render={(renderProps) => (
@@ -114,7 +144,7 @@ function Login() {
                 align="center"
                 className={`${classes.font700} ${classes.caption} ${classes.btnText}`}
               >
-                {t('signInWithGoogle')}
+                {t("signInWithGoogle")}
               </Typography>
             )}
           </Button>
@@ -146,7 +176,7 @@ function Login() {
             variant="caption"
             className={`${classes.fontGrey} ${classes.caption} ${classes.font700} `}
           >
-            {t('or')}
+            {t("or")}
           </Typography>
           <div className={classes.line}></div>
         </div>
@@ -171,11 +201,11 @@ function Login() {
             color="secondary"
             className={`${classes.font700} ${classes.caption}`}
           >
-            {t('continueWithEmail')}
+            {t("continueWithEmail")}
           </Typography>
         </Button>
       </RouterLink>
- 
+
       <Box
         display="flex"
         sx={{ justifyContent: "center", alignItems: "center" }}
@@ -189,24 +219,24 @@ function Login() {
           variant="caption"
           className={`${classes.fontGrey} ${classes.caption} `}
         >
-          {t('bySigningUp')}
+          {t("bySigningUp")}
           <RouterLink to="/terms" style={{ textDecoration: "none" }}>
             <Typography
               variant="caption"
               color="primary"
               className={`${classes.font700} ${classes.caption}`}
             >
-              {t('terms')}
+              {t("terms")}
             </Typography>
           </RouterLink>
-          {t('and')}
+          {t("and")}
           <RouterLink to="/privacy" style={{ textDecoration: "none" }}>
             <Typography
               variant="caption"
               color="primary"
               className={`${classes.font700} ${classes.caption}`}
             >
-              {t('privacyPolicy')}
+              {t("privacyPolicy")}
             </Typography>
           </RouterLink>
         </Typography>

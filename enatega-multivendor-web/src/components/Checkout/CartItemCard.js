@@ -49,6 +49,7 @@ function CartItemsCard({
   deliveryCharges,
   addQuantity,
   removeQuantity,
+  shouldAddMinimumFee
 }) {
   const { t } = useTranslation();
   const couponRef = useRef(null);
@@ -60,6 +61,8 @@ function CartItemsCard({
   const configuration = useContext(ConfigurationContext);
   const [voucherModal, setVoucherModal] = useState(false);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
+  
+  
 
   const { data: dataTip } = useQuery(TIPPING, {
     fetchPolicy: "network-only",
@@ -185,25 +188,25 @@ function CartItemsCard({
                 {`${configuration.currencySymbol} ${calculatePrice(0)}`}
               </Typography>
             </Box>
-            {!isPickUp && (
-              <Box
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: theme.spacing(2),
-                }}
-                className={classes.border}
-              >
-                <Typography className={classes.subtotalText}>
-                  {t("deliveryFee")}
-                </Typography>
-                <Typography className={classes.subtotalText}>
-                  {`${configuration.currencySymbol} ${deliveryCharges.toFixed(
-                    2
-                  )}`}
-                </Typography>
-              </Box>
-            )}
+            {!isPickUp && deliveryCharges > 0 && (
+  <Box
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: theme.spacing(2),
+    }}
+    className={classes.border}
+  >
+    <Typography className={classes.subtotalText}>
+      {t("deliveryFee")}
+    </Typography>
+
+    <Typography className={classes.subtotalText}>
+      {`${configuration.currencySymbol} ${deliveryCharges.toFixed(2)}`}
+    </Typography>
+  </Box>
+)}
+
             <Box
               style={{
                 display: "flex",

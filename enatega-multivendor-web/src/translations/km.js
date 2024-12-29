@@ -13,6 +13,7 @@ const km = {
     linksTitle: "តំណ",
     subTotal: "សរុបរង",
     deliveryFee: "ថ្លៃសេវាដឹកជញ្ជូន",
+    MinimumDeliveryFee:'ការចំណាយកាន់តិចសម្រាប់ការដឹកជញ្ជូន',
     haveVoucher: "តើអ្នកមានប័ណ្ណទូទាត់ទេ?",
     remove: "យកចេញ",
     change: "ផ្លាស់ប្តូរ",

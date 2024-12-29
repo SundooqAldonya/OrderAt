@@ -52,11 +52,12 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     color: theme.palette.grey[600],
     padding: 10,
-    paddingLeft: 24,
+    paddingLeft:24,
     fontSize: "1.2rem",
     width: "100%",
     borderRadius: 20,
     border: "none",
+    fontSize:16,
     backgroundColor: "#F3F4F8",
   },
 }));

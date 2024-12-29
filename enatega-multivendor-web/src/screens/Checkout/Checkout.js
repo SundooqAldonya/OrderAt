@@ -100,6 +100,7 @@ function Checkout() {
   } = useContext(UserContext);
 
   const { location, setLocation } = useLocationContext();
+  console.log(location ,"location divya");
   // const { getCurrentLocation } = useLocation();
   const theme = useTheme();
   const [minimumOrder, setMinimumOrder] = useState("");
@@ -111,6 +112,7 @@ function Checkout() {
   const [selectedDate, handleDateChange] = useState(new Date());
   const [isPickUp, setIsPickUp] = useState(false);
   const [deliveryCharges, setDeliveryCharges] = useState(0);
+  const [shouldAddMinimumFee, setShouldAddMinimumFee] = useState(false);
 
   let restCoordinates = {};
   const { loading, data, error } = useRestaurant(cartRestaurant);
@@ -135,24 +137,35 @@ function Checkout() {
 
   useEffect(() => {
     (async () => {
-      if (data && !!data.restaurant) {
+      if (data && data.restaurant) {
         const latOrigin = Number(data.restaurant.location.coordinates[1]);
         const lonOrigin = Number(data.restaurant.location.coordinates[0]);
         const latDest = Number(location.latitude);
         const longDest = Number(location.longitude);
-        const distance = await calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        );
-        let costType = configuration.costType;
-        let amount = calculateAmount(costType, configuration.deliveryRate, distance);
-        setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate);
+  
+        // Calculate distance between origin and destination
+        const distance = await calculateDistance(latOrigin, lonOrigin, latDest, longDest);
+  
+        let deliveryCharges;
+  
+        if (distance < 2) {
+          // For distances less than 2 km, set deliveryCharges to minimumDeliveryFee
+          deliveryCharges = configuration.minimumDeliveryFee;
+        } else {
+          // For distances greater than or equal to 2 km, calculate delivery charges
+          const costType = configuration.costType;
+          const calculatedAmount = calculateAmount(costType, configuration.deliveryRate, distance);
+  
+          // Ensure that the calculated fee is not less than the minimum fee
+          deliveryCharges = Math.max(calculatedAmount, configuration.minimumDeliveryFee);
+        }
+  
+        // Set the delivery charges state
+        setDeliveryCharges(deliveryCharges);
       }
     })();
-  }, [data, location]);
-
+  }, [data, location, configuration]); // Re-run effect when data, location, or configuration changes
+  
   const onLoad = useCallback(
     (map) => {
       const bounds = new window.google.maps.LatLngBounds();
@@ -251,7 +264,7 @@ function Checkout() {
   };
 
   function update(cache, { data: { placeOrder } }) {
-    console.log("update");
+    console.log("update divya");
     if (placeOrder && placeOrder.paymentMethod === "COD") {
       const data = cache.readQuery({ query: ORDERS });
       if (data) {
@@ -339,15 +352,17 @@ function Checkout() {
     return (itemTotal + deliveryAmount).toFixed(2);
   }
 
-  function calculateTotal() {
-    let total = 0;
-    const delivery = isPickUp ? 0 : deliveryCharges;
-    total += +calculatePrice(delivery, true);
-    total += +taxCalculation();
-    total += +calculateTip();
-    return parseFloat(total).toFixed(2);
+function calculateTotal() {
+  let total = 0;
+  const delivery = isPickUp ? 0 : deliveryCharges;
+  total += +calculatePrice(delivery, true);
+  total += +taxCalculation();
+  total += +calculateTip();
+  if (shouldAddMinimumFee) {
+    total += +configuration.minimumDeliveryFee;
   }
-
+  return parseFloat(total).toFixed(2);
+}
   function transformOrder(cartData) {
     return cartData.map((food) => {
       return {
@@ -390,8 +405,11 @@ function Checkout() {
             label: location.label,
             deliveryAddress: location.deliveryAddress,
             details: location.details,
-            longitude: "" + location.longitude,
-            latitude: "" + location.latitude,
+            // longitude:  location.longitude,
+            // latitude:   location.latitude,
+            longitude: location.longitude.toString(), // Convert longitude to string
+            latitude: location.latitude.toString(),   // Convert latitude to string
+            selected: true,
           },
           orderDate: selectedDate,
           isPickedUp: isPickUp,
@@ -640,6 +658,7 @@ function Checkout() {
             <Grid item xs={12} sm={6}>
               <CartItemCard
                 setSelectedTip={setSelectedTip}
+                shouldAddMinimumFee={shouldAddMinimumFee}
                 selectedTip={selectedTip}
                 setTaxValue={setTaxValue}
                 setCoupon={setCoupon}
