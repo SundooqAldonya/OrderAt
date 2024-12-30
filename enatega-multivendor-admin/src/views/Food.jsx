@@ -49,7 +49,7 @@ const Food = props => {
   const [isOpen, setIsOpen] = useState(false)
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const restaurantId = localStorage.getItem('restaurantId')
-
+  console.log({ restaurantId })
   const [mutate, { loading }] = useMutation(DELETE_FOOD, {
     refetchQueries: [{ query: GET_FOODS, variables: { id: restaurantId } }]
   })
@@ -254,7 +254,7 @@ const Food = props => {
             marginLeft: '13%',
             overflowY: 'auto'
           }}>
-          <FoodComponent food={food} onClose={closeEditModal} />
+          <FoodComponent food={food} onClose={closeEditModal} update={true} />
         </Modal>
       </Container>
     </>

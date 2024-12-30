@@ -335,7 +335,8 @@ const en = {
     CostType: 'Cost Type',
     PerKM: 'Per KM',
     FixedCost: 'Fixed Cost',
-    add_addons: 'Add addons'
+    add_addons: 'Add addons',
+    edit_addons: 'Edit addons'
   }
 }
 

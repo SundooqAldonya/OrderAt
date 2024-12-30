@@ -4,13 +4,12 @@ const { transformAddon, transformRestaurant } = require('./merge')
 
 module.exports = {
   Query: {
-    addons: async() => {
+    addons: async (_, args) => {
       console.log('addons')
+      console.log({ argsAddons: args })
       try {
-        const addons = await Addon.find({ isActive: true })
-        return addons.map(addon => {
-          return transformAddon(addon)
-        })
+        const addons = await Addon.find({ restaurant: args.id })
+        return addons
       } catch (err) {
         console.log(err)
         throw err
@@ -18,43 +17,40 @@ module.exports = {
     }
   },
   Mutation: {
-    createAddons: async(_, args, context) => {
+    createAddons: async (_, args, context) => {
       console.log('createAddon')
+      console.log({ argsCreateAddon: args.addonInput })
       try {
-        const restaurant = await Restaurant.findById(args.addonInput.restaurant)
-        const addons = args.addonInput.addons
-
-        await addons.map(addon => {
-          restaurant.addons.push(new Addon(addon))
-        })
-        const resultRestaurant = await restaurant.save()
-        return await transformRestaurant(resultRestaurant)
+        const addonsInput = args.addonInput.map(addon => ({
+          ...addon,
+          restaurant: args.id
+        }))
+        const addons = await Addon.insertMany(addonsInput)
+        return addons
       } catch (err) {
         console.log(err)
         throw err
       }
     },
-    editAddon: async(_, args, context) => {
+    editAddon: async (_, args, context) => {
       console.log('editAddon')
+      console.log({ addonInput: args.addonInput })
       try {
-        const restaurant = await Restaurant.findById(args.addonInput.restaurant)
-
-        const addons = args.addonInput.addons
-        restaurant.addons.id(args.addonInput.addons._id).set({
-          title: addons.title,
-          description: addons.description,
-          options: addons.options,
-          quantityMinimum: addons.quantityMinimum,
-          quantityMaximum: addons.quantityMaximum
-        })
-        await restaurant.save()
-        return transformRestaurant(restaurant)
+        const addon = await Addon.findById(args.id)
+        console.log({ addon })
+        addon.title = args.addonInput.title
+        addon.description = args.addonInput.description
+        addon.quantityMinimum = args.addonInput.quantityMinimum
+        addon.quantityMaximum = args.addonInput.quantityMaximum
+        addon.options = [...args.addonInput.options]
+        await addon.save()
+        return addon
       } catch (err) {
         console.log(err)
         throw err
       }
     },
-    deleteAddon: async(_, { id, restaurant }, context) => {
+    deleteAddon: async (_, { id, restaurant }, context) => {
       console.log('deleteAddon')
       try {
         const restaurants = await Restaurant.findById(restaurant)

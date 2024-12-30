@@ -58,6 +58,7 @@ const Category = props => {
     setEditModal(false)
   }
   const restaurantId = localStorage.getItem('restaurantId')
+  console.log({ restaurantId })
   // const restaurantId = '673af04d6b93314b760254c2'
 
   const [mutate, { loading }] = useMutation(DELETE_CATEGORY)

@@ -38,7 +38,6 @@ function AdminSidebar(props) {
       </Toolbar>
       <Box className={classes.sidebarList}>
         {routes.map((prop, key) => {
-        
           return prop.appearInSidebar && prop.admin ? (
             <>
               {key === 1 ? (

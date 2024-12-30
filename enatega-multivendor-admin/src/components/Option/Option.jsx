@@ -274,19 +274,20 @@ function Option(props) {
                   props.option
                     ? mutate({
                         variables: {
+                          id: restaurantId,
                           optionInput: {
                             options: {
                               _id: props.option._id,
                               title: option[0].title,
                               description: option[0].description,
                               price: +option[0].price
-                            },
-                            restaurant: restaurantId
+                            }
                           }
                         }
                       })
                     : mutate({
                         variables: {
+                          id: restaurantId,
                           optionInput: {
                             options: option.map(
                               ({ title, description, price }) => ({
@@ -294,8 +295,8 @@ function Option(props) {
                                 description,
                                 price: +price
                               })
-                            ),
-                            restaurant: restaurantId
+                            )
+                            // restaurant: restaurantId
                           }
                         }
                       })

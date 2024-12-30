@@ -18,6 +18,10 @@ const optionSchema = new Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant'
     }
   },
   { timestamps: true }

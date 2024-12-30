@@ -36,21 +36,27 @@ function Main() {
       reconnect: true
     }
   })
-  let token = null
 
   const request = async operation => {
     const data = localStorage.getItem('user-enatega')
+    let token = null
 
-    if (data) {
-      token = JSON.parse(data).token
+    // if (data) {
+    //   token = JSON.parse(data).token
+    // }
+    try {
+      token = data ? JSON.parse(data).token : null
+    } catch (error) {
+      console.warn('Error parsing user-enatega from localStorage:', error)
     }
+    console.log({ token })
+
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : ''
       }
     })
   }
-  console.log({ token })
 
   const requestLink = new ApolloLink(
     (operation, forward) =>

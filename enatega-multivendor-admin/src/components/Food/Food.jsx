@@ -128,7 +128,12 @@ function Food(props) {
     successSetter(message)
     setTitle('')
     setDescription('')
-    props.updateFoodList(data.createFood)
+    if (!props.update) {
+      props.updateFoodList(data.createFood)
+    }
+    if (props.update) {
+      window.location.reload()
+    }
     setTimeout(onDismiss, 3000)
   }
 
@@ -248,30 +253,31 @@ function Food(props) {
       { category: formRef.current['input-category'].value },
       'category'
     )
-    const variations = variation
-    variations.map(variationItem => {
-      variationItem.priceError = !validateFunc(
-        { price: variationItem.price },
-        'price'
-      )
-      let error = false
-      const occ = variation.filter(v => v.title === variationItem.title)
-      if (occ.length > 1) error = true
-      variationItem.titleError = error
-        ? !error
-        : variations.length > 1
-        ? !validateFunc({ title: variationItem.title }, 'title')
-        : true
+    // const variations = variation
+    // variations.map(variationItem => {
+    //   variationItem.priceError = !validateFunc(
+    //     { price: variationItem.price },
+    //     'price'
+    //   )
+    //   let error = false
+    //   const occ = variation.filter(v => v.title === variationItem.title)
+    //   if (occ.length > 1) error = true
+    //   variationItem.titleError = error
+    //     ? !error
+    //     : variations.length > 1
+    //     ? !validateFunc({ title: variationItem.title }, 'title')
+    //     : true
 
-      return variationItem
-    })
-    const variationsError = !variation.filter(
-      variationItem => !variationItem.priceError || !variationItem.titleError
-    ).length
+    //   return variationItem
+    // })
+    // const variationsError = !variation.filter(
+    //   variationItem => !variationItem.priceError || !variationItem.titleError
+    // ).length
     titleErrorSetter(titleError)
     categoryErrorSetter(categoryError)
-    variationSetter([...variations])
-    return titleError && categoryError && variationsError
+    // variationSetter([...variations])
+    // return titleError && categoryError && variationsError
+    return titleError && categoryError
   }
 
   const onBlurVariation = (index, type) => {

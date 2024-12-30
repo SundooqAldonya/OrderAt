@@ -9,7 +9,7 @@ module.exports = {
       console.log({ args })
       try {
         const categories = await Category.find({
-          restaurant: args.restaurant_id
+          restaurant: args.id
         })
         console.log({ categories })
         return categories
@@ -22,10 +22,10 @@ module.exports = {
     createCategory: async (_, args, context) => {
       console.log('createCategory')
       try {
-        console.log(args.category)
+        console.log(args)
         const category = new Category({
           title: args.category.title,
-          restaurant: args.restaurantId
+          restaurant: args.category.restaurant
         })
         await category.save()
         // const restaurant = await Restaurant.findOne({

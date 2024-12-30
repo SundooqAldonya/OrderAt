@@ -4,7 +4,7 @@ const { transformOption, transformRestaurant } = require('./merge')
 
 module.exports = {
   Query: {
-    options: async() => {
+    options: async () => {
       console.log('options')
       try {
         const options = await Option.find({ isActive: true })
@@ -18,26 +18,33 @@ module.exports = {
     }
   },
   Mutation: {
-    createOptions: async(_, args, context) => {
+    createOptions: async (_, args, context) => {
       console.log('createOption')
+      console.log({ argsOptions: args })
       try {
-        const options = args.optionInput.options
-        const restaurant = await Restaurant.findById(
-          args.optionInput.restaurant
-        )
+        const optionsInput = args.optionInput.options.map(option => ({
+          ...option,
+          restaurant: args.id // Add the restaurantId to each option
+        }))
+        const options = await Option.insertMany(optionsInput)
+        return options
+        // const options = args.optionInput.options
+        // const restaurant = await Restaurant.findById(
+        //   args.optionInput.restaurant
+        // )
 
-        options.map(option => {
-          restaurant.options.push(new Option(option))
-        })
+        // options.map(option => {
+        //   restaurant.options.push(new Option(option))
+        // })
 
-        const result = await restaurant.save()
-        return transformRestaurant(result)
+        // const result = await restaurant.save()
+        // return transformRestaurant(result)
       } catch (err) {
         console.log(err)
         throw err
       }
     },
-    editOption: async(_, args, context) => {
+    editOption: async (_, args, context) => {
       console.log('editOption')
       try {
         const options = args.optionInput.options
@@ -56,7 +63,7 @@ module.exports = {
         throw err
       }
     },
-    deleteOption: async(_, { id, restaurant }, context) => {
+    deleteOption: async (_, { id, restaurant }, context) => {
       console.log('deleteOption')
       try {
         const restaurants = await Restaurant.findById(restaurant)

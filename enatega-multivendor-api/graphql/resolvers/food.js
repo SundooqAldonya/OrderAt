@@ -36,10 +36,12 @@ module.exports = {
           restaurant: args.foodInput.restaurant,
           category: args.foodInput.category
         })
-        await uploadFoodImage({
-          id: food._id,
-          file: args.foodInput.file
-        })
+        if (args.foodInput.file.createReadStream) {
+          await uploadFoodImage({
+            id: food._id,
+            file: args.foodInput.file
+          })
+        }
         console.log({ food })
         await food.save()
         const newFood = await food.populate('category')
@@ -50,68 +52,98 @@ module.exports = {
         throw err
       }
     },
-    editFood: async (_, args, context) => {
-      // console.log('args: ', args)
-      const foodId = args.foodInput._id
-      const restId = args.foodInput.restaurant
-      const categoryId = args.foodInput.category
-      const variations = args.foodInput.variations.map(
-        variation => new Variation(variation)
-      )
+    async editFood(_, { foodInput }) {
+      console.log({ foodInput })
       try {
-        const restaurant = await Restaurant.findOne({ _id: restId })
-        const category = restaurant.categories.find(category =>
-          category.foods.find(food => food.id === foodId)
-        )
-        if (!category._id.equals(categoryId)) {
-          // const oldFood = category.foods.find(food => food.id === foodId)
-
-          // remove from previous category
-          const categoryIndex = restaurant.categories.findIndex(category =>
-            category.foods.find(food => food.id === foodId)
-          )
-          restaurant.categories[categoryIndex].foods.id(foodId).remove()
-          // console.log('Cat: ', JSON.stringify(restaurant))
-          await restaurant.save()
-          // add to new category
-          const food = new Food({
-            title: args.foodInput.title,
-            variations: variations,
-            description: args.foodInput.description,
-            image: args.foodInput.image
+        const food = await Food.findById(foodInput._id)
+        food.title = foodInput.title
+        food.description = foodInput.description
+        food.category = foodInput.category
+        if (foodInput.file.createReadStream) {
+          await uploadFoodImage({
+            id: food._id,
+            file: foodInput.file
           })
-          await Restaurant.updateOne(
-            { _id: restId, 'categories._id': categoryId },
-            {
-              $push: {
-                'categories.$.foods': food
-              }
-            }
-          )
-          const latestRest = await Restaurant.findOne({ _id: restId })
-          return transformRestaurant(latestRest)
-        } else {
-          const categoryFood = await restaurant.categories
-            .id(categoryId)
-            .foods.id(foodId)
-          if (categoryFood) {
-            restaurant.categories.id(categoryId).foods.id(foodId).set({
-              title: args.foodInput.title,
-              description: args.foodInput.description,
-              image: args.foodInput.image,
-              variations: variations
-            })
-            const result = await restaurant.save()
-            return transformRestaurant(result)
-          } else {
-            throw Error('Category Food error')
-          }
         }
+        await food.save()
+        const newFood = await food.populate('category')
+        return newFood
       } catch (err) {
         console.log(err)
         throw err
       }
     },
+    async deleteFood(_, args) {
+      try {
+        await Food.findByIdAndDelete(args.id)
+        return { message: 'Food removed successfully!' }
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    }
+    // editFood: async (_, args, context) => {
+    //   // console.log('args: ', args)
+    //   const foodId = args.foodInput._id
+    //   const restId = args.foodInput.restaurant
+    //   const categoryId = args.foodInput.category
+    //   const variations = args.foodInput.variations.map(
+    //     variation => new Variation(variation)
+    //   )
+    //   try {
+    //     const restaurant = await Restaurant.findOne({ _id: restId })
+    //     const category = restaurant.categories.find(category =>
+    //       category.foods.find(food => food.id === foodId)
+    //     )
+    //     if (!category._id.equals(categoryId)) {
+    //       // const oldFood = category.foods.find(food => food.id === foodId)
+
+    //       // remove from previous category
+    //       const categoryIndex = restaurant.categories.findIndex(category =>
+    //         category.foods.find(food => food.id === foodId)
+    //       )
+    //       restaurant.categories[categoryIndex].foods.id(foodId).remove()
+    //       // console.log('Cat: ', JSON.stringify(restaurant))
+    //       await restaurant.save()
+    //       // add to new category
+    //       const food = new Food({
+    //         title: args.foodInput.title,
+    //         variations: variations,
+    //         description: args.foodInput.description,
+    //         image: args.foodInput.image
+    //       })
+    //       await Restaurant.updateOne(
+    //         { _id: restId, 'categories._id': categoryId },
+    //         {
+    //           $push: {
+    //             'categories.$.foods': food
+    //           }
+    //         }
+    //       )
+    //       const latestRest = await Restaurant.findOne({ _id: restId })
+    //       return transformRestaurant(latestRest)
+    //     } else {
+    //       const categoryFood = await restaurant.categories
+    //         .id(categoryId)
+    //         .foods.id(foodId)
+    //       if (categoryFood) {
+    //         restaurant.categories.id(categoryId).foods.id(foodId).set({
+    //           title: args.foodInput.title,
+    //           description: args.foodInput.description,
+    //           image: args.foodInput.image,
+    //           variations: variations
+    //         })
+    //         const result = await restaurant.save()
+    //         return transformRestaurant(result)
+    //       } else {
+    //         throw Error('Category Food error')
+    //       }
+    //     }
+    //   } catch (err) {
+    //     console.log(err)
+    //     throw err
+    //   }
+    // },
 
     // async uploadFoodImage(_, { id, file }) {
     //   console.log({ file })
@@ -148,16 +180,16 @@ module.exports = {
     //     throw err
     //   }
     // },
-    deleteFood: async (_, { id, restaurant, categoryId }, context) => {
-      console.log('deleteFood')
-      try {
-        const restaurants = await Restaurant.findOne({ _id: restaurant })
-        restaurants.categories.id(categoryId).foods.id(id).remove()
-        const result = await restaurants.save()
-        return transformRestaurant(result)
-      } catch (err) {
-        throw err
-      }
-    }
+    // deleteFood: async (_, { id, restaurant, categoryId }, context) => {
+    //   console.log('deleteFood')
+    //   try {
+    //     const restaurants = await Restaurant.findOne({ _id: restaurant })
+    //     restaurants.categories.id(categoryId).foods.id(id).remove()
+    //     const result = await restaurants.save()
+    //     return transformRestaurant(result)
+    //   } catch (err) {
+    //     throw err
+    //   }
+    // }
   }
 }

@@ -70,6 +70,7 @@ async function startApolloServer() {
       maxFileSize: 10000000, // 10 MB
       maxFieldSize: 10000000 // 10 MB
     },
+    debug: true,
     introspection: config.NODE_ENV !== 'production',
     context: ({ req, res }) => {
       if (!req) return {}

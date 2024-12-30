@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Headers/Header'
 import AddonComponent from '../components/Addon/Addon'
-import { getRestaurantDetail, deleteAddon } from '../apollo'
+import { getRestaurantDetail, deleteAddon, getAddons } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
@@ -29,7 +29,7 @@ import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 
 const GET_ADDONS = gql`
-  ${getRestaurantDetail}
+  ${getAddons}
 `
 const DELETE_ADDON = gql`
   ${deleteAddon}
@@ -41,6 +41,13 @@ const Addon = props => {
   const [editModal, setEditModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  console.log({ anchorEl })
+  const open = Boolean(anchorEl)
+  const handleSetAnchorEl = item => {
+    setAnchorEl(item)
+  }
   const onChangeSearch = e => setSearchQuery(e.target.value)
 
   const toggleModal = addon => {
@@ -58,10 +65,14 @@ const Addon = props => {
       variables: { id: restaurantId }
     }
   )
+  // console.log({ dataAddons: data })
   const [mutate, { loading }] = useMutation(DELETE_ADDON, {
     refetchQueries: [{ query: GET_ADDONS, variables: { id: restaurantId } }]
   })
-
+  const handleSetAddon = item => {
+    console.log({ item })
+    setAddon(item)
+  }
   const customSort = (rows, field, direction) => {
     const handleField = row => {
       if (row[field] && isNaN(row[field])) {
@@ -95,24 +106,36 @@ const Addon = props => {
     },
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row)}</>
+      cell: row => (
+        <>
+          {ActionButtons(
+            row,
+            toggleModal,
+            setIsOpen,
+            t,
+            mutate,
+            restaurantId,
+            setIsOpen
+          )}
+        </>
+      )
     }
   ]
 
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
-  const filtered =
-    searchQuery.length < 3
-      ? data &&
-        data.restaurant.addons.filter(addon => addon.title !== 'Default Addon')
-      : data &&
-        data.restaurant.addons.filter(addon => {
-          return (
-            (addon.title.toLowerCase().search(regex) > -1 ||
-              addon.description.toLowerCase().search(regex) > -1) &&
-            addon.title !== 'Default Addon'
-          )
-        })
+  // const filtered =
+  //   searchQuery.length < 3
+  //     ? data &&
+  //       data.restaurant.addons.filter(addon => addon.title !== 'Default Addon')
+  //     : data &&
+  //       data.restaurant.addons.filter(addon => {
+  //         return (
+  //           (addon.title.toLowerCase().search(regex) > -1 ||
+  //             addon.description.toLowerCase().search(regex) > -1) &&
+  //           addon.title !== 'Default Addon'
+  //         )
+  //       })
   const globalClasses = useGlobalStyles()
 
   return (
@@ -123,7 +146,7 @@ const Addon = props => {
       )}
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <AddonComponent />
+        <AddonComponent edit={false} />
         {errorQuery && (
           <tr>
             <td>{`Error! ${errorQuery.message}`}</td>
@@ -143,7 +166,7 @@ const Addon = props => {
             }
             title={<TableHeader title={t('Addons')} />}
             columns={columns}
-            data={data && data.restaurant ? filtered : {}}
+            data={data?.addons && data.addons.length ? data.addons : {}}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}
@@ -162,24 +185,22 @@ const Addon = props => {
           onClose={() => {
             toggleModal()
           }}>
-          <AddonComponent addon={addon} onClose={closeEditModal} />
+          <AddonComponent edit={true} addon={addon} onClose={closeEditModal} />
         </Modal>
       </Container>
     </>
   )
 }
 
-const ActionButtons = row => {
-  const { PAID_VERSION } = ConfigurableValues()
-  const [isOpen, setIsOpen] = useState(false)
-  const [editModal, setEditModal] = useState(false)
-  const [addon, setAddon] = useState(null)
-
-  const toggleModal = addon => {
-    setEditModal(!editModal)
-    setAddon(addon)
-  }
-  const [anchorEl, setAnchorEl] = useState(null)
+const ActionButtons = (
+  row,
+  toggleModal,
+  setIsOpen,
+  t,
+  mutate,
+  restaurantId
+) => {
+  const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -209,14 +230,14 @@ const ActionButtons = row => {
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-                if (PAID_VERSION) toggleModal(row)
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
-                console.log('PAID_VERSION', PAID_VERSION)
+                toggleModal(row)
+                // else {
+                //   setIsOpen(true)
+                //   setTimeout(() => {
+                //     setIsOpen(false)
+                //   }, 5000)
+                // }
+                // console.log('PAID_VERSION', PAID_VERSION)
               }}
               style={{ height: 25 }}>
               <ListItemIcon>
@@ -228,16 +249,16 @@ const ActionButtons = row => {
               onClick={e => {
                 e.preventDefault()
 
-                if (PAID_VERSION)
-                  mutate({
-                    variables: { id: row._id, restaurant: restaurantId }
-                  })
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                // if (PAID_VERSION)
+                mutate({
+                  variables: { id: row._id, restaurant: restaurantId }
+                })
+                // else {
+                //   setIsOpen(true)
+                //   setTimeout(() => {
+                //     setIsOpen(false)
+                //   }, 5000)
+                // }
               }}
               style={{ height: 25 }}>
               <ListItemIcon>

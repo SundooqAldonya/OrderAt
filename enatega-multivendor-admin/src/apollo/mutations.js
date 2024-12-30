@@ -22,54 +22,25 @@ export const editFood = `
         editFood(
             foodInput:$foodInput
         ){
+          _id
+          title
+          description
+          image
+          category {
             _id
-            categories{
-              _id
-              title
-              foods{
-                _id
-                title
-                description
-                variations{
-                  _id
-                  title
-                  price
-                  discounted
-                  addons
-                }
-                image
-                isActive
-              }
-              createdAt
-              updatedAt
-            }
+            title
+          }
+          isActive
+          createdAt
+          updatedAt
         }
       }`
 
 export const deleteFood = `
-      mutation DeleteFood($id:String!,$restaurant:String!,$categoryId:String!){
-        deleteFood(id:$id,restaurant:$restaurant,categoryId:$categoryId){
-          _id
-          categories{
-            _id
-            title
-            foods{
-              _id
-              title
-              description
-              variations{
-                _id
-                title
-                price
-                discounted
-                addons
-              }
-              image
-              isActive
-            }
-            createdAt
-            updatedAt
-          }
+      mutation DeleteFood($id:String!){
+        deleteFood(id:$id){
+          message
+          
         }
       }`
 
@@ -483,43 +454,31 @@ export const deleteOffer = `mutation DeleteOffer($id:String!){
   deleteOffer(id:$id)
 }`
 
-export const createOptions = `mutation CreateOptions($optionInput:CreateOptionInput){
-  createOptions(optionInput:$optionInput){
+export const createOptions = `mutation CreateOptions($id: String!, $optionInput:CreateOptionInput){
+  createOptions(id: $id, optionInput:$optionInput){
     _id
-    options{
-      _id
-      title
-      description
-      price
-    }
+    title
+    description
+    price
   }
 }`
 
-export const createAddons = `mutation CreateAddons($addonInput:AddonInput){
-  createAddons(addonInput:$addonInput){
-      _id
-      addons{
-        _id
-        options
-        title
-        description
-        quantityMinimum
-        quantityMaximum
-      }
-      
-    }
+export const createAddons = `mutation CreateAddons($id: String!, $addonInput:[AddonInput!]!){
+  createAddons(id: $id, addonInput:$addonInput){
+    options
+    title
+    description
+    quantityMinimum
+    quantityMaximum      
+  }
 }`
-export const editAddon = `mutation editAddon($addonInput:editAddonInput){
-  editAddon(addonInput:$addonInput){
-      _id
-      addons{
-        _id
-        options
-        title
-        description
-        quantityMinimum
-        quantityMaximum
-      }
+export const editAddon = `mutation editAddon($id: String!, $addonInput:AddonInput!){
+  editAddon(id: $id,addonInput:$addonInput){
+    options
+    title
+    description
+    quantityMinimum
+    quantityMaximum     
   }
 }`
 

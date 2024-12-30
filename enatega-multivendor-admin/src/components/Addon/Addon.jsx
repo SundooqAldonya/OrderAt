@@ -1,7 +1,13 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import { useQuery, useMutation, gql } from '@apollo/client'
-import { getRestaurantDetail, createAddons, editAddon } from '../../apollo'
+import {
+  getRestaurantDetail,
+  createAddons,
+  editAddon,
+  createOptions,
+  getOptions
+} from '../../apollo'
 import OptionsComponent from '../Option/Option'
 import { validateFunc } from '../../constraints/constraints'
 import {
@@ -22,7 +28,7 @@ import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
 
 const GET_OPTIONS = gql`
-  ${getRestaurantDetail}
+  ${getOptions}
 `
 const CREATE_ADDONS = gql`
   ${createAddons}
@@ -95,6 +101,8 @@ function Addon(props) {
   const [success, successSetter] = useState('')
   const [mainError, mainErrorSetter] = useState('')
 
+  console.log({ addon })
+
   const onChange = (event, index, state) => {
     const addons = addon
     addons[index][state] = event.target.value
@@ -109,6 +117,7 @@ function Addon(props) {
     }
   )
   const [mutate, { loading }] = useMutation(mutation, { onError, onCompleted })
+
   const onBlur = (index, state) => {
     const addons = addon
     if (state === 'title') {
@@ -229,29 +238,35 @@ function Addon(props) {
         {addon.map((addonItem, index) => (
           <Box key={index}>
             <Box>
-              <label>{t('AddRemoveAddon')}</label>
-              <RemoveIcon
-                style={{
-                  backgroundColor: theme.palette.common.black,
-                  color: theme.palette.warning.dark,
-                  borderRadius: '50%',
-                  marginLeft: 12,
-                  marginRight: 10
-                }}
-                onClick={() => {
-                  onRemove(index)
-                }}
-              />
-              <AddIcon
-                style={{
-                  backgroundColor: theme.palette.warning.dark,
-                  color: theme.palette.common.black,
-                  borderRadius: '50%'
-                }}
-                onClick={() => {
-                  onAdd(index)
-                }}
-              />
+              <label>
+                {!props.edit ? t('AddRemoveAddon') : t('edit_addons')}
+              </label>
+              {!props.edit && (
+                <Fragment>
+                  <RemoveIcon
+                    style={{
+                      backgroundColor: theme.palette.common.black,
+                      color: theme.palette.warning.dark,
+                      borderRadius: '50%',
+                      marginLeft: 12,
+                      marginRight: 10
+                    }}
+                    onClick={() => {
+                      onRemove(index)
+                    }}
+                  />
+                  <AddIcon
+                    style={{
+                      backgroundColor: theme.palette.warning.dark,
+                      color: theme.palette.common.black,
+                      borderRadius: '50%'
+                    }}
+                    onClick={() => {
+                      onAdd(index)
+                    }}
+                  />
+                </Fragment>
+              )}
             </Box>
             <Typography className={classes.labelText}>{t('Title')}</Typography>
             <Input
@@ -346,7 +361,7 @@ function Addon(props) {
                   </span>
                 ) : null}
                 {data &&
-                  data.restaurant.options.map(option => (
+                  data.options.map(option => (
                     <Grid
                       item
                       xs={12}
@@ -375,53 +390,46 @@ function Addon(props) {
           </Box>
         ))}
         <Box>
+          {/* {JSON.stringify(addon[0])} */}
           <Button
             className={globalClasses.button}
             disabled={loading}
             onClick={() => {
               if (validate()) {
-                props.addon
+                props.edit
                   ? mutate({
                       variables: {
+                        id: props.addon._id,
                         addonInput: {
-                          addons: {
-                            _id: props.addon._id,
-                            title: addon[0].title,
-                            description: addon[0].description,
-                            options: addon[0].options,
-                            quantityMinimum: +addon[0].quantityMinimum,
-                            quantityMaximum: +addon[0].quantityMaximum
-                          },
-                          restaurant: restaurantId
+                          title: addon[0].title,
+                          description: addon[0].description,
+                          options: addon[0].options,
+                          quantityMinimum: +addon[0].quantityMinimum,
+                          quantityMaximum: +addon[0].quantityMaximum
                         }
                       }
                     })
                   : mutate({
                       variables: {
-                        addonInput: {
-                          addons: addon.map(
-                            ({
-                              title,
-                              description,
-                              options,
-                              quantityMinimum,
-                              quantityMaximum
-                            }) => ({
-                              title,
-                              description,
-                              options,
-                              quantityMinimum: +quantityMinimum,
-                              quantityMaximum: +quantityMaximum
-                            })
-                          ),
-                          restaurant: restaurantId
-                        }
+                        id: restaurantId,
+                        addonInput: addon.map(
+                          ({
+                            title,
+                            description,
+                            options,
+                            quantityMinimum,
+                            quantityMaximum
+                          }) => ({
+                            title,
+                            description,
+                            options,
+                            quantityMinimum: +quantityMinimum,
+                            quantityMaximum: +quantityMaximum
+                          })
+                        )
                       }
                     })
-                // Close the modal after 3 seconds by calling the parent's onClose callback
-                setTimeout(() => {
-                  props.onClose() // Close the modal
-                }, 4000)
+                window.location.reload()
               }
             }}>
             {t('Save')}

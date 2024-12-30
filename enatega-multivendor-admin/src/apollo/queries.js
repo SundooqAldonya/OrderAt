@@ -465,17 +465,12 @@ export const getTipping = `query Tips{
     }
   }`
 
-export const getAddons = `query Addons{
-    addons{
+export const getAddons = `query Addons($id: String!){
+    addons(id: $id){
     _id
     title
     description
-    options{
-      _id
-      title
-      description
-      price
-    }
+    options
     quantityMinimum
     quantityMaximum
   }}`
@@ -619,38 +614,6 @@ export const getRestaurantDetail = `query Restaurant($id:String){
       deliveryTime
       minimumOrder
       tax
-      categories{
-        _id
-        title
-        foods{
-          _id
-          title
-          description
-          variations{
-            _id
-            title
-            price
-            discounted
-            addons
-          }
-          image
-          isActive
-        }
-      }
-      options{
-        _id
-        title
-        description
-        price
-      }
-      addons{
-        _id
-        options
-        title
-        description
-        quantityMinimum
-        quantityMaximum
-      }
       shopType
     }
 }`

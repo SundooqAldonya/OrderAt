@@ -200,7 +200,7 @@ const typeDefs = gql`
     description: String
     # variations: [Variation!]
     restaurant: String!
-    category: String!
+    category: String
     image: String
     isActive: Boolean!
     createdAt: String!
@@ -212,8 +212,8 @@ const typeDefs = gql`
     title: String
     description: String
     # variations: [Variation!]
-    restaurant: String!
-    category: Category!
+    restaurant: String
+    category: Category
     image: String
     isActive: Boolean!
     createdAt: String!
@@ -485,6 +485,7 @@ const typeDefs = gql`
     title: String!
     description: String
     price: Float!
+    restaurant: String
   }
   type ItemOption {
     _id: String!
@@ -904,10 +905,11 @@ const typeDefs = gql`
   }
 
   input OptionInput {
-    _id: String
+    # _id: String
     title: String!
-    description: String
+    description: String!
     price: Float!
+    # restaurant: String!
   }
 
   input editOptionInput {
@@ -916,13 +918,23 @@ const typeDefs = gql`
   }
 
   input CreateOptionInput {
-    restaurant: String
     options: [OptionInput!]!
   }
 
   input AddonInput {
-    restaurant: String!
-    addons: [createAddonInput!]!
+    # addons: [createAddonInput!]!
+    title: String!
+    description: String
+    options: [String!]
+    quantityMinimum: Int!
+    quantityMaximum: Int!
+  }
+  type AddonResponse {
+    title: String
+    description: String
+    options: [String!]
+    quantityMinimum: Int
+    quantityMaximum: Int
   }
   input editAddonInput {
     restaurant: String!
@@ -1188,7 +1200,7 @@ const typeDefs = gql`
     getPaymentStatuses: [String!]
     assignedOrders(id: String): [Order!]
     options: [Option!]
-    addons: [Addon!]
+    addons(id: String!): [Addon!]
     foodByIds(foodIds: [CartFoodInput!]!): [CartFood!]
     getDashboardOrders(
       starting_date: String
@@ -1407,11 +1419,7 @@ const typeDefs = gql`
     resetPassword(password: String!, email: String!): ForgotPassword!
     vendorResetPassword(oldPassword: String!, newPassword: String!): Boolean!
     deleteCategory(id: String!, restaurant: String!): Message!
-    deleteFood(
-      id: String!
-      restaurant: String!
-      categoryId: String!
-    ): Restaurant!
+    deleteFood(id: String!): Message!
     createRider(riderInput: RiderInput): Rider!
     editRider(riderInput: RiderInput): Rider!
     deleteRider(id: String!): Rider!
@@ -1425,11 +1433,11 @@ const typeDefs = gql`
     ): AuthData!
     updateOrderStatusRider(id: String!, status: String!): Order!
     updatePaymentStatus(id: String, status: String): Order!
-    createOptions(optionInput: CreateOptionInput): Restaurant!
+    createOptions(id: String, optionInput: CreateOptionInput): [Option!]
     editOption(optionInput: editOptionInput): Restaurant!
     deleteOption(id: String!, restaurant: String!): Restaurant!
-    createAddons(addonInput: AddonInput): Restaurant!
-    editAddon(addonInput: editAddonInput): Restaurant!
+    createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
+    editAddon(id: String!, addonInput: AddonInput!): AddonResponse!
     deleteAddon(id: String!, restaurant: String!): Restaurant!
     createCoupon(couponInput: CouponInput!): Coupon!
     editCoupon(couponInput: CouponInput!): Coupon!
