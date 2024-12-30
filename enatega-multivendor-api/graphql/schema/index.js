@@ -1199,7 +1199,7 @@ const typeDefs = gql`
     getOrderStatuses: [String!]
     getPaymentStatuses: [String!]
     assignedOrders(id: String): [Order!]
-    options: [Option!]
+    options(id: String!): [Option!]
     addons(id: String!): [Addon!]
     foodByIds(foodIds: [CartFoodInput!]!): [CartFood!]
     getDashboardOrders(
@@ -1435,7 +1435,7 @@ const typeDefs = gql`
     updatePaymentStatus(id: String, status: String): Order!
     createOptions(id: String, optionInput: CreateOptionInput): [Option!]
     editOption(optionInput: editOptionInput): Restaurant!
-    deleteOption(id: String!, restaurant: String!): Restaurant!
+    deleteOption(id: String!): Message!
     createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
     editAddon(id: String!, addonInput: AddonInput!): AddonResponse!
     deleteAddon(id: String!, restaurant: String!): Restaurant!

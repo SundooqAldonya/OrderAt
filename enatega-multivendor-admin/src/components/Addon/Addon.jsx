@@ -235,7 +235,7 @@ function Addon(props) {
       </Box>
 
       <Box className={classes.form}>
-        {addon.map((addonItem, index) => (
+        {addon?.map((addonItem, index) => (
           <Box key={index}>
             <Box>
               <label>
@@ -357,11 +357,11 @@ function Addon(props) {
                 {loadingQuery ? <span>Loading ...</span> : null}
                 {errorQuery ? (
                   <span style={{ marginLeft: 20 }}>
-                    Error! {errorQuery.message}
+                    Error! {errorQuery?.message}
                   </span>
                 ) : null}
                 {data &&
-                  data.options.map(option => (
+                  data?.options?.map(option => (
                     <Grid
                       item
                       xs={12}

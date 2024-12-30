@@ -483,30 +483,16 @@ export const editAddon = `mutation editAddon($id: String!, $addonInput:AddonInpu
 }`
 
 export const deleteAddon = `
-      mutation DeleteAddon($id:String!,$restaurant:String!){
-        deleteAddon(id:$id,restaurant:$restaurant){
-          _id
-          addons{
-            _id
-            options
-            title
-            description
-            quantityMinimum
-            quantityMaximum
-          }
+      mutation DeleteAddon($id:String!){
+        deleteAddon(id:$id){
+          message
         }
       }`
 
 export const deleteOption = `
-      mutation DeleteOption($id:String!,$restaurant:String!){
-        deleteOption(id:$id,restaurant:$restaurant){
-          _id
-          options{
-            _id
-            title
-            description
-            price
-          }
+      mutation DeleteOption($id:String!){
+        deleteOption(id:$id){
+          message
         }
       }`
 export const editOption = `mutation editOption($optionInput:editOptionInput){

@@ -475,8 +475,8 @@ export const getAddons = `query Addons($id: String!){
     quantityMaximum
   }}`
 
-export const getOptions = `query Options{
-    options {
+export const getOptions = `query Options($id: String!){
+    options(id: $id) {
       _id
       title
       description

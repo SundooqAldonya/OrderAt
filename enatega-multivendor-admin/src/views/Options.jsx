@@ -8,7 +8,7 @@ import orderBy from 'lodash/orderBy'
 
 import { withTranslation } from 'react-i18next'
 import { useQuery, useMutation, gql } from '@apollo/client'
-import { getRestaurantDetail, deleteOption } from '../apollo'
+import { getRestaurantDetail, deleteOption, getOptions } from '../apollo'
 import SearchBar from '../components/TableHeader/SearchBar'
 import useGlobalStyles from '../utils/globalStyles'
 import {
@@ -30,7 +30,7 @@ import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 
 const GET_OPTIONS = gql`
-  ${getRestaurantDetail}
+  ${getOptions}
 `
 const DELETE_OPTION = gql`
   ${deleteOption}
@@ -38,7 +38,7 @@ const DELETE_OPTION = gql`
 
 const Option = props => {
   const { t } = props
-  const {PAID_VERSION} = ConfigurableValues()
+  const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
   const [option, setOption] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -61,6 +61,7 @@ const Option = props => {
       variables: { id: restaurantId }
     }
   )
+
   const [mutate, { loading }] = useMutation(DELETE_OPTION, {
     refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
   })
@@ -133,15 +134,14 @@ const Option = props => {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                 
-                  if(PAID_VERSION)
-                  toggleModal(row)
-                else{
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+
+                  if (PAID_VERSION) toggleModal(row)
+                  else {
+                    setIsOpen(true)
+                    setTimeout(() => {
+                      setIsOpen(false)
+                    }, 5000)
+                  }
                 }}
                 style={{ height: 25 }}>
                 <ListItemIcon>
@@ -152,12 +152,12 @@ const Option = props => {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                 
-                  if(PAID_VERSION)
-                  mutate({
-                    variables: { id: row._id, restaurant: restaurantId }
-                  })
-                  else{
+
+                  if (PAID_VERSION)
+                    mutate({
+                      variables: { id: row._id, restaurant: restaurantId }
+                    })
+                  else {
                     setIsOpen(true)
                     setTimeout(() => {
                       setIsOpen(false)
@@ -180,16 +180,16 @@ const Option = props => {
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  const filtered =
-    searchQuery.length < 3
-      ? data && data.restaurant.options
-      : data &&
-        data.restaurant.options.filter(option => {
-          return (
-            option.title.toLowerCase().search(regex) > -1 ||
-            option.description.toLowerCase().search(regex) > -1
-          )
-        })
+  // const filtered =
+  //   searchQuery.length < 3
+  //     ? data && data.restaurant.options
+  //     : data &&
+  //       data.restaurant.options.filter(option => {
+  //         return (
+  //           option.title.toLowerCase().search(regex) > -1 ||
+  //           option.description.toLowerCase().search(regex) > -1
+  //         )
+  //       })
   const globalClasses = useGlobalStyles()
   return (
     <>
@@ -199,7 +199,7 @@ const Option = props => {
       )}
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <OptionComponent />
+        <OptionComponent optionsPage={true} />
         {errorQuery && (
           <tr>
             <td>{`${'Error'} ${errorQuery.message}`}</td>
@@ -219,7 +219,7 @@ const Option = props => {
             }
             title={<TableHeader title={t('Options')} />}
             columns={columns}
-            data={data && data.restaurant ? filtered : {}}
+            data={data && data.options ? data.options : {}}
             pagination
             progressPending={loadingQuery}
             progressComponent={<CustomLoader />}
@@ -242,7 +242,11 @@ const Option = props => {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <OptionComponent option={option} onClose={closeEditModal} />
+          <OptionComponent
+            optionsPage={true}
+            option={option}
+            onClose={closeEditModal}
+          />
         </Modal>
       </Container>
     </>

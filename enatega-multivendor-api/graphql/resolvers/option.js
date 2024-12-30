@@ -4,13 +4,14 @@ const { transformOption, transformRestaurant } = require('./merge')
 
 module.exports = {
   Query: {
-    options: async () => {
-      console.log('options')
+    options: async (_, args) => {
+      console.log('options', args)
       try {
-        const options = await Option.find({ isActive: true })
-        return options.map(option => {
-          return transformOption(option)
+        const options = await Option.find({
+          restaurant: args.id
         })
+        console.log({ options })
+        return options
       } catch (err) {
         console.log(err)
         throw err
@@ -28,17 +29,6 @@ module.exports = {
         }))
         const options = await Option.insertMany(optionsInput)
         return options
-        // const options = args.optionInput.options
-        // const restaurant = await Restaurant.findById(
-        //   args.optionInput.restaurant
-        // )
-
-        // options.map(option => {
-        //   restaurant.options.push(new Option(option))
-        // })
-
-        // const result = await restaurant.save()
-        // return transformRestaurant(result)
       } catch (err) {
         console.log(err)
         throw err
@@ -63,18 +53,20 @@ module.exports = {
         throw err
       }
     },
-    deleteOption: async (_, { id, restaurant }, context) => {
+    deleteOption: async (_, { id }, context) => {
       console.log('deleteOption')
       try {
-        const restaurants = await Restaurant.findById(restaurant)
-        restaurants.options.id(id).remove()
-        restaurants.addons = restaurants.addons.map(addon => {
-          addon.options = addon.options.filter(option => option !== id)
-          return addon
-        })
+        await Option.findByIdAndDelete(id)
+        return { message: 'Removed option successfully!' }
+        // const restaurants = await Restaurant.findById(restaurant)
+        // restaurants.options.id(id).remove()
+        // restaurants.addons = restaurants.addons.map(addon => {
+        //   addon.options = addon.options.filter(option => option !== id)
+        //   return addon
+        // })
 
-        const result = await restaurants.save()
-        return transformRestaurant(result)
+        // const result = await restaurants.save()
+        // return transformRestaurant(result)
       } catch (err) {
         console.log(err)
         throw err

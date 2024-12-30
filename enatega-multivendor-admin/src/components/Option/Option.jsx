@@ -300,6 +300,10 @@ function Option(props) {
                           }
                         }
                       })
+
+                  if (props.optionsPage) {
+                    window.location.reload()
+                  }
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
                     props.onClose() // Close the modal
