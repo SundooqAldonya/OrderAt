@@ -2,6 +2,7 @@ import { MenuItem, Select } from '@mui/material'
 import { assignRider, getRidersByZone } from '../../apollo'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import useGlobalStyles from '../../utils/globalStyles'
+import { NotificationManager } from 'react-notifications'
 
 const GET_RIDERS_BY_ZONE = gql`
   ${getRidersByZone}

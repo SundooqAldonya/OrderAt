@@ -158,25 +158,13 @@ const Orders = props => {
       </>
     )
   }
-  const subscribeFunc = row => {
-    const { data: dataSubscription } = useSubscription(SUBSCRIPTION_ORDER, {
-      variables: { id: row._id }
-    })
-    console.log(dataSubscription)
-    return (
-      <div style={{ overflow: 'visible', whiteSpace: 'pre' }}>
-        {row.orderId}
-        <br />
-        {transformToNewline(row.deliveryAddress.deliveryAddress, 3)}
-      </div>
-    )
-  }
+
   const columns = [
     {
       name: t('OrderInformation'),
       sortable: true,
       selector: 'orderId',
-      cell: row => subscribeFunc(row)
+      cell: row => SubscribeFunc(row)
     },
     {
       name: t('RestaurantCol'),
@@ -290,6 +278,20 @@ const Orders = props => {
         )}
       </Container>
     </>
+  )
+}
+
+const SubscribeFunc = row => {
+  const { data: dataSubscription } = useSubscription(SUBSCRIPTION_ORDER, {
+    variables: { id: row._id }
+  })
+  console.log(dataSubscription)
+  return (
+    <div style={{ overflow: 'visible', whiteSpace: 'pre' }}>
+      {row.orderId}
+      <br />
+      {transformToNewline(row.deliveryAddress.deliveryAddress, 3)}
+    </div>
   )
 }
 

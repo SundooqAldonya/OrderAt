@@ -45,7 +45,7 @@ const DELETE_SECTION = gql`
 
 function Sections(props) {
   const { t } = props
-  const {PAID_VERSION} = ConfigurableValues()
+  const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
   const [sections, setSections] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -103,7 +103,7 @@ function Sections(props) {
     },
     {
       name: t('Action'),
-      cell: row => <>{actionButtons(row)}</>
+      cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
     }
   ]
 
@@ -133,8 +133,8 @@ function Sections(props) {
       </>
     )
   }
-  const actionButtons = row => {
-    const [anchorEl, setAnchorEl] = React.useState(null)
+  const ActionButtons = (row, toggleModal, mutateDelete) => {
+    const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
     const handleClick = event => {
       setAnchorEl(event.currentTarget)
@@ -164,15 +164,14 @@ function Sections(props) {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                 
-                  if(PAID_VERSION)
-                  toggleModal(row)
-                else{
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+
+                  if (PAID_VERSION) toggleModal(row)
+                  else {
+                    setIsOpen(true)
+                    setTimeout(() => {
+                      setIsOpen(false)
+                    }, 5000)
+                  }
                 }}
                 style={{ height: 25 }}>
                 <ListItemIcon>
@@ -183,15 +182,14 @@ function Sections(props) {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                 
-                  if(PAID_VERSION)
-                  mutateDelete({ variables: { id: row._id } })
-                else{
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+
+                  if (PAID_VERSION) mutateDelete({ variables: { id: row._id } })
+                  else {
+                    setIsOpen(true)
+                    setTimeout(() => {
+                      setIsOpen(false)
+                    }, 5000)
+                  }
                 }}
                 style={{ height: 25 }}>
                 <ListItemIcon>

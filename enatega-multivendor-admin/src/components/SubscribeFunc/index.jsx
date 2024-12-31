@@ -1,5 +1,6 @@
 import { gql, useSubscription } from '@apollo/client'
 import { subscriptionOrder } from '../../apollo'
+import { transformToNewline } from '../../utils/stringManipulations'
 
 const SUBSCRIPTION_ORDER = gql`
   ${subscriptionOrder}
