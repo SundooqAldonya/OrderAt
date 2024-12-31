@@ -43,7 +43,7 @@ const typeDefs = gql`
   type Category {
     _id: ID!
     title: String!
-    foods: [Food!]
+    # foods: [Food!]
     createdAt: String!
     updatedAt: String!
   }
@@ -1418,7 +1418,7 @@ const typeDefs = gql`
     forgotPassword(email: String!, otp: String!): ForgotPassword!
     resetPassword(password: String!, email: String!): ForgotPassword!
     vendorResetPassword(oldPassword: String!, newPassword: String!): Boolean!
-    deleteCategory(id: String!, restaurant: String!): Message!
+    deleteCategory(id: String!): Message!
     deleteFood(id: String!): Message!
     createRider(riderInput: RiderInput): Rider!
     editRider(riderInput: RiderInput): Rider!

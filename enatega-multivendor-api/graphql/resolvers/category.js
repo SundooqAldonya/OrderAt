@@ -42,9 +42,10 @@ module.exports = {
     },
     editCategory: async (_, args, context) => {
       console.log('editCategory')
+      console.log({ args })
       try {
-        const category = await Category.findById(args.categoryId)
-        category.title = args.title
+        const category = await Category.findById(args.category._id)
+        category.title = args.category.title
         await category.save()
         // const restaurant = await Restaurant.findOne({
         //   _id: args.category.restaurant
@@ -60,10 +61,10 @@ module.exports = {
         throw err
       }
     },
-    deleteCategory: async (_, { id, restaurant }, context) => {
+    deleteCategory: async (_, { id }, context) => {
       console.log('deleteCategory')
       try {
-        const category = await Category.findByIdAndDelete(id)
+        await Category.findByIdAndDelete(id)
         return { message: 'Removed category successfully!' }
         // const restaurants = await Restaurant.findOne({ _id: restaurant })
         // restaurants.categories.id(id).remove()

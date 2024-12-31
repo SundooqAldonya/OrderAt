@@ -57,58 +57,17 @@ mutation CreateCategory($category:CategoryInput){
 export const editCategory = `
       mutation EditCategory($category:CategoryInput){
         editCategory(category:$category){
-          _id
-          categories{
             _id
             title
-            foods{
-              _id
-              title
-              description
-              variations{
-                _id
-                title
-                price
-                discounted
-                addons
-              }
-              image
-              isActive
-              createdAt
-              updatedAt
-            }
             createdAt
             updatedAt
-          }
         }
       }`
 
 export const deleteCategory = `
-      mutation DeleteCategory($id:String!,$restaurant:String!){
-        deleteCategory(id:$id,restaurant:$restaurant){
-                _id
-                categories{
-                  _id
-                  title
-                  foods{
-                    _id
-                    title
-                    description
-                    variations{
-                      _id
-                      title
-                      price
-                      discounted
-                      addons
-                    }
-                    image
-                    isActive
-                    createdAt
-                    updatedAt
-                  }
-                  createdAt
-                  updatedAt
-                }
+      mutation DeleteCategory($id:String!){
+        deleteCategory(id:$id){
+          message
         }
       }`
 

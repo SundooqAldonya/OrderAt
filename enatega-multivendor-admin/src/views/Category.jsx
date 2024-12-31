@@ -44,7 +44,6 @@ const Category = props => {
   const { t } = props
   const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
-  const [categories, setCategories] = useState(null)
   const [category, setCategory] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
@@ -59,9 +58,10 @@ const Category = props => {
   }
   const restaurantId = localStorage.getItem('restaurantId')
   console.log({ restaurantId })
-  // const restaurantId = '673af04d6b93314b760254c2'
 
-  const [mutate, { loading }] = useMutation(DELETE_CATEGORY)
+  const [mutate, { loading }] = useMutation(DELETE_CATEGORY, {
+    refetchQueries: [{ query: GET_CATEGORIES, variables: { id: restaurantId } }]
+  })
 
   const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
     GET_CATEGORIES,
@@ -72,14 +72,6 @@ const Category = props => {
     }
   )
 
-  // useEffect(() => {
-  //   setCategories(data?.categoriesByRestaurant)
-  // }, [data])
-
-  // const updateCategories = item => {
-  //   setCategories([...categories, item])
-  // }
-
   const customSort = (rows, field, direction) => {
     const handleField = row => {
       if (row[field]) {
@@ -89,8 +81,6 @@ const Category = props => {
     }
     return orderBy(rows, handleField, direction)
   }
-
-  console.log({ data })
 
   const columns = [
     {
@@ -239,7 +229,7 @@ const ActionButtons = (
 
                 if (PAID_VERSION)
                   mutate({
-                    variables: { id: row._id, restaurant: restaurantId }
+                    variables: { id: row._id }
                   })
                 else {
                   setIsOpen(true)
