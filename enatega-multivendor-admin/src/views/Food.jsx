@@ -32,6 +32,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import TableHeader from '../components/TableHeader'
 import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
+import { Fragment } from 'react'
 
 const GET_FOODS = gql`
   ${getFoodListByRestaurant}
@@ -61,11 +62,11 @@ const Food = props => {
     }
   )
 
-  const foodListByRestaurant = data?.foodListByRestaurant
+  // const foodListByRestaurant = data?.foodListByRestaurant
 
-  useEffect(() => {
-    setFoodList(data?.foodListByRestaurant)
-  }, [data])
+  // useEffect(() => {
+  //   setFoodList(data?.foodListByRestaurant)
+  // }, [foodListByRestaurant])
 
   const toggleModal = food => {
     setEditModal(!editModal)
@@ -144,9 +145,9 @@ const Food = props => {
     }
   ]
 
-  const updateFoodList = item => {
-    setFoodList([...foodList, item])
-  }
+  // const updateFoodList = item => {
+  //   setFoodList([...foodList, item])
+  // }
 
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
@@ -161,36 +162,37 @@ const Food = props => {
         <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
       )}
       <Container className={globalClasses.flex} fluid>
-        <FoodComponent
-          updateFoodList={updateFoodList}
-          onClose={closeEditModal}
-        />
+        <FoodComponent onClose={closeEditModal} />
         {errorQuery && <span>`Error! ${errorQuery.message}`</span>}
         {loadingQuery ? (
           <CustomLoader />
         ) : (
-          <DataTable
-            subHeader={true}
-            subHeaderComponent={
-              <SearchBar
-                value={searchQuery}
-                onChange={onChangeSearch}
-                onClick={() => refetch()}
+          <Fragment>
+            {data && data?.foodListByRestaurant ? (
+              <DataTable
+                subHeader={true}
+                subHeaderComponent={
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={onChangeSearch}
+                    onClick={() => refetch()}
+                  />
+                }
+                title={<TableHeader title={t('Food')} />}
+                columns={columns}
+                data={data ? data.foodListByRestaurant : []}
+                pagination
+                progressPending={loading}
+                progressComponent={<CustomLoader />}
+                sortFunction={customSort}
+                defaultSortField="title"
+                customStyles={customStyles}
+                selectableRows
+                paginationIconLastPage=""
+                paginationIconFirstPage=""
               />
-            }
-            title={<TableHeader title={t('Food')} />}
-            columns={columns}
-            data={data && foodListByRestaurant ? foodList : []}
-            pagination
-            progressPending={loading}
-            progressComponent={<CustomLoader />}
-            sortFunction={customSort}
-            defaultSortField="title"
-            customStyles={customStyles}
-            selectableRows
-            paginationIconLastPage=""
-            paginationIconFirstPage=""
-          />
+            ) : null}
+          </Fragment>
         )}
         <Modal
           open={editModal}

@@ -6,7 +6,7 @@ import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
 
-import { withTranslation } from 'react-i18next'
+import { useTranslation, withTranslation } from 'react-i18next'
 import { useQuery, useMutation, gql } from '@apollo/client'
 import { getRestaurantDetail, deleteOption, getOptions } from '../apollo'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -180,6 +180,8 @@ const Option = props => {
 }
 
 const ActionButtons = (row, toggleModal, mutate) => {
+  const restaurantId = localStorage.getItem('restaurantId')
+  const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = event => {
@@ -211,13 +213,7 @@ const ActionButtons = (row, toggleModal, mutate) => {
               onClick={e => {
                 e.preventDefault()
 
-                if (PAID_VERSION) toggleModal(row)
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                toggleModal(row)
               }}
               style={{ height: 25 }}>
               <ListItemIcon>
@@ -229,16 +225,9 @@ const ActionButtons = (row, toggleModal, mutate) => {
               onClick={e => {
                 e.preventDefault()
 
-                if (PAID_VERSION)
-                  mutate({
-                    variables: { id: row._id, restaurant: restaurantId }
-                  })
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                mutate({
+                  variables: { id: row._id, restaurant: restaurantId }
+                })
               }}
               style={{ height: 25 }}>
               <ListItemIcon>

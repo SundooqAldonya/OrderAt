@@ -7,7 +7,8 @@ import {
   getRestaurantDetail,
   createFood,
   editFood,
-  categoriesByRestaurants
+  categoriesByRestaurants,
+  getFoodListByRestaurant
 } from '../../apollo'
 import AddonComponent from '../Addon/Addon'
 import useStyles from './styles'
@@ -28,6 +29,11 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
+
+const GET_FOODS = gql`
+  ${getFoodListByRestaurant}
+`
+
 const CREATE_FOOD = gql`
   ${createFood}
 `
@@ -128,9 +134,7 @@ function Food(props) {
     successSetter(message)
     setTitle('')
     setDescription('')
-    if (!props.update) {
-      props.updateFoodList(data.createFood)
-    }
+
     if (props.update) {
       window.location.reload()
     }
@@ -139,7 +143,8 @@ function Food(props) {
 
   const [mutate, { loading: mutateLoading }] = useMutation(mutation, {
     onError,
-    onCompleted
+    onCompleted,
+    refetchQueries: [{ query: GET_FOODS, variables: { id: restaurantId } }]
   })
 
   const {

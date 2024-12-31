@@ -72,13 +72,13 @@ const Category = props => {
     }
   )
 
-  useEffect(() => {
-    setCategories(data?.categoriesByRestaurant)
-  }, [data])
+  // useEffect(() => {
+  //   setCategories(data?.categoriesByRestaurant)
+  // }, [data])
 
-  const updateCategories = item => {
-    setCategories([...categories, item])
-  }
+  // const updateCategories = item => {
+  //   setCategories([...categories, item])
+  // }
 
   const customSort = (rows, field, direction) => {
     const handleField = row => {
@@ -120,20 +120,6 @@ const Category = props => {
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  // const filtered =
-  //   searchQuery.length < 3
-  //     ? data &&
-  //       data.restaurant.categories.filter(
-  //         category => category.title !== 'Default Category'
-  //       )
-  //     : data &&
-  //       data.restaurant.categories.filter(category => {
-  //         return (
-  //           category.title.toLowerCase().search(regex) > -1 &&
-  //           category.title !== 'Default Category'
-  //         )
-  //       })
-
   const globalClasses = useGlobalStyles()
   return (
     <>
@@ -145,7 +131,7 @@ const Category = props => {
       <Container className={globalClasses.flex} fluid>
         <Grid container mb={3}>
           <Grid item xs={12} md={7}>
-            <CategoryComponent updateCategories={updateCategories} />
+            <CategoryComponent />
           </Grid>
         </Grid>
         {errorQuery ? <span>{`Error! ${errorQuery.message}`}</span> : null}
@@ -163,7 +149,7 @@ const Category = props => {
             }
             title={<TableHeader title={t('Categories')} />}
             columns={columns}
-            data={categories}
+            data={data ? data?.categoriesByRestaurant : []}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}

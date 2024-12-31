@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState } from 'react'
-import { withTranslation } from 'react-i18next'
+import { useTranslation, withTranslation } from 'react-i18next'
 import { useQuery, useMutation, gql } from '@apollo/client'
 import Header from '../components/Headers/Header'
 import CustomLoader from '../components/Loader/CustomLoader'
@@ -227,6 +227,7 @@ function Riders(props) {
 
 const ActionButtons = (row, toggleModal, mutateDelete) => {
   const [anchorEl, setAnchorEl] = useState(null)
+  const { t } = useTranslation()
   const open = Boolean(anchorEl)
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -257,13 +258,7 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
               onClick={e => {
                 e.preventDefault()
 
-                if (PAID_VERSION) toggleModal(row)
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                toggleModal(row)
               }}
               style={{ height: 25 }}>
               <ListItemIcon>
@@ -275,13 +270,7 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
               onClick={e => {
                 e.preventDefault()
 
-                if (PAID_VERSION) mutateDelete({ variables: { id: row._id } })
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                mutateDelete({ variables: { id: row._id } })
               }}
               style={{ height: 25 }}>
               <ListItemIcon>

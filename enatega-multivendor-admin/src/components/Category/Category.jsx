@@ -4,7 +4,11 @@ import { withTranslation } from 'react-i18next'
 
 import { Box, Typography, Input, Button, Alert } from '@mui/material'
 
-import { editCategory, createCategory } from '../../apollo'
+import {
+  editCategory,
+  createCategory,
+  categoriesByRestaurants
+} from '../../apollo'
 import useGlobalStyles from '../../utils/globalStyles'
 import useStyles from '../styles'
 
@@ -13,6 +17,10 @@ const CREATE_CATEGORY = gql`
 `
 const EDIT_CATEGORY = gql`
   ${editCategory}
+`
+
+const GET_CATEGORIES = gql`
+  ${categoriesByRestaurants}
 `
 
 function Category(props) {
@@ -24,7 +32,6 @@ function Category(props) {
   )
   const restaurantId = localStorage.getItem('restaurantId')
   const onCompleted = data => {
-    props.updateCategories(data.createCategory)
     const message = props.category
       ? t('CategoryUpdatedSuccessfully')
       : t('CategoryAddedSuccessfully')
@@ -39,7 +46,11 @@ function Category(props) {
     mainErrorSetter(message)
     setTimeout(hideAlert, 3000)
   }
-  const [mutate, { loading }] = useMutation(mutation, { onError, onCompleted })
+  const [mutate, { loading }] = useMutation(mutation, {
+    onError,
+    onCompleted,
+    refetchQueries: [{ query: GET_CATEGORIES, variables: { id: restaurantId } }]
+  })
   const hideAlert = () => {
     mainErrorSetter('')
     successSetter('')
