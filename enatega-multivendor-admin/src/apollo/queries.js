@@ -591,6 +591,12 @@ export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!)
     description
     image
     restaurant
+    variations {
+      _id
+      title
+      price
+      discounted
+    }
     category {
       _id
       title

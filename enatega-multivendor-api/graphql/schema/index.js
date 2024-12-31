@@ -224,7 +224,7 @@ const typeDefs = gql`
     _id: ID!
     title: String
     description: String
-    # variations: [Variation!]
+    variations: [Variation!]
     restaurant: String!
     category: Category!
     image: String
@@ -807,7 +807,7 @@ const typeDefs = gql`
     title: String!
     description: String
     file: Upload
-    # variations: [VariationInput!]!
+    variations: [VariationInput!]
   }
 
   input RiderInput {

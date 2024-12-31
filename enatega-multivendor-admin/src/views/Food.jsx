@@ -62,6 +62,8 @@ const Food = props => {
     }
   )
 
+  console.log({ data })
+
   // const foodListByRestaurant = data?.foodListByRestaurant
 
   // useEffect(() => {

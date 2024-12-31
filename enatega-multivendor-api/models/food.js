@@ -25,7 +25,13 @@ const foodSchema = new Schema(
     category: {
       type: Schema.Types.ObjectId,
       ref: 'Category'
-    }
+    },
+    variations: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Variation'
+      }
+    ]
   },
   { timestamps: true }
 )

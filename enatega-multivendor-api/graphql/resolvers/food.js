@@ -14,9 +14,9 @@ module.exports = {
     async foodListByRestaurant(_, args, context) {
       console.log({ argsFood: args })
       try {
-        const foodList = await Food.find({ restaurant: args.id }).populate(
-          'category'
-        )
+        const foodList = await Food.find({ restaurant: args.id })
+          .populate('category')
+          .populate('variations')
         console.log({ foodList })
         return foodList
       } catch (err) {
@@ -30,19 +30,30 @@ module.exports = {
       console.log('createFood')
       console.log({ args })
       try {
+        let variations
+        if (args.foodInput.variations.length) {
+          const variationsArr = args.foodInput.variations
+          variations = await Variation.insertMany([...variationsArr])
+        }
         const food = new Food({
           title: args.foodInput.title,
           description: args.foodInput.description,
           restaurant: args.foodInput.restaurant,
-          category: args.foodInput.category
+          category: args.foodInput.category,
+          variations
         })
+        if (args.foodInput.variations.length) {
+          const variationsArr = args.foodInput.variations.map(item => {
+            return { ...item, food: food._id }
+          })
+          variations = await Variation.insertMany([...variationsArr])
+        }
         if (args.foodInput.file.createReadStream) {
           await uploadFoodImage({
             id: food._id,
             file: args.foodInput.file
           })
         }
-        console.log({ food })
         await food.save()
         const newFood = await food.populate('category')
         console.log({ newFood })
@@ -53,7 +64,7 @@ module.exports = {
       }
     },
     async editFood(_, { foodInput }) {
-      console.log({ foodInput })
+      console.log({ foodInput: foodInput.variations })
       try {
         const food = await Food.findById(foodInput._id)
         food.title = foodInput.title
@@ -64,6 +75,27 @@ module.exports = {
             id: food._id,
             file: foodInput.file
           })
+        }
+        if (foodInput.variations.length) {
+          const variationsArr = foodInput.variations
+          const existingVariations = await Variation.find({
+            title: { $in: variationsArr.map(item => item.title) },
+            food: food._id
+          })
+          console.log({ existingVariations })
+          const existingTitles = existingVariations.map(item => item.title)
+          console.log({ existingTitles })
+          const newVariations = variationsArr.filter(
+            item => !existingTitles.includes(item.title)
+          )
+          console.log({ newVariations })
+          // let insertedVariations
+          if (newVariations.length) {
+            const insertedVariations = await Variation.insertMany([
+              ...newVariations
+            ])
+            food.variations = [...existingVariations, ...insertedVariations]
+          }
         }
         await food.save()
         const newFood = await food.populate('category')

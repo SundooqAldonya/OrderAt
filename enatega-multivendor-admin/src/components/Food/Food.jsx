@@ -43,13 +43,12 @@ const EDIT_FOOD = gql`
 const GET_CATEGORIES = gql`
   ${categoriesByRestaurants}
 `
-// const GET_ADDONS = gql`
-//   ${getRestaurantDetail}
-// `
+const GET_ADDONS = gql`
+  ${getRestaurantDetail}
+`
 
 function Food(props) {
   const theme = useTheme()
-
   const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues()
   const formRef = useRef()
   const mutation = props.food ? EDIT_FOOD : CREATE_FOOD
@@ -71,34 +70,36 @@ function Food(props) {
   const [titleError, titleErrorSetter] = useState(null)
   const [categoryError, categoryErrorSetter] = useState(null)
   const [addonModal, addonModalSetter] = useState(false)
-  const [variation, variationSetter] = useState(null)
-  // props.food
-  //   ? props.food.variations.map(({ title, price, discounted, addons }) => {
-  //       return {
-  //         title,
-  //         price,
-  //         discounted,
-  //         addons,
-  //         titleError: null,
-  //         priceError: null
-  //       }
-  //     })
-  //   : [
-  //       {
-  //         title: '',
-  //         price: '',
-  //         discounted: '',
-  //         addons: [],
-  //         titleError: null,
-  //         priceError: null
-  //       }
-  //     ]
+  const [variation, setVariation] = useState(
+    props.food && props.food.variations.length
+      ? props.food?.variations.map(({ title, price, discounted, addons }) => {
+          return {
+            title,
+            price,
+            discounted,
+            addons,
+            titleError: null,
+            priceError: null
+          }
+        })
+      : [
+          {
+            title: '',
+            price: '',
+            discounted: '',
+            addons: [],
+            titleError: null,
+            priceError: null
+          }
+        ]
+  )
+  console.log({ variation })
 
   const restaurantId = localStorage.getItem('restaurantId')
 
   const clearFields = () => {
     // formRef.current.reset()
-    variationSetter([
+    setVariation([
       {
         title: '',
         price: '',
@@ -159,15 +160,15 @@ function Food(props) {
 
   console.log({ dataCategories })
 
-  // const {
-  //   data: dataAddons,
-  //   error: errorAddons,
-  //   loading: loadingAddons
-  // } = useQuery(GET_ADDONS, {
-  //   variables: {
-  //     id: restaurantId
-  //   }
-  // })
+  const {
+    data: dataAddons,
+    error: errorAddons,
+    loading: loadingAddons
+  } = useQuery(GET_ADDONS, {
+    variables: {
+      id: restaurantId
+    }
+  })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -215,7 +216,7 @@ function Food(props) {
         priceError: null
       })
     }
-    variationSetter([...variations])
+    setVariation([...variations])
   }
   const onRemove = index => {
     if (variation.length === 1 && index === 0) {
@@ -223,7 +224,7 @@ function Food(props) {
     }
     const variations = variation
     variations.splice(index, 1)
-    variationSetter([...variations])
+    setVariation([...variations])
   }
   const handleVariationChange = (event, index, type) => {
     const variations = variation
@@ -233,20 +234,20 @@ function Food(props) {
         event.target.value.length === 1
           ? event.target.value.toUpperCase()
           : event.target.value
-      variationSetter([...variations])
+      setVariation([...variations])
     } else if (type === 'discounted') {
       // Enforce non-negative discounted price
       const newValue = Math.max(0, parseFloat(event.target.value))
       // variations[index][type] = newValue
       if (newValue > 0) {
         variations[index][type] = newValue
-        variationSetter([...variations])
+        setVariation([...variations])
       }
       // variations[index][type + 'Error'] = newValue < 0 // Update error based on new value
-      // variationSetter([...variations])
+      // setVariation([...variations])
     } else {
       variations[index][type] = event.target.value
-      variationSetter([...variations])
+      setVariation([...variations])
     }
   }
   const onSubmitValidaiton = () => {
@@ -280,7 +281,7 @@ function Food(props) {
     // ).length
     titleErrorSetter(titleError)
     categoryErrorSetter(categoryError)
-    // variationSetter([...variations])
+    // setVariation([...variations])
     // return titleError && categoryError && variationsError
     return titleError && categoryError
   }
@@ -305,7 +306,7 @@ function Food(props) {
         type
       )
     }
-    variationSetter([...variations])
+    setVariation([...variations])
   }
 
   const updateAddonsList = ids => {
@@ -313,7 +314,7 @@ function Food(props) {
     variations[variationIndex].addons = variations[
       variationIndex
     ].addons.concat(ids)
-    variationSetter([...variations])
+    setVariation([...variations])
   }
 
   // show Create Addon modal
@@ -326,7 +327,7 @@ function Food(props) {
     const addon = variations[index].addons.indexOf(id)
     if (addon < 0) variations[index].addons.push(id)
     else variations[index].addons.splice(addon, 1)
-    variationSetter([...variations])
+    setVariation([...variations])
   }
 
   // const uploadImageToCloudinary = async () => {
@@ -495,7 +496,7 @@ function Food(props) {
               </Box>
               <Box classes={classes.form}>
                 {variation?.map((variationItem, index) => (
-                  <Box key={variationItem._id} pl={1} pr={1}>
+                  <Box key={index} pl={1} pr={1}>
                     <Box className={globalClasses.flexRow}>
                       <Grid container>
                         <Grid item xs={12} sm={6}>
@@ -622,10 +623,10 @@ function Food(props) {
                       />
                     </Box>
                     <Box>
-                      {/* {loadingAddons && t('LoadingDots')} */}
-                      {/* {errorAddons && t('ErrorDots')} */}
-                      {/* {dataAddons?.restaurant?.addons
-                        .filter(addon => addon.title !== 'Default Addon')
+                      {loadingAddons && t('LoadingDots')}
+                      {errorAddons && t('ErrorDots')}
+                      {dataAddons?.restaurant?.addons
+                        ?.filter(addon => addon.title !== 'Default Addon')
                         .map(addon => (
                           <Grid
                             item
@@ -648,13 +649,13 @@ function Food(props) {
                               label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
                             />
                           </Grid>
-                        ))} */}
+                        ))}
                     </Box>
-                    <Button
+                    {/* <Button
                       className={classes.button}
                       onClick={() => toggleModal(index)}>
                       {t('NewAddon')}
-                    </Button>
+                    </Button> */}
                   </Box>
                 ))}
               </Box>
@@ -675,17 +676,17 @@ function Food(props) {
                         title: formRef.current['input-title'].value,
                         description: formRef.current['input-description'].value,
                         file: image,
-                        category: formRef.current['input-category'].value
-                        // variations: variation.map(
-                        //   ({ title, price, discounted, addons }) => {
-                        //     return {
-                        //       title,
-                        //       price: +price,
-                        //       discounted: +discounted,
-                        //       addons
-                        //     }
-                        //   }
-                        // )
+                        category: formRef.current['input-category'].value,
+                        variations: variation.map(
+                          ({ title, price, discounted, addons }) => {
+                            return {
+                              title,
+                              price: +price,
+                              discounted: +discounted,
+                              addons
+                            }
+                          }
+                        )
                       }
                     }
                   })
