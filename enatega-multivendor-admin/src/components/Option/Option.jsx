@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { withTranslation } from 'react-i18next'
 import { useMutation, gql } from '@apollo/client'
-import { createOptions, editOption } from '../../apollo'
+import { createOptions, editOption, getOptions } from '../../apollo'
 import { validateFunc } from '../../constraints/constraints'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -21,6 +21,9 @@ const CREATE_OPTIONS = gql`
   ${createOptions}
 `
 
+const GET_OPTIONS = gql`
+  ${getOptions}
+`
 const EDIT_OPTION = gql`
   ${editOption}
 `
@@ -28,6 +31,7 @@ const EDIT_OPTION = gql`
 function Option(props) {
   const theme = useTheme()
   const { t } = props
+  const restaurantId = localStorage.getItem('restaurantId')
   const [option, optionSetter] = useState(
     props.option
       ? [{ ...props.option, titleError: false, priceError: false }]
@@ -69,7 +73,11 @@ function Option(props) {
     successSetter('')
     setTimeout(hideAlert, 3000)
   }
-  const [mutate, { loading }] = useMutation(mutation, { onError, onCompleted })
+  const [mutate, { loading }] = useMutation(mutation, {
+    onError,
+    onCompleted,
+    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
+  })
   const hideAlert = () => {
     mainErrorSetter('')
     successSetter('')
@@ -126,8 +134,6 @@ function Option(props) {
     if (!error.length) return true
     return false
   }
-
-  const restaurantId = localStorage.getItem('restaurantId')
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -301,9 +307,6 @@ function Option(props) {
                         }
                       })
 
-                  if (props.optionsPage) {
-                    window.location.reload()
-                  }
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
                     props.onClose() // Close the modal

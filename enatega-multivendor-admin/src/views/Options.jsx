@@ -125,7 +125,7 @@ const Option = props => {
       )}
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <OptionComponent optionsPage={true} />
+        <OptionComponent optionsPage={true} onClose={closeEditModal} />
         {errorQuery && (
           <tr>
             <td>{`${'Error'} ${errorQuery.message}`}</td>
