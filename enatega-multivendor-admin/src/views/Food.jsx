@@ -49,7 +49,6 @@ const Food = props => {
   const [isOpen, setIsOpen] = useState(false)
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const restaurantId = localStorage.getItem('restaurantId')
-  console.log({ restaurantId })
   const [mutate, { loading }] = useMutation(DELETE_FOOD, {
     refetchQueries: [{ query: GET_FOODS, variables: { id: restaurantId } }]
   })
@@ -62,12 +61,11 @@ const Food = props => {
     }
   )
 
-  console.log({ data })
   const foodListByRestaurant = data?.foodListByRestaurant
 
   useEffect(() => {
     setFoodList(data?.foodListByRestaurant)
-  }, [data?.foodListByRestaurant])
+  }, [data])
 
   const toggleModal = food => {
     setEditModal(!editModal)
@@ -110,7 +108,7 @@ const Food = props => {
       name: t('Category'),
       sortable: true,
       selector: 'category.category',
-      cell: row => <>{row.category.title}</>
+      cell: row => <>{row.category?.title || 'N/A'}</>
     },
     {
       name: t('Image'),
@@ -150,62 +148,11 @@ const Food = props => {
     setFoodList([...foodList, item])
   }
 
-  // const foodsList = categories => {
-  //   const list = []
-  //   categories &&
-  //     categories.forEach(category => {
-  //       if (category.foods && category.foods.length) {
-  //         return category.foods.map(item => {
-  //           console.log({ item })
-  //           list.push({
-  //             ...item,
-  //             category: category.title,
-  //             categoryId: category._id,
-  //             ...category,
-  //             _id: item._id,
-  //             title: item.title,
-  //             image: item.image
-  //           })
-
-  //           return {
-  //             ...item,
-  //             category: category.title,
-  //             categoryId: category._id,
-  //             ...category,
-  //             _id: item._id,
-  //             title: item.title,
-  //             image: item.image
-  //           }
-  //         })
-  //       }
-  //     })
-  //   return list
-  // }
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  // const filteredFoods = foodsList(data && data.restaurant.categories).filter(
-  //   food =>
-  //     !(food.category === 'Default Category' || food.title === 'Default Food')
-  // )
-
-  // const filtered =
-  //   searchQuery.length < 3
-  //     ? filteredFoods
-  //     : filteredFoods.filter(food => {
-  //         return (
-  //           food.title.toLowerCase().search(regex) > -1 ||
-  //           food.description.toLowerCase().search(regex) > -1 ||
-  //           food.category.toLowerCase().search(regex) > -1
-  //         )
-  //       })
   const globalClasses = useGlobalStyles()
-  // const foodId = '676e8e1e750a3e0d3f4d9e95'
-  // const findFood = data?.restaurant.categories.map(item => {
-  //   return item.foods.find(food => food._id === foodId)
-  // })
-  // console.log({ data: data?.restaurant.categories })
-  // console.log({ findFood })
+
   return (
     <>
       <Header />
@@ -233,7 +180,7 @@ const Food = props => {
             }
             title={<TableHeader title={t('Food')} />}
             columns={columns}
-            data={data && foodListByRestaurant ? foodList : {}}
+            data={data && foodListByRestaurant ? foodList : []}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}
