@@ -25,7 +25,7 @@ import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues()
-
+  console.log('ahmed elselly')
   const cache = new InMemoryCache()
   const httpLink = createHttpLink({
     uri: `${SERVER_URL}/graphql`
