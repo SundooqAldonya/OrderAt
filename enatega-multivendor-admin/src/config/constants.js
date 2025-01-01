@@ -9,8 +9,8 @@ const ConfigurableValues = () => {
   //   SERVER_URL = 'http://localhost:8001'
   //   WS_SERVER_URL = 'ws://localhost:8001'
   // } else {
-    SERVER_URL = 'https://query.orderat.ai'
-    WS_SERVER_URL = 'wss://query.orderat.ai'
+  SERVER_URL = 'https://query.orderat.ai'
+  WS_SERVER_URL = 'wss://query.orderat.ai'
   // }
   const GOOGLE_MAPS_KEY = configuration.googleApiKey ?? ''
   const FIREBASE_KEY = configuration.firebaseKey
