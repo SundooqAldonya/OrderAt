@@ -693,8 +693,8 @@ module.exports = {
         })
         restaurant.name = args.restaurant.name
         restaurant.address = args.restaurant.address
-        restaurant.image = args.restaurant.image
-        restaurant.logo = args.restaurant.logo
+        // restaurant.image = args.restaurant.image
+        // restaurant.logo = args.restaurant.logo
         restaurant.orderPrefix = args.restaurant.orderPrefix
         restaurant.isActive = true
         restaurant.username = args.restaurant.username
@@ -756,12 +756,7 @@ module.exports = {
     async uploadRestaurantLogo(_, { id, file }) {
       console.log({ file })
       try {
-        const {
-          createReadStream,
-          filename,
-          mimetype,
-          encoding
-        } = await file.file
+        const { createReadStream } = await file.file
         const stream = createReadStream()
 
         const image = await cloudinary.uploader.upload_stream(
@@ -777,7 +772,7 @@ module.exports = {
             console.log({ restaurant })
             restaurant.logo = result.secure_url
             await restaurant.save()
-            return result.secure_url // Return the URL of the uploaded image
+            return result.secure_url
           }
         )
 

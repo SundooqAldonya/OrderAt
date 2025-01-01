@@ -87,8 +87,8 @@ const VendorProfile = () => {
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
   const [restaurantCuisines, setRestaurantCuisines] = useState([])
-  const [image, setImage] = useState({})
-  const [logo, setLogo] = useState({})
+  const [image, setImage] = useState(null)
+  const [logo, setLogo] = useState(null)
 
   const onCompleted = data => {
     setNameError(null)
@@ -277,18 +277,7 @@ const VendorProfile = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    if (image) {
-      const restaurantImage = await uploadFile({
-        variables: { id: restaurantId, file: image }
-      })
-      console.log('File uploaded:', restaurantImage.data)
-    }
-    if (logo) {
-      const restaurantLogo = await uploadRestaurantLogo({
-        variables: { id: restaurantId, file: logo }
-      })
-      console.log('Logo uploaded:', restaurantLogo.data)
-    }
+
     if (onSubmitValidaiton()) {
       const form = formRef.current
       const name = form.name.value
@@ -317,6 +306,20 @@ const VendorProfile = () => {
           }
         }
       })
+    }
+    if (image) {
+      console.log({ image })
+      const restaurantImage = await uploadFile({
+        variables: { id: restaurantId, file: image }
+      })
+      console.log('File uploaded:', restaurantImage.data)
+    }
+    if (logo) {
+      console.log({ logo })
+      const restaurantLogo = await uploadRestaurantLogo({
+        variables: { id: restaurantId, file: logo }
+      })
+      console.log('Logo uploaded:', restaurantLogo.data)
     }
   }
 

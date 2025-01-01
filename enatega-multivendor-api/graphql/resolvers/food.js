@@ -28,7 +28,7 @@ module.exports = {
   Mutation: {
     createFood: async (_, args, context) => {
       console.log('createFood')
-      console.log({ args })
+      console.log({ createFoodArgs: args.foodInput.file })
       try {
         let variations
         if (args.foodInput.variations.length) {
@@ -48,7 +48,7 @@ module.exports = {
           })
           variations = await Variation.insertMany([...variationsArr])
         }
-        if (args.foodInput.file.createReadStream) {
+        if (args.foodInput.file.file['createReadStream']) {
           await uploadFoodImage({
             id: food._id,
             file: args.foodInput.file
@@ -70,7 +70,7 @@ module.exports = {
         food.title = foodInput.title
         food.description = foodInput.description
         food.category = foodInput.category
-        if (foodInput.file.createReadStream) {
+        if (foodInput.file.file['createReadStream']) {
           await uploadFoodImage({
             id: food._id,
             file: foodInput.file
