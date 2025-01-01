@@ -80,7 +80,7 @@ module.exports = {
           const variationsArr = foodInput.variations
           const existingVariations = await Variation.find({
             title: { $in: variationsArr.map(item => item.title) },
-            food: food._id
+            food: foodInput._id
           })
           console.log({ existingVariations })
           const existingTitles = existingVariations.map(item => item.title)
