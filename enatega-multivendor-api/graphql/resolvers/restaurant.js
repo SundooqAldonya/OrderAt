@@ -180,8 +180,10 @@ module.exports = {
       console.log('restaurantByOwner')
       try {
         const id = args.id || req.userId
-        const owner = await Owner.findById(id)
-        return transformOwner(owner)
+        const restaurants = await Restaurant.find({ owner: id })
+        return restaurants
+        // const owner = await Owner.findById(id)
+        // return transformOwner(owner)
       } catch (e) {
         throw e
       }
@@ -617,7 +619,7 @@ module.exports = {
         if (restaurantExists) {
           throw Error('Restaurant by this name already exists')
         }
-        // const owner = await Owner.findById(args.owner)
+        const owner = await Owner.findById(args.owner)
         // if (!owner) throw new Error('Owner does not exist')
         const orderPrefix = randomstring.generate({
           length: 5,
@@ -641,13 +643,35 @@ module.exports = {
           phone: args.restaurant.phone
         })
         console.log('New Restaurant: ', restaurant)
+        // const {
+        //   createReadStream,
+        //   filename,
+        //   mimetype,
+        //   encoding
+        // } = await file.file
+        // const stream = createReadStream()
+        // const image = await cloudinary.uploader.upload_stream(
+        //   {
+        //     resource_type: 'auto'
+        //   },
+        //   async (error, result) => {
+        //     if (error) {
+        //       throw new Error('Upload failed')
+        //     }
+        //     console.log({ image: result.secure_url })
+        //     restaurant.image = result.secure_url
+        //     console.log({ restaurant })
+        //     return result.secure_url // Return the URL of the uploaded image
+        //   }
+        // )
+        // stream.pipe(image)
 
-        const result = await restaurant.save()
-        console.log({ result })
-        // owner.restaurants.push(result.id)
-        // await owner.save()
-        // return transformRestaurant(result)
-        return result
+        await restaurant.save()
+        console.log({ restaurant })
+        owner.restaurants.push(restaurant.id)
+        await owner.save()
+        // return transformRestaurant(restaurant)
+        return restaurant
       } catch (err) {
         throw err
       }

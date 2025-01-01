@@ -4,8 +4,8 @@ import { withTranslation } from 'react-i18next'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import { createRestaurant, getCuisines, restaurantByOwner } from '../../apollo'
 import defaultLogo from '../../assets/img/defaultLogo.png'
-import { IconButton } from '@mui/material';
-import Close from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material'
+import Close from '@mui/icons-material/Close'
 
 import {
   Box,
@@ -42,6 +42,21 @@ const RESTAURANT_BY_OWNER = gql`
 const CUISINES = gql`
   ${getCuisines}
 `
+
+const UPLOAD_FILE = gql`
+  mutation uploadFile($id: ID!, $file: Upload!) {
+    uploadFile(id: $id, file: $file) {
+      message
+    }
+  }
+`
+const UPLOAD_LOGO = gql`
+  mutation uploadRestaurantLogo($id: ID!, $file: Upload!) {
+    uploadRestaurantLogo(id: $id, file: $file) {
+      message
+    }
+  }
+`
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -70,11 +85,35 @@ const CreateRestaurant = props => {
   const [minimumOrderError, setMinimumOrderError] = useState(null)
   const [salesTaxError, setSalesTaxError] = useState(null)
   const [restaurantCuisines, setRestaurantCuisines] = React.useState([])
+  const [image, setImage] = useState(null)
+  const [logo, setLogo] = useState(null)
 
+  const [uploadFile] = useMutation(UPLOAD_FILE)
+  const [uploadRestaurantLogo] = useMutation(UPLOAD_LOGO)
   // const [shopType, setShopType] = useState(SHOP_TYPE.RESTAURANT)
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
-  const onCompleted = data => {
+
+  const onCompleted = async data => {
+    console.log({ data })
+    const restaurantId = data.createRestaurant._id
+    setTimeout(async () => {
+      if (image) {
+        console.log({ image })
+        const restaurantImage = await uploadFile({
+          variables: { id: restaurantId, file: image }
+        })
+        console.log('File uploaded:', restaurantImage.data)
+      }
+      if (logo) {
+        console.log({ logo })
+        const restaurantLogo = await uploadRestaurantLogo({
+          variables: { id: restaurantId, file: logo }
+        })
+        console.log('Logo uploaded:', restaurantLogo.data)
+      }
+    }, 3000)
+
     console.log('on complete here')
     setNameError(null)
     setAddressError(null)
@@ -117,19 +156,26 @@ const CreateRestaurant = props => {
     () => cuisines?.cuisines?.map(item => item.name),
     [cuisines]
   )
-  console.log('cuisines => ', cuisinesInDropdown)
+  console.log({ owner })
 
   const [mutate, { loading }] = useMutation(CREATE_RESTAURANT, {
     onError,
-    onCompleted,
-    update
+    onCompleted
+    // update
   })
 
   const formRef = useRef(null)
 
+  const handleImage = e => {
+    setImage(e.target.files[0])
+  }
+  const handleLogo = e => {
+    setLogo(e.target.files[0])
+  }
+
   const handleFileSelect = (event, type) => {
-    let result;
-    result = filterImage(event);
+    let result
+    result = filterImage(event)
     if (result) imageToBase64(result, type)
   }
 
@@ -154,8 +200,8 @@ const CreateRestaurant = props => {
     fileReader.readAsDataURL(imgUrl)
   }
 
-  const uploadImageToCloudinary = async(uploadType) => {
-    if (!uploadType) return;
+  const uploadImageToCloudinary = async uploadType => {
+    if (!uploadType) return
 
     const apiUrl = CLOUDINARY_UPLOAD_URL
     const data = {
@@ -179,7 +225,7 @@ const CreateRestaurant = props => {
 
   const handleCloseModal = () => {
     props.onClose() // Update state to close modal
-  };
+  }
 
   const onSubmitValidaiton = data => {
     const form = formRef.current
@@ -208,11 +254,11 @@ const CreateRestaurant = props => {
     const salesTaxError = !validateFunc({ salesTax }, 'salesTax')
 
     if (deliveryTime < 0 || minimumOrder < 0 || salesTax < 0) {
-      setDeliveryTimeError(true);
-      setMinimumOrderError(true);
-      setSalesTaxError(true);
-      setErrors(t('Negative Values Not Allowed'));
-      return false;
+      setDeliveryTimeError(true)
+      setMinimumOrderError(true)
+      setSalesTaxError(true)
+      setErrors(t('Negative Values Not Allowed'))
+      return false
     }
 
     setNameError(nameError)
@@ -276,14 +322,11 @@ const CreateRestaurant = props => {
     const {
       target: { value }
     } = event
-    setRestaurantCuisines(
-      typeof value === 'string' ? value.split(',') : value
-    )
+    setRestaurantCuisines(typeof value === 'string' ? value.split(',') : value)
   }
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
-
 
   return (
     <Box container className={classes.container}>
@@ -297,7 +340,9 @@ const CreateRestaurant = props => {
           <label>{t('Available')}</label>
           <Switch defaultChecked style={{ color: 'black' }} />
         </Box>
-        <IconButton onClick={handleCloseModal} style={{ position: 'absolute', right: 5, top: 35 }}>
+        <IconButton
+          onClick={handleCloseModal}
+          style={{ position: 'absolute', right: 5, top: 35 }}>
           <Close />
         </IconButton>
       </Box>
@@ -323,8 +368,8 @@ const CreateRestaurant = props => {
                     usernameError === false
                       ? globalClasses.inputError
                       : usernameError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                   onChange={event => {
                     event.target.value = event.target.value
@@ -352,8 +397,8 @@ const CreateRestaurant = props => {
                     passwordError === false
                       ? globalClasses.inputError
                       : passwordError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                   endAdornment={
                     <InputAdornment position="end">
@@ -387,8 +432,8 @@ const CreateRestaurant = props => {
                     nameError === false
                       ? globalClasses.inputError
                       : nameError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                 />
               </Box>
@@ -411,8 +456,8 @@ const CreateRestaurant = props => {
                     addressError === false
                       ? globalClasses.inputError
                       : addressError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                 />
               </Box>
@@ -434,8 +479,8 @@ const CreateRestaurant = props => {
                     deliveryTimeError === false
                       ? globalClasses.inputError
                       : deliveryTimeError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                 />
               </Box>
@@ -457,8 +502,8 @@ const CreateRestaurant = props => {
                     minimumOrderError === false
                       ? globalClasses.inputError
                       : minimumOrderError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                 />
               </Box>
@@ -480,8 +525,8 @@ const CreateRestaurant = props => {
                     salesTaxError === false
                       ? globalClasses.inputError
                       : salesTaxError === true
-                        ? globalClasses.inputSuccess
-                        : ''
+                      ? globalClasses.inputSuccess
+                      : ''
                   ]}
                 />
               </Box>
@@ -526,7 +571,7 @@ const CreateRestaurant = props => {
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} >
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Box
                 mt={3}
@@ -550,6 +595,7 @@ const CreateRestaurant = props => {
                   accept="image/*"
                   onChange={event => {
                     handleFileSelect(event, 'image')
+                    handleImage(event)
                   }}
                 />
               </Box>
@@ -563,9 +609,7 @@ const CreateRestaurant = props => {
                 <img
                   className={classes.image}
                   alt="..."
-                  src={
-                    logoUrl || defaultLogo
-                  }
+                  src={logoUrl || defaultLogo}
                 />
                 <label htmlFor="logo-upload" className={classes.fileUpload}>
                   {t('UploadaLogo')}
@@ -577,6 +621,7 @@ const CreateRestaurant = props => {
                   accept="image/*"
                   onChange={event => {
                     handleFileSelect(event, 'logo')
+                    handleLogo(event)
                   }}
                 />
               </Box>
@@ -589,8 +634,9 @@ const CreateRestaurant = props => {
               onClick={async e => {
                 e.preventDefault()
                 if (onSubmitValidaiton()) {
-                  const imgUpload = await uploadImageToCloudinary(imgUrl)
-                  const logoUpload = await uploadImageToCloudinary(logoUrl)
+                  // const imgUpload = await uploadImageToCloudinary(imgUrl)
+                  // const logoUpload = await uploadImageToCloudinary(logoUrl)
+                  let img, lgo
                   const form = formRef.current
                   const name = form.name.value
                   const address = form.address.value
@@ -607,10 +653,9 @@ const CreateRestaurant = props => {
                         name,
                         address,
                         image:
-                          imgUpload ||
+                          img ||
                           'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp',
-                        logo:
-                          logoUpload || defaultLogo,
+                        logo: lgo || defaultLogo,
                         deliveryTime: Number(deliveryTime),
                         minimumOrder: Number(minimumOrder),
                         username,

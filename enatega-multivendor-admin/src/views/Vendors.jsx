@@ -55,6 +55,9 @@ const Vendors = props => {
   const { loading: loadingQuery, error: errorQuery, data, refetch } = useQuery(
     GET_VENDORS
   )
+
+  console.log({ data })
+
   const [mutate, { loading }] = useMutation(DELETE_VENDOR, {
     refetchQueries: [{ query: GET_VENDORS }]
   })

@@ -675,8 +675,8 @@ export const updateCommission = `mutation UpdateCommission($id:String!,$commissi
     commissionRate
   }
 }`
-export const createRestaurant = `mutation CreateRestaurant($restaurant:RestaurantInput!,$owner:ID!){
-  createRestaurant(restaurant:$restaurant,owner:$owner){
+export const createRestaurant = `mutation CreateRestaurant($restaurant: RestaurantInput!, $owner: String!){
+  createRestaurant(restaurant: $restaurant,owner: $owner){
     _id
     orderId
     orderPrefix
@@ -692,6 +692,7 @@ export const createRestaurant = `mutation CreateRestaurant($restaurant:Restauran
     location{coordinates}
     shopType
     cuisines
+  
   }
 }`
 

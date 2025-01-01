@@ -5,21 +5,26 @@ const bcrypt = require('bcryptjs')
 
 module.exports = {
   Query: {
-    vendors: async(_, args, context) => {
+    vendors: async (_, args, context) => {
       console.log('vendors')
       try {
         // TODO: might need pagination here
-        const vendors = await Owner.find({ userType: 'VENDOR', isActive: true })
-        if (!vendors || !vendors.length) return []
-        return vendors.map(vendor => {
-          return transformOwner(vendor)
+        const vendors = await Owner.find({
+          userType: 'VENDOR',
+          isActive: true
         })
+        console.log({ vendorRestaurant: vendors[0].restaurants })
+        if (!vendors || !vendors.length) return []
+        // return vendors.map(vendor => {
+        //   return transformOwner(vendor)
+        // })
+        return vendors
       } catch (err) {
         console.log(err)
         throw err
       }
     },
-    getVendor: async(_, args, context) => {
+    getVendor: async (_, args, context) => {
       console.log('getVendor')
       try {
         const vendor = await Owner.findById(args.id)
@@ -31,7 +36,7 @@ module.exports = {
   },
   Mutation: {
     // TODO: need to rethink about how restaurants are being added
-    createVendor: async(_, args, context) => {
+    createVendor: async (_, args, context) => {
       console.log('createVendor')
       try {
         if (args.vendorInput.email) {
@@ -55,7 +60,7 @@ module.exports = {
         throw err
       }
     },
-    editVendor: async(_, args, context) => {
+    editVendor: async (_, args, context) => {
       console.log('editVendor')
       try {
         const owner = await Owner.findOne({
@@ -85,7 +90,7 @@ module.exports = {
       }
     },
     // TODO: if vendor is deleted, shouldn't the restaurants also(isActive:false)
-    deleteVendor: async(_, args, context) => {
+    deleteVendor: async (_, args, context) => {
       console.log('Delete Vendor')
       try {
         const owner = await Owner.findById(args.id)

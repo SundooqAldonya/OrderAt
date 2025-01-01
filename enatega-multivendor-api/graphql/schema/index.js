@@ -1247,7 +1247,7 @@ const typeDefs = gql`
     restaurantPreview(id: String, slug: String): RestaurantPreview!
     restaurants: [Restaurant!]
     restaurantsPreview: [RestaurantPreview!]
-    restaurantByOwner(id: String): OwnerData!
+    restaurantByOwner(id: String): [Restaurant!]
     offers: [Offer]
     sections: [Section]
     vendors: [OwnerData]
@@ -1455,7 +1455,7 @@ const typeDefs = gql`
     editTipping(tippingInput: TippingInput!): Tipping!
     createTaxation(taxationInput: TaxationInput!): Taxation!
     editTaxation(taxationInput: TaxationInput!): Taxation!
-    createRestaurant(restaurant: RestaurantInput!, owner: ID!): Restaurant!
+    createRestaurant(restaurant: RestaurantInput!, owner: String!): Restaurant!
     createReview(review: ReviewInput!): Restaurant!
     deleteRestaurant(id: String!): Restaurant!
     editRestaurant(restaurant: RestaurantProfileInput!): Restaurant!

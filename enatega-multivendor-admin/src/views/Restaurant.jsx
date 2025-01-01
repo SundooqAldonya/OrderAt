@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import RestaurantCard from '../components/Restaurant/Card'
 import { Link } from 'react-router-dom'
 import { useQuery, gql } from '@apollo/client'
@@ -31,9 +31,16 @@ const Restaurant = props => {
       variables: { id: vendorId }
     }
   )
+
+  console.log({ data })
+
+  useEffect(() => {
+    setOwner(localStorage.getItem('vendorId'))
+  }, [])
+
   const links =
     data &&
-    data.restaurantByOwner.restaurants.map((rest, index) => {
+    data.restaurantByOwner.map((rest, index) => {
       return (
         <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
           <Link
@@ -78,7 +85,7 @@ const Restaurant = props => {
           <Button
             variant="contained"
             onClick={() => {
-              setOwner(data.restaurantByOwner._id)
+              // setOwner(data.restaurantByOwner._id)
               toggleModal()
             }}
             style={{

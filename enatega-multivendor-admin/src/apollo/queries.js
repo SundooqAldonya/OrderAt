@@ -380,18 +380,7 @@ export const getVendors = `query Vendors{
       userType
       restaurants{
         _id
-        orderId
-        orderPrefix
-        slug
-        name
-        image
-        address
-        location{coordinates}
-        zone{
-          _id
-          title
-        }
-        shopType
+        
       }
     }
 }`
@@ -490,10 +479,7 @@ export const getPaymentStatuses = `query{
 
 export const restaurantByOwner = `query RestaurantByOwner($id:String){
   restaurantByOwner(id:$id){
-  _id
-  email
-  userType
-  restaurants{
+  
     _id
     orderId
     orderPrefix
@@ -505,7 +491,6 @@ export const restaurantByOwner = `query RestaurantByOwner($id:String){
     password
     location{coordinates}
     shopType
-    }
   }
 }`
 
