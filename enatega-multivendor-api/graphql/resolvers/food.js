@@ -74,7 +74,7 @@ module.exports = {
         food.title = foodInput.title
         food.description = foodInput.description
         food.category = foodInput.category
-        if (foodInput.file.file['createReadStream']) {
+        if (foodInput.file.file && foodInput.file.file['createReadStream']) {
           await uploadFoodImage({
             id: food._id,
             file: foodInput.file
