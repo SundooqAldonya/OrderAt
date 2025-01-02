@@ -30,19 +30,19 @@ module.exports = {
         throw err
       }
     },
-    // users: async(_, args, context) => {
-    //  console.log('users')
-    //   try {
-    //      TODO: need pagination here
-    //    const users = await User.find()
-    //     return users.map(user => {
-    //       return transformUser(user)
-    //     })
-    //   } catch (err) {
-    //     console.log(err)
-    //     throw err
-    //   }
-    // },
+    users: async (_, args, context) => {
+      console.log('users')
+      try {
+        //  TODO: need pagination here
+        const users = await User.find()
+        return users.map(user => {
+          return transformUser(user)
+        })
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    },
     search_users: async (_, args, context) => {
       try {
         let query = {}
