@@ -76,29 +76,29 @@ async function startApolloServer() {
     debug: true,
     introspection: config.NODE_ENV !== 'production',
     context: ({ req, res }) => {
-      // return new Promise((resolve, reject) => {
-      //   passport.authenticate('jwt', { session: false }, (err, user) => {
-      //     if (err) {
-      //       console.log('Authentication error:', err)
-      //       reject(err)
-      //     }
-      //     if (!user) {
-      //       return reject(new Error('Authentication failed'))
-      //     }
-      //     req.user = user
-      //     req.isAuth = true
-      //     resolve({ req })
-      //   })(req, res)
-      // })
+      return new Promise((resolve, reject) => {
+        passport.authenticate('jwt', { session: false }, (err, user) => {
+          if (err) {
+            console.log('Authentication error:', err)
+            reject(err)
+          }
+          if (!user) {
+            return reject(new Error('Authentication failed'))
+          }
+          req.user = user
+          req.isAuth = true
+          resolve({ req, res, user })
+        })(req, res)
+      })
 
-      if (!req) return {}
-      const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
-      req.isAuth = isAuth
-      req.userId = userId
-      req.userType = userType
-      req.restaurantId = restaurantId
-      const user = req.user
-      return { req, res, user }
+      // if (!req) return {}
+      // const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
+      // req.isAuth = isAuth
+      // req.userId = userId
+      // req.userType = userType
+      // req.restaurantId = restaurantId
+      // const user = req.user
+      // return { req, res, user }
     },
     // plugins: [SentryConfig],
     formatError: (formattedError, error) => {

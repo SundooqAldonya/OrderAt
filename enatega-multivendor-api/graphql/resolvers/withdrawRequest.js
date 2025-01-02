@@ -37,6 +37,7 @@ module.exports = {
       }
     },
     getAllWithdrawRequests: async (_, args, { req }, context) => {
+      // console.log({ context: context.req })
       try {
         if (!req.isAuth) {
           throw new Error('Unauthenticated')
