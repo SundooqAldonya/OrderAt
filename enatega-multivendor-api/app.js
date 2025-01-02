@@ -129,7 +129,11 @@ async function startApolloServer() {
   await server.start()
   app.use(graphqlUploadExpress())
   app.use(morgan('dev'))
-  app.use(cors())
+  app.use(
+    cors({
+      origin: '*'
+    })
+  )
   app.engine('ejs', engines.ejs)
   app.set('views', './views')
   app.set('view engine', 'ejs')
