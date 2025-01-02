@@ -76,25 +76,26 @@ async function startApolloServer() {
     debug: true,
     introspection: config.NODE_ENV !== 'production',
     context: ({ req, res }) => {
-      return new Promise((resolve, reject) => {
-        passport.authenticate('jwt', { session: false }, (err, user) => {
-          if (err) {
-            console.log('Authentication error:', err)
-            reject(err)
-          }
-          if (!user) {
-            return reject(new Error('Authentication failed'))
-          }
-          const { userType, restaurantId } = isAuthenticated(req)
+      if (isAuthenticated(req).isAuth) {
+        return new Promise((resolve, reject) => {
+          passport.authenticate('jwt', { session: true }, (err, user) => {
+            if (err) {
+              console.log('Authentication error:', err)
+              reject(err)
+            }
+            if (!user) {
+              return reject(new Error('Authentication failed'))
+            }
+            const { userType, restaurantId } = isAuthenticated(req)
 
-          req.user = user
-          req.userType = userType
-          req.restaurantId = restaurantId
-          req.isAuth = true
-          resolve({ req, res, user })
-        })(req, res)
-      })
-
+            req.user = user
+            req.userType = userType
+            req.restaurantId = restaurantId
+            req.isAuth = true
+            resolve({ req, res, user })
+          })(req, res)
+        })
+      }
       // if (!req) return {}
       // const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
       // req.isAuth = isAuth
@@ -107,7 +108,6 @@ async function startApolloServer() {
     // plugins: [SentryConfig],
     formatError: (formattedError, error) => {
       console.log({ formattedError })
-      console.log({ errorLocation: formattedError.locations[0] })
       console.log({ errorLocation: formattedError.extensions.exception })
       // console.log({ formattedError: formattedError.locations });
       // console.log({ formattedError: formattedError.extensions.exception });

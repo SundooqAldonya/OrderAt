@@ -34,7 +34,7 @@ const App = () => {
     GOOGLE_MAPS_KEY,
     SENTRY_DSN
   } = ConfigurableValues()
-
+  console.log({ tokeApp: JSON.parse(localStorage.getItem('user-enatega')) })
   const client = useApolloClient()
   const [user] = useState(localStorage.getItem('user-enatega'))
   const userType = localStorage.getItem('user-enatega')

@@ -23,6 +23,8 @@ import LoginPageIcon from '../assets/img/LoginPageIcon.png'
 import InputAdornment from '@mui/material/InputAdornment'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { authenticate } from '../helpers/user'
+import { useHistory } from 'react-router-dom'
 
 const LOGIN = gql`
   ${ownerLogin}
@@ -40,7 +42,7 @@ const Login = props => {
   })
   const formRef = useRef()
   const { t } = props
-
+  const history = useHistory()
   const [isLogged, setIsLogged] = useState(false)
   const onBlur = (event, field) => {
     setStateData({
@@ -62,36 +64,48 @@ const Login = props => {
   useEffect(() => {
     if (isLogged) {
       if (redirectToReferrer && type === 0) {
-        props.history.replace('/restaurant/list')
+        // props.history.replace('/restaurant/list')
+        history.push('/restaurant/list')
+        // window.location.reload()
       }
       if (redirectToReferrer && type === 1) {
-        props.history.replace('/super_admin/vendors')
+        // props.history.replace('/super_admin/vendors')
+        history.push('/super_admin/vendors')
       }
+      window.location.reload()
     }
   }, [isLogged])
 
+  console.log({ isLogged })
+
   const onCompleted = data => {
-    localStorage.setItem('user-enatega', JSON.stringify(data.ownerLogin))
-    const userType = data.ownerLogin.userType
-    if (userType === 'VENDOR') {
-      setStateData({
-        ...stateData,
-        redirectToReferrer: true,
-        type: 0,
-        emailError: null,
-        passwordError: null
-      })
-    } else {
-      setStateData({
-        ...stateData,
-        redirectToReferrer: true,
-        type: 1,
-        emailError: null,
-        passwordError: null
-      })
-    }
-    setIsLogged(true)
-    setTimeout(hideAlert, 5000)
+    // localStorage.setItem('user-enatega', JSON.stringify(data.ownerLogin))
+
+    console.log({ data })
+    authenticate(data.ownerLogin, () => {
+      console.log('user logged in')
+
+      const userType = data.ownerLogin.userType
+      if (userType === 'VENDOR') {
+        setStateData({
+          ...stateData,
+          redirectToReferrer: true,
+          type: 0,
+          emailError: null,
+          passwordError: null
+        })
+      } else {
+        setStateData({
+          ...stateData,
+          redirectToReferrer: true,
+          type: 1,
+          emailError: null,
+          passwordError: null
+        })
+      }
+      setIsLogged(true)
+      setTimeout(hideAlert, 5000)
+    })
   }
   const hideAlert = () => {
     setStateData({

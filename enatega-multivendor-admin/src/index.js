@@ -22,6 +22,7 @@ import { RestProvider } from './context/Restaurant'
 import { ThemeProvider, StyledEngineProvider } from '@mui/material'
 import theme from './utils/theme'
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
+import { isAuthenticated } from './helpers/user'
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues()
@@ -36,9 +37,11 @@ function Main() {
       reconnect: true
     }
   })
-  const token = localStorage.getItem('user-enatega')
-    ? JSON.parse(localStorage.getItem('user-enatega')).token
-    : null
+  // const token = localStorage.getItem('user-enatega')
+  //   ? JSON.parse(localStorage.getItem('user-enatega')).token
+  //   : null
+
+  const token = isAuthenticated() ? isAuthenticated().token : null
 
   const request = async operation => {
     console.log({ token })
