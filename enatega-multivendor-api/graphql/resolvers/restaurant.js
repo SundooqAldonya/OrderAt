@@ -208,7 +208,7 @@ module.exports = {
       }
     },
     restaurant: async (_, args, { req }) => {
-      console.log('restaurant', args)
+      console.log('restaurant.args', args)
       try {
         const filters = {}
         if (args.slug) {

@@ -609,6 +609,17 @@ export const getRestaurantDetail = `query Restaurant($id:String){
     }
 }`
 
+export const getAddonsByRestaurant = `query GetAddonsByRestaurant($id: String!){
+  getAddonsByRestaurant(id: $id){
+    _id
+    options
+    title
+    description
+    quantityMinimum
+    quantityMaximum
+    }
+}`
+
 export const getOffers = `query Offers{
   offers{
     _id

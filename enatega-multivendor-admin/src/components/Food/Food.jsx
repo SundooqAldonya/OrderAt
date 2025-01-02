@@ -8,7 +8,8 @@ import {
   createFood,
   editFood,
   categoriesByRestaurants,
-  getFoodListByRestaurant
+  getFoodListByRestaurant,
+  getAddonsByRestaurant
 } from '../../apollo'
 import AddonComponent from '../Addon/Addon'
 import useStyles from './styles'
@@ -44,12 +45,12 @@ const GET_CATEGORIES = gql`
   ${categoriesByRestaurants}
 `
 const GET_ADDONS = gql`
-  ${getRestaurantDetail}
+  ${getAddonsByRestaurant}
 `
 
 function Food(props) {
   const theme = useTheme()
-  const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues()
+  // const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues()
   const formRef = useRef()
   const mutation = props.food ? EDIT_FOOD : CREATE_FOOD
   const [title, setTitle] = useState(props.food ? props.food.title : '')
@@ -158,8 +159,6 @@ function Food(props) {
     }
   })
 
-  console.log({ dataCategories })
-
   const {
     data: dataAddons,
     error: errorAddons,
@@ -169,6 +168,7 @@ function Food(props) {
       id: restaurantId
     }
   })
+  console.log({ dataAddons })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -625,7 +625,7 @@ function Food(props) {
                     <Box>
                       {loadingAddons && t('LoadingDots')}
                       {errorAddons && t('ErrorDots')}
-                      {dataAddons?.restaurant?.addons
+                      {dataAddons?.getAddonsByRestaurant
                         ?.filter(addon => addon.title !== 'Default Addon')
                         .map(addon => (
                           <Grid
@@ -651,11 +651,11 @@ function Food(props) {
                           </Grid>
                         ))}
                     </Box>
-                    {/* <Button
+                    <Button
                       className={classes.button}
                       onClick={() => toggleModal(index)}>
                       {t('NewAddon')}
-                    </Button> */}
+                    </Button>
                   </Box>
                 ))}
               </Box>

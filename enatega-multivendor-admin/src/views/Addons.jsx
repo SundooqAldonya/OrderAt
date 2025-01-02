@@ -2,7 +2,12 @@
 import React, { useState } from 'react'
 import Header from '../components/Headers/Header'
 import AddonComponent from '../components/Addon/Addon'
-import { getRestaurantDetail, deleteAddon, getAddons } from '../apollo'
+import {
+  getRestaurantDetail,
+  deleteAddon,
+  getAddons,
+  getAddonsByRestaurant
+} from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
@@ -29,7 +34,7 @@ import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 
 const GET_ADDONS = gql`
-  ${getAddons}
+  ${getAddonsByRestaurant}
 `
 const DELETE_ADDON = gql`
   ${deleteAddon}
@@ -65,7 +70,7 @@ const Addon = props => {
       variables: { id: restaurantId }
     }
   )
-  // console.log({ dataAddons: data })
+  console.log({ dataAddons: data })
   const [mutate, { loading }] = useMutation(DELETE_ADDON, {
     refetchQueries: [{ query: GET_ADDONS, variables: { id: restaurantId } }]
   })
@@ -166,7 +171,11 @@ const Addon = props => {
             }
             title={<TableHeader title={t('Addons')} />}
             columns={columns}
-            data={data?.addons && data.addons.length ? data.addons : {}}
+            data={
+              data?.getAddonsByRestaurant && data.getAddonsByRestaurant.length
+                ? data.getAddonsByRestaurant
+                : {}
+            }
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}

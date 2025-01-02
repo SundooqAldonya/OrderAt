@@ -4,11 +4,12 @@ const { transformAddon, transformRestaurant } = require('./merge')
 
 module.exports = {
   Query: {
-    addons: async (_, args) => {
+    getAddonsByRestaurant: async (_, args) => {
       console.log('addons')
       console.log({ argsAddons: args })
       try {
         const addons = await Addon.find({ restaurant: args.id })
+
         return addons
       } catch (err) {
         console.log(err)

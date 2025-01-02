@@ -48,7 +48,11 @@ module.exports = {
           })
           variations = await Variation.insertMany([...variationsArr])
         }
-        if (args.foodInput.file?.file['createReadStream']) {
+        console.log({ foodInputFile: args.foodInput.file })
+        if (
+          args.foodInput.file.file &&
+          args.foodInput.file.file['createReadStream']
+        ) {
           await uploadFoodImage({
             id: food._id,
             file: args.foodInput.file

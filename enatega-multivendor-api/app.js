@@ -132,7 +132,7 @@ async function startApolloServer() {
 
   await server.start()
   app.use(graphqlUploadExpress())
-  app.use(morgan('dev'))
+  // app.use(morgan('dev'))
   app.use(
     cors({
       origin: '*'

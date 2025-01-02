@@ -429,7 +429,6 @@ function Addon(props) {
                         )
                       }
                     })
-                window.location.reload()
               }
             }}>
             {t('Save')}

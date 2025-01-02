@@ -1160,6 +1160,7 @@ const typeDefs = gql`
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
+    getAddonsByRestaurant(id: String!): [Addon!]
     foodListByRestaurant(id: String!): [FoodListByRestaurant!]
     categoriesByRestaurant(id: String!): [CategoriesByRestaurant!]
     foods: [Food!]!
