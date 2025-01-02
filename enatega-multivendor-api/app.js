@@ -85,8 +85,10 @@ async function startApolloServer() {
           if (!user) {
             return reject(new Error('Authentication failed'))
           }
+          const { userType, restaurantId } = isAuthenticated(req)
+
           req.user = user
-          // req.userType = userType
+          req.userType = userType
           req.restaurantId = restaurantId
           req.isAuth = true
           resolve({ req, res, user })
