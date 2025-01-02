@@ -20,6 +20,8 @@ const ResetPassword = props => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState(null)
   const [passwordError, setPasswordError] = useState(null)
+  const [email, setEmail] = useState(null)
+  const [emailError, setEmailError] = useState(null)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -95,6 +97,29 @@ const ResetPassword = props => {
 
         <Box className={classes.form}>
           <form ref={formRef}>
+            <Box className={globalClasses.flexRow}>
+              <Input
+                id="email"
+                name="email"
+                value={email}
+                onChange={event => {
+                  setEmail(event.target.value)
+                }}
+                onBlur={event => {
+                  onBlur(event, 'email')
+                }}
+                placeholder={t('Email')}
+                disableUnderline
+                className={[
+                  globalClasses.input,
+                  emailError === false
+                    ? globalClasses.inputError
+                    : emailError === true
+                    ? globalClasses.inputSuccess
+                    : ''
+                ]}
+              />
+            </Box>
             <Box className={globalClasses.flexRow}>
               <Input
                 id="input-password"
@@ -176,11 +201,12 @@ const ResetPassword = props => {
                   setError(null)
                   setSuccess(null)
                   const params = new URLSearchParams(props.location.search)
-                  if (validate() && params.get('reset')) {
+                  if (validate()) {
                     mutate({
                       variables: {
-                        password: password,
-                        token: params.get('reset')
+                        email,
+                        password
+                        // token: params.get('reset')
                       }
                     })
                       .then(response => {

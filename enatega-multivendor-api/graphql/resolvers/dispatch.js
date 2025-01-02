@@ -33,9 +33,9 @@ module.exports = {
   Query: {
     getActiveOrders: async (_, args, { req, res }) => {
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const filters = {
           orderStatus: { $in: ['PENDING', 'ACCEPTED', 'PICKED', 'ASSIGNED'] }
         }
@@ -50,9 +50,9 @@ module.exports = {
     },
     orderDetails: async (_, args, { req, res }) => {
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const order = await Order.findById(args.id)
         if (!order) throw new Error('Order does not exist')
         return transformOrder(order)
@@ -62,9 +62,9 @@ module.exports = {
     },
     ridersByZone: async (_, args, { req, res }) => {
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const riders = await Rider.find({
           zone: args.id,
           isActive: true,
@@ -80,9 +80,9 @@ module.exports = {
     updateStatus: async (_, args, { req }) => {
       console.log('updateStatuss', args.id, args.orderStatus)
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const order = await Order.findById(args.id)
         if (!order) throw new Error('Order not found')
         const restaurant = await Restaurant.findById(order.restaurant)
@@ -134,9 +134,9 @@ module.exports = {
     assignRider: async (_, args, { req }) => {
       console.log('assignRider', args.id, args.riderId)
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const order = await Order.findById(args.id)
         const rider = await Rider.findById(args.riderId)
         if (!order) throw new Error('Order does not exist')
@@ -175,9 +175,9 @@ module.exports = {
     },
     notifyRiders: async (_, args, { req }) => {
       try {
-        // if (!req.isAuth) {
-        //   throw new AuthenticationError('Unauthenticated')
-        // }
+        if (!req.isAuth) {
+          throw new AuthenticationError('Unauthenticated')
+        }
         const order = await Order.findById(args.id)
         const transformedOrder = await transformOrder(order)
         publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
@@ -189,6 +189,5 @@ module.exports = {
         throw err
       }
     }
-    // remove rider
   }
 }

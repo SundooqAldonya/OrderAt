@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const passportLocalMongoose = require('passport-local-mongoose')
 const { addressSchema } = require('./address')
 
 const Schema = mongoose.Schema
@@ -14,11 +14,11 @@ const userSchema = new Schema(
       type: String,
       default: ''
     },
-    governate:{
-      type: String,
+    governate: {
+      type: String
     },
-    address_free_text:{
-      type : String
+    address_free_text: {
+      type: String
     },
     emailIsVerified: {
       type: Boolean,
@@ -75,5 +75,9 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 )
+
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: 'email'
+})
 
 module.exports = mongoose.model('User', userSchema)

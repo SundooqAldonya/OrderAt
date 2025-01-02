@@ -36,19 +36,11 @@ function Main() {
       reconnect: true
     }
   })
+  const token = localStorage.getItem('user-enatega')
+    ? JSON.parse(localStorage.getItem('user-enatega')).token
+    : null
 
   const request = async operation => {
-    const data = localStorage.getItem('user-enatega')
-    let token = null
-
-    // if (data) {
-    //   token = JSON.parse(data).token
-    // }
-    try {
-      token = data ? JSON.parse(data).token : null
-    } catch (error) {
-      console.warn('Error parsing user-enatega from localStorage:', error)
-    }
     console.log({ token })
 
     operation.setContext({
@@ -58,26 +50,28 @@ function Main() {
     })
   }
 
-  const requestLink = new ApolloLink(
-    (operation, forward) =>
-      new Observable(observer => {
-        let handle
-        Promise.resolve(operation)
-          .then(oper => request(oper))
-          .then(() => {
-            handle = forward(operation).subscribe({
-              next: observer.next.bind(observer),
-              error: observer.error.bind(observer),
-              complete: observer.complete.bind(observer)
-            })
+  const requestLink = new ApolloLink((operation, forward) => {
+    console.log({ operation })
+    console.log('requestLink executed')
+    // return forward(operation)
+    return new Observable(observer => {
+      let handle
+      Promise.resolve(operation)
+        .then(oper => request(oper))
+        .then(() => {
+          handle = forward(operation).subscribe({
+            next: observer.next.bind(observer),
+            error: observer.error.bind(observer),
+            complete: observer.complete.bind(observer)
           })
-          .catch(observer.error.bind(observer))
+        })
+        .catch(observer.error.bind(observer))
 
-        return () => {
-          if (handle) handle.unsubscribe()
-        }
-      })
-  )
+      return () => {
+        if (handle) handle.unsubscribe()
+      }
+    })
+  })
   const terminatingLink = split(({ query }) => {
     const { kind, operation } = getMainDefinition(query)
     return kind === 'OperationDefinition' && operation === 'subscription'
@@ -88,10 +82,12 @@ function Main() {
   })
 
   const client = new ApolloClient({
-    link: concat(
-      ApolloLink.from([uploadLink, terminatingLink, requestLink]),
-      httpLink
-    ),
+    // link: concat(
+    //   ApolloLink.from([uploadLink, terminatingLink, requestLink]),
+    //   httpLink
+    // ),
+    // link: concat(requestLink, httpLink),
+    link: ApolloLink.from([requestLink, uploadLink, terminatingLink, httpLink]),
     cache,
     resolvers: {},
     connectToDevTools: true

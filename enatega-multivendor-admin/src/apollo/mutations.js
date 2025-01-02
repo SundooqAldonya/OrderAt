@@ -312,8 +312,8 @@ export const uploadToken = `mutation UploadToken($id:String!,$pushToken:String!)
   }
 }`
 
-export const resetPassword = `mutation ResetPassword($password:String!,$token:String!){
-  resetPassword(password:$password,token:$token){
+export const resetPassword = `mutation ResetPassword($email: String!, $password:String!){
+  resetPassword(email: $email, password:$password){
     result
   }
 }`

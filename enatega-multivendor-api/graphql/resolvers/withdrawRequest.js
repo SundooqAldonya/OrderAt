@@ -4,9 +4,13 @@ const WithdrawRequest = require('../../models/withdrawRequest')
 const { transformWithDrawRequest, transformRider } = require('./merge')
 module.exports = {
   Query: {
-    withdrawRequests: async(_, { req }) => {
+    withdrawRequests: async (_, { req }, context) => {
       console.log('withdrawRequests')
-      if (!req.isAuth) throw new Error('Unauthenticated!')
+      // if (!req.isAuth) throw new Error('Unauthenticated!')
+      if (!context.user) {
+        console.log('User is not authenticated!!!')
+        throw new Error('Unauthenticated')
+      }
       try {
         const requests = await WithdrawRequest.find({})
         return requests.map(transformWithDrawRequest)
@@ -14,7 +18,7 @@ module.exports = {
         throw err
       }
     },
-    riderWithdrawRequests: async(_, args, { req }) => {
+    riderWithdrawRequests: async (_, args, { req }) => {
       console.log('riderWithdrawRequests', args)
       const riderId = args.id || req.userId
       if (!riderId) {
@@ -32,11 +36,12 @@ module.exports = {
         throw err
       }
     },
-    getAllWithdrawRequests: async(_, args, { req }) => {
+    getAllWithdrawRequests: async (_, args, { req }, context) => {
       try {
         if (!req.isAuth) {
           throw new Error('Unauthenticated')
         }
+
         const riderRequests = await WithdrawRequest.find({})
           .sort({ createdAt: -1 })
           .skip(args.offset || 0)
@@ -59,7 +64,7 @@ module.exports = {
     }
   },
   Mutation: {
-    createWithdrawRequest: async(_, args, { req }) => {
+    createWithdrawRequest: async (_, args, { req }) => {
       console.log('createWithdrawRequest', args)
       if (!req.isAuth) {
         throw new Error('Unauthenticated')
@@ -91,7 +96,7 @@ module.exports = {
         throw err
       }
     },
-    updateWithdrawReqStatus: async(_, args, { req }) => {
+    updateWithdrawReqStatus: async (_, args, { req }) => {
       console.log('updateWithdrawReqStatus: ', args)
       try {
         if (!req.isAuth) {

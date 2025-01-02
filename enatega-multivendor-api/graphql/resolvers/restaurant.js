@@ -612,7 +612,7 @@ module.exports = {
       console.log('createRestanrant', args)
       try {
         // console.log({ authenticatedCreate: req.isAuth })
-        // if (!req.isAuth) throw new Error('Unauthenticated')
+        if (!req.isAuth) throw new Error('Unauthenticated')
         const restaurantExists = await Restaurant.exists({
           name: { $regex: new RegExp('^' + args.restaurant.name + '$', 'i') }
         })
@@ -643,28 +643,6 @@ module.exports = {
           phone: args.restaurant.phone
         })
         console.log('New Restaurant: ', restaurant)
-        // const {
-        //   createReadStream,
-        //   filename,
-        //   mimetype,
-        //   encoding
-        // } = await file.file
-        // const stream = createReadStream()
-        // const image = await cloudinary.uploader.upload_stream(
-        //   {
-        //     resource_type: 'auto'
-        //   },
-        //   async (error, result) => {
-        //     if (error) {
-        //       throw new Error('Upload failed')
-        //     }
-        //     console.log({ image: result.secure_url })
-        //     restaurant.image = result.secure_url
-        //     console.log({ restaurant })
-        //     return result.secure_url // Return the URL of the uploaded image
-        //   }
-        // )
-        // stream.pipe(image)
 
         await restaurant.save()
         console.log({ restaurant })
@@ -679,6 +657,7 @@ module.exports = {
     editRestaurant: async (_, args) => {
       console.log('editRestaurant')
       try {
+        if (!req.isAuth) throw new Error('Unauthenticated')
         const restaurantByNameExists = await Restaurant.findOne({
           name: { $regex: new RegExp('^' + args.restaurant.name + '$', 'i') },
           // name: { $text: { $search: args.restaurant.name } },
@@ -810,6 +789,7 @@ module.exports = {
     deleteRestaurant: async (_, { id }, { req }) => {
       console.log('deleteRestaurant', req.userId)
       try {
+        if (!req.isAuth) throw new Error('Unauthenticated')
         const owner = await Owner.findOne({
           restaurants: mongoose.Types.ObjectId(id)
         })

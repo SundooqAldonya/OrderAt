@@ -13,8 +13,9 @@ const graphql = require('graphql')
 const morgan = require('morgan')
 const cors = require('cors')
 const passport = require('passport')
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
+const session = require('express-session')
 const User = require('./models/user.js')
-// const FacebookStrategy = require('passport-facebook').Strategy
 const subscriptionTransportWs = require('subscriptions-transport-ws')
 const config = require('./config.js')
 const graphqlTools = require('@graphql-tools/schema')
@@ -28,6 +29,8 @@ const app = express()
 const Sentry = require('@sentry/node')
 const Tracing = require('@sentry/tracing')
 const { SentryConfig } = require('./helpers/sentry.config.js')
+const MongoStore = require('connect-mongo')
+const Owner = require('./models/owner.js')
 
 async function startApolloServer() {
   const httpServer = http.createServer(app)
@@ -73,14 +76,29 @@ async function startApolloServer() {
     debug: true,
     introspection: config.NODE_ENV !== 'production',
     context: ({ req, res }) => {
-      if (!req) return {}
-      const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
-      req.isAuth = isAuth
-      req.userId = userId
-      req.userType = userType
-      req.restaurantId = restaurantId
-      const user = req.user
-      return { req, res, user }
+      return new Promise((resolve, reject) => {
+        passport.authenticate('jwt', { session: true }, (err, user) => {
+          if (err) {
+            console.log('Authentication error:', err)
+            reject(err)
+          }
+          if (!user) {
+            return reject(new Error('Authentication failed'))
+          }
+          req.user = user
+          req.isAuth = true
+          resolve({ req })
+        })(req, res)
+      })
+
+      // if (!req) return {}
+      // const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
+      // req.isAuth = isAuth
+      // req.userId = userId
+      // req.userType = userType
+      // req.restaurantId = restaurantId
+      // const user = req.user
+      // return { req, res, user }
     },
     // plugins: [SentryConfig],
     formatError: (formattedError, error) => {
@@ -110,14 +128,13 @@ async function startApolloServer() {
 
   await server.start()
   app.use(graphqlUploadExpress())
-
-  server.applyMiddleware({ app })
-
+  app.use(morgan('dev'))
+  app.use(cors())
   app.engine('ejs', engines.ejs)
   app.set('views', './views')
   app.set('view engine', 'ejs')
-  app.use(morgan('dev'))
-  app.use(cors())
+  server.applyMiddleware({ app })
+
   // Use JSON parser for all non-webhook routes
   app.use(Sentry.Handlers.requestHandler())
   app.use(Sentry.Handlers.tracingHandler())
@@ -142,38 +159,46 @@ async function startApolloServer() {
   app.use('/sentry-crash', (req, res) => {
     throw new Error('Backend Crashed')
   })
-
-  // app.use(passport.initialize())
-  // app.use(passport.session())
-  // passport.use(
-  //   new FacebookStrategy(
-  //     {
-  //       clientID: '3511551789148450',
-  //       clientSecret: '70dd1566ad3201dfd4d6df7ef0855577',
-  //       callbackURL: '/auth/facebook/callback',
-  //       profileFields: ['id', 'displayName', 'photos', 'email']
-  //     },
-  //     (accessToken, refreshToken, profile, done) => {
-  //       // Here you would typically save the user to your database
-  //       return done(null, profile)
-  //     }
-  //   )
-  // )
-
-  // // Serialize user into the session
-  // passport.serializeUser((user, done) => {
-  //   done(null, user)
-  // })
-
-  // // Deserialize user from the session
-  // passport.deserializeUser((obj, done) => {
-  //   done(null, obj)
-  // })
-
+  app.use(
+    session({
+      secret: 'awesome work',
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: process.env.CONNECTION_STRING,
+        collectionName: 'sessions'
+      })
+    })
+  )
   app.use('/paypal', paypal)
   app.use('/stripe', stripe)
+  app.use(passport.initialize())
+  app.use(passport.session())
 
-  // Make sure to call listen on httpServer, NOT on app.
+  const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.SECRETKEY
+  }
+
+  passport.use(
+    new JwtStrategy(opts, async (jwtPayload, done) => {
+      // console.log({ jwtPayload })
+      try {
+        const user = await User.findById(jwtPayload.userId)
+        const owner = await Owner.findById(jwtPayload.userId)
+        // console.log('inside passportjwt', { user, owner })
+        if (user) {
+          return done(null, user)
+        }
+        if (owner) {
+          return done(null, owner)
+        }
+        return done(null, false)
+      } catch (err) {
+        return done(err, false)
+      }
+    })
+  )
 
   // populate countries data.
   await populateCountries()

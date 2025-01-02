@@ -13,7 +13,6 @@ module.exports = {
           userType: 'VENDOR',
           isActive: true
         })
-        console.log({ vendorRestaurant: vendors[0].restaurants })
         if (!vendors || !vendors.length) return []
         // return vendors.map(vendor => {
         //   return transformOwner(vendor)

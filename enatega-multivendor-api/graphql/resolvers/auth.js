@@ -45,11 +45,14 @@ module.exports = {
       if (!owner) {
         throw new Error('User does not exist!')
       }
-      const isEqual = await bcrypt.compare(password, owner.password)
-      if (!isEqual) {
-        throw new Error('Invalid credentials!')
-        // throw new Error('Password is incorrect!');
-      }
+      // const isEqual = await bcrypt.compare(password, owner.password)
+      // if (!isEqual) {
+      //   throw new Error('Invalid credentials!')
+      //   // throw new Error('Password is incorrect!');
+      // }
+      const { user, err } = await Owner.authenticate()(email, password)
+      if (!user || err) throw new Error("Email and password don't match!")
+
       const token = jwt.sign(
         {
           userId: owner.id,
@@ -119,7 +122,6 @@ module.exports = {
       }
       user.notificationToken = notificationToken
       const result = await user.save()
-
       const token = jwt.sign(
         {
           userId: result._id,
@@ -218,14 +220,23 @@ module.exports = {
       }
     },
     resetPassword: async (_, { password, email }, context) => {
+      console.log('resetPassword')
       console.log(password, email)
-      const user = await User.findOne({ email: email })
-      if (!user) {
-        throw new Error('Something went wrong. Please try again later!')
+      const user = await User.findOne({ email })
+      const owner = await Owner.findOne({ email })
+      if (!user && !owner) {
+        throw new Error('User is not found!')
       }
-      const hashedPassword = await bcrypt.hash(password, 12)
-      user.password = hashedPassword
-      await user.save()
+      // const hashedPassword = await bcrypt.hash(password, 12)
+      // user.password = hashedPassword
+      if (user) {
+        await user.setPassword(password)
+        await user.save()
+      }
+      if (owner) {
+        await owner.setPassword(password)
+        await owner.save()
+      }
       // validate token against time- not done yet
       // find user from reset object
       // generate hash of password

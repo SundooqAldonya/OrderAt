@@ -1416,7 +1416,7 @@ const typeDefs = gql`
     updateOrderStatus(id: String!, status: String!, reason: String): Order!
     uploadToken(id: String!, pushToken: String!): OwnerData!
     forgotPassword(email: String!, otp: String!): ForgotPassword!
-    resetPassword(password: String!, email: String!): ForgotPassword!
+    resetPassword(email: String!, password: String!): ForgotPassword!
     vendorResetPassword(oldPassword: String!, newPassword: String!): Boolean!
     deleteCategory(id: String!): Message!
     deleteFood(id: String!): Message!
