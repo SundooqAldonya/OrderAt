@@ -170,8 +170,8 @@ const typeDefs = gql`
     address: String
     location: Point
     categories: [CategoryCustomer!]
-    # options: [Option!]
-    # addons: [Addon!]
+    options: [Option!]
+    addons: [Addon!]
     reviewData: ReviewData
     zone: Zone
     username: String
@@ -204,7 +204,7 @@ const typeDefs = gql`
   type CategoryCustomer {
     _id: ID!
     title: String!
-    foods: [Food!]
+    foods: [FoodCustomer!]
     createdAt: String!
     updatedAt: String!
   }
@@ -246,6 +246,18 @@ const typeDefs = gql`
     title: String
     description: String
     # variations: [Variation!]
+    restaurant: String!
+    category: String
+    image: String
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+  type FoodCustomer {
+    _id: ID!
+    title: String
+    description: String
+    variations: [Variation!]
     restaurant: String!
     category: String
     image: String
@@ -1292,6 +1304,7 @@ const typeDefs = gql`
 
     riderCompletedOrders: [Order!]
     restaurant(id: String, slug: String): Restaurant!
+    restaurantCustomer(id: String, slug: String): RestaurantCustomer!
     restaurantPreview(id: String, slug: String): RestaurantPreview!
     restaurants: [Restaurant!]
     restaurantsPreview: [RestaurantPreview!]

@@ -40,6 +40,9 @@ const {
 } = require('../../helpers/notifications')
 const { GraphqlUpload } = require('graphql-upload')
 const { cloudinary } = require('../../helpers/cloudinary')
+const Addon = require('../../models/addon')
+const Variation = require('../../models/variation')
+const Option = require('../../models/option')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -236,6 +239,45 @@ module.exports = {
           throw new Error('Invalid request, restaurant id not provided')
         }
         const restaurant = await Restaurant.findOne(filters)
+        if (!restaurant) throw Error('Restaurant not found')
+        return transformRestaurant(restaurant)
+      } catch (e) {
+        throw e
+      }
+    },
+    restaurantCustomer: async (_, args, { req }) => {
+      console.log('restaurant.args', args)
+      try {
+        const filters = {}
+        if (args.slug) {
+          filters.slug = args.slug
+        } else if (args.id) {
+          filters._id = args.id
+        } else if (req.restaurantId) {
+          filters._id = req.restaurantId
+        } else {
+          throw new Error('Invalid request, restaurant id not provided')
+        }
+        let restaurant = await Restaurant.findOne(filters)
+        const addons = await Addon.find({ restaurant })
+        const categories = await Category.find({ restaurant })
+        const modifiedCategories = categories.map(async category => {
+          let food = await Food.find({ category })
+          let modifiedFood = food.map(async item => {
+            const foundVariations = await Variation.find({ food: item })
+            item.variations = [...foundVariations]
+            return item
+          })
+          console.log({ food })
+          category.foods = [...modifiedFood]
+          return category
+        })
+        restaurant['categories'] = [...modifiedCategories]
+        console.log({ restaurant })
+        const options = await Option.find({ restaurant })
+        restaurant['addons'] = [...addons]
+        restaurant['categories'] = [...categories]
+        restaurant['options'] = [...options]
         if (!restaurant) throw Error('Restaurant not found')
         return transformRestaurant(restaurant)
       } catch (e) {

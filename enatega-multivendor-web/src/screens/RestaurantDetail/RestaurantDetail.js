@@ -47,7 +47,7 @@ function RestaurantDetail() {
   const [reviewModal, setReviewModal] = useState(false);
   const [variationModal, setVariationModal] = useState(false);
   const { data, loading, error } = useRestaurant(state?.id, query.slug);
-  const allDeals = data?.restaurant?.categories.filter(
+  const allDeals = data?.restaurantCustomer?.categories.filter(
     (cat) => cat.foods.length
   );
   const {
@@ -65,25 +65,25 @@ function RestaurantDetail() {
     index,
   }));
   const headerData = {
-    name: data?.restaurant?.name ?? "...",
-    averageReview: data?.restaurant?.reviewData.ratings ?? "...",
-    averageTotal: data?.restaurant?.reviewData.total ?? "...",
-    isAvailable: data?.restaurant?.isAvailable ?? true,
-    openingTimes: data?.restaurant?.openingTimes ?? [],
+    name: data?.restaurantCustomer?.name ?? "...",
+    averageReview: data?.restaurantCustomer?.reviewData.ratings ?? "...",
+    averageTotal: data?.restaurantCustomer?.reviewData.total ?? "...",
+    isAvailable: data?.restaurantCustomer?.isAvailable ?? true,
+    openingTimes: data?.restaurantCustomer?.openingTimes ?? [],
     deals: deals,
-    deliveryTime: data?.restaurant?.deliveryTime,
+    deliveryTime: data?.restaurantCustomer?.deliveryTime,
   };
   const restaurantInfo = {
-    _id: data?.restaurant._id ?? "",
-    name: data?.restaurant?.name ?? "...",
-    image: data?.restaurant?.image ?? "",
+    _id: data?.restaurantCustomer._id ?? "",
+    name: data?.restaurantCustomer?.name ?? "...",
+    image: data?.restaurantCustomer?.image ?? "",
     deals: deals,
-    reviewData: data?.restaurant?.reviewData ?? {},
-    address: data?.restaurant?.address ?? "",
-    deliveryCharges: data?.restaurant?.deliveryCharges ?? "",
-    deliveryTime: data?.restaurant?.deliveryTime ?? "...",
-    isAvailable: data?.restaurant?.isAvailable ?? true,
-    openingTimes: data?.restaurant?.openingTimes ?? [],
+    reviewData: data?.restaurantCustomer?.reviewData ?? {},
+    address: data?.restaurantCustomer?.address ?? "",
+    deliveryCharges: data?.restaurantCustomer?.deliveryCharges ?? "",
+    deliveryTime: data?.restaurantCustomer?.deliveryTime ?? "...",
+    isAvailable: data?.restaurantCustomer?.isAvailable ?? true,
+    openingTimes: data?.restaurantCustomer?.openingTimes ?? [],
   };
 
   useEffect(() => {
@@ -93,10 +93,13 @@ function RestaurantDetail() {
     // await Analytics.track(Analytics.events.NAVIGATE_TO_RESTAURANTS_DETAIL);
   }, []);
   useEffect(() => {
-    if (data?.restaurant && (!isOpen || !data?.restaurant?.isAvailable)) {
+    if (
+      data?.restaurantCustomer &&
+      (!isOpen || !data?.restaurantCustomer?.isAvailable)
+    ) {
       toggleCloseModal();
     }
-  }, [data?.restaurant]);
+  }, [data?.restaurantCustomer]);
 
   const toggleVariationModal = useCallback(() => {
     setVariationModal((prev) => !prev);
@@ -157,10 +160,10 @@ function RestaurantDetail() {
       if (clearFlag) await clearCart();
       setAddonData({
         food,
-        addons: data?.restaurant.addons,
-        options: data?.restaurant.options,
-        restaurant: data?.restaurant._id,
-        image: data?.restaurant?.image,
+        addons: data?.restaurantCustomer.addons,
+        options: data?.restaurantCustomer.options,
+        restaurant: data?.restaurantCustomer._id,
+        image: data?.restaurantCustomer?.image,
       });
       toggleVariationModal();
     }
