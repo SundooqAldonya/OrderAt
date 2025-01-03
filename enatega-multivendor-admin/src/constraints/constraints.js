@@ -257,17 +257,17 @@ const constraints = {
   title: {
     presence: {
       allowEmpty: false
-    },
+    }
   },
   action: {
     presence: {
       allowEmpty: false
-    },
+    }
   },
   screen: {
     presence: {
       allowEmpty: false
-    },
+    }
   }
 }
 

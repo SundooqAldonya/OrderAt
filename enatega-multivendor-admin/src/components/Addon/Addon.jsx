@@ -70,7 +70,7 @@ function Addon(props) {
     setTimeout(onDismiss, 3000)
   }
   const onError = error => {
-    mainErrorSetter(` ${t('errorWhileSaving')} ${error}`)
+    mainErrorSetter(`${t('errorWhileSaving')} ${error}`)
     successSetter('')
     setTimeout(onDismiss, 3000)
   }
@@ -155,15 +155,17 @@ function Addon(props) {
         { addonQuantityMaximum: addons[index][state] },
         'addonQuantityMaximum'
       )
-      addons[index].quantityMinimumError = addons[index].quantityMaximum <= 1
+      addons[index].quantityMaximumError = addons[index].quantityMaximum < 1
       addons[index].quantityMaximumError =
         addons[index].quantityMaximum < addons[index].quantityMinimum
     }
     if (state === 'options') {
       addons[index].optionsError = addons[index].options.length === 0
+      mainErrorSetter(`Should pick at least one option`)
     }
     addonSetter([...addons])
   }
+
   const onSelectOption = (index, id) => {
     const addons = addon
     const option = addons[index].options.indexOf(id)
@@ -171,11 +173,13 @@ function Addon(props) {
     else addons[index].options.splice(option, 1)
     addonSetter([...addons])
   }
+
   const updateOptions = ids => {
     const addons = addon
     addons[addonIndex].options = addons[addonIndex].options.concat(ids)
     addonSetter([...addons])
   }
+
   const onAdd = index => {
     const addons = addon
     if (index === addons.length - 1) {
@@ -197,6 +201,7 @@ function Addon(props) {
     }
     addonSetter([...addons])
   }
+
   const onRemove = index => {
     if (addon.length === 1 && index === 0) {
       return
@@ -205,10 +210,12 @@ function Addon(props) {
     addons.splice(index, 1)
     addonSetter([...addons])
   }
+
   const toggleModal = index => {
     modalSetter(prev => !prev)
     addonIndexSetter(index)
   }
+
   const validate = () => {
     const addons = addon
     addons.map((addon, index) => {
