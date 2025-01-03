@@ -456,13 +456,7 @@ export const deleteOption = `
       }`
 export const editOption = `mutation editOption($optionInput:editOptionInput){
   editOption(optionInput:$optionInput){
-          _id
-          options{
-            _id
-            title
-            description
-            price
-          }
+          message
         }
       }`
 

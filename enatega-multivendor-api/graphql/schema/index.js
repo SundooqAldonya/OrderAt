@@ -952,7 +952,7 @@ const typeDefs = gql`
   }
 
   input OptionInput {
-    # _id: String
+    _id: String
     title: String!
     description: String!
     price: Float!
@@ -960,7 +960,7 @@ const typeDefs = gql`
   }
 
   input editOptionInput {
-    restaurant: String!
+    # restaurant: String!
     options: OptionInput
   }
 
@@ -1482,7 +1482,7 @@ const typeDefs = gql`
     updateOrderStatusRider(id: String!, status: String!): Order!
     updatePaymentStatus(id: String, status: String): Order!
     createOptions(id: String, optionInput: CreateOptionInput): [Option!]
-    editOption(optionInput: editOptionInput): Restaurant!
+    editOption(optionInput: editOptionInput): Message!
     deleteOption(id: String!): Message!
     createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
     editAddon(id: String!, addonInput: AddonInput!): AddonResponse!

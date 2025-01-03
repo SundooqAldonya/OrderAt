@@ -21,11 +21,11 @@ module.exports = {
   Mutation: {
     createOptions: async (_, args, context) => {
       console.log('createOption')
-      console.log({ argsOptions: args })
+      // console.log({ argsOptions: args })
       try {
         const optionsInput = args.optionInput.options.map(option => ({
           ...option,
-          restaurant: args.id // Add the restaurantId to each option
+          restaurant: args.id
         }))
         const options = await Option.insertMany(optionsInput)
         return options
@@ -39,6 +39,12 @@ module.exports = {
       console.log(args.optionInput)
       try {
         const { options } = args.optionInput
+        const option = await Option.findById(options._id)
+        option.title = options.title
+        option.description = options.description
+        option.price = options.price
+        await option.save()
+        return { message: 'Option is updated!' }
         // const restaurant = await Restaurant.findById(
         //   args.optionInput.restaurant
         // )

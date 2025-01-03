@@ -48,7 +48,7 @@ function Option(props) {
   )
   const [mainError, mainErrorSetter] = useState('')
   const [success, successSetter] = useState('')
-  const mutation = props.option ? EDIT_OPTION : CREATE_OPTIONS
+  // const mutation = props.option ? EDIT_OPTION : CREATE_OPTIONS
   const onCompleted = ({ createOptions, editOption }) => {
     if (createOptions) {
       optionSetter([
@@ -74,7 +74,12 @@ function Option(props) {
     successSetter('')
     setTimeout(hideAlert, 3000)
   }
-  const [mutate, { loading }] = useMutation(mutation, {
+  const [mutate, { loading }] = useMutation(CREATE_OPTIONS, {
+    onError,
+    onCompleted,
+    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
+  })
+  const [mutateEdit, { loading: EditIsLoading }] = useMutation(EDIT_OPTION, {
     onError,
     onCompleted,
     refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
@@ -279,9 +284,9 @@ function Option(props) {
                     return
                   }
                   props.option
-                    ? mutate({
+                    ? mutateEdit({
                         variables: {
-                          id: restaurantId,
+                          // id: props.option._id,
                           optionInput: {
                             options: {
                               _id: props.option._id,
