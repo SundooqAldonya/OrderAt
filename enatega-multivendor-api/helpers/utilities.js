@@ -93,6 +93,12 @@ const checkPhoneAlreadyUsed = async(userId, phone) => {
   return true
 }
 
+function calculateAmount(costType, deliveryRate, distance) {
+
+  return costType === 'fixed' ? deliveryRate : Math.ceil(distance) * deliveryRate;
+
+}
+
 const sendNotificationMobile = async messages => {
   const chunks = expo.chunkPushNotifications(messages)
   const tickets = []
@@ -170,10 +176,6 @@ const calculateDistance = (latS, lonS, latD, lonD) => {
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   var d = R * c
   return d
-}
-
-const calculateAmount = (costType, deliveryRate, distance) => {
-  return costType === 'fixed' ? deliveryRate : Math.ceil(distance) * deliveryRate;
 }
 
 exports.saveImageToDisk = saveImageToDisk
