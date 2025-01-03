@@ -59,10 +59,6 @@ function Restaurants() {
     navigate(`/restaurant/${navigateData.slug}`, { state: navigateData });
   }, [navigateData]);
 
-  // useEffect(async () => {
-  //   // await Analytics.track(Analytics.events.NAVIGATE_TO_RESTAURANTS);
-  // }, []);
-
   const checkCart = useCallback(
     (id, name, image, slug) => {
       if (cartRestaurant && id !== cartRestaurant) {
@@ -95,6 +91,8 @@ function Restaurants() {
     fetchPolicy: "network-only",
     skip: !location,
   });
+
+  console.log({ data });
 
   if (loading || error) {
     return (

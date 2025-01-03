@@ -19,7 +19,7 @@ import { addFavouriteRestaurant, profile } from "../../../apollo/server";
 import ConfigurationContext from "../../../context/Configuration";
 import UserContext from "../../../context/User";
 import useStyles from "./styles";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -36,7 +36,6 @@ function PricingDelivery({
   isSmall,
   index,
 }) {
-  
   const classes = useStyles();
   const theme = useTheme();
   const containerStyle = !grid
@@ -106,13 +105,9 @@ function PricingDelivery({
           {deliveryCharges > 0 ? "delivery fee" : ""}
         </Typography>
       </Box>
-      
     </Box>
-    
   );
-  
 }
-
 
 function Card(props) {
   const { t } = useTranslation();
@@ -125,7 +120,7 @@ function Card(props) {
   const cardImageHeight = props.cardImageHeight
     ? props.cardImageHeight
     : "144px";
-  const category = item.categories.map((category) => category.title);
+  const category = item?.categories?.map((category) => category.title);
   const configuration = useContext(ConfigurationContext);
   const classes = useStyles(props);
   const [mutate, { loading }] = useMutation(ADD_FAVOURITE, {
@@ -136,7 +131,7 @@ function Card(props) {
   function onCompleted() {
     props.showMessage({
       type: "success",
-      message: t('favouriteListUpdated'),
+      message: t("favouriteListUpdated"),
     });
   }
 
@@ -274,7 +269,7 @@ function Card(props) {
                     : "#5A5858",
                 }}
               >
-                {item.reviewData.ratings}
+                {item.reviewData?.ratings}
               </Typography>
               <Typography
                 variant="caption"
@@ -302,7 +297,7 @@ function Card(props) {
                   marginLeft: "3px",
                 }}
               >
-                ({item.reviewData.reviews.length})
+                ({item.reviewData?.reviews?.length})
               </Typography>
             </Box>
           </Box>
@@ -326,7 +321,7 @@ function Card(props) {
                   : "#5A5858",
               }}
             >
-              {category.toString()}
+              {category?.toString()}
             </Typography>
             <PricingDelivery
               minimum={item.minimumOrder ?? 0}

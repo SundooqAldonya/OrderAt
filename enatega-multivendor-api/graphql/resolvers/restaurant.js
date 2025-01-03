@@ -10,6 +10,8 @@ const Sections = require('../../models/section')
 const Zone = require('../../models/zone')
 const User = require('../../models/user')
 const Food = require('../../models/food')
+const Category = require('../../models/category')
+
 const {
   sendNotificationToCustomerWeb
 } = require('../../helpers/firebase-web-notifications')
@@ -83,17 +85,19 @@ module.exports = {
           _id: { $in: sectionArray },
           enabled: true
         })
+
         restaurants.forEach(async restaurant => {
           const foundCategories = await Category.find({ restaurant })
-          const modifiedCategories = await foundCategories.map(
-            async category => {
-              const food = await Food.find({ category })
-              category.foods.push(food)
-            }
-          )
-          restaurant.categories = [...modifiedCategories]
+          console.log({ foundCategories })
+          const modifiedCategories = foundCategories.map(async category => {
+            const food = await Food.find({ category })
+            category.foods = [...food]
+            return category
+          })
+          restaurant['categories'] = [...modifiedCategories]
+          console.log({ restaurant })
         })
-        console.log({ restaurants })
+        console.log({ restaurants: restaurants.categories })
         const result = {
           restaurants: restaurants,
           sections: sections.map(sec => ({
