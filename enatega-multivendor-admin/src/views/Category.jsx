@@ -109,7 +109,13 @@ const Category = props => {
 
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
-
+  const filtered =
+    searchQuery.length < 3
+      ? data && data.categoriesByRestaurant
+      : data &&
+        data.categoriesByRestaurant.filter(option => {
+          return option.title.toLowerCase().search(regex) > -1
+        })
   const globalClasses = useGlobalStyles()
   return (
     <>
@@ -139,7 +145,7 @@ const Category = props => {
             }
             title={<TableHeader title={t('Categories')} />}
             columns={columns}
-            data={data ? data?.categoriesByRestaurant : []}
+            data={data && data.categoriesByRestaurant?.length ? filtered : []}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}

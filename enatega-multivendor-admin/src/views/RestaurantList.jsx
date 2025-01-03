@@ -41,9 +41,11 @@ const Restaurants = props => {
     refetch,
     networkStatus
   } = useQuery(GET_RESTAURANTS, { fetchPolicy: 'network-only' })
+  console.log({ data })
   const onClickRefetch = cb => {
     cb()
   }
+
   const customSort = (rows, field, direction) => {
     const handleField = row => {
       if (row[field]) {
@@ -161,25 +163,23 @@ const Restaurants = props => {
     [searchQuery]
   )
 
-  const filtered = useMemo(
-    () =>
-      searchQuery.length < 3
-        ? data && data.restaurants
-        : data &&
-          data.restaurants.filter(restaurant => {
-            return (
-              (restaurant.name &&
-                restaurant.name.toLowerCase().search(regex) > -1) ||
-              (restaurant.orderPrefix &&
-                restaurant.orderPrefix.toLowerCase().search(regex) > -1) ||
-              (restaurant.owner &&
-                restaurant.owner.email.toLowerCase().search(regex) > -1) ||
-              (restaurant.address &&
-                restaurant.address.toLowerCase().search(regex) > -1)
-            )
-          }),
-    [searchQuery, data, regex]
-  )
+  const filtered =
+    searchQuery.length < 3
+      ? data && data.restaurants
+      : data &&
+        data.restaurants.filter(restaurant => {
+          return (
+            (restaurant.name &&
+              restaurant.name.toLowerCase().search(regex) > -1) ||
+            (restaurant.orderPrefix &&
+              restaurant.orderPrefix.toLowerCase().search(regex) > -1) ||
+            (restaurant.owner &&
+              restaurant.owner.email &&
+              restaurant.owner.email.toLowerCase().search(regex) > -1) ||
+            (restaurant.address &&
+              restaurant.address.toLowerCase().search(regex) > -1)
+          )
+        })
 
   return (
     <>

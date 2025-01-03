@@ -631,13 +631,13 @@ module.exports = {
           throw Error('Restaurant by this name already exists')
         }
         const owner = await Owner.findById(args.owner)
-        // if (!owner) throw new Error('Owner does not exist')
+        if (!owner) throw new Error('Owner does not exist')
         const orderPrefix = randomstring.generate({
           length: 5,
           capitalization: 'uppercase'
         })
 
-        const restaurant = new Restaurant({
+        let restaurant = new Restaurant({
           name: args.restaurant.name,
           address: args.restaurant.address,
           image: args.restaurant.image,
@@ -660,6 +660,7 @@ module.exports = {
         owner.restaurants.push(restaurant.id)
         await owner.save()
         // return transformRestaurant(restaurant)
+        restaurant = await restaurant.populate('owner')
         return restaurant
       } catch (err) {
         throw err

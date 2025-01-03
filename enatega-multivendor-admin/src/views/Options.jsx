@@ -43,7 +43,6 @@ const Option = props => {
   const [option, setOption] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
-  const onChangeSearch = e => setSearchQuery(e.target.value)
 
   const toggleModal = option => {
     setEditModal(!editModal)
@@ -103,19 +102,22 @@ const Option = props => {
     }
   ]
 
+  const onChangeSearch = e => setSearchQuery(e.target.value)
+
   const regex =
     searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
 
-  // const filtered =
-  //   searchQuery.length < 3
-  //     ? data && data.restaurant.options
-  //     : data &&
-  //       data.restaurant.options.filter(option => {
-  //         return (
-  //           option.title.toLowerCase().search(regex) > -1 ||
-  //           option.description.toLowerCase().search(regex) > -1
-  //         )
-  //       })
+  const filtered =
+    searchQuery.length < 3
+      ? data && data.options
+      : data &&
+        data.options.filter(option => {
+          return (
+            option.title.toLowerCase().search(regex) > -1 ||
+            option.description.toLowerCase().search(regex) > -1
+          )
+        })
+
   const globalClasses = useGlobalStyles()
   return (
     <>
@@ -145,7 +147,7 @@ const Option = props => {
             }
             title={<TableHeader title={t('Options')} />}
             columns={columns}
-            data={data && data.options ? data.options : {}}
+            data={data && data.options?.length ? filtered : {}}
             pagination
             progressPending={loadingQuery}
             progressComponent={<CustomLoader />}
