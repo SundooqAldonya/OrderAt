@@ -627,29 +627,32 @@ function Food(props) {
                       {errorAddons && t('ErrorDots')}
                       {dataAddons?.getAddonsByRestaurant
                         ?.filter(addon => addon.title !== 'Default Addon')
-                        .map(addon => (
-                          <Grid
-                            item
-                            xs={12}
-                            md={6}
-                            key={addon._id}
-                            style={{ textAlign: 'left', paddingLeft: 20 }}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  value={addon._id}
-                                  checked={variation[index].addons.includes(
-                                    addon._id
-                                  )}
-                                  onChange={() =>
-                                    onSelectAddon(index, addon._id)
-                                  }
-                                />
-                              }
-                              label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
-                            />
-                          </Grid>
-                        ))}
+                        .map(addon => {
+                          console.log({ addons: variation[index].addons })
+                          return (
+                            <Grid
+                              item
+                              xs={12}
+                              md={6}
+                              key={addon._id}
+                              style={{ textAlign: 'left', paddingLeft: 20 }}>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    value={addon._id}
+                                    checked={variation[index]?.addons?.includes(
+                                      addon._id
+                                    )}
+                                    onChange={() =>
+                                      onSelectAddon(index, addon._id)
+                                    }
+                                  />
+                                }
+                                label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
+                              />
+                            </Grid>
+                          )
+                        })}
                     </Box>
                     <Button
                       className={classes.button}

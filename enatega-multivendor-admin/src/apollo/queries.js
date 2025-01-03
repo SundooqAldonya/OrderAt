@@ -581,6 +581,7 @@ export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!)
       title
       price
       discounted
+      addons 
     }
     category {
       _id

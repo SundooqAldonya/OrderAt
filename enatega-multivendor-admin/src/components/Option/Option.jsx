@@ -29,6 +29,7 @@ const EDIT_OPTION = gql`
 `
 
 function Option(props) {
+  console.log({ props })
   const theme = useTheme()
   const { t } = props
   const restaurantId = localStorage.getItem('restaurantId')

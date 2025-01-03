@@ -15,6 +15,12 @@ const variationSchema = new Schema(
       default: 0
     },
     // addons: [String],
+    addons: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Addon'
+      }
+    ],
     food: {
       type: Schema.Types.ObjectId,
       ref: 'Food'

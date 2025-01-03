@@ -16,8 +16,10 @@ module.exports = {
       try {
         const foodList = await Food.find({ restaurant: args.id })
           .populate('category')
-          .populate('variations')
-        console.log({ foodList })
+          .populate({ path: 'variations' })
+        console.log({
+          foodListVariationsAddons: foodList[0].variations[0].addons
+        })
         return foodList
       } catch (err) {
         console.log(err)
@@ -28,27 +30,35 @@ module.exports = {
   Mutation: {
     createFood: async (_, args, context) => {
       console.log('createFood')
-      console.log({ createFoodArgs: args.foodInput.file })
+      console.log({ createFoodAddons: args.foodInput.variations[0].addons })
       try {
         let variations
-        if (args.foodInput.variations.length) {
-          const variationsArr = args.foodInput.variations
-          variations = await Variation.insertMany([...variationsArr])
-        }
+        // if (args.foodInput.variations.length) {
+        //   const variationsArr = args.foodInput.variations
+        //   variations = await Variation.insertMany([...variationsArr])
+        // }
+
+        // if (args.foodInput.variations[0]?.addons?.length) {
+        //   args.foodInput.variations.map(item => {
+        //     console.log({ item })
+        //   })
+        //   // const variationsArr = args.foodInput.variations
+        //   // variations = await Variation.insertMany([...variationsArr])
+        // }
+
         const food = new Food({
           title: args.foodInput.title,
           description: args.foodInput.description,
           restaurant: args.foodInput.restaurant,
-          category: args.foodInput.category,
-          variations
+          category: args.foodInput.category
         })
         if (args.foodInput.variations.length) {
           const variationsArr = args.foodInput.variations.map(item => {
             return { ...item, food: food._id }
           })
           variations = await Variation.insertMany([...variationsArr])
+          food.variations = [...variations]
         }
-        console.log({ foodInputFile: args.foodInput.file })
         if (
           args.foodInput.file.file &&
           args.foodInput.file.file['createReadStream']

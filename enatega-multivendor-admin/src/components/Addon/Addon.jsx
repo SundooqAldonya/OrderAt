@@ -6,7 +6,8 @@ import {
   createAddons,
   editAddon,
   createOptions,
-  getOptions
+  getOptions,
+  getAddonsByRestaurant
 } from '../../apollo'
 import OptionsComponent from '../Option/Option'
 import { validateFunc } from '../../constraints/constraints'
@@ -37,6 +38,9 @@ const EDIT_ADDON = gql`
   ${editAddon}
 `
 
+const GET_ADDONS = gql`
+  ${getAddonsByRestaurant}
+`
 function Addon(props) {
   const theme = useTheme()
   const { t } = props
@@ -116,7 +120,18 @@ function Addon(props) {
       variables: { id: restaurantId }
     }
   )
-  const [mutate, { loading }] = useMutation(mutation, { onError, onCompleted })
+  const [mutate, { loading }] = useMutation(mutation, {
+    onError,
+    onCompleted,
+    refetchQueries: [
+      {
+        query: GET_ADDONS,
+        variables: {
+          id: restaurantId
+        }
+      }
+    ]
+  })
 
   const onBlur = (index, state) => {
     const addons = addon
@@ -463,7 +478,7 @@ function Addon(props) {
         onClose={() => {
           toggleModal()
         }}>
-        <OptionsComponent updateOptions={updateOptions} />
+        <OptionsComponent onClose={toggleModal} updateOptions={updateOptions} />
       </Modal>
     </Box>
   )
