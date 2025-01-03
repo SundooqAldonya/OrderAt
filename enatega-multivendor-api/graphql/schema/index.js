@@ -160,7 +160,54 @@ const typeDefs = gql`
     phone: String
     createdAt: String
   }
-
+  type RestaurantCustomer {
+    _id: ID!
+    orderId: Int!
+    orderPrefix: String
+    name: String!
+    image: String
+    logo: String
+    address: String
+    location: Point
+    categories: [CategoryCustomer!]
+    # options: [Option!]
+    # addons: [Addon!]
+    reviewData: ReviewData
+    zone: Zone
+    username: String
+    password: String
+    deliveryTime: Int
+    minimumOrder: Int
+    sections: [String!]
+    rating: Float
+    isActive: Boolean!
+    isAvailable: Boolean!
+    openingTimes: [OpeningTimes]
+    slug: String
+    stripeDetailsSubmitted: Boolean
+    commissionRate: Float
+    owner: Owner
+    deliveryBounds: Polygon
+    tax: Float
+    notificationToken: String
+    enableNotification: Boolean
+    shopType: String
+    cuisines: [String]
+    keywords: [String]
+    tags: [String]
+    reviewCount: Int
+    reviewAverage: Float
+    restaurantUrl: String
+    phone: String
+    createdAt: String
+  }
+  type CategoryCustomer {
+    _id: ID!
+    title: String!
+    foods: [Food!]
+    createdAt: String!
+    updatedAt: String!
+  }
   type OpeningTimes {
     day: String!
     times: [Timings]
@@ -609,7 +656,7 @@ const typeDefs = gql`
   }
 
   type NearByData {
-    restaurants: [Restaurant!]
+    restaurants: [RestaurantCustomer!]
     offers: [OfferInfo!]
     sections: [SectionInfo!]
   }

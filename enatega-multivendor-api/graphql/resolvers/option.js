@@ -36,18 +36,19 @@ module.exports = {
     },
     editOption: async (_, args, context) => {
       console.log('editOption')
+      console.log(args.optionInput)
       try {
-        const options = args.optionInput.options
-        const restaurant = await Restaurant.findById(
-          args.optionInput.restaurant
-        )
-        restaurant.options.id(options._id).set({
-          title: options.title,
-          description: options.description,
-          price: options.price
-        })
-        const result = await restaurant.save()
-        return transformRestaurant(result)
+        const { options } = args.optionInput
+        // const restaurant = await Restaurant.findById(
+        //   args.optionInput.restaurant
+        // )
+        // restaurant.options.id(options._id).set({
+        //   title: options.title,
+        //   description: options.description,
+        //   price: options.price
+        // })
+        // const result = await restaurant.save()
+        // return transformRestaurant(result)
       } catch (err) {
         console.log(err)
         throw err
