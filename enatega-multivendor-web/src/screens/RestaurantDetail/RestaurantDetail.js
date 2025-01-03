@@ -66,8 +66,8 @@ function RestaurantDetail() {
   }));
   const headerData = {
     name: data?.restaurantCustomer?.name ?? "...",
-    averageReview: data?.restaurantCustomer?.reviewData.ratings ?? "...",
-    averageTotal: data?.restaurantCustomer?.reviewData.total ?? "...",
+    averageReview: data?.restaurantCustomer?.reviewData?.ratings ?? "...",
+    averageTotal: data?.restaurantCustomer?.reviewData?.total ?? "...",
     isAvailable: data?.restaurantCustomer?.isAvailable ?? true,
     openingTimes: data?.restaurantCustomer?.openingTimes ?? [],
     deals: deals,
@@ -115,16 +115,16 @@ function RestaurantDetail() {
 
   const isOpen = useCallback(() => {
     if (data) {
-      if (data.restaurant.openingTimes.length < 1) return false;
+      if (data.restaurantCustomer?.openingTimes?.length < 1) return false;
       const date = new Date();
       const day = date.getDay();
       const hours = date.getHours();
       const minutes = date.getMinutes();
-      const todaysTimings = data.restaurant.openingTimes.find(
+      const todaysTimings = data?.restaurantCustomer?.openingTimes?.find(
         (o) => o.day === DAYS[day]
       );
       if (todaysTimings === undefined) return false;
-      const times = todaysTimings.times.filter(
+      const times = todaysTimings?.times?.filter(
         (t) =>
           hours >= Number(t.startTime[0]) &&
           minutes >= Number(t.startTime[1]) &&

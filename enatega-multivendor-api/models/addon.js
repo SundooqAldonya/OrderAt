@@ -13,7 +13,12 @@ const addonSchema = new Schema(
     },
     // TODO: can this be changed to { type: [String], default:[] }
     // or look into other ways ho we can give it default value.
-    options: [String],
+    options: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Option'
+      }
+    ],
     quantityMinimum: {
       type: Number,
       required: true

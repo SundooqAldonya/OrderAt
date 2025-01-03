@@ -258,29 +258,37 @@ module.exports = {
         } else {
           throw new Error('Invalid request, restaurant id not provided')
         }
-        let restaurant = await Restaurant.findOne(filters)
+
+        let restaurant = await Restaurant.findOne(filters).lean()
+        if (!restaurant) throw new Error('Restaurant not found')
+
+        // Fetch related data
         const addons = await Addon.find({ restaurant })
         const categories = await Category.find({ restaurant })
-        const modifiedCategories = categories.map(async category => {
-          let food = await Food.find({ category })
-          let modifiedFood = food.map(async item => {
-            const foundVariations = await Variation.find({ food: item })
-            item.variations = [...foundVariations]
-            return item
-          })
-          console.log({ food })
-          category.foods = [...modifiedFood]
-          return category
-        })
-        restaurant['categories'] = [...modifiedCategories]
-        console.log({ restaurant })
         const options = await Option.find({ restaurant })
-        restaurant['addons'] = [...addons]
-        restaurant['categories'] = [...categories]
-        restaurant['options'] = [...options]
-        if (!restaurant) throw Error('Restaurant not found')
-        return transformRestaurant(restaurant)
+
+        // Process categories and their foods
+        const modifiedCategories = await Promise.all(
+          categories.map(async category => {
+            const food = await Food.find({ category })
+              .populate('variations')
+              .lean()
+            console.log({ variations: food[0].variations })
+            category.foods = food
+            return category
+          })
+        )
+
+        // Attach data to restaurant
+        restaurant.categories = modifiedCategories
+        restaurant.addons = addons
+        restaurant.options = options
+
+        console.log({ restaurantAddons: restaurant.options })
+
+        return restaurant
       } catch (e) {
+        console.error(e)
         throw e
       }
     },

@@ -100,7 +100,7 @@ function Checkout() {
   } = useContext(UserContext);
 
   const { location, setLocation } = useLocationContext();
-  console.log(location ,"location divya");
+  console.log(location, "location divya");
   // const { getCurrentLocation } = useLocation();
   const theme = useTheme();
   const [minimumOrder, setMinimumOrder] = useState("");
@@ -116,6 +116,7 @@ function Checkout() {
 
   let restCoordinates = {};
   const { loading, data, error } = useRestaurant(cartRestaurant);
+  console.log({ data });
   const extraSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const [mutateOrder, { loading: loadingOrderMutation }] = useMutation(
     PLACEORDER,
@@ -137,35 +138,51 @@ function Checkout() {
 
   useEffect(() => {
     (async () => {
-      if (data && data.restaurant) {
-        const latOrigin = Number(data.restaurant.location.coordinates[1]);
-        const lonOrigin = Number(data.restaurant.location.coordinates[0]);
+      if (data && data?.restaurantCustomer) {
+        const latOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[1]
+        );
+        const lonOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[0]
+        );
         const latDest = Number(location.latitude);
         const longDest = Number(location.longitude);
-  
+
         // Calculate distance between origin and destination
-        const distance = await calculateDistance(latOrigin, lonOrigin, latDest, longDest);
-  
+        const distance = await calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        );
+
         let deliveryCharges;
-  
+
         if (distance < 2) {
           // For distances less than 2 km, set deliveryCharges to minimumDeliveryFee
           deliveryCharges = configuration.minimumDeliveryFee;
         } else {
           // For distances greater than or equal to 2 km, calculate delivery charges
           const costType = configuration.costType;
-          const calculatedAmount = calculateAmount(costType, configuration.deliveryRate, distance);
-  
+          const calculatedAmount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          );
+
           // Ensure that the calculated fee is not less than the minimum fee
-          deliveryCharges = Math.max(calculatedAmount, configuration.minimumDeliveryFee);
+          deliveryCharges = Math.max(
+            calculatedAmount,
+            configuration.minimumDeliveryFee
+          );
         }
-  
+
         // Set the delivery charges state
         setDeliveryCharges(deliveryCharges);
       }
     })();
   }, [data, location, configuration]); // Re-run effect when data, location, or configuration changes
-  
+
   const onLoad = useCallback(
     (map) => {
       const bounds = new window.google.maps.LatLngBounds();
@@ -179,7 +196,7 @@ function Checkout() {
     const day = date.getDay();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    const todaysTimings = data.restaurant.openingTimes.find(
+    const todaysTimings = data?.restaurantCustomer.openingTimes.find(
       (o) => o.day === DAYS[day]
     );
     const times = todaysTimings.times.filter(
@@ -200,8 +217,8 @@ function Checkout() {
     if (cart && cartCount > 0) {
       if (
         data &&
-        data.restaurant &&
-        (!data.restaurant.isAvailable || !isOpen())
+        data?.restaurantCustomer &&
+        (!data?.restaurantCustomer.isAvailable || !isOpen())
       ) {
         setIsClose((prev) => {
           if (!prev) return true;
@@ -227,7 +244,7 @@ function Checkout() {
     setIsClose((prev) => !prev);
   }, []);
 
-  const restaurantData = data?.restaurant ?? null;
+  const restaurantData = data?.restaurantCustomer ?? null;
 
   const showMessage = useCallback((messageObj) => {
     setMainError(messageObj);
@@ -259,8 +276,8 @@ function Checkout() {
     );
   }
   restCoordinates = {
-    lat: parseFloat(data.restaurant.location.coordinates[1]),
-    lng: parseFloat(data.restaurant.location.coordinates[0]),
+    lat: parseFloat(data?.restaurantCustomer.location.coordinates[1]),
+    lng: parseFloat(data?.restaurantCustomer.location.coordinates[0]),
   };
 
   function update(cache, { data: { placeOrder } }) {
@@ -308,7 +325,7 @@ function Checkout() {
     const delivery = isPickUp ? 0 : deliveryCharges;
     const amount = +calculatePrice(delivery, true);
     const taxAmount = ((amount / 100) * tax).toFixed(2);
-    console.log("tax:", {taxAmount, deliveryCharges, tax, amount})
+    console.log("tax:", { taxAmount, deliveryCharges, tax, amount });
     return taxAmount;
   }
   async function onCompleted(data) {
@@ -341,28 +358,28 @@ function Checkout() {
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0;
     cart.forEach((cartItem) => {
-      console.log(cartItem)
+      console.log(cartItem);
       itemTotal += cartItem.price * cartItem.quantity;
     });
     if (withDiscount && coupon && coupon.discount) {
       itemTotal = itemTotal - (coupon.discount / 100) * itemTotal;
     }
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0;
-    console.log("price:", {itemTotal, deliveryAmount})
+    console.log("price:", { itemTotal, deliveryAmount });
     return (itemTotal + deliveryAmount).toFixed(2);
   }
 
-function calculateTotal() {
-  let total = 0;
-  const delivery = isPickUp ? 0 : deliveryCharges;
-  total += +calculatePrice(delivery, true);
-  total += +taxCalculation();
-  total += +calculateTip();
-  if (shouldAddMinimumFee) {
-    total += +configuration.minimumDeliveryFee;
+  function calculateTotal() {
+    let total = 0;
+    const delivery = isPickUp ? 0 : deliveryCharges;
+    total += +calculatePrice(delivery, true);
+    total += +taxCalculation();
+    total += +calculateTip();
+    if (shouldAddMinimumFee) {
+      total += +configuration.minimumDeliveryFee;
+    }
+    return parseFloat(total).toFixed(2);
   }
-  return parseFloat(total).toFixed(2);
-}
   function transformOrder(cartData) {
     return cartData.map((food) => {
       return {
@@ -408,7 +425,7 @@ function calculateTotal() {
             // longitude:  location.longitude,
             // latitude:   location.latitude,
             longitude: location.longitude.toString(), // Convert longitude to string
-            latitude: location.latitude.toString(),   // Convert latitude to string
+            latitude: location.latitude.toString(), // Convert latitude to string
             selected: true,
           },
           orderDate: selectedDate,
@@ -464,7 +481,7 @@ function calculateTotal() {
   };
 
   function validateOrder() {
-    if (!data.restaurant.isAvailable || !isOpen()) {
+    if (!data?.restaurantCustomer.isAvailable || !isOpen()) {
       toggleCloseModal();
       return;
     }

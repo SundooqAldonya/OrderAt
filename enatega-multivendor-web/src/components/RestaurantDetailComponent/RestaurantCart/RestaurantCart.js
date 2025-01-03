@@ -6,6 +6,7 @@ import EmptyView from "./EmptyView";
 
 function RestaurantCart(props) {
   const { cart } = useContext(UserContext);
+  console.log({ cart });
   return (
     <Hidden lgDown>
       <Grid

@@ -225,6 +225,13 @@ const typeDefs = gql`
     discounted: Float
     addons: [String!]
   }
+  type VariationCustomer {
+    _id: ID!
+    title: String!
+    price: Float!
+    discounted: Float
+    addons: [String!]
+  }
 
   type CartVariation {
     _id: ID!
@@ -254,7 +261,7 @@ const typeDefs = gql`
     updatedAt: String!
   }
   type FoodCustomer {
-    _id: ID!
+    _id: ID
     title: String
     description: String
     variations: [Variation!]

@@ -28,10 +28,11 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import ConfigurationContext from "../../../context/Configuration";
 import UserContext from "../../../context/User";
 import HeadingView from "./HeadingView";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import useStyles from "./styles";
 
 function VariationModal({ isVisible, toggleModal, data }) {
+  console.log("inside VariationModal", data);
   const { t } = useTranslation();
   const theme = useTheme();
   const classes = useStyles();
@@ -318,7 +319,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
             }}
           >
             <Typography variant="h4" color="white" style={{ fontWeight: 600 }}>
-              {t('customize')}
+              {t("customize")}
             </Typography>
             <Button onClick={toggleModal} className={classes.closeContainer}>
               <CloseIcon style={{ color: "black" }} />
@@ -343,9 +344,9 @@ function VariationModal({ isVisible, toggleModal, data }) {
                 <Divider orientation="horizontal" />
               </DialogTitle>
               <DialogContent>
-                {data?.food.variations.length > 1 && (
+                {data?.food.variations.length && (
                   <>
-                    <HeadingView />
+                    <HeadingView option={false} />
                     <FormControl style={{ width: "100%" }}>
                       <RadioGroup>
                         {data?.food.variations.map((variation, index) => (
@@ -370,7 +371,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                                 </Typography>
                               }
                             />
-                            
+
                             <Typography className={classes.priceTitle}>
                               {`${
                                 configuration.currencySymbol
@@ -380,22 +381,27 @@ function VariationModal({ isVisible, toggleModal, data }) {
                         ))}
                       </RadioGroup>
                     </FormControl>
-                    <Divider orientation="horizontal" style={{marginBottom: "10px"}}/>
+                    <Divider
+                      orientation="horizontal"
+                      style={{ marginBottom: "10px" }}
+                    />
                   </>
                 )}
                 <Box />
                 <FormControl style={{ flex: 1, display: "flex" }}>
+                  {console.log({ selectedVariation })}
                   <FormGroup>
                     {selectedVariation?.addons?.map((addon, index) => (
                       <Box key={`VARIATION_${index}`}>
                         <HeadingView
                           title={addon.title}
                           subTitle={addon.description}
-                          error={addon.error}
+                          error={false}
+                          option={true}
                           status={
                             addon.quantityMinimum === 0
-                              ? t('optional')
-                              : `${addon.quantityMinimum} ${t('required')}`
+                              ? t("optional")
+                              : `${addon.quantityMinimum} ${t("required")}`
                           }
                         />
                         {radioORcheckboxes(addon)}
@@ -404,10 +410,12 @@ function VariationModal({ isVisible, toggleModal, data }) {
                   </FormGroup>
                   <FormGroup>
                     <HeadingView
-                      title={t('specialInstructions')}
-                      subTitle={t('anySpecific')}
-                      status={t('optional')}
+                      title={t("specialInstructions")}
+                      subTitle={t("anySpecific")}
+                      status={t("optional")}
                       error={false}
+                      option={false}
+                      notice={true}
                     />
                     <Box mt={theme.spacing(2)} />
                     <OutlinedInput
@@ -420,7 +428,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                       onChange={(event) =>
                         setSpecialInstructions(event.target.value)
                       }
-                      placeholder={t('placeholder')}
+                      placeholder={t("placeholder")}
                       variant="filled"
                       color="primary"
                       inputProps={{
@@ -490,7 +498,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                     }}
                   >
                     <Typography className={classes.checkoutText}>
-                      {t('addToCart')}
+                      {t("addToCart")}
                     </Typography>
                   </Button>
                 </Box>
