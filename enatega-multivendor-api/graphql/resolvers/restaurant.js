@@ -720,7 +720,7 @@ module.exports = {
         throw err
       }
     },
-    editRestaurant: async (_, args) => {
+    editRestaurant: async (_, args, { req }) => {
       console.log('editRestaurant')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
