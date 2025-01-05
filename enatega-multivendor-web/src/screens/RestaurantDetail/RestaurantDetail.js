@@ -50,6 +50,9 @@ function RestaurantDetail() {
   const allDeals = data?.restaurantCustomer?.categories.filter(
     (cat) => cat.foods.length
   );
+
+  console.log({ data });
+
   const {
     restaurant: restaurantCart,
     setCartRestaurant,

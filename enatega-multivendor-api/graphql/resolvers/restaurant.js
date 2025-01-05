@@ -279,14 +279,16 @@ module.exports = {
           })
         )
 
-        // Attach data to restaurant
-        restaurant.categories = modifiedCategories
-        restaurant.addons = addons
-        restaurant.options = options
+        // restaurant.categories = modifiedCategories
+        // restaurant.addons = addons
+        // restaurant.options = options
 
-        console.log({ restaurantAddons: restaurant.options })
-
-        return restaurant
+        return {
+          ...restaurant,
+          categories: modifiedCategories,
+          addons,
+          options
+        }
       } catch (e) {
         console.error(e)
         throw e

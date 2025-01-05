@@ -89,6 +89,7 @@ async function startApolloServer() {
             const { userType, restaurantId } = isAuthenticated(req)
 
             req.user = user
+            req.userId = user._id
             req.userType = userType
             req.restaurantId = restaurantId
             req.isAuth = true
