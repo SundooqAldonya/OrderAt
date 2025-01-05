@@ -273,7 +273,7 @@ module.exports = {
             const food = await Food.find({ category })
               .populate('variations')
               .lean()
-            console.log({ variations: food[0].variations })
+            // console.log({ variations: food[0].variations })
             category.foods = food
             return category
           })
