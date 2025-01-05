@@ -18,9 +18,9 @@ const getEnvVars = (env = Updates.channel) => {
   return {
     // GRAPHQL_URL: 'https://enatega-multivendor.up.railway.app/graphql',
     // WS_GRAPHQL_URL: 'wss://enatega-multivendor.up.railway.app/graphql',
-    GRAPHQL_URL: 'http://145.223.23.186:8001/graphql',
-    WS_GRAPHQL_URL: 'ws://145.223.23.186:8001/graphql',
-    SERVER_URL: 'http://145.223.23.186:8001/',
+    GRAPHQL_URL: 'http://192.168.1.11:8001/graphql',
+    WS_GRAPHQL_URL: 'ws://192.168.1.11:8001/graphql',
+    SERVER_URL: 'http://192.168.1.11:8001/',
     SENTRY_DSN: configuration.riderAppSentryUrl,
     GOOGLE_MAPS_KEY: configuration.googleApiKey
     // SENTRY_DSN:

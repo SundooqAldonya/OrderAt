@@ -240,13 +240,13 @@ function AppContainer() {
 
   useEffect(() => {
     const dsn = configuration?.riderAppSentryUrl
-  
+
     if (dsn) {
       Sentry.init({
         dsn: dsn,
-        environment:"development",
+        environment: 'development',
         enableInExpoDevelopment: true,
-        debug:  true,
+        debug: true,
         tracesSampleRate: 1.0 // to be changed to 0.2 in production
       })
     }

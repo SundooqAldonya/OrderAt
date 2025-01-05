@@ -161,7 +161,7 @@ module.exports = {
       await rider.save()
 
       const token = jwt.sign(
-        { userId: rider.id, email: rider.username },
+        { userId: rider._id, email: rider.username },
         process.env.SECRETKEY
       )
       return {
