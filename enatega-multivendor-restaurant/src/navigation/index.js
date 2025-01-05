@@ -12,7 +12,6 @@ function AppContainer() {
   const { SENTRY_DSN } = getEnvVars()
 
   useEffect(() => {
-   
     if (SENTRY_DSN) {
       Sentry.init({
         dsn: SENTRY_DSN,
@@ -28,6 +27,7 @@ function AppContainer() {
     <NavigationContainer>
       {/* {isLoggedIn ? <AuthStack />:<MainStack />  } */}
       {isLoggedIn ? <MainStack /> : <AuthStack />}
+      {/* <AuthStack /> */}
     </NavigationContainer>
   )
 }

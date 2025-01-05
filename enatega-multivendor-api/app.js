@@ -31,6 +31,7 @@ const Tracing = require('@sentry/tracing')
 const { SentryConfig } = require('./helpers/sentry.config.js')
 const MongoStore = require('connect-mongo')
 const Owner = require('./models/owner.js')
+const Restaurant = require('./models/restaurant.js')
 
 async function startApolloServer() {
   const httpServer = http.createServer(app)
@@ -191,17 +192,25 @@ async function startApolloServer() {
 
   passport.use(
     new JwtStrategy(opts, async (jwtPayload, done) => {
-      // console.log({ jwtPayload })
+      console.log({ jwtPayload })
       try {
-        const user = await User.findById(jwtPayload.userId)
-        const owner = await Owner.findById(jwtPayload.userId)
+        if (jwtPayload.restaurantId) {
+          const restaurant = await Restaurant.findById(jwtPayload.restaurantId)
+          if (restaurant) {
+            return done(null, restaurant)
+          }
+        } else {
+          const user = await User.findById(jwtPayload.userId)
+          const owner = await Owner.findById(jwtPayload.userId)
+          if (user) {
+            return done(null, user)
+          }
+          if (owner) {
+            return done(null, owner)
+          }
+        }
         // console.log('inside passportjwt', { user, owner })
-        if (user) {
-          return done(null, user)
-        }
-        if (owner) {
-          return done(null, owner)
-        }
+
         return done(null, false)
       } catch (err) {
         return done(err, false)

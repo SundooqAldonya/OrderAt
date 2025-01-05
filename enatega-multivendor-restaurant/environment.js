@@ -21,9 +21,9 @@ const getEnvVars = (env = Updates.channel) => {
   //   }
   // }
   return {
-    GRAPHQL_URL: 'https://query.orderat.ai/graphql',
-    WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
-    SERVER_URL: 'https://query.orderat.ai/',
+    GRAPHQL_URL: 'http://192.168.1.11:8001/graphql',
+    WS_GRAPHQL_URL: 'wss://192.168.1.11:8001/graphql',
+    SERVER_URL: 'http://192.168.1.11:8001/',
 
     // GRAPHQL_URL: 'https://enatega-multivendor.up.railway.app/graphql',
     // WS_GRAPHQL_URL: 'wss://enatega-multivendor.up.railway.app/graphql',
