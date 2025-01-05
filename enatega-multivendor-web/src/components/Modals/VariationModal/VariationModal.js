@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   Button,
@@ -52,11 +51,11 @@ function VariationModal({ isVisible, toggleModal, data }) {
 
   useEffect(() => {
     setSelectedVariation({
-      ...data?.food.variations[0],
-      addons: data?.food.variations[0].addons.map((fa) => {
-        const addon = data?.addons.find((a) => a._id === fa);
-        const addonOptions = addon.options.map((ao) => {
-          return data?.options.find((o) => o._id === ao);
+      ...data?.food?.variations[0],
+      addons: data?.food?.variations[0].addons.map((fa) => {
+        const addon = data?.addons?.find((a) => a._id === fa);
+        const addonOptions = addon?.options?.map((ao) => {
+          return data?.options?.find((o) => o._id === ao);
         });
         return {
           ...addon,
@@ -152,6 +151,10 @@ function VariationModal({ isVisible, toggleModal, data }) {
         validatedAddons.push(false);
       } else validatedAddons.push(true);
     });
+    console.log({ validatedAddons });
+    console.log({
+      validatedAddonsCheck: validatedAddons.every((val) => val === false),
+    });
     return validatedAddons.every((val) => val === false);
   };
 
@@ -244,7 +247,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
       if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
         return (
           <RadioGroup>
-            {addon?.options.map((option, index) => (
+            {addon?.options?.map((option, index) => (
               <Box
                 key={`OPTIONS_${option._id}`}
                 display="flex"
@@ -271,7 +274,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
           </RadioGroup>
         );
       } else {
-        return addon?.options.map((option, index) => (
+        return addon?.options?.map((option, index) => (
           <Box
             key={`OPTIONS_${option._id}_${index}`}
             display="flex"
@@ -279,7 +282,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
           >
             <FormControlLabel
               control={<Checkbox color="primary" />}
-              onClick={() => onSelectOption(addon, option)}
+              onChange={() => onSelectOption(addon, option)}
               name={option._id}
               label={
                 <Typography
@@ -344,12 +347,12 @@ function VariationModal({ isVisible, toggleModal, data }) {
                 <Divider orientation="horizontal" />
               </DialogTitle>
               <DialogContent>
-                {data?.food.variations.length && (
+                {data?.food?.variations?.length && (
                   <>
                     <HeadingView option={false} />
                     <FormControl style={{ width: "100%" }}>
                       <RadioGroup>
-                        {data?.food.variations.map((variation, index) => (
+                        {data?.food?.variations?.map((variation, index) => (
                           <Box
                             key={`ADDONS_${index}`}
                             display="flex"
@@ -391,22 +394,25 @@ function VariationModal({ isVisible, toggleModal, data }) {
                 <FormControl style={{ flex: 1, display: "flex" }}>
                   {console.log({ selectedVariation })}
                   <FormGroup>
-                    {selectedVariation?.addons?.map((addon, index) => (
-                      <Box key={`VARIATION_${index}`}>
-                        <HeadingView
-                          title={addon.title}
-                          subTitle={addon.description}
-                          error={false}
-                          option={true}
-                          status={
-                            addon.quantityMinimum === 0
-                              ? t("optional")
-                              : `${addon.quantityMinimum} ${t("required")}`
-                          }
-                        />
-                        {radioORcheckboxes(addon)}
-                      </Box>
-                    ))}
+                    {selectedVariation?.addons?.map((addon, index) => {
+                      console.log({ addonItem: addon });
+                      return (
+                        <Box key={`VARIATION_${index}`}>
+                          <HeadingView
+                            title={addon.title}
+                            subTitle={addon.description}
+                            error={false}
+                            option={true}
+                            status={
+                              addon.quantityMinimum === 0
+                                ? t("optional")
+                                : `${addon.quantityMinimum} ${t("required")}`
+                            }
+                          />
+                          {radioORcheckboxes(addon)}
+                        </Box>
+                      );
+                    })}
                   </FormGroup>
                   <FormGroup>
                     <HeadingView
@@ -486,6 +492,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                   >
                     <AddIcon fontSize="medium" style={{ color: "white" }} />
                   </IconButton>
+                  {console.log({ validateButton: !validateButton() })}
                   <Button
                     variant="contained"
                     color="primary"

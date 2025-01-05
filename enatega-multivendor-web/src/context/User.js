@@ -37,10 +37,10 @@ export const UserProvider = (props) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [cart, setCart] = useState([]); // use initial state of cart here
   const [restaurant, setRestaurant] = useState(null);
-  // const [saveNotificationToken] = useMutation(SAVE_NOTIFICATION_TOKEN_WEB, {
-  //   onCompleted,
-  //   onError,
-  // });
+  const [saveNotificationToken] = useMutation(SAVE_NOTIFICATION_TOKEN_WEB, {
+    onCompleted,
+    onError,
+  });
   const [
     fetchProfile,
     {
@@ -109,7 +109,7 @@ export const UserProvider = (props) => {
 
   function onCompleted({ profile, orders, saveNotificationTokenWeb }) {
     if (profile) {
-      // updateNotificationToken();
+      updateNotificationToken();
     }
   }
 
@@ -279,12 +279,12 @@ export const UserProvider = (props) => {
     localStorage.setItem("restaurant", id);
   };
 
-  // const updateNotificationToken = () => {
-  //   const token = localStorage.getItem("messaging-token");
-  //   if (token) {
-  //     saveNotificationToken({ variables: { token } });
-  //   }
-  // };
+  const updateNotificationToken = () => {
+    const token = localStorage.getItem("messaging-token");
+    if (token) {
+      saveNotificationToken({ variables: { token } });
+    }
+  };
 
   return (
     <UserContext.Provider

@@ -11,9 +11,9 @@ import React, { useContext } from "react";
 import UserContext from "../../context/User";
 import useStyle from "./styles";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-function PersonalCard({ toggleModal, location }) {
+function PersonalCard({ toggleModal, location, instructions }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const classes = useStyle();
@@ -42,7 +42,7 @@ function PersonalCard({ toggleModal, location }) {
                 color="textSecondary"
                 fontWeight={800}
               >
-                {t('contactInfo')}
+                {t("contactInfo")}
               </Typography>
             </Box>
             <Divider
@@ -63,7 +63,7 @@ function PersonalCard({ toggleModal, location }) {
                   fontSize: "0.875rem",
                 }}
               >
-                {t('name')} :
+                {t("name")} :
               </Typography>
               <Typography
                 style={{
@@ -88,7 +88,7 @@ function PersonalCard({ toggleModal, location }) {
                   fontSize: "0.875rem",
                 }}
               >
-                {t('email')} :
+                {t("email")} :
               </Typography>
               <Typography
                 style={{
@@ -109,7 +109,7 @@ function PersonalCard({ toggleModal, location }) {
                   fontSize: "0.875rem",
                 }}
               >
-                {t('phone')} :
+                {t("phone")} :
               </Typography>
               <Typography
                 style={{
@@ -137,7 +137,7 @@ function PersonalCard({ toggleModal, location }) {
                   fontSize: "0.875rem",
                 }}
               >
-                {t('address')}: 
+                {t("address")}:
               </Typography>
               <Typography
                 style={{
@@ -145,10 +145,36 @@ function PersonalCard({ toggleModal, location }) {
                   color: theme.palette.common.black,
                   fontWeight: 600,
                   fontSize: "0.875rem",
-                  paddingLeft: 10
+                  paddingLeft: 10,
                 }}
               >
                 {location?.deliveryAddress?.split(",")[0] ?? ""}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              flexDirection={"column"}
+            >
+              <Typography
+                style={{
+                  ...theme.typography.body1,
+                  color: theme.palette.text.secondary,
+                  fontSize: "0.875rem",
+                }}
+              >
+                Instructions:
+              </Typography>
+              <Typography
+                style={{
+                  ...theme.typography.caption,
+                  color: theme.palette.common.black,
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                  // paddingLeft: 10,
+                }}
+              >
+                {instructions}
               </Typography>
             </Box>
             <Box display="flex" justifyContent="center">
@@ -165,7 +191,7 @@ function PersonalCard({ toggleModal, location }) {
                   fontWeight={800}
                   style={{ textTransform: "capitalize" }}
                 >
-                  {t('changeAddress')}
+                  {t("changeAddress")}
                 </Typography>
               </Button>
             </Box>

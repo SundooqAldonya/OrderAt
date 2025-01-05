@@ -130,6 +130,7 @@ function CartItemsCard({
             borderTopLeftRadius: 20,
           }}
         >
+          {console.log({ cartView: cart })}
           {cart?.map((foodItem, index) => (
             <>
               <CartItem

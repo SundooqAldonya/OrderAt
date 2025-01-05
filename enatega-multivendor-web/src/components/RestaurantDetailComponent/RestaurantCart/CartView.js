@@ -30,7 +30,8 @@ function CartView(props) {
     updateCart,
   } = useContext(UserContext);
   const { data } = useRestaurant(cartRestaurant);
-  const restaurantData = data?.restaurant ?? null;
+  console.log({ restaurantData: data });
+  const restaurantData = data?.restaurantCustomer ?? null;
 
   useEffect(() => {
     if (restaurantData) didFocus();
@@ -97,10 +98,7 @@ function CartView(props) {
         message: e.message,
       });
     } finally {
-      setLoadingData((prev) => {
-        if (prev) return false;
-        else return prev;
-      });
+      setLoadingData(!loadingData);
     }
   };
 

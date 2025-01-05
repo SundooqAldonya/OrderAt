@@ -743,6 +743,10 @@ function Checkout() {
                       >
                         {location?.deliveryAddress}
                       </Typography>
+                      <Divider />
+                      {/* <Box>
+                        <Typography>{cart[0].specialInstructions}</Typography>
+                      </Box> */}
                     </Box>
 
                     <Grid
@@ -815,6 +819,7 @@ function Checkout() {
               <PersonalCard
                 toggleModal={toggleAdressModal}
                 location={location}
+                instructions={cart.length ? cart[0].specialInstructions : null}
               />
               <PaymentCard
                 paymentMethod={paymentMethod}

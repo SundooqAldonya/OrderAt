@@ -1,5 +1,5 @@
 import { Box, Grid, Hidden } from "@mui/material";
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import UserContext from "../../../context/User";
 import CartView from "./CartView";
 import EmptyView from "./EmptyView";
@@ -21,7 +21,9 @@ function RestaurantCart(props) {
           {!cart.length ? (
             <EmptyView showMessage={props.showMessage} />
           ) : (
-            <CartView showMessage={props.showMessage} />
+            <Fragment>
+              <CartView showMessage={props.showMessage} />
+            </Fragment>
           )}
         </Box>
       </Grid>

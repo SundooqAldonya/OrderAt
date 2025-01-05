@@ -17,9 +17,7 @@ module.exports = {
         const foodList = await Food.find({ restaurant: args.id })
           .populate('category')
           .populate({ path: 'variations' })
-        console.log({
-          foodListVariationsAddons: foodList[0].variations[0].addons
-        })
+
         return foodList
       } catch (err) {
         console.log(err)
