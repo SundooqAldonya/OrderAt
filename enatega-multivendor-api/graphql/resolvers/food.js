@@ -119,7 +119,16 @@ module.exports = {
     },
     async deleteFood(_, args) {
       try {
-        await Food.findByIdAndDelete(args.id)
+        // const food = await Food.findByIdAndDelete(args.id)
+        const food = await Food.findById(args.id)
+        if (food?.variations.length) {
+          food.variations.forEach(async item => {
+            console.log({ item })
+            const variation = await Variation.findByIdAndDelete(item)
+            console.log({ variation })
+          })
+        }
+        await food.deleteOne()
         return { message: 'Food removed successfully!' }
       } catch (err) {
         console.log(err)

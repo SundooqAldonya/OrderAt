@@ -116,17 +116,17 @@ function VariationModal({ isVisible, toggleModal, data }) {
       if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
         selectedAddons[index].options = [option];
       } else {
-        const optionIndex = selectedAddons[index].options.findIndex(
+        const optionIndex = selectedAddons[index].options?.findIndex(
           (opt) => opt._id === option._id
         );
         if (optionIndex > -1) {
-          selectedAddons[index].options = selectedAddons[index].options.filter(
+          selectedAddons[index].options = selectedAddons[index].options?.filter(
             (opt) => opt._id !== option._id
           );
         } else {
           selectedAddons[index].options.push(option);
         }
-        if (!selectedAddons[index].options.length) {
+        if (!selectedAddons[index].options?.length) {
           selectedAddons.splice(index, 1);
         }
       }
@@ -244,6 +244,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
 
   const radioORcheckboxes = useCallback(
     (addon) => {
+      console.log({ addonOptions: addon.options });
       if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
         return (
           <RadioGroup>
@@ -274,30 +275,39 @@ function VariationModal({ isVisible, toggleModal, data }) {
           </RadioGroup>
         );
       } else {
-        return addon?.options?.map((option, index) => (
-          <Box
-            key={`OPTIONS_${option._id}_${index}`}
-            display="flex"
-            justifyContent="space-between"
-          >
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
-              onChange={() => onSelectOption(addon, option)}
-              name={option._id}
-              label={
-                <Typography
-                  style={{ color: theme.palette.text.secondary }}
-                  className={classes.priceTitle}
-                >
-                  {option.title}
+        return (
+          addon &&
+          addon.options.length &&
+          addon?.options?.map((option, index) => {
+            console.log({ option });
+            return (
+              <Box
+                key={`OPTIONS_${option?._id}_${index}`}
+                display="flex"
+                justifyContent="space-between"
+              >
+                <FormControlLabel
+                  control={<Checkbox color="primary" />}
+                  onChange={() => onSelectOption(addon, option)}
+                  name={option?._id}
+                  label={
+                    <Typography
+                      style={{ color: theme.palette.text.secondary }}
+                      className={classes.priceTitle}
+                    >
+                      {option?.title}
+                    </Typography>
+                  }
+                />
+                <Typography className={classes.priceTitle}>
+                  {`${configuration.currencySymbol} ${option?.price.toFixed(
+                    2
+                  )}`}
                 </Typography>
-              }
-            />
-            <Typography className={classes.priceTitle}>
-              {`${configuration.currencySymbol} ${option.price.toFixed(2)}`}
-            </Typography>
-          </Box>
-        ));
+              </Box>
+            );
+          })
+        );
       }
     },
     [selectedVariation]

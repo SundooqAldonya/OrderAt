@@ -192,7 +192,7 @@ async function startApolloServer() {
 
   passport.use(
     new JwtStrategy(opts, async (jwtPayload, done) => {
-      console.log({ jwtPayload })
+      // console.log({ jwtPayload })
       try {
         if (jwtPayload.restaurantId) {
           const restaurant = await Restaurant.findById(jwtPayload.restaurantId)

@@ -51,24 +51,12 @@ module.exports = {
         throw err
       }
     },
-    deleteAddon: async (_, { id, restaurant }, context) => {
+    deleteAddon: async (_, { id }, context) => {
       console.log('deleteAddon')
       try {
-        const restaurants = await Restaurant.findById(restaurant)
-        await restaurants.addons.id(id).remove()
-        restaurants.categories = restaurants.categories.map(category => {
-          category.foods = category.foods.map(food => {
-            food.variations = food.variations.map(variation => {
-              variation.addons = variation.addons.filter(e => e !== id)
-              return variation
-            })
-            return food
-          })
-          return category
-        })
-
-        await restaurants.save()
-        return transformRestaurant(restaurants)
+        const addon = await Addon.findByIdAndDelete(id)
+        console.log({ addon })
+        return { message: 'Addon deleted successfully!' }
       } catch (err) {
         console.log(err)
         throw err

@@ -1506,7 +1506,7 @@ const typeDefs = gql`
     deleteOption(id: String!): Message!
     createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
     editAddon(id: String!, addonInput: AddonInput!): AddonResponse!
-    deleteAddon(id: String!, restaurant: String!): Restaurant!
+    deleteAddon(id: String!): Message!
     createCoupon(couponInput: CouponInput!): Coupon!
     editCoupon(couponInput: CouponInput!): Coupon!
     deleteCoupon(id: String!): String!
