@@ -105,9 +105,9 @@ function ImageTextCenterHeader(props, ref) {
     restaurantTax: props.tax,
     restaurantMinOrder: props.minimumOrder,
     deliveryTime: props.restaurant ? props.restaurant.deliveryTime : '...',
-    average: props.restaurant ? props.restaurant.reviewData.ratings : '...',
-    total: props.restaurant ? props.restaurant.reviewData.total : '...',
-    reviews: props.restaurant ? props.restaurant.reviewData.reviews : '...',
+    average: props.restaurant ? props.restaurant.reviewData?.ratings : '...',
+    total: props.restaurant ? props.restaurant.reviewData?.total : '...',
+    reviews: props.restaurant ? props.restaurant.reviewData?.reviews : '...',
     isAvailable: props.restaurant ? props.restaurant.isAvailable : true,
     openingTimes: props.restaurant ? props.restaurant.openingTimes : [],
     isOpen: () => {
@@ -142,8 +142,6 @@ function ImageTextCenterHeader(props, ref) {
     }
   })
 
-
-
   const headerHeight = useAnimatedStyle(() => {
     return {
       height: interpolate(
@@ -168,7 +166,6 @@ function ImageTextCenterHeader(props, ref) {
       )
     }
   })
-
 
   const opacity = useAnimatedStyle(() => {
     return {
@@ -404,7 +401,8 @@ function ImageTextCenterHeader(props, ref) {
                   style={styles().restaurantAbout}
                   textColor={currentTheme.fontMainColor}
                 >
-                  {configuration.currencySymbol}{' '}{aboutObject.restaurantTax} {t('deliveryCharges')}
+                  {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
+                  {t('deliveryCharges')}
                 </TextDefault>
               </View>
               <View
@@ -419,7 +417,8 @@ function ImageTextCenterHeader(props, ref) {
                   style={styles().restaurantAbout}
                   textColor={currentTheme.fontMainColor}
                 >
-                  {configuration.currencySymbol}{' '}{aboutObject.restaurantMinOrder} {t('minimum')}
+                  {configuration.currencySymbol}{' '}
+                  {aboutObject.restaurantMinOrder} {t('minimum')}
                 </TextDefault>
                 <TextDefault
                   style={styles().restaurantAbout}
@@ -500,8 +499,11 @@ function ImageTextCenterHeader(props, ref) {
                 </AnimatedTouchable>
               </View>
               <View style={[styles().ratingBox, { marginTop: scale(9) }]}>
-                <MaterialCommunityIcons name="timer-outline" size={scale(20)}
-                  color={currentTheme.newIconColor} />
+                <MaterialCommunityIcons
+                  name='timer-outline'
+                  size={scale(20)}
+                  color={currentTheme.newIconColor}
+                />
                 <TextDefault
                   textColor={currentTheme.fontNewColor}
                   style={{

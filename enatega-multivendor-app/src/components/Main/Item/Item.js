@@ -10,11 +10,15 @@ import { alignment } from '../../../utils/alignment'
 import { AntDesign, Ionicons, MaterialIcons, Feather } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { DAYS } from '../../../utils/enums'
-import { profile, FavouriteRestaurant } from '../../../apollo/queries'
+import {
+  profile,
+  FavouriteRestaurant,
+  restaurantCustomerAppDetail
+} from '../../../apollo/queries'
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import Spinner from '../../Spinner/Spinner'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import { useTranslation } from 'react-i18next'
@@ -29,18 +33,37 @@ const FAVOURITERESTAURANTS = gql`
   ${FavouriteRestaurant}
 `
 
+const RESTAURANT_DETAILS = gql`
+  ${restaurantCustomerAppDetail}
+`
+
 function Item(props) {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props.item._id) : false
   const item = props.item
+
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+  // const {
+  //   loading,
+  //   error,
+  //   data: item,
+  //   subscribeToMore,
+  //   refetch,
+  //   networkStatus
+  // } = useQuery(RESTAURANT_DETAILS, {
+  //   fetchPolicy: 'network-only',
+  //   pollInterval: 15000
+  // })
+
+  console.log({ item })
+
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
-    refetchQueries: [PROFILE,FAVOURITERESTAURANTS ]
+    refetchQueries: [PROFILE, FAVOURITERESTAURANTS]
   })
   const { isAvailable, openingTimes } = item
   const isOpen = () => {
@@ -48,10 +71,10 @@ function Item(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = openingTimes.find(o => o.day === DAYS[day])
+    const todaysTimings = openingTimes.find((o) => o.day === DAYS[day])
     if (todaysTimings === undefined) return false
     const times = todaysTimings.times.filter(
-      t =>
+      (t) =>
         hours >= Number(t.startTime[0]) &&
         minutes >= Number(t.startTime[1]) &&
         hours <= Number(t.endTime[0]) &&
@@ -67,12 +90,13 @@ function Item(props) {
     <TouchableOpacity
       style={{ padding: scale(10) }}
       activeOpacity={1}
-      onPress={() => navigation.navigate('Restaurant', { ...item })}>
+      onPress={() => navigation.navigate('Restaurant', { ...item })}
+    >
       <View key={item._id} style={styles().mainContainer}>
         <View style={[styles(currentTheme).restaurantContainer]}>
           <View style={styles().imageContainer}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               source={{ uri: item.image }}
               style={styles().img}
             />
@@ -83,14 +107,19 @@ function Item(props) {
                 style={styles(currentTheme).favOverlay}
                 onPress={() =>
                   profile ? mutate({ variables: { id: item._id } }) : null
-                }>
+                }
+              >
                 {loadingMutation ? (
-                  <Spinner size={'small'} backColor={'transparent'} spinnerColor={currentTheme.iconColorDark} />
+                  <Spinner
+                    size={'small'}
+                    backColor={'transparent'}
+                    spinnerColor={currentTheme.iconColorDark}
+                  />
                 ) : (
                   <AntDesign
                     name={heart ? 'heart' : 'hearto'}
                     size={scale(15)}
-                    color="black"
+                    color='black'
                   />
                 )}
               </TouchableOpacity>
@@ -111,7 +140,8 @@ function Item(props) {
                     numberOfLines={1}
                     small
                     bold
-                    uppercase>
+                    uppercase
+                  >
                     {t('Closed')}
                   </TextDefault>
                 </View>
@@ -136,25 +166,29 @@ function Item(props) {
                 H4
                 numberOfLines={1}
                 textColor={currentTheme.fontThirdColor}
-                bolder>
+                bolder
+              >
                 {item.name}
               </TextDefault>
               <View style={[styles().aboutRestaurant, { width: '23%' }]}>
-                <Feather name="star" size={18} color={currentTheme.newIconColor} />
+                <Feather
+                  name='star'
+                  size={18}
+                  color={currentTheme.newIconColor}
+                />
                 <TextDefault
-                textColor={currentTheme.fontThirdColor}
-       
-                H4
-                 bolder
-                  style={{ marginLeft: scale(2), marginRight: scale(5)}}
-                 >
+                  textColor={currentTheme.fontThirdColor}
+                  H4
+                  bolder
+                  style={{ marginLeft: scale(2), marginRight: scale(5) }}
+                >
                   {item.reviewAverage}
                 </TextDefault>
                 <TextDefault
-                   textColor={currentTheme.fontNewColor}
-                  style={{ marginLeft: scale(2)}}
-                 
-                  H5>
+                  textColor={currentTheme.fontNewColor}
+                  style={{ marginLeft: scale(2) }}
+                  H5
+                >
                   ({item.reviewCount})
                 </TextDefault>
               </View>
@@ -162,9 +196,9 @@ function Item(props) {
             <TextDefault
               style={styles().offerCategoty}
               numberOfLines={1}
-            bold
-            Normal
-            textColor={currentTheme.fontNewColor}
+              bold
+              Normal
+              textColor={currentTheme.fontNewColor}
             >
               {item?.tags?.join(',')}
             </TextDefault>
@@ -176,14 +210,19 @@ function Item(props) {
                   gap: 5,
                   justifyContent: 'center',
                   marginRight: 18
-                }}>
-                <AntDesign name="clockcircleo" size={16}
-                color={currentTheme.fontNewColor} />
+                }}
+              >
+                <AntDesign
+                  name='clockcircleo'
+                  size={16}
+                  color={currentTheme.fontNewColor}
+                />
                 <TextDefault
                   textColor={currentTheme.fontNewColor}
                   numberOfLines={1}
                   bold
-                  Normal>
+                  Normal
+                >
                   {item.deliveryTime + ' '}
                   {t('min')}
                 </TextDefault>
@@ -195,15 +234,20 @@ function Item(props) {
                   gap: 4,
                   justifyContent: 'center',
                   marginRight: 10
-                }}>
-                <MaterialIcons name="directions-bike" size={16}
-                color={currentTheme.fontNewColor}/>
+                }}
+              >
+                <MaterialIcons
+                  name='directions-bike'
+                  size={16}
+                  color={currentTheme.fontNewColor}
+                />
                 <TextDefault
                   style={styles().offerCategoty}
                   textColor={currentTheme.fontNewColor}
-                numberOfLines={1}
-                bold
-                Normal>
+                  numberOfLines={1}
+                  bold
+                  Normal
+                >
                   {configuration.currencySymbol + '' + item.minimumOrder}{' '}
                 </TextDefault>
               </View>

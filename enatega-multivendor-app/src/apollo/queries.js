@@ -253,34 +253,35 @@ export const restaurantFragment = gql`
   }
 `
 export const restaurantPreviewFragment = gql`
-fragment RestaurantPreviewFields on RestaurantPreview{
-  _id
-  orderId
-  orderPrefix
-  name
-  image
-  address
-  username
-  password
-  deliveryTime
-  minimumOrder
-  sections
-  rating
-  isActive
-  isAvailable
-  slug
-  stripeDetailsSubmitted
-  commissionRate
-  tax
-  notificationToken
-  enableNotification
-  shopType
-  cuisines
-  keywords
-  tags
-  reviewCount
-  reviewAverage
-  }`
+  fragment RestaurantPreviewFields on RestaurantPreview {
+    _id
+    orderId
+    orderPrefix
+    name
+    image
+    address
+    username
+    password
+    deliveryTime
+    minimumOrder
+    sections
+    rating
+    isActive
+    isAvailable
+    slug
+    stripeDetailsSubmitted
+    commissionRate
+    tax
+    notificationToken
+    enableNotification
+    shopType
+    cuisines
+    keywords
+    tags
+    reviewCount
+    reviewAverage
+  }
+`
 export const profile = `
         query{
           profile{
@@ -615,12 +616,13 @@ export const restaurantListPreview = `query Restaurants($latitude:Float,$longitu
 }
 }`
 export const topRatedVendorsInfo = gql`
-${restaurantPreviewFragment}
-query TopRatedVendors($latitude: Float!, $longitude: Float!) {
-  topRatedVendorsPreview(latitude: $latitude, longitude: $longitude) {
-    ...RestaurantPreviewFields
+  ${restaurantPreviewFragment}
+  query TopRatedVendors($latitude: Float!, $longitude: Float!) {
+    topRatedVendorsPreview(latitude: $latitude, longitude: $longitude) {
+      ...RestaurantPreviewFields
+    }
   }
-}`
+`
 
 export const restaurant = `query Restaurant($id:String){
   restaurant(id:$id){
@@ -802,6 +804,161 @@ export const FavouriteRestaurant = `query UserFavourite ($latitude:Float,$longit
      }
   }`
 
+export const restaurantCustomer = `query RestaurantCustomer($id:String,$slug:String){
+    restaurantCustomer(id:$id,slug:$slug){
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location{coordinates}
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData{
+        total
+        ratings
+        reviews{
+          _id
+          order{
+            user{
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+      categories{
+        _id
+        title
+        foods{
+          _id
+          title
+          image
+          description
+          variations{
+            _id
+            title
+            price
+            discounted
+            addons
+          }
+        }
+      }
+      options{
+        _id
+        title
+        description
+        price
+      }
+      addons{
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone{
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes{
+        day
+        times{
+          startTime
+          endTime
+        }
+      }
+    }
+  }`
+
+export const restaurantCustomerAppDetail = `query RestaurantCustomerAppDetail($id:String!){
+  restaurantCustomerAppDetail(id:$id){
+    _id
+    orderId
+    orderPrefix
+    name
+    image
+    address
+    location{coordinates}
+    deliveryTime
+    minimumOrder
+    tax
+    reviewData{
+      total
+      ratings
+      reviews{
+        _id
+        order{
+          user{
+            _id
+            name
+            email
+          }
+        }
+        rating
+        description
+        createdAt
+      }
+    }
+    categories{
+      _id
+      title
+      foods{
+        _id
+        title
+        image
+        description
+        variations{
+          _id
+          title
+          price
+          discounted
+          addons
+        }
+      }
+    }
+    options{
+      _id
+      title
+      description
+      price
+    }
+    addons{
+      _id
+      options
+      title
+      description
+      quantityMinimum
+      quantityMaximum
+    }
+    zone{
+      _id
+      title
+      tax
+    }
+    rating
+    isAvailable
+    openingTimes{
+      day
+      times{
+        startTime
+        endTime
+      }
+    }
+  }
+}`
+
 export const orderFragment = `fragment NewOrder on Order {
   _id
   orderId
@@ -894,7 +1051,7 @@ export const recentOrderRestaurantsQuery = gql`
       ...RestaurantPreviewFields
     }
   }
-`;
+`
 
 export const mostOrderedRestaurantsQuery = gql`
   ${restaurantPreviewFragment}
@@ -903,13 +1060,13 @@ export const mostOrderedRestaurantsQuery = gql`
       ...RestaurantPreviewFields
     }
   }
-`;
+`
 
 export const relatedItems = `query RelatedItems($itemId: String!, $restaurantId: String!) {
   relatedItems(itemId: $itemId, restaurantId: $restaurantId)
 }`
 
-export const food = `fragment FoodItem on Food{
+export const food = `fragment FoodItem on FoodCustomer{
   _id
   title
   image
@@ -924,6 +1081,22 @@ export const food = `fragment FoodItem on Food{
 }
 `
 
+export const getSingleFood = `query GetSingleFood($id: String!) {
+  getSingleFood(id: $id) {
+    _id
+    title
+    image
+    description
+    variations{
+      _id
+      title
+      price
+      discounted
+      addons
+    }
+  }
+}`
+
 export const popularItems = `query PopularItems($restaurantId: String!) {
   popularItems(restaurantId: $restaurantId) {
     id
@@ -931,4 +1104,3 @@ export const popularItems = `query PopularItems($restaurantId: String!) {
   }
 }
 `
-

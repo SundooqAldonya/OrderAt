@@ -82,12 +82,13 @@ function OrderDetail(props) {
     })
   }
 
-  const order = orders?.find(o => o?._id === id)
+  const order = orders?.find((o) => o?._id === id)
 
   useEffect(() => {
     props.navigation.setOptions({
-      headerRight: () => HelpButton({ iconBackground: currentTheme.main, navigation, t }),
-      headerTitle: `${order ? order?.deliveryAddress?.deliveryAddress?.substr(0, 15) : ""}...`,
+      headerRight: () =>
+        HelpButton({ iconBackground: currentTheme.main, navigation, t }),
+      headerTitle: `${order ? order?.deliveryAddress?.deliveryAddress?.substr(0, 15) : ''}...`,
       headerTitleStyle: { color: currentTheme.newFontcolor },
       headerStyle: { backgroundColor: currentTheme.newheaderBG }
     })
@@ -212,31 +213,31 @@ function OrderDetail(props) {
                 ORDER_STATUS_ENUM.PENDING,
                 ORDER_STATUS_ENUM.CANCELLED
               ].includes(order.orderStatus) && (
-                  <>
-                    <TextDefault
-                      style={{ ...alignment.MTxSmall }}
-                      textColor={currentTheme.gray500}
-                      H5
-                    >
-                      {t('estimatedDeliveryTime')}
-                    </TextDefault>
-                    <TextDefault
-                      style={{ ...alignment.MTxSmall }}
-                      Regular
-                      textColor={currentTheme.gray900}
-                      H1
-                      bolder
-                    >
-                      {remainingTime}-{remainingTime + 5} {t('mins')}
-                    </TextDefault>
-                    <ProgressBar
-                      configuration={configuration}
-                      currentTheme={currentTheme}
-                      item={order}
-                      navigation={navigation}
-                    />
-                  </>
-                )}
+                <>
+                  <TextDefault
+                    style={{ ...alignment.MTxSmall }}
+                    textColor={currentTheme.gray500}
+                    H5
+                  >
+                    {t('estimatedDeliveryTime')}
+                  </TextDefault>
+                  <TextDefault
+                    style={{ ...alignment.MTxSmall }}
+                    Regular
+                    textColor={currentTheme.gray900}
+                    H1
+                    bolder
+                  >
+                    {remainingTime}-{remainingTime + 5} {t('mins')}
+                  </TextDefault>
+                  <ProgressBar
+                    configuration={configuration}
+                    currentTheme={currentTheme}
+                    item={order}
+                    navigation={navigation}
+                  />
+                </>
+              )}
               <TextDefault
                 H5
                 style={{ ...alignment.Mmedium, textAlign: 'center' }}
@@ -249,7 +250,11 @@ function OrderDetail(props) {
             </View>
           )}
         </View>
-        <Instructions title={'Instructions'} theme={currentTheme} message={order.instructions} />
+        <Instructions
+          title={'Instructions'}
+          theme={currentTheme}
+          message={order.instructions}
+        />
         <Detail
           navigation={props.navigation}
           currencySymbol={configuration.currencySymbol}
@@ -300,7 +305,7 @@ function OrderDetail(props) {
 }
 
 export const OrderStatusImage = ({ status }) => {
-  let imagePath = null;
+  let imagePath = null
   switch (status) {
     case ORDER_STATUS_ENUM.PENDING:
       imagePath = require('../../assets/SVG/order-placed.json')
@@ -321,17 +326,17 @@ export const OrderStatusImage = ({ status }) => {
 
   if (!imagePath) return null
 
-  return <LottieView
-    style={{
-      width: 250,
-      height: 250
-    }}
-    source={imagePath}
-    autoPlay
-    loop
-  />
-
-
+  return (
+    <LottieView
+      style={{
+        width: 250,
+        height: 250
+      }}
+      source={imagePath}
+      autoPlay
+      loop
+    />
+  )
 }
 
 export default OrderDetail

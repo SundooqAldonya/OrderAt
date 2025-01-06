@@ -57,8 +57,8 @@ import {
   Montserrat_600SemiBold_Italic,
   Montserrat_700Bold_Italic,
   Montserrat_800ExtraBold_Italic,
-  Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
+  Montserrat_900Black_Italic
+} from '@expo-google-fonts/montserrat'
 import { colors } from './src/utils/colors'
 
 LogBox.ignoreLogs([
@@ -68,12 +68,13 @@ LogBox.ignoreLogs([
 ]) // Ignore log notification by message
 LogBox.ignoreAllLogs() // Ignore all log notifications
 
-
 Notifications.setNotificationHandler({
-  handleNotification: async notification => {
+  handleNotification: async (notification) => {
     return {
-      shouldShowAlert: notification?.request?.content?.data?.type !== NOTIFICATION_TYPES.REVIEW_ORDER,
-      shouldPlaySound: false,
+      shouldShowAlert:
+        notification?.request?.content?.data?.type !==
+        NOTIFICATION_TYPES.REVIEW_ORDER,
+      shouldPlaySound: true,
       shouldSetBadge: false
     }
   }
@@ -88,7 +89,10 @@ export default function App() {
   const [orderId, setOrderId] = useState()
   const systemTheme = useColorScheme()
   // Theme Reducer
-  const [theme, themeSetter] = useReducer(ThemeReducer, systemTheme === 'dark' ? 'Dark' : 'Pink')
+  const [theme, themeSetter] = useReducer(
+    ThemeReducer,
+    systemTheme === 'dark' ? 'Dark' : 'Pink'
+  )
   const [isUpdating, setIsUpdating] = useState(false)
 
   let [fontsLoaded] = useFonts({
@@ -109,10 +113,9 @@ export default function App() {
     Montserrat_600SemiBold_Italic,
     Montserrat_700Bold_Italic,
     Montserrat_800ExtraBold_Italic,
-    Montserrat_900Black_Italic,
-  });
+    Montserrat_900Black_Italic
+  })
 
-  
   useWatchLocation()
   useEffect(() => {
     const loadAppData = async () => {
@@ -126,18 +129,18 @@ export default function App() {
         MuseoSans300: require('./src/assets/font/MuseoSans/MuseoSans300.ttf'),
         MuseoSans500: require('./src/assets/font/MuseoSans/MuseoSans500.ttf'),
         MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf'),
-        'Roboto-Black': require("./src/assets/font/roboto/Roboto-Black.ttf",),
-        'Roboto-BlackItalic': require("./src/assets/font/roboto/Roboto-BlackItalic.ttf",),
-        'Roboto-Bold': require("./src/assets/font/roboto/Roboto-Bold.ttf",),
-        'Roboto-BoldItalic': require("./src/assets/font/roboto/Roboto-BoldItalic.ttf",),
-        'Roboto-Italic': require("./src/assets/font/roboto/Roboto-Italic.ttf",),
-        'Roboto-Light': require("./src/assets/font/roboto/Roboto-Light.ttf",),
-        'Roboto-LightItalic': require("./src/assets/font/roboto/Roboto-LightItalic.ttf",),
-        'Roboto-Medium': require("./src/assets/font/roboto/Roboto-Medium.ttf",),
-        'Roboto-MediumItalic': require("./src/assets/font/roboto/Roboto-MediumItalic.ttf",),
-        'Roboto-Regular': require("./src/assets/font/roboto/Roboto-Regular.ttf",),
-        'Roboto-Thin': require("./src/assets/font/roboto/Roboto-Thin.ttf",),
-        'Roboto-ThinItalic': require("./src/assets/font/roboto/Roboto-ThinItalic.ttf"),
+        'Roboto-Black': require('./src/assets/font/roboto/Roboto-Black.ttf'),
+        'Roboto-BlackItalic': require('./src/assets/font/roboto/Roboto-BlackItalic.ttf'),
+        'Roboto-Bold': require('./src/assets/font/roboto/Roboto-Bold.ttf'),
+        'Roboto-BoldItalic': require('./src/assets/font/roboto/Roboto-BoldItalic.ttf'),
+        'Roboto-Italic': require('./src/assets/font/roboto/Roboto-Italic.ttf'),
+        'Roboto-Light': require('./src/assets/font/roboto/Roboto-Light.ttf'),
+        'Roboto-LightItalic': require('./src/assets/font/roboto/Roboto-LightItalic.ttf'),
+        'Roboto-Medium': require('./src/assets/font/roboto/Roboto-Medium.ttf'),
+        'Roboto-MediumItalic': require('./src/assets/font/roboto/Roboto-MediumItalic.ttf'),
+        'Roboto-Regular': require('./src/assets/font/roboto/Roboto-Regular.ttf'),
+        'Roboto-Thin': require('./src/assets/font/roboto/Roboto-Thin.ttf'),
+        'Roboto-ThinItalic': require('./src/assets/font/roboto/Roboto-ThinItalic.ttf')
       })
       // await permissionForPushNotificationsAsync()
       await getActiveLocation()
@@ -186,34 +189,33 @@ export default function App() {
     requestTrackingPermissions()
   }, [])
 
-
   const client = setupApolloClient()
-  const shouldBeRTL = false;
+  const shouldBeRTL = false
   if (shouldBeRTL !== I18nManager.isRTL && Platform.OS !== 'web') {
-    I18nManager.allowRTL(shouldBeRTL);
-    I18nManager.forceRTL(shouldBeRTL);
-    Updates.reloadAsync();
+    I18nManager.allowRTL(shouldBeRTL)
+    I18nManager.forceRTL(shouldBeRTL)
+    Updates.reloadAsync()
   }
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
-      ; (async () => {
-        const { isAvailable } = await Updates.checkForUpdateAsync()
-        if (isAvailable) {
-          try {
-            setIsUpdating(true)
-            const { isNew } = await Updates.fetchUpdateAsync()
-            if (isNew) {
-              await Updates.reloadAsync()
-            }
-          } catch (error) {
-            console.log('error while updating app', JSON.stringify(error))
-          } finally {
-            setIsUpdating(false)
+    ;(async () => {
+      const { isAvailable } = await Updates.checkForUpdateAsync()
+      if (isAvailable) {
+        try {
+          setIsUpdating(true)
+          const { isNew } = await Updates.fetchUpdateAsync()
+          if (isNew) {
+            await Updates.reloadAsync()
           }
+        } catch (error) {
+          console.log('error while updating app', JSON.stringify(error))
+        } finally {
+          setIsUpdating(false)
         }
-      })()
+      }
+    })()
   }, [])
 
   if (isUpdating) {
@@ -247,25 +249,33 @@ export default function App() {
   useEffect(() => {
     registerForPushNotificationsAsync()
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      if (notification?.request?.content?.data?.type === NOTIFICATION_TYPES.REVIEW_ORDER) {
-        const id = notification?.request?.content?.data?._id
-        if (id) {
-          setOrderId(id)
-          reviewModalRef?.current?.open()
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        if (
+          notification?.request?.content?.data?.type ===
+          NOTIFICATION_TYPES.REVIEW_ORDER
+        ) {
+          const id = notification?.request?.content?.data?._id
+          if (id) {
+            setOrderId(id)
+            reviewModalRef?.current?.open()
+          }
         }
-      }
-    })
+      })
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      if (response?.notification?.request?.content?.data?.type === NOTIFICATION_TYPES.REVIEW_ORDER) {
-        const id = response?.notification?.request?.content?.data?._id
-        if (id) {
-          setOrderId(id)
-          reviewModalRef?.current?.open()
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        if (
+          response?.notification?.request?.content?.data?.type ===
+          NOTIFICATION_TYPES.REVIEW_ORDER
+        ) {
+          const id = response?.notification?.request?.content?.data?._id
+          if (id) {
+            setOrderId(id)
+            reviewModalRef?.current?.open()
+          }
         }
-      }
-    })
+      })
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current)
       Notifications.removeNotificationSubscription(responseListener.current)
@@ -279,29 +289,35 @@ export default function App() {
   if (appIsReady) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-      <ApolloProvider client={client}>
-        <ThemeContext.Provider
-          value={{ ThemeValue: theme, dispatch: themeSetter }}>
-          <StatusBar
-            backgroundColor={colors.primary}
-            barStyle={'light-content'}
-          />
-          <LocationProvider>
-            <ConfigurationProvider>
-              <AuthProvider>
-                <UserProvider>
-                  <OrdersProvider>
-                    <AppContainer />
-                    <ReviewModal ref={reviewModalRef} onOverlayPress={onOverlayPress} theme={Theme[theme]} orderId={orderId} />
-                  </OrdersProvider>
-                </UserProvider>
-              </AuthProvider>
-            </ConfigurationProvider>
-          </LocationProvider>
-          <FlashMessage MessageComponent={MessageComponent} />
-        </ThemeContext.Provider>
-      </ApolloProvider>
-    </GestureHandlerRootView>
+        <ApolloProvider client={client}>
+          <ThemeContext.Provider
+            value={{ ThemeValue: theme, dispatch: themeSetter }}
+          >
+            <StatusBar
+              backgroundColor={colors.primary}
+              barStyle={'light-content'}
+            />
+            <LocationProvider>
+              <ConfigurationProvider>
+                <AuthProvider>
+                  <UserProvider>
+                    <OrdersProvider>
+                      <AppContainer />
+                      <ReviewModal
+                        ref={reviewModalRef}
+                        onOverlayPress={onOverlayPress}
+                        theme={Theme[theme]}
+                        orderId={orderId}
+                      />
+                    </OrdersProvider>
+                  </UserProvider>
+                </AuthProvider>
+              </ConfigurationProvider>
+            </LocationProvider>
+            <FlashMessage MessageComponent={MessageComponent} />
+          </ThemeContext.Provider>
+        </ApolloProvider>
+      </GestureHandlerRootView>
     )
   } else {
     return null

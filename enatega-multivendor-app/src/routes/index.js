@@ -62,14 +62,15 @@ const SideDrawer = createDrawerNavigator()
 const Location = createStackNavigator()
 
 function Drawer() {
-
- 
   return (
-    <SideDrawer.Navigator  screenOptions={{
-      drawerStyle:{
-        width:"80%"
-      }
-    }} drawerContent={(props) => <SideBar {...props} />}>
+    <SideDrawer.Navigator
+      screenOptions={{
+        drawerStyle: {
+          width: '80%'
+        }
+      }}
+      drawerContent={(props) => <SideBar {...props} />}
+    >
       <SideDrawer.Screen
         options={{ headerShown: false }}
         name='NoDrawer'
@@ -224,17 +225,15 @@ function AppContainer() {
     ) {
       handleNotification(lastNotificationResponse)
     }
-
   }, [lastNotificationResponse])
 
   useEffect(() => {
-
     if (SENTRY_DSN) {
       Sentry.init({
         dsn: SENTRY_DSN,
-        environment:"development",
+        environment: 'development',
         enableInExpoDevelopment: true,
-        debug:  true,
+        debug: true,
         tracesSampleRate: 1.0 // to be changed to 0.2 in production
       })
     }
@@ -247,7 +246,7 @@ function AppContainer() {
           navigationService.setGlobalRef(ref)
         }}
       >
-       {!location ? (
+        {!location ? (
           <LocationStack />
         ) : (
           <MainStack.Navigator initialRouteName='Drawer'>

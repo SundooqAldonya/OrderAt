@@ -28,10 +28,10 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const activeOrders = orders.filter(o =>
+  const activeOrders = orders.filter((o) =>
     orderStatusActive.includes(o.orderStatus)
   )
-  const onPressDetails = order => {
+  const onPressDetails = (order) => {
     navigation.navigate('OrderDetail', {
       _id: order._id,
       currencySymbol: configuration.currencySymbol
@@ -53,18 +53,26 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
   const order = displayOrders[0]
   const remainingTime = calulateRemainingTime(order)
   const modalStyle = {
-    borderWidth: StyleSheet.hairlineWidth,  
-    backgroundColor: currentTheme.themeBackground,
-   
-  };
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: currentTheme.themeBackground
+  }
 
   return (
-    <Modalize alwaysOpen={MODAL_HEIGHT} withHandle={false} modalHeight={MODAL_HEIGHT} modalStyle={modalStyle}>
+    <Modalize
+      alwaysOpen={MODAL_HEIGHT}
+      withHandle={false}
+      modalHeight={MODAL_HEIGHT}
+      modalStyle={modalStyle}
+    >
       <View style={{ marginTop: scale(20), marginHorizontal: scale(10) }}>
         <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <TextDefault Regular textColor={currentTheme.fontGrayNew}>{t('estimatedDeliveryTime')}</TextDefault>
+          <TextDefault Regular textColor={currentTheme.fontGrayNew}>
+            {t('estimatedDeliveryTime')}
+          </TextDefault>
           <TouchableOpacity onPress={() => onPressDetails(order)}>
-            <TextDefault textColor={currentTheme.gray700} bolder>{t('details')}</TextDefault>
+            <TextDefault textColor={currentTheme.gray700} bolder>
+              {t('details')}
+            </TextDefault>
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: scale(10) }}>
@@ -82,14 +90,14 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
           <View style={{ marginTop: scale(10) }}>
             <TextDefault
               numberOfLines={2}
-              style={styles(currentTheme).statusText}>
+              style={styles(currentTheme).statusText}
+            >
               {t(checkStatus(order.orderStatus).statusText)}
             </TextDefault>
           </View>
         </View>
       </View>
     </Modalize>
-    
   )
 }
 

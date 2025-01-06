@@ -1,10 +1,17 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { restaurant } from '../../apollo/queries'
+import {
+  restaurant,
+  restaurantCustomer,
+  restaurantCustomerAppDetail
+} from '../../apollo/queries'
 
 const RESTAURANT = gql`
-  ${restaurant}
+  ${restaurantCustomer}
 `
+// const RESTAURANT = gql`
+//   ${restaurant}
+// `
 
 export default function useRestaurant(id) {
   const { data, refetch, networkStatus, loading, error } = useQuery(

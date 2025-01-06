@@ -46,7 +46,7 @@ import TextError from '../../components/Text/TextError/TextError'
 import { MaterialIcons } from '@expo/vector-icons'
 import analytics from '../../utils/analytics'
 import { gql, useApolloClient, useQuery } from '@apollo/client'
-import { popularItems, food } from '../../apollo/queries'
+import { popularItems, food, getSingleFood } from '../../apollo/queries'
 
 import { useTranslation } from 'react-i18next'
 import ItemCard from '../../components/ItemCards/ItemCards'
@@ -54,7 +54,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { IMAGE_LINK } from '../../utils/constants'
 import { LocationContext } from '../../context/Location'
 import PopularIcon from '../../assets/SVG/popular'
-import {escapeRegExp} from '../../utils/regex'
+import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
 
 const { height } = Dimensions.get('screen')
@@ -71,8 +71,11 @@ const POPULAR_ITEMS = gql`
   ${popularItems}
 `
 const FOOD = gql`
-  ${food}
+  ${getSingleFood}
 `
+// const FOOD = gql`
+//   ${food}
+// `
 
 // const concat = (...args) => args.join('')
 function Restaurant(props) {
@@ -115,7 +118,11 @@ function Restaurant(props) {
   })
 
   const fetchFoodDetails = (itemId) => {
-    return client.readFragment({ id: `Food:${itemId}`, fragment: FOOD })
+    const { data } = useQuery(FOOD, {
+      variables: { id: itemId }
+    })
+    return data
+    // return client.readFragment({ id: `Food:${itemId}`, fragment: FOOD })
   }
 
   const dataList =
@@ -148,7 +155,7 @@ function Restaurant(props) {
       setFilterData(filteredData)
       setShowSearchResults(false)
     } else if (deals) {
-      const escapedSearchText = escapeRegExp(search);
+      const escapedSearchText = escapeRegExp(search)
       const regex = new RegExp(escapedSearchText, 'i')
       const filteredData = []
       deals.forEach((category) => {
@@ -184,8 +191,8 @@ function Restaurant(props) {
   useEffect(() => {
     if (
       data &&
-      data?.restaurant &&
-      (!data?.restaurant.isAvailable || !isOpen())
+      data?.restaurantCustomer &&
+      (!data?.restaurantCustomer.isAvailable || !isOpen())
     ) {
       Alert.alert(
         '',
@@ -221,12 +228,12 @@ function Restaurant(props) {
 
   const isOpen = () => {
     if (data) {
-      if (data?.restaurant?.openingTimes?.length < 1) return false
+      if (data?.restaurantCustomer?.openingTimes?.length < 1) return false
       const date = new Date()
       const day = date.getDay()
       const hours = date.getHours()
       const minutes = date.getMinutes()
-      const todaysTimings = data?.restaurant?.openingTimes?.find(
+      const todaysTimings = data?.restaurantCustomer?.openingTimes?.find(
         (o) => o.day === DAYS[day]
       )
       if (todaysTimings === undefined) return false
@@ -244,7 +251,7 @@ function Restaurant(props) {
     }
   }
   const onPressItem = async (food) => {
-    if (!data?.restaurant.isAvailable || !isOpen()) {
+    if (!data?.restaurantCustomer.isAvailable || !isOpen()) {
       Alert.alert(
         '',
         t('restaurantClosed'),
@@ -488,14 +495,16 @@ function Restaurant(props) {
           iconRadius={iconRadius}
           iconTouchWidth={iconTouchWidth}
           iconTouchHeight={iconTouchHeight}
-          restaurantName={propsData?.name ?? data?.restaurant?.name}
-          restaurantId={propsData._id}
-          restaurantImage={propsData?.image ?? data?.restaurant?.image}
+          restaurantName={propsData?.name ?? data?.restaurantCustomer?.name}
+          restaurantId={propsData?._id}
+          restaurantImage={propsData?.image ?? data?.restaurantCustomer?.image}
           restaurant={null}
           topaBarData={[]}
           loading={loading}
-          minimumOrder={propsData?.minimumOrder ?? data?.restaurant?.minimumOrder}
-          tax={propsData?.tax ?? data?.restaurant?.tax}
+          minimumOrder={
+            propsData?.minimumOrder ?? data?.restaurantCustomer?.minimumOrder
+          }
+          tax={propsData?.tax ?? data?.restaurantCustomer?.tax}
           updatedDeals={[]}
           searchOpen={searchOpen}
           showSearchResults={showSearchResults}
@@ -505,7 +514,7 @@ function Restaurant(props) {
           searchPopupHandler={searchPopupHandler}
           translationY={translationY}
         />
-<View
+        <View
           style={[
             styles(currentTheme).navbarContainer,
             styles(currentTheme).flex,
@@ -534,13 +543,13 @@ function Restaurant(props) {
             </Placeholder>
           ))}
         </View>
-
       </View>
     )
   }
   if (error) return <TextError text={JSON.stringify(error)} />
-  const restaurant = data.restaurant
-  const allDeals = restaurant.categories.filter((cat) => cat?.foods?.length)
+  const restaurant = data?.restaurantCustomer
+  console.log({ restaurant })
+  const allDeals = restaurant?.categories?.filter((cat) => cat?.foods?.length)
   const deals = allDeals.map((c, index) => ({
     ...c,
     data: c.foods,
@@ -572,15 +581,19 @@ function Restaurant(props) {
             iconRadius={iconRadius}
             iconTouchWidth={iconTouchWidth}
             iconTouchHeight={iconTouchHeight}
-            restaurantName={propsData?.name ?? data?.restaurant?.name}
-            restaurantId={propsData._id}
-            restaurantImage={propsData?.image ?? data?.restaurant?.image}
-            restaurant={data?.restaurant}
+            restaurantName={propsData?.name ?? data?.restaurantCustomer?.name}
+            restaurantId={propsData?._id}
+            restaurantImage={
+              propsData?.image ?? data?.restaurantCustomer?.image
+            }
+            restaurant={data?.restaurantCustomer}
             topaBarData={updatedDeals}
             changeIndex={changeIndex}
             selectedLabel={selectedLabel}
-            minimumOrder={propsData?.minimumOrder ?? data?.restaurant?.minimumOrder}
-            tax={propsData?.tax ?? data?.restaurant?.tax}
+            minimumOrder={
+              propsData?.minimumOrder ?? data?.restaurantCustomer?.minimumOrder
+            }
+            tax={propsData?.tax ?? data?.restaurantCustomer?.tax}
             updatedDeals={updatedDeals}
             searchOpen={searchOpen}
             showSearchResults={showSearchResults}
@@ -596,7 +609,7 @@ function Restaurant(props) {
               style={{
                 flexGrow: 1,
                 marginTop: TOP_BAR_HEIGHT,
-                backgroundColor: currentTheme.themeBackground,
+                backgroundColor: currentTheme.themeBackground
               }}
             >
               {filterData.map((item, index) => (
@@ -607,8 +620,8 @@ function Restaurant(props) {
                     onPress={() =>
                       onPressItem({
                         ...item,
-                        restaurant: restaurant._id,
-                        restaurantName: restaurant.name
+                        restaurant: restaurant?._id,
+                        restaurantName: restaurant?.name
                       })
                     }
                   >
@@ -627,7 +640,7 @@ function Restaurant(props) {
                               width: scale(60),
                               borderRadius: 30
                             }}
-                            source={{ uri: item.image }}
+                            source={{ uri: item?.image }}
                           />
                         ) : null}
                         <View style={styles(currentTheme).flex}>
@@ -687,18 +700,21 @@ function Restaurant(props) {
                       </View>
                     </View>
                     {/* )} */}
-                    {tagCart(item._id)}
+                    {tagCart(item?._id)}
                   </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>
           ) : (
             <AnimatedSectionList
-              style={[{
-                flexGrow: 1,
-                paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
-                marginTop: HEADER_MIN_HEIGHT,
-              }, zIndexAnimation]}
+              style={[
+                {
+                  flexGrow: 1,
+                  paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
+                  marginTop: HEADER_MIN_HEIGHT
+                },
+                zIndexAnimation
+              ]}
               contentContainerStyle={{
                 paddingBottom: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
               }}
@@ -724,17 +740,18 @@ function Restaurant(props) {
                   return (
                     <View style={styles(currentTheme).restaurantItems}>
                       <View style={styles().popularHeading}>
-                      <PopularIcon color={currentTheme.iconColorDark} />  
-                      <TextDefault
-                        style={styles(currentTheme).popularText}
-                        textColor={currentTheme.fontFourthColor}
-                        bolder>
-                        {title}
-                      </TextDefault>
+                        <PopularIcon color={currentTheme.iconColorDark} />
+                        <TextDefault
+                          style={styles(currentTheme).popularText}
+                          textColor={currentTheme.fontFourthColor}
+                          bolder
+                        >
+                          {title}
+                        </TextDefault>
                       </View>
                       <TextDefault
                         textColor={currentTheme.fontFourthColor}
-                        style={{                        
+                        style={{
                           ...alignment.PLmedium,
                           ...alignment.PRmedium,
                           fontSize: scale(12),
@@ -745,9 +762,9 @@ function Restaurant(props) {
                         {t('mostOrderedNow')}
                       </TextDefault>
                       <View style={styles().popularItemCards}>
-                        {data.map((item) => (
+                        {data?.map((item) => (
                           <ItemCard
-                            key={item._id}
+                            key={item?._id}
                             item={item}
                             onPressItem={onPressItem}
                             restaurant={restaurant}
@@ -764,7 +781,8 @@ function Restaurant(props) {
                     <TextDefault
                       style={styles(currentTheme).sectionHeaderText}
                       textColor={currentTheme.fontFourthColor}
-                      bolder>
+                      bolder
+                    >
                       {title}
                     </TextDefault>
                   </View>
@@ -772,7 +790,7 @@ function Restaurant(props) {
               }}
               renderItem={({ item, section }) => {
                 const imageUrl =
-                  item.image && item.image.trim() !== ''
+                  item?.image && item?.image?.trim() !== ''
                     ? item.image
                     : IMAGE_LINK
                 if (section.title === 'Popular') {
@@ -788,7 +806,7 @@ function Restaurant(props) {
                     onPress={() =>
                       onPressItem({
                         ...item,
-                        restaurant: restaurant._id,
+                        restaurant: restaurant?._id,
                         restaurantName: restaurant.name
                       })
                     }
@@ -866,7 +884,7 @@ function Restaurant(props) {
                       </View>
                     </View>
                     {/* )} */}
-                    {tagCart(item._id)}
+                    {tagCart(item?._id)}
                   </TouchableOpacity>
                 )
               }}

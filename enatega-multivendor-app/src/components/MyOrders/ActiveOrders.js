@@ -63,10 +63,10 @@ const ActiveOrders = ({ navigation, loading, error, activeOrders }) => {
   )
 }
 
-const getItems = items => {
+const getItems = (items) => {
   return items
     .map(
-      item =>
+      (item) =>
         `${item.quantity}x ${item.title}${
           item.variation.title ? `(${item.variation.title})` : ''
         }`
@@ -86,7 +86,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => navigation.navigate('OrderDetail', { _id: item._id })}>
+      onPress={() => navigation.navigate('OrderDetail', { _id: item._id })}
+    >
       <View style={{ flex: 1 }}>
         <View style={styles(currentTheme).subContainer}>
           <View style={styles().orderDescriptionContainer}>
@@ -112,7 +113,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
             style={{
               ...styles().orderDescriptionContainer,
               ...alignment.PTxSmall
-            }}>
+            }}
+          >
             <TextDefault h5 bold textColor={currentTheme.secondaryText}>
               {item.orderStatus === 'PENDING'
                 ? t('PenddingText')
@@ -128,10 +130,11 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
               ...alignment.Mmedium,
               ...alignment.MTlarge,
               ...alignment.PLmedium
-            }}>
+            }}
+          >
             <Image
               style={styles(currentTheme).restaurantImage1}
-              resizeMode="cover"
+              resizeMode='cover'
               source={{ uri: item.restaurant.image }}
             />
             <View style={styles(currentTheme).textContainer2}>
@@ -141,7 +144,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
                   uppercase
                   bolder
                   numberOfLines={2}
-                  style={styles(currentTheme).restaurantName}>
+                  style={styles(currentTheme).restaurantName}
+                >
                   {item.restaurant.name}
                 </TextDefault>
                 <TextDefault
@@ -149,7 +153,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
                   style={{ ...alignment.MTxSmall }}
                   textColor={currentTheme.fontMainColor}
                   bolder
-                  small>
+                  small
+                >
                   {getItems(item.items)}
                 </TextDefault>
               </View>
@@ -158,7 +163,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
               <TextDefault
                 //numberOfLines={1}
                 textColor={currentTheme.fontMainColor}
-                bolder>
+                bolder
+              >
                 {configuration.currencySymbol}
                 {parseFloat(item.orderAmount).toFixed(2)}
               </TextDefault>
