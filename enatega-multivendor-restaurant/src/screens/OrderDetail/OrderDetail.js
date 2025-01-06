@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { View, ActivityIndicator, ImageBackground, ScrollView } from 'react-native'
+import {
+  View,
+  ActivityIndicator,
+  ImageBackground,
+  ScrollView
+} from 'react-native'
 import { Spinner, TextDefault } from '../../components'
 import { colors, MAX_TIME } from '../../utilities'
 import styles from './styles'
@@ -16,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 export default function OrderDetail({ navigation, route }) {
   const { t } = useTranslation()
   const { activeBar, orderData, preparationTime, createdAt } = route.params
+  console.log({ orderData: orderData.items.addons })
   const { _id, orderDate } = orderData
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
@@ -47,8 +53,8 @@ export default function OrderDetail({ navigation, route }) {
   const decision = !isAcceptButtonVisible
     ? acceptTime
     : remainingTime > 0
-      ? remainingTime
-      : 0
+    ? remainingTime
+    : 0
 
   // image path
   const order = data.restaurantOrders.find(o => o._id === _id)

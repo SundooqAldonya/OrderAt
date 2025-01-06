@@ -31,6 +31,7 @@ function CartView(props) {
   } = useContext(UserContext);
   const { data } = useRestaurant(cartRestaurant);
   console.log({ restaurantData: data });
+  // console.log({ cartRestaurant });
   const restaurantData = data?.restaurantCustomer ?? null;
 
   useEffect(() => {

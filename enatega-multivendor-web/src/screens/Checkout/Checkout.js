@@ -744,9 +744,6 @@ function Checkout() {
                         {location?.deliveryAddress}
                       </Typography>
                       <Divider />
-                      {/* <Box>
-                        <Typography>{cart[0].specialInstructions}</Typography>
-                      </Box> */}
                     </Box>
 
                     <Grid

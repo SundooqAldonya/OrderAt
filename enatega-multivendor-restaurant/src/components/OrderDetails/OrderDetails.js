@@ -41,9 +41,10 @@ export default function OrderDetails({ orderData }) {
     </View>
   )
 }
+
 function OrderItems({ orderData }) {
   const { t } = useTranslation()
-  console.log("order@@@@@@@@", orderData)
+  console.log('order@@@@@@@@', orderData)
   const {
     items,
     orderAmount,
@@ -57,19 +58,42 @@ function OrderItems({ orderData }) {
     <View style={[styles.cardContainer, { marginTop: 30, marginBottom: 45 }]}>
       {items &&
         items.map((item, index) => {
+          console.log({ itemAddon: item })
           return (
-            <View style={styles.itemRowBar} key={index}>
-              <TextDefault
-                H5
-                textColor={colors.fontSecondColor}
-                bold>{`${item.quantity}x ${item.title}`}</TextDefault>
-              <TextDefault
-                bold>{`${configuration.currencySymbol}${item.variation.price}`}</TextDefault>
-              {item.addons &&
-                item.addons.map((addon, index) => {
-                  ;<TextDefault
-                    H6>{`${configuration.currencySymbol}${addon.price}`}</TextDefault>
-                })}
+            <View>
+              <View style={styles.itemRowBar} key={index}>
+                <TextDefault
+                  H5
+                  textColor={colors.fontSecondColor}
+                  bold>{`${item.quantity}x ${item.title} ${item.variation.title}`}</TextDefault>
+                <TextDefault
+                  bold>{`${configuration.currencySymbol}${item.variation.price}`}</TextDefault>
+              </View>
+              {item.addons?.map((addon, index) => {
+                console.log({ addon })
+                return (
+                  <View key={addon._id}>
+                    <TextDefault H5 style={{ marginVertical: 10 }}>
+                      {addon.title}
+                    </TextDefault>
+                    {addon?.options?.map(option => {
+                      return (
+                        <View
+                          key={option._id}
+                          style={{
+                            flexDirection: 'row',
+                            paddingInlineStart: 20,
+                            justifyContent: 'space-between'
+                          }}>
+                          <TextDefault H6>{option.title}</TextDefault>
+                          <TextDefault
+                            H6>{`${configuration.currencySymbol}${option.price}`}</TextDefault>
+                        </View>
+                      )
+                    })}
+                  </View>
+                )
+              })}
             </View>
           )
         })}
