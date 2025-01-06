@@ -1295,6 +1295,7 @@ const typeDefs = gql`
       longitude: Float
       shopType: String
     ): NearByDataPreview!
+    restaurantCustomerAppDetail(id: String!): RestaurantCustomer!
     restaurantList: [Restaurant!]
     restaurantListPreview: [RestaurantPreview!]
     ordersByRestId(
@@ -1308,7 +1309,7 @@ const typeDefs = gql`
       endingDate: String!
       restaurant: String!
     ): OrdersWithCashOnDeliveryInfo!
-
+    getSingleFood(id: String!): FoodCustomer!
     riderCompletedOrders: [Order!]
     restaurant(id: String, slug: String): Restaurant!
     restaurantCustomer(id: String, slug: String): RestaurantCustomer!
@@ -1344,7 +1345,8 @@ const typeDefs = gql`
       longitude: Float!
     ): [RestaurantPreview!]
     relatedItems(itemId: String!, restaurantId: String!): [String!]!
-    popularItems(restaurantId: String!): [PopularItemsResponse!]!
+    # popularItems(restaurantId: String!): [PopularItemsResponse!]!
+    popularItems(restaurantId: String!): [FoodCustomer!]!
     topRatedVendors(latitude: Float!, longitude: Float!): [Restaurant!]
     topRatedVendorsPreview(
       latitude: Float!

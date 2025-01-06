@@ -750,6 +750,7 @@ export const restaurant = `query Restaurant($id:String,$slug:String){
     }
   }
 }`;
+
 export const restaurantCustomer = `query RestaurantCustomer($id:String,$slug:String){
   restaurantCustomer(id:$id,slug:$slug){
     _id

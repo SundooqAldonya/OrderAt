@@ -25,8 +25,6 @@ const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
   const imageUrl =
     item?.image && item?.image?.trim() !== '' ? item?.image : IMAGE_LINK
 
-  console.log({ item })
-
   return (
     <TouchableOpacity onPress={handleAddToCart}>
       <LinearGradient
@@ -54,7 +52,7 @@ const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
           />
           <View style={styles().popularMenuPrice}>
             <Text style={{ color: '#1C1C1E', fontSize: scale(12) }}>
-              {`${configuration.currencySymbol}${item?.price}`}
+              {`${configuration.currencySymbol}${formatNumber(item?.variations[0].price)}`}
             </Text>
             {item?.variations[0]?.discounted > 0 && (
               <Text

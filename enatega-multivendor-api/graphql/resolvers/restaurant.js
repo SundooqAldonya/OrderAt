@@ -176,6 +176,36 @@ module.exports = {
         throw err
       }
     },
+    async restaurantCustomerAppDetail(_, args) {
+      console.log({ restaurantCustomerAppDetailArgs: args })
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        const categories = await Category.find({ restaurant: args.id })
+        const addons = await Addon.find({ restaurant: args.id }).populate(
+          'options'
+        )
+        const options = await Option.find({ restaurant: args.id })
+        const modifiedCategories = await Promise.all(
+          categories.map(async category => {
+            const food = await Food.find({ category, restaurant: args.id })
+              .populate('variations')
+              .lean()
+            // console.log({ variations: food[0].variations })
+            category.foods = food
+            return category
+          })
+        )
+
+        return {
+          ...restaurant,
+          categories: [...modifiedCategories],
+          ...addons,
+          ...options
+        }
+      } catch (err) {
+        throw err
+      }
+    },
     restaurantList: async _ => {
       console.log('restaurantList')
       try {
@@ -246,7 +276,7 @@ module.exports = {
       }
     },
     restaurantCustomer: async (_, args, { req }) => {
-      console.log('restaurant.args', args)
+      console.log('restaurantCustomer.args', args)
       try {
         const filters = {}
         if (args.slug) {
@@ -267,22 +297,19 @@ module.exports = {
         const categories = await Category.find({ restaurant })
         const options = await Option.find({ restaurant })
 
-        // Process categories and their foods
         const modifiedCategories = await Promise.all(
           categories.map(async category => {
             const food = await Food.find({ category })
               .populate('variations')
               .lean()
-            // console.log({ variations: food[0].variations })
             category.foods = food
             return category
           })
         )
-
-        // restaurant.categories = modifiedCategories
-        // restaurant.addons = addons
-        // restaurant.options = options
-
+        console.log({
+          modifiedCategoriesFoodVariations:
+            modifiedCategories[0].foods[0].variations
+        })
         return {
           ...restaurant,
           categories: modifiedCategories,
@@ -453,7 +480,7 @@ module.exports = {
       return restaurants.map(r => transformRestaurant(new Restaurant(r)))
     },
     mostOrderedRestaurantsPreview: async (_, args, { req }) => {
-      console.log('mostOrderedRestaurantsPreview', args, req.userId)
+      console.log('mostOrderedRestaurantsPreview', args)
       const { longitude, latitude } = args
       const restaurants = await Restaurant.aggregate([
         {
@@ -561,8 +588,42 @@ module.exports = {
           { $group: { _id: { id: '$items.food' }, count: { $sum: 1 } } },
           { $sort: { count: -1 } },
           { $limit: 10 }
+          // {
+          //   $lookup: {
+          //     from: 'foods', // Name of the Food collection
+          //     localField: '_id.id',
+          //     foreignField: '_id',
+          //     as: 'foodDetails'
+          //   }
+          // },
+          // { $unwind: '$foodDetails' }, // Unwind the populated food
+          // {
+          //   $lookup: {
+          //     from: 'variations', // Name of the Variation collection
+          //     localField: 'foodDetails._id',
+          //     foreignField: 'food',
+          //     as: 'foodDetails.variations'
+          //   }
+          // },
+          // {
+          //   $project: {
+          //     _id: 0,
+          //     foodId: '$foodDetails._id',
+          //     foodName: '$foodDetails.name',
+          //     count: 1,
+          //     variations: '$foodDetails.variations'
+          //   }
+          // }
         ]).exec()
-        return result.map(({ _id: { id }, count }) => ({ id, count }))
+        const foods = result.map(async item => {
+          console.log({ item })
+          const food = await Food.findById(item._id.id).populate('variations')
+          return food
+        })
+        console.log({ foods })
+        console.log({ result: result[0]._id })
+        // return result.map(({ _id: { id }, count }) => ({ id, count }))
+        return foods
       } catch (error) {
         console.log('popularItems errored', error)
       }

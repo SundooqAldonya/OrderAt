@@ -1066,7 +1066,7 @@ export const relatedItems = `query RelatedItems($itemId: String!, $restaurantId:
   relatedItems(itemId: $itemId, restaurantId: $restaurantId)
 }`
 
-export const food = `fragment FoodItem on FoodCustomer{
+export const food = `fragment FoodItem on Food{
   _id
   title
   image
@@ -1099,8 +1099,24 @@ export const getSingleFood = `query GetSingleFood($id: String!) {
 
 export const popularItems = `query PopularItems($restaurantId: String!) {
   popularItems(restaurantId: $restaurantId) {
-    id
-    count
+    _id
+    title
+    image
+    description
+    variations{
+      _id
+      title
+      price
+      discounted
+      addons
+    }
   }
 }
 `
+// export const popularItems = `query PopularItems($restaurantId: String!) {
+//   popularItems(restaurantId: $restaurantId) {
+//     id
+//     count
+//   }
+// }
+// `

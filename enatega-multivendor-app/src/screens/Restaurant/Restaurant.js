@@ -70,12 +70,12 @@ const HALF_HEADER_SCROLL = HEADER_MAX_HEIGHT - TOP_BAR_HEIGHT
 const POPULAR_ITEMS = gql`
   ${popularItems}
 `
-const FOOD = gql`
-  ${getSingleFood}
-`
 // const FOOD = gql`
-//   ${food}
+//   ${getSingleFood}
 // `
+const FOOD = gql`
+  ${food}
+`
 
 // const concat = (...args) => args.join('')
 function Restaurant(props) {
@@ -118,18 +118,20 @@ function Restaurant(props) {
   })
 
   const fetchFoodDetails = (itemId) => {
-    const { data } = useQuery(FOOD, {
-      variables: { id: itemId }
-    })
-    return data
-    // return client.readFragment({ id: `Food:${itemId}`, fragment: FOOD })
+    // const { data } = useQuery(FOOD, {
+    //   variables: { id: itemId }
+    // })
+    // return data
+    return client.readFragment({ id: `Food:${itemId}`, fragment: FOOD })
   }
 
   const dataList =
     popularItems &&
     popularItems?.popularItems?.map((item) => {
-      const foodDetails = fetchFoodDetails(item.id)
-      return foodDetails
+      // const foodDetails = fetchFoodDetails(item.id)
+      // console.log({ foodDetails })
+      // return foodDetails
+      return item
     })
 
   const searchHandler = () => {

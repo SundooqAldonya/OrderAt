@@ -23,6 +23,15 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+    async getSingleFood(_, args) {
+      try {
+        const food = await Food.findById(args.id).populate('variations')
+        return food
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     }
   },
   Mutation: {
