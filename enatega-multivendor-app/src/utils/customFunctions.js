@@ -21,9 +21,15 @@ function toRad(Value) {
 }
 
 const calulateRemainingTime = (order) => {
-  const expectedTime = [ORDER_STATUS_ENUM.ACCEPTED, ORDER_STATUS_ENUM.ASSIGNED].includes(order?.orderStatus)
-    ? order?.preparationTime : order?.completionTime
-  const remainingTime = Math.floor((new Date(expectedTime) - Date.now()) / 1000 / 60)
+  const expectedTime = [
+    ORDER_STATUS_ENUM.ACCEPTED,
+    ORDER_STATUS_ENUM.ASSIGNED
+  ].includes(order?.orderStatus)
+    ? order?.preparationTime
+    : order?.completionTime
+  const remainingTime = Math.floor(
+    (new Date(expectedTime) - Date.now()) / 1000 / 60
+  )
   return remainingTime > 0 ? remainingTime : 0
 }
 
@@ -43,7 +49,7 @@ function groupAndCount(array = [], key) {
     2: 0,
     1: 0
   }
-  return array.reduce((updated, item) => {
+  return array?.reduce((updated, item) => {
     const propertyValue = item[key]
 
     if (!result[propertyValue === 0 ? 1 : propertyValue]) {

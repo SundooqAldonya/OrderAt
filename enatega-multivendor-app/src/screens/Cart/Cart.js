@@ -12,7 +12,8 @@ import {
   StatusBar,
   Platform,
   Alert,
-  Button} from 'react-native'
+  Button
+} from 'react-native'
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { AntDesign } from '@expo/vector-icons'
@@ -78,6 +79,8 @@ function Cart(props) {
   const cartLength = !isCartEmpty ? cart?.length : 0
   const { loading, data } = useRestaurant(cartRestaurant)
 
+  // console.log({ dataHere: data })
+
   const { loading: loadingTip, data: dataTip } = useQuery(TIPPING, {
     fetchPolicy: 'network-only'
   })
@@ -105,23 +108,27 @@ function Cart(props) {
 
   useEffect(() => {
     let isSubscribed = true
-      ; (async () => {
-        if (data && data?.restaurant) {
-          const latOrigin = Number(data?.restaurant.location.coordinates[1])
-          const lonOrigin = Number(data?.restaurant.location.coordinates[0])
-          const latDest = Number(location.latitude)
-          const longDest = Number(location.longitude)
-          const distance = await calculateDistance(
-            latOrigin,
-            lonOrigin,
-            latDest,
-            longDest
-          )
-          const amount = Math.ceil(distance) * configuration.deliveryRate
-          isSubscribed &&
-            setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
-        }
-      })()
+    ;(async () => {
+      if (data && data?.restaurantCustomer) {
+        const latOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[1]
+        )
+        const lonOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[0]
+        )
+        const latDest = Number(location.latitude)
+        const longDest = Number(location.longitude)
+        const distance = await calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+        const amount = Math.ceil(distance) * configuration.deliveryRate
+        isSubscribed &&
+          setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
+      }
+    })()
     return () => {
       isSubscribed = false
     }
@@ -190,19 +197,18 @@ function Cart(props) {
     if (cart && cartCount > 0) {
       if (
         data &&
-        data?.restaurant &&
-        (!data.restaurant.isAvailable || !isOpen())
+        data?.restaurantCustomer &&
+        (!data?.restaurantCustomer.isAvailable || !isOpen())
       ) {
         showAvailablityMessage()
       }
     }
-    
   }, [data])
 
   const showAvailablityMessage = () => {
     Alert.alert(
       '',
-      `${data?.restaurant.name} ${t('restaurantClosed')}`,
+      `${data?.restaurantCustomer.name} ${t('restaurantClosed')}`,
       [
         {
           text: t('backToRestaurants'),
@@ -216,7 +222,7 @@ function Cart(props) {
         },
         {
           text: t('continueBtn'),
-          onPress: () => { },
+          onPress: () => {},
           style: 'cancel'
         }
       ],
@@ -252,7 +258,7 @@ function Cart(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = data?.restaurant.openingTimes.find(
+    const todaysTimings = data?.restaurantCustomer.openingTimes.find(
       (o) => o.day === DAYS[day]
     )
     const times = todaysTimings.times.filter(
@@ -267,9 +273,9 @@ function Cart(props) {
   }
 
   async function didFocus() {
-    const { restaurant } = data
-    setSelectedRestaurant(restaurant)
-    setMinimumOrder(restaurant.minimumOrder)
+    const { restaurantCustomer } = data
+    setSelectedRestaurant(restaurantCustomer)
+    setMinimumOrder(restaurantCustomer.minimumOrder)
     setLoadingData(false)
   }
 
@@ -397,9 +403,10 @@ function Cart(props) {
       modal.open()
     }
   }
+  //here
   if (loading || loadingData || loadingTip) return loadginScreen()
 
-  const restaurant = data?.restaurant
+  const restaurant = data?.restaurantCustomer
   const addons = restaurant?.addons
   const options = restaurant?.options
 
@@ -413,8 +420,9 @@ function Cart(props) {
     )
     if (!variation) return null
 
-    const title = `${food.title}${variation.title ? `(${variation.title})` : ''
-      }`
+    const title = `${food.title}${
+      variation.title ? `(${variation.title})` : ''
+    }`
     let price = variation.price
     const optionsTitle = []
     if (cartItem.addons) {
@@ -444,7 +452,6 @@ function Cart(props) {
   let deliveryTime = Math.floor((orderDate - Date.now()) / 1000 / 60)
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
 
-
   return (
     <>
       <View style={styles(currentTheme).mainContainer}>
@@ -456,12 +463,18 @@ function Cart(props) {
               showsVerticalScrollIndicator={false}
               style={[styles().flex, styles().cartItems]}
             >
-              <View style={{
-                ...alignment.PLsmall,
-                ...alignment.PRsmall,
-                marginTop: 10
-              }}>
-                <SpecialInstructions instructions={instructions} onSubmitInstructions={setInstructions} theme={currentTheme} />
+              <View
+                style={{
+                  ...alignment.PLsmall,
+                  ...alignment.PRsmall,
+                  marginTop: 10
+                }}
+              >
+                <SpecialInstructions
+                  instructions={instructions}
+                  onSubmitInstructions={setInstructions}
+                  theme={currentTheme}
+                />
               </View>
               <View
                 style={{
@@ -478,11 +491,10 @@ function Cart(props) {
                     style={styles().totalOrder}
                     H5
                     bolder
-                    
                   >
                     {t('yourOrder')} ({cartLength})
                   </TextDefault>
-                 
+
                   {cart?.map((cartItem, index) => {
                     const food = populateFood(cartItem)
                     if (!food) return null
@@ -497,7 +509,7 @@ function Cart(props) {
                           optionsTitle={food.optionsTitle}
                           itemImage={food.image}
                           itemAddons={food.addons}
-                          cartRestaurant= {cartRestaurant}
+                          cartRestaurant={cartRestaurant}
                           dealPrice={(
                             parseFloat(food.price) * food.quantity
                           ).toFixed(2)}

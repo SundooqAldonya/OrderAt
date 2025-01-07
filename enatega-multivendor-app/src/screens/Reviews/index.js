@@ -18,16 +18,16 @@ import {
   sortReviews
 } from '../../utils/customFunctions'
 
-
-
-
-
 const Reviews = ({ navigation, route }) => {
   const { t } = useTranslation()
 
   const restaurant = route.params.restaurantObject
-  const { reviews } = restaurant
-  const reviewGroups = groupAndCount(reviews, 'rating')
+  console.log({ restaurantHere: restaurant })
+  const reviews = restaurant && restaurant.reviews ? restaurant.reviews : null
+  let reviewGroups
+  if (reviews) {
+    reviewGroups = groupAndCount(reviews, 'rating')
+  }
   const [sortBy, setSortBy] = useState('newest')
   const sortingParams = {
     newest: t('Newest'),
@@ -43,7 +43,11 @@ const Reviews = ({ navigation, route }) => {
           <TextDefault H4 bold textColor={currentTheme.newFontcolor}>
             {t('ratingAndreviews')}
           </TextDefault>
-          <TextDefault H5 style={{ ...alignment.MTxSmall }} textColor={currentTheme.newFontcolor}>
+          <TextDefault
+            H5
+            style={{ ...alignment.MTxSmall }}
+            textColor={currentTheme.newFontcolor}
+          >
             {restaurant.restaurantName}
           </TextDefault>
         </View>
@@ -71,7 +75,10 @@ const Reviews = ({ navigation, route }) => {
       )
     })
   }, [navigation])
-  const sorted = sortReviews([...reviews], sortBy)
+  let sorted
+  if (reviews) {
+    sorted = sortReviews([...reviews], sortBy)
+  }
   return (
     <View style={{ flex: 1, backgroundColor: currentTheme.themeBackground }}>
       <ScrollView style={[styles.container]}>
@@ -95,57 +102,62 @@ const Reviews = ({ navigation, route }) => {
             </View>
           </View>
           <View>
-            {Object.keys(reviewGroups)
-              .sort((a, b) => b - a)
-              .map((i, index) => {
-                const filled = (reviewGroups[i] / restaurant.total) * 100
-                const unfilled = filled ? 100 - filled : 100
-                return (
-                  <View
-                    key={`${index}-rate`}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'center',
-                      marginVertical: scale(5)
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: 'row', alignItems: 'flex-end' }}
-                    >
-                      <TextDefault> {i} </TextDefault>
-                      <StarRating isFilled={true} />
-                    </View>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        marginHorizontal: scale(10)
-                      }}
-                    >
+            {reviews
+              ? Object.keys(reviewGroups)
+                  .sort((a, b) => b - a)
+                  .map((i, index) => {
+                    const filled = (reviewGroups[i] / restaurant.total) * 100
+                    const unfilled = filled ? 100 - filled : 100
+                    return (
                       <View
+                        key={`${index}-rate`}
                         style={{
-                          height: scale(5),
-                          width: filled ? `${filled}%` : '0%',
-                          backgroundColor: currentTheme.orange
+                          flexDirection: 'row',
+                          justifyContent: 'space-evenly',
+                          alignItems: 'center',
+                          marginVertical: scale(5)
                         }}
-                      />
-                      <View
-                        style={{
-                          height: scale(5),
-                          width: `${unfilled}%`,
-                          backgroundColor: currentTheme.borderLight
-                        }}
-                      />
-                    </View>
-                    <View style={{ width: '10%', alignItems: 'flex-end' }}>
-                      <TextDefault bolder textColor={currentTheme.gray700}>
-                        {filled ? parseInt(filled) : 0}%
-                      </TextDefault>
-                    </View>
-                  </View>
-                )
-              })}
+                      >
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'flex-end'
+                          }}
+                        >
+                          <TextDefault> {i} </TextDefault>
+                          <StarRating isFilled={true} />
+                        </View>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            marginHorizontal: scale(10)
+                          }}
+                        >
+                          <View
+                            style={{
+                              height: scale(5),
+                              width: filled ? `${filled}%` : '0%',
+                              backgroundColor: currentTheme.orange
+                            }}
+                          />
+                          <View
+                            style={{
+                              height: scale(5),
+                              width: `${unfilled}%`,
+                              backgroundColor: currentTheme.borderLight
+                            }}
+                          />
+                        </View>
+                        <View style={{ width: '10%', alignItems: 'flex-end' }}>
+                          <TextDefault bolder textColor={currentTheme.gray700}>
+                            {filled ? parseInt(filled) : 0}%
+                          </TextDefault>
+                        </View>
+                      </View>
+                    )
+                  })
+              : null}
           </View>
         </View>
         <View style={{ ...alignment.MTsmall }}>
@@ -172,7 +184,7 @@ const Reviews = ({ navigation, route }) => {
             ))}
           </View>
           <View style={{ ...alignment.MBlarge }}>
-            {sorted.map((review) => (
+            {sorted?.map((review) => (
               <ReviewCard
                 key={review._id}
                 name={review.order.user.name}
@@ -184,8 +196,10 @@ const Reviews = ({ navigation, route }) => {
             ))}
           </View>
           <View style={{ ...alignment.MTlarge }}>
-            {sorted.length === 0 ? (
-              <TextDefault center H4 bold>{t('unReadReviews')}</TextDefault>
+            {sorted?.length === 0 ? (
+              <TextDefault center H4 bold>
+                {t('unReadReviews')}
+              </TextDefault>
             ) : null}
           </View>
         </View>

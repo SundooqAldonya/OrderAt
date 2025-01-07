@@ -22,12 +22,13 @@ function RadioComponent(props) {
 
   return (
     <View>
-      {options.map(option => (
+      {options?.map((option) => (
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={onPress.bind(this, option)}
           key={option._id}
-          style={styles.mainContainer}>
+          style={styles.mainContainer}
+        >
           <View style={styles.leftContainer}>
             <RadioButton
               size={11}
@@ -40,14 +41,16 @@ function RadioComponent(props) {
             <TextDefault
               textColor={currentTheme.fontMainColor}
               style={alignment.MLsmall}
-              bolder>
+              bolder
+            >
               {option.title}
             </TextDefault>
           </View>
           <View style={styles.rightContainer}>
             <TextDefault
               textColor={currentTheme.fontMainColor}
-              bolder>{`${configuration.currencySymbol}${option.price}`}</TextDefault>
+              bolder
+            >{`${configuration.currencySymbol}${option.price}`}</TextDefault>
           </View>
         </TouchableOpacity>
       ))}

@@ -22,6 +22,7 @@ export const LocationProvider = ({ children }) => {
     const getActiveLocation = async () => {
       try {
         const locationStr = await AsyncStorage.getItem('location')
+        console.log({ locationStr })
         if (locationStr) {
           setLocation(JSON.parse(locationStr))
         }
@@ -63,7 +64,7 @@ export const LocationProvider = ({ children }) => {
   }, [])
 
   const { loading, error, data } = useQuery(GET_CITIES, {
-    variables: { iso: 'EG' },
+    variables: { iso: 'EG' }
   })
   //console.log('cities Data inside context', cities)
   // useEffect(() => {
@@ -77,7 +78,8 @@ export const LocationProvider = ({ children }) => {
         location,
         setLocation,
         cities: data?.getCountryByIso?.cities || []
-      }}>
+      }}
+    >
       {children}
     </LocationContext.Provider>
   )

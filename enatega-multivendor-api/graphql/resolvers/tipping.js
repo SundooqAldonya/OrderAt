@@ -2,10 +2,12 @@ const Tipping = require('../../models/tipping')
 
 module.exports = {
   Query: {
-    tips: async() => {
+    tips: async () => {
       console.log('Tipping')
       try {
         const tipping = await Tipping.findOne({ isActive: true })
+        console.log({ tipping })
+
         if (!tipping) {
           return {
             _id: '',
@@ -24,7 +26,7 @@ module.exports = {
     }
   },
   Mutation: {
-    createTipping: async(_, args, context) => {
+    createTipping: async (_, args, context) => {
       console.log('createTipping')
       try {
         const count = await Tipping.countDocuments({
@@ -45,7 +47,7 @@ module.exports = {
         throw err
       }
     },
-    editTipping: async(_, args, context) => {
+    editTipping: async (_, args, context) => {
       console.log('editTipping', args)
       try {
         const tipping = await Tipping.findById(args.tippingInput._id)

@@ -52,6 +52,7 @@ function ItemDetail(props) {
   const Analytics = analytics()
 
   const { food, addons, options, restaurant } = props.route.params
+  console.log({ food: food.variations[0].addons })
   const navigation = useNavigation()
   const { t } = useTranslation()
 
@@ -59,6 +60,7 @@ function ItemDetail(props) {
     ...food.variations[0],
     addons: food.variations[0].addons.map((fa) => {
       const addon = addons.find((a) => a._id === fa)
+      // console.log({ addon: addon.options })
       const addonOptions = addon.options.map((ao) => {
         return options.find((o) => o._id === ao)
       })
@@ -68,6 +70,8 @@ function ItemDetail(props) {
       }
     })
   })
+
+  console.log({ selectedVariation: selectedVariation.addons[0].options })
 
   const imageUrl =
     food?.image && food?.image.trim() !== '' ? food.image : IMAGE_LINK
@@ -153,6 +157,7 @@ function ItemDetail(props) {
   }
 
   async function onPressAddToCart(quantity) {
+    console.log({ quantity })
     if (validateOrderItem()) {
       Analytics.track(Analytics.events.ADD_TO_CART, {
         title: food.title,
@@ -258,6 +263,7 @@ function ItemDetail(props) {
   }
 
   async function onSelectOption(addon, option) {
+    console.log({ addonHere: addon })
     const index = selectedAddons.findIndex((ad) => ad._id === addon._id)
     if (index > -1) {
       if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
@@ -279,9 +285,12 @@ function ItemDetail(props) {
       }
     } else {
       selectedAddons.push({ _id: addon._id, options: [option] })
+      // setSelectedAddons([...selectedAddons, { _id: addon, options: [option] }])
     }
     setSelectedAddons([...selectedAddons])
   }
+
+  console.log({ selectedAddonsHere: selectedAddons })
 
   function calculatePrice() {
     const variation = selectedVariation.price
@@ -390,7 +399,6 @@ function ItemDetail(props) {
       <View style={[styles().flex, styles(currentTheme).mainContainer]}>
         <Animated.View
           style={[styles(currentTheme).headerContainer, animatedHeaderStyle]}
-          // style={[styles(currentTheme).headerContainer]}
         >
           <ImageHeader image={imageUrl} />
           {/* <HeadingComponent title={food.title} price={calculatePrice()} /> */}
@@ -403,7 +411,7 @@ function ItemDetail(props) {
           ]}
           scrollEventThrottle={1}
           contentContainerStyle={{
-            // paddingTop: HEADER_MAX_HEIGHT,
+            paddingTop: HEADER_MAX_HEIGHT,
             paddingBottom: scale(height * 0.09),
             backgroundColor: currentTheme.themeBackground
           }}
@@ -415,7 +423,7 @@ function ItemDetail(props) {
             ]}
           >
             <View>
-              {food?.variations?.length > 1 && (
+              {food?.variations?.length && (
                 <View>
                   <TitleComponent
                     title={t('SelectVariation')}
@@ -429,7 +437,7 @@ function ItemDetail(props) {
                   />
                 </View>
               )}
-              {selectedVariation.addons.map((addon) => (
+              {selectedVariation?.addons?.map((addon) => (
                 <View key={addon._id}>
                   <TitleComponent
                     title={addon.title}

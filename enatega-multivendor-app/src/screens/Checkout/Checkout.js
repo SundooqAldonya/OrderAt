@@ -63,7 +63,6 @@ import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
 import { PaymentModeOption } from '../../components/Checkout/PaymentOption'
 import { colors } from '../../utils/colors'
 
-
 // Constants
 const PLACEORDER = gql`
   ${placeOrder}
@@ -114,8 +113,8 @@ function Checkout(props) {
 
   const { loading, data } = useRestaurant(cartRestaurant)
   const [loadingOrder, setLoadingOrder] = useState(false)
-  const latOrigin = data?.restaurant?.location?.coordinates[1]
-  const lonOrigin = data?.restaurant?.location?.coordinates[0]
+  const latOrigin = data?.restaurantCustomer?.location?.coordinates[1]
+  const lonOrigin = data?.restaurantCustomer?.location?.coordinates[0]
   const initialRegion = {
     latitude: +latOrigin,
     longitude: +lonOrigin,
@@ -123,7 +122,7 @@ function Checkout(props) {
     longitudeDelta: 0.5
   }
 
-  const restaurant = data?.restaurant
+  const restaurant = data?.restaurantCustomer
 
   const onModalOpen = (modalRef) => {
     const modal = modalRef.current
@@ -212,23 +211,27 @@ function Checkout(props) {
 
   useEffect(() => {
     let isSubscribed = true
-      ; (async () => {
-        if (data && !!data.restaurant) {
-          const latOrigin = Number(data.restaurant.location.coordinates[1])
-          const lonOrigin = Number(data.restaurant.location.coordinates[0])
-          const latDest = Number(location.latitude)
-          const longDest = Number(location.longitude)
-          const distance = await calculateDistance(
-            latOrigin,
-            lonOrigin,
-            latDest,
-            longDest
-          )
-          const amount = Math.ceil(distance) * configuration.deliveryRate
-          isSubscribed &&
-            setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
-        }
-      })()
+    ;(async () => {
+      if (data && !!data?.restaurantCustomer) {
+        const latOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[1]
+        )
+        const lonOrigin = Number(
+          data?.restaurantCustomer.location.coordinates[0]
+        )
+        const latDest = Number(location.latitude)
+        const longDest = Number(location.longitude)
+        const distance = await calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+        const amount = Math.ceil(distance) * configuration.deliveryRate
+        isSubscribed &&
+          setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
+      }
+    })()
     return () => {
       isSubscribed = false
     }
@@ -257,11 +260,14 @@ function Checkout(props) {
           <TextDefault
             style={{ color: currentTheme.newFontcolor, ...textStyles.H5 }}
           >
-            {data && data.restaurant.name && data.restaurant.address && (
-              <>
-                {data.restaurant.name} {' - '} {data.restaurant.address}
-              </>
-            )}
+            {data &&
+              data?.restaurantCustomer.name &&
+              data?.restaurantCustomer.address && (
+                <>
+                  {data?.restaurantCustomer.name} {' - '}{' '}
+                  {data?.restaurantCustomer.address}
+                </>
+              )}
           </TextDefault>
         </View>
       ),
@@ -299,7 +305,9 @@ function Checkout(props) {
   useEffect(() => {
     if (!data) return
     didFocus()
-    setrestaurantName(`${data.restaurant.name} - ${data.restaurant.address}`)
+    setrestaurantName(
+      `${data?.restaurantCustomer.name} - ${data?.restaurantCustomer.address}`
+    )
   }, [data])
   useEffect(() => {
     async function Track() {
@@ -311,8 +319,8 @@ function Checkout(props) {
     if (cart && cartCount > 0) {
       if (
         data &&
-        data.restaurant &&
-        (!data.restaurant.isAvailable || !isOpen())
+        data?.restaurantCustomer &&
+        (!data?.restaurantCustomer.isAvailable || !isOpen())
       ) {
         showAvailablityMessage()
       }
@@ -322,7 +330,7 @@ function Checkout(props) {
   const showAvailablityMessage = () => {
     Alert.alert(
       '',
-      `${data.restaurant.name} closed at the moment`,
+      `${data?.restaurantCustomer.name} closed at the moment`,
       [
         {
           text: 'Go back to restaurants',
@@ -336,7 +344,7 @@ function Checkout(props) {
         },
         {
           text: 'Continue',
-          onPress: () => { },
+          onPress: () => {},
           style: 'cancel'
         }
       ],
@@ -441,7 +449,7 @@ function Checkout(props) {
   }
 
   function taxCalculation() {
-    const tax = data.restaurant ? +data.restaurant.tax : 0
+    const tax = data?.restaurantCustomer ? +data?.restaurantCustomer.tax : 0
     if (tax === 0) {
       return tax.toFixed(2)
     }
@@ -471,9 +479,9 @@ function Checkout(props) {
     total += +calculateTip()
     return parseFloat(total).toFixed(2)
   }
-
+  console.log({ location })
   function validateOrder() {
-    if (!data.restaurant.isAvailable || !isOpen()) {
+    if (!data?.restaurantCustomer.isAvailable || !isOpen()) {
       showAvailablityMessage()
       return
     }
@@ -491,7 +499,7 @@ function Checkout(props) {
       // })
       return false
     }
-    if (!location._id) {
+    if (!location.deliveryAddress) {
       props.navigation.navigate('CartAddress')
       return false
     }
@@ -507,7 +515,7 @@ function Checkout(props) {
     }
     if (profile.phone.length > 0 && !profile.phoneIsVerified) {
       FlashMessage({
-        message: t('numberVerificationAlert') 
+        message: t('numberVerificationAlert')
       })
       props.navigation.navigate('PhoneNumber')
       return false
@@ -533,9 +541,9 @@ function Checkout(props) {
         variation: food.variation._id,
         addons: food.addons
           ? food.addons.map(({ _id, options }) => ({
-            _id,
-            options: options.map(({ _id }) => _id)
-          }))
+              _id,
+              options: options.map(({ _id }) => _id)
+            }))
           : [],
         specialInstructions: food.specialInstructions
       }
@@ -577,7 +585,7 @@ function Checkout(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = data.restaurant.openingTimes.find(
+    const todaysTimings = data?.restaurantCustomer.openingTimes.find(
       (o) => o.day === DAYS[day]
     )
     const times = todaysTimings.times.filter(
@@ -592,11 +600,13 @@ function Checkout(props) {
   }
 
   async function didFocus() {
-    const { restaurant } = data
-    setSelectedRestaurant(restaurant)
-    setMinimumOrder(restaurant.minimumOrder)
-    const foods = restaurant.categories.map((c) => c.foods.flat()).flat()
-    const { addons, options } = restaurant
+    const { restaurantCustomer } = data
+    setSelectedRestaurant(restaurantCustomer)
+    setMinimumOrder(restaurantCustomer.minimumOrder)
+    const foods = restaurantCustomer.categories
+      .map((c) => c.foods.flat())
+      .flat()
+    const { addons, options } = restaurantCustomer
     try {
       if (cartCount && cart) {
         const transformCart = cart.map((cartItem) => {
@@ -607,8 +617,9 @@ function Checkout(props) {
           )
           if (!variation) return null
 
-          const title = `${food.title}${variation.title ? `(${variation.title})` : ''
-            }`
+          const title = `${food.title}${
+            variation.title ? `(${variation.title})` : ''
+          }`
           let price = variation.price
           const optionsTitle = []
           if (cartItem.addons) {
@@ -771,11 +782,15 @@ function Checkout(props) {
                   <View
                     style={[
                       styles(currentTheme).horizontalLine,
-                      styles().width100,
+                      styles().width100
                     ]}
                   />
                 </View>
-                <FulfillmentMode theme={currentTheme} setIsPickup={setIsPickup} isPickup={isPickup} />
+                <FulfillmentMode
+                  theme={currentTheme}
+                  setIsPickup={setIsPickup}
+                  isPickup={isPickup}
+                />
                 <View style={[styles(currentTheme).headerContainer]}>
                   <Location
                     locationIcon={currentTheme.newIconColor}
@@ -793,7 +808,12 @@ function Checkout(props) {
                       styles().width100
                     ]}
                   />
-                  <TouchableOpacity onPress={() => { onModalOpen(modalRef) }} style={styles(currentTheme).deliveryTime}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      onModalOpen(modalRef)
+                    }}
+                    style={styles(currentTheme).deliveryTime}
+                  >
                     <View style={[styles().iconContainer]}>
                       <View style={styles().icon}>
                         <EvilIcons name='calendar' size={scale(20)} />
@@ -807,12 +827,17 @@ function Checkout(props) {
                           H5
                           bolder
                         >
-                          {t(isPickup ? 'pickUp' : 'delivery')}{' '}
-                          ({deliveryTime} {t('mins')})
+                          {t(isPickup ? 'pickUp' : 'delivery')} ({deliveryTime}{' '}
+                          {t('mins')})
                         </TextDefault>
                       </View>
                     </View>
-                    <View style={[styles().iconContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <View
+                      style={[
+                        styles().iconContainer,
+                        { justifyContent: 'center', alignItems: 'center' }
+                      ]}
+                    >
                       <View style={[styles().icon, { backgroundColor: null }]}>
                         <Feather
                           name='chevron-right'
@@ -822,10 +847,13 @@ function Checkout(props) {
                       </View>
                     </View>
                   </TouchableOpacity>
-
                 </View>
                 <View>
-                  <Instructions theme={currentTheme} title={'Instruction for the courier'} message={instructions} />
+                  <Instructions
+                    theme={currentTheme}
+                    title={'Instruction for the courier'}
+                    message={instructions}
+                  />
                 </View>
 
                 {isLoggedIn && profile && (
@@ -840,9 +868,33 @@ function Checkout(props) {
                         {t('titlePayment')}
                       </TextDefault>
                       <View>
-                        <PaymentModeOption title={'Cash'} icon={'dollar'} selected={paymentMode === 'COD'} theme={currentTheme} onSelect={() => { setPaymentMode('COD') }} />
-                        <PaymentModeOption title={'Card (Stripe)'} icon={'credit-card'} selected={paymentMode === 'STRIPE'} theme={currentTheme} onSelect={() => { setPaymentMode('STRIPE') }} />
-                        <PaymentModeOption title={'Card (Paypal)'} icon={'credit-card'} selected={paymentMode === 'PAYPAL'} theme={currentTheme} onSelect={() => { setPaymentMode('PAYPAL') }} />
+                        <PaymentModeOption
+                          title={'Cash'}
+                          icon={'dollar'}
+                          selected={paymentMode === 'COD'}
+                          theme={currentTheme}
+                          onSelect={() => {
+                            setPaymentMode('COD')
+                          }}
+                        />
+                        <PaymentModeOption
+                          title={'Card (Stripe)'}
+                          icon={'credit-card'}
+                          selected={paymentMode === 'STRIPE'}
+                          theme={currentTheme}
+                          onSelect={() => {
+                            setPaymentMode('STRIPE')
+                          }}
+                        />
+                        <PaymentModeOption
+                          title={'Card (Paypal)'}
+                          icon={'credit-card'}
+                          selected={paymentMode === 'PAYPAL'}
+                          theme={currentTheme}
+                          onSelect={() => {
+                            setPaymentMode('PAYPAL')
+                          }}
+                        />
                       </View>
                     </View>
                   </>
@@ -923,7 +975,7 @@ function Checkout(props) {
                               -{configuration.currencySymbol}
                               {parseFloat(
                                 calculatePrice(0, false) -
-                                calculatePrice(0, true)
+                                  calculatePrice(0, true)
                               ).toFixed(2)}
                             </TextDefault>
                           </View>

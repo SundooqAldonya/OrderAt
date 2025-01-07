@@ -712,7 +712,7 @@ function Restaurant(props) {
               ))}
             </ScrollView>
           ) : (
-            <AnimatedSectionList
+            <SectionList
               style={[
                 {
                   flexGrow: 1,
@@ -724,7 +724,7 @@ function Restaurant(props) {
               contentContainerStyle={{
                 paddingBottom: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
               }}
-              ref={scrollRef}
+              // ref={scrollRef}
               sections={updatedDeals}
               scrollEventThrottle={1}
               stickySectionHeadersEnabled={false}
@@ -735,7 +735,7 @@ function Restaurant(props) {
               onMomentumScrollEnd={(event) => {
                 onScrollEndSnapToEdge(event)
               }}
-              onScroll={scrollHandler}
+              // onScroll={scrollHandler}
               keyExtractor={(item, index) => item + index}
               // contentContainerStyle={{ paddingBottom: 150 }}
               renderSectionHeader={({ section: { title, data } }) => {
@@ -858,10 +858,10 @@ function Restaurant(props) {
                                 small
                               >
                                 {configuration.currencySymbol}{' '}
-                                {item.variations[0].price}
-                                {/* {parseFloat(item.variations[0].price).toFixed(
+                                {/* {item.variations[0].price} */}
+                                {parseFloat(item.variations[0].price).toFixed(
                                   2
-                                )} */}
+                                )}
                               </TextDefault>
                               {item?.variations[0]?.discounted > 0 && (
                                 <TextDefault

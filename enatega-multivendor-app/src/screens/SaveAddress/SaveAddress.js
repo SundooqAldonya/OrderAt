@@ -52,30 +52,34 @@ function SaveAddress(props) {
   const [selectedLabel, setSelectedLabel] = useState('')
   const inset = useSafeAreaInsets()
 
-
-  const [mutate, { loading }] = useMutation(locationData?.id ? EDIT_ADDRESS : CREATE_ADDRESS, {
-    onCompleted,
-    onError
-  })
-  function onCompleted({createAddress, editAddress}) {
+  const [mutate, { loading }] = useMutation(
+    locationData?.id ? EDIT_ADDRESS : CREATE_ADDRESS,
+    {
+      onCompleted,
+      onError
+    }
+  )
+  function onCompleted({ createAddress, editAddress }) {
     FlashMessage({
       message: t('addressUpdated')
     })
-    
-    const address = (createAddress||editAddress)?.addresses.find(a => a.selected) || 
-    setLocation({
-      _id: address._id,
-      label: selectedLabel,
-      deliveryAddress: locationData.deliveryAddress,
-      latitude: locationData.latitude,
-      longitude: locationData.longitude,
-      city: locationData.city
-    })
-    if(locationData.prevScreen){
+
+    const address =
+      (createAddress || editAddress)?.addresses.find((a) => a.selected) ||
+      setLocation({
+        _id: address?._id,
+        label: selectedLabel,
+        deliveryAddress: locationData.deliveryAddress,
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        city: locationData.city
+      })
+    if (locationData.prevScreen) {
       navigation.navigate(locationData.prevScreen)
-    } else{
+    } else {
       navigation.dispatch(StackActions.popToTop())
     }
+    console.log({ address })
   }
 
   function onError(error) {
@@ -116,7 +120,11 @@ function SaveAddress(props) {
           truncatedLabel=''
           backImage={() => (
             <View>
-              <MaterialIcons name='arrow-back' size={30} color={currentTheme.newIconColor} />
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={currentTheme.newIconColor}
+              />
             </View>
           )}
           onPress={() => {
@@ -133,6 +141,7 @@ function SaveAddress(props) {
       return
     }
     const addressInput = {
+      _id: '',
       longitude: `${locationData.longitude}`,
       latitude: `${locationData.latitude}`,
       deliveryAddress: locationData.deliveryAddress,

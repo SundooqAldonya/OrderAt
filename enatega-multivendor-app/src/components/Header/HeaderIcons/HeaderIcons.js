@@ -10,7 +10,7 @@ import {
 } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import styles from './styles'
-import { TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import {
@@ -54,10 +54,16 @@ function BackButton(props) {
     )
   } else if (props.icon === 'target') {
     return (
-      <MaterialIcons name='my-location' size={scale(16)} color={colors?.background} />
+      <MaterialIcons
+        name='my-location'
+        size={scale(16)}
+        color={colors?.background}
+      />
     )
   } else if (props.icon === 'fav') {
-    return <AntDesign name='hearto' size={scale(20)} color={colors?.background} />
+    return (
+      <AntDesign name='hearto' size={scale(20)} color={colors?.background} />
+    )
   } else {
     return (
       <EvilIcons
@@ -165,10 +171,11 @@ function RightButton(props) {
           color={colors.background}
         />
         <View
-          style={
-           [ styles(route.name === 'Main' ? 'black' : currentTheme.white)
-              .absoluteContainer,{alignItems:'center', justifyContent:'center'}]
-          }
+          style={[
+            styles(route.name === 'Main' ? 'black' : currentTheme.white)
+              .absoluteContainer,
+            { alignItems: 'center', justifyContent: 'center' }
+          ]}
         >
           <TextDefault
             textColor={colors.background}
@@ -263,7 +270,7 @@ function RightButton(props) {
         labelVisible={false}
         backImage={() => (
           <View style={[styles().rightContainer]}>
-            {BackButton({ iconColor:colors.background, icon: 'target' })}
+            {BackButton({ iconColor: colors.background, icon: 'target' })}
           </View>
         )}
         onPress={props.onPressRight}
@@ -279,15 +286,14 @@ function DarkBackButton(props) {
   return (
     <View
       style={{
-        backgroundColor: props.themeBackground,
-        borderRadius: 5,
-    
+        backgroundColor: '#fff',
+        borderRadius: 5
       }}
     >
       <Ionicons
         name='close-circle-outline'
         size={20}
-        style={styles().darkBackArrow}
+        style={{ ...styles().darkBackArrow, color: '#000' }}
         color={colors.background}
       />
     </View>
@@ -295,6 +301,10 @@ function DarkBackButton(props) {
 }
 function HelpButton(props) {
   const { t } = props
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = theme[themeContext.ThemeValue]
+  console.log({ currentTheme: currentTheme.gray500 })
+  console.log({ ThemeValue: themeContext.ThemeValue })
   return (
     <TouchableOpacity
       style={{
@@ -304,9 +314,19 @@ function HelpButton(props) {
       }}
       onPress={() => props.navigation.navigate('Help')}
     >
-      <TextDefault style={styles().rightButtonContainer} center small bold>
+      <Text
+        style={{
+          ...styles().rightButtonContainer,
+          color: '#000',
+          textAlign: 'center'
+        }}
+        // textColor={'#000'}
+        center
+        small
+        bold
+      >
         {t('help')}
-      </TextDefault>
+      </Text>
     </TouchableOpacity>
   )
 }
