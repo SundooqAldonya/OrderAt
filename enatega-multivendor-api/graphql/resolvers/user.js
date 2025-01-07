@@ -14,6 +14,7 @@ const { transformUser, transformRestaurants } = require('./merge')
 const { sendOtpToPhone } = require('../../helpers/sms')
 const { sendUserInfoToZapier } = require('../../helpers/api')
 const Configuration = require('../../models/configuration')
+const category = require('../../models/category')
 
 module.exports = {
   Query: {
@@ -109,9 +110,12 @@ module.exports = {
           // zone: { $in: zones.map(z => z.id) },
           // isAvailable: true,
           // isActive: true
-        })
-        console.log(restaurants)
-        return transformRestaurants(restaurants)
+        }).lean()
+        // restaurants.map(async restaurant => {
+        //   const category = await category.find({restaurant});
+        // })
+        console.log({ restaurants })
+        return restaurants
       } catch (err) {
         console.log(err)
         throw err

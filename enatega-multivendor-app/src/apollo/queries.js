@@ -761,37 +761,7 @@ export const FavouriteRestaurant = `query UserFavourite ($latitude:Float,$longit
           createdAt
         }
       }
-      categories{
-        _id
-        title
-        foods{
-          _id
-          title
-          image
-          description
-          variations{
-            _id
-            title
-            price
-            discounted
-            addons
-          }
-        }
-      }
-      options{
-        _id
-        title
-        description
-        price
-      }
-      addons{
-        _id
-        options
-        title
-        description
-        quantityMinimum
-        quantityMaximum
-      }
+      
       rating
       isAvailable
       openingTimes{

@@ -95,7 +95,6 @@ function SidebBar(props) {
     StatusBar.setBarStyle('light-content')
   })
 
-
   return (
     <View
       style={[
@@ -105,12 +104,19 @@ function SidebBar(props) {
           paddingBottom: inset.bottom,
           backgroundColor: currentTheme.themeBackground
         }
-      ]}>
+      ]}
+    >
       <View style={{ flexGrow: 1 }}>
         <SideDrawerProfile navigation={props.navigation} />
         <View style={styles(currentTheme).botContainer}>
           {datas.map((dataItem, ind) => (
-            <View key={ind} style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
+            <View
+              key={ind}
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 5 }
+              ]}
+            >
               <SideDrawerItems
                 style={styles(currentTheme).iconContainer}
                 onPress={async () => {
@@ -126,23 +132,32 @@ function SidebBar(props) {
             </View>
           ))}
           {isLoggedIn ? (
-            <View style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
+            <View
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 5 }
+              ]}
+            >
               <SideDrawerItems
                 onPress={logoutClick}
                 icon={'logout'}
                 title={t('titleLogout')}
               />
             </View>
-          ) :
-            (
-              <View style={[styles().item, { borderBottomWidth: 0, marginVertical: 5 }]}>
-                <SideDrawerItems
-                  onPress={() => props.navigation.navigate("CreateAccount")}
-                  icon={'login'}
-                  title={t('login')}
-                />
-              </View>
-            )}
+          ) : (
+            <View
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 5 }
+              ]}
+            >
+              <SideDrawerItems
+                onPress={() => props.navigation.navigate('CreateAccount')}
+                icon={'login'}
+                title={t('login')}
+              />
+            </View>
+          )}
         </View>
       </View>
 

@@ -119,7 +119,7 @@ function ImageTextCenterHeader(props, ref) {
       const todaysTimings = props.restaurant.openingTimes.find(
         (o) => o.day === DAYS[day]
       )
-      const times = todaysTimings.times.filter(
+      const times = todaysTimings?.times?.filter(
         (t) =>
           hours >= Number(t.startTime[0]) &&
           minutes >= Number(t.startTime[1]) &&
@@ -127,7 +127,7 @@ function ImageTextCenterHeader(props, ref) {
           minutes <= Number(t.endTime[1])
       )
 
-      return times.length > 0
+      return times?.length > 0
     }
   }
 

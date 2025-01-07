@@ -21,6 +21,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 import ConfigurationContext from '../../context/Configuration'
 import { colors } from '../../utils/colors'
+
 function About(props) {
   const Analytics = analytics()
   const { t } = useTranslation()
@@ -30,14 +31,18 @@ function About(props) {
   const currentTheme = theme[themeContext.ThemeValue]
   const configuration = useContext(ConfigurationContext)
   const RestAbout = {
-    name: restaurantObject.name,
-    address: restaurantObject.address,
-    deliveryTime: restaurantObject.deliveryTime,
-    rating: restaurantObject.rating,
-    average: restaurantObject.average,
+    name: restaurantObject?.name,
+    address: restaurantObject?.address,
+    deliveryTime: restaurantObject?.deliveryTime,
+    rating: restaurantObject?.rating,
+    average: restaurantObject?.average,
     map: {
-      latitude: Number(restaurantObject.latitude),
-      longitude: Number(restaurantObject.longitude),
+      latitude: restaurantObject?.latitude
+        ? Number(restaurantObject?.latitude)
+        : null,
+      longitude: restaurantObject?.longitude
+        ? Number(restaurantObject?.longitude)
+        : null,
       latitudeDelta: 0.5,
       longitudeDelta: 0.4
     }
@@ -52,10 +57,7 @@ function About(props) {
   const inset = useSafeAreaInsets()
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar
-        backgroundColor={colors.primary}
-        barStyle={'light-content'}
-      />
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
       <ScrollView
         style={[
           // { marginTop: inset.top },
@@ -66,14 +68,14 @@ function About(props) {
         <ImageHeader
           iconColor={currentTheme.newIconColor}
           svgNameL='leftArrow'
-          restaurantImage={restaurantObject.restaurantImage}
-          restaurantName={restaurantObject.restaurantName}
-          deliveryTime={restaurantObject.deliveryTime}
-          total={restaurantObject.total}
+          restaurantImage={restaurantObject?.restaurantImage}
+          restaurantName={restaurantObject?.restaurantName}
+          deliveryTime={restaurantObject?.deliveryTime}
+          total={restaurantObject?.total}
           rating={
-            restaurantObject.reviews.length === 0
-              ? 0
-              : restaurantObject.reviews[0].rating
+            restaurantObject?.reviews && restaurantObject?.reviews?.length
+              ? restaurantObject?.reviews[0].rating
+              : 0
           }
         />
         <View style={styles(currentTheme).mapContainer}>
@@ -84,7 +86,7 @@ function About(props) {
             zoomControlEnabled={false}
             rotateEnabled={false}
             cacheEnabled={false}
-            initialRegion={RestAbout.map}
+            initialRegion={RestAbout?.map}
             customMapStyle={aboutMapStyle}
             provider={PROVIDER_GOOGLE}
           ></MapView>
@@ -107,7 +109,7 @@ function About(props) {
             }}
           >
             <TextDefault H4 textColor={currentTheme.fontThirdColor} bolder>
-              {restaurantObject.restaurantName} |
+              {restaurantObject?.restaurantName} |
             </TextDefault>
             <View
               style={{
@@ -122,7 +124,7 @@ function About(props) {
                 color={currentTheme.fontThirdColor}
               />
               <TextDefault H5 bolder textColor={currentTheme.fontThirdColor}>
-                {RestAbout.address}
+                {RestAbout?.address}
               </TextDefault>
             </View>
           </View>
@@ -138,7 +140,7 @@ function About(props) {
                 />
                 <TextDefault H5 textColor={currentTheme.fontThirdColor} bold>
                   {t('minimumOrder')} {configuration.currencySymbol}
-                  {restaurantObject.restaurantMinOrder}
+                  {restaurantObject?.restaurantMinOrder}
                 </TextDefault>
               </View>
             )}
@@ -156,7 +158,7 @@ function About(props) {
                 color={currentTheme.fontThirdColor}
               />
               <TextDefault H5 textColor={currentTheme.fontThirdColor} bold>
-                {t('delivery')} {restaurantObject.deliveryTime} {t('Min')}
+                {t('delivery')} {restaurantObject?.deliveryTime} {t('Min')}
               </TextDefault>
             </View>
             <View
@@ -174,7 +176,7 @@ function About(props) {
               />
               <TextDefault H5 textColor={currentTheme.fontThirdColor} bold>
                 {t('salesTax')} {configuration.currencySymbol}
-                {restaurantObject.restaurantTax}
+                {restaurantObject?.restaurantTax}
               </TextDefault>
             </View>
             <View style={styles().ratingContainer}>
@@ -190,10 +192,10 @@ function About(props) {
                 H5
                 bolder
               >
-                {restaurantObject.average}
+                {restaurantObject?.average}
               </TextDefault>
               <TextDefault H5 textColor={currentTheme.fontThirdColor} bold>
-                ({restaurantObject.total})
+                ({restaurantObject?.total})
               </TextDefault>
             </View>
           </View>
@@ -218,7 +220,7 @@ function About(props) {
             </View>
 
             <View style={styles().timingContainer}>
-              {restaurantObject.openingTimes.map((v, index) => (
+              {restaurantObject?.openingTimes?.map((v, index) => (
                 <View key={index} style={styles(currentTheme).timingRow}>
                   <TextDefault
                     style={styles().timingText}
@@ -228,12 +230,12 @@ function About(props) {
                   >
                     {t(v.day)}{' '}
                   </TextDefault>
-                  {v.times.length < 1 ? (
+                  {v.times?.length < 1 ? (
                     <TextDefault key={index + 8} small bold center>
                       {t('ClosedAllDay')}
                     </TextDefault>
                   ) : (
-                    v.times.map((t) => (
+                    v.times?.map((t) => (
                       <TextDefault
                         key={index + 8}
                         textColor={currentTheme.black}

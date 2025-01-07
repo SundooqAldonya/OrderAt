@@ -37,7 +37,7 @@ const RESTAURANTS = gql`
 
 function Favourite() {
   const analytics = Analytics()
-
+  console.log('fav here')
   const { t } = useTranslation()
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -53,6 +53,7 @@ function Favourite() {
       fetchPolicy: 'network-only'
     }
   )
+  console.log({ data })
   useEffect(() => {
     async function Track() {
       await analytics.track(analytics.events.NAVIGATE_TO_FAVOURITES)
@@ -72,7 +73,7 @@ function Favourite() {
       headerTitleAlign: 'center',
       headerRight: null,
       headerTitleStyle: {
-        color:currentTheme.newFontcolor,
+        color: currentTheme.newFontcolor,
         fontWeight: 'bold'
       },
       headerTitleContainerStyle: {
@@ -90,10 +91,14 @@ function Favourite() {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View>
-              <MaterialIcons name="arrow-back" size={25} color={currentTheme.newFontcolor} />
+              <MaterialIcons
+                name='arrow-back'
+                size={25}
+                color={currentTheme.newFontcolor}
+              />
             </View>
           )}
           onPress={() => {
@@ -121,7 +126,7 @@ function Favourite() {
         spinnerColor={currentTheme.main}
       />
     )
-  if (error) return <ErrorView />
+  // if (error) return <ErrorView />
   return (
     <SafeAreaView edges={['bottom']} style={styles(currentTheme).flex}>
       <FlatList

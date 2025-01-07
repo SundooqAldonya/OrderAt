@@ -6,7 +6,7 @@ import {
   Platform,
   Linking,
   StatusBar,
-  ActivityIndicator,
+  ActivityIndicator
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications'
@@ -14,10 +14,7 @@ import Modal from 'react-native-modal'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { profile } from '../../apollo/queries'
 
-import {
-  pushToken,
-  updateNotificationStatus,
-} from '../../apollo/mutations'
+import { pushToken, updateNotificationStatus } from '../../apollo/mutations'
 
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
@@ -67,11 +64,7 @@ const appVersion = Constants.default.expoConfig.version
 function Settings(props) {
   const Analytics = analytics()
 
-  const {
-    profile,
-    loadingProfile,
-    errorProfile,
-  } = useContext(UserContext)
+  const { profile, loadingProfile, errorProfile } = useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
@@ -114,7 +107,11 @@ function Settings(props) {
           truncatedLabel=''
           backImage={() => (
             <View>
-              <MaterialIcons name="arrow-back" size={25} color={currentTheme.newIconColor} />
+              <MaterialIcons
+                name='arrow-back'
+                size={25}
+                color={currentTheme.newIconColor}
+              />
             </View>
           )}
           onPress={() => {
@@ -144,13 +141,15 @@ function Settings(props) {
     checkPermission()
   }, [props.navigation, languageName, themeContext.ThemeValue])
 
-  const _handleAppStateChange = async nextAppState => {
+  const _handleAppStateChange = async (nextAppState) => {
     if (nextAppState === 'active') {
       let token = null
       const permission = await getPermission()
       if (permission === 'granted') {
         if (!profile.notificationToken) {
-          token = await Notifications.getExpoPushTokenAsync({  projectId: Constants.expoConfig.extra.eas.projectId})
+          token = await Notifications.getExpoPushTokenAsync({
+            projectId: Constants.expoConfig.extra.eas.projectId
+          })
           uploadToken({ variables: { token: token.data } })
         }
         offerNotificationSetter(profile.isOfferNotification)
@@ -277,7 +276,10 @@ function Settings(props) {
   }
   if (loadingProfile)
     return (
-      <Spinner backColor={currentTheme.CustomLoadingBG} spinnerColor={currentTheme.main} />
+      <Spinner
+        backColor={currentTheme.CustomLoadingBG}
+        spinnerColor={currentTheme.main}
+      />
     )
   return (
     <SafeAreaView
@@ -285,20 +287,23 @@ function Settings(props) {
       style={[styles().flex, styles(currentTheme).mainContainer]}
     >
       <View style={styles().flex}>
-        <TouchableOpacity style={[styles(currentTheme).languageContainer]} onPress={() => modalVisibleSetter(true)}>
+        <TouchableOpacity
+          style={[styles(currentTheme).languageContainer]}
+          onPress={() => modalVisibleSetter(true)}
+        >
           <View style={{ flex: 1 }}>
             <View style={styles().changeLanguage}>
               <View>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={colors.border2}
+                  textColor={darkTheme ? '#fff' : colors.dark}
                 >
                   {t('language')}
                 </TextDefault>
               </View>
             </View>
             <TextDefault
-              textColor={colors.dark}
+              textColor={darkTheme ? '#fff' : colors.dark}
               bolder
               H5
               B700
@@ -345,7 +350,7 @@ function Settings(props) {
               <View style={styles().notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={colors.dark}
+                  textColor={darkTheme ? '#fff' : colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}
@@ -354,7 +359,11 @@ function Settings(props) {
               </View>
               {loading && btnText === 'order' && (
                 <View>
-                  <Spinner size='small' backColor='transparent' spinnerColor={currentTheme.main} />
+                  <Spinner
+                    size='small'
+                    backColor='transparent'
+                    spinnerColor={currentTheme.main}
+                  />
                 </View>
               )}
             </TouchableOpacity>
@@ -384,7 +393,7 @@ function Settings(props) {
               <View style={styles(currentTheme).notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={colors.dark}
+                  textColor={darkTheme ? '#fff' : colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}
@@ -393,7 +402,11 @@ function Settings(props) {
               </View>
               {loading && btnText === 'offer' && (
                 <View>
-                  <Spinner size='small' backColor='transparent' spinnerColor={currentTheme.main} />
+                  <Spinner
+                    size='small'
+                    backColor='transparent'
+                    spinnerColor={currentTheme.main}
+                  />
                 </View>
               )}
             </TouchableOpacity>
@@ -411,7 +424,7 @@ function Settings(props) {
               <View style={styles().notificationChekboxContainer}>
                 <TextDefault
                   numberOfLines={1}
-                  textColor={colors.dark}
+                  textColor={darkTheme ? '#fff' : colors.dark}
                   style={alignment.MLsmall}
                 >
                   {' '}
@@ -491,12 +504,7 @@ function Settings(props) {
               style={styles().modalButtons}
               onPress={() => onSelectedLanguage()}
             >
-              <TextDefault
-                textColor={currentTheme.main}
-                bolder
-                uppercase
-                small
-              >
+              <TextDefault textColor={currentTheme.main} bolder uppercase small>
                 {t('Select')}
               </TextDefault>
             </TouchableOpacity>
