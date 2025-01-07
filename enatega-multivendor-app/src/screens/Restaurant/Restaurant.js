@@ -112,6 +112,7 @@ function Restaurant(props) {
   const { data, refetch, networkStatus, loading, error } = useRestaurant(
     propsData._id
   )
+  const restaurant = data?.restaurantCustomer
   const client = useApolloClient()
   const { data: popularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId }
@@ -275,6 +276,7 @@ function Restaurant(props) {
       return
     }
     if (!restaurantCart || food.restaurant === restaurantCart) {
+      console.log('AddToCart')
       await addToCart(food, food.restaurant !== restaurantCart)
     } else if (food.restaurant !== restaurantCart) {
       Alert.alert(
@@ -321,6 +323,7 @@ function Restaurant(props) {
       animate()
     } else {
       if (clearFlag) await clearCart()
+      console.log('beforeNavigation')
       navigation.navigate('ItemDetail', {
         food,
         addons: restaurant.addons,
@@ -549,7 +552,7 @@ function Restaurant(props) {
     )
   }
   if (error) return <TextError text={JSON.stringify(error)} />
-  const restaurant = data?.restaurantCustomer
+
   console.log({ restaurant })
   const allDeals = restaurant?.categories?.filter((cat) => cat?.foods?.length)
   const deals = allDeals.map((c, index) => ({
@@ -670,9 +673,10 @@ function Restaurant(props) {
                                 small
                               >
                                 {configuration.currencySymbol}{' '}
-                                {parseFloat(item.variations[0].price).toFixed(
+                                {item.variations[0].price}
+                                {/* {parseFloat(item.variations[0].price).toFixed(
                                   2
-                                )}
+                                )} */}
                               </TextDefault>
                               {item?.variations[0]?.discounted > 0 && (
                                 <TextDefault
@@ -854,9 +858,10 @@ function Restaurant(props) {
                                 small
                               >
                                 {configuration.currencySymbol}{' '}
-                                {parseFloat(item.variations[0].price).toFixed(
+                                {item.variations[0].price}
+                                {/* {parseFloat(item.variations[0].price).toFixed(
                                   2
-                                )}
+                                )} */}
                               </TextDefault>
                               {item?.variations[0]?.discounted > 0 && (
                                 <TextDefault

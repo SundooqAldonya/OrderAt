@@ -7,7 +7,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Dimensions,
-  Keyboard, 
+  Keyboard,
   TouchableOpacity
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -41,11 +41,13 @@ import Animated, {
 import { scale } from '../../utils/scaling'
 import { Card } from 'react-native-paper'
 import { colors } from '../../utils/colors'
+
 const { height } = Dimensions.get('window')
 const TOP_BAR_HEIGHT = height * 0.08
 const HEADER_MAX_HEIGHT = height * 0.34
 const HEADER_MIN_HEIGHT = height * 0.05 + TOP_BAR_HEIGHT
 const SCROLL_RANGE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
+
 function ItemDetail(props) {
   const Analytics = analytics()
 
@@ -289,7 +291,7 @@ function ItemDetail(props) {
         return acc + option.price
       }, 0)
     })
-    return (variation + addons).toFixed(2)
+    return Math.round(variation + addons)
   }
 
   function validateOrderItem() {
@@ -357,12 +359,7 @@ function ItemDetail(props) {
     )
     return {
       height,
-      opacity: interpolate(
-        scrollY.value,
-        [0, 1],
-        [1, 0],
-        Extrapolation.CLAMP
-      )
+      opacity: interpolate(scrollY.value, [0, 1], [1, 0], Extrapolation.CLAMP)
     }
   })
 
@@ -393,21 +390,30 @@ function ItemDetail(props) {
       <View style={[styles().flex, styles(currentTheme).mainContainer]}>
         <Animated.View
           style={[styles(currentTheme).headerContainer, animatedHeaderStyle]}
+          // style={[styles(currentTheme).headerContainer]}
         >
           <ImageHeader image={imageUrl} />
           {/* <HeadingComponent title={food.title} price={calculatePrice()} /> */}
         </Animated.View>
         <Animated.ScrollView
-          onScroll={scrollHandler} 
-          style={[styles().scrollViewStyle, { backgroundColor: currentTheme.themeBackground }]}
+          onScroll={scrollHandler}
+          style={[
+            styles().scrollViewStyle,
+            { backgroundColor: currentTheme.themeBackground }
+          ]}
           scrollEventThrottle={1}
           contentContainerStyle={{
-            paddingTop: HEADER_MAX_HEIGHT,
+            // paddingTop: HEADER_MAX_HEIGHT,
             paddingBottom: scale(height * 0.09),
-            backgroundColor: currentTheme.themeBackground,
+            backgroundColor: currentTheme.themeBackground
           }}
         >
-          <View style={[styles().subContainer, { backgroundColor: currentTheme.themeBackground}]}>
+          <View
+            style={[
+              styles().subContainer,
+              { backgroundColor: currentTheme.themeBackground }
+            ]}
+          >
             <View>
               {food?.variations?.length > 1 && (
                 <View>
@@ -471,6 +477,7 @@ function ItemDetail(props) {
 
         <Animated.View
           style={[styles(currentTheme).titleContainer, animatedTitleStyle]}
+          // style={[styles(currentTheme).titleContainer]}
         >
           <HeadingComponent title={food.title} price={calculatePrice()} />
         </Animated.View>
