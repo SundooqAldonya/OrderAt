@@ -52,16 +52,14 @@ function ItemDetail(props) {
   const Analytics = analytics()
 
   const { food, addons, options, restaurant } = props.route.params
-  console.log({ food: food.variations[0].addons })
   const navigation = useNavigation()
   const { t } = useTranslation()
 
   const [selectedVariation, setSelectedVariation] = useState({
     ...food.variations[0],
     addons: food.variations[0].addons.map((fa) => {
-      const addon = addons.find((a) => a._id === fa)
-      // console.log({ addon: addon.options })
-      const addonOptions = addon.options.map((ao) => {
+      const addon = addons?.find((a) => a._id === fa)
+      const addonOptions = addon?.options?.map((ao) => {
         return options.find((o) => o._id === ao)
       })
       return {
@@ -71,7 +69,11 @@ function ItemDetail(props) {
     })
   })
 
-  console.log({ selectedVariation: selectedVariation.addons[0].options })
+  // console.log({
+  //   selectedVariation: selectedVariation?.addons
+  //     ? selectedVariation?.addons[0].options
+  //     : 'no addons'
+  // })
 
   const imageUrl =
     food?.image && food?.image.trim() !== '' ? food.image : IMAGE_LINK
@@ -148,7 +150,7 @@ function ItemDetail(props) {
       } else if (
         selected &&
         selected?.options?.length >= addon.quantityMinimum &&
-        selected.options.length <= addon.quantityMaximum
+        selected?.options?.length <= addon.quantityMaximum
       ) {
         validatedAddons.push(false)
       } else validatedAddons.push(true)
@@ -192,7 +194,7 @@ function ItemDetail(props) {
   const addToCart = async (quantity, clearFlag) => {
     const addons = selectedAddons.map((addon) => ({
       ...addon,
-      options: addon.options.map(({ _id }) => ({
+      options: addon?.options?.map(({ _id }) => ({
         _id
       }))
     }))
@@ -251,7 +253,7 @@ function ItemDetail(props) {
       ...variation,
       addons: variation.addons.map((fa) => {
         const addon = addons.find((a) => a._id === fa)
-        const addonOptions = addon.options.map((ao) => {
+        const addonOptions = addon?.options?.map((ao) => {
           return options.find((o) => o._id === ao)
         })
         return {
@@ -296,7 +298,7 @@ function ItemDetail(props) {
     const variation = selectedVariation.price
     let addons = 0
     selectedAddons.forEach((addon) => {
-      addons += addon.options.reduce((acc, option) => {
+      addons += addon?.options?.reduce((acc, option) => {
         return acc + option.price
       }, 0)
     })
@@ -311,8 +313,8 @@ function ItemDetail(props) {
         addon.error = false
       } else if (
         selected &&
-        selected.options.length >= addon.quantityMinimum &&
-        selected.options.length <= addon.quantityMaximum
+        selected?.options?.length >= addon.quantityMinimum &&
+        selected?.options?.length <= addon.quantityMaximum
       ) {
         addon.error = false
       } else addon.error = true
@@ -327,7 +329,7 @@ function ItemDetail(props) {
       return (
         <View>
           <RadioComponent
-            options={addon.options}
+            options={addon?.options}
             onPress={onSelectOption.bind(this, addon)}
           />
           {addon.error && (
@@ -341,7 +343,7 @@ function ItemDetail(props) {
       return (
         <View>
           <CheckComponent
-            options={addon.options}
+            options={addon?.options}
             onPress={onSelectOption.bind(this, addon)}
           />
           {addon.error && (
