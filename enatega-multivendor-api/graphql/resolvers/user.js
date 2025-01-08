@@ -228,11 +228,12 @@ module.exports = {
       console.log('CheckingEmail')
       console.log(args)
       try {
-        const emailExist = await User.findOne({
-          or: [{ email: args.email }, { phone: args.email }]
+        const emailExists = await User.findOne({
+          $or: [{ email: args.email }, { phone: args.email }]
         })
-        if (emailExist) {
-          return emailExist
+        console.log({ emailExists })
+        if (emailExists) {
+          return emailExists
         } else {
           return 'null'
         }
