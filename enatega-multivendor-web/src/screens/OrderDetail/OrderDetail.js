@@ -34,8 +34,8 @@ import RestMarker from "../../assets/images/rest-map-2.png";
 import DestMarker from "../../assets/images/dest-map-2.png";
 import MarkerImage from "../../assets/images/marker.png";
 import TrackingRider from "../../components/Orders/OrderDetail/TrackingRider";
-import { useSubscription } from "@apollo/client";
-import { subscriptionOrder } from "../../apollo/server";
+import { useLazyQuery, useQuery, useSubscription } from "@apollo/client";
+import { singleOrder, subscriptionOrder } from "../../apollo/server";
 import gql from "graphql-tag";
 import Modal from "react-modal";
 import { reviewOrder } from "../../apollo/server";
@@ -48,7 +48,10 @@ const REVIEWORDER = gql`
   ${reviewOrder}
 `;
 
-function useQuery() {
+const ORDER = gql`
+  ${singleOrder}
+`;
+function useQueryData() {
   return new URLSearchParams(useLocation().search);
 }
 
@@ -60,7 +63,7 @@ function OrderDetail() {
   const navigate = useNavigate();
   let destCoordinates = null;
   let restCoordinates = {};
-  const queryParams = useQuery();
+  const queryParams = useQueryData();
   const [toggleChat, setToggleChat] = useState(false);
   const { location } = useLocationContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +74,27 @@ function OrderDetail() {
     onError,
     onCompleted,
   });
+
+  const {
+    data,
+    called: calledOrders,
+    loading: loadingOrders,
+    error: errorOrders,
+    data: dataOrders,
+    networkStatus: networkStatusOrders,
+    fetchMore: fetchMoreOrders,
+    subscribeToMore: subscribeToMoreOrders,
+  } = useQuery(
+    ORDER,
+    { variables: { id } },
+    {
+      fetchPolicy: "network-only",
+      onCompleted,
+      onError,
+    }
+  );
+
+  const order = data?.singleOrder;
 
   useEffect(() => {
     async function Track() {
@@ -133,10 +157,10 @@ function OrderDetail() {
     [restCoordinates, destCoordinates]
   );
 
-  const { loadingOrders, errorOrders, orders, clearCart } =
-    useContext(UserContext);
+  // const { loadingOrders, errorOrders, orders, clearCart } =
+  //   useContext(UserContext);
 
-  console.log(orders, "ORDERS------11111111111111111111111111111111111");
+  console.log({ order });
 
   // useEffect(async () => {
   //   // await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {
@@ -161,7 +185,7 @@ function OrderDetail() {
     );
   }
 
-  const order = orders?.length ? orders.find((o) => o._id === id) : null;
+  // const order = orders?.length ? orders.find((o) => o._id === id) : null;
   if (loadingOrders || !order) {
     return (
       <Grid container className={classes.spinnerContainer}>

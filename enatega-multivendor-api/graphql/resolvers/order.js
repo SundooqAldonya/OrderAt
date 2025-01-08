@@ -101,6 +101,20 @@ module.exports = {
         throw err
       }
     },
+    singleOrder: async (_, args, { req }) => {
+      try {
+        console.log('orderPaypal')
+        if (!req.isAuth) {
+          throw new Error('Unauthenticated!')
+        }
+        const order = await Order.findById(args.id)
+        console.log({ order })
+        if (!order) throw new Error('Order does not exist')
+        return transformOrder(order)
+      } catch (err) {
+        throw err
+      }
+    },
     orderPaypal: async (_, args, { req, res }) => {
       console.log('orderPaypal')
       if (!req.isAuth) {

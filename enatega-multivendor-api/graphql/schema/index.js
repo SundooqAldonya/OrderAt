@@ -1231,6 +1231,7 @@ const typeDefs = gql`
     categoriesByRestaurant(id: String!): [CategoriesByRestaurant!]
     foods: [Food!]!
     orders(offset: Int): [Order!]!
+    singleOrder(id: String!): Order!
     undeliveredOrders(offset: Int): [Order!]!
     deliveredOrders(offset: Int): [Order!]!
     allOrders(page: Int): [Order!]!
