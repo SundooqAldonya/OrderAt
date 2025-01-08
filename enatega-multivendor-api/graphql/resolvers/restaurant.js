@@ -398,7 +398,6 @@ module.exports = {
       if (!req.isAuth) throw new Error('Unauthenticated')
       // selects recent orders
       const recentRestaurantIds = await Order.find({ user: req.userId })
-        .populate('restaurant')
         .select('restaurant')
         .sort({ createdAt: -1 })
         .limit(100)
@@ -406,7 +405,7 @@ module.exports = {
       // if no orders, no restaurant, returns empty
       if (!recentRestaurantIds.length) return []
       const restaurantIds = recentRestaurantIds.map(order =>
-        order.restaurant._id.toString()
+        order?.restaurant?.toString()
       )
       // finds restaurants by id, also make sures restaurants delivers in the area.
       const restaurants = await Restaurant.find({
