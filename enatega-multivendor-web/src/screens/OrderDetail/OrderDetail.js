@@ -157,6 +157,8 @@ function OrderDetail() {
     [restCoordinates, destCoordinates]
   );
 
+  // const { loadingOrders, errorOrders, orders, clearCart } =
+  //   useContext(UserContext);
   const { clearCart } = useContext(UserContext);
 
   console.log({ order });

@@ -150,10 +150,12 @@ module.exports = {
       }
       try {
         const orders = await Order.find({ user: req.userId })
+          .populate('restaurant')
           .sort({ createdAt: -1 })
           .skip(args.offset || 0)
           .limit(50)
         const filterOrders = orders.filter(order => order.restaurant)
+        console.log({ filterOrders: filterOrders[0] })
         return filterOrders.map(order => {
           return transformOrder(order)
         })
