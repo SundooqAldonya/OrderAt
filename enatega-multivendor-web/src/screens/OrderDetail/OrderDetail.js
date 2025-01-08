@@ -160,7 +160,8 @@ function OrderDetail() {
       </Grid>
     );
   }
-  const order = orders.find((o) => o._id === id);
+
+  const order = orders?.length ? orders.find((o) => o._id === id) : null;
   if (loadingOrders || !order) {
     return (
       <Grid container className={classes.spinnerContainer}>
@@ -169,6 +170,7 @@ function OrderDetail() {
       </Grid>
     );
   }
+
   restCoordinates = {
     lat: parseFloat(order.restaurant.location.coordinates[1]),
     lng: parseFloat(order.restaurant.location.coordinates[0]),
