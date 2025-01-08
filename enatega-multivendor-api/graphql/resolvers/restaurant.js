@@ -306,10 +306,10 @@ module.exports = {
             return category
           })
         )
-        console.log({
-          modifiedCategoriesFoodVariations:
-            modifiedCategories[0].foods[0].variations
-        })
+        // console.log({
+        //   modifiedCategoriesFoodVariations:
+        //     modifiedCategories[0].foods[0].variations
+        // })
         return {
           ...restaurant,
           categories: modifiedCategories,
