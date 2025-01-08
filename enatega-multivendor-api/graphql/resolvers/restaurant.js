@@ -398,6 +398,7 @@ module.exports = {
       if (!req.isAuth) throw new Error('Unauthenticated')
       // selects recent orders
       const recentRestaurantIds = await Order.find({ user: req.userId })
+        .populate('restaurant')
         .select('restaurant')
         .sort({ createdAt: -1 })
         .limit(100)
