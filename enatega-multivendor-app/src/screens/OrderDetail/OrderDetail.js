@@ -30,7 +30,7 @@ import { PriceRow } from '../../components/OrderDetail/PriceRow'
 import { ORDER_STATUS_ENUM } from '../../utils/enums'
 import { CancelModal } from '../../components/OrderDetail/CancelModal'
 import Button from '../../components/Button/Button'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { cancelOrder as cancelOrderMutation } from '../../apollo/mutations'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { calulateRemainingTime } from '../../utils/customFunctions'
@@ -39,10 +39,16 @@ import { Instructions } from '../../components/Checkout/Instructions'
 import MapViewDirections from 'react-native-maps-directions'
 import useEnvVars from '../../../environment'
 import LottieView from 'lottie-react-native'
+import { singleOrder } from '../../apollo/queries'
+
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
 
 const CANCEL_ORDER = gql`
   ${cancelOrderMutation}
+`
+
+const ORDER = gql`
+  ${singleOrder}
 `
 
 function OrderDetail(props) {
@@ -50,7 +56,7 @@ function OrderDetail(props) {
   const Analytics = analytics()
   const id = props.route.params ? props.route.params._id : null
   const user = props.route.params ? props.route.params.user : null
-  const { loadingOrders, errorOrders, orders } = useContext(OrdersContext)
+  const { orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -63,6 +69,26 @@ function OrderDetail(props) {
     onError,
     variables: { abortOrderId: id }
   })
+
+  const {
+    data,
+    called: calledOrders,
+    loading: loadingOrders,
+    error: errorOrders,
+    data: dataOrders,
+    networkStatus: networkStatusOrders,
+    fetchMore: fetchMoreOrders,
+    subscribeToMore: subscribeToMoreOrders
+  } = useQuery(
+    ORDER,
+    { variables: { id } },
+    {
+      fetchPolicy: 'network-only',
+      onError
+    }
+  )
+
+  const order = data?.singleOrder
 
   useEffect(() => {
     async function Track() {
@@ -82,7 +108,7 @@ function OrderDetail(props) {
     })
   }
 
-  const order = orders?.find((o) => o?._id === id)
+  // const order = orders?.find((o) => o?._id === id)
 
   useEffect(() => {
     props.navigation.setOptions({

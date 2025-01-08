@@ -1002,6 +1002,84 @@ export const orderFragment = `fragment NewOrder on Order {
   assignedAt
 }`
 
+export const singleOrder = `query SingleOrder($id: String!){
+  singleOrder(id: $id){
+    _id
+    orderId
+    restaurant{
+      _id
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+    }
+    deliveryAddress{
+      location{coordinates}
+      deliveryAddress
+    }
+    items{
+      _id
+      title
+      food
+      description
+      quantity
+      variation{
+        _id
+        title
+        price
+        discounted
+      }
+      addons{
+        _id
+        options{
+          _id
+          title
+          description
+          price
+        }
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+    }
+    user{
+      _id
+      name
+      phone
+    }
+    rider{
+      _id
+      name
+    }
+    review{
+      _id
+    }
+    paymentMethod
+    paidAmount
+    orderAmount
+    orderStatus
+    deliveryCharges
+    tipping
+    taxationAmount
+    orderDate
+    expectedTime
+    isPickedUp
+    createdAt
+    completionTime
+    cancelledAt
+    assignedAt
+    deliveredAt
+    acceptedAt
+    pickedAt
+    preparationTime
+  }
+}
+`
+
 export const chat = `query Chat($order: ID!) {
   chat(order: $order) {
     id

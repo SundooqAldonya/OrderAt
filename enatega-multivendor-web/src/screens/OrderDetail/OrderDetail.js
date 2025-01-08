@@ -51,6 +51,7 @@ const REVIEWORDER = gql`
 const ORDER = gql`
   ${singleOrder}
 `;
+
 function useQueryData() {
   return new URLSearchParams(useLocation().search);
 }
