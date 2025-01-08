@@ -404,9 +404,10 @@ module.exports = {
         .lean()
       // if no orders, no restaurant, returns empty
       if (!recentRestaurantIds.length) return []
-      const restaurantIds = recentRestaurantIds.map(order =>
-        order?.restaurant?.toString()
-      )
+      const restaurantIds = recentRestaurantIds.map(order => {
+        console.log({ orderRestaurant: order?.restaurant })
+        return order?.restaurant?.toString()
+      })
       // finds restaurants by id, also make sures restaurants delivers in the area.
       const restaurants = await Restaurant.find({
         $and: [
