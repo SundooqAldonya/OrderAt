@@ -21,6 +21,7 @@ const {
   JOB_TYPE,
   JOB_DELAY_DEFAULT
 } = require('../../queue')
+
 module.exports = {
   Subscription: {
     subscriptionRiderLocation: {
@@ -43,7 +44,7 @@ module.exports = {
     }
   },
   Query: {
-    riders: async() => {
+    riders: async () => {
       console.log('riders')
       try {
         const riders = await Rider.find({ isActive: true })
@@ -53,7 +54,7 @@ module.exports = {
         throw err
       }
     },
-    rider: async(_, args, { req }) => {
+    rider: async (_, args, { req }) => {
       console.log('args', args)
       console.log('rider1111', args.id, req.userId, req.isAuth)
       console.log('rider', args.id, req.userId, req.isAuth)
@@ -79,7 +80,7 @@ module.exports = {
         throw err
       }
     },
-    assignedOrders: async(_, args, { req }) => {
+    assignedOrders: async (_, args, { req }) => {
       console.log('assignedOrders', args.id || req.userId)
       const userId = args.id || req.userId
       if (!userId) {
@@ -97,7 +98,7 @@ module.exports = {
         throw err
       }
     },
-    riderCompletedOrders: async(_, args, { req }) => {
+    riderCompletedOrders: async (_, args, { req }) => {
       console.log('rider completed orders')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -112,7 +113,7 @@ module.exports = {
         throw err
       }
     },
-    unassignedOrdersByZone: async(_, args, { req }) => {
+    unassignedOrdersByZone: async (_, args, { req }) => {
       console.log('unassignedOrders')
 
       try {
@@ -133,7 +134,7 @@ module.exports = {
         throw err
       }
     },
-    riderOrders: async(_, args, { req }) => {
+    riderOrders: async (_, args, { req }) => {
       console.log('riderOrders', req.userId)
       try {
         const rider = await Rider.findById(req.userId)
@@ -173,7 +174,7 @@ module.exports = {
     }
   },
   Mutation: {
-    createRider: async(_, args) => {
+    createRider: async (_, args) => {
       console.log('createRider')
       try {
         // check username, if already exists throw error
@@ -210,7 +211,7 @@ module.exports = {
         throw err
       }
     },
-    editRider: async(_, args) => {
+    editRider: async (_, args) => {
       console.log('editRider')
       try {
         const checkUsername = await Rider.find({
@@ -246,7 +247,7 @@ module.exports = {
         throw err
       }
     },
-    deleteRider: async(_, { id }) => {
+    deleteRider: async (_, { id }) => {
       console.log('deleteRider')
       try {
         const rider = await Rider.findById(id)
@@ -257,7 +258,7 @@ module.exports = {
         throw err
       }
     },
-    toggleAvailablity: async(_, args, { req }) => {
+    toggleAvailablity: async (_, args, { req }) => {
       console.log('toggleAvailablity')
       const userId = args.id || req.userId // if rider: get id from req, args otherwise
       if (!userId) {
@@ -272,7 +273,7 @@ module.exports = {
         throw err
       }
     },
-    updateOrderStatusRider: async(_, args, { req }) => {
+    updateOrderStatusRider: async (_, args, { req }) => {
       console.log('updateOrderStatusRider', args, req.userId)
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -320,7 +321,7 @@ module.exports = {
         throw err
       }
     },
-    assignOrder: async(_, args, { req }) => {
+    assignOrder: async (_, args, { req }) => {
       console.log('assignOrder', args.id, req.userId)
       try {
         const order = await Order.findById(args.id)
@@ -341,7 +342,7 @@ module.exports = {
         throw error
       }
     },
-    updateRiderLocation: async(_, args, { req }) => {
+    updateRiderLocation: async (_, args, { req }) => {
       console.log('updateRiderLocation', req.userId)
       if (!req.userId) {
         throw new Error('Unauthenticated!')

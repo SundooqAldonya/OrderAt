@@ -16,6 +16,7 @@ import colors from '../../utilities/colors'
 import { NetworkStatus } from '@apollo/client'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
+import useSidebar from '../../components/Sidebar/useSidebar'
 
 const { height, width } = Dimensions.get('window')
 
@@ -31,6 +32,7 @@ const NewOrders = ({ navigation }) => {
     networkStatusAssigned
   } = useContext(UserContext)
   const [orders, setOrders] = useState([])
+  const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
 
   useFocusEffect(() => {
     setActive('NewOrders')
@@ -40,7 +42,10 @@ const NewOrders = ({ navigation }) => {
     if (assignedOrders) {
       setOrders(
         assignedOrders.filter(
-          o => o.orderStatus === 'ACCEPTED' && !o.rider && !o.isPickedUp
+          order =>
+            order?.orderStatus === 'ACCEPTED' &&
+            !order?.rider &&
+            !order?.isPickedUp
         )
       )
     }

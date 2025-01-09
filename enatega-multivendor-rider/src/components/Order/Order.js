@@ -5,8 +5,7 @@ import TextDefault from '../Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 import useOrder from './useOrder'
 import Spinner from '../Spinner/Spinner'
-import {useTranslation} from 'react-i18next'
-
+import { useTranslation } from 'react-i18next'
 
 const Order = ({ order, orderAmount }) => {
   const {
@@ -17,7 +16,7 @@ const Order = ({ order, orderAmount }) => {
     loadingAssignOrder
   } = useOrder(order)
 
-    const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <>
       <View style={{ marginTop: 20 }}>
@@ -37,12 +36,12 @@ const Order = ({ order, orderAmount }) => {
             styles.container,
             active === 'NewOrders' ? styles.bgPrimary : styles.bgWhite
           ]}
-          onPress={() =>
+          onPress={() => {
             navigation.navigate('OrderDetail', {
               itemId: order?._id,
               order
             })
-          }>
+          }}>
           <View style={styles.row}>
             <TextDefault style={styles.rowItem1} bolder H4>
               {t('orderID')}

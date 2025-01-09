@@ -7,10 +7,10 @@ import { FlashMessage } from '../FlashMessage/FlashMessage'
 import { subscriptionOrder } from '../../apollo/subscriptions'
 import { getRemainingAcceptingTime } from '../../utilities/utils'
 import UserContext from '../../context/user'
+
 const ASSIGN_ORDER = gql`
   ${assignOrder}
 `
-
 const useOrder = order => {
   const { active } = useContext(TabsContext)
   const { refetchAssigned } = useContext(UserContext)
