@@ -7,7 +7,7 @@ export default {
   container: {
     display: 'flex',
     flexDirection: 'row',
-    width: width * 0.79,
+    width: width * 0.89,
     height: 60,
     backgroundColor: colors.black,
     borderRadius: 15,
@@ -19,6 +19,7 @@ export default {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10
   },
   btn: {
@@ -28,7 +29,7 @@ export default {
     ...alignment.PLsmall,
     ...alignment.PRsmall,
     ...alignment.PTsmall,
-    ...alignment.PBsmall,
+    ...alignment.PBsmall
   },
   badge: {
     width: 20,

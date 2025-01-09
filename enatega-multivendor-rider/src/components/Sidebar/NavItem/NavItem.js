@@ -11,7 +11,13 @@ const NavItem = props => (
   <View style={styles.Flex}>
     <TouchableOpacity style={styles.container} onPress={props.onPress}>
       <View style={styles.leftContainer}>
-        <FontAwesome name={props.icon} size={scale(20)} color={colors.white} />
+        {props.icon ? (
+          <FontAwesome
+            name={props.icon}
+            size={scale(20)}
+            color={colors.white}
+          />
+        ) : null}
       </View>
       <View style={styles.rightContainer}>
         <TextDefault textColor={colors.white} H5 bold>

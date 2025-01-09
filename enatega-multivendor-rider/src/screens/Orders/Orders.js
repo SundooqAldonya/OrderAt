@@ -1,4 +1,4 @@
-import { View, FlatList, Dimensions } from 'react-native'
+import { View, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import ScreenBackground from '../../components/ScreenBackground/ScreenBackground'
 import styles from './style'
@@ -14,7 +14,6 @@ import LottieView from 'lottie-react-native'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 import { useTranslation } from 'react-i18next'
-
 
 const { height, width } = Dimensions.get('window')
 const Orders = ({ navigation }) => {
@@ -40,10 +39,10 @@ const Orders = ({ navigation }) => {
           ? assignedOrders.filter(
               o =>
                 ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
-                  o.orderStatus
+                  o?.orderStatus
                 ) &&
-                o.rider &&
-                dataProfile.rider._id === o.rider._id
+                o?.rider &&
+                dataProfile?.rider?._id === o?.rider?._id
             )
           : []
       )

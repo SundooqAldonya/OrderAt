@@ -184,14 +184,27 @@ function Main() {
 }
 
 function NoDrawer() {
+  const { t } = useTranslation()
   return (
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
       <Stack.Screen
-        name="Orders"
-        component={MyTabs}
+        // name="Orders"
+        // component={MyTabs}
+        name="Home"
+        component={NewOrders}
         options={{
           headerLeft: () => <LeftButton />
         }}
+      />
+      <Stack.Screen
+        name="MyOrders"
+        component={Orders}
+        options={{ title: t('orders') }}
+      />
+      <Stack.Screen
+        name="Wallet"
+        component={Wallet}
+        options={{ title: t('wallet') }}
       />
       <Stack.Screen name="OrderDetail" component={OrderDetail} />
       <Stack.Screen name="Withdraw" component={Withdraw} />

@@ -7,11 +7,13 @@ import TextDefault from '../Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 const rider = require('../../assets/rider.png')
 import useSidebar from './useSidebar'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 function SidebBar() {
+  const navigation = useNavigation()
   const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <ImageBackground
       source={rider}
@@ -47,6 +49,27 @@ function SidebBar() {
                 style={{ marginTop: Platform.OS === 'android' ? -12 : -5 }}
               />
             </View>
+          </View>
+          <View style={styles.item}>
+            <NavItem
+              onPress={() => navigation.navigate('Home')}
+              icon={'home'}
+              title={t('NewOrders')}
+            />
+          </View>
+          <View style={styles.item}>
+            <NavItem
+              onPress={() => navigation.navigate('MyOrders')}
+              icon={'clock-o'}
+              title={t('myorders')}
+            />
+          </View>
+          <View style={styles.item}>
+            <NavItem
+              onPress={() => navigation.navigate('Language')}
+              icon={'language'}
+              title={t('language')}
+            />
           </View>
           {datas.map((data, ind) => (
             <View key={ind} style={styles.item}>

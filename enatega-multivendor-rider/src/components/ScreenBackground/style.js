@@ -50,5 +50,20 @@ export default StyleSheet.create({
     backgroundColor: colors.black,
     borderRadius: 7,
     ...alignment.MLmedium
+  },
+  hamburger: {
+    width: 30,
+    height: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    top: 70,
+    left: 40
+  },
+  line: {
+    height: 2,
+    backgroundColor: '#000',
+    width: '100%'
   }
 })
