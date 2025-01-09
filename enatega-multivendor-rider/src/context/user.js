@@ -61,6 +61,8 @@ export const UserProvider = props => {
     // pollInterval: 15000
   })
 
+  console.log({ dataAssigned: dataAssigned?.riderOrders[0] })
+
   let unsubscribeZoneOrder = null
   let unsubscribeAssignOrder = null
 
@@ -78,7 +80,7 @@ export const UserProvider = props => {
   }, [dataProfile])
 
   useEffect(() => {
-    const trackRiderLocation = async() => {
+    const trackRiderLocation = async () => {
       locationListener.current = await watchPositionAsync(
         { accuracy: LocationAccuracy.BestForNavigation, timeInterval: 10000 },
         async location => {

@@ -2,38 +2,49 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useTabsContext } from './tabs'
 import { Audio } from 'expo-av'
 import { useUserContext } from './user'
+import useSidebar from '../components/Sidebar/useSidebar'
+
 const SoundContext = React.createContext()
+
 export const SoundContextProvider = ({ children }) => {
   const [sound, setSound] = useState(null)
   const { active } = useTabsContext()
   const { assignedOrders } = useUserContext()
+  const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
+
+  console.log({ active })
+
   useEffect(() => {
     if (assignedOrders) {
-      const shouldPlaySound = assignedOrders.some(o => o.isRiderRinged)
+      const shouldPlaySound = assignedOrders.some(order => order?.isRiderRinged)
       if (shouldPlaySound) playSound()
       else stopSound()
     }
   }, [assignedOrders])
+
   const playSound = async () => {
-    // if (active === 'NewOrders') {
-    //   await stopSound()
-    //   const { sound } = await Audio.Sound.createAsync(
-    //     require('../assets/beep3.mp3')
-    //   )
-    //   await sound.setIsLoopingAsync(true)
-    //   await Audio.setAudioModeAsync({
-    //     allowsRecordingIOS: false,
-    //     staysActiveInBackground: true,
-    //     interruptionModeIOS: (Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS = 2),
-    //     playsInSilentModeIOS: true,
-    //     shouldDuckAndroid: true,
-    //     interruptionModeAndroid: (Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS = 2),
-    //     playThroughEarpieceAndroid: false
-    //   })
-    //   await sound.playAsync()
-    //   setSound(sound)
-    // }
+    if (isEnabled) {
+      if (active === 'NewOrders') {
+        await stopSound()
+        const { sound } = await Audio.Sound.createAsync(
+          require('../assets/beep3.mp3')
+        )
+        await sound.setIsLoopingAsync(true)
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          staysActiveInBackground: true,
+          interruptionModeIOS: (Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS = 2),
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: true,
+          interruptionModeAndroid: (Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS = 2),
+          playThroughEarpieceAndroid: false
+        })
+        await sound.playAsync()
+        setSound(sound)
+      }
+    }
   }
+
   const stopSound = async () => {
     await sound?.unloadAsync()
   }
