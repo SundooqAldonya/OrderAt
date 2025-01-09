@@ -39,20 +39,6 @@ module.exports = {
       console.log('createFood')
       console.log({ createFoodAddons: args.foodInput.variations[0].addons })
       try {
-        let variations
-        // if (args.foodInput.variations.length) {
-        //   const variationsArr = args.foodInput.variations
-        //   variations = await Variation.insertMany([...variationsArr])
-        // }
-
-        // if (args.foodInput.variations[0]?.addons?.length) {
-        //   args.foodInput.variations.map(item => {
-        //     console.log({ item })
-        //   })
-        //   // const variationsArr = args.foodInput.variations
-        //   // variations = await Variation.insertMany([...variationsArr])
-        // }
-
         const food = new Food({
           title: args.foodInput.title,
           description: args.foodInput.description,
@@ -63,7 +49,8 @@ module.exports = {
           const variationsArr = args.foodInput.variations.map(item => {
             return { ...item, food: food._id }
           })
-          variations = await Variation.insertMany([...variationsArr])
+          const variations = await Variation.insertMany([...variationsArr])
+          console.log({ createdVariations: variations })
           food.variations = [...variations]
         }
         if (
@@ -77,7 +64,6 @@ module.exports = {
         }
         await food.save()
         const newFood = await food.populate('category')
-        console.log({ newFood })
         return newFood
       } catch (err) {
         console.log(err)
@@ -85,7 +71,9 @@ module.exports = {
       }
     },
     async editFood(_, { foodInput }) {
-      console.log({ foodInput: foodInput.variations })
+      console.log({ foodInput })
+      console.log({ foodInputVariations: foodInput.variations })
+      console.log({ foodInputVariationsAddons: foodInput.variations[0].addons })
       try {
         const food = await Food.findById(foodInput._id)
         food.title = foodInput.title
@@ -99,11 +87,31 @@ module.exports = {
         }
         if (foodInput.variations.length) {
           const variationsArr = foodInput.variations
+          const variationsTitle = variationsArr.map(item => item.title)
+          console.log({ variationsTitle })
           const existingVariations = await Variation.find({
-            title: { $in: variationsArr.map(item => item.title) },
+            title: { $in: variationsTitle },
             food: foodInput._id
           })
+
           console.log({ existingVariations })
+
+          // existingVariations.forEach(async (variant, index) => {
+          //   variant?.addons = [...foodInput.variations[index].addons]
+          //   await variant.save()
+          // })
+          await Promise.all(
+            existingVariations.map(async variant => {
+              const matchingInput = foodInput.variations.find(
+                item => item.title === variant.title
+              )
+              if (matchingInput) {
+                variant.addons = [...matchingInput.addons]
+                await variant.save()
+              }
+            })
+          )
+
           const existingTitles = existingVariations.map(item => item.title)
           console.log({ existingTitles })
           const newVariations = variationsArr.filter(

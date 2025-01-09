@@ -28,5 +28,7 @@ const variationSchema = new Schema(
   },
   { timestamps: true }
 )
+
+variationSchema.index({ title: 1, food: 1 })
 const myModule = (module.exports = mongoose.model('Variation', variationSchema))
 myModule.variationSchema = variationSchema

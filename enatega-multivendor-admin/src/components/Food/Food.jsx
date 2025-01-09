@@ -73,7 +73,7 @@ function Food(props) {
   const [addonModal, addonModalSetter] = useState(false)
   const [variation, setVariation] = useState(
     props.food && props.food.variations.length
-      ? props.food?.variations.map(({ title, price, discounted, addons }) => {
+      ? props.food?.variations?.map(({ title, price, discounted, addons }) => {
           return {
             title,
             price,
@@ -137,9 +137,6 @@ function Food(props) {
     setTitle('')
     setDescription('')
 
-    if (props.update) {
-      window.location.reload()
-    }
     setTimeout(onDismiss, 3000)
   }
 
@@ -324,35 +321,30 @@ function Food(props) {
   }
   const onSelectAddon = (index, id) => {
     const variations = variation
-    const addon = variations[index].addons.indexOf(id)
-    if (addon < 0) variations[index].addons.push(id)
-    else variations[index].addons.splice(addon, 1)
-    setVariation([...variations])
+    // const addon = variations[index].addons.indexOf(id)
+    const foundAddon = variations[index].addons.find(item => item === id)
+    console.log({ foundAddon })
+    if (foundAddon) {
+      const newArr = variations[index].addons.filter(item => item !== id)
+      variations[index].addons = newArr
+      console.log({ newArr })
+      setVariation([...variations])
+    } else {
+      variations[index].addons = [...variations[index].addons, id]
+      setVariation([...variations])
+    }
+
+    // if (addon < 0) variations[index].addons.push(id)
+    // else variations[index].addons.splice(addon, 1)
   }
+  console.log({ variationAddon: variation[0].addons })
 
-  // const uploadImageToCloudinary = async () => {
-  // if (imgMenu === '') return imgMenu
-  // if (props.food && props.food.image === imgMenu) return imgMenu
-
-  // const apiUrl = CLOUDINARY_UPLOAD_URL
-  // const data = {
-  //   file: imgMenu,
-  //   upload_preset: CLOUDINARY_FOOD
-  // }
-  // try {
-  //   const result = await fetch(apiUrl, {
-  //     body: JSON.stringify(data),
-  //     headers: {
-  //       'content-type': 'application/json'
-  //     },
-  //     method: 'POST'
-  //   })
-  //   const imageData = await result.json()
-  //   return imageData.secure_url
-  // } catch (e) {
-  //   console.log(e)
-  // }
-  // }
+  const foundAddon = (index, id) => {
+    const variations = variation
+    const foundAddon = variations[index].addons.find(item => item === id)
+    if (foundAddon) return true
+    return false
+  }
 
   const handleImageChange = e => {
     setImage(e.target.files[0])
@@ -625,34 +617,36 @@ function Food(props) {
                     <Box>
                       {loadingAddons && t('LoadingDots')}
                       {errorAddons && t('ErrorDots')}
-                      {dataAddons?.getAddonsByRestaurant
-                        ?.filter(addon => addon.title !== 'Default Addon')
-                        .map(addon => {
-                          console.log({ addons: variation[index].addons })
-                          return (
-                            <Grid
-                              item
-                              xs={12}
-                              md={6}
-                              key={addon._id}
-                              style={{ textAlign: 'left', paddingLeft: 20 }}>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    value={addon._id}
-                                    checked={variation[index]?.addons?.includes(
-                                      addon._id
-                                    )}
-                                    onChange={() =>
-                                      onSelectAddon(index, addon._id)
-                                    }
-                                  />
-                                }
-                                label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
-                              />
-                            </Grid>
-                          )
-                        })}
+                      {dataAddons?.getAddonsByRestaurant.map(addon => {
+                        console.log({ addon })
+                        // console.log({
+                        //   addons: variation[index].addons.includes(addon._id)
+                        // })
+                        return (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            key={addon._id}
+                            style={{ textAlign: 'left', paddingLeft: 20 }}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  value={addon._id}
+                                  // checked={variation[index]?.addons?.includes(
+                                  //   addon._id
+                                  // )}
+                                  checked={foundAddon(index, addon._id)}
+                                  onChange={() =>
+                                    onSelectAddon(index, addon._id)
+                                  }
+                                />
+                              }
+                              label={`${addon.title} (Description: ${addon.description})(Min: ${addon.quantityMinimum})(Max: ${addon.quantityMaximum})`}
+                            />
+                          </Grid>
+                        )
+                      })}
                     </Box>
                     <Button
                       className={classes.button}
