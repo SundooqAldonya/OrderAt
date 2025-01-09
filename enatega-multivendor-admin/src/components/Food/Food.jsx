@@ -58,7 +58,7 @@ function Food(props) {
     props.food ? props.food.description : ''
   )
   const [category, setCategory] = useState(
-    props.food ? props.food.categoryId : ''
+    props.food ? props.food.category._id : ''
   )
   const [editModal, setEditModal] = useState(false)
   // const [uploadFoodImage] = useMutation(UPLOAD_FILE)
@@ -94,7 +94,6 @@ function Food(props) {
           }
         ]
   )
-  console.log({ variation })
 
   const restaurantId = localStorage.getItem('restaurantId')
 
@@ -319,6 +318,7 @@ function Food(props) {
     addonModalSetter(prev => !prev)
     variationIndexSetter(index)
   }
+
   const onSelectAddon = (index, id) => {
     const variations = variation
     // const addon = variations[index].addons.indexOf(id)
