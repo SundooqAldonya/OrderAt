@@ -453,6 +453,7 @@ export const myOrders = `query Orders($offset:Int){
   }
 }
 `;
+
 export const singleOrder = `query SingleOrder($id: String!){
   singleOrder(id: $id){
     _id
