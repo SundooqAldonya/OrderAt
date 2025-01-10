@@ -671,6 +671,7 @@ export const getRiders = `query{
       password
       phone
       available
+      isActive
       zone{
         _id
         title

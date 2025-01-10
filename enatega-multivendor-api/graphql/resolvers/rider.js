@@ -47,7 +47,7 @@ module.exports = {
     riders: async () => {
       console.log('riders')
       try {
-        const riders = await Rider.find({ isActive: true })
+        const riders = await Rider.find()
         return riders.map(transformRider)
       } catch (err) {
         console.log(err)
@@ -270,6 +270,22 @@ module.exports = {
         const rider = await Rider.findById(userId)
         rider.available = !rider.available
         const result = await rider.save()
+        return transformRider(result)
+      } catch (err) {
+        throw err
+      }
+    },
+    toggleActive: async (_, args, { req }) => {
+      console.log('toggleActive')
+      const userId = args.id || req.userId // if rider: get id from req, args otherwise
+      if (!userId) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const rider = await Rider.findById(userId)
+        rider.isActive = !rider.isActive
+        const result = await rider.save()
+        console.log({ result })
         return transformRider(result)
       } catch (err) {
         throw err

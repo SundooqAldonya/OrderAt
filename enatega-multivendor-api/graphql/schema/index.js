@@ -1497,6 +1497,7 @@ const typeDefs = gql`
     deleteRider(id: String!): Rider!
     toggleAvailablity(id: String): Rider!
     toggleMute(id: String): Rider!
+    toggleActive(id: String): Rider!
     updateStatus(id: String, orderStatus: String!): Order!
     assignRider(id: String!, riderId: String!): Order!
     riderLogin(

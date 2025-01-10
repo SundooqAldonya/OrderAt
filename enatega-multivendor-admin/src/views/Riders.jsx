@@ -12,7 +12,8 @@ import {
   getRiders,
   deleteRider,
   toggleAvailablity,
-  getAvailableRiders
+  getAvailableRiders,
+  toggleActive
 } from '../apollo'
 import useGlobalStyles from '../utils/globalStyles'
 import {
@@ -45,23 +46,33 @@ const DELETE_RIDER = gql`
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
 `
+const TOGGLE_ACTIVE = gql`
+  ${toggleActive}
+`
 const GET_AVAILABLE_RIDERS = gql`
   ${getAvailableRiders}
 `
 
 function Riders(props) {
-  const { PAID_VERSION } = ConfigurableValues()
+  // const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
   const [rider, setRider] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const onChangeSearch = e => setSearchQuery(e.target.value)
+
   const [mutateToggle] = useMutation(TOGGLE_RIDER, {
     refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
   })
+
+  const [mutateActive] = useMutation(TOGGLE_ACTIVE, {
+    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
+  })
+
   const [mutateDelete] = useMutation(DELETE_RIDER, {
     refetchQueries: [{ query: GET_RIDERS }]
   })
+
   const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
     GET_RIDERS
   )
@@ -122,6 +133,10 @@ function Riders(props) {
       cell: row => <>{availableStatus(row)}</>
     },
     {
+      name: t('Active'),
+      cell: row => <>{isActiveStatus(row)}</>
+    },
+    {
       name: t('Action'),
       cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
     }
@@ -136,6 +151,22 @@ function Riders(props) {
           defaultChecked={row.available}
           onChange={_event => {
             mutateToggle({ variables: { id: row._id } })
+          }}
+          style={{ color: 'black' }}
+        />
+      </>
+    )
+  }
+  const isActiveStatus = row => {
+    console.log({ isActive: row.isActive })
+    return (
+      <>
+        {/* {row.isActive} */}
+        <Switch
+          size="small"
+          defaultChecked={row.isActive}
+          onChange={_event => {
+            mutateActive({ variables: { id: row._id } })
           }}
           style={{ color: 'black' }}
         />

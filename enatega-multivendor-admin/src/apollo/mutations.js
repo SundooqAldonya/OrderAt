@@ -357,11 +357,19 @@ export const deleteRider = `
       }`
 
 export const toggleAvailablity = `
-      mutation ToggleRider($id:String){
-        toggleAvailablity(id:$id){
-          _id
-        }
-}`
+  mutation ToggleRider($id:String){
+    toggleAvailablity(id:$id){
+      _id
+    }
+  }
+`
+export const toggleActive = `
+  mutation ToggleActive($id:String){
+    toggleActive(id:$id){
+      _id
+    }
+  }
+`
 
 export const assignRider = ` mutation AssignRider($id:String!,$riderId:String!){
   assignRider(id:$id,riderId:$riderId){
