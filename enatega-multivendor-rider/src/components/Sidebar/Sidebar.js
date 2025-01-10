@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Platform, Switch, ImageBackground, Linking } from 'react-native'
 import NavItem from './NavItem/NavItem'
 import Profile from './Profile/Profile'
@@ -9,11 +9,29 @@ const rider = require('../../assets/rider.png')
 import useSidebar from './useSidebar'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
+import { useSoundContext } from '../../context/sound'
 
 function SidebBar() {
   const navigation = useNavigation()
-  const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
   const { t } = useTranslation()
+
+  const {
+    logout,
+    isEnabled,
+    isMuted,
+    toggleMute,
+    toggleSwitch,
+    datas
+  } = useSidebar()
+  // const { stopSound } = useSoundContext()
+
+  const handleMute = async () => {
+    // if (isMuted) {
+    //   await stopSound()
+    // }
+    toggleMute()
+  }
+
   return (
     <ImageBackground
       source={rider}
@@ -46,6 +64,31 @@ function SidebBar() {
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isEnabled}
+                style={{ marginTop: Platform.OS === 'android' ? -12 : -5 }}
+              />
+            </View>
+          </View>
+          <View style={styles.rowDisplay}>
+            <TextDefault textColor={colors.white} H4 bolder>
+              {t('mute')}
+            </TextDefault>
+            <View style={styles.row}>
+              <TextDefault
+                H5
+                bold
+                textColor={colors.primary}
+                style={styles.online}>
+                {isMuted ? t('muted') : t('notMuted')}
+              </TextDefault>
+              <Switch
+                trackColor={{
+                  false: colors.fontSecondColor,
+                  true: colors.primary
+                }}
+                thumbColor={isMuted ? colors.headerBackground : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={handleMute}
+                value={isMuted}
                 style={{ marginTop: Platform.OS === 'android' ? -12 : -5 }}
               />
             </View>

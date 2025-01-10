@@ -1,13 +1,17 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
 import { gql, useMutation } from '@apollo/client'
-import { toggleAvailablity } from '../../apollo/mutations'
+import { toggleAvailablity, toggleMute } from '../../apollo/mutations'
 import UserContext from '../../context/user'
 import { profile } from '../../apollo/queries'
 import { useTranslation } from 'react-i18next'
+import { useSoundContext } from '../../context/sound'
 
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
+`
+const TOGGLE_Mute = gql`
+  ${toggleMute}
 `
 const PROFILE = gql`
   ${profile}
@@ -58,11 +62,30 @@ const useSidebar = () => {
   ]
   const { logout } = useContext(AuthContext)
   const { dataProfile } = useContext(UserContext)
+  const [isMuted, setIsMuted] = useState(dataProfile?.rider.muted)
   const [isEnabled, setIsEnabled] = useState(dataProfile?.rider.available)
+
+  console.log({ dataProfileMuted: dataProfile?.rider.muted })
+  console.log({ isEnabled })
+  console.log({ isMuted })
+
+  useEffect(() => {
+    if (dataProfile && dataProfile.rider) {
+      setIsMuted(dataProfile?.rider.muted)
+    }
+  }, [dataProfile?.rider.muted])
 
   const toggleSwitch = () => {
     mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
     setIsEnabled(previousState => !previousState)
+  }
+
+  const toggleMute = async () => {
+    mutateMute({
+      variables: { id: dataProfile.rider._id },
+      onCompleted: completedMute
+    })
+    setIsMuted(!isMuted)
   }
 
   useEffect(() => {
@@ -75,15 +98,25 @@ const useSidebar = () => {
       setIsEnabled(toggleAvailability.available)
     }
   }
+  function completedMute({ toggleAvailability }) {
+    if (toggleAvailability) {
+      setIsMuted(toggleAvailability.mute)
+    }
+  }
   const [mutateToggle] = useMutation(TOGGLE_RIDER, {
+    refetchQueries: [{ query: PROFILE }]
+  })
+  const [mutateMute] = useMutation(TOGGLE_Mute, {
     refetchQueries: [{ query: PROFILE }]
   })
   return {
     logout,
     isEnabled,
-    toggleSwitch,
+    isMuted,
     datas,
-    dataProfile
+    dataProfile,
+    toggleSwitch,
+    toggleMute
   }
 }
 

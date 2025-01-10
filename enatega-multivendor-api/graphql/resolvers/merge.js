@@ -68,6 +68,7 @@ const rider = async riderId => {
 }
 
 const transformRider = rider => {
+  // console.log({ rider })
   return {
     ...rider._doc,
     _id: rider.id,

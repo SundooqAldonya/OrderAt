@@ -319,6 +319,7 @@ const typeDefs = gql`
     phone: String!
     image: String
     available: Boolean!
+    muted: Boolean!
     zone: Zone!
     isActive: Boolean!
     createdAt: String!
@@ -1495,6 +1496,7 @@ const typeDefs = gql`
     editRider(riderInput: RiderInput): Rider!
     deleteRider(id: String!): Rider!
     toggleAvailablity(id: String): Rider!
+    toggleMute(id: String): Rider!
     updateStatus(id: String, orderStatus: String!): Order!
     assignRider(id: String!, riderId: String!): Order!
     riderLogin(

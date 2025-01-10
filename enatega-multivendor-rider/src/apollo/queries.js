@@ -7,6 +7,7 @@ query Rider($id:String){
       accountNumber
       username
       available
+      muted
       zone{
         _id
       }

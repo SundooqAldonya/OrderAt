@@ -10,22 +10,31 @@ export const SoundContextProvider = ({ children }) => {
   const [sound, setSound] = useState(null)
   const { active } = useTabsContext()
   const { assignedOrders } = useUserContext()
-  const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
-
-  console.log({ active })
+  const { isEnabled, isMuted } = useSidebar()
+  const [seenOrders, setSeenOrders] = useState([])
 
   useEffect(() => {
     if (assignedOrders) {
-      const shouldPlaySound = assignedOrders.some(order => order?.isRiderRinged)
-      if (shouldPlaySound) playSound()
-      else stopSound()
+      const newOrderIds = assignedOrders
+        .filter(order => order?.isRiderRinged)
+        .map(order => order._id)
+      const unseenOrderIds = newOrderIds.filter(id => !seenOrders.includes(id))
+      console.log({ unseenOrderIds })
+      // const shouldPlaySound = assignedOrders.some(order => order?.isRiderRinged)
+      // console.log({ shouldPlaySound })
+      if (unseenOrderIds.length) {
+        playSound()
+      } else {
+        stopSound()
+      }
     }
   }, [assignedOrders])
 
   const playSound = async () => {
-    if (isEnabled) {
+    // console.log({ isMuted })
+    if (isEnabled && !isMuted) {
+      if (sound) await stopSound()
       if (active === 'NewOrders') {
-        await stopSound()
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/beep3.mp3')
         )
@@ -46,10 +55,16 @@ export const SoundContextProvider = ({ children }) => {
   }
 
   const stopSound = async () => {
-    await sound?.unloadAsync()
+    try {
+      await sound?.unloadAsync()
+    } catch (err) {
+      console.error('Error stopping sound:', err)
+    }
   }
+
   return (
-    <SoundContext.Provider value={{ playSound, stopSound }}>
+    <SoundContext.Provider
+      value={{ playSound, stopSound, seenOrders, setSeenOrders }}>
       {children}
     </SoundContext.Provider>
   )

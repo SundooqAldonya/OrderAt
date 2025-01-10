@@ -46,6 +46,10 @@ const riderSchema = new Schema(
       type: Boolean,
       default: true
     },
+    muted: {
+      type: Boolean,
+      default: false
+    },
     accountNumber: {
       type: String
     },

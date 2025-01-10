@@ -37,6 +37,12 @@ export const toggleAvailablity = `
       _id
     }
 }`
+export const toggleMute = `
+  mutation ToggleRider($id:String){
+    toggleMute(id:$id){
+      _id
+    }
+}`
 
 export const createWithdrawRequest = `
   mutation CreateWithdrawRequest($amount: Float!) {

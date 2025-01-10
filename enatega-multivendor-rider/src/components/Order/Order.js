@@ -6,8 +6,11 @@ import colors from '../../utilities/colors'
 import useOrder from './useOrder'
 import Spinner from '../Spinner/Spinner'
 import { useTranslation } from 'react-i18next'
+import { useSoundContext } from '../../context/sound'
 
 const Order = ({ order, orderAmount }) => {
+  const { t } = useTranslation()
+
   const {
     active,
     navigation,
@@ -16,7 +19,17 @@ const Order = ({ order, orderAmount }) => {
     loadingAssignOrder
   } = useOrder(order)
 
-  const { t } = useTranslation()
+  const { stopSound, seenOrders, setSeenOrders } = useSoundContext()
+
+  const handlePress = async id => {
+    setSeenOrders([...seenOrders, id])
+    await stopSound()
+    navigation.navigate('OrderDetail', {
+      itemId: order?._id,
+      order
+    })
+  }
+
   return (
     <>
       <View style={{ marginTop: 20 }}>
@@ -36,12 +49,7 @@ const Order = ({ order, orderAmount }) => {
             styles.container,
             active === 'NewOrders' ? styles.bgPrimary : styles.bgWhite
           ]}
-          onPress={() => {
-            navigation.navigate('OrderDetail', {
-              itemId: order?._id,
-              order
-            })
-          }}>
+          onPress={() => handlePress(order._id)}>
           <View style={styles.row}>
             <TextDefault style={styles.rowItem1} bolder H4>
               {t('orderID')}

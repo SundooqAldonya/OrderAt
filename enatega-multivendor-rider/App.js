@@ -24,6 +24,8 @@ import { LocationProvider } from './src/context/location'
 import getEnvVars from './environment'
 import moment from 'moment-timezone'
 import { useTranslation } from 'react-i18next'
+import { useKeepAwake } from 'expo-keep-awake'
+
 import {
   useFonts,
   Montserrat_100Thin,
@@ -43,8 +45,8 @@ import {
   Montserrat_600SemiBold_Italic,
   Montserrat_700Bold_Italic,
   Montserrat_800ExtraBold_Italic,
-  Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
+  Montserrat_900Black_Italic
+} from '@expo-google-fonts/montserrat'
 
 moment.tz.setDefault('Asia/Karachi')
 LogBox.ignoreLogs([
@@ -56,6 +58,7 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 
 export default function App() {
   // const { t } = useTranslation();
+  useKeepAwake()
   const [appIsReady, setAppIsReady] = useState(false)
   const [token, setToken] = useState(null)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -80,11 +83,11 @@ export default function App() {
     Montserrat_600SemiBold_Italic,
     Montserrat_700Bold_Italic,
     Montserrat_800ExtraBold_Italic,
-    Montserrat_900Black_Italic,
-  });
+    Montserrat_900Black_Italic
+  })
 
   useEffect(() => {
-    ;(async() => {
+    ;(async () => {
       await SplashScreen.preventAutoHideAsync()
 
       await Font.loadAsync({
@@ -102,7 +105,7 @@ export default function App() {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
-    ;(async() => {
+    ;(async () => {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
         try {

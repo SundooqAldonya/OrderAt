@@ -65,6 +65,7 @@ module.exports = {
         }
         const rider = await Rider.findById(userId)
         return transformRider(rider)
+        // return rider
       } catch (err) {
         console.log(err)
         throw err
@@ -165,6 +166,7 @@ module.exports = {
             }-${date.getDate()}`
           }
         }).sort({ createdAt: -1 })
+        console.log({ orders: orders[0] })
         return orders.concat(...assignedOrders).map(order => {
           return transformOrder(order)
         })
@@ -268,6 +270,22 @@ module.exports = {
         const rider = await Rider.findById(userId)
         rider.available = !rider.available
         const result = await rider.save()
+        return transformRider(result)
+      } catch (err) {
+        throw err
+      }
+    },
+    toggleMute: async (_, args, { req }) => {
+      console.log('toggleMute')
+      const userId = args.id || req.userId // if rider: get id from req, args otherwise
+      if (!userId) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const rider = await Rider.findById(userId)
+        rider.muted = !rider.muted
+        const result = await rider.save()
+        console.log({ result })
         return transformRider(result)
       } catch (err) {
         throw err
