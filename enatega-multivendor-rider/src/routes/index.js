@@ -186,7 +186,7 @@ function Main() {
 function NoDrawer() {
   const { t } = useTranslation()
   return (
-    <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions()}>
       <Stack.Screen
         // name="Orders"
         // component={MyTabs}

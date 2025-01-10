@@ -70,7 +70,7 @@ function SidebBar() {
           </View>
           <View style={styles.rowDisplay}>
             <TextDefault textColor={colors.white} H4 bolder>
-              {t('mute')}
+              {t('muted')}
             </TextDefault>
             <View style={styles.row}>
               <TextDefault

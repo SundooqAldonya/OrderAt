@@ -64,19 +64,17 @@ const useSidebar = () => {
   const { dataProfile } = useContext(UserContext)
   const [isMuted, setIsMuted] = useState(dataProfile?.rider.muted)
   const [isEnabled, setIsEnabled] = useState(dataProfile?.rider.available)
+  // const { stopSound } = useSoundContext()
 
   console.log({ dataProfileMuted: dataProfile?.rider.muted })
   console.log({ isEnabled })
   console.log({ isMuted })
 
-  useEffect(() => {
-    if (dataProfile && dataProfile.rider) {
-      setIsMuted(dataProfile?.rider.muted)
-    }
-  }, [dataProfile?.rider.muted])
-
   const toggleSwitch = () => {
     mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
+    if (isEnabled) {
+      setIsMuted(true)
+    }
     setIsEnabled(previousState => !previousState)
   }
 
@@ -91,6 +89,7 @@ const useSidebar = () => {
   useEffect(() => {
     if (!dataProfile) return
     setIsEnabled(dataProfile?.rider.available)
+    setIsMuted(dataProfile?.rider.muted)
   }, [dataProfile])
 
   function onCompleted({ toggleAvailability }) {
@@ -100,7 +99,7 @@ const useSidebar = () => {
   }
   function completedMute({ toggleAvailability }) {
     if (toggleAvailability) {
-      setIsMuted(toggleAvailability.mute)
+      setIsMuted(toggleAvailability.muted)
     }
   }
   const [mutateToggle] = useMutation(TOGGLE_RIDER, {

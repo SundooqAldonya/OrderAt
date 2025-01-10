@@ -22,6 +22,7 @@ const { height, width } = Dimensions.get('window')
 
 const NewOrders = ({ navigation }) => {
   const { t } = useTranslation()
+  const [orders, setOrders] = useState([])
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
   const {
@@ -31,7 +32,7 @@ const NewOrders = ({ navigation }) => {
     refetchAssigned,
     networkStatusAssigned
   } = useContext(UserContext)
-  const [orders, setOrders] = useState([])
+
   const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
 
   useFocusEffect(() => {
@@ -75,63 +76,76 @@ const NewOrders = ({ navigation }) => {
             <TextError text={t('errorText')} />
           </View>
         )}
-        <FlatList
-          ListEmptyComponent={() => {
-            return (
-              <View
-                style={{
-                  minHeight:
-                    height > 670
-                      ? height - height * 0.5
-                      : height - height * 0.6,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <LottieView
+        {isEnabled ? (
+          <FlatList
+            ListEmptyComponent={() => {
+              return (
+                <View
                   style={{
-                    width: width - 100,
-                    height: 250
-                  }}
-                  source={require('../../assets/loader.json')}
-                  autoPlay
-                  loop
-                />
+                    minHeight:
+                      height > 670
+                        ? height - height * 0.5
+                        : height - height * 0.6,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                  <LottieView
+                    style={{
+                      width: width - 100,
+                      height: 250
+                    }}
+                    source={require('../../assets/loader.json')}
+                    autoPlay
+                    loop
+                  />
 
-                {noNewOrders ? (
-                  <TextDefault
-                    bold
-                    center
-                    H3
-                    textColor={colors.fontSecondColor}>
-                    {t('noNewOrders')}
-                  </TextDefault>
-                ) : (
-                  <TextDefault
-                    bold
-                    center
-                    H3
-                    textColor={colors.fontSecondColor}>
-                    {t('pullToRefresh')}
-                  </TextDefault>
-                )}
-              </View>
-            )
-          }}
-          style={styles.ordersContainer}
-          keyExtractor={item => item._id}
-          data={orders}
-          showsVerticalScrollIndicator={false}
-          refreshing={networkStatusAssigned === NetworkStatus.loading}
-          onRefresh={refetchAssigned}
-          renderItem={({ item }) => (
-            <Order
-              order={item}
-              key={item._id}
-              id={item._id}
-              orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
-            />
-          )}
-        />
+                  {noNewOrders ? (
+                    <TextDefault
+                      bold
+                      center
+                      H3
+                      textColor={colors.fontSecondColor}>
+                      {t('noNewOrders')}
+                    </TextDefault>
+                  ) : (
+                    <TextDefault
+                      bold
+                      center
+                      H3
+                      textColor={colors.fontSecondColor}>
+                      {t('pullToRefresh')}
+                    </TextDefault>
+                  )}
+                </View>
+              )
+            }}
+            style={styles.ordersContainer}
+            keyExtractor={item => item._id}
+            data={orders}
+            showsVerticalScrollIndicator={false}
+            refreshing={networkStatusAssigned === NetworkStatus.loading}
+            onRefresh={refetchAssigned}
+            renderItem={({ item }) => (
+              <Order
+                order={item}
+                key={item._id}
+                id={item._id}
+                orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
+              />
+            )}
+          />
+        ) : (
+          <TextDefault
+            bold
+            center
+            H3
+            textColor={colors.fontSecondColor}
+            style={{
+              marginTop: 100
+            }}>
+            {t('turnOnAvailability')}
+          </TextDefault>
+        )}
       </View>
     </ScreenBackground>
   )
