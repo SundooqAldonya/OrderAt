@@ -110,10 +110,14 @@ async function startApolloServer() {
     },
     // plugins: [SentryConfig],
     formatError: (formattedError, error) => {
+      console.log({ error })
       console.log({ formattedError })
       console.log({ errorLocation: formattedError.extensions.exception })
-      // console.log({ formattedError: formattedError.locations });
-      // console.log({ formattedError: formattedError.extensions.exception });
+      return {
+        message: formattedError.extensions.exception.stacktrace[0]
+        // code: error.extensions.code,
+        // path: error.path
+      }
     }
   })
   const subscriptionServer = httpServer => {

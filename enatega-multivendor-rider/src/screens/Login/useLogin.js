@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Dimensions } from 'react-native'
+import { Alert, Dimensions } from 'react-native'
 import { riderLogin } from '../../apollo/mutations'
 import { defaultRiderCreds } from '../../apollo/queries'
 import { AuthContext } from '../../context/auth'
@@ -58,7 +58,7 @@ const useLogin = () => {
       FlashMessage({ message: t('loginFlashMsg') })
       await AsyncStorage.setItem('rider-id', riderLogin.userId)
       await setTokenAsync(riderLogin.token)
-      navigation.navigate("Home")
+      navigation.navigate('Home')
     } else {
       if (
         lastOrderCreds &&
@@ -75,64 +75,77 @@ const useLogin = () => {
   }
   function onError(error) {
     let message = 'Check internet connection'
-    console.log("going in", error)
+    console.log('going in', error)
     try {
-      message = error.message
-    } catch (error) {}
-    setUsername('')
-    setPassword('')
+      const rawMessage = error.message || 'An unexpected error occurred.'
+      const extractedMessage =
+        rawMessage.match(/Error: (.*)\]/)?.[1] || rawMessage
+      console.log({ extractedMessage })
+      Alert.alert(extractedMessage)
+    } catch (error) {
+      console.log({ err })
+    }
+    // setUsername('')
+    // setPassword('')
   }
 
   async function onSubmit() {
-    console.log(validateForm(),'form da')
-    if (validateForm()) {
-      console.log('inside form da')
-      // Get notification permissions
-      const settings = await Notifications.getPermissionsAsync()
-      let notificationPermissions = { ...settings }
+    console.log(validateForm(), 'form da')
+    try {
+      if (validateForm()) {
+        console.log('inside form da')
+        // Get notification permissions
+        const settings = await Notifications.getPermissionsAsync()
+        let notificationPermissions = { ...settings }
 
-      // Request notification permissions if not granted or not provisional on iOS
-      if (
-        settings?.status !== 'granted' ||
-        settings.ios?.status !==
-          Notifications.IosAuthorizationStatus.PROVISIONAL
-      ) {
-        notificationPermissions = await Notifications.requestPermissionsAsync({
-          ios: {
-            allowProvisional: true,
-            allowAlert: true,
-            allowBadge: true,
-            allowSound: true,
-            allowAnnouncements: true
+        // Request notification permissions if not granted or not provisional on iOS
+        if (
+          settings?.status !== 'granted' ||
+          settings.ios?.status !==
+            Notifications.IosAuthorizationStatus.PROVISIONAL
+        ) {
+          notificationPermissions = await Notifications.requestPermissionsAsync(
+            {
+              ios: {
+                allowProvisional: true,
+                allowAlert: true,
+                allowBadge: true,
+                allowSound: true,
+                allowAnnouncements: true
+              }
+            }
+          )
+        }
+
+        let notificationToken = null
+        // Get notification token if permissions are granted and it's a device
+        if (
+          (notificationPermissions?.status === 'granted' ||
+            notificationPermissions.ios?.status ===
+              Notifications.IosAuthorizationStatus.PROVISIONAL) &&
+          Device.isDevice
+        ) {
+          notificationToken = (
+            await Notifications.getExpoPushTokenAsync({
+              projectId: Constants.expoConfig.extra.eas.projectId
+            })
+          ).data
+        }
+
+        // Perform mutation with the obtained data
+        mutate({
+          variables: {
+            username: username.toLowerCase(),
+            password: password,
+            notificationToken: notificationToken
           }
         })
       }
-
-      let notificationToken = null
-      // Get notification token if permissions are granted and it's a device
-      if (
-        (notificationPermissions?.status === 'granted' ||
-          notificationPermissions.ios?.status ===
-            Notifications.IosAuthorizationStatus.PROVISIONAL) &&
-        Device.isDevice
-      ) {
-        notificationToken = (
-          await Notifications.getExpoPushTokenAsync({
-            projectId: Constants.expoConfig.extra.eas.projectId
-          })
-        ).data
-      }
-
-      // Perform mutation with the obtained data
-      mutate({
-        variables: {
-          username: username.toLowerCase(),
-          password: password,
-          notificationToken: notificationToken
-        }
-      })
+    } catch (err) {
+      console.log({ errLogin: err })
     }
   }
+
   return {
     username,
     setUsername,

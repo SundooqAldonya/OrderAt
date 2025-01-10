@@ -115,6 +115,7 @@ const Login = props => {
     })
   }
   const onError = error => {
+    console.log({ error })
     if (error.graphQLErrors.length) {
       setStateData({
         ...stateData,

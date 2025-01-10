@@ -150,13 +150,19 @@ module.exports = {
       }
     },
     riderLogin: async (_, args, context) => {
+      // try {
       console.log('riderLogin', args.username, args.password)
       const rider = await Rider.findOne({ username: args.username })
-      if (!rider) throw new Error('Invalid credentials')
+      if (!rider) throw new Error('Email not registered!')
 
       if (rider.password !== args.password) {
-        throw new Error('Invalid credentials')
+        throw new Error('Email and password do not match!')
       }
+
+      if (!rider.isActive) {
+        throw new Error('Rider is disabled!. Please contact support')
+      }
+
       rider.notificationToken = args.notificationToken
       await rider.save()
 
@@ -172,6 +178,10 @@ module.exports = {
         token: token,
         tokenExpiration: 1
       }
+      // } catch (err) {
+      //   console.log({ err })
+      //   throw new Error(err)
+      // }
     },
     pushToken: async (_, args, { req, res }) => {
       if (!req.isAuth) throw new Error('Unauthenticated')
