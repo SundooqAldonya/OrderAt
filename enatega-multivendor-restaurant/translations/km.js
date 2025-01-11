@@ -51,5 +51,25 @@ export const km = {
   acceptAndPrint: 'ទទួលយក និង បោះពុម្ព',
   accept: 'ទទួលយក',
   language: 'ភាសា',
-  notificationText: 'ត្រូវតែប្រើឧបករណ៍សំបុត្រសម្រាប់ការជូនដំណឹងរហ័ស'
+  notificationText: 'ត្រូវតែប្រើឧបករណ៍សំបុត្រសម្រាប់ការជូនដំណឹងរហ័ស',
+  createneworder: 'បង្កើតការបញ្ជាទិញថ្មី។',
+  searchcustomer: 'ស្វែងរកអតិថិជន',
+  searchfromnumber: 'ស្វែងរកពីលេខទូរស័ព្ទ',
+  resultsfor: 'លទ្ធផលសម្រាប់',
+  continue: 'បន្ត',
+  confirmorder: 'បញ្ជាទិញបញ្ជាទិញ',
+  chooseaddress: 'ជ្រើសរើសអាសយដ្ឋាន',
+  entercost: 'បញ្ចូលថ្លៃ',
+  ordersuccessfullycreated: 'បានបង្កើតការបញ្ជាទិញដោយជោគជ័យ',
+  ordernumber: 'លេខកម្មង់',
+  ok: 'យល់ព្រម',
+  customernotfound: 'រកមិនឃើញអតិថិជន',
+  addnewcustomer: 'បន្ថែមអតិថិជនថ្មី',
+  enterphone: 'បញ្ចូលលេខទូរសព្ទ',
+  fullname: 'ឈ្មោះពេញ',
+  entergovernate: 'បញ្ចូលខេត្ត',
+  searchforaplace: 'ស្វែងរកទីតាំង',
+  saveuserdetailsandcontinuetocompletetheorder:
+    'រក្សាទុកព័ត៌មានអ្នកប្រើនិងបន្តដល់ការបញ្ជាទិញដោយបន្ត',
+  saveandcontinue: 'រក្សាទុក និង បន្ត'
 }

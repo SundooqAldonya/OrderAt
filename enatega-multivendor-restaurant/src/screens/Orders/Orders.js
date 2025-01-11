@@ -30,6 +30,7 @@ import { auth_token, getAccessToken } from '../../utilities/apiServices'
 import { AuthContext, Configuration, Restaurant } from '../../ui/context'
 import { Icon } from 'react-native-elements'
 import { detectLanguageDir } from '../../../helpers'
+
 const Orders = props => {
   const {
     loading,
@@ -46,6 +47,7 @@ const Orders = props => {
   const navigation = useNavigation()
   const { loading: mutateLoading } = useAcceptOrder()
   const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const dir = detectLanguageDir(i18n.language)
   const [search, setSearch] = useState('')
   const [isVisible, setIsVisible] = useState(false)
@@ -184,7 +186,7 @@ const Orders = props => {
                 style={{ textAlign: 'center' }}
                 bold
                 textColor={colors.green}>
-                Create New Order
+                {t('createneworder')}
               </TextDefault>
             </TouchableOpacity>
             {loading ? (
@@ -331,8 +333,11 @@ const Orders = props => {
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10
           }}>
-          <TextDefault H3 bold>
-            Search Customer
+          <TextDefault
+            H3
+            bold
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {t('searchcustomer')}
           </TextDefault>
           <View
             style={{
@@ -342,7 +347,8 @@ const Orders = props => {
               padding: 10,
               borderRadius: 10,
               paddingVertical: 0,
-              marginVertical: 10
+              marginVertical: 10,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
             }}>
             <FontAwesome
               name="search"
@@ -351,7 +357,7 @@ const Orders = props => {
             />
             <TextInput
               keyboardType="number-pad"
-              placeholder="Search from number"
+              placeholder={t('searchfromnumber')}
               value={search}
               onChangeText={text => {
                 setSearch(text)
@@ -370,7 +376,7 @@ const Orders = props => {
                     <TextDefault
                       style={{ marginVertical: scale(20), textAlign: 'center' }}
                       H3>
-                      Customer Not Found
+                      {t('customernotfound')}
                     </TextDefault>
                     <TouchableOpacity
                       onPress={() => {
@@ -388,7 +394,8 @@ const Orders = props => {
                         justifyContent: 'center',
                         marginTop: 10,
                         padding: 10,
-                        borderRadius: 10
+                        borderRadius: 10,
+                        flexDirection: isArabic ? 'row-reverse' : 'row'
                       }}>
                       <FontAwesome
                         name="user"
@@ -399,8 +406,8 @@ const Orders = props => {
                         H4
                         bold
                         textColor={'#fff'}
-                        style={{ marginLeft: 10 }}>
-                        Add new customer
+                        style={{ MarginLeft: 10, MarginRight: 10 }}>
+                        {t('addnewcustomer')}
                       </TextDefault>
                     </TouchableOpacity>
                   </View>
@@ -409,8 +416,11 @@ const Orders = props => {
               data={customers}
               ListHeaderComponent={
                 showResults && (
-                  <TextDefault H5 bold>
-                    Results for "{search}"
+                  <TextDefault
+                    H5
+                    bold
+                    style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                    {t('resultsfor')} "{search}"
                   </TextDefault>
                 )
               }
@@ -430,7 +440,8 @@ const Orders = props => {
                       flexDirection: 'row',
                       alignItems: 'center',
                       borderWidth:
-                        selectedCustomer?.phone === item?.phone ? 2 : 0
+                        selectedCustomer?.phone === item?.phone ? 2 : 0,
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
                     }}>
                     <View
                       style={{
@@ -447,8 +458,13 @@ const Orders = props => {
                         style={{ alignSelf: 'center' }}
                       />
                     </View>
-                    <View style={{ flex: 1, paddingLeft: 10 }}>
-                      <TextDefault textColor={'#000000'} H5 bold>
+                    <View
+                      style={{ flex: 1, paddingLeft: 10, paddingRight: 10 }}>
+                      <TextDefault
+                        textColor={'#000000'}
+                        H5
+                        bold
+                        style={{ textAlign: isArabic ? 'right' : 'left' }}>
                         {item.name}
                       </TextDefault>
                       <View
@@ -456,7 +472,8 @@ const Orders = props => {
                           flexDirection: 'row',
                           marginTop: scale(5),
                           alignItems: 'center',
-                          gap: 5
+                          gap: 5,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
                         }}>
                         <FontAwesome
                           name="phone"
@@ -474,7 +491,8 @@ const Orders = props => {
                             flex: 1,
                             marginTop: scale(3),
                             alignItems: 'center',
-                            gap: 5
+                            gap: 5,
+                            flexDirection: isArabic ? 'row-reverse' : 'row'
                           }}>
                           <FontAwesome
                             name="envelope"
@@ -493,7 +511,8 @@ const Orders = props => {
                             flexDirection: 'row',
                             marginTop: scale(3),
                             alignItems: 'flex-start',
-                            gap: 5
+                            gap: 5,
+                            flexDirection: isArabic ? 'row-reverse' : 'row'
                           }}>
                           <View
                             style={{
@@ -532,7 +551,7 @@ const Orders = props => {
                 style={{ textAlign: 'center' }}
                 bold
                 textColor={'#000'}>
-                Continue
+                {t('continue')}
               </TextDefault>
             </TouchableOpacity>
           )}
@@ -549,7 +568,7 @@ const Orders = props => {
               style={{ textAlign: 'center' }}
               bold
               textColor={colors.green}>
-              Search Customer
+              {t('searchfromnumber')}
             </TextDefault>
           </TouchableOpacity>
         </View>

@@ -14,9 +14,16 @@ export default function TabBars(props) {
   const handleDelivered = async () => {
     setActiveBar(2)
   }
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  const isArabic = i18n.language === 'ar'
+
   return (
-    <View style={styles.barContainer}>
+    <View
+      style={[
+        styles.barContainer,
+        { flexDirection: isArabic ? 'row-reverse' : 'row' }
+      ]}>
       <Pressable
         onPress={() => setActiveBar(0)}
         style={[
@@ -65,6 +72,7 @@ export default function TabBars(props) {
           {t('processing')}
         </TextDefault>
       </Pressable>
+
       <Pressable
         onPress={handleDelivered}
         style={[

@@ -51,5 +51,25 @@ export const en = {
   acceptAndPrint: 'Accept & Print',
   accept: 'Accept',
   language: 'Language',
-  notificationText: 'Must use physical device for Push Notifications'
+  notificationText: 'Must use physical device for Push Notifications',
+  createneworder: 'Create New Order',
+  searchcustomer: 'Search Customer',
+  searchfromnumber: 'Search from number',
+  resultsfor: 'Results for',
+  continue: 'Continue',
+  confirmorder: 'Confirm Order',
+  chooseaddress: 'Choose Address',
+  entercost: 'Enter Cost',
+  ordersuccessfullycreated: 'Order Successfully Created',
+  ordernumber: 'Order Number',
+  ok: 'Okay',
+  customernotfound: 'Customer not found',
+  addnewcustomer: 'Add New Customer',
+  enterphone: 'Enter Phone',
+  fullname: 'Full Name',
+  entergovernate: 'Enter Governate',
+  searchforaplace: 'Search for a place',
+  saveuserdetailsandcontinuetocompletetheorder:
+    'Save user details and continue to complete the order',
+  saveandcontinue: 'Save and Continue'
 }
