@@ -1,2 +1,5 @@
-.expo
-.DS_Store
+.expo
+.DS_Store
+config.bat
+node_modules
+.env

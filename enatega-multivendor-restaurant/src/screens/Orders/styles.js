@@ -28,6 +28,7 @@ const Styles = {
     // marginBottom: Platform === 'ios' ? height * 0.1 : height * 0.1
   },
   hamburger: {
+    // backgroundColor: 'red',
     width: 30,
     height: 20,
     display: 'flex',

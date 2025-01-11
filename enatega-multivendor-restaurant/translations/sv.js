@@ -51,5 +51,25 @@ export const sv = {
   acceptAndPrint: 'Acceptera och Skriv ut',
   accept: 'Acceptera',
   language: 'Språk',
-  notificationText: 'Måste använda en fysisk enhet för push-meddelanden'
+  notificationText: 'Måste använda en fysisk enhet för push-meddelanden',
+  createneworder: 'skapa ny order',
+  searchcustomer: 'Sök kund',
+  searchfromnumber: 'Sök från telefonnummer',
+  resultsfor: 'Resultat för',
+  continue: 'Fortsätt',
+  confirmorder: 'Bekräfta beställning',
+  chooseaddress: 'Välj adress',
+  entercost: 'Ange kostnad',
+  ordersuccessfullycreated: 'Order skapad framgångsrikt',
+  ordernumber: 'Order nummer',
+  ok: 'Okej',
+  customernotfound: 'Kund hittades inte',
+  addnewcustomer: 'Lägg till ny kund',
+  enterphone: 'Ange telefon',
+  fullname: 'Fullständigt namn',
+  entergovernate: 'Ange guvernement',
+  searchforaplace: 'Sök efter en plats',
+  saveuserdetailsandcontinuetocompletetheorder:
+    'Spara användaruppgifter och fortsätt för att slutföra beställningen',
+  saveandcontinue: 'Spara och fortsätt'
 }

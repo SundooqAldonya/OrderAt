@@ -23,7 +23,7 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 
 export default function SideBar() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigator = useNavigation()
   const notificationRef = useRef(true)
   const openSettingsRef = useRef(false)
@@ -130,6 +130,8 @@ export default function SideBar() {
     }
   }
 
+  const isRtl = i18n.language === 'ar'
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
@@ -152,59 +154,98 @@ export default function SideBar() {
                 bolder
                 center
                 textColor="white"
-                style={{ marginLeft: 10, textAlign: 'left' }}>
+                style={{
+                  MarginLeft: 10,
+                  textAlign: isRtl ? 'right' : 'left'
+                }}>
                 {data && data.restaurant.name}
               </TextDefault>
             </View>
           </View>
         </View>
         <View style={styles.middleContainer}>
-          <View style={styles.status}>
-            <TextDefault H4 bolder textColor="white">
-              {t('status')}
-            </TextDefault>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextDefault textColor="white" style={{ marginRight: 5 }}>
+          <View
+            style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
+            <View
+              style={{
+                flexDirection: isRtl ? 'row-reverse' : 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              }}>
+              <TextDefault
+                H4
+                bolder
+                textColor="white"
+                style={{ textAlign: isRtl ? 'right' : 'left' }}>
+                {t('status')}
+              </TextDefault>
+              <TextDefault
+                textColor="white"
+                style={{
+                  marginRight: 5,
+                  MarginLeft: 15,
+                  textAlign: isRtl ? 'right' : 'left'
+                }}>
                 {isAvailable ? t('online') : t('closed')}
               </TextDefault>
-              <Switch
-                trackColor={{
-                  false: colors.fontSecondColor,
-                  true: colors.green
-                }}
-                thumbColor={isAvailable ? colors.headerBackground : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isAvailable}
-                style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
-              />
             </View>
+
+            <Switch
+              trackColor={{
+                false: colors.fontSecondColor,
+                true: colors.green
+              }}
+              thumbColor={isAvailable ? colors.headerBackground : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isAvailable}
+              style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
+            />
           </View>
-          <View style={styles.status}>
-            <TextDefault H4 bolder textColor="white">
-              {t('notifications')}
-            </TextDefault>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextDefault textColor="white" style={{ marginRight: 5 }}>
+
+          <View
+            style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
+            <View
+              style={{
+                flexDirection: isRtl ? 'row-reverse' : 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              }}>
+              <TextDefault
+                H4
+                bolder
+                textColor="white"
+                style={{ textAlign: isRtl ? 'right' : 'left' }}>
+                {t('notifications')}
+              </TextDefault>
+              <TextDefault
+                textColor="white"
+                style={{
+                  marginRight: 5,
+                  MarginLeft: 15,
+                  textAlign: isRtl ? 'right' : 'left'
+                }}>
                 {notificationStatus ? t('onn') : t('off')}
               </TextDefault>
-              <Switch
-                trackColor={{
-                  false: colors.fontSecondColor,
-                  true: colors.green
-                }}
-                thumbColor={
-                  notificationStatus ? colors.headerBackground : '#f4f3f4'
-                }
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={handleClick}
-                value={notificationStatus}
-                style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
-              />
             </View>
+
+            <Switch
+              trackColor={{
+                false: colors.fontSecondColor,
+                true: colors.green
+              }}
+              thumbColor={
+                notificationStatus ? colors.headerBackground : '#f4f3f4'
+              }
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={handleClick}
+              value={notificationStatus}
+              style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
+            />
           </View>
+
           <TouchableOpacity
-            style={styles.logout}
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() => navigator.navigate('SelectLanguage')}>
             <View style={styles.icon}>
@@ -215,12 +256,15 @@ export default function SideBar() {
                 size={26}
               />
             </View>
-            <TextDefault H4 bolder style={styles.text}>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('language')}
             </TextDefault>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.logout}
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(PRODUCT_URL).then(() => {
@@ -235,35 +279,33 @@ export default function SideBar() {
                 size={26}
               />
             </View>
-            <TextDefault H4 bolder style={styles.text}>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('productPage')}
             </TextDefault>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.logout}
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() =>
-              Linking.canOpenURL(
-                'https://orderat.ai/#/privacy'
-                // 'https://enatega.com/privacy-policy/'
-              )
-                .then(() => {
-                  Linking.openURL('https://orderat.ai/#/privacy')
-                })
-                .catch(() => {
-                  Linking.openURL('https://orderat.ai')
-                })
+              Linking.canOpenURL('https://orderat.ai/#/privacy').then(() => {
+                Linking.openURL('https://orderat.ai/#/privacy')
+              })
             }>
             <View style={styles.icon}>
               <Icon type="font-awesome" color="white" name="lock" size={26} />
             </View>
-
-            <TextDefault H4 bolder style={styles.text}>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('privacyPolicy')}
             </TextDefault>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.logout}
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(ABOUT_URL).then(() => {
@@ -278,17 +320,26 @@ export default function SideBar() {
                 size={26}
               />
             </View>
-            <TextDefault H4 bolder style={styles.text}>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('aboutUs')}
             </TextDefault>
           </TouchableOpacity>
         </View>
+
         <View style={styles.lowerContainer}>
-          <TouchableOpacity style={styles.logout} onPress={logout}>
+          <TouchableOpacity
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            onPress={logout}>
             <View style={styles.icon}>
               <Icon type="entypo" color="white" name="log-out" size={26} />
             </View>
-            <TextDefault H4 bolder style={styles.text}>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('titleLogout')}
             </TextDefault>
           </TouchableOpacity>
