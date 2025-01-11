@@ -51,5 +51,26 @@ export const fr = {
   acceptAndPrint: 'Accepter et Imprimer',
   accept: 'Accepter',
   language: 'Langue',
-  notificationText: 'Doit utiliser un appareil physique pour les notifications push'
+  notificationText:
+    'Doit utiliser un appareil physique pour les notifications push',
+  createneworder: 'Créer une nouvelle commande',
+  searchcustomer: 'Rechercher un client',
+  searchfromnumber: 'Rechercher par numéro',
+  resultsfor: 'Résultats pour',
+  continue: 'Continuer',
+  confirmorder: 'Confirmer la commande',
+  chooseaddress: 'Choisir une adresse',
+  entercost: 'Entrez le coût',
+  ordersuccessfullycreated: 'Commande créée avec succès',
+  ordernumber: 'Numéro de commande',
+  ok: 'D accord',
+  customernotfound: 'Client non trouvé',
+  addnewcustomer: 'Ajouter un nouveau client',
+  enterphone: 'Entrer le téléphone',
+  fullname: 'Nom complet',
+  entergovernate: 'Entrez le gouvernorat',
+  searchforaplace: 'Rechercher un endroit',
+  saveuserdetailsandcontinuetocompletetheorder:
+    'Enregistrer les détails de l’utilisateur et continuer pour compléter la commande',
+  saveandcontinue: 'Enregistrer et continuer'
 }

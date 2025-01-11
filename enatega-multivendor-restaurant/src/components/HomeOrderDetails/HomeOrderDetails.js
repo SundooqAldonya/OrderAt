@@ -30,19 +30,16 @@ function HomeOrderDetails(props) {
   const dir = detectLanguageDir(i18n.language)
   const date = new Date(orderDate)
   const acceptanceTime = moment(date).diff(timeNow, 'seconds')
-  // current
   const createdTime = new Date(createdAt)
   var remainingTime = moment(createdTime)
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
   const configuration = useContext(Configuration.Context)
 
-  // prepTime
   const prep = new Date(preparationTime)
   const diffTime = prep - timeNow
   const totalPrep = diffTime > 0 ? diffTime / 1000 : 0
 
-  // accept time
   const [isAcceptButtonVisible, setIsAcceptButtonVisible] = useState(
     !moment().isBefore(date)
   )
@@ -79,9 +76,11 @@ function HomeOrderDetails(props) {
     { variables: { id: _id } }
   )
 
+  const textAlignment = dir === 'rtl' ? 'right' : 'left'
+  const flexDirection = dir === 'rtl' ? 'row-reverse' : 'row'
+
   return (
     <Pressable
-      // dir={dir}
       style={[
         styles.card,
         {
@@ -117,26 +116,37 @@ function HomeOrderDetails(props) {
         />
       ) : null}
 
-      <View style={styles.itemRowBar}>
-        <TextDefault style={styles.heading} H5 bolder>
+      <View style={[styles.itemRowBar, { flexDirection }]}>
+        <TextDefault
+          style={[styles.heading, { textAlign: textAlignment }]}
+          H5
+          bolder>
           {t('orderId')}:
         </TextDefault>
         <TextDefault style={styles.text} H5 bolder>
           {orderId}
         </TextDefault>
       </View>
-      <View style={styles.itemRowBar}>
-        <TextDefault style={styles.heading}>{t('orderAmount')}:</TextDefault>
+      <View style={[styles.itemRowBar, { flexDirection }]}>
+        <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
+          {t('orderAmount')}:
+        </TextDefault>
         <TextDefault style={styles.text}>
-          {`${configuration.currencySymbol}${orderAmount}`}:
+          {dir === 'rtl'
+            ? `${orderAmount}${configuration.currencySymbol}`
+            : `${configuration.currencySymbol}${orderAmount}`}
         </TextDefault>
       </View>
-      <View style={styles.itemRowBar}>
-        <TextDefault style={styles.heading}>{t('paymentMethod')}</TextDefault>
+      <View style={[styles.itemRowBar, { flexDirection }]}>
+        <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
+          {t('paymentMethod')}
+        </TextDefault>
         <TextDefault style={styles.text}>{paymentMethod}</TextDefault>
       </View>
-      <View style={styles.itemRowBar}>
-        <TextDefault style={styles.heading}>{t('time')}:</TextDefault>
+      <View style={[styles.itemRowBar, { flexDirection }]}>
+        <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
+          {t('time')}:
+        </TextDefault>
         <TextDefault style={styles.text}>
           {moment(date).format('lll')}
         </TextDefault>

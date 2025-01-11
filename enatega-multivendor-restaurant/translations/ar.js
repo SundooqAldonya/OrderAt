@@ -51,5 +51,25 @@ export const ar = {
   acceptAndPrint: 'قبول وطباعة',
   accept: 'قبول',
   language: 'لغة',
-  notificationText: 'يجب استخدام جهاز فيزيائي للإشعارات الفورية'
+  notificationText: 'يجب استخدام جهاز فيزيائي للإشعارات الفورية',
+  createneworder: 'إنشاء طلب جديد',
+  searchcustomer: 'بحث عن العميل',
+  searchfromnumber: 'البحث من رقم الهاتف',
+  resultsfor: 'النتائج لـ',
+  continue: 'استمر',
+  confirmorder: 'تأكيد الطلب',
+  chooseaddress: 'اختر العنوان',
+  entercost: 'أدخل التكلفة',
+  ordersuccessfullycreated: 'تم إنشاء الطلب بنجاح',
+  ordernumber: 'رقم الطلب',
+  ok: 'حسنا',
+  customernotfound: 'العميل غير موجود',
+  addnewcustomer: 'إضافة عميل جديد',
+  enterphone: 'أدخل رقم الهاتف',
+  fullname: 'الاسم الكامل',
+  entergovernate: 'أدخل المحافظة',
+  searchforaplace: 'البحث عن مكان',
+  saveuserdetailsandcontinuetocompletetheorder:
+    'حفظ تفاصيل المستخدم ومتابعة لإكمال الطلب',
+  saveandcontinue: 'حفظ ومتابعة'
 }

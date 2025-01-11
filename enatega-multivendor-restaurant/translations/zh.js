@@ -51,5 +51,25 @@ export const zh = {
   acceptAndPrint: '接受并打印',
   accept: '接受',
   language: '语言',
-  notificationText: '必须使用物理设备进行推送通知'
+  notificationText: '必须使用物理设备进行推送通知',
+  createneworder: '创建新订单',
+  searchcustomer: '搜索客户',
+  searchfromnumber: '从电话号码搜索',
+  resultsfor: '搜索结果',
+  continue: '继续',
+  confirmorder: '确认订单',
+  chooseaddress: '选择地址',
+  entercost: '输入成本',
+  ordersuccessfullycreated: '订单创建成功',
+  ordernumber: '订单号',
+  ok: '好的',
+  customernotfound: '找不到客户',
+  addnewcustomer: '添加新客户',
+  enterphone: '输入电话号码',
+  fullname: '全名',
+  entergovernate: '输入省份',
+  searchforaplace: '搜索地点',
+  saveuserdetailsandcontinuetocompletetheorder:
+    '保存用户详细信息并继续完成订单',
+  saveandcontinue: '保存并继续'
 }

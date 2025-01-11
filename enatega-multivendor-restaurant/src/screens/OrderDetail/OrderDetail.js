@@ -19,9 +19,8 @@ import { useRestaurantContext } from '../../ui/context/restaurant'
 import { useTranslation } from 'react-i18next'
 
 export default function OrderDetail({ navigation, route }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { activeBar, orderData, preparationTime, createdAt } = route.params
-  console.log({ orderData: orderData.items.addons })
   const { _id, orderDate } = orderData
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
@@ -31,38 +30,29 @@ export default function OrderDetail({ navigation, route }) {
   const [print, setPrint] = useState(false)
 
   const { data } = useRestaurantContext()
-  // current
   const timeNow = new Date()
 
-  // create Time and Difference of 2 min calcualtion
   const createdTime = new Date(createdAt)
   const remainingTime = moment(createdTime)
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
 
-  // accept time for late time deliveries
   const date = new Date(orderDate)
   const acceptTime = moment(date).diff(timeNow, 'seconds')
 
-  // preparation time based on selection
   const prep = new Date(preparationTime)
   const diffTime = prep - timeNow
   const totalPrep = diffTime > 0 ? diffTime / 1000 : 0
 
-  // checking whether to give 2 min time or accept time
   const decision = !isAcceptButtonVisible
     ? acceptTime
     : remainingTime > 0
     ? remainingTime
     : 0
 
-  // image path
   const order = data.restaurantOrders.find(o => o._id === _id)
-  // const imagePath =
-  //   activeBar === 2
-  //     ? require('../../assets/shop.png')
-  //     : require('../../assets/bowl.png')
   const imagePath = require('../../assets/bowl.png')
+
   const toggleOverlay = () => {
     setPrint(false)
     setOverlayVisible(!overlayVisible)
@@ -89,6 +79,8 @@ export default function OrderDetail({ navigation, route }) {
     }
   }
 
+  const isArabic = i18n.language === 'ar'
+
   return (
     <View style={{ flex: 1 }}>
       <BackButton navigation={navigation} />
@@ -105,19 +97,34 @@ export default function OrderDetail({ navigation, route }) {
         </View>
         <View style={styles.lowerContainer}>
           <View style={styles.barContainer}>
-            <View style={styles.roundedBar}>
-              <View style={styles.iconContainer}>
+            <View
+              style={[
+                styles.roundedBar,
+                isArabic && { flexDirection: 'row-reverse' }
+              ]}>
+              <View
+                style={[styles.iconContainer, isArabic && { MarginLeft: 10 }]}>
                 <Image
                   source={imagePath}
                   PlaceholderContent={<ActivityIndicator />}
                   style={{ width: 25, height: 25 }}
                 />
               </View>
-              <View style={styles.textContainer}>
-                <TextDefault bolder H4>
+              <View
+                style={[
+                  styles.textContainer,
+                  isArabic && {
+                    flexDirection: 'column',
+                    alignItems: 'flex-end'
+                  }
+                ]}>
+                <TextDefault
+                  bolder
+                  H4
+                  style={isArabic && { textAlign: 'right' }}>
                   {activeBar === 2 ? t('prepared') : t('preparing')}
                 </TextDefault>
-                <TextDefault>
+                <TextDefault style={isArabic && { textAlign: 'right' }}>
                   {activeBar === 2 ? t('delivered') : t('accepted')}
                 </TextDefault>
               </View>
@@ -262,12 +269,16 @@ export default function OrderDetail({ navigation, route }) {
               )}
             </View>
             <View style={styles.borderContainer}>
-              <TextDefault bold H2 center>
+              <TextDefault
+                bold
+                H2
+                center
+                style={isArabic && { textAlign: 'right' }}>
                 {t('orderDetail')}
               </TextDefault>
             </View>
 
-            <OrderDetails orderData={orderData} />
+            <OrderDetails orderData={orderData} isArabic={isArabic} />
           </ScrollView>
         </View>
       </ImageBackground>

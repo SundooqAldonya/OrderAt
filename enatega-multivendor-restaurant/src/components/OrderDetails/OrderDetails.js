@@ -8,31 +8,35 @@ import { useTranslation } from 'react-i18next'
 
 export default function OrderDetails({ orderData }) {
   const { orderId, user, deliveryAddress } = orderData
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isRtl = i18n.language === 'ar'
+  const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
+  const textAlignStyle = isRtl ? { textAlign: 'right' } : {}
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.cardContainer}>
-        <View style={styles.row}>
-          <Text style={styles.heading}>{t('orderNo')}.</Text>
-          <Text style={styles.text} selectable>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>{t('orderNo')}.</Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
             {orderId}
           </Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.heading}>{t('email')}</Text>
-          <Text style={styles.text} selectable>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>{t('email')}</Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
             {user.email}
           </Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.heading}>{t('contact')}</Text>
-          <Text style={styles.text} selectable>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>{t('contact')}</Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
             {user.phone}
           </Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.heading}>{t('address')}</Text>
-          <Text style={styles.text} selectable>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>{t('address')}</Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
             {deliveryAddress.deliveryAddress}
           </Text>
         </View>
@@ -43,8 +47,7 @@ export default function OrderDetails({ orderData }) {
 }
 
 function OrderItems({ orderData }) {
-  const { t } = useTranslation()
-  console.log('order@@@@@@@@', orderData)
+  const { t, i18n } = useTranslation()
   const {
     items,
     orderAmount,
@@ -53,109 +56,99 @@ function OrderItems({ orderData }) {
     taxationAmount
   } = orderData
   const configuration = useContext(Configuration.Context)
+  const isRtl = i18n.language === 'ar'
+  const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
+  const textAlignStyle = isRtl ? { textAlign: 'right' } : {}
+
   let subTotal = orderAmount - deliveryCharges - tipping - taxationAmount
+
+  const formatAmount = amount => {
+    return isRtl
+      ? `${amount}${configuration.currencySymbol}`
+      : `${configuration.currencySymbol}${amount}`
+  }
+
   return (
     <View style={[styles.cardContainer, { marginTop: 30, marginBottom: 45 }]}>
       {items &&
         items.map((item, index) => {
-          console.log({ itemAddon: item })
           return (
-            <View>
-              <View style={styles.itemRowBar} key={index}>
-                <TextDefault
-                  H5
-                  textColor={colors.fontSecondColor}
-                  bold>{`${item.quantity}x ${item.title} ${item.variation.title}`}</TextDefault>
-                <TextDefault
-                  bold>{`${configuration.currencySymbol}${item.variation.price}`}</TextDefault>
-              </View>
-              {item.addons?.map((addon, index) => {
-                console.log({ addon })
-                return (
-                  <View key={addon._id}>
-                    <TextDefault H5 style={{ marginVertical: 10 }}>
-                      {addon.title}
-                    </TextDefault>
-                    {addon?.options?.map(option => {
-                      return (
-                        <View
-                          key={option._id}
-                          style={{
-                            flexDirection: 'row',
-                            paddingInlineStart: 20,
-                            justifyContent: 'space-between'
-                          }}>
-                          <TextDefault H6>{option.title}</TextDefault>
-                          <TextDefault
-                            H6>{`${configuration.currencySymbol}${option.price}`}</TextDefault>
-                        </View>
-                      )
-                    })}
-                  </View>
-                )
-              })}
+            <View style={[styles.itemRowBar, directionStyle]} key={index}>
+              <TextDefault
+                H5
+                textColor={colors.fontSecondColor}
+                bold>{`${item.quantity}x ${item.title}`}</TextDefault>
+              <TextDefault bold>
+                {formatAmount(item.variation.price)}
+              </TextDefault>
+              {item.addons &&
+                item.addons.map((addon, index) => {
+                  return (
+                    <TextDefault H6>{formatAmount(addon.price)}</TextDefault>
+                  )
+                })}
             </View>
           )
         })}
-      <View style={styles.itemRow}>
+      <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
           H6
           textColor={colors.fontSecondColor}
           bold
-          style={styles.itemHeading}>
+          style={[styles.itemHeading, textAlignStyle]}>
           {t('subT')}
         </TextDefault>
-        <TextDefault bold style={styles.itemText}>
-          {`${configuration.currencySymbol}${subTotal.toFixed(2)}`}
+        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+          {formatAmount(subTotal.toFixed(2))}
         </TextDefault>
       </View>
-      <View style={styles.itemRow}>
+      <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
           H6
           textColor={colors.fontSecondColor}
           bold
-          style={styles.itemHeading}>
+          style={[styles.itemHeading, textAlignStyle]}>
           {t('tip')}
         </TextDefault>
-        <TextDefault bold style={styles.itemText}>
-          {`${configuration.currencySymbol}${tipping}`}
+        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+          {formatAmount(tipping)}
         </TextDefault>
       </View>
-      <View style={styles.itemRow}>
+      <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
           H6
           textColor={colors.fontSecondColor}
           bold
-          style={styles.itemHeading}>
+          style={[styles.itemHeading, textAlignStyle]}>
           {t('taxCharges')}
         </TextDefault>
-        <TextDefault bold style={styles.itemText}>
-          {`${configuration.currencySymbol}${taxationAmount}`}
+        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+          {formatAmount(taxationAmount)}
         </TextDefault>
       </View>
-      <View style={styles.itemRow}>
+      <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
           H6
           textColor={colors.fontSecondColor}
           bold
-          style={styles.itemHeading}>
+          style={[styles.itemHeading, textAlignStyle]}>
           {t('deliveryCharges')}
         </TextDefault>
-        <TextDefault bold style={styles.itemText}>
-          {`${configuration.currencySymbol}${deliveryCharges}`}
+        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+          {formatAmount(deliveryCharges)}
         </TextDefault>
       </View>
 
-      <View style={[styles.itemRow, { marginTop: 30 }]}>
+      <View style={[styles.itemRow, { marginTop: 30 }, directionStyle]}>
         <TextDefault
           H6
           textColor={colors.fontSecondColor}
           bold
-          style={styles.itemHeading}>
+          style={[styles.itemHeading, textAlignStyle]}>
           {t('total')}
         </TextDefault>
-        <TextDefault bold style={styles.itemText}>
-          {`${configuration.currencySymbol}${orderAmount}`}
+        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+          {formatAmount(orderAmount)}
         </TextDefault>
       </View>
     </View>
