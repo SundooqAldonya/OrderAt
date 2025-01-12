@@ -24,11 +24,11 @@ const orderSchema = new Schema(
       ref: 'Restaurant'
     },
     orderId: {
-      type: String,
+      type: String
       //required: true
     },
     resId: {
-      type: String,
+      type: String
       //required: true
     },
     deliveryAddress: {
@@ -148,7 +148,7 @@ const orderSchema = new Schema(
   },
   { timestamps: true }
 )
-orderSchema.pre('save', async function(next) {
+orderSchema.pre('save', async function (next) {
   const isOrderStatusUpdated = this.modifiedPaths().includes('orderStatus')
   if (
     isOrderStatusUpdated &&
@@ -165,7 +165,7 @@ orderSchema.pre('save', async function(next) {
       paymentMethod: this.paymentMethod,
       deliveryTime: this.deliveredAt
     })
-    earning.save()
+    await earning.save()
     Rider.findOneAndUpdate(
       { _id: this.rider },
       {
