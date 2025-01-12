@@ -34,7 +34,7 @@ export default function SearchModal({
   onClose = () => {},
   onSubmit = () => {}
 }) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const animation = useSharedValue(0)
   const { GOOGLE_MAPS_KEY } = useEnvVars()
 
@@ -142,17 +142,22 @@ export default function SearchModal({
             listViewDisplayed='auto' // true/false/undefined
             fetchDetails={true}
             renderDescription={(row) => row.description} // custom description render
-            renderRow={(data) =>(
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <View style={styles(currentTheme).locationIcon} >
-                      <Ionicons name="location-outline" size={16} color={currentTheme.newIconColor} />
-                    </View>
-                    <TextDefault>{data?.description}</TextDefault>
-                  </View>
-              )
-            } //
+            renderRow={(data) => (
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
+              >
+                <View style={styles(currentTheme).locationIcon}>
+                  <Ionicons
+                    name='location-outline'
+                    size={16}
+                    color={currentTheme.newIconColor}
+                  />
+                </View>
+                <TextDefault>{data?.description}</TextDefault>
+              </View>
+            )} //
             onPress={(data, details) => {
-              onSubmit(data.description, details.geometry.location,details)
+              onSubmit(data.description, details.geometry.location, details)
             }}
             getDefaultValue={() => {
               return '' // text input default value
@@ -160,18 +165,18 @@ export default function SearchModal({
             query={{
               // available options: https://developers.google.com/places/web-service/autocomplete
               key: GOOGLE_MAPS_KEY,
-              language: 'en' // language of the results
+              language: i18n.language // language of the results
             }}
             textInputProps={{
               placeholderTextColor: currentTheme.fontMainColor
             }}
             styles={{
               listView: {
-                marginLeft: -50,
+                marginLeft: -50
               },
               description: {
                 fontWeight: 'bold',
-                color: currentTheme.black,
+                color: currentTheme.black
               },
               predefinedPlacesDescription: {
                 color: '#1faadb'
@@ -183,8 +188,8 @@ export default function SearchModal({
                 backgroundColor: currentTheme.themeBackground
               },
               textInput: {
-      fontSize:scale(12),
-                
+                fontSize: scale(12),
+
                 ...alignment.MTxSmall,
                 color: currentTheme.newFontcolor,
                 backgroundColor: currentTheme.themeBackground,
