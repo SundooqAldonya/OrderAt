@@ -52,6 +52,7 @@ function ItemDetail(props) {
   const Analytics = analytics()
 
   const { food, addons, options, restaurant } = props.route.params
+  // console.log({ restaurant })
   const navigation = useNavigation()
   const { t } = useTranslation()
 

@@ -11,6 +11,7 @@ import { gql, useApolloClient, useQuery } from '@apollo/client'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
+import { useRestaurant } from '../../ui/hooks'
 
 const RELATED_ITEMS = gql`
   ${relatedItemsQuery}
@@ -20,6 +21,7 @@ const RESTAURANT = gql`
 `
 
 const Section = ({ itemId, restaurantId }) => {
+  console.log({ restaurantId })
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -27,24 +29,33 @@ const Section = ({ itemId, restaurantId }) => {
   const { loading, error, data } = useQuery(RELATED_ITEMS, {
     variables: { itemId, restaurantId }
   })
+  const { data: result, error: errorRestaurant } = useRestaurant(restaurantId)
+
   if (loading) return <View />
   if (error) return <View />
+
   const { relatedItems } = data
+
   if (relatedItems.length < 1) return <View />
-  const result = client.readQuery({
-    query: RESTAURANT,
-    variables: { id: restaurantId }
-  })
+
+  // const result = client.readQuery({
+  //   query: RESTAURANT,
+  //   variables: { id: restaurantId }
+  // })
+
+  console.log({ result })
 
   const slicedItems =
     relatedItems.length > 3 ? relatedItems.slice(0, 3) : relatedItems
   return (
     <View style={{ margin: 10 }}>
       <View style={{ marginBottom: scale(15) }}>
-        <TextDefault H4 bolder textColor={currentTheme.newFontcolor}>{t('frequentlyBoughtTogether')}</TextDefault>
+        <TextDefault H4 bolder textColor={currentTheme.newFontcolor}>
+          {t('frequentlyBoughtTogether')}
+        </TextDefault>
       </View>
-      {slicedItems.map((id) => (
-        <Row key={id} id={id} restaurant={result.restaurant} />
+      {slicedItems?.map((id) => (
+        <Row key={id} id={id} restaurant={result?.restaurant} />
       ))}
     </View>
   )
