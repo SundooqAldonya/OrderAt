@@ -55,6 +55,8 @@ import { ReactComponent as RestaurantSectionIcon } from './assets/svg/restSectio
 import SuperAdminDashboard from './views/SuperAdminDashboard'
 import Cuisines from './views/Cuisines'
 import Banners from './views/Banners'
+import DeliveryZones from './views/DeliveryZones'
+import Cities from './views/Cities'
 
 var routes = [
   {
@@ -152,6 +154,24 @@ var routes = [
     name: 'Tipping',
     icon: TippingsIcon,
     component: Tipping,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/cities',
+    name: 'Cities',
+    icon: ZonesIcon,
+    component: Cities,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/delivery-zones',
+    name: 'Delivery Zones',
+    icon: ZonesIcon,
+    component: DeliveryZones,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

@@ -1223,7 +1223,13 @@ const typeDefs = gql`
     riderPassword: String
   }
 
+  type City {
+    _id: String!
+    title: String
+  }
+
   type Query {
+    cities: [City!]
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
@@ -1326,6 +1332,8 @@ const typeDefs = gql`
     orderCount(restaurant: String!): Int
     restaurantOrders: [Order!]!
     zones: [Zone!]
+    deliveryZones: [Zone!]
+    singleDeliveryZone: Zone!
     zone(id: String!): Zone!
     unassignedOrdersByZone: [Order!]
     riderOrders: [Order!]
@@ -1369,7 +1377,16 @@ const typeDefs = gql`
     message: String!
   }
 
+  input DeliveryInput {
+    cityId: String!
+    title: String!
+  }
+
   type Mutation {
+    createDeliveryZone(deliveryInput: DeliveryInput): Message
+    editDeliveryZone(deliveryInput: DeliveryInput): Message
+    deleteDeliveryZone(deliveryInput: DeliveryInput): Message
+    createCity(title: String!): Message
     CheckOutPlaceOrder(
       userId: ID!
       addressId: ID!

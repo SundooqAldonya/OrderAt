@@ -662,6 +662,12 @@ export const getUsers = `query{
       }
     }
   }`
+export const getCities = `query {
+    cities {
+      _id
+      title      
+    }
+  }`
 
 export const getRiders = `query{
     riders{

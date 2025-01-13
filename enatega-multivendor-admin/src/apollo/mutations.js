@@ -642,6 +642,12 @@ export const deleteZone = `mutation DeleteZone($id:String!){
   }
 }`
 
+export const createCity = `mutation CreateCity($title:String!){
+  createCity(title:$title){
+    message
+  }
+}`
+
 export const vendorResetPassword = `mutation VendorResetPassword($oldPassword: String!, $newPassword: String!){
     vendorResetPassword(oldPassword: $oldPassword, newPassword: $newPassword)
 }`

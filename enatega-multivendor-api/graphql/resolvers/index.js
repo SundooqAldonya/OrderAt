@@ -28,6 +28,7 @@ const cuisine = require('./cuisine')
 const banner = require('./banner')
 const demo = require('./demo')
 const food = require('./food')
+const deliveryZones = require('./deliveryZones')
 
 const rootResolver = {
   Query: {
@@ -56,7 +57,8 @@ const rootResolver = {
     ...cuisine.Query,
     ...banner.Query,
     ...demo.Query,
-    ...food.Query
+    ...food.Query,
+    ...deliveryZones.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -86,7 +88,8 @@ const rootResolver = {
     ...chatResolver.Mutation,
     ...cuisine.Mutation,
     ...banner.Mutation,
-    ...demo.Mutation
+    ...demo.Mutation,
+    ...deliveryZones.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,
