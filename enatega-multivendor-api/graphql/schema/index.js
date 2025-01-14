@@ -1228,7 +1228,14 @@ const typeDefs = gql`
     title: String
   }
 
+  type Area {
+    _id: String!
+    title: String
+    city: City
+  }
+
   type Query {
+    areas: [Area!]
     cities: [City!]
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
@@ -1382,7 +1389,13 @@ const typeDefs = gql`
     title: String!
   }
 
+  input AreaInput {
+    city: String!
+    title: String!
+  }
+
   type Mutation {
+    createArea(areaInput: AreaInput!): Message
     createDeliveryZone(deliveryInput: DeliveryInput): Message
     editDeliveryZone(deliveryInput: DeliveryInput): Message
     deleteDeliveryZone(deliveryInput: DeliveryInput): Message

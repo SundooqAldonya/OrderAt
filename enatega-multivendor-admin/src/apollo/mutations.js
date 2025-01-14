@@ -647,6 +647,11 @@ export const createCity = `mutation CreateCity($title:String!){
     message
   }
 }`
+export const createArea = `mutation CreateArea($areaInput:AreaInput!){
+  createArea(areaInput:$areaInput){
+    message
+  }
+}`
 
 export const vendorResetPassword = `mutation VendorResetPassword($oldPassword: String!, $newPassword: String!){
     vendorResetPassword(oldPassword: $oldPassword, newPassword: $newPassword)

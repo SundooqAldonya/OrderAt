@@ -668,6 +668,16 @@ export const getCities = `query {
       title      
     }
   }`
+export const getAreas = `query {
+    areas {
+      _id
+      title
+      city {
+        _id
+        title
+      }     
+    }
+  }`
 
 export const getRiders = `query{
     riders{

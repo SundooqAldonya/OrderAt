@@ -410,7 +410,9 @@ module.exports = {
           configuration.deliveryRate,
           distance
         )
+
         let deliveryCharges = amount
+
         if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
           deliveryCharges = configuration.minimumDeliveryFee
         }

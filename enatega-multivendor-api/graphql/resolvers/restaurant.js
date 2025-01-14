@@ -1124,10 +1124,9 @@ module.exports = {
         })
         console.log('Zone: ', zone)
         if (!zone) {
-          return {
-            success: false,
-            message: "restaurant's location doesn't lie in any delivery zone"
-          }
+          throw new Error(
+            "Restaurant's location doesn't lie in any delivery zone"
+          )
         }
         const updated = await Restaurant.findByIdAndUpdate(
           id,

@@ -1,4 +1,5 @@
 const City = require('../../models/city')
+const DeliveryZone = require('../../models/deliveryZone')
 const Zone = require('../../models/zone')
 const { transformZone } = require('./merge')
 module.exports = {
@@ -50,7 +51,7 @@ module.exports = {
         coordinates: args.zone.coordinates
       }
 
-      const zone = new Zone({
+      const zone = new DeliveryZone({
         title: args.zone.title,
         description: args.zone.description,
         location
@@ -62,7 +63,7 @@ module.exports = {
       return transformZone(result)
     },
     editDeliveryZone: async (_, args, { req, res }) => {
-      const zone = await Zone.findById(args.zone._id)
+      const zone = await DeliveryZone.findById(args.zone._id)
       if (!zone) throw new Error('Zone does not exist')
       const location = {
         type: 'Polygon',
@@ -77,7 +78,7 @@ module.exports = {
       return transformZone(result)
     },
     deleteDeliveryZone: async (_, args, { req, res }) => {
-      const deletedZone = await Zone.findByIdAndUpdate(
+      const deletedZone = await DeliveryZone.findByIdAndUpdate(
         args.id,
         { isActive: false },
         { new: true }
