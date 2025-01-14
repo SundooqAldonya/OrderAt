@@ -158,6 +158,7 @@ const typeDefs = gql`
     reviewAverage: Float
     restaurantUrl: String
     phone: String
+    city: CityArea
     createdAt: String
   }
   type RestaurantCustomer {
@@ -951,6 +952,7 @@ const typeDefs = gql`
     cuisines: [String]
     restaurantUrl: String
     phone: String
+    city: String
   }
 
   input RestaurantProfileInput {
@@ -969,6 +971,7 @@ const typeDefs = gql`
     cuisines: [String]
     restaurantUrl: String
     phone: String
+    city: String
   }
 
   input OptionInput {
@@ -1223,20 +1226,30 @@ const typeDefs = gql`
     riderPassword: String
   }
 
-  type City {
+  type CityArea {
     _id: String!
     title: String
+  }
+
+  type InsideLocationArea {
+    coordinates: [Float!]
+  }
+
+  type LocationArea {
+    _id: String!
+    location: InsideLocationArea
   }
 
   type Area {
     _id: String!
     title: String
-    city: City
+    city: CityArea
+    location: LocationArea
   }
 
   type Query {
     areas: [Area!]
-    cities: [City!]
+    cities: [CityArea!]
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
@@ -1392,6 +1405,7 @@ const typeDefs = gql`
   input AreaInput {
     city: String!
     title: String!
+    coordinates: [Float!]
   }
 
   type Mutation {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import useStyles from '../styles'
 import { useTranslation } from 'react-i18next'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { createArea, getAreas, getCities } from '../../apollo'
+import { GoogleMap, Marker, Polygon } from '@react-google-maps/api'
 
 const CREATE_AREA = gql`
   ${createArea}
@@ -33,7 +34,11 @@ const AreaCreate = ({ onClose }) => {
   const [success, setSuccess] = useState(false)
   const [mainError, setMainError] = useState(false)
   const [selectedCity, setSelectedCity] = useState('')
-
+  const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker') // polygon
+  const [center, setCenter] = useState({ lat: 30.0444, lng: 31.2357 })
+  const [marker, setMarker] = useState({ lat: 30.0444, lng: 31.2357 })
+  const polygonRef = useRef()
+  const listenersRef = useRef([])
   const { data, loading: loadingCities, error: errorCities } = useQuery(
     GET_CITIES
   )
@@ -49,18 +54,43 @@ const AreaCreate = ({ onClose }) => {
     setSuccess('Created an area successfully!')
     setTitle('')
   }
+
   const [mutate] = useMutation(CREATE_AREA, {
     onCompleted,
     refetchQueries: [{ query: GET_AREAS }]
   })
 
+  const onClick = e => {
+    if (drawBoundsOrMarker === 'marker') {
+      setMarker({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+    }
+    //  else {
+    //   setPath([...path, { lat: e.latLng.lat(), lng: e.latLng.lng() }])
+    // }
+  }
+
+  const removeMarker = () => {
+    setMarker(null)
+  }
+
+  const onDragEnd = mapMouseEvent => {
+    setMarker({
+      lat: mapMouseEvent.latLng.lat(),
+      lng: mapMouseEvent.latLng.lng()
+    })
+  }
+
+  // console.log(marker)
+
   const handleSubmit = async e => {
     e.preventDefault()
+    const coordinates = [marker.lat, marker.lng]
     mutate({
       variables: {
         areaInput: {
           title,
-          city: selectedCity
+          city: selectedCity,
+          coordinates
         }
       }
     })
@@ -83,6 +113,27 @@ const AreaCreate = ({ onClose }) => {
       </Box>
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
+          <Box className={classes.form}>
+            <GoogleMap
+              mapContainerStyle={{
+                height: '500px',
+                width: '100%',
+                borderRadius: 30
+              }}
+              id="google-map"
+              zoom={14}
+              center={center}
+              onClick={onClick}>
+              {marker && (
+                <Marker
+                  position={marker}
+                  draggable
+                  onRightClick={removeMarker}
+                  onDragEnd={onDragEnd}
+                />
+              )}
+            </GoogleMap>
+          </Box>
           <Box>
             <Typography className={classes.labelText}>{t('Title')}</Typography>
             <Input

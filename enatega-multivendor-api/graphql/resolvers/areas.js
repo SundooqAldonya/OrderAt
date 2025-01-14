@@ -1,9 +1,11 @@
 const Area = require('../../models/area')
+const Location = require('../../models/location')
 module.exports = {
   Query: {
     async areas(_, args, { req, res }) {
       try {
-        const areas = await Area.find().populate('city')
+        const areas = await Area.find().populate('city').populate('location')
+        console.log({ areas: areas[areas.length - 1].location })
         return areas
       } catch (err) {
         throw new Error('Something went wrong')
@@ -14,7 +16,13 @@ module.exports = {
     async createArea(_, args) {
       console.log({ createAreaArgs: args })
       try {
-        await Area.create({ ...args.areaInput })
+        const location = new Location({
+          location: { coordinates: args.areaInput.coordinates }
+        })
+        const area = new Area({ ...args.areaInput })
+        area.location = location
+        await location.save()
+        await area.save()
         return { message: 'Created the area' }
       } catch (err) {
         console.log({ err })

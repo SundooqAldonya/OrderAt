@@ -3,7 +3,12 @@ import { validateFunc } from '../constraints/constraints'
 import { withTranslation, useTranslation } from 'react-i18next'
 import Header from '../components/Headers/Header'
 import { useQuery, useMutation, gql } from '@apollo/client'
-import { getRestaurantProfile, editRestaurant, getCuisines } from '../apollo'
+import {
+  getRestaurantProfile,
+  editRestaurant,
+  getCuisines,
+  getCities
+} from '../apollo'
 import ConfigurableValues from '../config/constants'
 import useStyles from '../components/Restaurant/styles'
 import useGlobalStyles from '../utils/globalStyles'
@@ -37,6 +42,9 @@ const EDIT_RESTAURANT = gql`
 `
 const CUISINES = gql`
   ${getCuisines}
+`
+const GET_CITIES = gql`
+  ${getCities}
 `
 
 const UPLOAD_FILE = gql`
@@ -72,7 +80,8 @@ const VendorProfile = () => {
   const [uploadFile] = useMutation(UPLOAD_FILE)
   const [uploadRestaurantLogo] = useMutation(UPLOAD_LOGO)
 
-  const restaurantId = localStorage.getItem('restaurant_id')
+  const restaurantId = localStorage.getItem('restaurantId')
+  console.log({ restaurantId })
   const [showPassword, setShowPassword] = useState(false)
   const [imgUrl, setImgUrl] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
@@ -89,6 +98,7 @@ const VendorProfile = () => {
   const [restaurantCuisines, setRestaurantCuisines] = useState([])
   const [image, setImage] = useState(null)
   const [logo, setLogo] = useState(null)
+  const [selectedCity, setSelectedCity] = useState('')
 
   const onCompleted = data => {
     setNameError(null)
@@ -126,12 +136,23 @@ const VendorProfile = () => {
     setErrors('')
     setSuccess('')
   }
+
   const { data, error: errorQuery, loading: loadingQuery } = useQuery(
     GET_PROFILE,
     {
       variables: { id: restaurantId }
     }
   )
+  console.log({ restaurant: data })
+  const {
+    data: dataCities,
+    error: errorCities,
+    loading: loadingCities
+  } = useQuery(GET_CITIES)
+
+  console.log({ dataCities })
+  const cities = dataCities?.cities || null
+  console.log({ cities })
   const restaurantImage = data?.restaurant?.image
   const restaurantLogo = data?.restaurant?.logo
 
@@ -289,6 +310,8 @@ const VendorProfile = () => {
       const password = form.password.value
       const salesTax = form.salesTax.value
       const shopType = form.shopType.value
+      const city = selectedCity
+      console.log({ city })
       mutate({
         variables: {
           restaurantInput: {
@@ -302,7 +325,8 @@ const VendorProfile = () => {
             password: password,
             salesTax: +salesTax,
             shopType,
-            cuisines: restaurantCuisines
+            cuisines: restaurantCuisines,
+            city
           }
         }
       })
@@ -563,6 +587,35 @@ const VendorProfile = () => {
                         ]}
                       />
                     </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography className={classes.labelText}>
+                      {t('Select City')}
+                    </Typography>
+                    <Select
+                      id="input-city"
+                      name="input-city"
+                      defaultValue={data?.restaurant?.city?._id || ''}
+                      value={selectedCity || data?.restaurant?.city?._id || ''}
+                      onChange={e => setSelectedCity(e.target.value)}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                      className={[globalClasses.input]}>
+                      {!selectedCity && !data?.restaurant.city?._id && (
+                        <MenuItem value="" style={{ color: 'black' }}>
+                          {t('Select City')}
+                        </MenuItem>
+                      )}
+
+                      {cities?.map(city => (
+                        <MenuItem
+                          value={city._id}
+                          key={city._id}
+                          style={{ color: 'black' }}>
+                          {city.title}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Dropdown

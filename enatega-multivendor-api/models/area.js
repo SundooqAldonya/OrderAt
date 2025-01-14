@@ -8,6 +8,10 @@ const areaSchema = new Schema(
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'
+    },
+    location: {
+      type: Schema.Types.ObjectId,
+      ref: 'Location'
     }
   },
   {

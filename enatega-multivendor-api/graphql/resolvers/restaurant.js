@@ -270,7 +270,10 @@ module.exports = {
         }
         const restaurant = await Restaurant.findOne(filters)
         if (!restaurant) throw Error('Restaurant not found')
-        return transformRestaurant(restaurant)
+        const result = await restaurant.populate('city')
+        console.log({ result })
+
+        return transformRestaurant(result)
       } catch (e) {
         throw e
       }
@@ -786,6 +789,7 @@ module.exports = {
     },
     editRestaurant: async (_, args, { req }) => {
       console.log('editRestaurant')
+      console.log({ args })
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
         const restaurantByNameExists = await Restaurant.findOne({
@@ -826,8 +830,6 @@ module.exports = {
         })
         restaurant.name = args.restaurant.name
         restaurant.address = args.restaurant.address
-        // restaurant.image = args.restaurant.image
-        // restaurant.logo = args.restaurant.logo
         restaurant.orderPrefix = args.restaurant.orderPrefix
         restaurant.isActive = true
         restaurant.username = args.restaurant.username
@@ -843,9 +845,10 @@ module.exports = {
         restaurant.cuisines = args.restaurant.cuisines
         restaurant.restaurantUrl = args.restaurant.restaurantUrl
         restaurant.phone = args.restaurant.phone
-
-        const result = await restaurant.save()
-
+        restaurant.city = args.restaurant.city
+        await restaurant.save()
+        const result = await restaurant.populate('city')
+        console.log({ result })
         return transformRestaurant(result)
       } catch (err) {
         throw err

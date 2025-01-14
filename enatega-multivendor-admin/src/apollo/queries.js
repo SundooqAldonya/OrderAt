@@ -559,6 +559,10 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       }
       shopType
       cuisines
+      city {
+        _id
+        title
+      }
     }
 }`
 
@@ -675,7 +679,13 @@ export const getAreas = `query {
       city {
         _id
         title
-      }     
+      }
+     location {
+      _id
+      location {
+        coordinates
+      }
+     }
     }
   }`
 

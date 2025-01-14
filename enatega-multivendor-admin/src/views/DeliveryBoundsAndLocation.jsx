@@ -20,12 +20,11 @@ import {
 } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
 
-
 const UPDATE_DELIVERY_BOUNDS_AND_LOCATION = gql`
-${updateDeliveryBoundsAndLocation}
+  ${updateDeliveryBoundsAndLocation}
 `
-console.log('updateDeliveryBoundsAndLocation');
-console.log(UPDATE_DELIVERY_BOUNDS_AND_LOCATION);
+console.log('updateDeliveryBoundsAndLocation')
+console.log(UPDATE_DELIVERY_BOUNDS_AND_LOCATION)
 
 const GET_RESTAURANT_PROFILE = gql`
   ${getRestaurantProfile}
@@ -191,6 +190,7 @@ function DeliveryBoundsAndLocation() {
       lng: mapMouseEvent.latLng.lng()
     })
   }
+
   const globalClasses = useGlobalStyles()
   const classes = useStyles()
 
@@ -307,18 +307,19 @@ function DeliveryBoundsAndLocation() {
                   let variables = {
                     id: restaurantId,
                     location,
-                    boundType: "Polygon",
-                    address: "nil",
-                    location, bounds
-                  };
-          
+                    boundType: 'Polygon',
+                    address: 'nil',
+                    location,
+                    bounds
+                  }
+
                   variables = {
                     ...variables,
                     circleBounds: {
-                      radius: 0.0, // Convert kilometers to meters
-                    },
-                  };
-                  mutate({variables})
+                      radius: 0.0 // Convert kilometers to meters
+                    }
+                  }
+                  mutate({ variables })
                 }
               }}>
               {t('Save')}

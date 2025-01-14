@@ -123,7 +123,11 @@ const restaurantSchema = new Schema(
     keywords: [{ type: String }],
     tags: [{ type: String }],
     restaurantUrl: { type: String },
-    phone: { type: String }
+    phone: { type: String },
+    city: {
+      type: Schema.Types.ObjectId,
+      ref: 'City'
+    }
   },
 
   { timestamps: true }
