@@ -351,6 +351,7 @@ const typeDefs = gql`
     notificationToken: String
     favourite: [String!]
     userType: String
+    area: String
   }
   type Configuration {
     _id: String!
@@ -901,6 +902,7 @@ const typeDefs = gql`
     addresses: [AddressInput]
     notificationToken: String
     appleId: String
+    area: String
   }
 
   input OwnerInput {
@@ -1248,6 +1250,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    areasByCity(id: String!): [Area!]
     areas: [Area!]
     cities: [CityArea!]
     withdrawRequests: [WithdrawRequest!]!
@@ -1410,10 +1413,10 @@ const typeDefs = gql`
 
   type Mutation {
     createArea(areaInput: AreaInput!): Message
+    createCity(title: String!): Message
     createDeliveryZone(deliveryInput: DeliveryInput): Message
     editDeliveryZone(deliveryInput: DeliveryInput): Message
     deleteDeliveryZone(deliveryInput: DeliveryInput): Message
-    createCity(title: String!): Message
     CheckOutPlaceOrder(
       userId: ID!
       addressId: ID!

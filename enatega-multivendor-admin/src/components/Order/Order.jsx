@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useMutation, useQuery, gql } from '@apollo/client'
 import { withTranslation } from 'react-i18next'
 import { validateFunc } from '../../constraints/constraints'
-import { updateOrderStatus, getConfiguration } from '../../apollo'
+import { updateOrderStatus, getConfiguration, getCityAreas } from '../../apollo'
 import Loader from 'react-loader-spinner'
 import {
   Box,
@@ -26,9 +26,10 @@ const GET_CONFIGURATION = gql`
   ${getConfiguration}
 `
 
-function Order(props) {
+function Order({ order, t }) {
+  const classes = useStyles()
+  const globalClasses = useGlobalStyles()
   const theme = useTheme()
-  const { order, t } = props
   const [reason, reasonSetter] = useState('')
   const [reasonError, reasonErrorSetter] = useState(null)
   const [error, errorSetter] = useState('')
@@ -40,11 +41,14 @@ function Order(props) {
     }
     setTimeout(onDismiss, 5000)
   }
+
   const onError = error => {
     errorSetter(error.message)
     setTimeout(onDismiss, 5000)
   }
+
   const { data } = useQuery(GET_CONFIGURATION)
+
   const [mutate, { loading }] = useMutation(UPDATE_STATUS, {
     onError,
     onCompleted
@@ -61,9 +65,7 @@ function Order(props) {
     successSetter('')
   }
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  if (!props.order) return null
+  if (!order) return null
   return (
     <Box className={[classes.container, classes.pb]}>
       <Box className={classes.flexRow}>

@@ -7,11 +7,11 @@ const addressSchema = new Schema(
     location: {
       type: pointSchema
     },
-    deliveryAddress: { type: String, required: true },
+    deliveryAddress: { type: String, required: false },
     details: { type: String },
-    label: { type: String, required: true },
-    //selected: { type: Boolean, default: true },
-    isActive: { type: Boolean, default: true }
+    label: { type: String, required: false },
+    //selected: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: false }
   },
   { timestamps: true }
 )

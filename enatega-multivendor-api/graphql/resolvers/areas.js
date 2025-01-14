@@ -10,6 +10,19 @@ module.exports = {
       } catch (err) {
         throw new Error('Something went wrong')
       }
+    },
+    async areasByCity(_, args) {
+      console.log({ argsAreaByCity: args })
+      try {
+        const areas = await Area.find({ city: args.id })
+          .populate('city')
+          .populate('location')
+        // console.log({ areas: areas[areas.length - 1].location })
+        console.log({ areas })
+        return areas
+      } catch (err) {
+        throw new Error('Something went wrong')
+      }
     }
   },
   Mutation: {

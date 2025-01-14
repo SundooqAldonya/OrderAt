@@ -60,6 +60,10 @@ const userSchema = new Schema(
       type: [],
       default: []
     },
+    area: {
+      type: Schema.Types.ObjectId,
+      ref: 'Area'
+    },
     addresses: [
       {
         type: addressSchema,

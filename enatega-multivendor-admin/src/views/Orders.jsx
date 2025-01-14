@@ -1,15 +1,28 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import OrderComponent from '../components/Order/Order'
 import OrdersData from '../components/Order/OrdersData'
 import Header from '../components/Headers/Header'
 import { useQuery, gql } from '@apollo/client'
-import { getOrdersByRestaurant } from '../apollo'
+import {
+  getCityAreas,
+  getOrdersByRestaurant,
+  getRestaurantProfile
+} from '../apollo'
 import useGlobalStyles from '../utils/globalStyles'
 import { Container, Modal } from '@mui/material'
+import CustomLoader from '../components/Loader/CustomLoader'
+import { AreaContext } from '../context/AreaContext'
 
 const GET_ORDERS = gql`
   ${getOrdersByRestaurant}
+`
+const GET_PROFILE = gql`
+  ${getRestaurantProfile}
+`
+
+const CITY_AREAS = gql`
+  ${getCityAreas}
 `
 
 const Orders = () => {
@@ -18,7 +31,12 @@ const Orders = () => {
   const [page, setPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [search] = useState('')
+  const { setAreas } = useContext(AreaContext)
+
+  // const [areas, setAreas] = useState(null)
   const restaurantId = localStorage.getItem('restaurantId')
+
+  // console.log({ areasData })
 
   const {
     data,
@@ -33,10 +51,34 @@ const Orders = () => {
       search
     }
   })
+
+  const { data: dataProfile } = useQuery(GET_PROFILE, {
+    variables: { id: restaurantId }
+  })
+  console.log({ dataProfile })
+
+  console.log({ restaurant: dataProfile?.restaurant })
+  const restaurant = dataProfile?.restaurant || null
+
+  const { data: dataAreas, loading: loadingAreas } = useQuery(CITY_AREAS, {
+    skip: !dataProfile?.restaurant?.city?._id,
+    variables: { id: dataProfile?.restaurant?.city?._id },
+    onCompleted: fetchedData => {
+      console.log({ fetchedData })
+      setAreas(fetchedData ? fetchedData.areasByCity : null)
+    }
+  })
+
+  // console.log({ areas })
+
   const toggleModal = order => {
     setOrder(order)
     setDetailModal(!detailsModal)
   }
+
+  // if (loadingAreas) {
+  //   return <CustomLoader />
+  // }
 
   const globalClasses = useGlobalStyles()
   return (

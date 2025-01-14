@@ -23,6 +23,7 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material'
 import theme from './utils/theme'
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 import { isAuthenticated } from './helpers/user'
+import AreaProvider from './context/AreaContext'
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues()
@@ -113,9 +114,11 @@ function Main() {
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
             <RestProvider>
-              {/* <GoogleMapsLoader> */}
-              <App />
-              {/* </GoogleMapsLoader> */}
+              <AreaProvider>
+                {/* <GoogleMapsLoader> */}
+                <App />
+                {/* </GoogleMapsLoader> */}
+              </AreaProvider>
             </RestProvider>
           </ThemeProvider>
         </StyledEngineProvider>
