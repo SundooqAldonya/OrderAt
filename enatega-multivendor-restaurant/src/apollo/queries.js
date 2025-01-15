@@ -115,3 +115,10 @@ export const defaultRestaurantCreds = `query LastOrderCreds {
     restaurantPassword
   }
 }`
+
+export const getCityAreas = `query AreasByCity($id: String!){
+  areasByCity(id: $id){
+    _id
+    title
+  }
+}`

@@ -37,7 +37,7 @@ export default function useLogin() {
   )
 
   function onCompleted({ restaurantLogin, lastOrderCreds }) {
-    console.log(restaurantLogin, lastOrderCreds, 'onCompleted')
+    console.log({ restaurantLogin }, lastOrderCreds, 'onCompleted')
     if (lastOrderCreds) {
       if (
         (lastOrderCreds.restaurantUsername !== null ||
@@ -48,7 +48,11 @@ export default function useLogin() {
         setPassword(lastOrderCreds.restaurantPassword || '')
       }
     } else {
-      login(restaurantLogin.token, restaurantLogin.restaurantId)
+      login(
+        restaurantLogin.token,
+        restaurantLogin.restaurantId,
+        restaurantLogin.city
+      )
       setUserName(username || '')
     }
   }

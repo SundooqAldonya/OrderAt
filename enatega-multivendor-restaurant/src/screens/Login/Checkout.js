@@ -21,8 +21,10 @@ import { TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
 import { useMutation } from '@apollo/client'
-const { width, height } = Dimensions.get('window')
 import { CHECK_OUT_PLACE_ORDER } from '../../apollo/mutations'
+
+const { width, height } = Dimensions.get('window')
+
 const Checkout = () => {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
@@ -30,11 +32,13 @@ const Checkout = () => {
   const navigation = useNavigation()
   const [selectedAddress, setSelectedAddress] = useState({})
   const [amount, setAmount] = useState(null)
+
   useEffect(() => {
     console.log('sellllllllllllllct@@@@@@@@', userData.addresses[0])
     setSelectedAddress(userData.addresses[0])
     console.log(userData)
   }, [])
+
   const [checkoutPlaceOrder, { loading, error, data }] = useMutation(
     CHECK_OUT_PLACE_ORDER,
     {
@@ -46,6 +50,7 @@ const Checkout = () => {
       }
     }
   )
+
   const createOrder = async () => {
     console.log('helllll', userData, selectedAddress, amount, !amount)
     if (!userData._id || !selectedAddress._id || !amount) {
@@ -77,6 +82,7 @@ const Checkout = () => {
         console.log('errrr@@@@@@@@@@', err)
       })
   }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
       <ScrollView>
@@ -134,43 +140,47 @@ const Checkout = () => {
             <FontAwesome name="location-arrow" size={scale(18)} />
             <TextDefault H5>{t('chooseaddress')}</TextDefault>
           </View>
-          {userData?.addresses?.map((item, index) => (
-            <TouchableOpacity
-              style={{
-                backgroundColor: 'whitesmoke',
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: 10,
-                margin: 5,
-                marginTop: 10,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: 'powderblue'
-              }}>
-              <View style={{ flex: 1 }}>
-                <TextDefault>{item.deliveryAddress}</TextDefault>
-              </View>
-              <View
+          {userData?.addresses?.map((item, index) => {
+            console.log({ item })
+            return (
+              <TouchableOpacity
                 style={{
-                  height: 20,
-                  width: 20,
-                  borderWidth: 3,
-                  borderColor: colors.green,
-                  borderRadius: 20
+                  backgroundColor: 'whitesmoke',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 10,
+                  margin: 5,
+                  marginTop: 10,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: 'powderblue'
                 }}>
-                {selectedAddress?.deliveryAddress == item?.deliveryAddress && (
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: colors.green,
-                      margin: 2,
-                      borderRadius: 20
-                    }}
-                  />
-                )}
-              </View>
-            </TouchableOpacity>
-          ))}
+                <View style={{ flex: 1 }}>
+                  <TextDefault>{item.deliveryAddress}</TextDefault>
+                </View>
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    borderWidth: 3,
+                    borderColor: colors.green,
+                    borderRadius: 20
+                  }}>
+                  {selectedAddress?.deliveryAddress ==
+                    item?.deliveryAddress && (
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: colors.green,
+                        margin: 2,
+                        borderRadius: 20
+                      }}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            )
+          })}
         </View>
         <View
           style={{

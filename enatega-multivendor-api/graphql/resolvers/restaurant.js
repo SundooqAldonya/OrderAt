@@ -939,12 +939,13 @@ module.exports = {
     restaurantLogin: async (_, args) => {
       console.log('restaurantLogin')
       const restaurant = await Restaurant.findOne({ ...args })
+      console.log({ restaurant })
       if (!restaurant) throw new Error('Invalid credentials')
       const token = jwt.sign(
         { restaurantId: restaurant.id },
         process.env.SECRETKEY // TODO: move this key to .env and use that everywhere
       )
-      return { token, restaurantId: restaurant.id }
+      return { token, restaurantId: restaurant.id, city: restaurant.city }
     },
     acceptOrder: async (_, args, { req }) => {
       var newDateObj = await new Date(

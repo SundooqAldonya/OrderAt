@@ -695,6 +695,7 @@ export const getCityAreas = `query AreasByCity($id: String!){
       title
     }
   }`
+
 export const getRiders = `query{
     riders{
       _id

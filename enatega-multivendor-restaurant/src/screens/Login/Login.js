@@ -15,9 +15,8 @@ import { useLogin } from '../../ui/hooks'
 import { colors } from '../../utilities'
 import styles from './styles'
 import { Image, Button, Input, Icon } from 'react-native-elements'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { FontAwesome } from '@expo/vector-icons'
-
 
 const { height } = Dimensions.get('window')
 export default function Login() {
@@ -32,10 +31,15 @@ export default function Login() {
     password
   } = useLogin()
   const [showPassword, setShowPassword] = useState(false)
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' , zIndex:99999999999999999}}
+      style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        zIndex: 99999999999999999
+      }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled>
       <ScrollView
@@ -61,31 +65,28 @@ export default function Login() {
               </Text>
             </View>
             <View style={{ flex: 0.5 }}>
-            <TextInput
-            style={[styles.textInput]}
-            placeholder={t('username')}
-            value={username}
-            onChangeText={e => setUserName(e)}
-          />
-    <View style={styles.passwordField}>
-            <TextInput
-              secureTextEntry={showPassword}
-              placeholder={t('password')}
-              style={[
-                styles.textInput,
-                styles.passwordInput,
-              ]}
-              value={password}
-              onChangeText={e => setPassword(e)}
-            />
-            <FontAwesome
-              onPress={() => setShowPassword(!showPassword)}
-              name={showPassword ? 'eye' : 'eye-slash'}
-              size={24}
-              style={styles.eyeBtn}
-            />
-            {console.log(username)}
-          </View>
+              <TextInput
+                style={[styles.textInput]}
+                placeholder={t('username')}
+                value={username}
+                onChangeText={e => setUserName(e)}
+              />
+              <View style={styles.passwordField}>
+                <TextInput
+                  secureTextEntry={showPassword}
+                  placeholder={t('password')}
+                  style={[styles.textInput, styles.passwordInput]}
+                  value={password}
+                  onChangeText={e => setPassword(e)}
+                />
+                <FontAwesome
+                  onPress={() => setShowPassword(!showPassword)}
+                  name={showPassword ? 'eye' : 'eye-slash'}
+                  size={24}
+                  style={styles.eyeBtn}
+                />
+                {console.log(username)}
+              </View>
             </View>
             <View
               style={{
@@ -102,8 +103,7 @@ export default function Login() {
                   borderWidth: 0,
                   borderRadius: 5,
                   height: 50,
-                  marginHorizontal:10,
-                  
+                  marginHorizontal: 10
                 }}
                 style={{
                   shadowColor: '#000',

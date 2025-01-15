@@ -8,13 +8,15 @@ const Context = React.createContext({})
 const Provider = props => {
   const [printer, setPrinter] = useState()
   const [notificationToken, setNotificationToken] = useState()
-  const [addressToken,setAddressToken] = useState("")
+  const [addressToken, setAddressToken] = useState('')
+
   useEffect(() => {
     ;(async () => {
       const printerStr = await AsyncStorage.getItem('printer')
       if (printerStr) setPrinter(JSON.parse(printerStr))
     })()
   }, [])
+
   const {
     loading,
     error,
@@ -29,7 +31,7 @@ const Provider = props => {
     { fetchPolicy: 'network-only', pollInterval: 15000, onError }
   )
 
-  console.log('useQuery called:', { loading, error, data, networkStatus });
+  console.log('useQuery called:', { loading, error, data, networkStatus })
   function onError(error) {
     console.log(JSON.stringify(error))
   }
@@ -41,12 +43,12 @@ const Provider = props => {
   }, [])
 
   useEffect(() => {
-    console.log("runnnnnnnnnnnnnnnnn")
+    console.log('runnnnnnnnnnnnnnnnn')
     subscribeToMoreOrders()
   }, [])
 
   useEffect(() => {
-    console.log("hillllewdewwerw")
+    console.log('hillllewdewwerw')
     async function GetToken() {
       const result = await SecureStore.getItemAsync('notification-token')
       if (result) {
@@ -59,9 +61,9 @@ const Provider = props => {
   }, [])
 
   const subscribeToMoreOrders = async () => {
-    console.log("subscribeToMoreOrders calledddd")
+    console.log('subscribeToMoreOrders calledddd')
     const restaurant = await AsyncStorage.getItem('restaurantId')
-    console.log("restaurant@@@@@@@@", restaurant)
+    console.log('restaurant@@@@@@@@', restaurant)
     if (!restaurant) return
     unsubscribe = subscribeToMore({
       document: gql`

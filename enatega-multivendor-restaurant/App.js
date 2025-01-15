@@ -41,6 +41,7 @@ import {
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
 import { useTranslation } from 'react-i18next'
+import { RestaurantContext } from './src/contexts/restaurant'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -56,6 +57,7 @@ export default function App() {
   const [isUpdating, setIsUpdating] = useState(false)
   console.log({ isRTL: I18nManager.isRTL })
   console.log({ language: i18n.language })
+  const [city, setCity] = useState(null)
 
   const client = setupApolloClient()
 
@@ -112,11 +114,15 @@ export default function App() {
     })()
   }, [])
 
-  const login = async (token, restaurantId) => {
+  const login = async (token, restaurantId, city) => {
     await SecureStore.setItemAsync('token', token)
     await AsyncStorage.setItem('restaurantId', restaurantId)
+    console.log({ city })
+    setCity(city)
     setToken(token)
   }
+
+  console.log({ onLoginRestaurantId: city })
 
   const logout = async () => {
     await SecureStore.deleteItemAsync('token')
@@ -152,9 +158,11 @@ export default function App() {
         <StatusBar style="dark" backgroundColor={colors.headerBackground} />
         <Configuration.Provider>
           <AuthContext.Provider value={{ isLoggedIn: !!token, login, logout }}>
-            <SafeAreaProvider>
-              <AppContainer />
-            </SafeAreaProvider>
+            <RestaurantContext.Provider value={{ city, setCity }}>
+              <SafeAreaProvider>
+                <AppContainer />
+              </SafeAreaProvider>
+            </RestaurantContext.Provider>
           </AuthContext.Provider>
         </Configuration.Provider>
         <FlashMessage />

@@ -1,9 +1,10 @@
-import { gql } from "@apollo/client"
+import { gql } from '@apollo/client'
 
 export const login = `mutation RestaurantLogin($username:String!,$password:String!){
     restaurantLogin(username:$username,password:$password){
         token
         restaurantId
+        city
     }
 }`
 
@@ -61,28 +62,40 @@ export const FIND_OR_CREATE_USER = gql`
       }
     }
   }
-`;
+`
 
-export const CHECK_OUT_PLACE_ORDER = gql`mutation CheckOutPlaceOrder($userId: ID!, $addressId: ID!, $orderAmount: Float!, $resId: String!) {
-  CheckOutPlaceOrder(userId: $userId, addressId: $addressId, orderAmount: $orderAmount, resId: $resId) {
-    _id
-    orderId
-    user {
+export const CHECK_OUT_PLACE_ORDER = gql`
+  mutation CheckOutPlaceOrder(
+    $userId: ID!
+    $addressId: ID!
+    $orderAmount: Float!
+    $resId: String!
+  ) {
+    CheckOutPlaceOrder(
+      userId: $userId
+      addressId: $addressId
+      orderAmount: $orderAmount
+      resId: $resId
+    ) {
       _id
-      name
-      phone
+      orderId
+      user {
+        _id
+        name
+        phone
+      }
+      deliveryAddress {
+        id
+        deliveryAddress
+        details
+        label
+      }
+      orderAmount
+      paymentStatus
+      orderStatus
+      isActive
+      createdAt
+      updatedAt
     }
-    deliveryAddress {
-      id
-      deliveryAddress
-      details
-      label
-    }
-    orderAmount
-    paymentStatus
-    orderStatus
-    isActive
-    createdAt
-    updatedAt
   }
-}`;
+`

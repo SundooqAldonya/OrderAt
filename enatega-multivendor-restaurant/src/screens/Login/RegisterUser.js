@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { colors, scale } from '../../utilities'
 import { TextDefault } from '../../components'
@@ -26,20 +26,30 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
 import { getCities, getGovernate } from '../../utilities/apiServices'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { FIND_OR_CREATE_USER } from '../../apollo'
-import { useMutation } from '@apollo/client'
+import { FIND_OR_CREATE_USER, getCityAreas } from '../../apollo'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { useTranslation } from 'react-i18next'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { RestaurantContext } from '../../contexts/restaurant'
+import Icon from 'react-native-vector-icons/AntDesign'
+
 const { width, height } = Dimensions.get('window')
+
+const GET_CITY_AREAS = gql`
+  ${getCityAreas}
+`
+
 const token =
   'nzu3zF6IpFPbvb-8-JY6dwcOJsKDhqXbW4bLkbWjrtt0ldh0ZHc0tTkr0GfqOSdaM4U'
 const RegisterUser = () => {
   const { t } = useTranslation()
   const { phone } = useRoute().params
   const [selectedLocation, setSelectedLocation] = useState(null)
-
+  const [isClicked, setIsClicked] = useState(false)
   const [checkoutModal, setCheckoutModal] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
   const [isVisible2, setIsVisible2] = useState(false)
+  const [areaIsVisible, setAreaIsVisible] = useState(false)
   const [userData, setUserData] = useState({
     name: '',
     governate: '',
@@ -53,7 +63,22 @@ const RegisterUser = () => {
   const stateRef = useRef < TextInput > null
   const [selectedGovernate, setSelectedGovernate] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
+  const [selectedArea, setSelectedArea] = useState(null)
   const [locationAddress, setLocationAddress] = useState('')
+  const { city, setCity } = useContext(RestaurantContext)
+
+  const {
+    data: dataAreas,
+    loading: loadingAreas,
+    error: errorAreas
+  } = useQuery(GET_CITY_AREAS, {
+    skip: !city,
+    variables: { id: city }
+  })
+
+  console.log({ here: dataAreas })
+  console.log({ city })
+
   const navigation = useNavigation()
   const laodGovernates = async () => {
     await getGovernate()
@@ -86,51 +111,67 @@ const RegisterUser = () => {
       }
     }
   )
+
   useEffect(() => {
     laodGovernates()
   }, [])
+
   const onSave = () => {
-    Object.keys(userData).map(item => {
-      if (userData[item] == '') {
-        Alert.alert(
-          'Validation Error',
-          'All fields required you need to feel all fields'
-        )
-      } else {
-        console.log('teewgg')
-        const addresses = [
-          {
-            deliveryAddress: `${userData.address}, ${userData.governate}`,
-            details: locationAddress || 'APT 1',
-            label: 'Home',
-            selected: true,
-            latitude: selectedLocation.latitude,
-            longitude: selectedLocation.longitude
-          }
-        ]
-        findOrCreateUser({
-          variables: {
-            userInput: { name: userData.name, phone: userData.phone, addresses }
-          }
-        }).then(res => {
-          if (res?.data?.findOrCreateUser) {
-            setUserData({
-              name: '',
-              governate: '',
-              phone: '',
-              address: ''
-            })
-            setLocationAddress('')
-            setSelectedLocation(null)
-            Alert.alert('User Created!', 'User successfully created.')
-            navigation.navigate('Checkout', {
-              userData: res.data?.findOrCreateUser
-            })
-          }
+    // Object.keys(userData).map(item => {
+    // if (userData[item] == '') {
+    // Alert.alert(
+    //   'Validation Error',
+    //   'All fields required you need to feel all fields'
+    // )
+    // } else {
+    if (!userData.name || !userData.address || !userData.phone) {
+      Alert.alert(
+        'Validation Error',
+        'All fields required you need to feel all fields'
+      )
+      return
+    }
+    console.log({ selectedLocation })
+    let addresses = []
+    if (locationAddress) {
+      const addressItem = {
+        deliveryAddress: `${locationAddress}, ${userData.governate}`,
+        details: userData.address || 'APT 1',
+        label: 'Home',
+        selected: true,
+        latitude: String(selectedLocation.latitude),
+        longitude: String(selectedLocation.longitude)
+      }
+      addresses.push(addressItem)
+    }
+    findOrCreateUser({
+      variables: {
+        userInput: {
+          name: userData.name,
+          phone: userData.phone,
+          addresses,
+          area: selectedArea?._id
+        }
+      }
+    }).then(res => {
+      if (res?.data?.findOrCreateUser) {
+        setUserData({
+          name: '',
+          governate: '',
+          phone: '',
+          address: ''
+        })
+        setLocationAddress('')
+        setSelectedLocation(null)
+        Alert.alert('User Created!', 'User successfully created.')
+        navigation.navigate('Checkout', {
+          userData: res.data?.findOrCreateUser
         })
       }
-      console.log('lllll', item, '=', userData[item])
     })
+    // }
+    // console.log('lllll', item, '=', userData[item])
+    // })
   }
   const SelectBox = ({ data, title }) => (
     <View>
@@ -369,46 +410,38 @@ const RegisterUser = () => {
                 placeholder={t('fullname')}
                 style={styles.inputs}
               />
-              <TextInput
+              {/* <TextInput
                 value={userData.governate}
                 onChangeText={text =>
                   setUserData({ ...userData, governate: text })
                 }
                 placeholder={t('entergovernate')}
                 style={styles.inputs}
-              />
-
-              <GooglePlacesAutocomplete
-                placeholder={t('searchforaplace')}
-                onPress={(data, details = null) => {
-                  setLocationAddress(details?.formatted_address)
-                  setSelectedLocation({
-                    latitude: details.geometry.location.lat,
-                    longitude: details.geometry.location.lng
-                  })
+              /> */}
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#fff',
+                  paddingVertical: 12,
+                  paddingHorizontal: 24,
+                  borderRadius: 8,
+                  elevation: 5,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  marginHorizontal: 16
                 }}
-                query={{
-                  key: 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
-                  language: 'en'
-                }}
-                fetchDetails={true}
-                styles={{
-                  container: {
-                    flex: 1
-                  },
-                  listView: {
-                    height: 500
-                  },
-                  textInput: styles.inputs
-                }}
-                flatListProps={{
-                  scrollEnabled: true
-                }}
-              />
-              {/* <TextInput value={userData.city} onChangeText={(text) => setUserData({ ...userData, city: text })} placeholder='Enter City' style={styles.inputs} /> */}
-              {/* <SelectBox data={governate} title="Governate" />
-        <SelectBox2 data={cities} title="Cities" /> */}
-              {/* <TextInput value={userData.area} onChangeText={(text) => setUserData({ ...userData, area: text })} placeholder='Enter Area' style={styles.inputs} /> */}
+                onPress={() => {
+                  setAreaIsVisible(!areaIsVisible)
+                }}>
+                <TextDefault
+                  style={{
+                    color: '#000',
+                    textTransform: 'capitalize'
+                  }}>
+                  {selectedArea ? selectedArea.title : `Select area`}
+                </TextDefault>
+              </TouchableOpacity>
               <TextInput
                 value={userData.address}
                 onChangeText={text =>
@@ -416,9 +449,62 @@ const RegisterUser = () => {
                 }
                 multiline
                 numberOfLines={4}
-                placeholder={t('address')}
+                placeholder={`${t('Address details')} ex: 2nd floor`}
                 style={styles.inputs}
               />
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginVertical: 10
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsClicked(!isClicked)
+                  }}>
+                  <Text>
+                    <Icon
+                      name={isClicked ? 'upcircle' : 'downcircle'}
+                      size={30}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {isClicked ? (
+                <View style={{ marginBottom: 15 }}>
+                  <GooglePlacesAutocomplete
+                    placeholder={t('searchforaplace')}
+                    onPress={(data, details = null) => {
+                      setLocationAddress(details?.formatted_address)
+                      setSelectedLocation({
+                        latitude: details.geometry.location.lat,
+                        longitude: details.geometry.location.lng
+                      })
+                    }}
+                    query={{
+                      key: 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
+                      language: 'en'
+                    }}
+                    fetchDetails={true}
+                    styles={{
+                      container: {
+                        flex: 1
+                      },
+                      listView: {
+                        height: 500
+                      },
+                      textInput: styles.inputs
+                    }}
+                    flatListProps={{
+                      scrollEnabled: true
+                    }}
+                  />
+                </View>
+              ) : null}
+              {/* <TextInput value={userData.city} onChangeText={(text) => setUserData({ ...userData, city: text })} placeholder='Enter City' style={styles.inputs} /> */}
+              {/* <SelectBox data={governate} title="Governate" />
+        <SelectBox2 data={cities} title="Cities" /> */}
+              {/* <TextInput value={userData.area} onChangeText={(text) => setUserData({ ...userData, area: text })} placeholder='Enter Area' style={styles.inputs} /> */}
             </View>
             <TouchableOpacity
               onPress={onSave}
@@ -438,6 +524,67 @@ const RegisterUser = () => {
             </TouchableOpacity>
           </ScrollView>
         </View>
+        <Modal visible={areaIsVisible} transparent animationType="slide">
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setAreaIsVisible(false)}
+            style={{
+              flex: 1,
+              backgroundColor: '#00000050',
+              marginBottom: -20
+            }}></TouchableOpacity>
+          <ScrollView
+            contentContainerStyle={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              gap: 20
+            }}
+            style={{
+              flex: 1,
+              backgroundColor: colors.green,
+              padding: 16,
+              height: 400,
+              elevation: 10,
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10
+            }}>
+            {dataAreas?.areasByCity?.map(area => {
+              console.log({ area })
+              return (
+                <TouchableOpacity
+                  key={area._id}
+                  style={{
+                    backgroundColor:
+                      selectedArea?._id === area._id ? '#000' : '#fff',
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3
+                  }}
+                  onPress={() => {
+                    if (selectedArea?._id === area._id) {
+                      setSelectedArea(null)
+                    } else {
+                      setSelectedArea(area)
+                    }
+                  }}>
+                  <TextDefault
+                    style={{
+                      color: selectedArea?._id === area._id ? '#fff' : '#000',
+                      textTransform: 'capitalize'
+                    }}>
+                    {area.title}
+                  </TextDefault>
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+        </Modal>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )

@@ -691,6 +691,7 @@ const typeDefs = gql`
   type RestaurantAuth {
     token: String!
     restaurantId: String!
+    city: String
   }
 
   type Polygon {
