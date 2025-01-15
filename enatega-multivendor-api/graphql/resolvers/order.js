@@ -333,18 +333,34 @@ module.exports = {
       { req }
     ) => {
       console.log('Entered CheckOutPlaceOrder resolver')
-
+      console.log({
+        userId,
+        addressId,
+        resId,
+        orderAmount,
+        isPickedUp,
+        tipping
+      })
       try {
         // Fetch the user
         const user = await User.findById(userId)
         if (!user) throw new Error('User not found')
 
         // Find the delivery address
-        const address = user.addresses.find(
-          addr => addr._id.toString() === addressId
-        )
-        if (!address) throw new Error('Address not found')
-
+        let address, area
+        if (user?.addresses?.length) {
+          address = user.addresses.find(
+            addr => addr._id.toString() === addressId
+          )
+          if (!address) throw new Error('Address not found')
+        }
+        if (user?.area) {
+          const populatedUser = await user.populate({
+            path: 'area',
+            populate: { path: 'location' }
+          })
+          area = populatedUser.area
+        }
         console.log(address, 'Address@1233333333')
 
         // Fetch the restaurant details
@@ -378,10 +394,21 @@ module.exports = {
         const lonOrigin = +restaurant.location.coordinates[0]
         console.log(lonOrigin, 'lonOrigin#$')
 
-        const latDest = +address.location.coordinates[0]
-        console.log(latDest, 'latDest#$')
-        const longDest = +address.location.coordinates[1]
-        console.log(longDest, 'longDest#$')
+        // const latDest = +address?.location.coordinates[0] || null
+        // console.log(latDest, 'latDest#$')
+        // const longDest = +address?.location.coordinates[1] || null
+        // console.log(longDest, 'longDest#$')
+        console.log({ area })
+        const latDest = address
+          ? +address?.location.coordinates[0]
+          : area
+          ? area.location.location.coordinates[0]
+          : null
+        const longDest = address
+          ? +address?.location.coordinates[1]
+          : area
+          ? area.location.location.coordinates[1]
+          : null
 
         const distance = calculateDistance(
           latOrigin,
@@ -393,7 +420,7 @@ module.exports = {
         console.log(distance, 'Distance@1223333--=========killl')
 
         const costType = configuration.costType
-
+        console.log({ costType })
         // let deliveryCharges= 0 ;
 
         // if (costType === 'fixed') {
@@ -410,7 +437,7 @@ module.exports = {
           configuration.deliveryRate,
           distance
         )
-
+        console.log({ amount })
         let deliveryCharges = amount
 
         if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
@@ -473,7 +500,7 @@ module.exports = {
           orderStatus: 'PENDING',
           //orderAmount: orderAmount, // The original order amount (before additional fees)
           orderAmount: totalOrderAmount,
-          deliveryAddress: address,
+          deliveryAddress: address ? address : area,
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: tipping, // Store tipping amount

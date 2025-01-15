@@ -19,10 +19,10 @@ const typeDefs = gql`
 
   type OrderAddress {
     location: Point
-    deliveryAddress: String!
+    deliveryAddress: String
     details: String
-    label: String!
-    id: String!
+    label: String
+    id: String
   }
 
   type Item {
@@ -427,7 +427,7 @@ const typeDefs = gql`
     orderId: String!
     resId: String!
     restaurant: RestaurantDetail!
-    deliveryAddress: OrderAddress!
+    deliveryAddress: OrderAddress
     items: [Item!]!
     user: User!
     paymentMethod: String
@@ -1419,7 +1419,7 @@ const typeDefs = gql`
     deleteDeliveryZone(deliveryInput: DeliveryInput): Message
     CheckOutPlaceOrder(
       userId: ID!
-      addressId: ID!
+      addressId: ID
       resId: String!
       orderAmount: Float!
     ): Order!

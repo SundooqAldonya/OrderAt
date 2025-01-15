@@ -29,7 +29,7 @@ const CHECKOUT_PLACE_ORDER = gql`
   mutation CheckOutPlaceOrder(
     $userId: ID!
     $resId: String!
-    $addressId: ID!
+    $addressId: ID
     $orderAmount: Float!
   ) {
     CheckOutPlaceOrder(
@@ -90,6 +90,7 @@ const GET_USERS_BY_SEARCH = gql`
       name
       email
       phone
+      address_free_text
       addresses {
         _id
         deliveryAddress
@@ -121,7 +122,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [cost, setCost] = useState('')
   const [success, setSuccess] = useState('')
   const [orderMode, setOrderMode] = useState(false)
-  const [selectedCustomer, setSelectedCustomer] = useState(null) // To store the selected customer data
+  const [selectedCustomer, setSelectedCustomer] = useState(null)
   const [selectedAddress, setSelectedAddress] = useState('')
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER)
   const { areas } = useContext(AreaContext)
@@ -248,6 +249,18 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
       console.log('Form validation failed')
       return
     }
+    let addresses = []
+    if (latitude || longitude || newCustomer?.address) {
+      addresses = [
+        {
+          latitude: latitude?.toString(),
+          longitude: longitude?.toString(),
+          deliveryAddress: newCustomer?.address ? newCustomer?.address : '',
+          label: 'Home',
+          selected: true
+        }
+      ]
+    }
     console.log('submitted')
     try {
       const { data } = await findOrCreateUser({
@@ -258,17 +271,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
             address_free_text: newCustomer.address_free_text,
             phone: searchQuery,
             area: selectedArea,
-            addresses: [
-              {
-                latitude: latitude?.toString(),
-                longitude: longitude?.toString(),
-                deliveryAddress: newCustomer?.address
-                  ? newCustomer?.address
-                  : '',
-                label: 'Home',
-                selected: true
-              }
-            ]
+            addresses
           }
         }
       })
@@ -278,7 +281,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         name: '',
         phoneNumber: '',
         address: '',
-        governate: '',
+        // governate: '',
         address_free_text: ''
       })
 
@@ -313,7 +316,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     const restaurantId = localStorage.getItem('restaurantId')
 
     try {
-      if (!cost || !selectedCustomer || !selectedAddress) {
+      if (!cost || !selectedCustomer) {
         throw new Error('Cost, customer details, and address are required!')
       }
 
@@ -323,10 +326,10 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
       const selectedAddressData = addresses.find(
         address => address.deliveryAddress === selectedAddress
       )
-      if (!selectedAddressData) {
-        throw new Error('Selected address not found.')
-      }
-      const addressId = selectedAddressData._id
+      // if (!selectedAddressData) {
+      //   throw new Error('Selected address not found.')
+      // }
+      const addressId = selectedAddressData?._id || null
 
       const orderAmount = parseFloat(cost)
       if (isNaN(orderAmount) || orderAmount <= 0) {
@@ -419,7 +422,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
           />
         </Box>
         {console.log({ selectedCustomer })}
-        {selectedCustomer?.addresses?.length && (
+        {selectedCustomer?.addresses?.length ? (
           <Box sx={{ mb: 2 }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
               Address
@@ -444,7 +447,25 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
               </Select>
             </FormControl>
           </Box>
-        )}
+        ) : null}
+        {console.log({ selectedCustomer })}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            Address free text
+          </Typography>
+          <FormControl fullWidth sx={{ mt: 1 }}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={selectedCustomer?.address_free_text}
+              sx={{
+                '& .MuiInputBase-input': { color: 'black' },
+                '& .MuiOutlinedInput-root': { borderRadius: 2 }
+              }}
+            />
+          </FormControl>
+        </Box>
 
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>

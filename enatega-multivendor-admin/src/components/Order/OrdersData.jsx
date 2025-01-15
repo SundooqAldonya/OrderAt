@@ -41,11 +41,11 @@ const OrdersData = props => {
   })
 
   const onChangeSearch = e => setSearchQuery(e.target.value)
-  
+
   const handleOpenOrderForm = () => setIsOrderFormVisible(true)
   const handleCloseOrderForm = () => setIsOrderFormVisible(false)
 
-  const handleOrderChange = (e) => {
+  const handleOrderChange = e => {
     const { name, value } = e.target
     setOrderDetails(prevState => ({
       ...prevState,
@@ -63,11 +63,13 @@ const OrdersData = props => {
     return items
       .map(
         item =>
-          `${item.quantity}x${item.title}${item.variation.title ? `(${item.variation.title})` : ''}`
+          `${item.quantity}x${item.title}${
+            item.variation.title ? `(${item.variation.title})` : ''
+          }`
       )
       .join('\n')
   }
-  
+
   const restaurantId = localStorage.getItem('restaurantId')
 
   const { data, loading: loadingQuery } = useQuery(ORDERCOUNT, {
@@ -128,7 +130,7 @@ const OrdersData = props => {
     {
       name: t('Address'),
       cell: row => (
-        <>{transformToNewline(row.deliveryAddress.deliveryAddress, 3)}</>
+        <>{transformToNewline(row?.deliveryAddress?.deliveryAddress, 3)}</>
       )
     }
   ]
@@ -186,14 +188,14 @@ const OrdersData = props => {
     <>
       {/* Add Order Button on the Right Side */}
       <Grid container spacing={2} style={{ marginBottom: '20px' }}>
-        <Grid item xs={9}></Grid>  {/* Empty space on the left to push the button to the right */}
+        <Grid item xs={9}></Grid>{' '}
+        {/* Empty space on the left to push the button to the right */}
         <Grid item xs={3}>
           <Button
             variant="contained"
             color="primary"
             onClick={handleOpenOrderForm}
-            fullWidth
-          >
+            fullWidth>
             {t('Addorder')}
           </Button>
         </Grid>
@@ -212,10 +214,9 @@ const OrdersData = props => {
       <div
         className={`table-container ${isOrderFormVisible ? 'slide-up' : ''}`}
         style={{
-            transition: 'transform 0.3s ease-in-out',
-            marginTop: isOrderFormVisible ? '20px' : '0px',  // Adds space above table when form is visible
-        }}
-        >
+          transition: 'transform 0.3s ease-in-out',
+          marginTop: isOrderFormVisible ? '20px' : '0px' // Adds space above table when form is visible
+        }}>
         <DataTable
           title={<TableHeader title={t('Orders')} />}
           columns={columns}

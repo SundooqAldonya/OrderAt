@@ -35,9 +35,9 @@ const orderSchema = new Schema(
       location: {
         type: pointSchema
       },
-      deliveryAddress: { type: String, required: true },
+      deliveryAddress: { type: String },
       details: { type: String },
-      label: { type: String, required: true },
+      label: { type: String },
       id: { type: String, default: v4() }
     },
     items: [itemSchema],

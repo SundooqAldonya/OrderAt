@@ -142,9 +142,9 @@ module.exports = {
             addresses: existingUser.addresses
           }
         }
-        let address
+        let address = null
         if (userInput?.addresses?.length) {
-          address = userInput.addresses?.length ? userInput.addresses[0] : {}
+          address = userInput.addresses[0]
 
           address['location'] = {
             type: 'Point',
@@ -168,7 +168,7 @@ module.exports = {
           emailIsVerified: userInput.email ? true : false,
           phoneIsVerified: false,
           isActive: true,
-          area: userInput.area
+          area: userInput.area || null
         })
 
         // Save the new user to the database

@@ -18,7 +18,7 @@ const firebaseAdminApp = admin.initializeApp(
   'firebase-admin-notifications'
 )
 // Upload image utility functions
-const storeUpload = async({ stream, filename }) => {
+const storeUpload = async ({ stream, filename }) => {
   const path = `./public/images/${filename}`
   return await stream
     .pipe(createWriteStream(path))
@@ -28,7 +28,7 @@ const storeUpload = async({ stream, filename }) => {
     })
 }
 
-const processUpload = async(upload, type) => {
+const processUpload = async (upload, type) => {
   type = type || ''
   const { createReadStream } = await upload
   const filename = `${Date.now() + type}.jpg`
@@ -40,7 +40,7 @@ const processUpload = async(upload, type) => {
 const saveImageToDisk = url => {
   const filename = `${Date.now()}.jpg`
   var file = createWriteStream('./public/images/' + filename, { mode: 0o777 })
-  https.get(url, function(response) {
+  https.get(url, function (response) {
     response.pipe(file)
   })
   return `images/${filename}`
@@ -85,7 +85,7 @@ const sendNotification = async orderId => {
   }
 }
 // returns true if already used,false otherwise
-const checkPhoneAlreadyUsed = async(userId, phone) => {
+const checkPhoneAlreadyUsed = async (userId, phone) => {
   const user = await User.find({ phone })
   if (user.length === 0 || (user.length === 1 && user[0].id === userId)) {
     return false
@@ -94,9 +94,9 @@ const checkPhoneAlreadyUsed = async(userId, phone) => {
 }
 
 function calculateAmount(costType, deliveryRate, distance) {
-
-  return costType === 'fixed' ? deliveryRate : Math.ceil(distance) * deliveryRate;
-
+  return costType === 'fixed'
+    ? deliveryRate
+    : Math.ceil(distance) * deliveryRate
 }
 
 const sendNotificationMobile = async messages => {
@@ -129,7 +129,7 @@ const sendNotificationMobile = async messages => {
   }
   const receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds)
   // eslint-disable-next-line no-unused-expressions
-  async() => {
+  ;async () => {
     // Like sending notifications, there are different strategies you could use
     // to retrieve batches of receipts from the Expo service.
     for (const chunk of receiptIdChunks) {
