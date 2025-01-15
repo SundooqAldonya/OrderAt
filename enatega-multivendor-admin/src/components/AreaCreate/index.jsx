@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useStyles from '../styles'
 import { useTranslation } from 'react-i18next'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -31,6 +31,8 @@ const AreaCreate = ({ onClose }) => {
   const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [titleError, titleErrorSetter] = useState(null)
+  const [address, setAddress] = useState('')
+  const [addressError, addressErrorSetter] = useState(null)
   const [success, setSuccess] = useState(false)
   const [mainError, setMainError] = useState(false)
   const [selectedCity, setSelectedCity] = useState('')
@@ -60,9 +62,34 @@ const AreaCreate = ({ onClose }) => {
     refetchQueries: [{ query: GET_AREAS }]
   })
 
+  useEffect(() => {
+    getAddress(marker.lat, marker.lng)
+  }, [])
+
+  const getAddress = async (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder()
+    const location = { lat, lng }
+
+    geocoder.geocode({ location }, (results, status) => {
+      console.log({ results })
+      if (status === 'OK') {
+        if (results[0]) {
+          setAddress(results[0].formatted_address)
+        } else {
+          console.error('No results found')
+        }
+      } else {
+        console.error(`Geocoder failed due to: ${status}`)
+      }
+    })
+  }
+
   const onClick = e => {
+    const lat = e.latLng.lat()
+    const lng = e.latLng.lng()
     if (drawBoundsOrMarker === 'marker') {
-      setMarker({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+      setMarker({ lat, lng })
+      getAddress(lat, lng)
     }
     //  else {
     //   setPath([...path, { lat: e.latLng.lat(), lng: e.latLng.lng() }])
@@ -89,6 +116,7 @@ const AreaCreate = ({ onClose }) => {
       variables: {
         areaInput: {
           title,
+          address,
           city: selectedCity,
           coordinates
         }
@@ -150,6 +178,29 @@ const AreaCreate = ({ onClose }) => {
                 titleError === false
                   ? globalClasses.inputError
                   : titleError === true
+                  ? globalClasses.inputSuccess
+                  : ''
+              ]}
+            />
+          </Box>
+          <Box>
+            <Typography className={classes.labelText}>
+              {t('Address')}
+            </Typography>
+            <Input
+              style={{ marginTop: -1 }}
+              id="input-address"
+              name="input-address"
+              placeholder={t('Address')}
+              type="text"
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+              disableUnderline
+              className={[
+                globalClasses.input,
+                addressError === false
+                  ? globalClasses.inputError
+                  : addressError === true
                   ? globalClasses.inputSuccess
                   : ''
               ]}

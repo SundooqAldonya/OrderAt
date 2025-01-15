@@ -11,7 +11,7 @@ const addressSchema = new Schema(
     details: { type: String },
     label: { type: String, required: false },
     //selected: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: false }
+    isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
 )

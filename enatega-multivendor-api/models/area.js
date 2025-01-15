@@ -5,6 +5,9 @@ const areaSchema = new Schema(
     title: {
       type: String
     },
+    address: {
+      type: String
+    },
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'

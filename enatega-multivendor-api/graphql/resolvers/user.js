@@ -14,7 +14,7 @@ const { transformUser, transformRestaurants } = require('./merge')
 const { sendOtpToPhone } = require('../../helpers/sms')
 const { sendUserInfoToZapier } = require('../../helpers/api')
 const Configuration = require('../../models/configuration')
-const category = require('../../models/category')
+const Area = require('../../models/area')
 
 module.exports = {
   Query: {
@@ -142,7 +142,7 @@ module.exports = {
             addresses: existingUser.addresses
           }
         }
-        let address = null
+        let address = {}
         if (userInput?.addresses?.length) {
           address = userInput.addresses[0]
 
@@ -155,6 +155,21 @@ module.exports = {
           delete address['longitude']
 
           console.log('address@@@@@@@@@@', address)
+        }
+
+        if (userInput?.area) {
+          const area = await Area.findById(userInput.area).populate('location')
+          console.log({ area })
+          address['deliveryAddress'] = area?.address
+          address['label'] = area?.title
+          address['details'] = userInput?.address_free_text
+          address['location'] = {
+            type: 'Point',
+            coordinates: [
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
+            ]
+          }
         }
         // If the user doesn't exist, create a new user
         const newUser = new User({

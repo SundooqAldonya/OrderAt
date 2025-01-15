@@ -1231,6 +1231,7 @@ const typeDefs = gql`
   type CityArea {
     _id: String!
     title: String
+    address: String
   }
 
   type InsideLocationArea {
@@ -1408,6 +1409,7 @@ const typeDefs = gql`
   input AreaInput {
     city: String!
     title: String!
+    address: String!
     coordinates: [Float!]
   }
 

@@ -394,21 +394,21 @@ module.exports = {
         const lonOrigin = +restaurant.location.coordinates[0]
         console.log(lonOrigin, 'lonOrigin#$')
 
-        // const latDest = +address?.location.coordinates[0] || null
-        // console.log(latDest, 'latDest#$')
-        // const longDest = +address?.location.coordinates[1] || null
-        // console.log(longDest, 'longDest#$')
+        const latDest = +address?.location.coordinates[0] || null
+        console.log(latDest, 'latDest#$')
+        const longDest = +address?.location.coordinates[1] || null
+        console.log(longDest, 'longDest#$')
         console.log({ area })
-        const latDest = address
-          ? +address?.location.coordinates[0]
-          : area
-          ? area.location.location.coordinates[0]
-          : null
-        const longDest = address
-          ? +address?.location.coordinates[1]
-          : area
-          ? area.location.location.coordinates[1]
-          : null
+        // const latDest = address
+        //   ? +address?.location.coordinates[0]
+        //   : area
+        //   ? area.location.location.coordinates[0]
+        //   : null
+        // const longDest = address
+        //   ? +address?.location.coordinates[1]
+        //   : area
+        //   ? area.location.location.coordinates[1]
+        //   : null
 
         const distance = calculateDistance(
           latOrigin,
