@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next'
 import { useSoundContext } from '../../context/sound'
 
 const Order = ({ order, orderAmount }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const {
     active,
@@ -30,9 +31,26 @@ const Order = ({ order, orderAmount }) => {
     })
   }
 
+  const formatPrice = price => {
+    if (!price) return price
+
+    const numericPart = price.replace(/[^\d-]/g, '')
+    const currencyPart = price.replace(/[\d-]/g, '')
+
+    if (isArabic) {
+      return `${numericPart} ${currencyPart}`
+    }
+
+    return `${currencyPart} ${numericPart}`
+  }
+
   return (
     <>
-      <View style={{ marginTop: 20 }}>
+      <View
+        style={{
+          marginTop: 20,
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}>
         {order?.orderStatus === 'ACCEPTED' ||
         order?.orderStatus === 'PICKED' ? (
           <View
@@ -42,7 +60,6 @@ const Order = ({ order, orderAmount }) => {
             ]}
           />
         ) : null}
-
         <TouchableOpacity
           activeOpacity={0.8}
           style={[
@@ -50,53 +67,111 @@ const Order = ({ order, orderAmount }) => {
             active === 'NewOrders' ? styles.bgPrimary : styles.bgWhite
           ]}
           onPress={() => handlePress(order._id)}>
-          <View style={styles.row}>
-            <TextDefault style={styles.rowItem1} bolder H4>
-              {t('orderID')}
-            </TextDefault>
-            <TextDefault style={styles.rowItem2} bolder H4>
-              {order?.orderId}
-            </TextDefault>
-          </View>
-          <View style={styles.row}>
-            <TextDefault
-              style={styles.rowItem1}
-              bolder
-              H5
-              textColor={colors.fontSecondColor}>
-              {t('orderAmount')}
-            </TextDefault>
-            <TextDefault style={styles.rowItem2} bolder H5>
-              {orderAmount}
-            </TextDefault>
-          </View>
-          <View style={styles.row}>
-            <TextDefault
-              style={styles.rowItem1}
-              bolder
-              H5
-              textColor={colors.fontSecondColor}>
-              {t('paymentMethod')}
-            </TextDefault>
-            <TextDefault style={styles.rowItem2} bolder H5>
-              {order?.paymentMethod}
-            </TextDefault>
-          </View>
-          {active === 'MyOrders' && (
-            <View style={styles.row}>
-              <TextDefault
-                style={styles.rowItem1}
-                bolder
-                H5
-                textColor={colors.fontSecondColor}>
-                {t('deliveryTime')}
-              </TextDefault>
-              <TextDefault style={styles.rowItem2} bolder H5>
-                {new Date(order?.createdAt).toLocaleDateString()}{' '}
-                {new Date(order?.createdAt).toLocaleTimeString()}
-              </TextDefault>
-            </View>
+          {isArabic ? (
+            <>
+              <View style={styles.row}>
+                <TextDefault style={styles.rowItem2} bolder H4>
+                  {order?.orderId}
+                </TextDefault>
+                <TextDefault style={styles.rowItem1} bolder H4>
+                  {t('orderID')}
+                </TextDefault>
+              </View>
+              <View style={styles.row}>
+                <TextDefault bolder H5>
+                  {formatPrice(orderAmount)}
+                </TextDefault>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('orderAmount')}
+                </TextDefault>
+              </View>
+              <View style={styles.row}>
+                <TextDefault style={styles.rowItem2} bolder H5>
+                  {order?.paymentMethod}
+                </TextDefault>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('paymentMethod')}
+                </TextDefault>
+              </View>
+              {active === 'MyOrders' && (
+                <View style={styles.row}>
+                  <TextDefault style={styles.rowItem2} bolder H5>
+                    {new Date(order?.createdAt).toLocaleDateString()}{' '}
+                    {new Date(order?.createdAt).toLocaleTimeString()}
+                  </TextDefault>
+                  <TextDefault
+                    style={styles.rowItem1}
+                    bolder
+                    H5
+                    textColor={colors.fontSecondColor}>
+                    {t('deliveryTime')}
+                  </TextDefault>
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              <View style={styles.row}>
+                <TextDefault style={styles.rowItem1} bolder H4>
+                  {t('orderID')}
+                </TextDefault>
+                <TextDefault style={styles.rowItem2} bolder H4>
+                  {order?.orderId}
+                </TextDefault>
+              </View>
+              <View style={styles.row}>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('orderAmount')}
+                </TextDefault>
+                <TextDefault
+                  style={[styles.rowItem2, { paddingRight: 65 }]}
+                  bolder
+                  H5>
+                  {formatPrice(orderAmount)}
+                </TextDefault>
+              </View>
+              <View style={styles.row}>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('paymentMethod')}
+                </TextDefault>
+                <TextDefault style={styles.rowItem2} bolder H5>
+                  {order?.paymentMethod}
+                </TextDefault>
+              </View>
+              {active === 'MyOrders' && (
+                <View style={styles.row}>
+                  <TextDefault
+                    style={styles.rowItem1}
+                    bolder
+                    H5
+                    textColor={colors.fontSecondColor}>
+                    {t('deliveryTime')}
+                  </TextDefault>
+                  <TextDefault style={styles.rowItem2} bolder H5>
+                    {new Date(order?.createdAt).toLocaleDateString()}{' '}
+                    {new Date(order?.createdAt).toLocaleTimeString()}
+                  </TextDefault>
+                </View>
+              )}
+            </>
           )}
+
           <View style={styles.horizontalLine} />
           <View style={styles.row}>
             {active === 'NewOrders' && (

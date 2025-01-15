@@ -9,7 +9,12 @@ import PropTypes from 'prop-types'
 
 const NavItem = props => (
   <View style={styles.Flex}>
-    <TouchableOpacity style={styles.container} onPress={props.onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        { flexDirection: props.reverse ? 'row-reverse' : 'row' }
+      ]}
+      onPress={props.onPress}>
       <View style={styles.leftContainer}>
         {props.icon ? (
           <FontAwesome
