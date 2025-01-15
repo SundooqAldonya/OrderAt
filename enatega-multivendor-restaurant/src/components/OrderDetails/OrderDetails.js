@@ -55,6 +55,7 @@ function OrderItems({ orderData }) {
     deliveryCharges,
     taxationAmount
   } = orderData
+  console.log({ items })
   const configuration = useContext(Configuration.Context)
   const isRtl = i18n.language === 'ar'
   const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
@@ -73,18 +74,57 @@ function OrderItems({ orderData }) {
       {items &&
         items.map((item, index) => {
           return (
-            <View style={[styles.itemRowBar, directionStyle]} key={index}>
-              <TextDefault
-                H5
-                textColor={colors.fontSecondColor}
-                bold>{`${item.quantity}x ${item.title}`}</TextDefault>
-              <TextDefault bold>
-                {formatAmount(item.variation.price)}
-              </TextDefault>
-              {item.addons &&
+            <View
+              style={
+                ([styles.itemRowBar, directionStyle],
+                { flexDirection: 'column' })
+              }
+              key={index}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10
+                }}>
+                <TextDefault
+                  H5
+                  textColor={colors.fontSecondColor}
+                  bold>{`${item.quantity}x ${item.title}`}</TextDefault>
+                <TextDefault bold>
+                  {formatAmount(item.variation.price)}
+                </TextDefault>
+              </View>
+              {item.addons?.length &&
                 item.addons.map((addon, index) => {
                   return (
-                    <TextDefault H6>{formatAmount(addon.price)}</TextDefault>
+                    <View>
+                      <TextDefault H6>{addon.title}</TextDefault>
+                      {/* <TextDefault H6>{formatAmount(addon.price)}</TextDefault> */}
+                      {addon?.options?.length
+                        ? addon?.options?.map(option => {
+                            return (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  marginInlineStart: 20
+                                }}>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    gap: 5
+                                  }}>
+                                  <TextDefault>-</TextDefault>
+                                  <TextDefault H6>{option.title}</TextDefault>
+                                </View>
+                                <TextDefault H6>
+                                  {formatAmount(option.price)}
+                                </TextDefault>
+                              </View>
+                            )
+                          })
+                        : null}
+                    </View>
                   )
                 })}
             </View>
