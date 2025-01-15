@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { View, Platform, Switch, ImageBackground, Linking } from 'react-native'
+import React from 'react'
+import { View, Platform, Switch, ImageBackground } from 'react-native'
 import NavItem from './NavItem/NavItem'
 import Profile from './Profile/Profile'
 import styles from './styles'
@@ -9,11 +9,10 @@ const rider = require('../../assets/rider.png')
 import useSidebar from './useSidebar'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
-import { useSoundContext } from '../../context/sound'
 
 function SidebBar() {
   const navigation = useNavigation()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const {
     logout,
@@ -23,14 +22,12 @@ function SidebBar() {
     toggleSwitch,
     datas
   } = useSidebar()
-  // const { stopSound } = useSoundContext()
 
   const handleMute = async () => {
-    // if (isMuted) {
-    //   await stopSound()
-    // }
     toggleMute()
   }
+
+  const isArabic = i18n.language === 'ar'
 
   return (
     <ImageBackground
@@ -43,7 +40,11 @@ function SidebBar() {
           <Profile />
         </View>
         <View style={[styles.opacity, { flex: 4 }]}>
-          <View style={styles.rowDisplay}>
+          <View
+            style={[
+              styles.rowDisplay,
+              isArabic && { flexDirection: 'row-reverse' }
+            ]}>
             <TextDefault textColor={colors.white} H4 bolder>
               {t('status')}
             </TextDefault>
@@ -68,7 +69,11 @@ function SidebBar() {
               />
             </View>
           </View>
-          <View style={styles.rowDisplay}>
+          <View
+            style={[
+              styles.rowDisplay,
+              isArabic && { flexDirection: 'row-reverse' }
+            ]}>
             <TextDefault textColor={colors.white} H4 bolder>
               {t('muted')}
             </TextDefault>
@@ -98,6 +103,7 @@ function SidebBar() {
               onPress={() => navigation.navigate('Home')}
               icon={'home'}
               title={t('NewOrders')}
+              reverse={isArabic}
             />
           </View>
           <View style={styles.item}>
@@ -105,6 +111,7 @@ function SidebBar() {
               onPress={() => navigation.navigate('MyOrders')}
               icon={'clock-o'}
               title={t('myorders')}
+              reverse={isArabic}
             />
           </View>
           <View style={styles.item}>
@@ -112,31 +119,21 @@ function SidebBar() {
               onPress={() => navigation.navigate('Language')}
               icon={'language'}
               title={t('language')}
+              reverse={isArabic}
             />
           </View>
-          {datas.map((data, ind) => (
-            <View key={ind} style={styles.item}>
-              <NavItem
-                onPress={() =>
-                  Linking.canOpenURL(data.navigateTo).then(() => {
-                    Linking.openURL(data.navigateTo)
-                  })
-                }
-                icon={data.icon}
-                title={data.title}
-              />
-            </View>
-          ))}
         </View>
         <View style={[styles.opacity, { flex: 2 }]}>
           <NavItem
             onPress={() => logout()}
             icon="sign-out"
             title={t('titleLogout')}
+            reverse={isArabic}
           />
         </View>
       </View>
     </ImageBackground>
   )
 }
+
 export default SidebBar

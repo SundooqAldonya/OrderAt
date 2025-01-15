@@ -49,7 +49,8 @@ const OrderDetail = () => {
                 longitudeDelta: 0.0421
               }}
               customMapStyle={MapStyles}
-              provider={PROVIDER_GOOGLE}>
+              provider={PROVIDER_GOOGLE}
+              language="ar">
               {deliveryAddressPin && (
                 <Marker
                   coordinate={deliveryAddressPin.location}
