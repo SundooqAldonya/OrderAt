@@ -7,7 +7,7 @@ import Spinner from '../../Spinner/Spinner'
 import TextError from '../../Text/TextError/TextError'
 import CountDown from 'react-native-countdown-component'
 import useDetails from './useDetails'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -23,7 +23,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     loadingAssignOrder,
     loadingOrderStatus
   } = useDetails(orderData)
-    const {t} = useTranslation()
+  const { t } = useTranslation()
   if (!order) return null
 
   return (
@@ -99,11 +99,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
                 activeOpacity={0.8}
                 style={[styles.btn, { backgroundColor: colors.black }]}>
                 <TextDefault center bold H5 textColor={colors.white}>
-                  {loadingOrderStatus ? (
-                    <Spinner size="small" />
-                  ) : (
-                    t('pick')
-                  )}
+                  {loadingOrderStatus ? <Spinner size="small" /> : t('pick')}
                 </TextDefault>
               </TouchableOpacity>
             </View>
@@ -117,11 +113,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
                     variables: { id: itemId, status: 'DELIVERED' }
                   })
                 }}
-                style={[
-                  styles.btn,
-                  { backgroundColor: colors.primary },
-                  
-                ]}>
+                style={[styles.btn, { backgroundColor: colors.primary }]}>
                 <TextDefault center H5 bold textColor={colors.black}>
                   {loadingOrderStatus ? (
                     <Spinner size="small" color="transparent" />
@@ -152,10 +144,15 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
 }
 
 const OrderDetails = ({ order }) => {
-  const {t} = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   return (
     <View style={styles.orderDetails}>
-      <View style={styles.rowDisplay}>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -167,7 +164,11 @@ const OrderDetails = ({ order }) => {
           {order.restaurant.name}
         </TextDefault>
       </View>
-      <View style={styles.rowDisplay}>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -175,11 +176,19 @@ const OrderDetails = ({ order }) => {
           style={styles.col1}>
           {t('orderNo')}
         </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={[styles.col2, isArabic ? { paddingLeft: 80 } : null]}>
           {order.orderId}
         </TextDefault>
       </View>
-      <View style={styles.rowDisplay}>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -197,17 +206,25 @@ const OrderDetails = ({ order }) => {
 
 const ItemDetails = ({ order, dataConfig, loading, error }) => {
   let subTotal = 0
-  const {t} = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+
   if (loading) return <Spinner />
   if (error) return <TextError text={t('errorText')} />
+
   return (
     <View style={styles.orderDetails}>
       {order.items.map(item => {
         subTotal = subTotal + item.variation.price
         return (
-          <View key={item._id} style={styles.rowDisplay}>
+          <View
+            key={item._id}
+            style={[
+              styles.rowDisplay,
+              { flexDirection: isArabic ? 'row-reverse' : 'row' }
+            ]}>
             <TextDefault bolder H4 style={styles.coll1}>
-              {item.quantity}X
+              {isArabic ? `X${item.quantity}` : `${item.quantity}X`}
             </TextDefault>
             <View style={styles.coll2}>
               <TextDefault textColor={colors.fontSecondColor} bold H5>
@@ -229,14 +246,21 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
               H5
               textColor={colors.black}
               style={styles.coll3}>
-              {dataConfig.configuration.currencySymbol}
-              {item.variation.price}
+              {isArabic
+                ? `${item.variation.price} ${dataConfig.configuration.currencySymbol}`
+                : `${dataConfig.configuration.currencySymbol} ${item.variation.price}`}
             </TextDefault>
           </View>
         )
       })}
+
       <View style={styles.horizontalLine2} />
-      <View style={styles.rowDisplay}>
+
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -249,11 +273,17 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           H5
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
-          {dataConfig.configuration.currencySymbol}
-          {subTotal}
+          {isArabic
+            ? `${subTotal} ${dataConfig.configuration.currencySymbol}`
+            : `${dataConfig.configuration.currencySymbol} ${subTotal}`}
         </TextDefault>
       </View>
-      <View style={styles.rowDisplay}>
+
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -266,11 +296,17 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           H5
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
-          {dataConfig.configuration.currencySymbol}
-          {order.tipping}
+          {isArabic
+            ? `${order.tipping} ${dataConfig.configuration.currencySymbol}`
+            : `${dataConfig.configuration.currencySymbol} ${order.tipping}`}
         </TextDefault>
       </View>
-      <View style={styles.rowDisplay}>
+
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -283,11 +319,17 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           H5
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
-          {dataConfig.configuration.currencySymbol}
-          {order.taxationAmount}
+          {isArabic
+            ? `${order.taxationAmount} ${dataConfig.configuration.currencySymbol}`
+            : `${dataConfig.configuration.currencySymbol} ${order.taxationAmount}`}
         </TextDefault>
       </View>
-      <View style={styles.rowDisplay}>
+
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -300,12 +342,19 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           H5
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
-          {dataConfig.configuration.currencySymbol}
-          {order.deliveryCharges}
+          {isArabic
+            ? `${order.deliveryCharges} ${dataConfig.configuration.currencySymbol}`
+            : `${dataConfig.configuration.currencySymbol} ${order.deliveryCharges}`}
         </TextDefault>
       </View>
+
       <View style={styles.horizontalLine2} />
-      <View style={styles.rowDisplay}>
+
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -318,8 +367,9 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           H5
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
-          {dataConfig.configuration.currencySymbol}
-          {order.orderAmount}
+          {isArabic
+            ? `${order.orderAmount} ${dataConfig.configuration.currencySymbol}`
+            : `${dataConfig.configuration.currencySymbol} ${order.orderAmount}`}
         </TextDefault>
       </View>
     </View>
@@ -327,8 +377,8 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
 }
 
 const ChatWithCustomerButton = ({ navigation, order }) => {
-  const { t } = useTranslation(); 
-  
+  const { t } = useTranslation()
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -343,6 +393,6 @@ const ChatWithCustomerButton = ({ navigation, order }) => {
         {t('chatWithCustomer')}
       </TextDefault>
     </TouchableOpacity>
-  );
+  )
 }
 export default Details
