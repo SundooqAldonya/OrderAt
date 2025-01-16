@@ -24,6 +24,8 @@ import useGlobalStyles from '../../utils/globalStyles'
 import { AreaContext } from '../../context/AreaContext'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
+import { UPDATE_USER_ADDRESS } from '../../apollo'
+import AddNewAddress from './AddNewAddress'
 
 const CHECKOUT_PLACE_ORDER = gql`
   mutation CheckOutPlaceOrder(
@@ -109,6 +111,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [PhoneError, setPhoneError] = useState(false)
   const [searchTrigger, setSearchTrigger] = useState('')
   const [openModal, setOpenModal] = useState(false)
+  const [openModalAddress, setOpenModalAddress] = useState(false)
   const [openAddress, setOpenAddress] = useState(false)
   const [longitude, setLongitude] = useState('')
   const [latitude, setLatitude] = useState('')
@@ -127,11 +130,12 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER)
   const { areas } = useContext(AreaContext)
   const [selectedArea, setSelectedArea] = useState('')
+  const [addressFreeText, setAddressFreeText] = useState('')
 
   console.log({ areas })
 
   const handleSearchChange = event => {
-    const newValue = event.target.value.replace(/[^0-9]/g, '')
+    const newValue = event.target.value.replace(/[^0-9+]/g, '')
     setSearchQuery(newValue)
   }
   const [validationErrors, setValidationErrors] = useState({
@@ -152,14 +156,18 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     }
     setSearchTrigger(searchQuery)
   }
+
   const { loading, error, data } = useQuery(GET_USERS_BY_SEARCH, {
     variables: { search: searchTrigger },
     skip: !searchTrigger
   })
+
+  console.log({ dataUser: data })
+
   useEffect(() => {
     if (data && data.search_users && data.search_users.length > 0) {
       setSelectedCustomer(data.search_users[0])
-
+      setAddressFreeText(data.search_users[0].addresses[0].details)
       // Set selected address when selectedCustomer is available
       if (
         data.search_users[0].addresses &&
@@ -242,6 +250,14 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     return !Object.values(errors).includes(true)
   }
 
+  const searchAddressFreeText = address => {
+    console.log({ address: selectedCustomer?.addresses[0] })
+    const foundAddressFree = selectedCustomer?.addresses?.find(
+      item => item.deliveryAddress === address
+    )
+    setAddressFreeText(foundAddressFree.details)
+  }
+
   const handleSubmitCustomer = async e => {
     e.preventDefault()
 
@@ -267,7 +283,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         variables: {
           userInput: {
             name: newCustomer.name,
-            governate: newCustomer.governate,
+            // governate: newCustomer.governate,
             address_free_text: newCustomer.address_free_text,
             phone: searchQuery,
             area: selectedArea,
@@ -295,8 +311,10 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
       }, 3000) // 3 seconds timeout
 
       const createdCustomer = data.findOrCreateUser
-
+      // here
       setSelectedCustomer(createdCustomer)
+      setAddressFreeText(createdCustomer.addresses[0].details)
+
       setOrderMode(true)
     } catch (error) {
       console.error('Error adding customer:', error)
@@ -431,24 +449,41 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
               <Select
                 labelId="address-select-label"
                 value={selectedAddress || ''}
-                onChange={e => setSelectedAddress(e.target.value)}
+                onChange={e => {
+                  console.log({ target: e.target.value })
+                  setSelectedAddress(e.target.value)
+                  searchAddressFreeText(e.target.value)
+                }}
                 sx={{
                   '& .MuiInputBase-input': { color: 'black' },
                   '& .MuiOutlinedInput-root': { borderRadius: 2 }
                 }}>
-                {selectedCustomer?.addresses.map((address, index) => (
-                  <MenuItem
-                    key={index}
-                    value={address.deliveryAddress}
-                    sx={{ color: 'black' }}>
-                    {address.deliveryAddress}
-                  </MenuItem>
-                ))}
+                {selectedCustomer?.addresses.map((address, index) => {
+                  console.log({ addressItem: address })
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={address.deliveryAddress}
+                      sx={{ color: 'black' }}>
+                      {`${address.deliveryAddress}`}
+                    </MenuItem>
+                  )
+                })}
               </Select>
             </FormControl>
           </Box>
         ) : null}
-        {console.log({ selectedCustomer })}
+        <Box
+          sx={{
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <Button onClick={() => setOpenModalAddress(true)}>
+            Add new address
+          </Button>
+        </Box>
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
             Address free text
@@ -458,7 +493,9 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
               variant="outlined"
               fullWidth
               margin="normal"
-              value={selectedCustomer?.address_free_text}
+              value={addressFreeText}
+              onChange={e => setAddressFreeText(e.target.value)}
+              disabled
               sx={{
                 '& .MuiInputBase-input': { color: 'black' },
                 '& .MuiOutlinedInput-root': { borderRadius: 2 }
@@ -507,6 +544,12 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
             Cancel
           </Button>
         </Box>
+        {/* Add new address component */}
+        <AddNewAddress
+          openModalAddress={openModalAddress}
+          setOpenModalAddress={setOpenModalAddress}
+          userId={selectedCustomer._id}
+        />
       </Box>
     )
   }
@@ -541,6 +584,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         <TextField
           placeholder="Phone Number"
           variant="outlined"
+          type="text"
           fullWidth
           margin="normal"
           sx={{
@@ -554,10 +598,12 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
           }}
           value={searchQuery}
           onChange={handleSearchChange}
-          onInput={e => {
-            // Only allow numeric characters
-            e.target.value = e.target.value.replace(/[^0-9]/g, '') // Replace any non-numeric character with an empty string
-          }}
+          // onInput={e => {
+          //   // Only allow numeric characters
+          //   e.target.value = e.target.value
+          //     .replace(/(?!^)\+/g, '')
+          //     .replace(/[^0-9+]/g, '') // Replace any non-numeric character with an empty string
+          // }}
           className={
             PhoneError !== undefined &&
             (PhoneError ? globalClasses.inputError : globalClasses.inputSuccess)
@@ -594,7 +640,10 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
           </>
         )}
       </div>
+      {/* add new address */}
+      {/* here */}
 
+      {/* add new customer */}
       <Dialog
         open={openModal}
         onClose={() => setOpenModal(false)}
@@ -704,43 +753,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
               ))}
             </Select>
           </Box>
-          {/* <Box sx={{ marginBottom: 2 }}>
-            <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
-              Governate
-            </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              sx={{
-                '& .MuiInputBase-input': { color: 'black' },
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  '& fieldset': {
-                    borderColor: validationErrors.governate ? 'red' : '#ccc',
-                    borderWidth: validationErrors.governate ? 2 : 1
-                  },
-                  '&:hover fieldset': {
-                    borderColor: validationErrors.governate ? 'red' : '#888'
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: validationErrors.governate ? 'red' : '#000',
-                    borderWidth: validationErrors.governate ? 2 : 1
-                  }
-                }
-              }}
-              name="governate"
-              value={newCustomer.governate}
-              onChange={handleInputChange}
-              error={
-                validationErrors.governate ||
-                (newCustomer.governate &&
-                  !/^[A-Za-z\s]*$/.test(newCustomer.governate))
-              }
-            />
-          </Box> */}
+
           <Box sx={{ marginBottom: 2 }}>
             <Typography
               variant="subtitle1"
@@ -833,7 +846,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
                 }}
                 options={{
                   types: ['address'],
-                  componentRestrictions: { country: 'in' }
+                  componentRestrictions: { country: 'eg' }
                 }}
                 style={{
                   width: '100%',
@@ -856,11 +869,6 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
             </Box>
           )}
 
-          {/* {validationErrors.address && (
-    <Typography variant="caption" sx={{ color: "red", mt: 1 }}>
-      Please enter a valid address.
-    </Typography>
-  )} */}
           {/* Address free text Field */}
         </DialogContent>
 

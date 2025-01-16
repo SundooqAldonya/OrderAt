@@ -33,10 +33,7 @@ const Orders = () => {
   const [search] = useState('')
   const { setAreas } = useContext(AreaContext)
 
-  // const [areas, setAreas] = useState(null)
   const restaurantId = localStorage.getItem('restaurantId')
-
-  // console.log({ areasData })
 
   const {
     data,
@@ -55,12 +52,8 @@ const Orders = () => {
   const { data: dataProfile } = useQuery(GET_PROFILE, {
     variables: { id: restaurantId }
   })
-  console.log({ dataProfile })
 
-  console.log({ restaurant: dataProfile?.restaurant })
-  const restaurant = dataProfile?.restaurant || null
-
-  const { data: dataAreas, loading: loadingAreas } = useQuery(CITY_AREAS, {
+  useQuery(CITY_AREAS, {
     skip: !dataProfile?.restaurant?.city?._id,
     variables: { id: dataProfile?.restaurant?.city?._id },
     onCompleted: fetchedData => {
@@ -69,16 +62,10 @@ const Orders = () => {
     }
   })
 
-  // console.log({ areas })
-
   const toggleModal = order => {
     setOrder(order)
     setDetailModal(!detailsModal)
   }
-
-  // if (loadingAreas) {
-  //   return <CustomLoader />
-  // }
 
   const globalClasses = useGlobalStyles()
   return (
