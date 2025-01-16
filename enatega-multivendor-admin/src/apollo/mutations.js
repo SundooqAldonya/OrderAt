@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const createFood = `
   mutation CreateFood($foodInput:FoodInput!){
     createFood(
@@ -806,3 +808,20 @@ mutation CheckOutPlaceOrder($userId: ID!, $resId : String! ,  $addressId: ID!, $
     updatedAt
   }
 }`
+
+export const UPDATE_USER_ADDRESS = gql`
+  mutation UpdateUserAddress($userInput: UpdateAddressUserInput!) {
+    updateUserAddress(userInput: $userInput) {
+      _id
+      name
+      phone
+      addresses {
+        _id
+        deliveryAddress
+        details
+        label
+        selected
+      }
+    }
+  }
+`
