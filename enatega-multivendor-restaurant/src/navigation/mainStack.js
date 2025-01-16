@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { MAX_TIME } from '../utilities'
 import RegisterUser from '../screens/Login/RegisterUser'
 import Checkout from '../screens/Login/Checkout'
+import AddNewAddress from '../screens/Login/AddNewAddress'
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -147,6 +148,7 @@ function StackNavigator() {
       <Stack.Screen name="Orders" component={OrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
       <Stack.Screen name="RegisterUser" component={RegisterUser} />
+      <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
       <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
     </Stack.Navigator>

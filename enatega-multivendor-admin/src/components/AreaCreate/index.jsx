@@ -36,7 +36,7 @@ const AreaCreate = ({ onClose }) => {
   const [success, setSuccess] = useState(false)
   const [mainError, setMainError] = useState(false)
   const [selectedCity, setSelectedCity] = useState('')
-  const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker') // polygon
+  const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker')
   const [center, setCenter] = useState({ lat: 30.0444, lng: 31.2357 })
   const [marker, setMarker] = useState({ lat: 30.0444, lng: 31.2357 })
   const polygonRef = useRef()
@@ -74,6 +74,7 @@ const AreaCreate = ({ onClose }) => {
       console.log({ results })
       if (status === 'OK') {
         if (results[0]) {
+          console.log({ results })
           setAddress(results[0].formatted_address)
         } else {
           console.error('No results found')

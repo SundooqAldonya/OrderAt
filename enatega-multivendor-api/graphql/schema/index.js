@@ -906,6 +906,13 @@ const typeDefs = gql`
     area: String
   }
 
+  input UpdateAddressUserInput {
+    userId: String!
+    addresses: [AddressInput]
+    area: String
+    type: String
+  }
+
   input OwnerInput {
     email: String
     password: String
@@ -1437,6 +1444,7 @@ const typeDefs = gql`
     emailExist(email: String!): User!
     phoneExist(phone: String!): User!
     findOrCreateUser(userInput: UserInput): User!
+    updateUserAddress(userInput: UpdateAddressUserInput): User
     Deactivate(isActive: Boolean!, email: String!): User!
     adminLogin(email: String!, password: String!): Admin!
     login(

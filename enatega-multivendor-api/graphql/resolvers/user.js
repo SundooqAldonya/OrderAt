@@ -49,12 +49,12 @@ module.exports = {
         let query = {}
 
         if (args.search) {
-          const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
+          // const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
           query = {
             $or: [
-              { name: searchRegex },
-              { email: searchRegex },
-              { phone: searchRegex }
+              { name: args.search },
+              { email: args.search },
+              { phone: args.search }
             ]
           }
         }
@@ -174,7 +174,7 @@ module.exports = {
         // If the user doesn't exist, create a new user
         const newUser = new User({
           name: userInput.name,
-          phone: userInput.phone,
+          phone: `+2${userInput.phone}`,
           governate: userInput.governate,
           address_free_text: userInput.address_free_text,
           addresses: address || [],
@@ -205,6 +205,64 @@ module.exports = {
         )
       }
     },
+
+    async updateUserAddress(_, { userInput }) {
+      console.log({ updateUserAddress: { userInput } })
+      try {
+        const user = await User.findById(userInput.userId)
+        console.log({ user })
+        let addresses = [...userInput.addresses]
+        let address = {}
+
+        if (userInput?.addresses?.length) {
+          addresses = addresses?.map(singleAddress => {
+            singleAddress['location'] = {
+              type: 'Point',
+              coordinates: [singleAddress.latitude, singleAddress.longitude]
+            }
+            delete singleAddress['latitude']
+            delete singleAddress['longitude']
+            console.log('singleAddress@@@@@@@@@@', singleAddress)
+            return singleAddress
+          })
+        }
+
+        if (userInput?.area) {
+          const area = await Area.findById(userInput.area).populate('location')
+          console.log({ area })
+          address['deliveryAddress'] = area?.address
+          address['label'] = area?.title
+          address['details'] = userInput?.address_free_text
+          address['location'] = {
+            type: 'Point',
+            coordinates: [
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
+            ]
+          }
+        }
+        if (userInput.addresses?.length) {
+          user.addresses = [...user.addresses, ...addresses]
+          console.log({ userAddresses: user?.addresses })
+        }
+        if (userInput.area) {
+          user.addresses = [...user.addresses, address]
+        }
+
+        await user.save()
+        return {
+          _id: user._id,
+          name: user.name,
+          phone: user.phone,
+          governate: user.governate,
+          address_free_text: user.address_free_text,
+          addresses: user.addresses
+        }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     sendFormSubmission: async (_, args) => {
       console.log('sendFormSubmission', args)
       try {
@@ -364,6 +422,7 @@ module.exports = {
       await deactivateByEmail.save()
       return deactivateByEmail
     },
+
     updateUser: async (_, args, { req, res }) => {
       console.log('Update user: ', args.updateUserInput, req.userId)
       if (!req.isAuth) {

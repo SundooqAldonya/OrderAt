@@ -22,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
 import { useMutation } from '@apollo/client'
 import { CHECK_OUT_PLACE_ORDER } from '../../apollo/mutations'
+import { Modal } from 'react-native'
 
 const { width, height } = Dimensions.get('window')
 
@@ -137,6 +138,24 @@ const Checkout = () => {
               alignItems: 'center',
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}>
+            <Ionicons name="person-circle" size={scale(18)} />
+            <TextDefault H5>{userData?.phone}</TextDefault>
+          </View>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: colors.green,
+              marginVertical: 10,
+              opacity: 0.2
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 10,
+              alignItems: 'center',
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}>
             <FontAwesome name="location-arrow" size={scale(18)} />
             <TextDefault H5>{t('chooseaddress')}</TextDefault>
           </View>
@@ -154,10 +173,15 @@ const Checkout = () => {
                   borderRadius: 10,
                   borderWidth: 1,
                   borderColor: 'powderblue'
-                }}>
+                }}
+                onPress={() => setSelectedAddress(item)}>
                 <View style={{ flex: 1 }}>
                   <TextDefault>{item.deliveryAddress}</TextDefault>
+                  <TextDefault>
+                    {item.details ? item.details : null}
+                  </TextDefault>
                 </View>
+
                 <View
                   style={{
                     height: 20,
@@ -181,6 +205,27 @@ const Checkout = () => {
               </TouchableOpacity>
             )
           })}
+        </View>
+        <View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#fff',
+              width: '95%',
+              height: 50,
+              marginInline: 13,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 8
+            }}
+            onPress={() => {
+              // setAddressVisible(true)
+              navigation.navigate('AddNewAddress', {
+                user: userData
+              })
+            }}>
+            <TextDefault>Add New Address</TextDefault>
+          </TouchableOpacity>
         </View>
         <View
           style={{

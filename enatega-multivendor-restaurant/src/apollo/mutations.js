@@ -64,6 +64,23 @@ export const FIND_OR_CREATE_USER = gql`
   }
 `
 
+export const UPDATE_USER_ADDRESS = gql`
+  mutation UpdateUserAddress($userInput: UpdateAddressUserInput!) {
+    updateUserAddress(userInput: $userInput) {
+      _id
+      name
+      phone
+      addresses {
+        _id
+        deliveryAddress
+        details
+        label
+        selected
+      }
+    }
+  }
+`
+
 export const CHECK_OUT_PLACE_ORDER = gql`
   mutation CheckOutPlaceOrder(
     $userId: ID!

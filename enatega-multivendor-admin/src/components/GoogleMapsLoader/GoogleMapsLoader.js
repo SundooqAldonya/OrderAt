@@ -6,6 +6,8 @@ const GoogleMapsLoader = ({ children, GOOGLE_MAPS_KEY }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: GOOGLE_MAPS_KEY,
+    language: 'ar',
+    region: 'EG',
     libraries: [
       'drawing',
       'places',

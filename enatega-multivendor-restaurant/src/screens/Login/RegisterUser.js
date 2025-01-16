@@ -483,7 +483,8 @@ const RegisterUser = () => {
                     }}
                     query={{
                       key: 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
-                      language: 'en'
+                      language: 'ar',
+                      region: 'EG'
                     }}
                     fetchDetails={true}
                     styles={{
