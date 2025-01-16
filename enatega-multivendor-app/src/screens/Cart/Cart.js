@@ -445,7 +445,7 @@ function Cart(props) {
       optionsTitle,
       title: title,
       price: price.toFixed(2),
-      image: food.image,
+      image: food?.image,
       addons: populateAddons
     }
   }
@@ -497,6 +497,7 @@ function Cart(props) {
 
                   {cart?.map((cartItem, index) => {
                     const food = populateFood(cartItem)
+                    console.log({ food })
                     if (!food) return null
                     return (
                       <View
@@ -507,7 +508,10 @@ function Cart(props) {
                           quantity={food.quantity}
                           dealName={food.title}
                           optionsTitle={food.optionsTitle}
-                          itemImage={food.image}
+                          itemImage={
+                            food.image ||
+                            'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
+                          }
                           itemAddons={food.addons}
                           cartRestaurant={cartRestaurant}
                           dealPrice={(
@@ -528,7 +532,9 @@ function Cart(props) {
               <View style={styles().suggestedItems}>
                 <WouldYouLikeToAddThese
                   itemId={foods[0]._id}
+                  food={foods[0]}
                   restaurantId={restaurant._id}
+                  restaurant={restaurant}
                 />
               </View>
             </ScrollView>

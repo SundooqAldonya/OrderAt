@@ -55,7 +55,7 @@ const Section = ({ itemId, restaurantId }) => {
         </TextDefault>
       </View>
       {slicedItems?.map((id) => (
-        <Row key={id} id={id} restaurant={result?.restaurant} />
+        <Row key={id} id={id} restaurant={result?.restaurantCustomer} />
       ))}
     </View>
   )
