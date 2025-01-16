@@ -31,7 +31,7 @@ export const en = {
   forgotPassword: 'Forgot Password?',
   loginText: 'Or Login With',
   deliveryLocation:
-    'Turn on location so we could send you endless taste of delicious food.',
+    'Enable location to discover nearby businesses and exclusive offers!',
   locationBtn: 'Turn on Location',
   locationPermissionDenied: 'Permission to access location was denied',
   cameraRollPermissionDenied: 'Permission to access Camera Roll was denied',
@@ -56,7 +56,7 @@ export const en = {
   question1: 'Where do we find the food?',
   question2: 'How do we contact?',
   question3: 'How can I pay the delivery person?',
-  question4: 'Is the service available in my city?',
+  question4: 'Is this service available in my city?',
   answer1:
     'You can find the food at your nearest store without paying anything to customer service.Our charges are extremely low as compared to others.',
   answer2: 'You can contact us through our email, phone number or our website.',
@@ -92,7 +92,7 @@ export const en = {
   paymentMethod: 'Payment Method',
   trackOrder: 'Track Order',
   backToMenu: 'Back To Menu',
-  foodItem: 'Food item',
+  foodItem: 'item',
   deliveredTo: 'Delivered to',
   writeAReview: 'Write a Review',
   orderReceived: 'Order Received',
@@ -130,7 +130,7 @@ export const en = {
   timeLeftForMeal: 'Time Left To Prepare Meal',
   distanceToDestination: 'Distance to destination',
   durationToDestination: 'Duration to reach destination',
-  pick: 'Pick',
+  pick: 'Order Picked',
   markAsDelivered: 'Mark As Delivered',
   OrderDetail: 'Order Details',
   yourOrderFrom: 'Your Order From',
@@ -208,8 +208,5 @@ export const en = {
   withdrawAmountError:
     'Withdraw amount must be less than or equal to wallet amount!',
   amountGreater: 'Amount must be grater than',
-  amountReq: 'Amount is required!',
-  turnOnAvailability: 'Turn on availability',
-  notMuted: 'Not muted',
-  muted: 'Muted'
+  amountReq: 'Amount is required!'
 }
