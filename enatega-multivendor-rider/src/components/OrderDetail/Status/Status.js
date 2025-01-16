@@ -3,52 +3,28 @@ import React, { useContext, useState, useEffect } from 'react'
 import styles from './style'
 import colors from '../../../utilities/colors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
-const Tick =  require('../../../assets/svg/tick.png')
-const  Restaurant =  require('../../../assets/svg/restaurant.png')
+const Tick = require('../../../assets/svg/tick.png')
+const Restaurant = require('../../../assets/svg/restaurant.png')
 const DeliveryBoy = require('../../../assets/svg/DeliveryBoy.png')
 import UserContext from '../../../context/user'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
-/*const STATUS_MESSAGES = {
-  PICKED: {
-    text: i18n.t('youPickedParcel'),
-    subText: i18n.t('youPickedParcel')
-  },
-  // PROCESS: 'Your parcel is in process.',
-  DELIVERED: {
-    text: i18n.t('parcelDelivered'),
-    subText: i18n.t('orderDelivered')
-  },
-  ACCEPTED: { text: i18n.t('newOrder'), subText: i18n.t('hurryUp') },
-  // READY: 'Your parcel is ready.',
-  ASSIGNED: {
-    text: i18n.t('orderAssigned'),
-    subText: i18n.t('orderAssignedSubText')
-  },
-  CANCELLED: {
-    text: i18n.t('orderNotAvailable'),
-    subText: i18n.t('orderNotAvailableSubText')
-  }
-}
-
-const STATUS_ORDER = ['ASSIGNED', 'PICKED', 'DELIVERED']*/
 const formatTime = date =>
   new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
 
 const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
-  const {t} = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const STATUS_MESSAGES = {
     PICKED: {
       text: t('youPickedParcel'),
       subText: t('youPickedParcel')
     },
-    // PROCESS: 'Your parcel is in process.',
     DELIVERED: {
       text: t('parcelDelivered'),
       subText: t('orderDelivered')
     },
     ACCEPTED: { text: t('newOrder'), subText: t('hurryUp') },
-    // READY: 'Your parcel is ready.',
     ASSIGNED: {
       text: t('orderAssigned'),
       subText: t('orderAssignedSubText')
@@ -58,7 +34,7 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
       subText: t('orderNotAvailableSubText')
     }
   }
-  
+
   const STATUS_ORDER = [t('ASSIGNED'), t('PICKED'), t('DELIVERED')]
   const { assignedOrders, loadingAssigned } = useContext(UserContext)
   const [order, setOrder] = useState(orderData)
@@ -82,7 +58,11 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.statusMessage}>
+      <View
+        style={[
+          styles.statusMessage,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
         <Icon
           name={
             order.orderStatus === 'ACCEPTED'
@@ -97,7 +77,7 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           subText={STATUS_MESSAGES[order.orderStatus].subText}
         />
       </View>
-      <View style={styles.status}>
+      <View style={[styles.status]}>
         <StatusRow
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 0}
           status={STATUS_ORDER[0]}
@@ -105,14 +85,22 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           time={order.assignedAt ? formatTime(order.assignedAt) : null}
         />
         <View
-          style={[
-            styles.verticalLine,
-            {
-              backgroundColor:
-                t(order.orderStatus) === t('ASSIGNED') ? colors.primary : colors.white
-            }
-          ]}
-        />
+          style={{
+            paddingRight: isArabic ? 35 : 0
+          }}>
+          <View
+            style={[
+              styles.verticalLine,
+              {
+                backgroundColor:
+                  t(order.orderStatus) === t('ASSIGNED')
+                    ? colors.primary
+                    : colors.white,
+                alignSelf: isArabic ? 'flex-end' : 'flex-start'
+              }
+            ]}
+          />
+        </View>
         <StatusRow
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 1}
           status={STATUS_ORDER[1]}
@@ -120,16 +108,22 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           time={order.pickedAt ? formatTime(order.pickedAt) : null}
         />
         <View
-          style={[
-            styles.verticalLine,
-            {
-              backgroundColor:
-                t(order.orderStatus) === t('DELIVERED')
-                  ? colors.primary
-                  : colors.white
-            }
-          ]}
-        />
+          style={{
+            paddingRight: isArabic ? 35 : 0
+          }}>
+          <View
+            style={[
+              styles.verticalLine,
+              {
+                backgroundColor:
+                  t(order.orderStatus) === t('DELIVERED')
+                    ? colors.primary
+                    : colors.white,
+                alignSelf: isArabic ? 'flex-end' : 'flex-start'
+              }
+            ]}
+          />
+        </View>
         <StatusRow
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 2}
           status={STATUS_ORDER[2]}
@@ -149,12 +143,19 @@ const StatusRow = ({
   order,
   fillColor = styles.bgSecondary
 }) => {
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   return (
-    <View style={styles.statusRow}>
+    <View
+      style={[
+        styles.statusRow,
+        { flexDirection: isArabic ? 'row-reverse' : 'row' }
+      ]}>
       <View
         style={[
           styles.circle,
-          fillColor ? styles.bgPrimary : styles.bgSecondary
+          fillColor ? styles.bgPrimary : styles.bgSecondary,
+          isArabic ? { marginLeft: 10 } : {}
         ]}
       />
       <View style={styles.statusOrder}>
