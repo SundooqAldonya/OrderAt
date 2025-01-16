@@ -144,8 +144,8 @@ module.exports = {
         }
         let address = {}
         if (userInput?.addresses?.length) {
-          address = userInput.addresses[0]
-
+          address = userInput?.addresses[0]
+          address['details'] = userInput?.address_free_text
           address['location'] = {
             type: 'Point',
             coordinates: [address.latitude, address.longitude]
@@ -172,9 +172,10 @@ module.exports = {
           }
         }
         // If the user doesn't exist, create a new user
+        const phone = userInput?.phone?.replace('+2', '')
         const newUser = new User({
           name: userInput.name,
-          phone: `+2${userInput.phone}`,
+          phone: `+2${phone}`,
           governate: userInput.governate,
           address_free_text: userInput.address_free_text,
           addresses: address || [],
