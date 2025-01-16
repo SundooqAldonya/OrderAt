@@ -257,7 +257,7 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => setOpenModal(false)} color="secondary">
+        <Button onClick={() => setOpenModalAddress(false)} color="secondary">
           Cancel
         </Button>
         <Button
