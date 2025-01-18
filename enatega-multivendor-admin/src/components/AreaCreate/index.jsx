@@ -13,12 +13,17 @@ import {
   Typography
 } from '@mui/material'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { createArea, getAreas, getCities } from '../../apollo'
+import { createArea, editArea, getAreas, getCities } from '../../apollo'
 import { GoogleMap, Marker, Polygon } from '@react-google-maps/api'
 
 const CREATE_AREA = gql`
   ${createArea}
 `
+
+const EDIT_AREA = gql`
+  ${editArea}
+`
+
 const GET_CITIES = gql`
   ${getCities}
 `
@@ -27,27 +32,26 @@ const GET_AREAS = gql`
   ${getAreas}
 `
 
-const AreaCreate = ({ onClose }) => {
+const AreaCreate = ({ onClose, area }) => {
   const { t } = useTranslation()
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(area ? area.title : '')
   const [titleError, titleErrorSetter] = useState(null)
   const [address, setAddress] = useState('')
   const [addressError, addressErrorSetter] = useState(null)
   const [success, setSuccess] = useState(false)
   const [mainError, setMainError] = useState(false)
-  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedCity, setSelectedCity] = useState(area ? area.city._id : '')
   const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker')
   const [center, setCenter] = useState({ lat: 30.0444, lng: 31.2357 })
   const [marker, setMarker] = useState({ lat: 30.0444, lng: 31.2357 })
-  const polygonRef = useRef()
-  const listenersRef = useRef([])
+
+  console.log({ selectedCity })
+
   const { data, loading: loadingCities, error: errorCities } = useQuery(
     GET_CITIES
   )
 
   const cities = data?.cities || null
-
-  console.log({ citiesData: data })
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -59,6 +63,14 @@ const AreaCreate = ({ onClose }) => {
 
   const [mutate] = useMutation(CREATE_AREA, {
     onCompleted,
+    refetchQueries: [{ query: GET_AREAS }]
+  })
+
+  const [mutateUpdate] = useMutation(EDIT_AREA, {
+    onCompleted: data => {
+      console.log({ data })
+      setSuccess(data.editArea.message)
+    },
     refetchQueries: [{ query: GET_AREAS }]
   })
 
@@ -92,9 +104,6 @@ const AreaCreate = ({ onClose }) => {
       setMarker({ lat, lng })
       getAddress(lat, lng)
     }
-    //  else {
-    //   setPath([...path, { lat: e.latLng.lat(), lng: e.latLng.lng() }])
-    // }
   }
 
   const removeMarker = () => {
@@ -108,21 +117,34 @@ const AreaCreate = ({ onClose }) => {
     })
   }
 
-  // console.log(marker)
-
   const handleSubmit = async e => {
     e.preventDefault()
     const coordinates = [marker.lat, marker.lng]
-    mutate({
-      variables: {
-        areaInput: {
-          title,
-          address,
-          city: selectedCity,
-          coordinates
+    if (!area) {
+      mutate({
+        variables: {
+          areaInput: {
+            title,
+            address,
+            city: selectedCity,
+            coordinates
+          }
         }
-      }
-    })
+      })
+    } else {
+      mutateUpdate({
+        variables: {
+          id: area._id,
+          locationId: area.location._id,
+          areaInput: {
+            title,
+            address,
+            city: selectedCity,
+            coordinates
+          }
+        }
+      })
+    }
     // if it's edit modal
     if (onClose) {
       setTimeout(() => {
@@ -209,27 +231,17 @@ const AreaCreate = ({ onClose }) => {
           </Box>
           {loadingCities && <div>Loading...</div>}
           {errorCities && <div>Error {errorCities.message}</div>}
-
+          {console.log({ cities })}
           <Box className={globalClasses.flexRow}>
             <Select
               id="input-city"
               name="input-city"
-              defaultValue={[selectedCity || '']}
+              defaultValue={selectedCity || ''}
               value={selectedCity}
               onChange={e => setSelectedCity(e.target.value)}
-              // onBlur={event =>
-              //   onBlur(categoryErrorSetter, 'category', event.target.value)
-              // }
               displayEmpty
               inputProps={{ 'aria-label': 'Without label' }}
-              className={[
-                globalClasses.input
-                // categoryError === false
-                //   ? globalClasses.inputError
-                //   : categoryError === true
-                //   ? globalClasses.inputSuccess
-                //   : ''
-              ]}>
+              className={[globalClasses.input]}>
               {!selectedCity && (
                 <MenuItem value="" style={{ color: 'black' }}>
                   {t('Select City')}
@@ -273,15 +285,6 @@ const AreaCreate = ({ onClose }) => {
           </Box>
         </form>
       </Box>
-      {/* <Modal
-        style={{
-          marginLeft: '25%',
-          overflowY: 'auto'
-        }}
-        open={addonModal}
-        onClose={() => {
-          toggleModal()
-        }}></Modal> */}
     </Box>
   )
 }

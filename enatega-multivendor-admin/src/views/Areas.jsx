@@ -16,8 +16,8 @@ import SearchBar from '../components/TableHeader/SearchBar'
 import TableHeader from '../components/TableHeader'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
-import { getAreas, getCities } from '../apollo'
-import { gql, useQuery } from '@apollo/client'
+import { getAreas, getCities, removeArea } from '../apollo'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import AreaCreate from '../components/AreaCreate'
 import { customStyles } from '../utils/tableCustomStyles'
 import orderBy from 'lodash/orderBy'
@@ -29,37 +29,44 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 const GET_AREAS = gql`
   ${getAreas}
 `
+const REMOVE_AREAS = gql`
+  ${removeArea}
+`
 
 const Areas = () => {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const [type, setType] = useState('')
+  const [openEdit, setOpenEdit] = useState(false)
+  const [area, setArea] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const globalClasses = useGlobalStyles()
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
+  const toggleModal = item => {
+    setOpenEdit(!openEdit)
+    setArea(item)
   }
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-  const toggleModal = food => {
-    // setEditModal(!editModal)
-    // setFood(food)
-  }
+
   const closeEditModal = () => {
-    // setEditModal(false)
+    setOpenEdit(false)
   }
+
   const { data, loading: loadingAreas, error: errorAreas, refetch } = useQuery(
     GET_AREAS
   )
 
-  console.log({ data })
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const [removeArea] = useMutation(REMOVE_AREAS, {
+    refetchQueries: GET_AREAS,
+    onCompleted: data => {
+      setMessage(data.removeArea.message)
+      setType('success')
+      setIsOpen(true)
+    }
+  })
 
   const areas = data?.areas || null
+
   const columns = [
     {
       name: t('Title'),
@@ -75,7 +82,7 @@ const Areas = () => {
 
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, setIsOpen)}</>
+      cell: row => <>{ActionButtons(row, toggleModal)}</>
     }
   ]
 
@@ -95,7 +102,31 @@ const Areas = () => {
     }
     return orderBy(rows, handleField, direction)
   }
+
+  const onChangeSearch = e => {
+    setSearchQuery(e.target.value)
+  }
+
+  const handleRemoveArea = itemId => {
+    removeArea({
+      variables: {
+        id: itemId
+      }
+    })
+  }
+
+  const globalClasses = useGlobalStyles()
+
   const ActionButtons = row => {
+    const [anchorEl, setAnchorEl] = useState(null)
+    const open = Boolean(anchorEl)
+
+    const handleClick = event => {
+      setAnchorEl(event.currentTarget)
+    }
+    const handleClose = () => {
+      setAnchorEl(null)
+    }
     return (
       <>
         <div>
@@ -118,7 +149,7 @@ const Areas = () => {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                  // toggleModal(row)
+                  toggleModal(row)
                 }}
                 style={{ height: 25 }}>
                 <ListItemIcon>
@@ -127,16 +158,7 @@ const Areas = () => {
                 <Typography color="green">{t('Edit')}</Typography>
               </MenuItem>
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  // mutate({
-                  //   variables: {
-                  //     id: row._id,
-                  //     restaurant: restaurantId,
-                  //     categoryId: row.categoryId
-                  //   }
-                  // })
-                }}
+                onClick={() => handleRemoveArea(row._id)}
                 style={{ height: 25 }}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" style={{ color: 'red' }} />
@@ -149,6 +171,7 @@ const Areas = () => {
       </>
     )
   }
+
   return (
     <Fragment>
       <Header />
@@ -157,7 +180,12 @@ const Areas = () => {
         <AreaCreate />
         {/* Table */}
         {isOpen && (
-          <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
+          <Alert
+            className={globalClasses.alertSuccess}
+            severity={type}
+            variant="filled">
+            {message}
+          </Alert>
         )}
         {errorAreas ? <span>{`Error! ${errorAreas.message}`}</span> : null}
         {loadingAreas ? <CustomLoader /> : null}
@@ -183,18 +211,18 @@ const Areas = () => {
             selectableRows
           />
         )}
-        {/* <Modal
+        <Modal
           style={{
             width: '70%',
             marginLeft: '15%',
             overflowY: 'auto'
           }}
-          open={editModal}
+          open={openEdit}
           onClose={() => {
             toggleModal()
           }}>
-          <ZoneComponent zone={zones} onClose={closeEditModal} />
-        </Modal> */}
+          <AreaCreate area={area} onClose={closeEditModal} />
+        </Modal>
       </Container>
     </Fragment>
   )

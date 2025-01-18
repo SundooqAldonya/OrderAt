@@ -1423,6 +1423,8 @@ const typeDefs = gql`
 
   type Mutation {
     createArea(areaInput: AreaInput!): Message
+    editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message
+    removeArea(id: String!): Message
     createCity(title: String!): Message
     editCity(id: String!, title: String!): Message
     removeCity(id: String!): Message

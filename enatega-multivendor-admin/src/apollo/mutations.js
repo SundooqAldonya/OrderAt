@@ -662,6 +662,18 @@ export const createArea = `mutation CreateArea($areaInput:AreaInput!){
   }
 }`
 
+export const editArea = `mutation EditArea($id: String!, $locationId: String!, $areaInput:AreaInput!){
+  editArea(id: $id, locationId: $locationId, areaInput:$areaInput){
+    message
+  }
+}`
+
+export const removeArea = `mutation RemoveArea($id: String!){
+  removeArea(id: $id){
+    message
+  }
+}`
+
 export const vendorResetPassword = `mutation VendorResetPassword($oldPassword: String!, $newPassword: String!){
     vendorResetPassword(oldPassword: $oldPassword, newPassword: $newPassword)
 }`

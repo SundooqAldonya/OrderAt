@@ -163,7 +163,14 @@ const Cities = () => {
       <Header />
       <Container className={globalClasses.flex} fluid>
         <CityForm />
-        {success && <Alert message={message} severity={type} />}
+        {success && (
+          <Alert
+            className={globalClasses.alertSuccess}
+            variant="filled"
+            severity={type}>
+            {message}
+          </Alert>
+        )}
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
         {data && (

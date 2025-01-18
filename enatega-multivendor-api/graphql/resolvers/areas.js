@@ -38,8 +38,34 @@ module.exports = {
         await area.save()
         return { message: 'Created the area' }
       } catch (err) {
-        console.log({ err })
-        throw new Error('Something went wrong!')
+        throw new Error(`Something went wrong!: ${err}`)
+      }
+    },
+
+    async editArea(_, args) {
+      console.log({ editAreaArgs: args })
+      try {
+        // here
+        const location = await Location.findById(args.locationId)
+        location.location.coordinates = args.areaInput.coordinates
+        await location.save()
+        const area = await Area.findById(args.id)
+        area.address = args.areaInput.address
+        area.title = args.areaInput.title
+        area.city = args.areaInput.city
+        await area.save()
+        return { message: 'Edited an area successfully!' }
+      } catch (err) {
+        throw new Error(`Something went wrong!: ${err}`)
+      }
+    },
+
+    async removeArea(_, args) {
+      try {
+        await Area.findByIdAndDelete(args.id)
+        return { message: 'Removed an area successfully!' }
+      } catch (err) {
+        throw new Error(`Something went wrong!: ${err}`)
       }
     }
   }
