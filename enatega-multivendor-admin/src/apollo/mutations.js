@@ -649,6 +649,13 @@ export const createCity = `mutation CreateCity($title:String!){
     message
   }
 }`
+
+export const editCity = `mutation EditCity($id: String!, $title: String!){
+  editCity(id: $id, title: $title){
+    message
+  }
+}`
+
 export const createArea = `mutation CreateArea($areaInput:AreaInput!){
   createArea(areaInput:$areaInput){
     message
@@ -822,6 +829,14 @@ export const UPDATE_USER_ADDRESS = gql`
         label
         selected
       }
+    }
+  }
+`
+
+export const REMOVE_CITY = gql`
+  mutation RemoveCity($id: String!) {
+    removeCity(id: $id) {
+      message
     }
   }
 `

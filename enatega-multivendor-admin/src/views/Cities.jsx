@@ -7,15 +7,15 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Modal,
   Paper,
   Typography
 } from '@mui/material'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
 import CityForm from '../components/CityForm'
-import useStyles from '../components/styles'
-import { gql, useQuery } from '@apollo/client'
-import { getCities } from '../apollo'
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { REMOVE_CITY, getCities } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -32,29 +32,36 @@ const GET_CITIES = gql`
 
 const Cities = () => {
   const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
   const [error, setError] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [message, setMessage] = useState('')
+  const [city, setCity] = useState(null)
+  const [type, setType] = useState('')
 
   const globalClasses = useGlobalStyles()
 
   const { data, loading, refetch } = useQuery(GET_CITIES)
 
+  const [removeCity] = useMutation(REMOVE_CITY, {
+    onCompleted: data => {
+      console.log({ dataResponse: data })
+      setSuccess(true)
+      setType('success')
+      setMessage(data.removeCity.message)
+    },
+    refetchQueries: GET_CITIES
+  })
+
   const onChangeSearch = e => setSearchQuery(e.target.value)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-  const toggleModal = food => {
-    // setEditModal(!editModal)
-    // setFood(food)
+
+  const toggleModal = item => {
+    setOpenEdit(!openEdit)
+    setCity(item)
   }
   const closeEditModal = () => {
-    // setEditModal(false)
+    setOpenEdit(false)
   }
   const cities = data?.cities || null
   const columns = [
@@ -66,7 +73,7 @@ const Cities = () => {
 
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, setIsOpen)}</>
+      cell: row => <>{ActionButtons(row, toggleModal)}</>
     }
   ]
 
@@ -86,7 +93,26 @@ const Cities = () => {
     }
     return orderBy(rows, handleField, direction)
   }
+
+  const handleRemoveCity = itemId => {
+    removeCity({
+      variables: {
+        id: itemId
+      }
+    })
+  }
+
   const ActionButtons = row => {
+    const [anchorEl, setAnchorEl] = useState(null)
+    const open = Boolean(anchorEl)
+
+    const handleClick = event => {
+      setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+      setAnchorEl(null)
+    }
     return (
       <>
         <div>
@@ -109,7 +135,7 @@ const Cities = () => {
               <MenuItem
                 onClick={e => {
                   e.preventDefault()
-                  // toggleModal(row)
+                  toggleModal(row)
                 }}
                 style={{ height: 25 }}>
                 <ListItemIcon>
@@ -118,16 +144,7 @@ const Cities = () => {
                 <Typography color="green">{t('Edit')}</Typography>
               </MenuItem>
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  // mutate({
-                  //   variables: {
-                  //     id: row._id,
-                  //     restaurant: restaurantId,
-                  //     categoryId: row.categoryId
-                  //   }
-                  // })
-                }}
+                onClick={() => handleRemoveCity(row._id)}
                 style={{ height: 25 }}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" style={{ color: 'red' }} />
@@ -144,13 +161,9 @@ const Cities = () => {
   return (
     <Fragment>
       <Header />
-      {/* Page content */}
       <Container className={globalClasses.flex} fluid>
         <CityForm />
-        {/* Table */}
-        {isOpen && (
-          <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
-        )}
+        {success && <Alert message={message} severity={type} />}
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
         {data && (
@@ -175,18 +188,19 @@ const Cities = () => {
             selectableRows
           />
         )}
-        {/* <Modal
-      style={{
-        width: '70%',
-        marginLeft: '15%',
-        overflowY: 'auto'
-      }}
-      open={editModal}
-      onClose={() => {
-        toggleModal()
-      }}>
-      <ZoneComponent zone={zones} onClose={closeEditModal} />
-    </Modal> */}
+        <Modal
+          style={{
+            width: '70%',
+            marginLeft: '15%',
+            overflowY: 'auto',
+            marginTop: 150
+          }}
+          open={openEdit}
+          onClose={() => {
+            toggleModal()
+          }}>
+          <CityForm city={city} onClose={closeEditModal} />
+        </Modal>
       </Container>
     </Fragment>
   )

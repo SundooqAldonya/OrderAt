@@ -4,18 +4,21 @@ import { useTranslation } from 'react-i18next'
 import useGlobalStyles from '../../utils/globalStyles'
 import { Alert, Box, Button, Input, Modal, Typography } from '@mui/material'
 import { gql, useMutation } from '@apollo/client'
-import { createCity, getCities } from '../../apollo'
+import { createCity, editCity, getCities } from '../../apollo'
 
 const CREATE_CITY = gql`
   ${createCity}
+`
+const EDIT_CITY = gql`
+  ${editCity}
 `
 const GET_CITIES = gql`
   ${getCities}
 `
 
-const CityForm = ({ onClose }) => {
+const CityForm = ({ onClose, city }) => {
   const { t } = useTranslation()
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(city ? city.title : '')
   const [titleError, titleErrorSetter] = useState(null)
   const [success, setSuccess] = useState(false)
   const [mainError, setMainError] = useState(false)
@@ -24,20 +27,39 @@ const CityForm = ({ onClose }) => {
   const globalClasses = useGlobalStyles()
 
   const onCompleted = data => {
-    setSuccess('Created a city successfully!')
+    if (!city) {
+      setSuccess('Created a city successfully!')
+    } else {
+      setSuccess('Updated city successfully!')
+    }
   }
   const [mutate] = useMutation(CREATE_CITY, {
     onCompleted,
     refetchQueries: [{ query: GET_CITIES }]
   })
 
+  const [mutateUpdate] = useMutation(EDIT_CITY, {
+    onCompleted,
+    refetchQueries: [{ query: GET_CITIES }]
+  })
+
   const handleSubmit = async e => {
     e.preventDefault()
-    mutate({
-      variables: {
-        title
-      }
-    })
+    if (!city) {
+      mutate({
+        variables: {
+          title
+        }
+      })
+    } else {
+      mutateUpdate({
+        variables: {
+          id: city._id,
+          title
+        }
+      })
+    }
+    setTitle('')
     // if it's edit modal
     if (onClose) {
       setTimeout(() => {
@@ -51,7 +73,7 @@ const CityForm = ({ onClose }) => {
       <Box className={classes.flexRow}>
         <Box item className={classes.headingBlack}>
           <Typography variant="h6" className={classes.textWhite}>
-            {t('Add City')}
+            {!city ? t('Add City') : t('Edit City')}
           </Typography>
         </Box>
       </Box>
@@ -106,15 +128,6 @@ const CityForm = ({ onClose }) => {
           </Box>
         </form>
       </Box>
-      {/* <Modal
-        style={{
-          marginLeft: '25%',
-          overflowY: 'auto'
-        }}
-        open={addonModal}
-        onClose={() => {
-          toggleModal()
-        }}></Modal> */}
     </Box>
   )
 }

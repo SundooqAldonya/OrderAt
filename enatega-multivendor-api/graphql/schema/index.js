@@ -1364,8 +1364,8 @@ const typeDefs = gql`
     orderCount(restaurant: String!): Int
     restaurantOrders: [Order!]!
     zones: [Zone!]
-    deliveryZones: [Zone!]
-    singleDeliveryZone: Zone!
+    # deliveryZones: [Zone!]
+    # singleDeliveryZone: Zone!
     zone(id: String!): Zone!
     unassignedOrdersByZone: [Order!]
     riderOrders: [Order!]
@@ -1424,9 +1424,8 @@ const typeDefs = gql`
   type Mutation {
     createArea(areaInput: AreaInput!): Message
     createCity(title: String!): Message
-    createDeliveryZone(deliveryInput: DeliveryInput): Message
-    editDeliveryZone(deliveryInput: DeliveryInput): Message
-    deleteDeliveryZone(deliveryInput: DeliveryInput): Message
+    editCity(id: String!, title: String!): Message
+    removeCity(id: String!): Message
     CheckOutPlaceOrder(
       userId: ID!
       addressId: ID
