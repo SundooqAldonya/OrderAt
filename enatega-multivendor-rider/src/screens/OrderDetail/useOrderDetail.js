@@ -31,6 +31,7 @@ const useOrderDetail = () => {
       )
     })
   }, [navigation])
+
   useEffect(() => {
     if (!loadingAssigned) {
       setOrder(assignedOrders.find(o => o._id === orderID))

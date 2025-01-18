@@ -95,6 +95,7 @@ const OrderDetail = () => {
                   strokeWidth={4}
                   strokeColor={colors.black}
                   onReady={result => {
+                    console.log({ result })
                     setDistance(result.distance)
                     setDuration(result.duration)
                   }}

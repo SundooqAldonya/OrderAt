@@ -328,6 +328,7 @@ function Checkout() {
     console.log("tax:", { taxAmount, deliveryCharges, tax, amount });
     return taxAmount;
   }
+
   async function onCompleted(data) {
     // await Analytics.track(Analytics.events.ORDER_PLACED, {
     //   userId: data.placeOrder.user._id,
