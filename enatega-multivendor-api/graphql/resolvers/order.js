@@ -476,7 +476,7 @@ module.exports = {
 
         // Calculate taxation amount (This is typically a percentage of the order amount)
         let taxationAmount = 0
-        const taxRate = restaurant.taxRate || 0.1 // Default 10% tax rate if not found
+        const taxRate = restaurant.taxRate || 0 // Default 10% tax rate if not found
         taxationAmount = orderAmount * taxRate
 
         // Ensure tipping is not undefined or null, default to 0 if missing

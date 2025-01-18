@@ -65,6 +65,8 @@ function Order({ order, t }) {
     successSetter('')
   }
 
+  console.log({ order })
+
   if (!order) return null
   return (
     <Box className={[classes.container, classes.pb]}>
