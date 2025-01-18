@@ -158,11 +158,11 @@ function Checkout() {
 
         let deliveryCharges;
 
-        if (distance < 2) {
-          // For distances less than 2 km, set deliveryCharges to minimumDeliveryFee
+        if (distance < 1) {
+          // For distances less than 1 km, set deliveryCharges to minimumDeliveryFee
           deliveryCharges = configuration.minimumDeliveryFee;
         } else {
-          // For distances greater than or equal to 2 km, calculate delivery charges
+          // For distances greater than or equal to 1 km, calculate delivery charges
           const costType = configuration.costType;
           const calculatedAmount = calculateAmount(
             costType,
@@ -380,6 +380,7 @@ function Checkout() {
     }
     return parseFloat(total).toFixed(2);
   }
+
   function transformOrder(cartData) {
     return cartData.map((food) => {
       return {
@@ -428,6 +429,7 @@ function Checkout() {
             latitude: location.latitude.toString(), // Convert latitude to string
             selected: true,
           },
+          // total: calculateTotal(),
           orderDate: selectedDate,
           isPickedUp: isPickUp,
           deliveryCharges: isPickUp ? 0 : deliveryCharges,

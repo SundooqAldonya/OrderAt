@@ -473,6 +473,7 @@ export const getConfiguration = `query Configuration{
     testOtp 
     skipMobileVerification
     skipEmailVerification
+    minimumDeliveryFee
   }
 }`
 

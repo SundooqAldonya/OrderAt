@@ -476,12 +476,12 @@ module.exports = {
 
         // Calculate taxation amount (This is typically a percentage of the order amount)
         let taxationAmount = 0
-        const taxRate = restaurant.taxRate || 0 // Default 10% tax rate if not found
-        taxationAmount = orderAmount * taxRate
-
+        const taxRate = restaurant.tax / 100 || 0 // Default 10% tax rate if not found
+        console.log({ tax: restaurant.tax })
+        taxationAmount = (orderAmount + deliveryCharges) * taxRate
+        console.log({ taxationAmount })
         // Ensure tipping is not undefined or null, default to 0 if missing
         tipping = tipping || 0
-
         // Calculate total order amount including delivery charges, taxation, and tipping
         const totalOrderAmount =
           orderAmount + deliveryCharges + taxationAmount + tipping
@@ -561,7 +561,8 @@ module.exports = {
     },
 
     placeOrder: async (_, args, { req, res }) => {
-      console.log('placeOrder', args.address.longitude, args.address.latitude)
+      console.log('orderInput', { args: args.orderInput })
+      console.log('placeOrder', { args: args })
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')
       }

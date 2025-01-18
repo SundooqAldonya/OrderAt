@@ -126,7 +126,11 @@ function Cart(props) {
         )
         const amount = Math.ceil(distance) * configuration.deliveryRate
         isSubscribed &&
-          setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
+          setDeliveryCharges(
+            amount >= configuration.minimumDeliveryFee
+              ? amount
+              : configuration.minimumDeliveryFee
+          )
       }
     })()
     return () => {
@@ -243,6 +247,18 @@ function Cart(props) {
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0
     return (itemTotal + deliveryAmount).toFixed(2)
   }
+
+  // function taxCalculation() {
+  //   const tax = taxValue ?? 0
+  //   if (tax === 0) {
+  //     return tax.toFixed(2)
+  //   }
+  //   const delivery = isPickUp ? 0 : deliveryCharges
+  //   const amount = +calculatePrice(delivery, true)
+  //   const taxAmount = ((amount / 100) * tax).toFixed(2)
+  //   console.log('tax:', { taxAmount, deliveryCharges, tax, amount })
+  //   return taxAmount
+  // }
 
   function calculateTotal() {
     let total = 0
@@ -557,7 +573,7 @@ function Cart(props) {
                     bolder
                     Smaller
                   >
-                    {t('exclusiveVAt')}
+                    {t('total_without_tax')}
                   </TextDefault>
                 </View>
                 {isLoggedIn && profile ? (

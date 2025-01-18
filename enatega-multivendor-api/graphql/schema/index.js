@@ -1483,7 +1483,8 @@ const typeDefs = gql`
       taxationAmount: Float!
       deliveryCharges: Float!
       instructions: String
-    ): Order!
+    ): # total: Float!
+    Order!
     editOrder(_id: String!, orderInput: [OrderInput!]!): Order!
     reviewOrder(reviewInput: ReviewInput!): Order!
     acceptOrder(_id: String!, time: String): Order!

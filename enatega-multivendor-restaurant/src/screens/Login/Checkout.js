@@ -51,7 +51,7 @@ const Checkout = () => {
       }
     }
   )
-
+  console.log('here')
   const createOrder = async () => {
     console.log('helllll', userData, selectedAddress, amount, !amount)
     if (!userData._id || !selectedAddress._id || !amount) {

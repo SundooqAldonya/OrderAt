@@ -229,13 +229,20 @@ function Checkout(props) {
         )
         const amount = Math.ceil(distance) * configuration.deliveryRate
         isSubscribed &&
-          setDeliveryCharges(amount > 0 ? amount : configuration.deliveryRate)
+          setDeliveryCharges(
+            amount >= configuration.minimumDeliveryFee
+              ? amount
+              : configuration.minimumDeliveryFee
+          )
       }
     })()
     return () => {
       isSubscribed = false
     }
   }, [data, location])
+
+  console.log({ deliveryCharges })
+  console.log({ minimumDeliveryFee: configuration.minimumDeliveryFee })
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
@@ -468,6 +475,7 @@ function Checkout(props) {
       itemTotal = itemTotal - (coupon.discount / 100) * itemTotal
     }
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0
+    console.log({ deliveryAmount })
     return (itemTotal + deliveryAmount).toFixed(2)
   }
 
@@ -1128,6 +1136,7 @@ function Checkout(props) {
                         >
                           {configuration.currencySymbol}
                           {deliveryCharges.toFixed(2)}
+                          {/* {deliveryCharges} */}
                         </TextDefault>
                       </View>
                       <View style={styles(currentTheme).horizontalLine2} />
