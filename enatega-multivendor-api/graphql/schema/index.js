@@ -8,7 +8,7 @@ const typeDefs = gql`
   type Address {
     _id: ID!
     location: Point
-    deliveryAddress: String!
+    deliveryAddress: String
     details: String
     label: String!
     selected: Boolean
@@ -1049,7 +1049,7 @@ const typeDefs = gql`
     _id: String
     longitude: String
     latitude: String
-    deliveryAddress: String!
+    deliveryAddress: String
     details: String
     label: String!
     selected: Boolean
@@ -1482,9 +1482,8 @@ const typeDefs = gql`
       isPickedUp: Boolean!
       taxationAmount: Float!
       deliveryCharges: Float!
-      instructions: String
-    ): # total: Float!
-    Order!
+      instructions: String # total: Float!
+    ): Order!
     editOrder(_id: String!, orderInput: [OrderInput!]!): Order!
     reviewOrder(reviewInput: ReviewInput!): Order!
     acceptOrder(_id: String!, time: String): Order!

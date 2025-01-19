@@ -33,7 +33,10 @@ const MongoStore = require('connect-mongo')
 const Owner = require('./models/owner.js')
 const Restaurant = require('./models/restaurant.js')
 const Rider = require('./models/rider.js')
+const EventEmitter = require('events')
+const emitter = new EventEmitter()
 
+emitter.setMaxListeners(20)
 async function startApolloServer() {
   const httpServer = http.createServer(app)
   mongoose
