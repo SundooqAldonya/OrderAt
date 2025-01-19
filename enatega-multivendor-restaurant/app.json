@@ -3,7 +3,6 @@
     "name": "Orderat Business",
     "slug": "enatega-restaurant-app-latest",
     "version": "1.0.72",
-    "logging": true,
     "orientation": "portrait",
     "icon": "./assets/icon3.png",
     "splash": {
@@ -11,16 +10,12 @@
       "resizeMode": "cover",
       "backgroundColor": "#06C167"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.restaurant.app",
       "infoPlist": {
-        "UIBackgroundModes": [
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["remote-notification"]
       }
     },
     "android": {
@@ -31,21 +26,6 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "INTERNET"
-      ],
-      "config": {
-        "usesCleartextTraffic": true
-      }
-    },
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "ninjas-code",
-            "project": "enatega-multivendor-app",
-            "authToken": "744ed798e04a40a896b0269c25f945de0e166db8362e41969b64d5e07ca80e65"
-          }
-        }
       ]
     },
     "web": {
@@ -61,7 +41,19 @@
       "expo-localization",
       "expo-secure-store",
       "sentry-expo",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "",
+            "manifestApplication": {
+              "usesCleartextTraffic": true
+            }
+          }
+        }
+      ]
     ]
   }
 }
