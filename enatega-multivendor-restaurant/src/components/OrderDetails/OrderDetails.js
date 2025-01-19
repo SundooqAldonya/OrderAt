@@ -37,7 +37,9 @@ export default function OrderDetails({ orderData }) {
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('address')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
-            {deliveryAddress.deliveryAddress}
+            {deliveryAddress?.deliveryAddress
+              ? deliveryAddress?.deliveryAddress
+              : null}
           </Text>
         </View>
       </View>
@@ -71,65 +73,68 @@ function OrderItems({ orderData }) {
 
   return (
     <View style={[styles.cardContainer, { marginTop: 30, marginBottom: 45 }]}>
-      {items &&
-        items.map((item, index) => {
-          return (
-            <View
-              style={
-                ([styles.itemRowBar, directionStyle],
-                { flexDirection: 'column' })
-              }
-              key={index}>
+      {items
+        ? items.map((item, index) => {
+            return (
               <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginBottom: 10
-                }}>
-                <TextDefault
-                  H5
-                  textColor={colors.fontSecondColor}
-                  bold>{`${item.quantity}x ${item.title}`}</TextDefault>
-                <TextDefault bold>
-                  {formatAmount(item.variation.price)}
-                </TextDefault>
+                style={
+                  ([styles.itemRowBar, directionStyle],
+                  { flexDirection: 'column' })
+                }
+                key={index}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 10
+                  }}>
+                  <TextDefault
+                    H5
+                    textColor={colors.fontSecondColor}
+                    bold>{`${item.quantity}x ${item.title}`}</TextDefault>
+                  <TextDefault bold>
+                    {formatAmount(item.variation.price)}
+                  </TextDefault>
+                </View>
+                {item.addons?.length
+                  ? item.addons.map((addon, index) => {
+                      return (
+                        <View>
+                          <TextDefault H6>{addon.title}</TextDefault>
+                          {addon?.options?.length
+                            ? addon?.options?.map(option => {
+                                return (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      justifyContent: 'space-between',
+                                      marginInlineStart: 20
+                                    }}>
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        gap: 5
+                                      }}>
+                                      <TextDefault>-</TextDefault>
+                                      <TextDefault H6>
+                                        {option.title}
+                                      </TextDefault>
+                                    </View>
+                                    <TextDefault H6>
+                                      {formatAmount(option.price)}
+                                    </TextDefault>
+                                  </View>
+                                )
+                              })
+                            : null}
+                        </View>
+                      )
+                    })
+                  : null}
               </View>
-              {item.addons?.length &&
-                item.addons.map((addon, index) => {
-                  return (
-                    <View>
-                      <TextDefault H6>{addon.title}</TextDefault>
-                      {/* <TextDefault H6>{formatAmount(addon.price)}</TextDefault> */}
-                      {addon?.options?.length
-                        ? addon?.options?.map(option => {
-                            return (
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-between',
-                                  marginInlineStart: 20
-                                }}>
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    gap: 5
-                                  }}>
-                                  <TextDefault>-</TextDefault>
-                                  <TextDefault H6>{option.title}</TextDefault>
-                                </View>
-                                <TextDefault H6>
-                                  {formatAmount(option.price)}
-                                </TextDefault>
-                              </View>
-                            )
-                          })
-                        : null}
-                    </View>
-                  )
-                })}
-            </View>
-          )
-        })}
+            )
+          })
+        : null}
       <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
           H6
