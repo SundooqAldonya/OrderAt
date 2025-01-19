@@ -4,8 +4,11 @@ import { FlashMessage } from '../../components'
 import { login as loginQuery, defaultRestaurantCreds } from '../../apollo'
 import { validateLogin } from '../validate'
 import { AuthContext } from '../context'
+import { useDispatch } from 'react-redux'
+import { setCity } from '../../../store/citySlice'
 
 export default function useLogin() {
+  const dispatch = useDispatch()
   const [errors, setErrors] = useState()
   const { login } = useContext(AuthContext)
   const [username, setUserName] = useState('')
@@ -38,6 +41,8 @@ export default function useLogin() {
 
   function onCompleted({ restaurantLogin, lastOrderCreds }) {
     console.log({ restaurantLogin }, lastOrderCreds, 'onCompleted')
+
+    dispatch(setCity({ cityId: restaurantLogin.city }))
     if (lastOrderCreds) {
       if (
         (lastOrderCreds.restaurantUsername !== null ||
@@ -83,6 +88,7 @@ export default function useLogin() {
       mutate({ variables: { username, password } })
     }
   }
+
   return {
     onLogin,
     isValid,

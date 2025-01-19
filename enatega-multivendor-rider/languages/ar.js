@@ -205,5 +205,6 @@ export const ar = {
   orderMarkedAs: 'تم وضع علامة على الطلب ',
   withdrawAmountError: 'يجب أن يكون مبلغ السحب أقل من أو يساوي مبلغ المحفظة!',
   amountGreater: 'يجب أن يكون المبلغ أكبر من',
-  amountReq: 'المبلغ مطلوب!'
+  amountReq: 'المبلغ مطلوب!',
+  businessName: 'اسم المكان'
 }

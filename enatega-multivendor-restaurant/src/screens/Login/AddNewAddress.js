@@ -36,6 +36,9 @@ import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
+import 'react-native-get-random-values'
+import { useSelector } from 'react-redux'
+import * as SecureStore from 'expo-secure-store'
 
 const { width, height } = Dimensions.get('window')
 
@@ -66,19 +69,33 @@ const AddNewAddress = () => {
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedArea, setSelectedArea] = useState(null)
   const [locationAddress, setLocationAddress] = useState('')
-  const { city, setCity } = useContext(RestaurantContext)
+  // const { city, setCity } = useContext(RestaurantContext)
+  const { cityId } = useSelector(state => state.city)
+
+  const getCity = async () => {
+    const city = await SecureStore.getItemAsync('cityId')
+
+    if (city) {
+      const value = JSON.parse(city)
+      console.log({ value })
+      return value
+    }
+    return null
+  }
+
+  console.log({ cityId: getCity() })
 
   const {
     data: dataAreas,
     loading: loadingAreas,
     error: errorAreas
   } = useQuery(GET_CITY_AREAS, {
-    skip: !city,
-    variables: { id: city }
+    skip: !cityId,
+    variables: { id: cityId }
   })
 
   console.log({ here: dataAreas })
-  console.log({ city })
+  // console.log({ city })
 
   const navigation = useNavigation()
   const laodGovernates = async () => {
@@ -302,6 +319,7 @@ const AddNewAddress = () => {
           <ScrollView
             contentContainerStyle={{
               display: 'flex',
+              flexWrap: 'wrap',
               flexDirection: 'row',
               justifyContent: 'flex-start',
               gap: 20

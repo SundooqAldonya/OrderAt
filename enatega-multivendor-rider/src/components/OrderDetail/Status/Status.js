@@ -1,4 +1,4 @@
-import { Image, View } from 'react-native'
+import { Image, Linking, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import styles from './style'
 import colors from '../../../utilities/colors'
@@ -8,6 +8,8 @@ const Restaurant = require('../../../assets/svg/restaurant.png')
 const DeliveryBoy = require('../../../assets/svg/DeliveryBoy.png')
 import UserContext from '../../../context/user'
 import { useTranslation } from 'react-i18next'
+import useOrderDetail from '../../../screens/OrderDetail/useOrderDetail'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 
 const formatTime = date =>
   new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
@@ -38,12 +40,17 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
   const STATUS_ORDER = [t('ASSIGNED'), t('PICKED'), t('DELIVERED')]
   const { assignedOrders, loadingAssigned } = useContext(UserContext)
   const [order, setOrder] = useState(orderData)
+  const { locationPin, deliveryAddressPin } = useOrderDetail()
+
+  console.log({ restaurant: order.restaurant })
+  console.log({ deliveryAddressPin })
 
   useEffect(() => {
     if (!loadingAssigned) {
       setOrder(assignedOrders.find(o => o._id === itemId))
     }
   }, [assignedOrders])
+
   if (!order) {
     return (
       <View style={styles.container}>
@@ -82,6 +89,8 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 0}
           status={STATUS_ORDER[0]}
           order={order}
+          address={order.restaurant.address}
+          location={order.restaurant.location}
           time={order.assignedAt ? formatTime(order.assignedAt) : null}
         />
         <View
@@ -129,6 +138,7 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           status={STATUS_ORDER[2]}
           time={order.deliveredAt ? formatTime(order.deliveredAt) : null}
           address={order.deliveryAddress.deliveryAddress}
+          location={order.deliveryAddress.location}
           order={order}
         />
       </View>
@@ -140,11 +150,29 @@ const StatusRow = ({
   status,
   time,
   address = null,
+  location = null,
   order,
   fillColor = styles.bgSecondary
 }) => {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
+
+  console.log({ location })
+
+  const openGoogleMaps = ({ latitude, longitude }) => {
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url)
+        } else {
+          Alert.alert('Error', 'Unable to open Google Maps')
+        }
+      })
+      .catch(err => console.error('An error occurred', err))
+  }
+
   return (
     <View
       style={[
@@ -155,21 +183,35 @@ const StatusRow = ({
         style={[
           styles.circle,
           fillColor ? styles.bgPrimary : styles.bgSecondary,
-          isArabic ? { marginLeft: 10 } : {}
+          isArabic ? { marginInlineStart: 10 } : {}
         ]}
       />
       <View style={styles.statusOrder}>
         <TextDefault
           bolder
           H3
-          textColor={fillColor ? colors.primary : colors.fontSecondColor}>
+          textColor={fillColor ? colors.primary : colors.white}>
           {status}
         </TextDefault>
-        {address !== null && (
-          <TextDefault bold textColor={colors.fontSecondColor}>
-            {address}
-          </TextDefault>
-        )}
+        {address ? (
+          <View>
+            <TouchableOpacity
+              onPress={() =>
+                openGoogleMaps({
+                  latitude: location.coordinates[0],
+                  longitude: location.coordinates[1]
+                })
+              }>
+              <TextDefault
+                bold
+                textColor={colors.white}
+                style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                {address}
+              </TextDefault>
+              <EvilIcons name="external-link" />
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
       <View style={styles.time}>
         <TextDefault bolder H5 textColor={colors.fontSecondColor}>

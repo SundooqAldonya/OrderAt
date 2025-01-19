@@ -1,4 +1,11 @@
-import { ScrollView, View, Image } from 'react-native'
+import {
+  ScrollView,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  Linking
+} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
@@ -128,6 +135,7 @@ const OrderDetail = () => {
             </MapView>
           )}
         </View>
+
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}
@@ -137,6 +145,7 @@ const OrderDetail = () => {
             style={styles.icon}
           />
         </View>
+
         <View style={styles.status}>
           <Status
             orderData={route.params?.order}

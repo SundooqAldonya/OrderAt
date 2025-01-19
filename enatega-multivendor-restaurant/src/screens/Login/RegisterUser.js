@@ -32,6 +32,7 @@ import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { useSelector } from 'react-redux'
 
 const { width, height } = Dimensions.get('window')
 
@@ -65,19 +66,21 @@ const RegisterUser = () => {
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedArea, setSelectedArea] = useState(null)
   const [locationAddress, setLocationAddress] = useState('')
-  const { city, setCity } = useContext(RestaurantContext)
+  // const { city, setCity } = useContext(RestaurantContext)
+  const { cityId } = useSelector(state => state.city)
+  console.log({ cityId })
 
   const {
     data: dataAreas,
     loading: loadingAreas,
     error: errorAreas
   } = useQuery(GET_CITY_AREAS, {
-    skip: !city,
-    variables: { id: city }
+    skip: !cityId,
+    variables: { id: cityId }
   })
 
   console.log({ here: dataAreas })
-  console.log({ city })
+  // console.log({ city })
 
   const navigation = useNavigation()
   const laodGovernates = async () => {

@@ -30,6 +30,7 @@ const Styles = {
   row: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-around',
     ...alignment.MBsmall
   },
   rowItem1: {
@@ -72,7 +73,9 @@ const Styles = {
     height: 16,
     borderRadius: 8,
     zIndex: 999,
-    elevation: 999
+    elevation: 999,
+    position: 'absolute',
+    top: -17
   },
   bgRed: {
     backgroundColor: colors.orderUncomplete

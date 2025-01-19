@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Linking } from 'react-native'
 import React from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -8,6 +8,7 @@ import TextError from '../../Text/TextError/TextError'
 import CountDown from 'react-native-countdown-component'
 import useDetails from './useDetails'
 import { useTranslation } from 'react-i18next'
+import useOrderDetail from '../../../screens/OrderDetail/useOrderDetail'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -24,6 +25,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     loadingOrderStatus
   } = useDetails(orderData)
   const { t } = useTranslation()
+
   if (!order) return null
 
   return (

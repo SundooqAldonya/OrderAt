@@ -77,6 +77,22 @@ const Order = ({ order, orderAmount }) => {
                   {t('orderID')}
                 </TextDefault>
               </View>
+              <View
+                style={{
+                  ...styles.row,
+                  flexDirection: 'row-reverse'
+                }}>
+                <TextDefault bolder H5>
+                  {order.restaurant.name}
+                </TextDefault>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('businessName')}
+                </TextDefault>
+              </View>
               <View style={styles.row}>
                 <TextDefault bolder H5>
                   {formatPrice(orderAmount)}
@@ -125,6 +141,22 @@ const Order = ({ order, orderAmount }) => {
                 </TextDefault>
                 <TextDefault style={styles.rowItem2} bolder H4>
                   {order?.orderId}
+                </TextDefault>
+              </View>
+              <View
+                style={{
+                  ...styles.row,
+                  flexDirection: 'row-reverse'
+                }}>
+                <TextDefault bolder H5>
+                  {order.restaurant.name}
+                </TextDefault>
+                <TextDefault
+                  style={styles.rowItem1}
+                  bolder
+                  H5
+                  textColor={colors.fontSecondColor}>
+                  {t('businessName')}
                 </TextDefault>
               </View>
               <View style={styles.row}>

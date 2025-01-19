@@ -42,6 +42,10 @@ import {
 } from '@expo-google-fonts/montserrat'
 import { useTranslation } from 'react-i18next'
 import { RestaurantContext } from './src/contexts/restaurant'
+import { Provider } from 'react-redux'
+// import { store } from './store'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, store } from './store/presistor'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -57,7 +61,7 @@ export default function App() {
   const [isUpdating, setIsUpdating] = useState(false)
   console.log({ isRTL: I18nManager.isRTL })
   console.log({ language: i18n.language })
-  const [city, setCity] = useState(null)
+  // const [city, setCity] = useState(null)
 
   const client = setupApolloClient()
 
@@ -117,12 +121,11 @@ export default function App() {
   const login = async (token, restaurantId, city) => {
     await SecureStore.setItemAsync('token', token)
     await AsyncStorage.setItem('restaurantId', restaurantId)
-    console.log({ city })
-    setCity(city)
+    await SecureStore.setItemAsync('cityId', city)
     setToken(token)
   }
 
-  console.log({ onLoginRestaurantId: city })
+  // console.log({ onLoginRestaurantId: city })
 
   const logout = async () => {
     await SecureStore.deleteItemAsync('token')
@@ -154,22 +157,31 @@ export default function App() {
 
   if (fontLoaded && isAppReady) {
     return (
-      <ApolloProvider client={client}>
-        <StatusBar style="dark" backgroundColor={colors.headerBackground} />
-        <Configuration.Provider>
-          <AuthContext.Provider value={{ isLoggedIn: !!token, login, logout }}>
-            <RestaurantContext.Provider value={{ city, setCity }}>
-              <SafeAreaProvider>
-                <AppContainer />
-              </SafeAreaProvider>
-            </RestaurantContext.Provider>
-          </AuthContext.Provider>
-        </Configuration.Provider>
-        <FlashMessage />
-      </ApolloProvider>
+      <Provider store={store}>
+        <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
+          <ApolloProvider client={client}>
+            <StatusBar style="dark" backgroundColor={colors.headerBackground} />
+            <Configuration.Provider>
+              <AuthContext.Provider
+                value={{ isLoggedIn: !!token, login, logout }}>
+                {/* <RestaurantContext.Provider value={{ city, setCity }}> */}
+                <SafeAreaProvider>
+                  <AppContainer />
+                </SafeAreaProvider>
+                {/* </RestaurantContext.Provider> */}
+              </AuthContext.Provider>
+            </Configuration.Provider>
+            <FlashMessage />
+          </ApolloProvider>
+        </PersistGate>
+      </Provider>
     )
   } else {
-    return <Spinner />
+    return (
+      <Provider store={store}>
+        <Spinner />
+      </Provider>
+    )
   }
 }
 
