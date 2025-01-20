@@ -290,6 +290,9 @@ const VendorProfile = () => {
   useEffect(() => {
     setRestaurantCuisines(data?.restaurant?.cuisines)
   }, [data?.restaurant?.cuisines])
+  useEffect(() => {
+    setSelectedCity(data?.restaurant?.city?._id)
+  }, [data])
 
   useEffect(() => {
     if (restaurantImage) setImgUrl(restaurantImage)
