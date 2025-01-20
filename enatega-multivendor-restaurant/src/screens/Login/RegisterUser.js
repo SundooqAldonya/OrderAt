@@ -33,6 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { useSelector } from 'react-redux'
+import 'react-native-get-random-values'
 
 const { width, height } = Dimensions.get('window')
 
@@ -373,7 +374,9 @@ const RegisterUser = () => {
         enabled>
         <View
           style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-          <TouchableOpacity style={{ marginRight: 10 }}>
+          <TouchableOpacity
+            style={{ marginRight: 10 }}
+            onPress={() => navigation.goBack()}>
             <Ionicons
               name="arrow-back-outline"
               size={scale(25)}
@@ -575,6 +578,7 @@ const RegisterUser = () => {
                       setSelectedArea(null)
                     } else {
                       setSelectedArea(area)
+                      setAreaIsVisible(false)
                     }
                   }}>
                   <TextDefault

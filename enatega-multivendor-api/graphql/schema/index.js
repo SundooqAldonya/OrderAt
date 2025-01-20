@@ -1422,6 +1422,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    searchUsersByBusiness(searchText: String!): User
     createArea(areaInput: AreaInput!): Message
     editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message
     removeArea(id: String!): Message

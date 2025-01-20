@@ -175,7 +175,9 @@ const AddNewAddress = () => {
         enabled>
         <View
           style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-          <TouchableOpacity style={{ marginRight: 10 }}>
+          <TouchableOpacity
+            style={{ marginRight: 10 }}
+            onPress={() => navigation.goBack()}>
             <Ionicons
               name="arrow-back-outline"
               size={scale(25)}
@@ -355,6 +357,7 @@ const AddNewAddress = () => {
                       setSelectedArea(null)
                     } else {
                       setSelectedArea(area)
+                      setAreaIsVisible(false)
                     }
                   }}>
                   <TextDefault

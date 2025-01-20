@@ -45,6 +45,7 @@ module.exports = {
       }
     },
     search_users: async (_, args, context) => {
+      console.log({ argsSearchUser: { args } })
       try {
         let query = {}
 
@@ -123,6 +124,57 @@ module.exports = {
     }
   },
   Mutation: {
+    searchUsersByBusiness: async (_, args, context) => {
+      console.log({ argsSearchUser: { args } })
+      try {
+        let query = {}
+
+        if (args.searchText) {
+          // const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
+          const searchRegex = args.searchText.includes('+2')
+            ? args.searchText
+            : `+2${args.searchText}`
+          query = {
+            $or: [
+              { name: searchRegex },
+              { email: searchRegex },
+              { phone: searchRegex }
+            ]
+          }
+        }
+        // Fetch the user based on the query
+        const user = await User.findOne(query) // Fetch user from DB
+        // Check if any user were found
+        if (!user) {
+          throw new Error('No user found matching the search criteria.')
+        }
+
+        // Transform the user data
+        // return user.map(user => {
+        // Map over the user's addresses to get separate latitude and longitude
+        const transformedUser = {
+          ...user.toObject(), // Convert the mongoose user object to a plain JS object
+          addresses: user.addresses.map(address => {
+            if (address.location && address.location.coordinates) {
+              // Extract longitude and latitude from the coordinates array
+              const [longitude, latitude] = address.location.coordinates
+              return {
+                ...address.toObject(), // Convert address to plain object
+                longitude, // Add longitude
+                latitude // Add latitude
+              }
+            }
+            return address // If no coordinates, return the address as is
+          })
+        }
+
+        return transformedUser // Return the transformed user object
+        // })
+      } catch (err) {
+        console.error('Error occurred while searching users:', err)
+        throw new Error('Error occurred while searching users: ' + err.message)
+      }
+    },
     findOrCreateUser: async (_, { userInput }, context) => {
       console.log('findOrCreateUser', userInput)
 

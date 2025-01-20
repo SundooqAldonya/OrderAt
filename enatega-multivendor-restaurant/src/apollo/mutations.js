@@ -116,3 +116,28 @@ export const CHECK_OUT_PLACE_ORDER = gql`
     }
   }
 `
+export const QUERY_USERS_MUTATION = gql`
+  mutation searchUsersByBusiness($searchText: String!) {
+    searchUsersByBusiness(searchText: $searchText) {
+      _id
+      name
+      email
+      phone
+      userType
+      isActive
+      notificationToken
+      isOrderNotification
+      isOfferNotification
+      addresses {
+        _id
+        deliveryAddress
+        details
+        label
+        selected
+      }
+      favourite
+      createdAt
+      updatedAt
+    }
+  }
+`
