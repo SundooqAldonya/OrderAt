@@ -42,6 +42,14 @@ export default function OrderDetails({ orderData }) {
               : null}
           </Text>
         </View>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>
+            {t('Delivery Details')}
+          </Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
+            {deliveryAddress?.details ? deliveryAddress?.details : null}
+          </Text>
+        </View>
       </View>
       <OrderItems orderData={orderData} />
     </View>
@@ -131,6 +139,12 @@ function OrderItems({ orderData }) {
                       )
                     })
                   : null}
+                <View style={{ marginTop: 20 }}>
+                  <TextDefault H6>Instructions</TextDefault>
+                  <TextDefault style={{ marginInlineStart: 20 }}>
+                    - {item.specialInstructions}
+                  </TextDefault>
+                </View>
               </View>
             )
           })
