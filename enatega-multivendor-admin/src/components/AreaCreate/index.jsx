@@ -119,7 +119,9 @@ const AreaCreate = ({ onClose, area }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const coordinates = [marker.lng, marker.lat]
+    // const coordinates = [marker.lng, marker.lat]
+    // wrong
+    const coordinates = [marker.lat, marker.lng]
     if (!area) {
       mutate({
         variables: {

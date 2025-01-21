@@ -34,6 +34,8 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState({})
   const [amount, setAmount] = useState(null)
 
+  console.log({ selectedAddress: selectedAddress.detail })
+
   useEffect(() => {
     console.log('sellllllllllllllct@@@@@@@@', userData.addresses[0])
     setSelectedAddress(userData.addresses[0])
@@ -83,6 +85,8 @@ const Checkout = () => {
         console.log('errrr@@@@@@@@@@', err)
       })
   }
+
+  console.log('here in busines app')
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
@@ -160,9 +164,10 @@ const Checkout = () => {
             <TextDefault H5>{t('chooseaddress')}</TextDefault>
           </View>
           {userData?.addresses?.map((item, index) => {
-            console.log({ item })
+            console.log({ itemAddress: item.deliveryAddress })
             return (
               <TouchableOpacity
+                key={item._id}
                 style={{
                   backgroundColor: 'whitesmoke',
                   flexDirection: 'row',
@@ -177,11 +182,16 @@ const Checkout = () => {
                 onPress={() => setSelectedAddress(item)}>
                 <View style={{ flex: 1 }}>
                   <TextDefault>{item.deliveryAddress}</TextDefault>
+                  <TextDefault style={{ color: 'red', fontWeight: 'bold' }}>
+                    {item.label}
+                  </TextDefault>
                   <TextDefault>
                     {item.details ? item.details : null}
                   </TextDefault>
                 </View>
-
+                {/* <Text>
+                  {JSON.stringify(selectedAddress?.deliveryAddress, null, 2)}
+                </Text> */}
                 <View
                   style={{
                     height: 20,
@@ -190,8 +200,7 @@ const Checkout = () => {
                     borderColor: colors.green,
                     borderRadius: 20
                   }}>
-                  {selectedAddress?.deliveryAddress ==
-                    item?.deliveryAddress && (
+                  {selectedAddress?.deliveryAddress == item?.deliveryAddress ? (
                     <View
                       style={{
                         flex: 1,
@@ -200,7 +209,7 @@ const Checkout = () => {
                         borderRadius: 20
                       }}
                     />
-                  )}
+                  ) : null}
                 </View>
               </TouchableOpacity>
             )

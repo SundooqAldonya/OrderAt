@@ -90,11 +90,23 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
       }
       addresses.push(addressItem)
     }
+    // if(selectedArea) {
+    //   const addressItem = {
+    //     // deliveryAddress: `${locationAddress}`,
+    //     details: details || 'No address detail is given',
+    //     label: 'Home',
+    //     selected: true,
+    //     latitude: String(latitude),
+    //     longitude: String(longitude)
+    //   }
+    //   addresses.push(addressItem)
+    // }
     updateUserAddress({
       variables: {
         userInput: {
           userId,
           area: selectedArea,
+          details: details,
           addresses,
           type: locationAddress.length ? 'google_api' : 'area'
         }

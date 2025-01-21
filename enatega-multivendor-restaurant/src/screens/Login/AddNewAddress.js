@@ -155,6 +155,7 @@ const AddNewAddress = () => {
         userInput: {
           userId: user?._id,
           area: selectedArea?._id,
+          details: userData.address || 'APT 1',
           addresses,
           type: locationAddress.length ? 'google_api' : 'area'
         }

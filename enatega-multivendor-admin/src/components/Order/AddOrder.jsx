@@ -131,6 +131,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const { areas } = useContext(AreaContext)
   const [selectedArea, setSelectedArea] = useState('')
   const [addressFreeText, setAddressFreeText] = useState('')
+  const [label, setLabel] = useState('')
 
   console.log({ areas })
 
@@ -255,7 +256,17 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
     const foundAddressFree = selectedCustomer?.addresses?.find(
       item => item.deliveryAddress === address
     )
+    console.log({ foundAddressFree })
     setAddressFreeText(foundAddressFree.details)
+  }
+
+  const getLabel = address => {
+    console.log({ address: selectedCustomer?.addresses[0] })
+    const foundAddressFree = selectedCustomer?.addresses?.find(
+      item => item.deliveryAddress === address
+    )
+    console.log({ foundAddressFree })
+    setLabel(foundAddressFree.label)
   }
 
   const handleSubmitCustomer = async e => {
@@ -359,6 +370,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         variables: {
           userId: _id,
           addressId,
+          details: addressFreeText,
           resId: restaurantId,
           orderAmount
         }
@@ -465,7 +477,12 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
                       key={index}
                       value={address.deliveryAddress}
                       sx={{ color: 'black' }}>
-                      {`${address.deliveryAddress}`}
+                      {`${address.deliveryAddress} -- `}{' '}
+                      <span
+                        style={{
+                          fontWeight: 'bold',
+                          color: 'red'
+                        }}>{` (${address.label}) `}</span>
                     </MenuItem>
                   )
                 })}

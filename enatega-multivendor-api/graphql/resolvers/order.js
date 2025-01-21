@@ -329,7 +329,7 @@ module.exports = {
   Mutation: {
     CheckOutPlaceOrder: async (
       _,
-      { userId, addressId, resId, orderAmount, isPickedUp, tipping },
+      { userId, addressId, resId, orderAmount, isPickedUp, tipping, details },
       { req }
     ) => {
       console.log('Entered CheckOutPlaceOrder resolver')
@@ -339,7 +339,8 @@ module.exports = {
         resId,
         orderAmount,
         isPickedUp,
-        tipping
+        tipping,
+        details
       })
       try {
         // Fetch the user
@@ -390,13 +391,13 @@ module.exports = {
         }
 
         const latOrigin = +restaurant.location.coordinates[1]
-        console.log(latOrigin, 'lonOrigin#$')
+        console.log(latOrigin, 'latOrigin#$')
         const lonOrigin = +restaurant.location.coordinates[0]
         console.log(lonOrigin, 'lonOrigin#$')
 
-        const latDest = +address?.location.coordinates[0] || null
+        const latDest = +address?.location.coordinates[1] || null
         console.log(latDest, 'latDest#$')
-        const longDest = +address?.location.coordinates[1] || null
+        const longDest = +address?.location.coordinates[0] || null
         console.log(longDest, 'longDest#$')
         console.log({ area })
         // const latDest = address
@@ -500,7 +501,7 @@ module.exports = {
           orderStatus: 'PENDING',
           //orderAmount: orderAmount, // The original order amount (before additional fees)
           orderAmount: totalOrderAmount,
-          deliveryAddress: address ? address : area,
+          deliveryAddress: address ? address : { ...area, details },
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: tipping, // Store tipping amount
@@ -561,7 +562,7 @@ module.exports = {
     },
 
     placeOrder: async (_, args, { req, res }) => {
-      console.log('orderInput', { args: args.orderInput })
+      console.log('orderInput', { argsOrderInput: args.orderInput })
       console.log('placeOrder', { args: args })
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')

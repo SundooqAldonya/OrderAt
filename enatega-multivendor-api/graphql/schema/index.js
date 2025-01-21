@@ -909,6 +909,7 @@ const typeDefs = gql`
   input UpdateAddressUserInput {
     userId: String!
     addresses: [AddressInput]
+    details: String
     area: String
     type: String
   }

@@ -218,8 +218,9 @@ module.exports = {
           address['location'] = {
             type: 'Point',
             coordinates: [
-              area.location.location.coordinates[0],
-              area.location.location.coordinates[1]
+              // wrong
+              area.location.location.coordinates[1],
+              area.location.location.coordinates[0]
             ]
           }
         }
@@ -271,7 +272,7 @@ module.exports = {
           addresses = addresses?.map(singleAddress => {
             singleAddress['location'] = {
               type: 'Point',
-              coordinates: [singleAddress.latitude, singleAddress.longitude]
+              coordinates: [singleAddress.longitude, singleAddress.latitude]
             }
             delete singleAddress['latitude']
             delete singleAddress['longitude']
@@ -286,11 +287,14 @@ module.exports = {
           address['deliveryAddress'] = area?.address
           address['label'] = area?.title
           address['details'] = userInput?.address_free_text
+            ? userInput?.address_free_text
+            : userInput?.details
           address['location'] = {
             type: 'Point',
             coordinates: [
-              area.location.location.coordinates[0],
-              area.location.location.coordinates[1]
+              // wrong
+              area.location.location.coordinates[1],
+              area.location.location.coordinates[0]
             ]
           }
         }
