@@ -122,7 +122,7 @@ export const ar = {
   orderID: 'رقم الطلب:',
   deliveryTime: 'وقت التوصيل',
   timeLeft: 'الوقت المتبقي',
-  inProgress: 'قيد التقدم',
+  inProgress: 'قيد التنفيذ',
   assignMe: 'تعيين لي',
   preparing: 'جارٍ التحضير',
   timeLeftForMeal: 'الوقت المتبقي لتحضير الوجبة',
@@ -209,5 +209,9 @@ export const ar = {
   businessName: 'اسم المكان',
   user_ordered: 'العميل',
   user_phone: 'رقم التليفون',
-  muted: 'صامت'
+  muted: 'صامت',
+  customer_name: 'الاسم',
+  delivery_section: 'معلومات التوصيل',
+  delivery_label: 'Label',
+  delivery_details: 'تفاصيل العنوان'
 }

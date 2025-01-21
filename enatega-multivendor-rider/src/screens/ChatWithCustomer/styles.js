@@ -22,8 +22,8 @@ export default StyleSheet.create({
   sendIcon: { marginBottom: 7, marginRight: 10 },
   emptyChat: {
     marginTop: 300,
-    transform: [{ scaleY: -1 }, {scaleX: -1}],
-    alignSelf:'center'
+    transform: [{ scaleY: -1 }, { scaleX: -1 }],
+    alignSelf: 'center'
   },
   bubbleRight: {
     backgroundColor: colors.black,
@@ -41,5 +41,23 @@ export default StyleSheet.create({
     borderTopRightRadius: 15,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 15
+  },
+  header: {
+    backgroundColor: '#f8f8f8',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  phoneNumber: {
+    fontSize: 14,
+    color: 'blue',
+    marginTop: 5
   }
 })

@@ -65,8 +65,10 @@ const useLogin = () => {
         lastOrderCreds.riderUsername &&
         lastOrderCreds.riderPassword
       ) {
-        setUsername(lastOrderCreds.riderUsername || '')
-        setPassword(lastOrderCreds.riderPassword || '')
+        if (process.env.NODE_ENV === 'development') {
+          setUsername(lastOrderCreds.riderUsername || '')
+          setPassword(lastOrderCreds.riderPassword || '')
+        }
       } else {
         setUsername('')
         setPassword('')

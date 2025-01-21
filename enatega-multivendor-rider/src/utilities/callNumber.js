@@ -2,6 +2,7 @@ import { Linking, Alert, Platform } from 'react-native'
 
 export const callNumber = phone => {
   let phoneNumber = phone
+
   if (Platform.OS !== 'android') {
     phoneNumber = `telprompt:${phone}`
   } else {

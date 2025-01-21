@@ -20,20 +20,15 @@
     "androidStatusBar": {
       "backgroundColor": "#000"
     },
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
-    "icon": "./assets/icon2.png",
+    "icon": "./assets/logo.jpg",
     "splash": {
-      "image": "./assets/splash2.png",
+      "image": "./assets/logo.jpg",
       "resizeMode": "cover",
-      "backgroundColor": "#06C167"
+      "backgroundColor": "#fff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rider.app",
@@ -42,11 +37,7 @@
       },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "$(PRODUCT_NAME) uses your location for features like finding orders nearby and tracking customer orders!.",
-        "UIBackgroundModes": [
-          "location",
-          "fetch",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
       }
     },
     "android": {

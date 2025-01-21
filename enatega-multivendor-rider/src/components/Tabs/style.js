@@ -38,7 +38,7 @@ export default {
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 2,
+    marginInlineEnd: 10,
     marginTop: -20
   },
   rightBadge: {

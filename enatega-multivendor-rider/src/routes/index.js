@@ -210,7 +210,13 @@ function NoDrawer() {
       <Stack.Screen name="Withdraw" component={Withdraw} />
       <Stack.Screen name="WalletHistory" component={WalletHistory} />
       <Stack.Screen name="AvailableCash" component={AvailableCash} />
-      <Stack.Screen name="ChatWithCustomer" component={ChatScreen} />
+      <Stack.Screen
+        name="ChatWithCustomer"
+        options={{
+          headerShown: true
+        }}
+        component={ChatScreen}
+      />
       <Stack.Screen name="Help" component={Help} />
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="HelpBrowser" component={HelpBrowser} />

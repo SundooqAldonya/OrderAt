@@ -1,5 +1,12 @@
-import React from 'react'
-import { Image, Platform, View } from 'react-native'
+import React, { Fragment } from 'react'
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
 import { useChatScreen } from './useChatScreen'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -8,9 +15,10 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import styles from './styles'
 import colors from '../../utilities/colors'
 
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const ChatScreen = ({ navigation, route }) => {
+  const { phoneNumber, id } = route.params
   const {
     messages,
     onSend,
@@ -18,10 +26,13 @@ const ChatScreen = ({ navigation, route }) => {
     setImage,
     inputMessage,
     setInputMessage,
-    profile
+    profile,
+    phone
   } = useChatScreen({ navigation, route })
 
-  const {t} = useTranslation()
+  console.log({ phone: phoneNumber })
+
+  const { t } = useTranslation()
   const filterImages = src => {
     setImage(image.filter(item => item !== src))
   }
@@ -101,29 +112,38 @@ const ChatScreen = ({ navigation, route }) => {
   }
 
   return (
-    <GiftedChat
-      messages={messages}
-      user={{
-        _id: profile.rider._id
-      }}
-      renderBubble={renderBubble}
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderAvatar={null}
-      renderUsernameOnMessage
-      renderChatEmpty={renderChatEmpty}
-      inverted={Platform.OS !== 'web' || messages.length === 0}
-      timeTextStyle={{
-        left: { color: colors.fontMainColor },
-        right: { color: colors.horizontalLine }
-      }}
-      placeholder={t('message')}
-      textInputStyle={{ paddingTop: 10 }}
-      renderAccessory={image.length > 0 ? renderAccessory : null}
-      text={inputMessage}
-      onInputTextChanged={m => setInputMessage(m)}
-    />
+    <Fragment>
+      {/* Custom Header */}
+      {/* <View style={styles.header}>
+        <Text style={styles.title}>Chat with Customer</Text>
+        <TouchableOpacity onPress={() => Linking.openURL('tel:+1234567890')}>
+          <TextDefault style={styles.phoneNumber}>+1234567890</TextDefault>
+        </TouchableOpacity>
+      </View> */}
+      <GiftedChat
+        messages={messages}
+        user={{
+          _id: profile.rider._id
+        }}
+        renderBubble={renderBubble}
+        renderSend={renderSend}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
+        renderAvatar={null}
+        renderUsernameOnMessage
+        renderChatEmpty={renderChatEmpty}
+        inverted={Platform.OS !== 'web' || messages.length === 0}
+        timeTextStyle={{
+          left: { color: colors.fontMainColor },
+          right: { color: colors.horizontalLine }
+        }}
+        placeholder={t('message')}
+        textInputStyle={{ paddingTop: 10 }}
+        renderAccessory={image.length > 0 ? renderAccessory : null}
+        text={inputMessage}
+        onInputTextChanged={m => setInputMessage(m)}
+      />
+    </Fragment>
   )
 }
 

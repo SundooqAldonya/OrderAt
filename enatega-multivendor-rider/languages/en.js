@@ -133,7 +133,7 @@ export const en = {
   pick: 'Order Picked',
   markAsDelivered: 'Mark As Delivered',
   OrderDetail: 'Order Details',
-  yourOrderFrom: 'Your Order From',
+  yourOrderFrom: 'Order From',
   orderNo: 'Order No.',
   subTotal: 'Sub Total',
   tip: 'Tip',
@@ -211,6 +211,10 @@ export const en = {
   amountReq: 'Amount is required!',
   businessName: 'Business Name',
   user_ordered: 'User Ordered',
-  user_phone: 'User phone',
-  muted: 'Muted'
+  user_phone: 'Phone',
+  muted: 'Muted',
+  customer_name: 'Name',
+  delivery_section: 'Delivery Details',
+  delivery_label: 'Delivery Label',
+  delivery_details: 'Details'
 }

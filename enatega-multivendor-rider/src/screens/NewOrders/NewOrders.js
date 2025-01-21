@@ -56,6 +56,7 @@ const NewOrders = ({ navigation }) => {
   useEffect(() => {
     // Trigger refetch when orders length changes
     if (noNewOrders) {
+      // if true refetch new order
       refetchAssigned()
     }
   }, [noNewOrders])

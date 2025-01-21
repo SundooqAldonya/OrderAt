@@ -73,24 +73,26 @@ const Order = ({ order, orderAmount }) => {
                 <TextDefault style={styles.rowItem2} bolder H4>
                   {order?.orderId}
                 </TextDefault>
-                <TextDefault style={styles.rowItem1} bolder H4>
+                <TextDefault
+                  style={{ ...styles.rowItem1, textAlign: 'right' }}
+                  bolder
+                  H4>
                   {t('orderID')}
                 </TextDefault>
               </View>
               <View
                 style={{
-                  ...styles.row,
-                  flexDirection: 'row-reverse'
+                  ...styles.row
                 }}>
                 <TextDefault bolder H5>
                   {order.restaurant.name}
                 </TextDefault>
                 <TextDefault
-                  style={styles.rowItem1}
+                  style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('businessName')}
+                  {t('businessName')}:
                 </TextDefault>
               </View>
               <View style={styles.row}>
@@ -98,11 +100,11 @@ const Order = ({ order, orderAmount }) => {
                   {formatPrice(orderAmount)}
                 </TextDefault>
                 <TextDefault
-                  style={styles.rowItem1}
+                  style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('orderAmount')}
+                  {t('orderAmount')}:
                 </TextDefault>
               </View>
               <View style={styles.row}>
@@ -110,11 +112,11 @@ const Order = ({ order, orderAmount }) => {
                   {order?.paymentMethod}
                 </TextDefault>
                 <TextDefault
-                  style={styles.rowItem1}
+                  style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('paymentMethod')}
+                  {t('paymentMethod')}:
                 </TextDefault>
               </View>
               {active === 'MyOrders' && (
@@ -124,11 +126,11 @@ const Order = ({ order, orderAmount }) => {
                     {new Date(order?.createdAt).toLocaleTimeString()}
                   </TextDefault>
                   <TextDefault
-                    style={styles.rowItem1}
+                    style={{ ...styles.rowItem1, textAlign: 'right' }}
                     bolder
                     H5
                     textColor={colors.fontSecondColor}>
-                    {t('deliveryTime')}
+                    {t('deliveryTime')}:
                   </TextDefault>
                 </View>
               )}
@@ -156,7 +158,7 @@ const Order = ({ order, orderAmount }) => {
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('businessName')}
+                  {t('businessName')}:
                 </TextDefault>
               </View>
               <View style={styles.row}>
@@ -165,7 +167,7 @@ const Order = ({ order, orderAmount }) => {
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('orderAmount')}
+                  {t('orderAmount')}:
                 </TextDefault>
                 <TextDefault
                   style={[styles.rowItem2, { paddingRight: 65 }]}
@@ -180,7 +182,7 @@ const Order = ({ order, orderAmount }) => {
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('paymentMethod')}
+                  {t('paymentMethod')}:
                 </TextDefault>
                 <TextDefault style={styles.rowItem2} bolder H5>
                   {order?.paymentMethod}
@@ -193,7 +195,7 @@ const Order = ({ order, orderAmount }) => {
                     bolder
                     H5
                     textColor={colors.fontSecondColor}>
-                    {t('deliveryTime')}
+                    {t('deliveryTime')}:
                   </TextDefault>
                   <TextDefault style={styles.rowItem2} bolder H5>
                     {new Date(order?.createdAt).toLocaleDateString()}{' '}

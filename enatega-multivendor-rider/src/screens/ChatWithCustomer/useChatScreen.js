@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useContext} from 'react'
+import React, { useState, useEffect, useLayoutEffect, useContext } from 'react'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { callNumber } from '../../utilities/callNumber'
 import colors from '../../utilities/colors'
@@ -11,12 +11,14 @@ import UserContext from '../../context/user'
 import { useTranslation } from 'react-i18next'
 
 export const useChatScreen = ({ navigation, route }) => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const { dataProfile } = useContext(UserContext)
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState(null)
   const [image, setImage] = useState([])
-  const [phone] = useState(route.params?.phoneNumber)
+  // const [phone] = useState(
+  //   route.params?.phoneNumber ? route.params?.phoneNumber : 'N/A'
+  // )
   const { id: orderId } = route.params
   const { subscribeToMore: subscribeToMessages, data: chatData } = useQuery(
     gql`
@@ -109,12 +111,12 @@ export const useChatScreen = ({ navigation, route }) => {
             borderRadius: 5,
             overflow: 'hidden'
           }}
-          onPress={() => callNumber(phone)}
+          onPress={() => callNumber(route.params?.phoneNumber)}
         />
       ),
       headerTitle: t('contactCustomer')
     })
-  }, [navigation])
+  }, [navigation, route.params?.phoneNumber])
 
   const onSend = () => {
     send({

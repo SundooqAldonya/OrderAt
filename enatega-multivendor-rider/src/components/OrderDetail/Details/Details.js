@@ -8,7 +8,6 @@ import TextError from '../../Text/TextError/TextError'
 import CountDown from 'react-native-countdown-component'
 import useDetails from './useDetails'
 import { useTranslation } from 'react-i18next'
-import useOrderDetail from '../../../screens/OrderDetail/useOrderDetail'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -175,7 +174,7 @@ const OrderDetails = ({ order }) => {
           bold
           H5
           style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-          {t('username')}
+          {t('customer_name')}
         </TextDefault>
         <TextDefault
           bolder
@@ -205,22 +204,31 @@ const OrderDetails = ({ order }) => {
           {order.user.phone}
         </TextDefault>
       </View>
-      <View
-        style={[
-          styles.rowDisplay,
-          { flexDirection: isArabic ? 'row-reverse' : 'row' }
-        ]}>
-        <TextDefault
-          textColor={colors.fontSecondColor}
-          bold
-          H5
-          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-          {t('yourOrderFrom')}
-        </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
-          {order.restaurant.name}
-        </TextDefault>
-      </View>
+      <TouchableOpacity
+        // style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}
+        onPress={() =>
+          openGoogleMaps({
+            latitude: order.restaurant.location.coordinates[1],
+            longitude: order.restaurant.location.coordinates[0]
+          })
+        }>
+        <View
+          style={[
+            styles.rowDisplay,
+            { flexDirection: isArabic ? 'row-reverse' : 'row' }
+          ]}>
+          <TextDefault
+            textColor={colors.fontSecondColor}
+            bold
+            H5
+            style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
+            {t('yourOrderFrom')}
+          </TextDefault>
+          <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+            {order.restaurant.name}
+          </TextDefault>
+        </View>
+      </TouchableOpacity>
       <View
         style={[
           styles.rowDisplay,
@@ -239,6 +247,52 @@ const OrderDetails = ({ order }) => {
           textColor={colors.black}
           style={[styles.col2, isArabic ? { paddingLeft: 80 } : null]}>
           {order.orderId}
+        </TextDefault>
+      </View>
+      <View
+        style={{
+          height: 1,
+          backgroundColor: '#000',
+          width: '100%'
+        }}></View>
+      <View
+        style={[
+          styles.rowDisplay,
+          {
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            marginVertical: 20
+          }
+        ]}>
+        <TextDefault
+          textColor={colors.black}
+          bold
+          H5
+          style={{
+            ...styles.col1,
+            textAlign: isArabic ? 'right' : 'left',
+            fontSize: 20
+          }}>
+          {t('delivery_section')}
+        </TextDefault>
+      </View>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{
+            ...styles.col1,
+            textAlign: isArabic ? 'right' : 'left',
+            flex: 4
+          }}>
+          {t('delivery_label')}
+        </TextDefault>
+        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+          {order.deliveryAddress.label ? order.deliveryAddress.label : 'N/A'}
         </TextDefault>
       </View>
       <View
@@ -264,6 +318,22 @@ const OrderDetails = ({ order }) => {
             {order.deliveryAddress.deliveryAddress}
           </TextDefault>
         </TouchableOpacity>
+      </View>
+      <View style={[styles.rowDisplay, { flexDirection: 'column' }]}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
+          {t('delivery_details')}
+        </TextDefault>
+        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+          {`(${
+            order.deliveryAddress.details
+              ? order.deliveryAddress.details
+              : 'N/A'
+          })`}
+        </TextDefault>
       </View>
     </View>
   )
@@ -488,7 +558,7 @@ const ChatWithCustomerButton = ({ navigation, order }) => {
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('ChatWithCustomer', {
-          phoneNumber: order?.user.phone,
+          phoneNumber: order?.user?.phone,
           id: order?._id
         })
       }
