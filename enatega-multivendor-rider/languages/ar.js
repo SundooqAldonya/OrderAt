@@ -206,5 +206,8 @@ export const ar = {
   withdrawAmountError: 'يجب أن يكون مبلغ السحب أقل من أو يساوي مبلغ المحفظة!',
   amountGreater: 'يجب أن يكون المبلغ أكبر من',
   amountReq: 'المبلغ مطلوب!',
-  businessName: 'اسم المكان'
+  businessName: 'اسم المكان',
+  user_ordered: 'العميل',
+  user_phone: 'رقم التليفون',
+  muted: 'صامت'
 }

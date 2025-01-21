@@ -148,6 +148,21 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
 const OrderDetails = ({ order }) => {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
+
+  const openGoogleMaps = ({ latitude, longitude }) => {
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url)
+        } else {
+          Alert.alert('Error', 'Unable to open Google Maps')
+        }
+      })
+      .catch(err => console.error('An error occurred', err))
+  }
+
   return (
     <View style={styles.orderDetails}>
       <View
@@ -159,7 +174,47 @@ const OrderDetails = ({ order }) => {
           textColor={colors.fontSecondColor}
           bold
           H5
-          style={styles.col1}>
+          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
+          {t('username')}
+        </TextDefault>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ ...styles.col2, textTransform: 'capitalize' }}>
+          {order.user.name}
+        </TextDefault>
+      </View>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
+          {t('user_phone')}
+        </TextDefault>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ ...styles.col2, textTransform: 'capitalize' }}>
+          {order.user.phone}
+        </TextDefault>
+      </View>
+      <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
           {t('yourOrderFrom')}
         </TextDefault>
         <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
@@ -175,7 +230,7 @@ const OrderDetails = ({ order }) => {
           textColor={colors.fontSecondColor}
           bold
           H5
-          style={styles.col1}>
+          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
           {t('orderNo')}
         </TextDefault>
         <TextDefault
@@ -191,16 +246,24 @@ const OrderDetails = ({ order }) => {
           styles.rowDisplay,
           { flexDirection: isArabic ? 'row-reverse' : 'row' }
         ]}>
-        <TextDefault
-          textColor={colors.fontSecondColor}
-          bold
-          H5
-          style={styles.col1}>
-          {t('deliveryAddress')}
-        </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
-          {order.deliveryAddress.deliveryAddress}
-        </TextDefault>
+        <TouchableOpacity
+          onPress={() =>
+            openGoogleMaps({
+              latitude: order.deliveryAddress.location.coordinates[1],
+              longitude: order.deliveryAddress.location.coordinates[0]
+            })
+          }>
+          <TextDefault
+            textColor={colors.fontSecondColor}
+            bold
+            H5
+            style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
+            {t('deliveryAddress')}
+          </TextDefault>
+          <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+            {order.deliveryAddress.deliveryAddress}
+          </TextDefault>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -212,16 +275,13 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
 
-  // useEffect(() => {
-  //   if (!subTotal) {
-  //     setSubTotalZero(
-  //       order.orderAmount - order.deliveryCharges - order.taxationAmount
-  //     )
-  //   }
-  // }, [subTotal, subTotalZero])
-
-  // console.log({ subTotal })
-  // console.log({ subTotalZero })
+  useEffect(() => {
+    if (!subTotal) {
+      setSubTotalZero(
+        order.orderAmount - order.deliveryCharges - order.taxationAmount
+      )
+    }
+  }, [subTotal, subTotalZero])
 
   if (loading) return <Spinner />
   if (error) return <TextError text={t('errorText')} />
@@ -244,14 +304,42 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
               <TextDefault textColor={colors.fontSecondColor} bold H5>
                 {item.title}
               </TextDefault>
-              {item.addons
+              {item.addons.length
                 ? item.addons.map(addon => (
-                    <TextDefault
-                      key={addon._id}
-                      textColor={colors.fontSecondColor}
-                      bold>
-                      {addon.title}
-                    </TextDefault>
+                    <View key={addon._id} style={{ marginTop: 15 }}>
+                      <TextDefault
+                        textColor={colors.fontSecondColor}
+                        bold
+                        style={{ fontWeight: 'bold' }}>
+                        {addon.title}
+                      </TextDefault>
+                      {addon.options.length
+                        ? addon.options.map(option => {
+                            subTotal += option.price
+                            return (
+                              <View
+                                key={option._id}
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-around',
+                                  marginInlineStart: 25
+                                }}>
+                                <TextDefault
+                                  textColor={colors.fontSecondColor}
+                                  bold>
+                                  {option.title}
+                                </TextDefault>
+                                <TextDefault
+                                  key={addon._id}
+                                  textColor={colors.fontSecondColor}
+                                  bold>
+                                  {option.price}
+                                </TextDefault>
+                              </View>
+                            )
+                          })
+                        : null}
+                    </View>
                   ))
                 : null}
             </View>
@@ -289,7 +377,9 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           style={[styles.coll3, { flex: 3 }]}>
           {isArabic
             ? `${subTotal} ${dataConfig.configuration.currencySymbol}`
-            : `${dataConfig.configuration.currencySymbol} ${subTotal}`}
+            : `${dataConfig.configuration.currencySymbol} ${
+                subTotal ? subTotal : subTotalZero
+              }`}
         </TextDefault>
       </View>
 

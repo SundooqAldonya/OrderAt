@@ -209,5 +209,8 @@ export const en = {
     'Withdraw amount must be less than or equal to wallet amount!',
   amountGreater: 'Amount must be grater than',
   amountReq: 'Amount is required!',
-  businessName: 'Business Name'
+  businessName: 'Business Name',
+  user_ordered: 'User Ordered',
+  user_phone: 'User phone',
+  muted: 'Muted'
 }

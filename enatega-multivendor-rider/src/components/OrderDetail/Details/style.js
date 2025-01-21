@@ -63,10 +63,11 @@ export default StyleSheet.create({
   },
   rowDisplay: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   col1: {
-    flex: 6
+    flex: 3
   },
   col2: {
     flex: 6,

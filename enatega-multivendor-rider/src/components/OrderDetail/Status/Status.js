@@ -42,9 +42,6 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
   const [order, setOrder] = useState(orderData)
   const { locationPin, deliveryAddressPin } = useOrderDetail()
 
-  console.log({ restaurant: order.restaurant })
-  console.log({ deliveryAddressPin })
-
   useEffect(() => {
     if (!loadingAssigned) {
       setOrder(assignedOrders.find(o => o._id === itemId))
