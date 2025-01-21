@@ -200,6 +200,7 @@ const ar = {
     pickUp: "استلام",
     warning: "تحذير",
     warningText: "أحد العناصر غير متاح",
+    cash_only: "الدفع عند التوصيل",
   },
 };
 export default ar;

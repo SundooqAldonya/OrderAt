@@ -52,7 +52,7 @@ export const ar = {
   accept: 'قبول',
   language: 'اللغة',
   notificationText: 'يجب استخدام جهاز فعلي لتلقي الإشعارات الفورية.',
-  createneworder: 'إنشاء طلب جديد',
+  createneworder: 'أطلب مندوب',
   searchcustomer: 'بحث عن العميل',
   searchfromnumber: 'البحث من رقم الهاتف',
   resultsfor: 'النتائج لـ',

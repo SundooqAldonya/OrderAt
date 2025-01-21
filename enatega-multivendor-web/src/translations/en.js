@@ -205,6 +205,7 @@ const en = {
     pickUp: "Pickup",
     warning: "warning",
     warningText: "One or more item is not available",
+    cash_only: "Cash on delivery",
   },
 };
 export default en;

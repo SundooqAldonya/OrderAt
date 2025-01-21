@@ -126,15 +126,14 @@ function CartItemsCard({
             overflow: "auto",
             backgroundColor: theme.palette.common.white,
             boxShadow: "0px 0px 5px 1px rgba(0,0,0,0.2)",
-            borderTopRightRadius: 20,
-            borderTopLeftRadius: 20,
+            borderRadius: 20,
+            paddingBottom: 20,
           }}
         >
-          {console.log({ cartView: cart })}
           {cart?.map((foodItem, index) => (
             <>
               <CartItem
-                key={`ITEM_${index}`}
+                key={foodItem._id}
                 quantity={foodItem.quantity}
                 dealName={foodItem.title}
                 foodTitle={foodItem.foodTitle}
@@ -147,11 +146,12 @@ function CartItemsCard({
                   addQuantity(foodItem.key);
                 }}
                 removeQuantity={() => {
-                  if (foodItem.quantity > 1) {
-                    removeQuantity(foodItem.key);
-                  }
+                  // if (foodItem.quantity > 1) {
+                  removeQuantity(foodItem.key);
+                  // }
                 }}
               />
+              <Typography>{foodItem.specialInstructions}</Typography>
               <Divider
                 orientation="horizontal"
                 style={{ backgroundColor: "rgb(72 71 71 / 66%)" }}
@@ -169,7 +169,7 @@ function CartItemsCard({
               boxShadow: "0px 0px 5px 1px rgba(0,0,0,0.2)",
               borderBottomRightRadius: 20,
               borderBottomLeftRadius: 20,
-              marginTop: "-5px",
+              marginTop: "15px",
             }}
           >
             <Box

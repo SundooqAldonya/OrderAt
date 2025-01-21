@@ -49,8 +49,8 @@ export default function useLogin() {
           lastOrderCreds.restaurantUsername !== undefined) &&
         lastOrderCreds.restaurantPassword
       ) {
-        setUserName(lastOrderCreds.restaurantUsername || '')
-        setPassword(lastOrderCreds.restaurantPassword || '')
+        // setUserName(lastOrderCreds.restaurantUsername || '')
+        // setPassword(lastOrderCreds.restaurantPassword || '')
       }
     } else {
       login(

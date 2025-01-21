@@ -198,8 +198,8 @@ const StatusRow = ({
             <TouchableOpacity
               onPress={() =>
                 openGoogleMaps({
-                  latitude: location.coordinates[0],
-                  longitude: location.coordinates[1]
+                  latitude: location.coordinates[1],
+                  longitude: location.coordinates[0]
                 })
               }>
               <TextDefault

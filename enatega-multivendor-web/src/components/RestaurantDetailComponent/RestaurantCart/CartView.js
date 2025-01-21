@@ -99,7 +99,8 @@ function CartView(props) {
         message: e.message,
       });
     } finally {
-      setLoadingData(!loadingData);
+      // setLoadingData(!loadingData);
+      setLoadingData(false);
     }
   };
 

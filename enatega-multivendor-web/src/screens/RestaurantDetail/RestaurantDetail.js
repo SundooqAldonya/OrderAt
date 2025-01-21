@@ -51,8 +51,6 @@ function RestaurantDetail() {
     (cat) => cat.foods.length
   );
 
-  console.log({ data });
-
   const {
     restaurant: restaurantCart,
     setCartRestaurant,
@@ -63,10 +61,12 @@ function RestaurantDetail() {
     clearCart,
     isLoggedIn,
   } = useContext(UserContext);
+
   const deals = allDeals?.map((c, index) => ({
     ...c,
     index,
   }));
+
   const headerData = {
     name: data?.restaurantCustomer?.name ?? "...",
     averageReview: data?.restaurantCustomer?.reviewData?.ratings ?? "...",
@@ -76,6 +76,7 @@ function RestaurantDetail() {
     deals: deals,
     deliveryTime: data?.restaurantCustomer?.deliveryTime,
   };
+
   const restaurantInfo = {
     _id: data?.restaurantCustomer._id ?? "",
     name: data?.restaurantCustomer?.name ?? "...",
@@ -92,9 +93,7 @@ function RestaurantDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  useEffect(async () => {
-    // await Analytics.track(Analytics.events.NAVIGATE_TO_RESTAURANTS_DETAIL);
-  }, []);
+
   useEffect(() => {
     if (
       data?.restaurantCustomer &&
@@ -150,17 +149,21 @@ function RestaurantDetail() {
   };
 
   const addToCart = async (food, clearFlag) => {
+    console.log({ clearFlag });
+    if (clearFlag) await clearCart();
     if (
       food.variations.length === 1 &&
       food.variations[0].addons.length === 0
     ) {
       await setCartRestaurant(food.restaurant);
       const result = checkItemCart(food._id);
-      if (result.exist) await addQuantity(result.key);
-      else
+      if (result.exist) {
+        await addQuantity(result.key);
+      } else {
         await addCartItem(food._id, food.variations[0]._id, 1, [], clearFlag);
+      }
     } else {
-      if (clearFlag) await clearCart();
+      // if (clearFlag) await clearCart();
       setAddonData({
         food,
         addons: data?.restaurantCustomer.addons,

@@ -100,7 +100,6 @@ function Checkout() {
   } = useContext(UserContext);
 
   const { location, setLocation } = useLocationContext();
-  console.log(location, "location divya");
   // const { getCurrentLocation } = useLocation();
   const theme = useTheme();
   const [minimumOrder, setMinimumOrder] = useState("");
@@ -113,11 +112,12 @@ function Checkout() {
   const [isPickUp, setIsPickUp] = useState(false);
   const [deliveryCharges, setDeliveryCharges] = useState(0);
   const [shouldAddMinimumFee, setShouldAddMinimumFee] = useState(false);
-
-  let restCoordinates = {};
-  const { loading, data, error } = useRestaurant(cartRestaurant);
-  console.log({ data });
+  const restaurantId = localStorage.getItem("restaurant");
+  // let restCoordinates = {};
+  const [restCoordinates, setRestCoordinates] = useState(null);
+  const { loading, data, error } = useRestaurant(restaurantId);
   const extraSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  // console.log({ error });
   const [mutateOrder, { loading: loadingOrderMutation }] = useMutation(
     PLACEORDER,
     {
@@ -126,6 +126,7 @@ function Checkout() {
       update,
     }
   );
+
   useEffect(() => {
     if (!location) {
       let localStorageLocation = localStorage.getItem("location");
@@ -209,6 +210,7 @@ function Checkout() {
 
     return times.length > 0;
   };
+
   const toggleAdressModal = useCallback(() => {
     setAddressModal((prev) => !prev);
   }, []);
@@ -227,6 +229,16 @@ function Checkout() {
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    const restCoords = {
+      lat: parseFloat(data?.restaurantCustomer.location.coordinates[1]),
+      lng: parseFloat(data?.restaurantCustomer.location.coordinates[0]),
+    };
+    setRestCoordinates(restCoords);
+  }, [data?.restaurantCustomer?.location]);
+
+  console.log({ restCoordinates });
 
   const setDeliveryAddress = (item) => {
     setSelectedAddress(item);
@@ -275,10 +287,11 @@ function Checkout() {
       </Grid>
     );
   }
-  restCoordinates = {
-    lat: parseFloat(data?.restaurantCustomer.location.coordinates[1]),
-    lng: parseFloat(data?.restaurantCustomer.location.coordinates[0]),
-  };
+
+  // restCoordinates = {
+  //   lat: parseFloat(data?.restaurantCustomer.location.coordinates[1]),
+  //   lng: parseFloat(data?.restaurantCustomer.location.coordinates[0]),
+  // };
 
   function update(cache, { data: { placeOrder } }) {
     console.log("update divya");
@@ -330,22 +343,6 @@ function Checkout() {
   }
 
   async function onCompleted(data) {
-    // await Analytics.track(Analytics.events.ORDER_PLACED, {
-    //   userId: data.placeOrder.user._id,
-    //   name: data.placeOrder.user.name,
-    //   email: data.placeOrder.user.email,
-    //   phoneNumber: data.placeOrder.user.phone,
-    //   orderId: data.placeOrder.orderId,
-    //   restaurantName: data.placeOrder.restaurant.name,
-    //   restaurantAddress: data.placeOrder.restaurant.address,
-    //   orderItems: data.placeOrder.items,
-    //   orderPaymentMethod: data.placeOrder.paymentMethod,
-    //   orderAmount: data.placeOrder.orderAmount,
-    //   orderPaidAmount: data.placeOrder.paidAmount,
-    //   tipping: data.placeOrder.tipping,
-    //   orderStatus: data.placeOrder.orderStatus,
-    //   orderDate: data.placeOrder.orderDate,
-    // });
     if (paymentMethod.payment === "COD") {
       await clearCart();
       navigate(`/order-detail/${data.placeOrder._id}`, { replace: true });
@@ -566,33 +563,35 @@ function Checkout() {
       >
         <Grid container item>
           <Grid item xs={12} className={classes.topContainer}>
-            <GoogleMap
-              mapContainerStyle={{
-                height: "450px",
-                width: "100%",
-              }}
-              zoom={14}
-              center={restCoordinates}
-              onLoad={restCoordinates && onLoad}
-              options={{
-                styles: mapStyles,
-                zoomControl: true,
-                zoomControlOptions: {
-                  position: window.google.maps.ControlPosition.RIGHT_CENTER,
-                },
-              }}
-            >
-              {location && (
-                <Marker
-                  position={{
-                    lat: location?.latitude,
-                    lng: location?.longitude,
-                  }}
-                  icon={MarkerImage}
-                />
-              )}
-              <Marker position={restCoordinates} icon={RestMarker} />
-            </GoogleMap>
+            {restCoordinates ? (
+              <GoogleMap
+                mapContainerStyle={{
+                  height: "450px",
+                  width: "100%",
+                }}
+                zoom={14}
+                center={restCoordinates}
+                onLoad={restCoordinates && onLoad}
+                options={{
+                  styles: mapStyles,
+                  zoomControl: true,
+                  zoomControlOptions: {
+                    position: window.google.maps.ControlPosition.RIGHT_CENTER,
+                  },
+                }}
+              >
+                {location && (
+                  <Marker
+                    position={{
+                      lat: location?.latitude,
+                      lng: location?.longitude,
+                    }}
+                    icon={MarkerImage}
+                  />
+                )}
+                <Marker position={restCoordinates} icon={RestMarker} />
+              </GoogleMap>
+            ) : null}
           </Grid>
         </Grid>
         <Container maxWidth="md" className={classes.containerCard}>
@@ -828,6 +827,7 @@ function Checkout() {
                 onPayment={onPayment}
                 loading={loadingOrderMutation}
                 calculateTotal={calculateTotal}
+                hasItems={cart?.length}
               />
             </Grid>
           </Grid>

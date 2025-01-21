@@ -543,6 +543,7 @@ const RegisterUser = () => {
           <ScrollView
             contentContainerStyle={{
               display: 'flex',
+              flexWrap: 'wrap',
               flexDirection: 'row',
               justifyContent: 'flex-start',
               gap: 20

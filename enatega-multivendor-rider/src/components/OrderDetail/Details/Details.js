@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, Linking } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import colors from '../../../utilities/colors'
@@ -208,8 +208,20 @@ const OrderDetails = ({ order }) => {
 
 const ItemDetails = ({ order, dataConfig, loading, error }) => {
   let subTotal = 0
+  const [subTotalZero, setSubTotalZero] = useState(0)
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
+
+  // useEffect(() => {
+  //   if (!subTotal) {
+  //     setSubTotalZero(
+  //       order.orderAmount - order.deliveryCharges - order.taxationAmount
+  //     )
+  //   }
+  // }, [subTotal, subTotalZero])
+
+  // console.log({ subTotal })
+  // console.log({ subTotalZero })
 
   if (loading) return <Spinner />
   if (error) return <TextError text={t('errorText')} />
@@ -372,6 +384,7 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           {isArabic
             ? `${order.orderAmount} ${dataConfig.configuration.currencySymbol}`
             : `${dataConfig.configuration.currencySymbol} ${order.orderAmount}`}
+          {console.log({ orderAmount: order.orderAmount })}
         </TextDefault>
       </View>
     </View>

@@ -50,22 +50,23 @@ function PaymentCard({
   onPayment,
   loading,
   calculateTotal,
+  hasItems,
 }) {
   const { t } = useTranslation();
   const PAYMENT_OPTIONS = [
-    {
-      id: 0,
-      payment: "STRIPE",
-      label: t("creditDebitCard"),
-      icon: <VisaIcon />,
-      icon1: <MastercardIcon />,
-    },
-    {
-      id: 1,
-      payment: "PAYPAL",
-      label: t("paypal"),
-      icon: <PayPalIcon />,
-    },
+    // {
+    //   id: 0,
+    //   payment: "STRIPE",
+    //   label: t("creditDebitCard"),
+    //   icon: <VisaIcon />,
+    //   icon1: <MastercardIcon />,
+    // },
+    // {
+    //   id: 1,
+    //   payment: "PAYPAL",
+    //   label: t("paypal"),
+    //   icon: <PayPalIcon />,
+    // },
     {
       id: 2,
       payment: "COD",
@@ -111,49 +112,61 @@ function PaymentCard({
               }}
             />
           </Box>
-          {PAYMENT_OPTIONS.map((item, index) => (
-            <ButtonBase
-              key={`CARD_${index}`}
-              className={classes.paymentInfoBtn}
-              onClick={() => setPaymentMethod(item)}
-            >
-              <Box display="flex" alignItems="center" style={{ width: "100%" }}>
-                <Radio
-                  color="primary"
-                  checked={paymentMethod.id === item.id}
-                  onChange={() => setPaymentMethod(item)}
-                />
+          {PAYMENT_OPTIONS.length > 1 ? (
+            PAYMENT_OPTIONS.map((item, index) => (
+              <ButtonBase
+                key={`CARD_${index}`}
+                className={classes.paymentInfoBtn}
+                onClick={() => setPaymentMethod(item)}
+              >
                 <Box
                   display="flex"
                   alignItems="center"
-                  justifyContent="space-between"
-                  flexGrow={1}
-                  style={{
-                    backgroundColor: "#F3F4F8",
-                    borderRadius: 20,
-                    padding: "8px",
-                  }}
+                  style={{ width: "100%" }}
                 >
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    align="left"
+                  <Radio
+                    color="primary"
+                    checked={paymentMethod.id === item.id}
+                    onChange={() => setPaymentMethod(item)}
+                  />
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    flexGrow={1}
+                    style={{
+                      backgroundColor: "#F3F4F8",
+                      borderRadius: 20,
+                      padding: "8px",
+                    }}
                   >
-                    {item.label}
-                  </Typography>
-                  <Box display="flex" alignItems="center">
-                    {item.icon}
-                    {item.icon1 && (
-                      <>
-                        <Box ml={theme.spacing(1)} />
-                        {item.icon1}
-                      </>
-                    )}
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="left"
+                    >
+                      {item.label}
+                    </Typography>
+                    <Box display="flex" alignItems="center">
+                      {item.icon}
+                      {item.icon1 && (
+                        <>
+                          <Box ml={theme.spacing(1)} />
+                          {item.icon1}
+                        </>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            </ButtonBase>
-          ))}
+              </ButtonBase>
+            ))
+          ) : (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" color="textSecondary" align="left">
+                {t("cash_only")}
+              </Typography>
+            </Box>
+          )}
 
           <Box mt={theme.spacing(2)} />
         </Container>
@@ -197,35 +210,63 @@ function PaymentCard({
         >
           {cart && cart.length}
         </Typography>
-        <Button
-          disabled={loading}
-          style={{
-            padding: `${theme.spacing(2)} 0`,
-            background: theme.palette.primary.main,
-            width: 280,
-            maxWidth: "70%",
-            borderRadius: 20,
-          }}
-          onClick={() => {
-            if (validateOrder()) {
-              onPayment();
-            }
-          }}
-        >
-          {loading ? (
-            <CircularProgress color="secondary" size={20} />
-          ) : (
-            <Typography
-              style={{
-                ...theme.typography.body2,
-                color: theme.palette.common.black,
-                fontWeight: 700,
-              }}
-            >
-              {t("orderBtn")}
-            </Typography>
-          )}
-        </Button>
+        {hasItems ? (
+          <Button
+            disabled={loading}
+            style={{
+              padding: `${theme.spacing(2)} 0`,
+              background: theme.palette.primary.main,
+              width: 280,
+              maxWidth: "70%",
+              borderRadius: 20,
+            }}
+            onClick={() => {
+              if (validateOrder()) {
+                onPayment();
+              }
+            }}
+          >
+            {console.log("anything")}
+            {loading ? (
+              <CircularProgress color="secondary" size={20} />
+            ) : (
+              <Typography
+                style={{
+                  ...theme.typography.body2,
+                  color: theme.palette.common.black,
+                  fontWeight: 700,
+                }}
+              >
+                {t("orderBtn")}
+              </Typography>
+            )}
+          </Button>
+        ) : (
+          <Button
+            disabled={true}
+            style={{
+              padding: `${theme.spacing(2)} 0`,
+              background: "grey",
+              width: 280,
+              maxWidth: "70%",
+              borderRadius: 20,
+            }}
+          >
+            {loading ? (
+              <CircularProgress color="secondary" size={20} />
+            ) : (
+              <Typography
+                style={{
+                  ...theme.typography.body2,
+                  color: theme.palette.common.black,
+                  fontWeight: 700,
+                }}
+              >
+                {t("orderBtn")}
+              </Typography>
+            )}
+          </Button>
+        )}
       </Box>
     </>
   );
