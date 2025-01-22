@@ -160,25 +160,27 @@ function OrderItems({ orderData }) {
                       )
                     })
                   : null}
-                <View
-                  style={{
-                    marginTop: 20,
-                    flexDirection: 'column',
-                    marginInlineEnd: 20
-                  }}>
-                  <TextDefault
-                    H6
-                    style={{ textAlign: isArabic ? 'right' : 'left' }}>
-                    {t('instructions')}
-                  </TextDefault>
-                  <TextDefault
+                {item.specialInstructions && item.specialInstructions.length ? (
+                  <View
                     style={{
-                      marginInlineEnd: 30,
-                      textAlign: isArabic ? 'right' : 'left'
+                      marginTop: 20,
+                      flexDirection: 'column',
+                      marginInlineEnd: 20
                     }}>
-                    {item.specialInstructions}
-                  </TextDefault>
-                </View>
+                    <TextDefault
+                      H6
+                      style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                      {t('instructions')}
+                    </TextDefault>
+                    <TextDefault
+                      style={{
+                        marginInlineEnd: 30,
+                        textAlign: isArabic ? 'right' : 'left'
+                      }}>
+                      {item.specialInstructions}
+                    </TextDefault>
+                  </View>
+                ) : null}
               </View>
             )
           })

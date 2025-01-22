@@ -80,7 +80,7 @@ export default function OrderDetail({ navigation, route }) {
       navigation.goBack()
     }
   }
-  // console.log('here')
+
   const isArabic = i18n.language === 'ar'
 
   return (

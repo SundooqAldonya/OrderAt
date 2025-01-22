@@ -10,11 +10,14 @@ import UserContext from '../../../context/user'
 import { useTranslation } from 'react-i18next'
 import useOrderDetail from '../../../screens/OrderDetail/useOrderDetail'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useNavigation } from '@react-navigation/native'
 
 const formatTime = date =>
   new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
 
 const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
+  const navigation = useNavigation()
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const STATUS_MESSAGES = {
@@ -80,6 +83,9 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           message={STATUS_MESSAGES[order.orderStatus].text}
           subText={STATUS_MESSAGES[order.orderStatus].subText}
         />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} />
+        </TouchableOpacity>
       </View>
       <View style={[styles.status]}>
         <StatusRow
@@ -199,13 +205,24 @@ const StatusRow = ({
                   longitude: location.coordinates[0]
                 })
               }>
-              <TextDefault
-                bold
-                textColor={colors.white}
-                style={{ textAlign: isArabic ? 'right' : 'left' }}>
-                {address}
-              </TextDefault>
-              <EvilIcons name="external-link" />
+              <View
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                <TextDefault
+                  bold
+                  textColor={colors.white}
+                  style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                  {address}
+                </TextDefault>
+                <EvilIcons
+                  size={24}
+                  name="external-link"
+                  style={{ color: '#fff', backgroundColor: 'gray' }}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         ) : null}

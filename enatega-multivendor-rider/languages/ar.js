@@ -212,6 +212,6 @@ export const ar = {
   muted: 'صامت',
   customer_name: 'الاسم',
   delivery_section: 'معلومات التوصيل',
-  delivery_label: 'Label',
+  delivery_label: 'المنطقة',
   delivery_details: 'تفاصيل العنوان'
 }

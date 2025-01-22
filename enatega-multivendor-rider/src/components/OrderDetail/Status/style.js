@@ -15,7 +15,7 @@ export default StyleSheet.create({
     borderRadius: 25,
     marginTop: -20,
     padding: 4,
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     alignItems: 'center'
   },
   iconView: {

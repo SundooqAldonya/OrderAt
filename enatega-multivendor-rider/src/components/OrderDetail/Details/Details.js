@@ -278,7 +278,8 @@ const OrderDetails = ({ order }) => {
       <View
         style={[
           styles.rowDisplay,
-          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+          // { flexDirection: isArabic ? 'row-reverse' : 'row' }
+          { flexDirection: 'column' }
         ]}>
         <TextDefault
           textColor={colors.fontSecondColor}
@@ -291,7 +292,11 @@ const OrderDetails = ({ order }) => {
           }}>
           {t('delivery_label')}
         </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ ...styles.col2, textAlign: isArabic ? 'right' : 'left' }}>
           {order.deliveryAddress.label ? order.deliveryAddress.label : 'N/A'}
         </TextDefault>
       </View>
@@ -327,7 +332,11 @@ const OrderDetails = ({ order }) => {
           style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
           {t('delivery_details')}
         </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ ...styles.col2, textAlign: isArabic ? 'right' : 'left' }}>
           {`(${
             order.deliveryAddress.details
               ? order.deliveryAddress.details
@@ -351,7 +360,7 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
         order.orderAmount - order.deliveryCharges - order.taxationAmount
       )
     }
-  }, [subTotal, subTotalZero])
+  }, [subTotalZero, subTotal])
 
   if (loading) return <Spinner />
   if (error) return <TextError text={t('errorText')} />
@@ -359,6 +368,7 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
   return (
     <View style={styles.orderDetails}>
       {order.items.map(item => {
+        console.log({ itemVariationPrice: item.variation.price })
         subTotal = subTotal + item.variation.price
         return (
           <View
@@ -446,7 +456,9 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
           {isArabic
-            ? `${subTotal} ${dataConfig.configuration.currencySymbol}`
+            ? `${subTotal ? subTotal : subTotalZero} ${
+                dataConfig.configuration.currencySymbol
+              }`
             : `${dataConfig.configuration.currencySymbol} ${
                 subTotal ? subTotal : subTotalZero
               }`}
