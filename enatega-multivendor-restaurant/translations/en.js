@@ -71,5 +71,8 @@ export const en = {
   searchforaplace: 'Search for a place',
   saveuserdetailsandcontinuetocompletetheorder:
     'Save user details and continue to complete the order',
-  saveandcontinue: 'Save and Continue'
+  saveandcontinue: 'Save and Continue',
+  add_new_address: 'Add New Address',
+  delivery_details: 'Delivery Details',
+  instructions: 'Instructions'
 }

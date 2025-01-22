@@ -49,8 +49,10 @@ export default function useLogin() {
           lastOrderCreds.restaurantUsername !== undefined) &&
         lastOrderCreds.restaurantPassword
       ) {
-        // setUserName(lastOrderCreds.restaurantUsername || '')
-        // setPassword(lastOrderCreds.restaurantPassword || '')
+        if (process.env.NODE_ENV === 'development') {
+          // setUserName(lastOrderCreds.restaurantUsername || '')
+          // setPassword(lastOrderCreds.restaurantPassword || '')
+        }
       }
     } else {
       login(

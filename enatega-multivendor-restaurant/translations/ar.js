@@ -4,7 +4,7 @@ export const ar = {
   notifications: 'إشعارات',
   online: 'متصل',
   closed: 'مغلق',
-  onn: 'آن',
+  onn: '',
   off: 'إيقاف',
   settings: 'الإعدادات',
   aboutUs: 'من نحن',
@@ -71,5 +71,8 @@ export const ar = {
   searchforaplace: 'البحث عن مكان',
   saveuserdetailsandcontinuetocompletetheorder:
     'حفظ تفاصيل المستخدم ومتابعة لإكمال',
-  saveandcontinue: 'حفظ ومتابعة'
+  saveandcontinue: 'حفظ ومتابعة',
+  add_new_address: 'إضافة عنوان جديد',
+  delivery_details: 'معلومات التوصيل',
+  instructions: 'طلبات إضافية'
 }

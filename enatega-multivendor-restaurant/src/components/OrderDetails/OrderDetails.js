@@ -44,7 +44,7 @@ export default function OrderDetails({ orderData }) {
         </View>
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>
-            {t('Delivery Details')}
+            {t('delivery_details')}
           </Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
             {deliveryAddress?.details ? deliveryAddress?.details : null}
@@ -79,6 +79,8 @@ function OrderItems({ orderData }) {
       : `${configuration.currencySymbol}${amount}`
   }
 
+  const isArabic = i18n.language === 'ar'
+
   return (
     <View style={[styles.cardContainer, { marginTop: 30, marginBottom: 45 }]}>
       {items
@@ -87,19 +89,21 @@ function OrderItems({ orderData }) {
               <View
                 style={
                   ([styles.itemRowBar, directionStyle],
-                  { flexDirection: 'column' })
+                  {
+                    flexDirection: 'column',
+                    marginBottom: 20
+                  })
                 }
                 key={index}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginBottom: 10
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    justifyContent: 'space-between'
                   }}>
                   <TextDefault
                     H5
                     textColor={colors.fontSecondColor}
-                    bold>{`${item.quantity}x ${item.title}`}</TextDefault>
+                    bold>{`${item.quantity} x ${item.title}`}</TextDefault>
                   <TextDefault bold>
                     {formatAmount(item.variation.price)}
                   </TextDefault>
@@ -107,8 +111,21 @@ function OrderItems({ orderData }) {
                 {item.addons?.length
                   ? item.addons.map((addon, index) => {
                       return (
-                        <View>
-                          <TextDefault H6>{addon.title}</TextDefault>
+                        <View
+                          style={{
+                            justifyContent: 'space-between',
+                            flexDirection: 'column',
+                            marginInlineEnd: 20
+                          }}>
+                          <TextDefault
+                            H6
+                            style={{
+                              textAlign: isArabic ? 'right' : 'left',
+                              fontSize: 20,
+                              textWeight: 'bold'
+                            }}>
+                            {addon.title}
+                          </TextDefault>
                           {addon?.options?.length
                             ? addon?.options?.map(option => {
                                 return (
@@ -116,14 +133,18 @@ function OrderItems({ orderData }) {
                                     style={{
                                       flexDirection: 'row',
                                       justifyContent: 'space-between',
-                                      marginInlineStart: 20
+                                      flexDirection: isArabic
+                                        ? 'row-reverse'
+                                        : 'row',
+                                      marginInlineEnd: 30,
+                                      gap: 10
                                     }}>
                                     <View
                                       style={{
                                         flexDirection: 'row',
                                         gap: 5
                                       }}>
-                                      <TextDefault>-</TextDefault>
+                                      {/* <TextDefault>-</TextDefault> */}
                                       <TextDefault H6>
                                         {option.title}
                                       </TextDefault>
@@ -139,10 +160,23 @@ function OrderItems({ orderData }) {
                       )
                     })
                   : null}
-                <View style={{ marginTop: 20 }}>
-                  <TextDefault H6>Instructions</TextDefault>
-                  <TextDefault style={{ marginInlineStart: 20 }}>
-                    - {item.specialInstructions}
+                <View
+                  style={{
+                    marginTop: 20,
+                    flexDirection: 'column',
+                    marginInlineEnd: 20
+                  }}>
+                  <TextDefault
+                    H6
+                    style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                    {t('instructions')}
+                  </TextDefault>
+                  <TextDefault
+                    style={{
+                      marginInlineEnd: 30,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}>
+                    {item.specialInstructions}
                   </TextDefault>
                 </View>
               </View>
