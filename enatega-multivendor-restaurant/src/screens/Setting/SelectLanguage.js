@@ -39,12 +39,12 @@ export default function SelectLanguage() {
   const navigation = useNavigation()
   const languageTypes = [
     { value: 'English', code: 'en', index: 0 },
-    { value: 'français', code: 'fr', index: 1 },
-    { value: 'ភាសាខ្មែរ', code: 'km', index: 2 },
-    { value: '中文', code: 'zh', index: 3 },
-    { value: 'Deutsche', code: 'de', index: 4 },
-    { value: 'arabic', code: 'ar', index: 5 },
-    { value: 'swedish', code: 'sv', index: 6 }
+    { value: 'Arabic', code: 'ar', index: 1 }
+    // { value: 'français', code: 'fr', index: 2 },
+    // { value: 'ភាសាខ្មែរ', code: 'km', index: 3 },
+    // { value: '中文', code: 'zh', index: 4 },
+    // { value: 'Deutsche', code: 'de', index: 5 },
+    // { value: 'swedish', code: 'sv', index: 6 }
   ]
 
   const changeLanguage = async language => {

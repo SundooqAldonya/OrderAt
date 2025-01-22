@@ -42,7 +42,7 @@ const OrderDetail = () => {
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.mapView}>
-          {locationPin && (
+          {/* {locationPin && (
             <MapView
               style={styles.map}
               showsUserLocation
@@ -133,7 +133,7 @@ const OrderDetail = () => {
                 />
               )}
             </MapView>
-          )}
+          )} */}
         </View>
 
         <View style={styles.iconView}>
