@@ -74,5 +74,6 @@ export const en = {
   saveandcontinue: 'Save and Continue',
   add_new_address: 'Add New Address',
   delivery_details: 'Delivery Details',
-  instructions: 'Instructions'
+  instructions: 'Instructions',
+  digits_error: 'Phone should be 11 digits'
 }

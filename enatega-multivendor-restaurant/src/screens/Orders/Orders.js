@@ -21,7 +21,6 @@ import { HomeOrderDetails } from '../../components/HomeOrderDetails'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
-const { width, height } = Dimensions.get('window')
 import i18next from '../../../i18n'
 import { QUERY_USERS_MUTATION, searchCustomers } from '../../apollo'
 import { gql, useApolloClient, useMutation, useQuery } from '@apollo/client'
@@ -29,7 +28,8 @@ import { useNavigation } from '@react-navigation/native'
 import { auth_token, getAccessToken } from '../../utilities/apiServices'
 import { AuthContext, Configuration, Restaurant } from '../../ui/context'
 import { Icon } from 'react-native-elements'
-import { detectLanguageDir } from '../../../helpers'
+
+const { width, height } = Dimensions.get('window')
 
 const Orders = props => {
   const {
@@ -43,48 +43,17 @@ const Orders = props => {
     refetch,
     setActive
   } = useOrders()
-  const client = useApolloClient()
   const navigation = useNavigation()
   const { loading: mutateLoading } = useAcceptOrder()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
-  const dir = detectLanguageDir(i18n.language)
   const [search, setSearch] = useState('')
   const [isVisible, setIsVisible] = useState(false)
-  const [showResults, setShowResults] = useState(false)
   const [searched, setSearched] = useState(false)
   const [errorSearch, setErrorSearch] = useState(false)
-  // const [customers, setCustomers] = useState([])
+  const [digitsError, setDigitsError] = useState(false)
+  const [message, setMessage] = useState(false)
   const [customer, setCustomer] = useState(null)
-  // const [selectedCustomer, setSelectedCustomer] = useState({})
-  // const QUERY_USERS = gql`
-  //   query SearchUsers($searchText: String!) {
-  //     search_users(search: $searchText) {
-  //       _id
-  //       name
-  //       email
-  //       phone
-  //       userType
-  //       isActive
-  //       notificationToken
-  //       isOrderNotification
-  //       isOfferNotification
-  //       addresses {
-  //         _id
-  //         deliveryAddress
-  //         details
-  //         label
-  //         selected
-  //       }
-  //       favourite
-  //       createdAt
-  //       updatedAt
-  //     }
-  //   }
-  // `
-  // const customerData = useQuery(QUERY_USERS, {
-  //   variables: { searchText: search }
-  // })
 
   const [searchMutation] = useMutation(QUERY_USERS_MUTATION, {
     onCompleted: data => {
@@ -92,26 +61,26 @@ const Orders = props => {
       setCustomer(data.searchUsersByBusiness)
       setSearched(true)
     },
-    onError: () => {
+    onError: err => {
+      console.log({ err })
+      const errorMessage = err.toString().match(/digits_error/)[0]
+      console.log({ errorMessage })
+      if (errorMessage === 'digits_error') {
+        setMessage(t(`${errorMessage}`))
+        setDigitsError(true)
+      }
       setSearched(true)
       setErrorSearch(true)
     }
   })
 
-  const searchingCustomers = async () => {
+  const searchingCustomers = () => {
+    setDigitsError(false)
     searchMutation({
       variables: {
         searchText: search
       }
     })
-    // setShowResults(true)
-    // try {
-    //   console.log(customerData.data)
-    //   setCustomers(customerData?.data?.search_users ?? [])
-    //   return customerData
-    // } catch (error) {
-    //   console.error('Error fetching users:', error)
-    // }
   }
 
   const hideGmail = text => {
@@ -125,29 +94,34 @@ const Orders = props => {
     console.log(mail)
     return mail
   }
-  const { addressToken, setAddressToken } = useContext(AuthContext)
+
+  // const { addressToken, setAddressToken } = useContext(AuthContext)
+
   const loadAccessToken = async () => {
     await getAccessToken()
       .then(res => (auth_token.auth_token = res.data?.auth_token))
       .catch(res => console.log(res))
   }
+
   const createOrder = () => {
     setIsVisible(false)
-
     navigation.navigate('Checkout', { userData: customer })
   }
+
   useEffect(() => {
     loadAccessToken()
-    console.log(addressToken)
+    // console.log(addressToken)
   }, [])
 
   useEffect(() => {
     console.log('OrdersScreen loaded')
-    if (!loading && data) {
-      console.log('Orders:', data)
-    }
+    // if (!loading && data) {
+    //   console.log('Orders:', data)
+    // }
   }, [loading, data])
+
   if (error) return <TextError text={error.message} />
+
   return (
     <>
       {mutateLoading ? (
@@ -381,13 +355,11 @@ const Orders = props => {
               color={colors.tagColor}
             />
             <TextInput
-              keyboardType="number-pad"
+              keyboardType="phone-pad"
               placeholder={t('searchfromnumber')}
               value={search}
               onChangeText={text => {
                 setSearch(text)
-                setShowResults(false)
-                // setCustomers([])
                 setCustomer(null)
               }}
               style={{ flex: 1, fontSize: scale(16) }}
@@ -494,7 +466,18 @@ const Orders = props => {
                 </View>
               </TouchableOpacity>
             ) : null}
-            {searched && errorSearch ? (
+
+            {digitsError && message ? (
+              <View>
+                <TextDefault
+                  style={{ marginVertical: scale(20), textAlign: 'center' }}
+                  H3>
+                  {message}
+                </TextDefault>
+              </View>
+            ) : null}
+
+            {!digitsError && searched && errorSearch ? (
               <View>
                 <TextDefault
                   style={{ marginVertical: scale(20), textAlign: 'center' }}
@@ -506,7 +489,6 @@ const Orders = props => {
                     setIsVisible(false)
                     const search1 = search
                     setSearch('')
-                    // setShowResults(false)
                     setSearched(false)
                     setCustomer(null)
                     navigation.navigate('RegisterUser', { phone: search1 })
@@ -532,192 +514,8 @@ const Orders = props => {
                 </TouchableOpacity>
               </View>
             ) : null}
-            {/* <FlatList
-              ListEmptyComponent={
-                showResults && (
-                  <View>
-                    <TextDefault
-                      style={{ marginVertical: scale(20), textAlign: 'center' }}
-                      H3>
-                      {t('customernotfound')}
-                    </TextDefault>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setIsVisible(false)
-                        const search1 = search
-                        setSearch('')
-                        setShowResults(false)
-                        setCustomers([])
-                        navigation.navigate('RegisterUser', { phone: search1 })
-                      }}
-                      style={{
-                        backgroundColor: '#000',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 10,
-                        padding: 10,
-                        borderRadius: 10,
-                        flexDirection: isArabic ? 'row-reverse' : 'row'
-                      }}>
-                      <FontAwesome
-                        name="user"
-                        color={'#fff'}
-                        size={scale(20)}
-                      />
-                      <TextDefault
-                        H4
-                        bold
-                        textColor={'#fff'}
-                        style={{ MarginLeft: 10, MarginRight: 10 }}>
-                        {t('addnewcustomer')}
-                      </TextDefault>
-                    </TouchableOpacity>
-                  </View>
-                )
-              }
-              data={customers}
-              ListHeaderComponent={
-                showResults && (
-                  <TextDefault
-                    H5
-                    bold
-                    style={{ textAlign: isArabic ? 'right' : 'left' }}>
-                    {t('resultsfor')} "{search}"
-                  </TextDefault>
-                )
-              }
-              renderItem={({ item, index }) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedCustomer(item)
-                      console.log(item)
-                    }}
-                    key={item.id + index}
-                    style={{
-                      marginVertical: 5,
-                      borderRadius: 5,
-                      padding: 10,
-                      backgroundColor: '#fff',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      borderWidth:
-                        selectedCustomer?.phone === item?.phone ? 2 : 0,
-                      flexDirection: isArabic ? 'row-reverse' : 'row'
-                    }}>
-                    <View
-                      style={{
-                        backgroundColor: colors.fontMainColor,
-                        borderRadius: 10,
-                        width: 30,
-                        height: 30,
-                        justifyContent: 'center'
-                      }}>
-                      <FontAwesome
-                        name="user"
-                        size={20}
-                        color={colors.borderColor}
-                        style={{ alignSelf: 'center' }}
-                      />
-                    </View>
-                    <View
-                      style={{ flex: 1, paddingLeft: 10, paddingRight: 10 }}>
-                      <TextDefault
-                        textColor={'#000000'}
-                        H5
-                        bold
-                        style={{ textAlign: isArabic ? 'right' : 'left' }}>
-                        {item.name}
-                      </TextDefault>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginTop: scale(5),
-                          alignItems: 'center',
-                          gap: 5,
-                          flexDirection: isArabic ? 'row-reverse' : 'row'
-                        }}>
-                        <FontAwesome
-                          name="phone"
-                          size={scale(12)}
-                          color={'#333'}
-                        />
-                        <TextDefault textColor={'#000000'}>
-                          {item.phone}
-                        </TextDefault>
-                      </View>
-                      {item.email && (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            flex: 1,
-                            marginTop: scale(3),
-                            alignItems: 'center',
-                            gap: 5,
-                            flexDirection: isArabic ? 'row-reverse' : 'row'
-                          }}>
-                          <FontAwesome
-                            name="envelope"
-                            size={scale(12)}
-                            color={'#333'}
-                          />
-                          <TextDefault textColor={'#000000'}>
-                            {hideGmail(item.email)}
-                          </TextDefault>
-                        </View>
-                      )}
-                      {item?.addresses?.map((address, index) => (
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            marginTop: scale(3),
-                            alignItems: 'flex-start',
-                            gap: 5,
-                            flexDirection: isArabic ? 'row-reverse' : 'row'
-                          }}>
-                          <View
-                            style={{
-                              height: scale(20),
-                              width: scale(20),
-                              paddingTop: 5
-                            }}>
-                            <FontAwesome
-                              name="location-arrow"
-                              size={scale(18)}
-                            />
-                          </View>
-                          <TextDefault style={{ flex: 1 }}>
-                            {address.deliveryAddress}
-                          </TextDefault>
-                        </View>
-                      ))}
-                    </View>
-                  </TouchableOpacity>
-                )
-              }}
-            /> */}
           </View>
-          {/* {selectedCustomer?.name && (
-            <TouchableOpacity
-              onPress={createOrder}
-              style={{
-                backgroundColor: '#fff',
-                borderWidth: 2,
-                padding: 10,
-                marginTop: 10,
-                borderRadius: 10
-              }}>
-              <TextDefault
-                H4
-                style={{ textAlign: 'center' }}
-                bold
-                textColor={'#000'}>
-                {t('continue')}
-              </TextDefault>
-            </TouchableOpacity>
-          )} */}
+
           <TouchableOpacity
             onPress={searchingCustomers}
             style={{

@@ -127,23 +127,27 @@ module.exports = {
     searchUsersByBusiness: async (_, args, context) => {
       console.log({ argsSearchUser: { args } })
       try {
-        let query = {}
-
-        if (args.searchText) {
-          // const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
-          const searchRegex = args.searchText.includes('+2')
-            ? args.searchText
-            : `+2${args.searchText}`
-          query = {
-            $or: [
-              { name: searchRegex },
-              { email: searchRegex },
-              { phone: searchRegex }
-            ]
-          }
+        // let query = {}
+        const searchRegex = args.searchText.includes('+2')
+          ? args.searchText
+          : `+2${args.searchText}`
+        if (args.searchText.length < 11) {
+          throw new Error('digits_error')
         }
+        // if (args.searchText) {
+        //   // const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
+
+        //   query = {
+        //     $or: [
+        //       { name: searchRegex },
+        //       { email: searchRegex },
+        //       { phone: searchRegex }
+        //     ]
+        //   }
+        // }
         // Fetch the user based on the query
-        const user = await User.findOne(query) // Fetch user from DB
+        // const user = await User.findOne(query) // Fetch user from DB
+        const user = await User.findOne({ phone: searchRegex }) // Fetch user from DB
         // Check if any user were found
         if (!user) {
           throw new Error('No user found matching the search criteria.')
