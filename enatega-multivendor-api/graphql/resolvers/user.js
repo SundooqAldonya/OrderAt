@@ -219,8 +219,8 @@ module.exports = {
             type: 'Point',
             coordinates: [
               // wrong
-              area.location.location.coordinates[1],
-              area.location.location.coordinates[0]
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
             ]
           }
         }
@@ -293,8 +293,8 @@ module.exports = {
             type: 'Point',
             coordinates: [
               // wrong
-              area.location.location.coordinates[1],
-              area.location.location.coordinates[0]
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
             ]
           }
         }

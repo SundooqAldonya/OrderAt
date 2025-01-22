@@ -51,6 +51,20 @@ const AreaCreate = ({ onClose, area }) => {
     GET_CITIES
   )
 
+  console.log({ area })
+  useEffect(() => {
+    if (area) {
+      setMarker({
+        lng: area.location.location.coordinates[0],
+        lat: area.location.location.coordinates[1]
+      })
+      setCenter({
+        lng: area.location.location.coordinates[0],
+        lat: area.location.location.coordinates[1]
+      })
+    }
+  }, [area])
+
   const cities = data?.cities || null
 
   const classes = useStyles()
@@ -119,9 +133,9 @@ const AreaCreate = ({ onClose, area }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    // const coordinates = [marker.lng, marker.lat]
+    const coordinates = [marker.lng, marker.lat]
     // wrong
-    const coordinates = [marker.lat, marker.lng]
+    // const coordinates = [marker.lat, marker.lng]
     if (!area) {
       mutate({
         variables: {
