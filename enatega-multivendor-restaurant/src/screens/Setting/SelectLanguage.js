@@ -49,26 +49,14 @@ export default function SelectLanguage() {
 
   const changeLanguage = async language => {
     setLoader(true)
-    console.log(language)
     setSelectedLanguage(language)
     await i18next.reloadResources(language, null)
     i18next.changeLanguage(language)
-
     await AsyncStorage.setItem('enatega-language', language)
-
-    var lang = await AsyncStorage.getItem('enatega-language')
-    console.log(lang)
+    // var lang = await AsyncStorage.getItem('enatega-language')
+    // console.log(lang)
     setLoader(false)
-    // if (language === 'ar') {
-    //   const rtl = I18nManager.isRTL(language)
-    //   await AsyncStorage.setItem('enatega-language', language)
-    //   await i18next.changeLanguage(language)
-    //   I18nManager.forceRTL(rtl)
-
-    //   if (rtl !== I18nManager.isRTL) {
-    //     DevSettings.reload()
-    //   }
-    // }
+    navigation.navigate('Orders')
   }
   return (
     <KeyboardAvoidingView

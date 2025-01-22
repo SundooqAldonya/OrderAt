@@ -46,6 +46,7 @@ import { Provider } from 'react-redux'
 // import { store } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './store/presistor'
+import { useKeepAwake } from 'expo-keep-awake'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -55,6 +56,7 @@ LogBox.ignoreLogs([
 LogBox.ignoreAllLogs() // Ignore all log notifications
 
 export default function App() {
+  useKeepAwake()
   const [isAppReady, setIsAppReady] = useState(false)
   const [token, setToken] = useState(null)
   const { i18n } = useTranslation()

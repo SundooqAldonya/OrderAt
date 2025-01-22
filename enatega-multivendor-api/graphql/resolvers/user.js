@@ -150,7 +150,7 @@ module.exports = {
         const user = await User.findOne({ phone: searchRegex }) // Fetch user from DB
         // Check if any user were found
         if (!user) {
-          throw new Error('No user found matching the search criteria.')
+          throw new Error('no_user_found')
         }
 
         // Transform the user data

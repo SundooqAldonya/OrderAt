@@ -221,7 +221,7 @@ const Checkout = () => {
               backgroundColor: '#fff',
               width: '95%',
               height: 50,
-              marginInline: 13,
+              marginInline: 'auto',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -241,9 +241,11 @@ const Checkout = () => {
             backgroundColor: '#fff',
             marginHorizontal: 10,
             marginVertical: 10,
+            marginBottom: 20,
             paddingHorizontal: 10,
             borderRadius: 10,
             borderWidth: 2,
+            height: 55,
             borderColor: colors.darkgreen,
             flexDirection: 'row',
             alignItems: 'center',
@@ -258,7 +260,8 @@ const Checkout = () => {
             style={{
               flex: 1,
               alignSelf: 'flex-start',
-              fontFamily: 'Montserrat_500Medium'
+              fontFamily: 'Montserrat_500Medium',
+              height: 55
             }}
           />
         </View>

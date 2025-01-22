@@ -63,19 +63,27 @@ const Orders = props => {
     },
     onError: err => {
       console.log({ err })
-      const errorMessage = err.toString().match(/digits_error/)[0]
+      const errorMessage = err?.toString()?.match(/digits_error/)
+        ? err?.toString()?.match(/digits_error/)[0]
+        : null
+      const errorMessage1 = err?.toString()?.match(/no_user_found/)
+        ? err?.toString()?.match(/no_user_found/)[0]
+        : null
       console.log({ errorMessage })
       if (errorMessage === 'digits_error') {
         setMessage(t(`${errorMessage}`))
         setDigitsError(true)
       }
-      setSearched(true)
-      setErrorSearch(true)
+      if (errorMessage1 === 'no_user_found') {
+        setSearched(true)
+        setErrorSearch(true)
+      }
     }
   })
 
   const searchingCustomers = () => {
     setDigitsError(false)
+    setErrorSearch(false)
     searchMutation({
       variables: {
         searchText: search

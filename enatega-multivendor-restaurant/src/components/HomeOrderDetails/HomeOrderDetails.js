@@ -148,7 +148,7 @@ function HomeOrderDetails(props) {
           {t('time')}:
         </TextDefault>
         <TextDefault style={styles.text}>
-          {moment(date).format('lll')}
+          {moment(props.order?.createdAt).format('lll')}
         </TextDefault>
       </View>
       <View

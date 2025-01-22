@@ -12,7 +12,7 @@ export const ar = {
   privacyPolicy: 'سياسة الخصوصية',
   unReadOrders: 'لا توجد طلبات لا توجد طلبات جديدة حتى الآن!',
   deliveredOrders: 'تم التوصيل',
-  processing: 'قيد المعالجة',
+  processing: 'قيد التجهيز',
   newOrders: 'طلبات جديدة',
   titleProfile: 'الملف الشخصي',
   titleHome: 'الصفحة الرئيسية',
