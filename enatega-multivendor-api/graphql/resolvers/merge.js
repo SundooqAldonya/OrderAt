@@ -48,8 +48,8 @@ const user = async userId => {
   try {
     const user = await User.findById(userId.toString())
     return {
-      ...user._doc,
-      _id: user.id
+      ...user?._doc,
+      _id: user?.id
     }
   } catch (err) {
     throw err

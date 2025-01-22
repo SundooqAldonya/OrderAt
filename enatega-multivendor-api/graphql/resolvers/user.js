@@ -292,7 +292,6 @@ module.exports = {
           address['location'] = {
             type: 'Point',
             coordinates: [
-              // wrong
               area.location.location.coordinates[0],
               area.location.location.coordinates[1]
             ]

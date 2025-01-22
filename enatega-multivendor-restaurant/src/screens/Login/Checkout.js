@@ -233,7 +233,7 @@ const Checkout = () => {
                 user: userData
               })
             }}>
-            <TextDefault>Add New Address</TextDefault>
+            <TextDefault>{t('add_new_address')}</TextDefault>
           </TouchableOpacity>
         </View>
         <View
