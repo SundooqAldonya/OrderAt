@@ -4,9 +4,9 @@
     "slug": "enatega-restaurant-app-latest",
     "version": "1.0.72",
     "orientation": "portrait",
-    "icon": "./assets/logo.jpg",
+    "icon": "./assets/icon_png.png",
     "splash": {
-      "image": "./assets/logo.jpg",
+      "image": "./assets/logo.png",
       "resizeMode": "cover",
       "backgroundColor": "#fff"
     },

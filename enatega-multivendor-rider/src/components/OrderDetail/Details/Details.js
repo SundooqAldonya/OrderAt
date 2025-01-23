@@ -8,6 +8,7 @@ import TextError from '../../Text/TextError/TextError'
 import CountDown from 'react-native-countdown-component'
 import useDetails from './useDetails'
 import { useTranslation } from 'react-i18next'
+import { callNumber } from '../../../utilities/callNumber'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -184,11 +185,12 @@ const OrderDetails = ({ order }) => {
           {order.user.name}
         </TextDefault>
       </View>
-      <View
+      <TouchableOpacity
         style={[
           styles.rowDisplay,
           { flexDirection: isArabic ? 'row-reverse' : 'row' }
-        ]}>
+        ]}
+        onPress={() => callNumber(order.user.phone)}>
         <TextDefault
           textColor={colors.fontSecondColor}
           bold
@@ -203,7 +205,7 @@ const OrderDetails = ({ order }) => {
           style={{ ...styles.col2, textTransform: 'capitalize' }}>
           {order.user.phone}
         </TextDefault>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity
         // style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}
         onPress={() =>

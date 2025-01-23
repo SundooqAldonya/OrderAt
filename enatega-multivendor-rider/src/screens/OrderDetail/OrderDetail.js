@@ -15,23 +15,13 @@ import styles from './styles'
 import colors from '../../utilities/colors'
 import Status from '../../components/OrderDetail/Status/Status'
 import Details from '../../components/OrderDetail/Details/Details'
-const RestIcon = require('../../assets/rest_icon.png')
-const HomeIcon = require('../../assets/home_icon.png')
-const RiderIcon = require('../../assets/rider_icon.png')
-import { linkToMapsApp } from '../../utilities/links'
-import { MapStyles } from '../../utilities/mapStyles'
 import useOrderDetail from './useOrderDetail'
+import MapViewOrderDetails from '../../components/MapViewOrderDetails'
 
 const OrderDetail = () => {
   const {
-    locationPin,
-    restaurantAddressPin,
-    deliveryAddressPin,
-    GOOGLE_MAPS_KEY,
     distance,
-    setDistance,
     duration,
-    setDuration,
     order,
     route,
     navigation,
@@ -43,101 +33,7 @@ const OrderDetail = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ ...styles.container, paddingTop: 50 }}>
-        {/* <View style={styles.mapView}>
-          {locationPin && (
-            <MapView
-              style={styles.map}
-              showsUserLocation
-              zoomEnabled={true}
-              zoomControlEnabled={true}
-              rotateEnabled={false}
-              initialRegion={{
-                latitude: locationPin.location.latitude,
-                longitude: locationPin.location.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421
-              }}
-              customMapStyle={MapStyles}
-              provider={PROVIDER_GOOGLE}
-              language="ar">
-              {deliveryAddressPin && (
-                <Marker
-                  coordinate={deliveryAddressPin.location}
-                  title="Delivery Address"
-                  onPress={() => {
-                    linkToMapsApp(
-                      deliveryAddressPin.location,
-                      deliveryAddressPin.label
-                    )
-                  }}>
-                  <Image source={HomeIcon} style={{ height: 35, width: 32 }} />
-                </Marker>
-              )}
-              {restaurantAddressPin && (
-                <Marker
-                  coordinate={restaurantAddressPin.location}
-                  title="Restaurant"
-                  onPress={() => {
-                    linkToMapsApp(
-                      restaurantAddressPin.location,
-                      restaurantAddressPin.label
-                    )
-                  }}>
-                  <Image source={RestIcon} style={{ height: 35, width: 32 }} />
-                </Marker>
-              )}
-              {locationPin && (
-                <Marker
-                  coordinate={locationPin.location}
-                  title="Rider"
-                  onPress={() => {
-                    linkToMapsApp(locationPin.location, locationPin.label)
-                  }}>
-                  <Image source={RiderIcon} style={{ height: 35, width: 32 }} />
-                </Marker>
-              )}
-              {order?.orderStatus === 'ACCEPTED' ? (
-                <MapViewDirections
-                  origin={locationPin.location}
-                  destination={restaurantAddressPin.location}
-                  apikey={GOOGLE_MAPS_KEY}
-                  strokeWidth={4}
-                  strokeColor={colors.black}
-                  onReady={result => {
-                    console.log({ result })
-                    setDistance(result.distance)
-                    setDuration(result.duration)
-                  }}
-                />
-              ) : order?.orderStatus === 'PICKED' ? (
-                <MapViewDirections
-                  origin={locationPin.location}
-                  destination={deliveryAddressPin.location}
-                  apikey={GOOGLE_MAPS_KEY}
-                  strokeWidth={4}
-                  strokeColor={colors.black}
-                  onReady={result => {
-                    setDistance(result.distance)
-                    setDuration(result.duration)
-                  }}
-                />
-              ) : (
-                <MapViewDirections
-                  origin={restaurantAddressPin.location}
-                  destination={deliveryAddressPin.location}
-                  apikey={GOOGLE_MAPS_KEY}
-                  strokeWidth={4}
-                  strokeColor={colors.black}
-                  onReady={result => {
-                    setDistance(result.distance)
-                    setDuration(result.duration)
-                  }}
-                />
-              )}
-            </MapView>
-          )}
-        </View> */}
-
+        {/* <MapViewOrderDetails /> */}
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}
