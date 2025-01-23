@@ -26,7 +26,7 @@ const fallbackLng = 'ar'
 
 const getDeviceLanguage = () => {
   const locales = Localization.getLocales()
-  return locales.length > 0 ? locales[0].languageCode : fallbackLng
+  return locales && locales.length > 0 ? locales[0].languageCode : fallbackLng
 }
 
 const getStoredLanguage = async () => {
