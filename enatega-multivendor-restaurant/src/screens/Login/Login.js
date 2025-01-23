@@ -31,7 +31,9 @@ export default function Login() {
     password
   } = useLogin()
   const [showPassword, setShowPassword] = useState(false)
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+
+  const isArabic = i18n.language === 'ar'
 
   return (
     <KeyboardAvoidingView
@@ -72,7 +74,11 @@ export default function Login() {
                 value={username}
                 onChangeText={e => setUserName(e)}
               />
-              <View style={styles.passwordField}>
+              <View
+                style={{
+                  ...styles.passwordField,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}>
                 <TextInput
                   secureTextEntry={showPassword}
                   placeholder={t('password')}
@@ -80,13 +86,12 @@ export default function Login() {
                   value={password}
                   onChangeText={e => setPassword(e)}
                 />
-                <FontAwesome
+                {/* <FontAwesome
                   onPress={() => setShowPassword(!showPassword)}
                   name={showPassword ? 'eye' : 'eye-slash'}
                   size={24}
-                  style={styles.eyeBtn}
-                />
-                {console.log(username)}
+                  style={isArabic ? styles.eyeBtnAr : styles.eyeBtn}
+                /> */}
               </View>
             </View>
             <View

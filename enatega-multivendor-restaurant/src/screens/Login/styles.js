@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native'
 import { colors, scale } from '../../utilities'
-const {height,fontScale,width} = Dimensions.get('window')
+const { height, fontScale, width } = Dimensions.get('window')
 const XSMALL = 5
 const SMALL = 10
 const MEDIUM = 15
@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     justifyContent: 'space-around',
-    paddingHorizontal:16,
-    zIndex:9999999999999999,
+    paddingHorizontal: 16,
+    zIndex: 9999999999999999
 
     // alignItems:'center'
   },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     backgroundColor: colors.white,
-    zIndex:999999999999999,
+    zIndex: 999999999999999,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -186,12 +186,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     padding: 15,
-    width:'100%',
+    width: '100%',
     backgroundColor: colors.borderColor,
-    borderColor: "#66666610",
+    borderColor: '#66666610',
     borderWidth: 1,
     borderRadius: 10,
-    zIndex:999999999999999,
+    zIndex: 999999999999999,
     shadowColor: colors.fontSecondColor,
     shadowOffset: {
       width: 0,
@@ -201,19 +201,26 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 4,
     ...alignment.MTlarge
-
   },
   passwordField: {
     display: 'flex',
-    width:'100%',
-    flexDirection: 'row',
+    width: '100%',
+    flexDirection: 'row'
   },
   eyeBtn: {
     display: 'flex',
     zIndex: 1,
     elevation: 999,
-    marginTop: Platform.OS === 'ios' ? 33 : 40,
+    marginTop: Platform.OS === 'ios' ? 33 : 37,
     marginLeft: -40,
+    color: colors.primary
+  },
+  eyeBtnAr: {
+    display: 'flex',
+    zIndex: 1,
+    elevation: 999,
+    marginTop: Platform.OS === 'ios' ? 33 : 37,
+    marginRight: -40,
     color: colors.primary
   },
   btn: {
@@ -223,9 +230,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.black,
     color: colors.white,
     alignSelf: 'center',
-    zIndex:999999999999999,
+    zIndex: 999999999999999,
     borderRadius: 10,
     marginTop: height * 0.15
-  },
+  }
 })
 export default styles
