@@ -35,6 +35,8 @@ const Orders = () => {
 
   const restaurantId = localStorage.getItem('restaurantId')
 
+  console.log({ orderStatus: order?.status })
+
   const {
     data,
     error: errorQuery,
@@ -99,7 +101,11 @@ const Orders = () => {
           onClose={() => {
             toggleModal(null)
           }}>
-          <OrderComponent order={order} />
+          <OrderComponent
+            order={order}
+            modal={true}
+            toggleModal={toggleModal}
+          />
         </Modal>
       </Container>
     </>

@@ -37,9 +37,7 @@ const Checkout = () => {
   console.log({ selectedAddress: selectedAddress.detail })
 
   useEffect(() => {
-    console.log('sellllllllllllllct@@@@@@@@', userData.addresses[0])
     setSelectedAddress(userData.addresses[0])
-    console.log(userData)
   }, [])
 
   const [checkoutPlaceOrder, { loading, error, data }] = useMutation(
@@ -53,16 +51,13 @@ const Checkout = () => {
       }
     }
   )
-  console.log('here')
+
   const createOrder = async () => {
-    console.log('helllll', userData, selectedAddress, amount, !amount)
     if (!userData._id || !selectedAddress._id || !amount) {
       Alert.alert('Error', `Please fill all fields`)
       return
     }
-
     const restaurant = await AsyncStorage.getItem('restaurantId')
-    console.log('restaurant@@@@@@@@@#$%', restaurant, selectedAddress?._id)
     checkoutPlaceOrder({
       variables: {
         userId: userData._id,
@@ -85,8 +80,6 @@ const Checkout = () => {
         console.log('errrr@@@@@@@@@@', err)
       })
   }
-
-  console.log('here in busines app')
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
@@ -164,7 +157,6 @@ const Checkout = () => {
             <TextDefault H5>{t('chooseaddress')}</TextDefault>
           </View>
           {userData?.addresses?.map((item, index) => {
-            console.log({ itemAddress: item.deliveryAddress })
             return (
               <TouchableOpacity
                 key={item._id}
@@ -189,9 +181,6 @@ const Checkout = () => {
                     {item.details ? item.details : null}
                   </TextDefault>
                 </View>
-                {/* <Text>
-                  {JSON.stringify(selectedAddress?.deliveryAddress, null, 2)}
-                </Text> */}
                 <View
                   style={{
                     height: 20,
@@ -228,7 +217,6 @@ const Checkout = () => {
               borderRadius: 8
             }}
             onPress={() => {
-              // setAddressVisible(true)
               navigation.navigate('AddNewAddress', {
                 user: userData
               })

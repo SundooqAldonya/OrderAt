@@ -22,12 +22,12 @@ export default function OrderDetails({ orderData }) {
             {orderId}
           </Text>
         </View>
-        <View style={[styles.row, directionStyle]}>
+        {/* <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('email')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
             {user.email}
           </Text>
-        </View>
+        </View> */}
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('contact')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
@@ -58,6 +58,7 @@ export default function OrderDetails({ orderData }) {
 
 function OrderItems({ orderData }) {
   const { t, i18n } = useTranslation()
+
   const {
     items,
     orderAmount,
@@ -65,7 +66,7 @@ function OrderItems({ orderData }) {
     deliveryCharges,
     taxationAmount
   } = orderData
-  console.log({ items })
+
   const configuration = useContext(Configuration.Context)
   const isRtl = i18n.language === 'ar'
   const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
@@ -112,6 +113,7 @@ function OrderItems({ orderData }) {
                   ? item.addons.map((addon, index) => {
                       return (
                         <View
+                          key={index}
                           style={{
                             justifyContent: 'space-between',
                             flexDirection: 'column',
@@ -130,6 +132,7 @@ function OrderItems({ orderData }) {
                             ? addon?.options?.map(option => {
                                 return (
                                   <View
+                                    key={option._id}
                                     style={{
                                       flexDirection: 'row',
                                       justifyContent: 'space-between',

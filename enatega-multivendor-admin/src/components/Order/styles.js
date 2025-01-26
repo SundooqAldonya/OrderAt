@@ -74,9 +74,10 @@ const useStyles = makeStyles(theme => ({
   },
   btnBox: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    gap: 20
   },
   inputLength: {
     width: '50%'

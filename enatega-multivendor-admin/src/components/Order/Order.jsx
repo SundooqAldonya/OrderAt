@@ -26,7 +26,7 @@ const GET_CONFIGURATION = gql`
   ${getConfiguration}
 `
 
-function Order({ order, t }) {
+function Order({ order, t, modal, toggleModal }) {
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
   const theme = useTheme()
@@ -207,6 +207,18 @@ function Order({ order, t }) {
           </Grid>
         </Box>
       </Box>
+      <Input
+        name="reason"
+        id="input-reason"
+        placeholder={t('PHReasonIfRejected')}
+        type="text"
+        disableUnderline
+        value={(order && order.reason) || reason}
+        onChange={event => {
+          reasonSetter(event.target.value)
+        }}
+        className={[globalClasses.input, classes.inputLength]}
+      />
       {order.orderStatus !== 'CANCELLED' && order.orderStatus !== 'DELIVERED' && (
         <>
           {loading && (
@@ -253,20 +265,19 @@ function Order({ order, t }) {
                   })
                 }
               }}>
-              {order.status === false ? t('Cancelled') : t('Cancel')}
+              {order.orderStatus === 'CANCELLED' ? t('Rejected') : t('Reject')}
             </Button>
-            <Input
-              name="reason"
-              id="input-reason"
-              placeholder={t('PHReasonIfRejected')}
-              type="text"
-              disableUnderline
-              value={(order && order.reason) || reason}
-              onChange={event => {
-                reasonSetter(event.target.value)
-              }}
-              className={[globalClasses.input, classes.inputLength]}
-            />
+            {modal ? (
+              <Button
+                variant="outlined"
+                color="error"
+                className={globalClasses.button}
+                onClick={() => {
+                  toggleModal()
+                }}>
+                {t('Cancel')}
+              </Button>
+            ) : null}
           </Box>
           {reasonError ? null : null}
         </>
