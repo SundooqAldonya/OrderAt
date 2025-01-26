@@ -153,6 +153,7 @@ const RegisterUser = () => {
         userInput: {
           name: userData.name,
           phone: userData.phone,
+          address_free_text: userData.address || 'APT 1',
           addresses,
           area: selectedArea?._id
         }

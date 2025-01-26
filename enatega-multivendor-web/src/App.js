@@ -36,6 +36,7 @@ import VerifyPhone from "./screens/VerifyPhone/VerifyPhone";
 import UserContext from "./context/User";
 import { useTranslation } from "react-i18next";
 import RestaurantsList from "./screens/RestaurantsList";
+import AddYourBusiness from "./screens/AddYourBusiness";
 //import { fetchConfiguration } from "./utils/helper";
 
 //import { Integrations } from "@sentry/tracing";
@@ -190,6 +191,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/restaurant-list" element={<RestaurantsList />} />
+          <Route path="/add-your-business" element={<AddYourBusiness />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />

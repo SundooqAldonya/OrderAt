@@ -88,13 +88,13 @@ export default function App() {
     Montserrat_900Black_Italic
   })
 
-  useEffect(() => {
-    if (i18n.language === 'ar' && !I18nManager.isRTL) {
-      I18nManager.allowRTL(true)
-      I18nManager.forceRTL(true)
-      console.log({ isRTL: I18nManager.isRTL })
-    }
-  }, [i18n.language])
+  // useEffect(() => {
+  //   if (i18n.language === 'ar' && !I18nManager.isRTL) {
+  //     I18nManager.allowRTL(true)
+  //     I18nManager.forceRTL(true)
+  //     console.log({ isRTL: I18nManager.isRTL })
+  //   }
+  // }, [i18n.language])
 
   useEffect(() => {
     ;(async () => {

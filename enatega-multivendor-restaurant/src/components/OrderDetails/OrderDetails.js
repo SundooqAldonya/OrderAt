@@ -17,17 +17,17 @@ export default function OrderDetails({ orderData }) {
     <View style={{ flex: 1 }}>
       <View style={styles.cardContainer}>
         <View style={[styles.row, directionStyle]}>
-          <Text style={[styles.heading, textAlignStyle]}>{t('orderNo')}.</Text>
+          <Text style={[styles.heading, textAlignStyle]}>{t('orderNo')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
             {orderId}
           </Text>
         </View>
-        {/* <View style={[styles.row, directionStyle]}>
-          <Text style={[styles.heading, textAlignStyle]}>{t('email')}</Text>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>{t('fullname')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
-            {user.email}
+            {user.name}
           </Text>
-        </View> */}
+        </View>
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('contact')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
@@ -40,6 +40,14 @@ export default function OrderDetails({ orderData }) {
             {deliveryAddress?.deliveryAddress
               ? deliveryAddress?.deliveryAddress
               : null}
+          </Text>
+        </View>
+        <View style={[styles.row, directionStyle]}>
+          <Text style={[styles.heading, textAlignStyle]}>
+            {t('delivery_label')}
+          </Text>
+          <Text style={[styles.text, textAlignStyle]} selectable>
+            {deliveryAddress?.label ? deliveryAddress?.label : null}
           </Text>
         </View>
         <View style={[styles.row, directionStyle]}>

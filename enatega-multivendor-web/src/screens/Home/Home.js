@@ -39,23 +39,19 @@ function Home() {
   const medium = useMediaQuery(theme.breakpoints.down("lg"));
 
   const [body, setBody] = useState([
-    // {
-    //   image:
-    //     "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    //   title: "Feed your employees",
-    //   link: "Create a business account",
-    // },
     {
       image:
         "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Your restaurant, delivered",
-      link: "Add your restaurant",
+      subtitle: "Add your restaurant",
+      link: "add-your-business",
     },
     {
       image:
         "https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Deliver with Orderat",
-      link: "Signup to deliver",
+      subtitle: "Signup to deliver",
+      link: "",
     },
   ]);
 
@@ -122,8 +118,11 @@ function Home() {
                   </Box>
                   <Box>
                     <Typography variant="h5">{item.title}</Typography>
-                    <Link to="/" style={{ fontSize: 17, color: "#000" }}>
-                      {item.link}
+                    <Link
+                      to={`/${item.link}`}
+                      style={{ fontSize: 17, color: "#000" }}
+                    >
+                      {item.subtitle}
                     </Link>
                   </Box>
                 </Grid>

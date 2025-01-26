@@ -80,7 +80,7 @@ export default function Login() {
                   flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}>
                 <TextInput
-                  secureTextEntry={showPassword}
+                  secureTextEntry={true}
                   placeholder={t('password')}
                   style={[styles.textInput, styles.passwordInput]}
                   value={password}

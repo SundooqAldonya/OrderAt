@@ -39,7 +39,7 @@ export default function SelectLanguage() {
   const navigation = useNavigation()
   const languageTypes = [
     { value: 'English', code: 'en', index: 0 },
-    { value: 'Arabic', code: 'ar', index: 1 }
+    { value: 'عربي', code: 'ar', index: 1 }
     // { value: 'français', code: 'fr', index: 2 },
     // { value: 'ភាសាខ្មែរ', code: 'km', index: 3 },
     // { value: '中文', code: 'zh', index: 4 },

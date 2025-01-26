@@ -75,6 +75,7 @@ export const ar = {
   saveandcontinue: 'حفظ ومتابعة',
   add_new_address: 'إضافة عنوان جديد',
   delivery_details: 'معلومات التوصيل',
+  delivery_label: 'المنطقة',
   instructions: 'طلبات إضافية',
   digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا'
 }
