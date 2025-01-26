@@ -93,38 +93,46 @@ function Checkout() {
     }
   }, []);
 
-useEffect(() => {
-  (async () => {
-    if (data && data.restaurant && location) {
-      const latOrigin = Number(data.restaurant.location.coordinates[1]);
-      const lonOrigin = Number(data.restaurant.location.coordinates[0]);
-      const latDest = Number(location.latitude);
-      const longDest = Number(location.longitude);
-      
-      // Calculate the distance between the restaurant and destination
-      const distance = await calculateDistance(latOrigin, lonOrigin, latDest, longDest);
-      
-      // Declare a variable to hold the delivery charge
-      let calculatedDeliveryCharge;
-      
-      // If the distance is less than 2 km, set the delivery charge to the minimumDeliveryFee
-      if (distance < 2) {
-        calculatedDeliveryCharge = configuration.minimumDeliveryFee;
-      } else {
-        // Calculate delivery charge based on distance and deliveryRate
-        const amount = Math.ceil(distance) * configuration.deliveryRate;
-        
-        // Ensure the calculated amount is not lower than the minimum
-        calculatedDeliveryCharge = amount > 0 ? amount : configuration.deliveryRate;
+  useEffect(() => {
+    (async () => {
+      if (data && data.restaurantCustomer && location) {
+        const latOrigin = Number(
+          data?.restaurantCustomer?.location?.coordinates[1]
+        );
+        const lonOrigin = Number(
+          data?.restaurantCustomer?.location?.coordinates[0]
+        );
+        const latDest = Number(location.latitude);
+        const longDest = Number(location.longitude);
+
+        // Calculate the distance between the restaurant and destination
+        const distance = await calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        );
+
+        // Declare a variable to hold the delivery charge
+        let calculatedDeliveryCharge;
+
+        // If the distance is less than 2 km, set the delivery charge to the minimumDeliveryFee
+        if (distance < 2) {
+          calculatedDeliveryCharge = configuration.minimumDeliveryFee;
+        } else {
+          // Calculate delivery charge based on distance and deliveryRate
+          const amount = Math.ceil(distance) * configuration.deliveryRate;
+
+          // Ensure the calculated amount is not lower than the minimum
+          calculatedDeliveryCharge =
+            amount > 0 ? amount : configuration.deliveryRate;
+        }
+
+        // Set the delivery charges
+        setDeliveryCharges(calculatedDeliveryCharge);
       }
-
-      // Set the delivery charges
-      setDeliveryCharges(calculatedDeliveryCharge);
-    }
-  })();
-}, [data, location, configuration]); // Dependencies to trigger the effect
-
-  
+    })();
+  }, [data, location, configuration]); // Dependencies to trigger the effect
 
   const isOpen = () => {
     const date = new Date();
@@ -176,7 +184,9 @@ useEffect(() => {
     setIsClose((prev) => !prev);
   }, []);
 
-  const restaurantData = data?.restaurant ?? null;
+  const restaurantData = data?.restaurantCustomer ?? null;
+
+  console.log({ restaurantData });
 
   const showMessage = useCallback((messageObj) => {
     setMainError(messageObj);

@@ -2,7 +2,13 @@ import React, { useContext, useState, useEffect } from 'react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { theme } from '../../utils/themeColors'
-import { View, TouchableOpacity, ScrollView, StatusBar, Platform } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  Platform
+} from 'react-native'
 import CheckboxBtn from '../../ui/FdCheckbox/CheckboxBtn'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
@@ -15,7 +21,7 @@ import { textStyles } from '../../utils/textStyles'
 import { scale } from '../../utils/scaling'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
-import {  AntDesign } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { useRestaurant } from '../../ui/hooks'
 import ReorderItem from '../../components/ReorderItem/ReorderItem'
@@ -125,29 +131,30 @@ function Reorder(props) {
     })
   }
 
-  const restaurant = data?.restaurant
+  const restaurant = data?.restaurantCustomer
   const addons = restaurant?.addons
   const options = restaurant?.options
-  const foods = restaurant?.categories?.map(c => c.foods.flat()).flat()
+  const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
 
   function populateFood(cartItem) {
-    const food = foods?.find(food => food._id === cartItem.food)
+    const food = foods?.find((food) => food._id === cartItem.food)
     if (!food) return null
     const variation = food.variations.find(
-      variation => variation._id === cartItem.variation._id
+      (variation) => variation._id === cartItem.variation._id
     )
     if (!variation) return null
 
-    const title = `${food.title}${variation.title ? `(${variation.title})` : ''
-      }`
+    const title = `${food.title}${
+      variation.title ? `(${variation.title})` : ''
+    }`
     let price = variation.price
     const optionsTitle = []
     if (cartItem.addons) {
-      cartItem.addons.forEach(addon => {
-        const cartAddon = addons.find(add => add._id === addon._id)
+      cartItem.addons.forEach((addon) => {
+        const cartAddon = addons.find((add) => add._id === addon._id)
         if (!cartAddon) return null
-        addon.options.forEach(option => {
-          const cartOption = options.find(opt => opt._id === option._id)
+        addon.options.forEach((option) => {
+          const cartOption = options.find((opt) => opt._id === option._id)
           if (!cartOption) return null
           price += cartOption.price
           optionsTitle.push(cartOption.title)
@@ -180,23 +187,22 @@ function Reorder(props) {
           </TextDefault>
           {order.items.map((item, index) => {
             const food = populateFood(item)
-            if(!food){
+            if (!food) {
               return null
             }
             return (
               <ReorderItem
-              key={food?._id}
+                key={food?._id}
                 quantity={food?.quantity}
                 dealName={food?.title}
                 optionsTitle={food?.optionsTitle}
                 itemImage={food?.image}
                 itemAddons={food?.addons}
-                dealPrice={(
-                  parseFloat(food?.price) * food?.quantity
-                ).toFixed(2)}
+                dealPrice={(parseFloat(food?.price) * food?.quantity).toFixed(
+                  2
+                )}
                 checked={selectedItems.includes(index)}
-                        onPress={() => onSelect(index)}
-              
+                onPress={() => onSelect(index)}
               />
             )
           })}
@@ -214,7 +220,14 @@ function Reorder(props) {
             }
             onPress={onAddToCart}
           >
-            <TextDefault bolder textColor={selectedItems.length > 0 ? currentTheme.black : currentTheme.newFontcolor}>
+            <TextDefault
+              bolder
+              textColor={
+                selectedItems.length > 0
+                  ? currentTheme.black
+                  : currentTheme.newFontcolor
+              }
+            >
               {t('addToCart')}
             </TextDefault>
           </TouchableOpacity>

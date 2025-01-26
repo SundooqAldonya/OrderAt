@@ -573,7 +573,7 @@ function Checkout() {
                 }}
                 zoom={14}
                 center={restCoordinates}
-                onLoad={restCoordinates && onLoad}
+                // onLoad={restCoordinates && onLoad}
                 options={{
                   // styles: mapStyles,
                   zoomControl: true,
