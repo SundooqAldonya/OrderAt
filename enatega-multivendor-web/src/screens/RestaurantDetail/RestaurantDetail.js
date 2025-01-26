@@ -194,7 +194,7 @@ function RestaurantDetail() {
   if (loading || error) {
     return (
       <div
-        // dir={direction(language)}
+        dir={direction(language)}
         style={{ backgroundColor: theme.palette.grey[200] }}
       >
         <Grid container>
@@ -268,7 +268,8 @@ function RestaurantDetail() {
           style={{ display: "flex", flexDirection: "row-reverse" }}
           className={classes.bg}
         >
-          {!isTablet && <RestaurantCart showMessage={showMessage} />}
+          {/* {!isTablet && <RestaurantCart showMessage={showMessage} />} */}
+          <RestaurantCart showMessage={showMessage} />
           <Grid item lg={9} xs={12}>
             <Container
               maxWidth="xl"

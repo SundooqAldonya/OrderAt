@@ -31,7 +31,6 @@ import { useTranslation } from "react-i18next";
 import useStyles from "./styles";
 
 function VariationModal({ isVisible, toggleModal, data }) {
-  console.log("inside VariationModal", data);
   const { t } = useTranslation();
   const theme = useTheme();
   const classes = useStyles();
@@ -502,7 +501,6 @@ function VariationModal({ isVisible, toggleModal, data }) {
                   >
                     <AddIcon fontSize="medium" style={{ color: "white" }} />
                   </IconButton>
-                  {console.log({ validateButton: !validateButton() })}
                   <Button
                     variant="contained"
                     color="primary"

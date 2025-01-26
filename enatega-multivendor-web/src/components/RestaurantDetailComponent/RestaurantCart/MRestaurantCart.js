@@ -17,6 +17,7 @@ import ConfigurationContext from "../../../context/Configuration";
 import UserContext from "../../../context/User";
 import { useRestaurant } from "../../../hooks";
 import useStyles from "./styles";
+import { Fragment } from "react";
 
 const TAXATION = gql`
   ${getTaxation}
@@ -38,10 +39,13 @@ function MRestaurantCart(props) {
     fetchPolicy: "network-only",
   });
   const { loading, data } = useRestaurant(cartRestaurant);
-  const restaurantData = data?.restaurant ?? null;
+  const restaurantData = data?.restaurantCustomer ?? null;
 
   useEffect(() => {
-    if (restaurantData) didFocus();
+    if (restaurantData) {
+      console.log("here");
+      didFocus();
+    }
   }, [restaurantData, cartCount]);
 
   const didFocus = async () => {
@@ -51,6 +55,8 @@ function MRestaurantCart(props) {
       if (cart && cartCount) {
         const transformCart = cart.map((cartItem) => {
           const foodItem = foods.find((food) => food._id === cartItem._id);
+          console.log({ foodItem });
+
           if (!foodItem) return null;
           const variationItem = foodItem.variations.find(
             (variation) => variation._id === cartItem.variation._id
@@ -85,10 +91,10 @@ function MRestaurantCart(props) {
         const updatedItems = transformCart.filter((item) => item);
         if (updatedItems.length === 0) await clearCart();
         await updateCart(updatedItems);
-        setLoadingData((prev) => {
-          if (prev) return false;
-          else return prev;
-        });
+        // setLoadingData((prev) => {
+        //   if (prev) return false;
+        //   else return prev;
+        // });
         if (transformCart.length !== updatedItems.length) {
           props.showMessage({
             type: "warning",
@@ -102,10 +108,7 @@ function MRestaurantCart(props) {
         message: e.message,
       });
     } finally {
-      setLoadingData((prev) => {
-        if (prev) return false;
-        else return prev;
-      });
+      setLoadingData(false);
     }
   };
 
@@ -142,11 +145,12 @@ function MRestaurantCart(props) {
       return parseFloat(total).toFixed(2);
     },
     // configuration.minimumDeliveryFee
-    [calculatePrice, taxCalculation,configuration.minimumDeliveryFee]
+    [calculatePrice, taxCalculation, configuration.minimumDeliveryFee]
   );
 
   return (
-    <Hidden lgUp>
+    <Fragment>
+      {/* <Hidden lgUp> */}
       <RouterLink
         to={loadingTax ? "#" : "/checkout"}
         style={{ textDecoration: "none" }}
@@ -259,7 +263,8 @@ function MRestaurantCart(props) {
           )}
         </Box>
       </RouterLink>
-    </Hidden>
+      {/* </Hidden> */}
+    </Fragment>
   );
 }
 
