@@ -36,6 +36,7 @@ function DetailedOrderCard(props) {
               style={{
                 height: small ? "50%" : "100%",
                 minWidth: small ? "100%" : "120px",
+                objectFit: "cover",
               }}
             />
           </Box>

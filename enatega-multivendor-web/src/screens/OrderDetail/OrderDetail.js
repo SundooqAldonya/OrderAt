@@ -233,7 +233,7 @@ function OrderDetail() {
                     center={restCoordinates}
                     onLoad={destCoordinates && onLoad}
                     options={{
-                      styles: mapStyles,
+                      // styles: mapStyles,
                       zoomControl: true,
                       zoomControlOptions: {
                         position: window.google.maps.ControlPosition.RIGHT_TOP,

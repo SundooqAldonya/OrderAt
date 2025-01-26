@@ -133,7 +133,7 @@ function CartView(props) {
           justifyContent="center"
           flexDirection="column"
           style={{
-            marginLeft: "5px",
+            marginInlineStart: "5px",
           }}
         >
           <Typography

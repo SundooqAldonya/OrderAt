@@ -22,68 +22,18 @@ import { ClearCart } from "../../components/Modals";
 import { ProductCard, Subheader } from "../../components/RestaurantComponent";
 import { LocationContext } from "../../context/Location";
 import UserContext from "../../context/User";
-// import analytics from "../../utils/analytics";
 import useStyles from "./styles";
 import Footer from "../../components/Footer/Footer";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { direction } from "../../utils/helper";
 
 const RESTAURANTS = gql`
   ${FavouriteRestaurant}
 `;
 
-function EmptyView() {
-  const { t } = useTranslation()
-  const classes = useStyles();
-  return (
-    <Grid item xs={12} className={classes.mt2}>
-      <Box className={classes.mt2} display="flex" justifyContent="center">
-        <FavouriteIcon />
-      </Box>
-      <Box className={classes.mt2} display="flex" justifyContent="center">
-        <Typography variant="h6" className={classes.textBold}>
-          {t('titleEmptyFav')}
-        </Typography>
-      </Box>
-      <Box className={classes.mt2} display="flex" justifyContent="center">
-        <Typography
-          variant="caption"
-          className={clsx(classes.disableText, classes.smallText)}
-        >
-          {t('emptyFavDesc')}
-        </Typography>
-      </Box>
-      <Box className={classes.mt2} display="flex" justifyContent="center">
-        <Box className={classes.heartBG}>
-          <HeartFilled />
-        </Box>
-      </Box>
-      <Box className={classes.mt2} display="flex" justifyContent="center">
-        <RouterLink to="/" style={{ textDecoration: "none" }}>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            disableElevation
-            disableRipple
-            disableFocusRipple
-            disableTouchRipple
-            className={classes.btnBase}
-          >
-            <Typography
-              variant="caption"
-              color="primary"
-              className={clsx(classes.textBold, classes.smallText)}
-            >
-              {t('emptyFavBtn')}
-            </Typography>
-          </Button>
-        </RouterLink>
-      </Box>
-    </Grid>
-  );
-}
 function Favourites() {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
   const navigate = useNavigate();
   const firstTime = useRef(true);
   const classes = useStyles();
@@ -91,7 +41,9 @@ function Favourites() {
   const [clearModal, setClearModal] = useState(false);
   const { location } = useContext(LocationContext);
   const [navigateData, setNavigateData] = useState({});
+
   const { clearCart, restaurant: cartRestaurant } = useContext(UserContext);
+
   const { data, loading, error } = useQuery(RESTAURANTS, {
     variables: {
       longitude: location?.longitude ?? null,
@@ -104,12 +56,11 @@ function Favourites() {
     await clearCart();
     navigate(`/restaurant/${navigateData.slug}`, { state: navigateData });
   }, [navigateData]);
+
   const toggleClearCart = useCallback(() => {
     setClearModal((prev) => !prev);
   }, []);
-  useEffect(async () => {
-    // await analytics.track(analytics.events.NAVIGATE_TO_FAVOURITES);
-  }, []);
+
   useEffect(() => {
     if (!firstTime.current && error) {
       setMainError({
@@ -144,7 +95,7 @@ function Favourites() {
 
   if (loading) {
     return (
-      <Grid container>
+      <Grid dir={direction(language)} container>
         <Header />
         <Subheader />
         <Box className={classes.spinnerContainer}>
@@ -155,7 +106,7 @@ function Favourites() {
   }
   if (error) {
     return (
-      <Grid container>
+      <Grid dir={direction(language)} container>
         <Header />
         <Subheader />
         <Box className={classes.spinnerContainer}>
@@ -166,9 +117,8 @@ function Favourites() {
   }
 
   const favouriteData = data?.userFavourite ?? [];
-
   return (
-    <Grid container className={classes.root}>
+    <Grid dir={direction(language)} container className={classes.root}>
       <FlashMessage
         open={Boolean(mainError.type)}
         severity={mainError.type}
@@ -180,7 +130,7 @@ function Favourites() {
       <Box className={classes.topContainer}>
         <Box style={{ zIndex: 100 }}>
           <Typography variant="h5" align="center">
-            {t('titleFavourite')}
+            {t("titleFavourite")}
           </Typography>
           <img src={Favourite} alt="fav" />
         </Box>
@@ -220,6 +170,59 @@ function Favourites() {
         toggleModal={toggleClearCart}
         action={navigateClearCart}
       />
+    </Grid>
+  );
+}
+
+function EmptyView() {
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
+  const classes = useStyles();
+  return (
+    <Grid dir={direction(language)} item xs={12} className={classes.mt2}>
+      <Box className={classes.mt2} display="flex" justifyContent="center">
+        <FavouriteIcon />
+      </Box>
+      <Box className={classes.mt2} display="flex" justifyContent="center">
+        <Typography variant="h6" className={classes.textBold}>
+          {t("titleEmptyFav")}
+        </Typography>
+      </Box>
+      <Box className={classes.mt2} display="flex" justifyContent="center">
+        <Typography
+          variant="caption"
+          className={clsx(classes.disableText, classes.smallText)}
+        >
+          {t("emptyFavDesc")}
+        </Typography>
+      </Box>
+      <Box className={classes.mt2} display="flex" justifyContent="center">
+        <Box className={classes.heartBG}>
+          <HeartFilled />
+        </Box>
+      </Box>
+      <Box className={classes.mt2} display="flex" justifyContent="center">
+        <RouterLink to="/" style={{ textDecoration: "none" }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            disableElevation
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+            className={classes.btnBase}
+          >
+            <Typography
+              variant="caption"
+              color="primary"
+              className={clsx(classes.textBold, classes.smallText)}
+            >
+              {t("emptyFavBtn")}
+            </Typography>
+          </Button>
+        </RouterLink>
+      </Box>
     </Grid>
   );
 }

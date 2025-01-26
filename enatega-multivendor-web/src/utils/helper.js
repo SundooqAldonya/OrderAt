@@ -32,3 +32,10 @@ export const fetchConfiguration = async () => {
     };
   }
 };
+
+export const direction = (lng) => {
+  if (lng === "ar") {
+    return "rtl";
+  }
+  return "ltr";
+};

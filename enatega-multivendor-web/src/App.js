@@ -25,7 +25,6 @@ import VerifyEmail from "./screens/VerifyEmail/VerifyEmail";
 import VerifyForgotOtp from "./screens/VerifyForgotOtp/VerifyForgotOtp";
 import ResetPassword from "./screens/ResetPassword/ResetPassword";
 import RestaurantDetail from "./screens/RestaurantDetail/RestaurantDetail";
-import Restaurants from "./screens/Restaurants/Restaurants";
 import Stripe from "./screens/Stripe/Stripe";
 import Terms from "./screens/Terms/Terms";
 import FlashMessage from "./components/FlashMessage";
@@ -36,6 +35,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import VerifyPhone from "./screens/VerifyPhone/VerifyPhone";
 import UserContext from "./context/User";
 import { useTranslation } from "react-i18next";
+import RestaurantsList from "./screens/RestaurantsList";
 //import { fetchConfiguration } from "./utils/helper";
 
 //import { Integrations } from "@sentry/tracing";
@@ -189,7 +189,7 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/restaurant-list" element={<Restaurants />} />
+          <Route path="/restaurant-list" element={<RestaurantsList />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />

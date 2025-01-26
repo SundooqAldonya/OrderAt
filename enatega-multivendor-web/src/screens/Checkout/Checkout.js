@@ -60,6 +60,7 @@ import { useLocation } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 import moment from "moment";
+import { direction } from "../../utils/helper";
 
 const PLACEORDER = gql`
   ${placeOrder}
@@ -76,7 +77,8 @@ const PAYMENT = {
 };
 
 function Checkout() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
   const classes = useStyle();
   const navigate = useNavigate();
   const [isClose, setIsClose] = useState(false);
@@ -268,7 +270,7 @@ function Checkout() {
 
   if (loading || loadingData) {
     return (
-      <Grid container>
+      <Grid dir={direction(language)} container>
         <Header />
         <Box className={classes.spinnerContainer}>
           <CircularProgress color="primary" size={48} />
@@ -279,7 +281,7 @@ function Checkout() {
 
   if (error) {
     return (
-      <Grid container>
+      <Grid dir={direction(language)} container>
         <Header />
         <Box className={classes.spinnerContainer}>
           <Typography>Unable to fetch data</Typography>
@@ -543,9 +545,9 @@ function Checkout() {
     }
     return true;
   }
-  // console.log("isPickUp", isPickUp, selectedDate);
+
   return (
-    <Grid container className={classes.root}>
+    <Grid dir={direction(language)} container className={classes.root}>
       <FlashMessage
         open={Boolean(mainError.type)}
         severity={mainError.type}
@@ -573,7 +575,7 @@ function Checkout() {
                 center={restCoordinates}
                 onLoad={restCoordinates && onLoad}
                 options={{
-                  styles: mapStyles,
+                  // styles: mapStyles,
                   zoomControl: true,
                   zoomControlOptions: {
                     position: window.google.maps.ControlPosition.RIGHT_CENTER,
@@ -608,7 +610,7 @@ function Checkout() {
               justifyContent="center"
               flexDirection="column"
               style={{
-                marginLeft: "20px",
+                marginInlineStart: "20px",
               }}
             >
               <Typography
@@ -645,7 +647,7 @@ function Checkout() {
                 <Button
                   variant="contained"
                   style={{
-                    marginLeft: theme.spacing(1),
+                    marginInlineStart: theme.spacing(1),
                     backgroundColor: "black",
                     borderRadius: theme.spacing(1.5),
                   }}
@@ -730,7 +732,7 @@ function Checkout() {
                         <Typography
                           style={{
                             color: theme.palette.common.black,
-                            marginLeft: 10,
+                            marginInlineStart: 10,
                           }}
                           variant="caption"
                           fontWeight={800}
@@ -756,7 +758,7 @@ function Checkout() {
                       style={{
                         background: theme.palette.common.white,
                         padding: theme.spacing(2, 0),
-                        marginLeft: "20px",
+                        marginInlineStart: "20px",
                       }}
                     >
                       <Paper

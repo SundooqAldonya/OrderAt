@@ -34,9 +34,13 @@ import { useRestaurant } from "../../hooks";
 import { DAYS } from "../../utils/constantValues";
 import useStyles from "./styles";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { direction } from "../../utils/helper";
+import { useTranslation } from "react-i18next";
 
 function RestaurantDetail() {
   const theme = useTheme();
+  const { i18n } = useTranslation();
+  const { language } = i18n;
   const isTablet = useMediaQuery(theme.breakpoints.down("lg"));
   const classes = useStyles();
   const { state } = useLocation();
@@ -149,7 +153,6 @@ function RestaurantDetail() {
   };
 
   const addToCart = async (food, clearFlag) => {
-    console.log({ clearFlag });
     if (clearFlag) await clearCart();
     if (
       food.variations.length === 1 &&
@@ -190,7 +193,10 @@ function RestaurantDetail() {
 
   if (loading || error) {
     return (
-      <div style={{ backgroundColor: theme.palette.grey[200] }}>
+      <div
+        // dir={direction(language)}
+        style={{ backgroundColor: theme.palette.grey[200] }}
+      >
         <Grid container>
           {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
         </Grid>
@@ -246,6 +252,7 @@ function RestaurantDetail() {
         handleClose={toggleSnackbar}
       />
       <div
+        dir={direction(language)}
         style={{
           backgroundColor: theme.palette.grey[200],
           scrollBehavior: "smooth",

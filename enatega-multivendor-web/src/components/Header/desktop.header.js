@@ -12,8 +12,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { ReactComponent as PersonIcon } from "../../assets/icons/user.svg";
 import { ReactComponent as FavoriteBorderIcon } from "../../assets/icons/favourite.svg";
 import { ReactComponent as LocalMallIcon } from "../../assets/icons/cart.svg";
-
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
+import { useTranslation } from "react-i18next";
+import { direction } from "../../utils/helper";
 
 function DHeader({
   navitems,
@@ -29,8 +30,12 @@ function DHeader({
   const theme = useTheme();
   const classes = useStyle();
   const location = useLocation();
+  const { i18n } = useTranslation();
+  const { language } = i18n;
+
   return (
     <AppBar
+      dir={direction(language)}
       elevation={0}
       position="fixed"
       style={{
@@ -48,8 +53,6 @@ function DHeader({
           className={classes.linkDecoration}
         >
           <Logo height={37} width={169} />
-
-          
         </RouterLink>
         <Box className={classes.flex}>
           <Button
@@ -119,7 +122,7 @@ function DHeader({
             ))}
           </Menu>
           <Box display="flex" alignItems="center">
-            <Box mr={theme.spacing(3)} ml={theme.spacing(3)}>
+            <Box marginInline={theme.spacing(3)} alignItems={"center"}>
               <RouterLink to="/favourite">
                 {favLength > 0 ? (
                   <FavoriteIcon className={classes.icon} />
@@ -136,7 +139,7 @@ function DHeader({
                     display="flex"
                     flexDirection="row"
                     alignItems="center"
-                    ml={theme.spacing(3)}
+                    marginInlineStart={theme.spacing(3)}
                   >
                     <LocalMallIcon className={classes.icon} />
                     <Typography

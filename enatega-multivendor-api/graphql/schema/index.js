@@ -1294,7 +1294,7 @@ const typeDefs = gql`
     configuration: Configuration!
     users: [User!]
     search_users(search: String): [User!]
-    userFavourite(latitude: Float, longitude: Float): [Restaurant]
+    userFavourite(latitude: Float, longitude: Float): [RestaurantCustomer]
     order(id: String!): Order!
     orderPaypal(id: String!): Order!
     orderStripe(id: String!): Order!

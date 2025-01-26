@@ -30,13 +30,17 @@ import UserContext from "../../context/User";
 import useStyles from "./styles";
 import DetailedOrderCard from "../../components/Orders/DetailedOrderCard/DetailedOrderCard";
 import { ACTIVE_STATUS } from "../../utils/constantValues";
+import { direction } from "../../utils/helper";
+import { useTranslation } from "react-i18next";
 
 const RESTAURANTS = gql`
   ${restaurantList}
 `;
 
-function Restaurants() {
+function RestaurantsList() {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
+  const { language } = i18n;
   const { location } = useLocationContext();
   const [message, setMessage] = useState({});
   const [search, setSearch] = useState("");
@@ -91,8 +95,6 @@ function Restaurants() {
     fetchPolicy: "network-only",
     skip: !location,
   });
-
-  console.log({ data });
 
   if (loading || error) {
     return (
@@ -157,7 +159,7 @@ function Restaurants() {
       />
       {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
       <Subheader />
-      <Box className={classes.searchWrapper}>
+      <Box dir={direction(i18n.language)} className={classes.searchWrapper}>
         <Grid container item>
           <SearchContainer
             loading={loading}
@@ -169,6 +171,7 @@ function Restaurants() {
       </Box>
       {activeOrders.length > 0 ? (
         <Box
+          dir={direction(i18n.language)}
           style={{
             backgroundColor: theme.palette.button.lightest,
             padding: mobile ? "10px" : "80px 90px",
@@ -177,7 +180,7 @@ function Restaurants() {
         >
           <Grid container spacing={2}>
             {activeOrders.map((item) => (
-              <Grid key={item.id} item sm={12} xl={6} lg={6}>
+              <Grid key={item._id} item sm={12} xl={6} lg={6}>
                 {mobile ? null : <DetailedOrderCard key={item._id} {...item} />}
               </Grid>
             ))}
@@ -198,7 +201,10 @@ function Restaurants() {
         </Box>
       )}
 
-      <Box style={{ width: "100%", minHeight: "100vh" }}>
+      <Box
+        dir={direction(language)}
+        style={{ width: "100%", minHeight: "100vh" }}
+      >
         <RestaurantGrid
           checkCart={checkCart}
           restaurants={search ? searchRestaurants(search) : restaurants}
@@ -220,4 +226,4 @@ function Restaurants() {
   );
 }
 
-export default Restaurants;
+export default RestaurantsList;
