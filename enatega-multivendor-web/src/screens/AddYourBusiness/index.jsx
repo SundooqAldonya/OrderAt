@@ -63,12 +63,6 @@ function AddYourBusiness() {
           handleClose={handleClose}
         />
         {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
-        {/* serch container (1st) */}
-        <Box>
-          <Grid container item>
-            <SearchContainer loading={loading} isHome={true} />
-          </Grid>
-        </Box>
 
         <Box className={classes.footerContainer}>
           <Box className={classes.footerWrapper}>
