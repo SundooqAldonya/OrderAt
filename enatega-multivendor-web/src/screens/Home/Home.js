@@ -28,27 +28,46 @@ import Fruits2 from "../../assets/images/fruits-2.png";
 import AppComponent from "../../components/HomeScreen/AppComponent";
 import Banner2 from "../../assets/images/banner-2.png";
 import Banner1 from "../../assets/images/banner-1.png";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 function Home() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const classes = useStyles();
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
   const medium = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const [body, setBody] = useState([
+    // {
+    //   image:
+    //     "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    //   title: "Feed your employees",
+    //   link: "Create a business account",
+    // },
+    {
+      image:
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Your restaurant, delivered",
+      link: "Add your restaurant",
+    },
+    {
+      image:
+        "https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Deliver with Orderat",
+      link: "Signup to deliver",
+    },
+  ]);
 
   const { error, loading } = useLocation();
   const [open, setOpen] = useState(!!error);
   const { isLoggedIn } = useContext(UserContext);
   let check = false;
 
-
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
-  useEffect(async () => {
-    // await Analytics.track(Analytics.events.NAVIGATE_TO_HOME);
-  }, []);
+
   useEffect(() => {
     if (check) {
       setOpen(!!error);
@@ -56,7 +75,6 @@ function Home() {
       check = true;
     }
   }, [error]);
-
 
   return (
     <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
@@ -74,8 +92,47 @@ function Home() {
             <SearchContainer loading={loading} isHome={true} />
           </Grid>
         </Box>
+        {/* Grid */}
+        <Box
+          sx={{
+            maxWidth: "1500px",
+            marginInline: "auto",
+            marginTop: "50px",
+          }}
+        >
+          <Grid container spacing={2}>
+            {body?.map((item, index) => {
+              return (
+                <Grid key={index} item xs={12} sm={6} md={6}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "300px",
+                    }}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography variant="h5">{item.title}</Typography>
+                    <Link to="/" style={{ fontSize: 17, color: "#000" }}>
+                      {item.link}
+                    </Link>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
         {/* app container (2nd) */}
-        <Box className={classes.appContainer}>
+        {/* <Box className={classes.appContainer}>
           <Box
             className={classes.appWrapper}
             style={{
@@ -105,9 +162,9 @@ function Home() {
 
             <AppComponent />
           </Box>
-        </Box>
+        </Box> */}
         {/* card container (3rd) */}
-        <Box className={classes.cardContainer}>
+        {/* <Box className={classes.cardContainer}>
           <Box className={classes.cardWrapper}>
             <Typography
               className={small ? classes.bgTextSmall : classes.bgText}
@@ -126,8 +183,8 @@ function Home() {
                       title={"Rider App"}
                       image={RiderApp}
                       description={[
-                        "• "+t('findingAddress'),
-                        "• "+t('zonesFunctionality'),
+                        "• " + t("findingAddress"),
+                        "• " + t("zonesFunctionality"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multirider"
@@ -149,8 +206,8 @@ function Home() {
                       title={"Restaurant App"}
                       image={RestaurantApp}
                       description={[
-                        "• "+t('multipleRestaurants'),
-                        "• "+t('realTimeOrder'),
+                        "• " + t("multipleRestaurants"),
+                        "• " + t("realTimeOrder"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
@@ -173,8 +230,8 @@ function Home() {
                       title={"Customer App"}
                       image={CustApp}
                       description={[
-                        "• "+t('differentSections'),
-                        "• "+t('previousOrder'),
+                        "• " + t("differentSections"),
+                        "• " + t("previousOrder"),
                       ]}
                       android={
                         "https://play.google.com/store/apps/details?id=com.enatega.multivendor"
@@ -193,8 +250,8 @@ function Home() {
                     title={"Admin Dashboard"}
                     image={Dashboard}
                     description={[
-                      "• "+t('findingAddress'),
-                      "• "+t('zonesFunctionality'),
+                      "• " + t("findingAddress"),
+                      "• " + t("zonesFunctionality"),
                     ]}
                     web={true}
                     link={"https://multivendor-admin.enatega.com/"}
@@ -208,8 +265,8 @@ function Home() {
                       title={"Product Page"}
                       image={WebApp}
                       description={[
-                        "• "+t('ourDelivery'),
-                        "• "+t('builtOnCommunity'),
+                        "• " + t("ourDelivery"),
+                        "• " + t("builtOnCommunity"),
                       ]}
                       web={true}
                       link={"https://enatega.com/"}
@@ -220,7 +277,7 @@ function Home() {
               </Grid>
             </Container>
           </Box>
-        </Box>
+        </Box> */}
 
         <Box className={classes.footerContainer}>
           <Box className={classes.footerWrapper}>
