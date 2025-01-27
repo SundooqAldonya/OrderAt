@@ -201,6 +201,9 @@ const ar = {
     warning: "تحذير",
     warningText: "أحد العناصر غير متاح",
     cash_only: "الدفع عند التوصيل",
+    business_name: "اسم الشركة",
+    business_address: "عنوان الشركة",
+    tell_us_business: "كلمنا عن عملك",
   },
 };
 export default ar;

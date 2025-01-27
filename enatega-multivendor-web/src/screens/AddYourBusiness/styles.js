@@ -17,6 +17,18 @@ const useStyles = makeStyles((theme) => ({
     },
     overflowX: "hidden",
   },
+  container: {
+    minHeight: 700,
+    marginBlock: 120,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wrapper: {
+    // background: "blue",
+    width: "50%",
+  },
   cardContainer: {
     background:
       "linear-gradient(180deg, theme.palette.common.whiteShade 0%, theme.palette.common.white 100%)",

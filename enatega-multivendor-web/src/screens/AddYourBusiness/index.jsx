@@ -6,36 +6,24 @@ import {
   useTheme,
   useMediaQuery,
   Typography,
+  TextField,
+  Button,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import FlashMessage from "../../components/FlashMessage";
 import { LoginHeader } from "../../components/Header";
 import Header from "../../components/Header/Header";
-import { SearchContainer } from "../../components/HomeScreen";
 import UserContext from "../../context/User";
 import { useLocation } from "../../hooks";
-// import Analytics from "../../utils/analytics";
 import useStyles from "./styles";
 import * as Sentry from "@sentry/react";
-import CategoryCards from "../../components/HomeScreen/CategoryCards";
-import WebApp from "../../assets/images/webapp.png";
-import CustApp from "../../assets/images/cust-app.png";
-import RiderApp from "../../assets/images/rider-app.png";
-import RestaurantApp from "../../assets/images/restaurant-app.png";
-import Dashboard from "../../assets/images/dashboard.png";
 import Footer from "../../components/Footer/Footer";
-import Fruits2 from "../../assets/images/fruits-2.png";
-import AppComponent from "../../components/HomeScreen/AppComponent";
-import Banner2 from "../../assets/images/banner-2.png";
-import Banner1 from "../../assets/images/banner-1.png";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import Logo from "../../assets/favicon.png";
 
 function AddYourBusiness() {
   const { t } = useTranslation();
   const classes = useStyles();
-  const theme = useTheme();
-
   const { error, loading } = useLocation();
   const [open, setOpen] = useState(!!error);
   const { isLoggedIn } = useContext(UserContext);
@@ -64,6 +52,70 @@ function AddYourBusiness() {
         />
         {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
 
+        <Box dir={"rtl"} className={classes.container}>
+          <Box sx={{ width: 200 }}>
+            <img src={Logo} alt={"logo"} style={{ width: "100%" }} />
+          </Box>
+          <Box sx={{ marginBottom: 3 }}>
+            <Typography variant="h4">{t("tell_us_business")}</Typography>
+          </Box>
+          <Grid
+            container
+            spacing={2}
+            component="form"
+            className={classes.wrapper}
+          >
+            <Grid
+              item
+              sm={12}
+              md={6}
+              sx={{ paddingInlineStart: "0 !important" }}
+            >
+              <TextField
+                sx={{ width: "100%" }}
+                id="outlined-basic"
+                label={t("name")}
+                variant="outlined"
+                placeholder={t("name")}
+              />
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <TextField
+                sx={{ width: "100%" }}
+                id="outlined-basic"
+                label={t("business_name")}
+                variant="outlined"
+                placeholder="Business Name"
+              />
+            </Grid>
+            <Grid
+              item
+              sm={12}
+              md={6}
+              sx={{ paddingInlineStart: "0 !important" }}
+            >
+              <TextField
+                sx={{ width: "100%" }}
+                id="outlined-basic"
+                label={t("business_address")}
+                variant="outlined"
+                placeholder="Business address"
+              />
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <TextField
+                sx={{ width: "100%" }}
+                id="outlined-basic"
+                label={t("phone")}
+                variant="outlined"
+                placeholder={t("phone")}
+              />
+            </Grid>
+            <Button sx={{ width: "100%", mt: 2 }} variant="contained">
+              {t("submit")}
+            </Button>
+          </Grid>
+        </Box>
         <Box className={classes.footerContainer}>
           <Box className={classes.footerWrapper}>
             <Footer />

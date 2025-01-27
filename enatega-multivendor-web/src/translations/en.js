@@ -206,6 +206,9 @@ const en = {
     warning: "warning",
     warningText: "One or more item is not available",
     cash_only: "Cash on delivery",
+    business_name: "Business Name",
+    business_address: "Business Address",
+    tell_us_business: "Tell us more about your business",
   },
 };
 export default en;
