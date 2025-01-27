@@ -150,8 +150,9 @@ function CartItemsCard({
                   removeQuantity(foodItem.key);
                   // }
                 }}
+                instructions={foodItem?.specialInstructions}
               />
-              <Typography>{foodItem.specialInstructions}</Typography>
+
               <Divider
                 orientation="horizontal"
                 style={{ backgroundColor: "rgb(72 71 71 / 66%)" }}

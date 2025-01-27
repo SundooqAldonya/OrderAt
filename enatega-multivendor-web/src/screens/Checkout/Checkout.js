@@ -358,14 +358,12 @@ function Checkout() {
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0;
     cart.forEach((cartItem) => {
-      console.log(cartItem);
       itemTotal += cartItem.price * cartItem.quantity;
     });
     if (withDiscount && coupon && coupon.discount) {
       itemTotal = itemTotal - (coupon.discount / 100) * itemTotal;
     }
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0;
-    console.log("price:", { itemTotal, deliveryAmount });
     return (itemTotal + deliveryAmount).toFixed(2);
   }
 
@@ -573,7 +571,6 @@ function Checkout() {
                 }}
                 zoom={14}
                 center={restCoordinates}
-                // onLoad={restCoordinates && onLoad}
                 options={{
                   // styles: mapStyles,
                   zoomControl: true,
@@ -737,7 +734,7 @@ function Checkout() {
                           variant="caption"
                           fontWeight={800}
                         >
-                          {location?.label}
+                          {`(${location?.label})`}
                         </Typography>
                       </Box>
                       <Typography
@@ -820,7 +817,6 @@ function Checkout() {
               <PersonalCard
                 toggleModal={toggleAdressModal}
                 location={location}
-                instructions={cart.length ? cart[0].specialInstructions : null}
               />
               <PaymentCard
                 paymentMethod={paymentMethod}

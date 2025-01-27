@@ -210,6 +210,8 @@ const en = {
     business_address: "Business Address",
     tell_us_business: "Tell us more about your business",
     created_business: "Created business successfully!",
+    label: "Label",
+    delivery_details: "Delivery Details",
   },
 };
 export default en;

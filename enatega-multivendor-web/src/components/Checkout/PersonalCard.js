@@ -129,7 +129,12 @@ function PersonalCard({ toggleModal, location, instructions }) {
                 backgroundColor: "rgb(72 71 71 / 66%)",
               }}
             />
-            <Box display="flex" justifyContent="space-between">
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              mb={1}
+            >
               <Typography
                 style={{
                   ...theme.typography.body1,
@@ -145,16 +150,17 @@ function PersonalCard({ toggleModal, location, instructions }) {
                   color: theme.palette.common.black,
                   fontWeight: 600,
                   fontSize: "0.875rem",
-                  paddingLeft: 10,
+                  paddingInlineStart: 10,
                 }}
               >
-                {location?.deliveryAddress?.split(",")[0] ?? ""}
+                {location?.deliveryAddress ?? ""}
               </Typography>
             </Box>
             <Box
               display="flex"
+              sx={{ width: "10%" }}
               justifyContent="space-between"
-              flexDirection={"column"}
+              mb={1}
             >
               <Typography
                 style={{
@@ -163,7 +169,7 @@ function PersonalCard({ toggleModal, location, instructions }) {
                   fontSize: "0.875rem",
                 }}
               >
-                Instructions:
+                {t("label")}:
               </Typography>
               <Typography
                 style={{
@@ -171,10 +177,37 @@ function PersonalCard({ toggleModal, location, instructions }) {
                   color: theme.palette.common.black,
                   fontWeight: 600,
                   fontSize: "0.875rem",
-                  // paddingLeft: 10,
+                  paddingLeft: 10,
                 }}
               >
-                {instructions}
+                {location?.label ?? ""}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              mb={1}
+            >
+              <Typography
+                style={{
+                  ...theme.typography.body1,
+                  color: theme.palette.text.secondary,
+                  fontSize: "0.875rem",
+                }}
+              >
+                {t("delivery_details")}:
+              </Typography>
+              <Typography
+                style={{
+                  ...theme.typography.caption,
+                  color: theme.palette.common.black,
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                  paddingLeft: 10,
+                }}
+              >
+                {location?.details ?? ""}
               </Typography>
             </Box>
             <Box display="flex" justifyContent="center">

@@ -200,6 +200,7 @@ function CartView(props) {
             removeQuantity={() => {
               removeQuantity(foodItem.key);
             }}
+            instructions={foodItem?.specialInstructions}
           />
         ))}
       </Container>

@@ -268,8 +268,8 @@ function RestaurantDetail() {
           style={{ display: "flex", flexDirection: "row-reverse" }}
           className={classes.bg}
         >
-          {/* {!isTablet && <RestaurantCart showMessage={showMessage} />} */}
-          <RestaurantCart showMessage={showMessage} />
+          {!isTablet && <RestaurantCart showMessage={showMessage} />}
+
           <Grid item lg={9} xs={12}>
             <Container
               maxWidth="xl"

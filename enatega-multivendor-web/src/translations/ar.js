@@ -205,6 +205,8 @@ const ar = {
     business_address: "عنوان الشركة",
     tell_us_business: "كلمنا عن عملك",
     created_business: "تم إنشاء الشركة!",
+    label: "المنطقة",
+    delivery_details: "معلومات التوصيل",
   },
 };
 export default ar;

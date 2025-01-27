@@ -57,6 +57,7 @@ function DHeader({
           <Box
             style={{
               width: 200,
+              height: 100,
             }}
           >
             <img
@@ -64,6 +65,7 @@ function DHeader({
               alt="logo"
               style={{
                 width: "100%",
+                height: "100%",
               }}
             />
           </Box>
