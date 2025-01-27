@@ -46,22 +46,27 @@ function AddYourBusiness() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutateCreateBusiness({
-      variables: {
-        businessInput: {
-          name,
-          businessName,
-          phone,
-          address,
+    if (!name || !businessName || !phone || !address) {
+      setMessage("All fields are required");
+      setOpenAlert(true);
+    } else {
+      mutateCreateBusiness({
+        variables: {
+          businessInput: {
+            name,
+            businessName,
+            phone,
+            address,
+          },
         },
-      },
-    });
-    setValues({
-      name: "",
-      businessName: "",
-      address: "",
-      phone: "",
-    });
+      });
+      setValues({
+        name: "",
+        businessName: "",
+        address: "",
+        phone: "",
+      });
+    }
   };
 
   return (
