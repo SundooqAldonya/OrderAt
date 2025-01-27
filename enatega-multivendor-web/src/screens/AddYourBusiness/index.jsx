@@ -12,9 +12,10 @@ import { useTranslation } from "react-i18next";
 import Logo from "../../assets/favicon.png";
 import { useMutation } from "@apollo/client";
 import { createBusiness } from "../../apollo/server";
+import { direction } from "../../utils/helper";
 
 function AddYourBusiness() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const classes = useStyles();
   const { isLoggedIn } = useContext(UserContext);
   const [message, setMessage] = useState("");
@@ -74,86 +75,84 @@ function AddYourBusiness() {
         />
         {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
 
-        <Box dir={"rtl"} className={classes.container}>
-          <Box sx={{ width: 200 }}>
-            <img src={Logo} alt={"logo"} style={{ width: "100%" }} />
-          </Box>
-          <Box sx={{ marginBottom: 3 }}>
-            <Typography variant="h4">{t("tell_us_business")}</Typography>
-          </Box>
-          <Grid
-            container
-            spacing={2}
-            component="form"
-            className={classes.wrapper}
-            onSubmit={handleSubmit}
-          >
+        <Box dir={direction(i18n.language)} className={classes.container}>
+          <Box className={classes.wrapper}>
+            <Box sx={{ width: 200, marginBottom: 5 }}>
+              <img src={Logo} alt={"logo"} style={{ width: "100%" }} />
+            </Box>
+            <Box
+              sx={{
+                marginBottom: 3,
+                alignSelf: "flex-start",
+              }}
+            >
+              <Typography sx={{ textAlign: "end" }} variant="h4">
+                {t("tell_us_business")}
+              </Typography>
+            </Box>
             <Grid
-              item
-              sm={12}
-              md={6}
-              sx={{ paddingInlineStart: "0 !important" }}
+              container
+              // spacing={2}
+              component="form"
+              onSubmit={handleSubmit}
             >
-              <TextField
-                sx={{ width: "100%" }}
-                id="outlined-basic"
-                label={t("name")}
-                variant="outlined"
-                placeholder={t("name")}
-                name="name"
-                onChange={handleChange}
-                value={name}
-              />
+              <Grid item sm={12} md={12} sx={{ marginBottom: 2 }}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="outlined-basic"
+                  label={t("name")}
+                  variant="outlined"
+                  placeholder={t("name")}
+                  name="name"
+                  onChange={handleChange}
+                  value={name}
+                />
+              </Grid>
+              <Grid item sm={12} md={12} sx={{ marginBottom: 2 }}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="outlined-basic"
+                  label={t("business_name")}
+                  variant="outlined"
+                  placeholder={t("business_name")}
+                  name="businessName"
+                  onChange={handleChange}
+                  value={businessName}
+                />
+              </Grid>
+              <Grid item sm={12} md={12} sx={{ marginBottom: 2 }}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="outlined-basic"
+                  label={t("business_address")}
+                  variant="outlined"
+                  placeholder={t("business_address")}
+                  name="address"
+                  onChange={handleChange}
+                  value={address}
+                />
+              </Grid>
+              <Grid item sm={12} md={12} sx={{ marginBottom: 2 }}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="outlined-basic"
+                  label={t("phone")}
+                  variant="outlined"
+                  placeholder={t("phone")}
+                  name="phone"
+                  onChange={handleChange}
+                  value={phone}
+                />
+              </Grid>
+              <Button
+                type="submit"
+                sx={{ width: 200, mt: 2, mx: "auto" }}
+                variant="contained"
+              >
+                {t("submit")}
+              </Button>
             </Grid>
-            <Grid item sm={12} md={6}>
-              <TextField
-                sx={{ width: "100%" }}
-                id="outlined-basic"
-                label={t("business_name")}
-                variant="outlined"
-                placeholder={t("business_name")}
-                name="businessName"
-                onChange={handleChange}
-                value={businessName}
-              />
-            </Grid>
-            <Grid
-              item
-              sm={12}
-              md={6}
-              sx={{ paddingInlineStart: "0 !important" }}
-            >
-              <TextField
-                sx={{ width: "100%" }}
-                id="outlined-basic"
-                label={t("business_address")}
-                variant="outlined"
-                placeholder={t("business_address")}
-                name="address"
-                onChange={handleChange}
-                value={address}
-              />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <TextField
-                sx={{ width: "100%" }}
-                id="outlined-basic"
-                label={t("phone")}
-                variant="outlined"
-                placeholder={t("phone")}
-                name="phone"
-                onChange={handleChange}
-                value={phone}
-              />
-            </Grid>
-            <Button
-              type="submit"
-              sx={{ width: 200, mt: 2, mx: "auto" }}
-              variant="contained"
-            >
-              {t("submit")}
-            </Button>
-          </Grid>
+          </Box>
         </Box>
         <Box className={classes.footerContainer}>
           <Box className={classes.footerWrapper}>

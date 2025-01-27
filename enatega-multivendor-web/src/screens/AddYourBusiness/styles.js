@@ -26,7 +26,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   wrapper: {
-    // background: "blue",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     width: "50%",
   },
   cardContainer: {
