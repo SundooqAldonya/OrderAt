@@ -1422,7 +1422,15 @@ const typeDefs = gql`
     coordinates: [Float!]
   }
 
+  input BusinessInput {
+    name: String!
+    businessName: String!
+    address: String!
+    phone: String!
+  }
+
   type Mutation {
+    createBusiness(businessInput: BusinessInput): Message
     searchUsersByBusiness(searchText: String!): User
     createArea(areaInput: AreaInput!): Message
     editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message

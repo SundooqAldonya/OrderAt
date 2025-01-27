@@ -1,3 +1,5 @@
+import { gql } from "@apollo/client";
+
 export const sendChatMessage = `mutation SendChatMessage($orderId: ID!, $messageInput: ChatMessageInput!) {
   sendChatMessage(message: $messageInput, orderId: $orderId) {
     success
@@ -1154,3 +1156,11 @@ export const subscriptionNewMessage = `subscription SubscriptionNewMessage($orde
     createdAt
   }
 }`;
+
+export const createBusiness = gql`
+  mutation CreateBusiness($businessInput: BusinessInput) {
+    createBusiness(businessInput: $businessInput) {
+      message
+    }
+  }
+`;

@@ -4,11 +4,12 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.6",
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^5.0.1",
     "@mui/lab": "^5.0.0-alpha.48",
-    "@mui/material": "^5.0.1",
+    "@mui/material": "^5.16.14",
     "@mui/styles": "^5.0.1",
     "@react-google-maps/api": "^2.0.2",
     "@sentry/react": "^6.16.1",
@@ -50,6 +51,7 @@
     "reactjs-social-login": "^2.6.3",
     "source-map-explorer": "^2.5.2",
     "stripe": "^12.3.0",
+    "stylis-plugin-rtl": "^2.1.1",
     "subscriptions-transport-ws": "^0.9.19",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"
