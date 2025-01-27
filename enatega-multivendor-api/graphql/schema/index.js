@@ -1259,7 +1259,16 @@ const typeDefs = gql`
     location: LocationArea
   }
 
+  type Business {
+    _id: String!
+    name: String!
+    businessName: String!
+    address: String!
+    phone: String!
+  }
+
   type Query {
+    getBusinesses: [Business!]
     areasByCity(id: String!): [Area!]
     areas: [Area!]
     cities: [CityArea!]

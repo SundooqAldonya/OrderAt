@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const getOrders = `query Orders($page:Int){
     allOrders(page:$page){
       _id
@@ -762,6 +764,17 @@ export const getUsersBySearch = `
     }
       createdAt
       updatedAt
+    }
+  }
+`
+export const getBusinesses = gql`
+  query GetBusinesses {
+    getBusinesses {
+      _id
+      name
+      phone
+      businessName
+      address
     }
   }
 `

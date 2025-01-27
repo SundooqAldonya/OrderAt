@@ -1,21 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Grid,
-  Container,
-  Box,
-  useTheme,
-  useMediaQuery,
-  Typography,
-  TextField,
-  Button,
-  Alert,
-} from "@mui/material";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Grid, Box, Typography, TextField, Button } from "@mui/material";
+import React, { useCallback, useContext, useState } from "react";
 import FlashMessage from "../../components/FlashMessage";
 import { LoginHeader } from "../../components/Header";
 import Header from "../../components/Header/Header";
 import UserContext from "../../context/User";
-import { useLocation } from "../../hooks";
 import useStyles from "./styles";
 import * as Sentry from "@sentry/react";
 import Footer from "../../components/Footer/Footer";
@@ -27,8 +16,6 @@ import { createBusiness } from "../../apollo/server";
 function AddYourBusiness() {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { error, loading } = useLocation();
-  const [open, setOpen] = useState(!!error);
   const { isLoggedIn } = useContext(UserContext);
   const [message, setMessage] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
@@ -40,8 +27,6 @@ function AddYourBusiness() {
   });
 
   const { name, businessName, phone, address } = values;
-
-  let check = false;
 
   const [mutateCreateBusiness] = useMutation(createBusiness, {
     onCompleted: (data) => {

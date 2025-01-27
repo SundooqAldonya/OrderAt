@@ -52,11 +52,13 @@ import { ReactComponent as PaymentIcon } from './assets/svg/payment.svg'
 import { ReactComponent as RatingIcon } from './assets/svg/rating.svg'
 import { ReactComponent as TimingIcon } from './assets/svg/timings.svg'
 import { ReactComponent as RestaurantSectionIcon } from './assets/svg/restSection.svg'
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import SuperAdminDashboard from './views/SuperAdminDashboard'
 import Cuisines from './views/Cuisines'
 import Banners from './views/Banners'
 import Cities from './views/Cities'
 import Areas from './views/Areas'
+import Businesses from './views/Businesses'
 
 var routes = [
   {
@@ -172,6 +174,15 @@ var routes = [
     name: 'Areas',
     icon: ZonesIcon,
     component: Areas,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/businesses',
+    name: 'Businesses',
+    icon: BusinessCenterIcon,
+    component: Businesses,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

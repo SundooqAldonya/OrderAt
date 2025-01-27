@@ -61,7 +61,8 @@ const rootResolver = {
     ...demo.Query,
     ...food.Query,
     ...cities.Query,
-    ...areas.Query
+    ...areas.Query,
+    ...businesses.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,

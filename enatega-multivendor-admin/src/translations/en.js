@@ -331,12 +331,16 @@ const en = {
     UpdateError: 'Update Error',
     'The value Should not be in the negative':
       'The value should not be negative',
-
     CostType: 'Cost Type',
     PerKM: 'Per KM',
     FixedCost: 'Fixed Cost',
     add_addons: 'Add addons',
-    edit_addons: 'Edit addons'
+    edit_addons: 'Edit addons',
+    business_name: 'Business Name',
+    business_address: 'Business Address',
+    tell_us_business: 'Tell us more about your business',
+    created_business: 'Created business successfully!',
+    add_business: 'Create Business'
   }
 }
 

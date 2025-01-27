@@ -315,11 +315,15 @@ const ar = {
     UpdateSuccessful: '!تم التحديث بنجاح',
     UpdateError: ' خطأ في التحديث',
     'The value Should not be in the negative': ' يجب أن لا يكون القيمة سالبة',
-
     CostType: 'نوع التكلفة',
     PerKM: 'لكل كيلومتر',
     FixedCost: 'تكلفة ثابتة',
-    add_addons: 'الإضافات'
+    add_addons: 'الإضافات',
+    business_name: 'اسم الشركة',
+    business_address: 'عنوان الشركة',
+    tell_us_business: 'كلمنا عن عملك',
+    created_business: 'تم إنشاء الشركة!',
+    add_business: 'إنشئ شركة'
   }
 }
 

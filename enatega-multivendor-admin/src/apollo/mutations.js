@@ -852,3 +852,10 @@ export const REMOVE_CITY = gql`
     }
   }
 `
+export const createBusiness = gql`
+  mutation CreateBusiness($businessInput: BusinessInput) {
+    createBusiness(businessInput: $businessInput) {
+      message
+    }
+  }
+`
