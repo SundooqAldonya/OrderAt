@@ -47,6 +47,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './store/presistor'
 import { useKeepAwake } from 'expo-keep-awake'
+import RNRestart from 'react-native-restart'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -88,13 +89,13 @@ export default function App() {
     Montserrat_900Black_Italic
   })
 
-  // useEffect(() => {
-  //   if (i18n.language === 'ar' && !I18nManager.isRTL) {
-  //     I18nManager.allowRTL(true)
-  //     I18nManager.forceRTL(true)
-  //     console.log({ isRTL: I18nManager.isRTL })
-  //   }
-  // }, [i18n.language])
+  useEffect(() => {
+    if (I18nManager.isRTL) {
+      I18nManager.allowRTL(false)
+      I18nManager.forceRTL(false)
+      // RNRestart.Restart()
+    }
+  }, [I18nManager.isRTL])
 
   useEffect(() => {
     ;(async () => {

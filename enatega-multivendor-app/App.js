@@ -116,6 +116,14 @@ export default function App() {
     Montserrat_900Black_Italic
   })
 
+  useEffect(() => {
+    if (I18nManager.isRTL) {
+      I18nManager.allowRTL(false)
+      I18nManager.forceRTL(false)
+      // RNRestart.Restart()
+    }
+  }, [I18nManager.isRTL])
+
   useWatchLocation()
   useEffect(() => {
     const loadAppData = async () => {

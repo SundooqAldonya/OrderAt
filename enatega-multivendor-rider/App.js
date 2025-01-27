@@ -4,7 +4,8 @@ import {
   View,
   StatusBar,
   StyleSheet,
-  LogBox
+  LogBox,
+  I18nManager
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Font from 'expo-font'
@@ -85,6 +86,14 @@ export default function App() {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic
   })
+
+  useEffect(() => {
+    if (I18nManager.isRTL) {
+      I18nManager.allowRTL(false)
+      I18nManager.forceRTL(false)
+      // RNRestart.Restart()
+    }
+  }, [I18nManager.isRTL])
 
   useEffect(() => {
     ;(async () => {
