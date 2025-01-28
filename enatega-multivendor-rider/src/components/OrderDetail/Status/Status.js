@@ -1,4 +1,11 @@
-import { Image, Linking, TouchableOpacity, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  Linking,
+  Platform,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import styles from './style'
 import colors from '../../../utilities/colors'
@@ -12,6 +19,7 @@ import useOrderDetail from '../../../screens/OrderDetail/useOrderDetail'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native'
+import { openGoogleMaps } from '../../../utilities/callMaps'
 
 const formatTime = date =>
   new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
@@ -161,20 +169,6 @@ const StatusRow = ({
   const isArabic = i18n.language === 'ar'
 
   console.log({ location })
-
-  const openGoogleMaps = ({ latitude, longitude }) => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
-
-    Linking.canOpenURL(url)
-      .then(supported => {
-        if (supported) {
-          Linking.openURL(url)
-        } else {
-          Alert.alert('Error', 'Unable to open Google Maps')
-        }
-      })
-      .catch(err => console.error('An error occurred', err))
-  }
 
   return (
     <View

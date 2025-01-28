@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Linking } from 'react-native'
+import { View, TouchableOpacity, Linking, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -9,6 +9,8 @@ import CountDown from 'react-native-countdown-component'
 import useDetails from './useDetails'
 import { useTranslation } from 'react-i18next'
 import { callNumber } from '../../../utilities/callNumber'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import { openGoogleMaps } from '../../../utilities/callMaps'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -149,20 +151,6 @@ const OrderDetails = ({ order }) => {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
 
-  const openGoogleMaps = ({ latitude, longitude }) => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
-
-    Linking.canOpenURL(url)
-      .then(supported => {
-        if (supported) {
-          Linking.openURL(url)
-        } else {
-          Alert.alert('Error', 'Unable to open Google Maps')
-        }
-      })
-      .catch(err => console.error('An error occurred', err))
-  }
-
   return (
     <View style={styles.orderDetails}>
       <View
@@ -198,16 +186,32 @@ const OrderDetails = ({ order }) => {
           style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
           {t('user_phone')}
         </TextDefault>
-        <TextDefault
-          bolder
-          H5
-          textColor={colors.black}
-          style={{ ...styles.col2, textTransform: 'capitalize' }}>
-          {order.user.phone}
-        </TextDefault>
+        <View
+          style={{
+            display: 'flex',
+            flex: 2.5,
+            flexDirection: isArabic ? 'row' : 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ ...styles.col2, textTransform: 'capitalize' }}>
+            {order.user.phone}
+          </TextDefault>
+          <EvilIcons
+            size={24}
+            name="external-link"
+            style={{
+              color: '#000',
+              marginTop: -20
+            }}
+          />
+        </View>
       </TouchableOpacity>
       <TouchableOpacity
-        // style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}
         onPress={() =>
           openGoogleMaps({
             latitude: order.restaurant.location.coordinates[1],
