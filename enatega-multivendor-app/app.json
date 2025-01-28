@@ -10,24 +10,19 @@
     "androidStatusBar": {
       "backgroundColor": "#000"
     },
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "google": {
       "iosClientId": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
       "androidClientId": "133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com"
     },
     "orientation": "portrait",
-    "icon": "./assets/icon2.png",
+    "icon": "./assets/logo.jpg",
     "splash": {
-      "image": "./assets/splash2.png",
+      "image": "./assets/logo.jpg",
       "resizeMode": "cover",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#fff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
@@ -39,9 +34,7 @@
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use location to determine the delivery address for your orders.",
-        "UIBackgroundModes": [
-          "remote-notification"
-        ],
+        "UIBackgroundModes": ["remote-notification"],
         "NSUserTrackingUsageDescription": "Allow this app to collect app-related data that can be used for tracking you or your device.",
         "CFBundleURLTypes": [
           {
@@ -105,9 +98,7 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $Customer Multivendor to use your location."
         }
       ],
-      [
-        "expo-font"
-      ],
+      ["expo-font"],
       "sentry-expo"
     ],
     "extra": {

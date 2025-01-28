@@ -35,22 +35,16 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { useSelector } from 'react-redux'
 import 'react-native-get-random-values'
 
-const { width, height } = Dimensions.get('window')
+// const { width, height } = Dimensions.get('window')
 
 const GET_CITY_AREAS = gql`
   ${getCityAreas}
 `
-
-const token =
-  'nzu3zF6IpFPbvb-8-JY6dwcOJsKDhqXbW4bLkbWjrtt0ldh0ZHc0tTkr0GfqOSdaM4U'
 const RegisterUser = () => {
   const { t } = useTranslation()
   const { phone } = useRoute().params
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [isClicked, setIsClicked] = useState(false)
-  const [checkoutModal, setCheckoutModal] = useState(true)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isVisible2, setIsVisible2] = useState(false)
   const [areaIsVisible, setAreaIsVisible] = useState(false)
   const [userData, setUserData] = useState({
     name: '',
@@ -58,16 +52,8 @@ const RegisterUser = () => {
     phone: phone,
     address: ''
   })
-  const [cities, setCities] = useState([])
-  const [currentData, setCurrentData] = useState([])
-  const [governate, setGovernate] = useState([])
-  const cityRef = useRef < TextInput > null
-  const stateRef = useRef < TextInput > null
-  const [selectedGovernate, setSelectedGovernate] = useState('')
-  const [selectedCity, setSelectedCity] = useState('')
   const [selectedArea, setSelectedArea] = useState(null)
   const [locationAddress, setLocationAddress] = useState('')
-  // const { city, setCity } = useContext(RestaurantContext)
   const { cityId } = useSelector(state => state.city)
   console.log({ cityId })
 
@@ -80,29 +66,8 @@ const RegisterUser = () => {
     variables: { id: cityId }
   })
 
-  console.log({ here: dataAreas })
-  // console.log({ city })
-
   const navigation = useNavigation()
-  const laodGovernates = async () => {
-    await getGovernate()
-      .then(res => {
-        if (res) {
-          setGovernate(res.data)
-        }
-      })
-      .catch(res => console.log(res))
-  }
-  const loadCities = async () => {
-    await getCities(selectedGovernate)
-      .then(res => {
-        if (res) {
-          console.log(res.data)
-          setCities(res.data)
-        }
-      })
-      .catch(res => console.log(res))
-  }
+
   const [findOrCreateUser, { loading, error }] = useMutation(
     FIND_OR_CREATE_USER,
     {
@@ -116,18 +81,7 @@ const RegisterUser = () => {
     }
   )
 
-  useEffect(() => {
-    laodGovernates()
-  }, [])
-
   const onSave = () => {
-    // Object.keys(userData).map(item => {
-    // if (userData[item] == '') {
-    // Alert.alert(
-    //   'Validation Error',
-    //   'All fields required you need to feel all fields'
-    // )
-    // } else {
     if (!userData.name || !userData.address || !userData.phone) {
       Alert.alert(
         'Validation Error',
@@ -174,194 +128,8 @@ const RegisterUser = () => {
         })
       }
     })
-    // }
-    // console.log('lllll', item, '=', userData[item])
-    // })
   }
-  const SelectBox = ({ data, title }) => (
-    <View>
-      <TouchableOpacity
-        onPress={() => {
-          setIsVisible(true)
-        }}
-        style={styles.inputs}>
-        <Text
-          style={{
-            fontFamily: 'Montserrat_400Regular',
-            fontSize: 16,
-            color: '#666'
-          }}>
-          {userData.governate ?? 'Select Governate'}
-        </Text>
-      </TouchableOpacity>
-      <Modal
-        visible={isVisible}
-        style={{ flex: 1, height: height }}
-        transparent
-        animationType="slide">
-        <View
-          style={{
-            flex: 1,
-            width: width,
-            height: height,
-            backgroundColor: colors.green
-          }}>
-          <Text
-            style={{
-              fontFamily: 'Montserrat_500Medium',
-              fontSize: scale(18),
-              margin: 10
-            }}>
-            Select {title}
-          </Text>
-          <TouchableOpacity
-            onPress={() => setIsVisible(false)}
-            style={{ position: 'absolute', left: '90%', top: 10 }}>
-            <Ionicons name="close" size={scale(25)} />
-          </TouchableOpacity>
-          <FlatList
-            data={governate}
-            style={{ height: height / 1.1 }}
-            ListHeaderComponent={
-              <TextInput
-                placeholder={`Search ${title}`}
-                style={{
-                  backgroundColor: '#fff',
-                  paddingHorizontal: 10,
-                  margin: 10,
-                  borderRadius: 5,
-                  color: '#333'
-                }}
-              />
-            }
-            ItemSeparatorComponent={
-              <View
-                style={{ height: 1, backgroundColor: colors.borderColor }}
-              />
-            }
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserData({ ...userData, governate: item?.state_name })
-                  setSelectedGovernate(item?.state_name)
-                  loadCities()
-                  setIsVisible(false)
-                }}
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 16,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor: colors.buttonBackground,
-                  paddingVertical: 10
-                }}>
-                <Text style={{ flex: 1 }}>{item?.state_name}</Text>
-                {item?.state_name == selectedGovernate && (
-                  <Ionicons name="checkmark" size={scale(20)} />
-                )}
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </Modal>
-    </View>
-  )
-  const SelectBox2 = ({ data, title }) => (
-    <View>
-      <TouchableOpacity
-        onPress={() => {
-          if (selectedGovernate) {
-            setIsVisible2(true)
-          } else {
-            Alert.alert(
-              'Please select govermate first',
-              'It help us to fetch the cities accordingly.'
-            )
-          }
-        }}
-        style={styles.inputs}>
-        <Text
-          style={{
-            fontFamily: 'Montserrat_400Regular',
-            fontSize: 16,
-            color: '#666'
-          }}>
-          {userData.city ?? 'Select City'}
-        </Text>
-      </TouchableOpacity>
-      <Modal
-        visible={isVisible2}
-        style={{ flex: 1, height: height }}
-        transparent
-        animationType="slide">
-        <View
-          style={{
-            flex: 1,
-            width: width,
-            height: height,
-            backgroundColor: colors.green
-          }}>
-          <Text
-            style={{
-              fontFamily: 'Montserrat_500Medium',
-              fontSize: scale(18),
-              margin: 10
-            }}>
-            Select {title}
-          </Text>
-          <TouchableOpacity
-            onPress={() => setIsVisible2(false)}
-            style={{ position: 'absolute', left: '90%', top: 10 }}>
-            <Ionicons name="close" size={scale(25)} />
-          </TouchableOpacity>
-          <FlatList
-            data={data}
-            style={{ height: height / 1.1 }}
-            ListHeaderComponent={
-              <TextInput
-                placeholder={`Search City`}
-                style={{
-                  backgroundColor: '#fff',
-                  paddingHorizontal: 10,
-                  margin: 10,
-                  borderRadius: 5,
-                  color: '#333'
-                }}
-              />
-            }
-            ItemSeparatorComponent={
-              <View
-                style={{ height: 1, backgroundColor: colors.borderColor }}
-              />
-            }
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedCity(item?.city_name)
-                  setUserData({ ...userData, city: item?.city_name })
-                  setIsVisible2(false)
-                }}
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 16,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor: colors.buttonBackground,
-                  paddingVertical: 10
-                }}>
-                <Text style={{ flex: 1 }}>{item?.city_name}</Text>
-                {item?.city_name == selectedCity && (
-                  <Ionicons name="checkmark" size={scale(20)} />
-                )}
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </Modal>
-    </View>
-  )
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
       <KeyboardAvoidingView
@@ -392,18 +160,20 @@ const RegisterUser = () => {
         />
 
         <View style={{ flex: 1 }}>
-          <TextDefault
-            H5
-            bold
-            style={{
-              marginHorizontal: 10,
-              textAlign: 'center',
-              marginHorizontal: scale(30)
-            }}
-            textColor={'#000'}>
-            {t('saveuserdetailsandcontinuetocompletetheorder')}
-          </TextDefault>
-          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+          <View>
+            <TextDefault
+              H5
+              bold
+              style={{
+                marginHorizontal: 10,
+                textAlign: 'center',
+                marginHorizontal: scale(30)
+              }}
+              textColor={'#000'}>
+              {t('saveuserdetailsandcontinuetocompletetheorder')}
+            </TextDefault>
+          </View>
+          <View style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <View>
               <TextInput
                 value={userData.phone}
@@ -417,14 +187,7 @@ const RegisterUser = () => {
                 placeholder={t('fullname')}
                 style={styles.inputs}
               />
-              {/* <TextInput
-                value={userData.governate}
-                onChangeText={text =>
-                  setUserData({ ...userData, governate: text })
-                }
-                placeholder={t('entergovernate')}
-                style={styles.inputs}
-              /> */}
+
               <TouchableOpacity
                 style={{
                   backgroundColor: '#fff',
@@ -439,7 +202,7 @@ const RegisterUser = () => {
                   marginHorizontal: 16
                 }}
                 onPress={() => {
-                  setAreaIsVisible(!areaIsVisible)
+                  setAreaIsVisible(true)
                 }}>
                 <TextDefault
                   style={{
@@ -478,7 +241,7 @@ const RegisterUser = () => {
                 </TouchableOpacity>
               </View>
               {isClicked ? (
-                <View style={{ marginBottom: 15 }}>
+                <View style={{ flex: 1, marginBottom: 80 }}>
                   <GooglePlacesAutocomplete
                     placeholder={t('searchforaplace')}
                     onPress={(data, details = null) => {
@@ -509,10 +272,6 @@ const RegisterUser = () => {
                   />
                 </View>
               ) : null}
-              {/* <TextInput value={userData.city} onChangeText={(text) => setUserData({ ...userData, city: text })} placeholder='Enter City' style={styles.inputs} /> */}
-              {/* <SelectBox data={governate} title="Governate" />
-        <SelectBox2 data={cities} title="Cities" /> */}
-              {/* <TextInput value={userData.area} onChangeText={(text) => setUserData({ ...userData, area: text })} placeholder='Enter Area' style={styles.inputs} /> */}
             </View>
             <TouchableOpacity
               onPress={onSave}
@@ -530,9 +289,9 @@ const RegisterUser = () => {
                 {t('saveandcontinue')}
               </TextDefault>
             </TouchableOpacity>
-          </ScrollView>
+          </View>
         </View>
-        <Modal visible={areaIsVisible} transparent animationType="slide">
+        {/* <Modal visible={areaIsVisible} transparent animationType="slide">
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => setAreaIsVisible(false)}
@@ -594,13 +353,11 @@ const RegisterUser = () => {
               )
             })}
           </ScrollView>
-        </Modal>
+        </Modal> */}
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
-
-export default RegisterUser
 
 const styles = StyleSheet.create({
   inputs: {
@@ -616,3 +373,5 @@ const styles = StyleSheet.create({
     fontSize: 16
   }
 })
+
+export default RegisterUser

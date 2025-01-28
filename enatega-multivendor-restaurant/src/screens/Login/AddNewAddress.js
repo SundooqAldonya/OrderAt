@@ -205,7 +205,7 @@ const AddNewAddress = () => {
             textColor={'#000'}>
             {t('Add new address')}
           </TextDefault>
-          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+          <View style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <View>
               <TouchableOpacity
                 style={{
@@ -260,7 +260,7 @@ const AddNewAddress = () => {
                 </TouchableOpacity>
               </View>
               {isClicked ? (
-                <View style={{ marginBottom: 15 }}>
+                <View style={{ marginBottom: 80 }}>
                   <GooglePlacesAutocomplete
                     placeholder={t('searchforaplace')}
                     onPress={(data, details = null) => {
@@ -308,7 +308,7 @@ const AddNewAddress = () => {
                 {t('saveandcontinue')}
               </TextDefault>
             </TouchableOpacity>
-          </ScrollView>
+          </View>
         </View>
         <Modal visible={areaIsVisible} transparent animationType="slide">
           <TouchableOpacity

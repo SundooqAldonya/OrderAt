@@ -26,6 +26,7 @@ import getEnvVars from './environment'
 import moment from 'moment-timezone'
 import { useTranslation } from 'react-i18next'
 import { useKeepAwake } from 'expo-keep-awake'
+import RNRestart from 'react-native-restart'
 
 import {
   useFonts,
@@ -91,7 +92,7 @@ export default function App() {
     if (I18nManager.isRTL) {
       I18nManager.allowRTL(false)
       I18nManager.forceRTL(false)
-      // RNRestart.Restart()
+      RNRestart.Restart()
     }
   }, [I18nManager.isRTL])
 

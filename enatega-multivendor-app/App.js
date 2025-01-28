@@ -38,6 +38,8 @@ import ReviewModal from './src/components/Review'
 import { NOTIFICATION_TYPES } from './src/utils/enums'
 import { useColorScheme } from 'react-native'
 import useWatchLocation from './src/ui/hooks/useWatchLocation'
+import RNRestart from 'react-native-restart'
+
 import {
   useFonts,
   Montserrat_100Thin,
@@ -120,7 +122,7 @@ export default function App() {
     if (I18nManager.isRTL) {
       I18nManager.allowRTL(false)
       I18nManager.forceRTL(false)
-      // RNRestart.Restart()
+      RNRestart.Restart()
     }
   }, [I18nManager.isRTL])
 
