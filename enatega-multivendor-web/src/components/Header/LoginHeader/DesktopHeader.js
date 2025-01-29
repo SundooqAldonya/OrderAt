@@ -17,6 +17,18 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
   const classes = useStyle();
   const theme = useTheme();
   const location = useLocation();
+  const currentLang = localStorage.getItem("enatega-language");
+
+  const handleLanguageChange = () => {
+    const savedLanguage = localStorage.getItem("enatega-language");
+    if (savedLanguage === "en") {
+      localStorage.setItem("enatega-language", "ar");
+    } else {
+      localStorage.setItem("enatega-language", "en");
+    }
+    window.location.reload();
+  };
+
   return (
     <AppBar elevation={0} position="fixed">
       <Toolbar className={classes.toolbar}>
@@ -26,7 +38,21 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
         >
           <Logo height={37} width={169} />
         </RouterLink>
-        <Box className={classes.flex}>
+
+        <Box
+          className={classes.flex}
+          sx={{
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Button
+              onClick={handleLanguageChange}
+              sx={{ fontSize: "20px", color: "#000" }}
+            >
+              {currentLang === "en" ? "عربي" : "EN"}
+            </Button>
+          </Box>
           {showIcon && (
             <>
               <Divider flexItem orientation="vertical" light />

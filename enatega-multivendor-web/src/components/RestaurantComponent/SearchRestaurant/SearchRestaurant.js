@@ -10,10 +10,10 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import React from "react";
 import SearchIcon from "../../../assets/icons/SearchIcon";
 import useStyles from "./styles";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-function SearchRestaurant({ search, setSearch }) {
-  const { t  } = useTranslation();
+function SearchRestaurant({ search, setSearch, navbar }) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const extraSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles(extraSmall);
@@ -28,7 +28,7 @@ function SearchRestaurant({ search, setSearch }) {
             flex: 1,
             alignItems: "center",
             padding: "12px",
-            background: theme.palette.common.white,
+            background: navbar ? "#efefef" : theme.palette.common.white,
             borderRadius: 5,
           }}
         >
@@ -37,9 +37,12 @@ function SearchRestaurant({ search, setSearch }) {
             disableUnderline={true}
             fullWidth
             type="text"
-            placeholder= {t('searchRestaurantPlaceholder')}
+            placeholder={t("searchRestaurantPlaceholder")}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
+            // sx={{
+            //   background: "#efefef",
+            // }}
             inputProps={{
               style: {
                 borderWidth: 0,

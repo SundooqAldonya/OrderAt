@@ -32,6 +32,7 @@ import DetailedOrderCard from "../../components/Orders/DetailedOrderCard/Detaile
 import { ACTIVE_STATUS } from "../../utils/constantValues";
 import { direction } from "../../utils/helper";
 import { useTranslation } from "react-i18next";
+import { SearchContext } from "../../context/useSearch";
 
 const RESTAURANTS = gql`
   ${restaurantList}
@@ -43,21 +44,26 @@ function BusinessList() {
   const { language } = i18n;
   const { location } = useLocationContext();
   const [message, setMessage] = useState({});
-  const [search, setSearch] = useState("");
   const { isLoggedIn } = useContext(UserContext);
   const [clearModal, setClearModal] = useState(false);
   const [navigateData, setNavigateData] = useState({});
+  const { search, setSearch } = useContext(SearchContext);
+
   const classes = useStyles();
+
   const {
     orders,
     clearCart,
     restaurant: cartRestaurant,
   } = useContext(UserContext);
+
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const activeOrders = orders.filter((o) =>
     ACTIVE_STATUS.includes(o.orderStatus)
   );
+
   const navigateClearCart = useCallback(async () => {
     await clearCart();
     navigate(`/restaurant/${navigateData.slug}`, { state: navigateData });
@@ -82,6 +88,7 @@ function BusinessList() {
   const showMessage = useCallback((messageObj) => {
     setMessage(messageObj);
   }, []);
+
   const toggleSnackbar = useCallback(() => {
     setMessage({});
   }, []);
@@ -112,6 +119,7 @@ function BusinessList() {
       </Grid>
     );
   }
+
   const { restaurants, sections } = data?.nearByRestaurants ?? {
     restaurants: [],
     sections: [],
@@ -150,6 +158,7 @@ function BusinessList() {
     });
     return data;
   };
+
   return (
     <Grid container>
       <FlashMessage

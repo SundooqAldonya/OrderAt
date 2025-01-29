@@ -17,7 +17,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { restaurantList } from "../../../apollo/server";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+  Fragment,
+} from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import LocationIcon from "../../../assets/icons/LocationIcon";
 import { useLocationContext } from "../../../context/Location";
@@ -31,6 +38,8 @@ import { SearchRestaurant } from "../../RestaurantComponent";
 import { useNavigate } from "react-router-dom";
 import RestMarker from "../../../assets/images/rest-map-2.png";
 import { useTranslation } from "react-i18next";
+import { SearchContext } from "../../../context/useSearch";
+import UserContext from "../../../context/User";
 
 const autocompleteService = { current: null };
 const RESTAURANTS = gql`
@@ -53,12 +62,13 @@ function SearchContainer({
   const { getCurrentLocation } = useLocation();
   const [open, setOpen] = useState();
   const { location, setLocation } = useLocationContext();
-  const [search, setSearch] = useState("");
   const navigateTo = useNavigate();
   const [alertError, setAlertError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [map, setMap] = React.useState(false);
   const fetchRef = useRef(false);
+  const { search, setSearch } = useContext(SearchContext);
+  const { isLoggedIn } = useContext(UserContext);
 
   const [fetchRestaurants, { data }] = useLazyQuery(RESTAURANTS, {
     fetchPolicy: "network-only",
@@ -414,194 +424,210 @@ function SearchContainer({
         </Grid>
       </Grid>
       {mobile ? null : (
-        <Grid container className={classes.headingContainer}>
-          <Grid item xs={1} md={1} />
-          <Grid
-            container
-            item
-            xs={20}
-            sm={15}
-            md={10}
-            lg={7}
-            style={{ marginBottom: "8%" }}
-          >
-            <Grid container item xs={12} className={classes.searchContainer}>
-              <Grid item xs={12} sm={isHome ? 9 : 12}>
-                {isHome ? (
-                  <Autocomplete
-                    id="google-map-demo"
-                    getOptionLabel={(option) =>
-                      typeof option === "string" ? option : option.description
-                    }
-                    filterOptions={(x) => x}
-                    options={options}
-                    autoComplete
-                    includeInputInList
-                    filterSelectedOptions
-                    value={
-                      loading
-                        ? "Loading ..."
-                        : search
-                        ? search
-                        : location
-                        ? location.deliveryAddress
-                        : ""
-                    }
-                    onChange={(event, newValue) => {
-                      if (newValue) {
-                        const b = new window.google.maps.Geocoder();
-                        b.geocode({ placeId: newValue.place_id }, (res) => {
-                          const location = res[0].geometry.location;
-                          setLocation({
-                            label: "Home",
-                            deliveryAddress: newValue.description,
-                            latitude: location.lat(),
-                            longitude: location.lng(),
-                          });
-                        });
-                      } else {
-                        setSearch("");
-                      }
-                      setOptions(newValue ? [...options] : options);
-                      setValue(newValue);
-                    }}
-                    onInputChange={(event, newInputValue) => {
-                      setInputValue(newInputValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        style={{
-                          color: "initial",
-                          backgroundColor: theme.palette.common.white,
-                          borderRadius: 10,
-                          border: "none",
-                        }}
-                        variant="outlined"
-                        placeholder="Enter your full address"
-                        onKeyPress={(event) => {
-                          if (event.key === "Enter") {
-                            if (location) {
-                              navigateTo("/business-list");
-                            }
-                          }
-                        }}
-                        InputLabelProps={{ style: { display: "none" } }}
-                        fullWidth
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {params.InputProps.endAdornment}
-                              <InputAdornment
-                                position="end"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setValue(search?.deliveryAddress ?? "");
-                                  setSearch(location?.deliveryAddress ?? "");
-                                }}
-                              >
-                                {loading ? (
-                                  <SyncLoader
-                                    color={theme.palette.primary.main}
-                                    size={5}
-                                    speedMultiplier={0.7}
-                                    margin={1}
-                                  />
-                                ) : (
-                                  <LocationIcon
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      setLoading(true);
-                                      getCurrentLocation(locationCallback);
-                                    }}
-                                  />
-                                )}
-                              </InputAdornment>
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
-                    renderOption={(props, option) => {
-                      const matches =
-                        option.structured_formatting
-                          ?.main_text_matched_substrings;
-                      let parts = null;
-                      if (matches) {
-                        parts = parse(
-                          option.structured_formatting.main_text,
-                          matches.map((match) => [
-                            match.offset,
-                            match.offset + match.length,
-                          ])
-                        );
-                      }
-                      return (
-                        <Grid {...props} container alignItems="center">
-                          <Grid item>
-                            <LocationOnIcon className={classes.icon} />
-                          </Grid>
-                          <Grid item xs>
-                            {parts &&
-                              parts.map((part, index) => (
-                                <span
-                                  key={index}
-                                  style={{
-                                    fontWeight: part.highlight ? 700 : 400,
-                                    color: "black",
-                                  }}
-                                >
-                                  {part.text}
-                                </span>
-                              ))}
-
-                            <Typography variant="body2" color="textSecondary">
-                              {option.structured_formatting?.secondary_text}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      );
-                    }}
-                  />
-                ) : (
-                  <Grid>
-                    <Grid>
-                      <SearchRestaurant
-                        search={searchProp}
-                        setSearch={setSearchProp}
-                      />
-                    </Grid>
-                  </Grid>
-                )}
-              </Grid>
-              {isHome ? (
+        <Fragment>
+          {!isLoggedIn ? (
+            <Grid container className={classes.headingContainer}>
+              <Grid item xs={1} md={1} />
+              <Grid
+                container
+                item
+                xs={20}
+                sm={15}
+                md={10}
+                lg={7}
+                style={{ marginBottom: "8%" }}
+              >
                 <Grid
+                  container
                   item
                   xs={12}
-                  sm={3}
-                  style={{ paddingLeft: "10px", textAlign: "center" }}
+                  className={classes.searchContainer}
                 >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disableElevation
-                    className={classes.button}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (location) {
-                        navigateTo("/business-list");
-                      }
-                    }}
-                  >
-                    {t("findRestaurants")}
-                  </Button>
+                  <Grid item xs={12} sm={isHome ? 9 : 12}>
+                    {isHome ? (
+                      <Autocomplete
+                        id="google-map-demo"
+                        getOptionLabel={(option) =>
+                          typeof option === "string"
+                            ? option
+                            : option.description
+                        }
+                        filterOptions={(x) => x}
+                        options={options}
+                        autoComplete
+                        includeInputInList
+                        filterSelectedOptions
+                        value={
+                          loading
+                            ? "Loading ..."
+                            : search
+                            ? search
+                            : location
+                            ? location.deliveryAddress
+                            : ""
+                        }
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            const b = new window.google.maps.Geocoder();
+                            b.geocode({ placeId: newValue.place_id }, (res) => {
+                              const location = res[0].geometry.location;
+                              setLocation({
+                                label: "Home",
+                                deliveryAddress: newValue.description,
+                                latitude: location.lat(),
+                                longitude: location.lng(),
+                              });
+                            });
+                          } else {
+                            setSearch("");
+                          }
+                          setOptions(newValue ? [...options] : options);
+                          setValue(newValue);
+                        }}
+                        onInputChange={(event, newInputValue) => {
+                          setInputValue(newInputValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            style={{
+                              color: "initial",
+                              backgroundColor: theme.palette.common.white,
+                              borderRadius: 10,
+                              border: "none",
+                            }}
+                            variant="outlined"
+                            placeholder="Enter your full address"
+                            onKeyPress={(event) => {
+                              if (event.key === "Enter") {
+                                if (location) {
+                                  navigateTo("/business-list");
+                                }
+                              }
+                            }}
+                            InputLabelProps={{ style: { display: "none" } }}
+                            fullWidth
+                            InputProps={{
+                              ...params.InputProps,
+                              endAdornment: (
+                                <>
+                                  {params.InputProps.endAdornment}
+                                  <InputAdornment
+                                    position="end"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setValue(search?.deliveryAddress ?? "");
+                                      setSearch(
+                                        location?.deliveryAddress ?? ""
+                                      );
+                                    }}
+                                  >
+                                    {loading ? (
+                                      <SyncLoader
+                                        color={theme.palette.primary.main}
+                                        size={5}
+                                        speedMultiplier={0.7}
+                                        margin={1}
+                                      />
+                                    ) : (
+                                      <LocationIcon
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setLoading(true);
+                                          getCurrentLocation(locationCallback);
+                                        }}
+                                      />
+                                    )}
+                                  </InputAdornment>
+                                </>
+                              ),
+                            }}
+                          />
+                        )}
+                        renderOption={(props, option) => {
+                          const matches =
+                            option.structured_formatting
+                              ?.main_text_matched_substrings;
+                          let parts = null;
+                          if (matches) {
+                            parts = parse(
+                              option.structured_formatting.main_text,
+                              matches.map((match) => [
+                                match.offset,
+                                match.offset + match.length,
+                              ])
+                            );
+                          }
+                          return (
+                            <Grid {...props} container alignItems="center">
+                              <Grid item>
+                                <LocationOnIcon className={classes.icon} />
+                              </Grid>
+                              <Grid item xs>
+                                {parts &&
+                                  parts.map((part, index) => (
+                                    <span
+                                      key={index}
+                                      style={{
+                                        fontWeight: part.highlight ? 700 : 400,
+                                        color: "black",
+                                      }}
+                                    >
+                                      {part.text}
+                                    </span>
+                                  ))}
+
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
+                                >
+                                  {option.structured_formatting?.secondary_text}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          );
+                        }}
+                      />
+                    ) : !isLoggedIn ? (
+                      <Fragment>
+                        <Grid>
+                          <SearchRestaurant
+                            search={searchProp}
+                            setSearch={setSearchProp}
+                          />
+                        </Grid>
+                      </Fragment>
+                    ) : null}
+                  </Grid>
+                  {isHome ? (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={3}
+                      style={{ paddingLeft: "10px", textAlign: "center" }}
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        disableElevation
+                        className={classes.button}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (location) {
+                            navigateTo("/business-list");
+                          }
+                        }}
+                      >
+                        {t("findRestaurants")}
+                      </Button>
+                    </Grid>
+                  ) : null}
                 </Grid>
-              ) : null}
+              </Grid>
             </Grid>
-          </Grid>
-        </Grid>
+          ) : null}
+        </Fragment>
       )}
     </div>
   );

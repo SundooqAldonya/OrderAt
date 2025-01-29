@@ -29,7 +29,7 @@ const SAVE_NOTIFICATION_TOKEN_WEB = gql`
   ${saveNotificationTokenWeb}
 `;
 
-const UserContext = React.createContext({});
+export const UserContext = React.createContext({});
 
 export const UserProvider = (props) => {
   const [isLoading, setIsLoading] = useState(true);

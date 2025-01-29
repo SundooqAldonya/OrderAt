@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import useStyle from "./styles";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -16,6 +16,8 @@ import { ReactComponent as Logo } from "../../assets/images/logo.svg";
 import logo from "../../assets/logo.png";
 import { useTranslation } from "react-i18next";
 import { direction } from "../../utils/helper";
+import { SearchRestaurant } from "../RestaurantComponent";
+import { SearchContext } from "../../context/useSearch";
 
 function DHeader({
   navitems,
@@ -33,30 +35,17 @@ function DHeader({
   const location = useLocation();
   const { i18n } = useTranslation();
   const { language } = i18n;
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const openLang = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const currentLang = localStorage.getItem("enatega-language");
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    currentLang ? currentLang : "en"
-  );
-  console.log(selectedLanguage);
+  const { search, setSearch } = useContext(SearchContext);
 
-  const handleLanguageChange = (lang) => {
+  const currentLang = localStorage.getItem("enatega-language");
+
+  const handleLanguageChange = () => {
     const savedLanguage = localStorage.getItem("enatega-language");
     if (savedLanguage === "en") {
-      setSelectedLanguage("ar");
       localStorage.setItem("enatega-language", "ar");
     } else {
-      setSelectedLanguage("en");
       localStorage.setItem("enatega-language", "en");
     }
-
     window.location.reload();
   };
 
@@ -96,7 +85,13 @@ function DHeader({
             />
           </Box>
         </RouterLink>
-
+        <Box sx={{ width: "40%" }}>
+          <SearchRestaurant
+            search={search}
+            setSearch={setSearch}
+            navbar={true}
+          />
+        </Box>
         <Box
           className={classes.flex}
           sx={{
@@ -111,7 +106,7 @@ function DHeader({
               {currentLang === "en" ? "عربي" : "EN"}
             </Button>
           </Box>
-          <Box>{/* address and search go here */}</Box>
+
           <Button
             aria-controls="simple-menu"
             aria-haspopup="true"
