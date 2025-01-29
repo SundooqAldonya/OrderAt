@@ -480,6 +480,7 @@ export const singleOrder = `query SingleOrder($id: String!){
       food
       description
       quantity
+      specialInstructions
       variation{
         _id
         title

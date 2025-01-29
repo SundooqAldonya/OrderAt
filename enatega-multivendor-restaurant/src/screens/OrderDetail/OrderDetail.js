@@ -217,7 +217,7 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )}
-              {activeBar === 1 && (
+              {/* {activeBar === 1 && (
                 <>
                   <Button
                     title={t('delivered')}
@@ -239,7 +239,7 @@ export default function OrderDetail({ navigation, route }) {
                     onPress={pickUpOrderFunc}
                   />
                 </>
-              )}
+              )} */}
               {activeBar !== 2 && (
                 <>
                   <Button

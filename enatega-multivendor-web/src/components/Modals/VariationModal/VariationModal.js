@@ -239,6 +239,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
       await addQuantity(cartItem.key, quantity);
     }
     toggleModal();
+    setSpecialInstructions("");
   };
 
   const radioORcheckboxes = useCallback(
