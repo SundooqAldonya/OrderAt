@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import React from "react";
+import React, { useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import useStyle from "./styles";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -33,6 +33,32 @@ function DHeader({
   const location = useLocation();
   const { i18n } = useTranslation();
   const { language } = i18n;
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openLang = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const currentLang = localStorage.getItem("enatega-language");
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    currentLang ? currentLang : "en"
+  );
+  console.log(selectedLanguage);
+
+  const handleLanguageChange = (lang) => {
+    const savedLanguage = localStorage.getItem("enatega-language");
+    if (savedLanguage === "en") {
+      setSelectedLanguage("ar");
+      localStorage.setItem("enatega-language", "ar");
+    } else {
+      setSelectedLanguage("en");
+      localStorage.setItem("enatega-language", "en");
+    }
+
+    window.location.reload();
+  };
 
   return (
     <AppBar
@@ -70,7 +96,22 @@ function DHeader({
             />
           </Box>
         </RouterLink>
-        <Box className={classes.flex}>
+
+        <Box
+          className={classes.flex}
+          sx={{
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Button
+              onClick={handleLanguageChange}
+              sx={{ fontSize: "20px", color: "#000" }}
+            >
+              {currentLang === "en" ? "عربي" : "EN"}
+            </Button>
+          </Box>
+          <Box>{/* address and search go here */}</Box>
           <Button
             aria-controls="simple-menu"
             aria-haspopup="true"

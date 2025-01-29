@@ -42,7 +42,7 @@ function LanguageCard() {
     onCompleted,
     onError,
   });
-  console.log(mutate);
+
   function onError(error) {
     setError({ type: "error", message: error.message });
   }

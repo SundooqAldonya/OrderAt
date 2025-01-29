@@ -13,9 +13,7 @@ import LanguageCard from "../../components/Language/LanguageCard";
 function Settings() {
   const { profile } = useContext(UserContext);
   const classes = useStyles();
-  useEffect(async () => {
-    // await Analytics.track(Analytics.events.NAVIGATE_TO_PROFILE);
-  }, []);
+
   return (
     <Grid container className={classes.root}>
       <Header />

@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import UserContext from "../../context/User";
 import DHeader from "./desktop.header";
 // import Analytics from "../../utils/analytics";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const TITLE = "Orderat";
 const NAME = "...";
@@ -25,25 +25,25 @@ const NAME = "...";
     link: "/settings",
   },
 ];*/
-const savedLanguage = localStorage.getItem('enatega-language');
-    console.log('Saved language in localStorage:', savedLanguage);
+const savedLanguage = localStorage.getItem("enatega-language");
+console.log("Saved language in localStorage:", savedLanguage);
 function Header() {
   const { t } = useTranslation();
   const NAVITEMS = [
     {
-      title: t('titleOrders'),
+      title: t("titleOrders"),
       link: "/orders",
     },
     {
-      title: t('titleProfile'),
+      title: t("titleProfile"),
       link: "/profile",
     },
+    // {
+    //   title: t('titleSettings'),
+    //   link: "/settings",
+    // },
     {
-      title: t('titleSettings'),
-      link: "/settings",
-    },
-    {
-      title: t('titleLogout'),
+      title: t("titleLogout"),
       link: "/login",
     },
   ];
@@ -58,7 +58,7 @@ function Header() {
   };
 
   const handleClose = async (route) => {
-    if (route === t('titleLogout')) {
+    if (route === t("titleLogout")) {
       logout();
       // await Analytics.track(Analytics.events.USER_LOGGED_OUT);
       // await Analytics.identify(null, null);
