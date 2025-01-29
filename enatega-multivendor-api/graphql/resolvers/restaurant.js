@@ -968,6 +968,8 @@ module.exports = {
         const result = await order.save()
         const user = await User.findById(result.user)
         const transformedOrder = await transformOrder(result)
+
+        console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)

@@ -1017,6 +1017,11 @@ export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
   subscriptionOrder(id:$id){
       _id
       orderStatus
+      acceptedAt
+      pickedAt
+      deliveredAt
+      cancelledAt
+      assignedAt
       rider{
           _id
       }
