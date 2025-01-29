@@ -11,7 +11,7 @@ const useStyle = makeStyles((theme) => ({
     padding: "25px",
     cursor: "pointer",
     backgroundColor: theme.palette.common.white,
-    borderRadius: 10
+    borderRadius: 10,
   },
   titleText: {
     paddingTop: "20px",
@@ -34,7 +34,7 @@ const useStyle = makeStyles((theme) => ({
   imageContainer: {
     width: "88px",
     height: "88px",
-    backgroundImage: `url('https://images.deliveryhero.io/image/fd-pk/Products/4387883.jpg')`,
+    // backgroundImage: `url('https://images.deliveryhero.io/image/fd-pk/Products/4387883.jpg')`,
     backgroundSize: "cover",
     backgroundPositionX: "center",
     backgroundPositionY: "center",
