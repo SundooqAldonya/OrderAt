@@ -96,12 +96,7 @@ function OrderDetail() {
 
   const order = data?.singleOrder;
 
-  useEffect(() => {
-    async function Track() {
-      // await Analytics.track(Analytics.events.NAVIGATE_TO_RATEANDREVIEW);
-    }
-    Track();
-  }, []);
+  console.log({ order });
 
   function onFinishRating(rating) {
     setRating(rating);
@@ -157,17 +152,8 @@ function OrderDetail() {
     [restCoordinates, destCoordinates]
   );
 
-  // const { loadingOrders, errorOrders, orders, clearCart } =
-  //   useContext(UserContext);
   const { clearCart } = useContext(UserContext);
 
-  console.log({ order });
-
-  // useEffect(async () => {
-  //   // await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {
-  //   //   orderId: id,
-  //   // });
-  // }, []);
   useEffect(() => {
     if (!id) {
       navigate("/orders");
