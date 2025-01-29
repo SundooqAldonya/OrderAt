@@ -116,6 +116,9 @@ function RestaurantsList() {
     restaurants: [],
     sections: [],
   };
+
+  console.log({ restaurants });
+
   const restaurantSections = sections.map((sec) => ({
     ...sec,
     restaurants: sec.restaurants

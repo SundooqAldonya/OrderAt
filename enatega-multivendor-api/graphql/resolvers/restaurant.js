@@ -52,7 +52,7 @@ module.exports = {
       console.log('nearByRestaurants', args)
 
       try {
-        const { shopType } = args
+        const { shopType, longitude, latitude } = args
         const query = {
           isActive: true,
           isAvailable: true,
@@ -60,14 +60,16 @@ module.exports = {
             $geoIntersects: {
               $geometry: {
                 type: 'Point',
-                coordinates: [Number(args.longitude), Number(args.latitude)]
+                coordinates: [Number(longitude), Number(latitude)]
               }
             }
           }
         }
+
         if (shopType) {
           query.shopType = shopType
         }
+
         const restaurants = await Restaurant.find(query)
 
         if (!restaurants.length) {
@@ -77,32 +79,37 @@ module.exports = {
             offers: []
           }
         }
-        // TODO: do something about offers too w.r.t zones
+
+        // Fetch Offers
         const offers = await Offer.find({ isActive: true, enabled: true })
 
-        // Find restaurants containing sections / offers
+        // Fetch Sections
         const sectionArray = [
-          ...new Set([...restaurants.map(res => res.sections)].flat())
+          ...new Set(restaurants.flatMap(res => res.sections))
         ]
         const sections = await Sections.find({
           _id: { $in: sectionArray },
           enabled: true
         })
 
-        restaurants.forEach(async restaurant => {
-          const foundCategories = await Category.find({ restaurant })
-          console.log({ foundCategories })
-          const modifiedCategories = foundCategories.map(async category => {
-            const food = await Food.find({ category })
-            category.foods = [...food]
-            return category
+        // Fetch categories and foods in a single step
+        const restaurantsWithCategories = await Promise.all(
+          restaurants.map(async restaurant => {
+            const foundCategories = await Category.find({ restaurant })
+
+            const modifiedCategories = await Promise.all(
+              foundCategories.map(async category => {
+                const food = await Food.find({ category })
+                return { ...category.toObject(), foods: food }
+              })
+            )
+
+            return { ...restaurant.toObject(), categories: modifiedCategories }
           })
-          restaurant['categories'] = [...modifiedCategories]
-          console.log({ restaurant })
-        })
-        console.log({ restaurants: restaurants.categories })
+        )
+
         const result = {
-          restaurants: restaurants,
+          restaurants: restaurantsWithCategories,
           sections: sections.map(sec => ({
             _id: sec.id,
             name: sec.name,
@@ -113,12 +120,14 @@ module.exports = {
             _id: o.id
           }))
         }
+
         return result
       } catch (err) {
         console.log(err)
         throw err
       }
     },
+
     nearByRestaurantsPreview: async (_, args) => {
       console.log('nearByRestaurantsPreview', args)
       try {
