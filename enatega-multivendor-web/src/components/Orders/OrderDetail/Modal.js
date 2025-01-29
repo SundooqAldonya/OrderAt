@@ -30,7 +30,7 @@ export default function ModalView() {
           </Typography>
           <Box className={classes.btnWrapper}>
             <RouterLink
-              to={"/restaurant-list"}
+              to={"/business-list"}
               style={{ textDecoration: "none" }}
             >
               <Button

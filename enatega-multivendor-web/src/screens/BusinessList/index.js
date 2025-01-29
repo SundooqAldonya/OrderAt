@@ -37,7 +37,7 @@ const RESTAURANTS = gql`
   ${restaurantList}
 `;
 
-function RestaurantsList() {
+function BusinessList() {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const { language } = i18n;
@@ -116,8 +116,6 @@ function RestaurantsList() {
     restaurants: [],
     sections: [],
   };
-
-  console.log({ restaurants });
 
   const restaurantSections = sections.map((sec) => ({
     ...sec,
@@ -229,4 +227,4 @@ function RestaurantsList() {
   );
 }
 
-export default RestaurantsList;
+export default BusinessList;

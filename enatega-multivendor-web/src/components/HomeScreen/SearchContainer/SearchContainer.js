@@ -399,7 +399,7 @@ function SearchContainer({
                         onClick={(e) => {
                           e.preventDefault();
                           if (location) {
-                            navigateTo("/restaurant-list");
+                            navigateTo("/business-list");
                           }
                         }}
                       >
@@ -482,7 +482,7 @@ function SearchContainer({
                         onKeyPress={(event) => {
                           if (event.key === "Enter") {
                             if (location) {
-                              navigateTo("/restaurant-list");
+                              navigateTo("/business-list");
                             }
                           }
                         }}
@@ -591,7 +591,7 @@ function SearchContainer({
                     onClick={(e) => {
                       e.preventDefault();
                       if (location) {
-                        navigateTo("/restaurant-list");
+                        navigateTo("/business-list");
                       }
                     }}
                   >

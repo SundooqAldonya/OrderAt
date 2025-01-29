@@ -35,12 +35,8 @@ import PrivateRoute from "./routes/PrivateRoute";
 import VerifyPhone from "./screens/VerifyPhone/VerifyPhone";
 import UserContext from "./context/User";
 import { useTranslation } from "react-i18next";
-import RestaurantsList from "./screens/RestaurantsList";
 import AddYourBusiness from "./screens/AddYourBusiness";
-//import { fetchConfiguration } from "./utils/helper";
-
-//import { Integrations } from "@sentry/tracing";
-
+import BusinessList from "./screens/BusinessList";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -49,26 +45,6 @@ const GoogleMapsLoader = ({
 }) => {
   const [message, setMessage] = useState(null);
   const { t, i18n } = useTranslation();
-
-  //Handlers
-  /*   const onWindowUpdateAmplitude = async () => {
-    const { webAmplitudeApiKey } = await fetchConfiguration();
-
-    if (webAmplitudeApiKey) {
-      // Set the API key to a global variable
-      window.amplitudeApiKey = webAmplitudeApiKey;
-
-      // Now you can initialize Amplitude
-      if (window.amplitude) {
-        window.amplitude
-          .add(window.sessionReplay.plugin({ sampleRate: 1 }))
-          .promise.then(function () {
-            window.amplitude.add(window.amplitudeAutocapturePlugin.plugin());
-            window.amplitude.init(window.amplitudeApiKey);
-          });
-      }
-    }
-  }; */
 
   useEffect(() => {
     const initializeFirebase = async () => {
@@ -190,7 +166,7 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/restaurant-list" element={<RestaurantsList />} />
+          <Route path="/business-list" element={<BusinessList />} />
           <Route path="/add-your-business" element={<AddYourBusiness />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />

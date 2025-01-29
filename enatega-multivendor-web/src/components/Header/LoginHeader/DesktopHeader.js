@@ -21,12 +21,10 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
     <AppBar elevation={0} position="fixed">
       <Toolbar className={classes.toolbar}>
         <RouterLink
-          to={location.pathname === "/checkout" ? "/restaurant-list" : "/"}
+          to={location.pathname === "/checkout" ? "/business-list" : "/"}
           className={classes.linkDecoration}
         >
           <Logo height={37} width={169} />
-
-          
         </RouterLink>
         <Box className={classes.flex}>
           {showIcon && (

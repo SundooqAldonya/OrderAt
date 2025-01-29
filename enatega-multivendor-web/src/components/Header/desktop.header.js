@@ -48,8 +48,8 @@ function DHeader({
         <RouterLink
           to={
             location.pathname === "/checkout"
-              ? "/restaurant-list"
-              : "/restaurant-list"
+              ? "/business-list"
+              : "/business-list"
           }
           className={classes.linkDecoration}
         >
