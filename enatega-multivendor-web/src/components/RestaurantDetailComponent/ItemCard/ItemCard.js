@@ -32,10 +32,18 @@ function ItemCard(props) {
         {title}
       </Typography>
       <Grid container spacing={2}>
-        {/* {foods.map((item) => {
-          return <FoodCard key={item._id} {...item} />;
-        })} */}
-        {foods.map((item, index) => (
+        {foods.map((item) => {
+          return (
+            <FoodCard
+              key={item._id}
+              {...item}
+              item={item}
+              onClick={props.onPress}
+              restaurant={props.restaurant}
+            />
+          );
+        })}
+        {/* {foods.map((item, index) => (
           <Grid
             key={index}
             item
@@ -97,7 +105,7 @@ function ItemCard(props) {
               </Box>
             </Paper>
           </Grid>
-        ))}
+        ))} */}
       </Grid>
     </Container>
   );
