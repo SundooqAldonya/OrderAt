@@ -125,7 +125,7 @@ function CartItem(props) {
           <Typography sx={{ fontSize: 18, fontWeight: "bold", color: "#000" }}>
             {t("specialInstructions")}
           </Typography>
-          <Typography>
+          <Typography sx={{ color: "#000" }}>
             {props.instructions ? props.instructions : null}
           </Typography>
         </Box>

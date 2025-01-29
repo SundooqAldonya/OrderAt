@@ -22,7 +22,6 @@ import {
   ModalView,
 } from "../../components/Orders";
 import UserContext from "../../context/User";
-// import Analytics from "../../utils/analytics";
 import { ORDER_STATUS } from "../../utils/constantValues";
 import Background from "./Background";
 import useStyles from "./styles";
