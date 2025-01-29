@@ -86,11 +86,6 @@ function Main() {
   })
 
   const client = new ApolloClient({
-    // link: concat(
-    //   ApolloLink.from([uploadLink, terminatingLink, requestLink]),
-    //   httpLink
-    // ),
-    // link: concat(requestLink, httpLink),
     link: ApolloLink.from([requestLink, uploadLink, terminatingLink, httpLink]),
     cache,
     resolvers: {},
