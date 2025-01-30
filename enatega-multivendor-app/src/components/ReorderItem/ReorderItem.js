@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import {  Image, TouchableOpacity, View } from 'react-native'
-import {  Feather } from '@expo/vector-icons'
+import { Image, TouchableOpacity, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import ConfigurationContext from '../../context/Configuration'
@@ -11,9 +11,9 @@ import { IMAGE_LINK } from '../../utils/constants'
 import CheckboxBtn from '../../ui/FdCheckbox/CheckboxBtn'
 import { useTranslation } from 'react-i18next'
 
-const ReorderItem = props => {
+const ReorderItem = (props) => {
   const { t } = useTranslation()
-
+  const { isArabic } = props
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -27,19 +27,27 @@ const ReorderItem = props => {
   }
 
   return (
-    <TouchableOpacity style={styles().itemContainer} onPress={props.onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={{
+        ...styles().itemContainer,
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
+      onPress={props.onPress}
+      activeOpacity={0.7}
+    >
       <View
         style={{
-          flexDirection: 'row',
+          flexDirection: isArabic ? 'row-reverse' : 'row',
           justifyContent: 'flex-start',
           alignItems: 'center',
           gap: scale(7)
-        }}>
+        }}
+      >
         <View style={styles().suggestItemImgContainer}>
           <Image
             source={{ uri: imageUrl }}
             style={styles().suggestItemImg}
-            resizeMode="contain"
+            resizeMode='contain'
           />
         </View>
         <View>
@@ -47,7 +55,9 @@ const ReorderItem = props => {
             numberOfLines={1}
             textColor={currentTheme.fontFourthColor}
             bolder
-            H5>
+            H5
+            style={{ textAlign: isArabic ? 'right' : 'left' }}
+          >
             {props?.dealName?.length > 20
               ? props.dealName.substring(0, 17) + '...'
               : props.dealName}
@@ -59,14 +69,17 @@ const ReorderItem = props => {
                 <TouchableOpacity
                   onPress={toggleDropdown}
                   activeOpacity={1}
-                  style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
                   <TextDefault
-                    style={{ marginRight: scale(5) }}
+                    style={{
+                      marginRight: scale(5)
+                    }}
                     textColor={currentTheme.secondaryText}
-                    Normal>
-
-                    {props?.optionsTitle?.slice(0, 3).length} {t('additionalItems')}
-
+                    Normal
+                  >
+                    {props?.optionsTitle?.slice(0, 3).length}{' '}
+                    {t('additionalItems')}
                   </TextDefault>
                   <Feather
                     name={isDropdownOpen ? 'chevron-up' : 'chevron-down'}
@@ -80,7 +93,8 @@ const ReorderItem = props => {
                       <TextDefault
                         key={index}
                         textColor={currentTheme.secondaryText}
-                        Normal>
+                        Normal
+                      >
                         {item}
                       </TextDefault>
                     ))}
@@ -92,26 +106,25 @@ const ReorderItem = props => {
 
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               gap: scale(8),
               alignItems: 'center',
               marginTop: scale(4)
-            }}>
+            }}
+          >
             <TextDefault
               numberOfLines={1}
               textColor={currentTheme.fontFourthColor}
               bolder
-              Normal>
+              Normal
+            >
               {configuration.currencySymbol}
               {parseFloat(props.dealPrice).toFixed(2)}
             </TextDefault>
           </View>
         </View>
       </View>
-      <CheckboxBtn
-        checked={props.checked}
-        onPress={props.onPress}
-        />
+      <CheckboxBtn checked={props.checked} onPress={props.onPress} />
     </TouchableOpacity>
   )
 }

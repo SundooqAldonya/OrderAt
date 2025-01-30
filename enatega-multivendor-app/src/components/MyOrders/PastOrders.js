@@ -23,14 +23,22 @@ function emptyViewPastOrders() {
   const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
   const orderStatusInactive = ['DELIVERED', 'COMPLETED']
   const { orders, loadingOrders, errorOrders } = useContext(OrdersContext)
-  if (loadingOrders) return <Spinner visible={loadingOrders} backColor="transparent" spinnerColor={currentTheme.main} />
+  if (loadingOrders)
+    return (
+      <Spinner
+        visible={loadingOrders}
+        backColor='transparent'
+        spinnerColor={currentTheme.main}
+      />
+    )
   if (errorOrders) return <TextError text={errorOrders.message} />
   else {
     const hasActiveOrders =
-      orders.filter(o => orderStatusActive.includes(o.orderStatus)).length > 0
+      orders.filter((o) => orderStatusActive.includes(o.orderStatus)).length > 0
 
     const hasPastOrders =
-      orders.filter(o => orderStatusInactive.includes(o.orderStatus)).length > 0
+      orders.filter((o) => orderStatusInactive.includes(o.orderStatus)).length >
+      0
     if (hasActiveOrders || hasPastOrders) return null
     return (
       <EmptyView
@@ -42,16 +50,19 @@ function emptyViewPastOrders() {
   }
 }
 
-const PastOrders = ({ navigation, loading, error, pastOrders, onPressReview }) => {
+const PastOrders = ({
+  navigation,
+  loading,
+  error,
+  pastOrders,
+  onPressReview
+}) => {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const configuration = useContext(ConfigurationContext)
-  const {
-    reFetchOrders,
-    fetchMoreOrdersFunc,
-    networkStatusOrders
-  } = useContext(OrdersContext)
+  const { reFetchOrders, fetchMoreOrdersFunc, networkStatusOrders } =
+    useContext(OrdersContext)
 
   const renderItem = ({ item }) => (
     <Item
@@ -81,7 +92,7 @@ const PastOrders = ({ navigation, loading, error, pastOrders, onPressReview }) =
   )
 }
 
-const formatDeliveredAt = deliveredAt => {
+const formatDeliveredAt = (deliveredAt) => {
   // Convert deliveredAt string to a Date object
   const deliveryDate = new Date(deliveredAt)
 
@@ -115,10 +126,10 @@ const formatDeliveredAt = deliveredAt => {
   // Formatting the date and time
   return `${formattedDay} ${month} ${formattedHours}:${formattedMinutes}`
 }
-const getItems = items => {
+const getItems = (items) => {
   return items
     .map(
-      item =>
+      (item) =>
         `${item.quantity}x ${item.title}${
           item.variation.title ? `(${item.variation.title})` : ''
         }`
@@ -126,14 +137,25 @@ const getItems = items => {
     .join('\n')
 }
 
-const Item = ({ item, navigation, currentTheme, configuration, onPressReview }) => {
+const Item = ({
+  item,
+  navigation,
+  currentTheme,
+  configuration,
+  onPressReview
+}) => {
   useSubscription(
     gql`
       ${subscriptionOrder}
     `,
-    { variables: { id: item._id }, skip:item.orderStatus===ORDER_STATUS_ENUM.DELIVERED }
+    {
+      variables: { id: item._id },
+      skip: item.orderStatus === ORDER_STATUS_ENUM.DELIVERED
+    }
   )
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
 
   return (
     <View style={{ ...alignment.MBsmall }}>
@@ -146,84 +168,109 @@ const Item = ({ item, navigation, currentTheme, configuration, onPressReview }) 
             restaurant: item.restaurant,
             user: item.user
           })
-        }>
+        }
+      >
         <View style={styles(currentTheme).subContainer}>
-          <View
-            style={{
-              flexDirection: 'row'
-            }}>
-            <Image
-              style={styles(currentTheme).restaurantImage}
-              resizeMode="cover"
-              source={{ uri: item.restaurant.image }}
-            />
-            <View style={styles(currentTheme).textContainer2}>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles().subContainerLeft}>
-                  <TextDefault
-                    textColor={currentTheme.fontMainColor}
-                    uppercase
-                    bolder
-                    numberOfLines={2}
-                    style={styles(currentTheme).restaurantName}>
-                    {item.restaurant.name}
-                  </TextDefault>
-                </View>
-                <View style={styles(currentTheme).subContainerRight}>
-                  <TextDefault textColor={currentTheme.fontMainColor} bolder>
-                    {configuration.currencySymbol}
-                    {parseFloat(item.orderAmount).toFixed(2)}
-                  </TextDefault>
-                </View>
+          <View>
+            <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
+              <View>
+                <Image
+                  style={styles(currentTheme).restaurantImage}
+                  resizeMode='cover'
+                  source={{ uri: item.restaurant.image }}
+                />
               </View>
-              <View style={{marginTop: 'auto'}}>
-                <TextDefault
-                  numberOfLines={1}
+              <View>
+                <View
                   style={{
-                    ...alignment.MTxSmall,
-                    width: '122%'
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    justifyContent: 'space-between',
+                    paddingInlineEnd: !isArabic ? 50 : 0
                   }}
-                  textColor={currentTheme.secondaryText}
+                >
+                  <View>
+                    <TextDefault
+                      textColor={currentTheme.fontMainColor}
+                      uppercase
+                      bolder
+                      numberOfLines={2}
+                      style={{
+                        ...styles(currentTheme).restaurantName,
+                        textAlign: isArabic ? 'right' : 'left',
+                        marginInlineStart: !isArabic ? 10 : 0
+                      }}
+                    >
+                      {item.restaurant.name}
+                    </TextDefault>
+                  </View>
+                  <View style={styles(currentTheme).subContainerRight}>
+                    <TextDefault textColor={currentTheme.fontMainColor} bolder>
+                      {configuration.currencySymbol}
+                      {parseFloat(item.orderAmount).toFixed(2)}
+                    </TextDefault>
+                  </View>
+                </View>
+                <View style={{ marginTop: 'auto' }}>
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={currentTheme.secondaryText}
+                    style={{
+                      textAlign: isArabic ? 'right' : 'left',
+                      marginInlineEnd: isArabic ? 10 : 0,
+                      marginInlineStart: !isArabic ? 10 : 0
+                    }}
                   >
-                  {t('deliveredOn')} {formatDeliveredAt(item.deliveredAt)}
-                </TextDefault>
-                <TextDefault
-                  numberOfLines={1}
-                  style={{ ...alignment.MTxSmall }}
-                  textColor={currentTheme.secondaryText}
-                  
+                    {t('deliveredOn')} {formatDeliveredAt(item.deliveredAt)}
+                  </TextDefault>
+                  <TextDefault
+                    numberOfLines={1}
+                    style={{
+                      ...alignment.MTxSmall,
+                      textAlign: isArabic ? 'right' : 'left',
+                      marginInlineEnd: isArabic ? 10 : 0,
+                      marginInlineStart: !isArabic ? 10 : 0
+                    }}
+                    textColor={currentTheme.secondaryText}
                   >
-                  {getItems(item.items)}
-                </TextDefault>
+                    {getItems(item.items)}
+                  </TextDefault>
+                </View>
               </View>
             </View>
           </View>
+
           <View style={styles().rateOrderContainer}>
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles(currentTheme).subContainerButton}
-              onPress={() => navigation.navigate('Reorder', { item })}>
+              onPress={() => navigation.navigate('Reorder', { item })}
+            >
               <TextDefault textColor={currentTheme.black} H4 bolder B700 center>
                 {' '}
                 {t('reOrder')}
               </TextDefault>
             </TouchableOpacity>
           </View>
-          <View style={styles(currentTheme).starsContainer}>
+          <View
+            style={{
+              ...styles(currentTheme).starsContainer,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
             <View>
               <TextDefault H5 bolder textColor={currentTheme.newFontcolor}>
                 {t('tapToRate')}
               </TextDefault>
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-                {[1, 2, 3, 4, 5].map(index => (
-                  <StarIcon
-                    disabled={Boolean(item?.review)}
-                    key={`star-icon-${index}`}
-                    isFilled={index <= item?.review?.rating}
-                    onPress={()=>onPressReview(item, index)}
-                  />
-                ))}
+              {[1, 2, 3, 4, 5].map((index) => (
+                <StarIcon
+                  disabled={Boolean(item?.review)}
+                  key={`star-icon-${index}`}
+                  isFilled={index <= item?.review?.rating}
+                  onPress={() => onPressReview(item, index)}
+                />
+              ))}
             </View>
           </View>
         </View>

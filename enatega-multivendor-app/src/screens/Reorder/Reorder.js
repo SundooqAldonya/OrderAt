@@ -30,7 +30,9 @@ import { colors } from '../../utils/colors'
 function Reorder(props) {
   const analytics = Analytics()
 
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const order = props.route.params.item
   const themeContext = useContext(ThemeContext)
   const { setCartRestaurant, addCartItem } = useContext(UserContext)
@@ -181,8 +183,15 @@ function Reorder(props) {
         alwaysBounceVertical={false}
         contentContainerStyle={styles(currentTheme).scrollViewStyle}
       >
-        <View style={styles(currentTheme).mainContainer}>
-          <TextDefault bolder H4 textColor={currentTheme.fontMainColor}>
+        <View style={{ ...styles(currentTheme).mainContainer }}>
+          <TextDefault
+            bolder
+            H4
+            textColor={currentTheme.fontMainColor}
+            style={{
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
             {t('ItemsOrderAgain')}
           </TextDefault>
           {order.items.map((item, index) => {
@@ -203,6 +212,7 @@ function Reorder(props) {
                 )}
                 checked={selectedItems.includes(index)}
                 onPress={() => onSelect(index)}
+                isArabic={isArabic}
               />
             )
           })}
