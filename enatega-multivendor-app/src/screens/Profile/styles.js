@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
 import { Dimensions } from 'react-native'
-const {height} = Dimensions.get('screen')
+const { height } = Dimensions.get('screen')
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -24,7 +24,7 @@ const styles = (props = null) =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       ...alignment.MBlarge,
-      marginBottom:0
+      marginBottom: 0
     },
     formSubContainer: {
       borderRadius: scale(8),

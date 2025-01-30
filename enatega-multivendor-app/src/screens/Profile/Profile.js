@@ -54,7 +54,9 @@ function Profile(props) {
   const navigation = useNavigation()
   const route = useRoute()
   const { params } = route
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const refName = useRef()
   const [nameError, setNameError] = useState('')
   const [toggleEmailView, setToggleEmailView] = useState(true)
@@ -383,21 +385,35 @@ function Profile(props) {
           behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={styles(currentTheme).flex}
         >
-          <View style={styles(currentTheme).mainContainer}>
+          <View
+            style={{
+              ...styles(currentTheme).mainContainer
+            }}
+          >
             <View>
-              <View style={styles(currentTheme).formSubContainer}>
-                <View style={{ flex: 3 }}>
-                  <View style={styles(currentTheme).containerHeading}>
+              <View
+                style={{
+                  ...styles(currentTheme).formSubContainer
+                  // flexDirection: 'row-reverse',
+                  // justifyContent: 'space-between',
+                  // backgroundColor: 'red'
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <View style={{ ...styles(currentTheme).containerHeading }}>
                     {!toggleNameView && (
                       <>
-                        <View style={styles(currentTheme).headingTitle}>
+                        <View style={{ ...styles(currentTheme).headingTitle }}>
                           <TextDefault
                             H5
                             B700
                             bolder
                             left
                             textColor={currentTheme.darkBgFont}
-                            style={styles(currentTheme).textAlignLeft}
+                            style={{
+                              ...styles(currentTheme).textAlignLeft,
+                              textAlign: 'right'
+                            }}
                           >
                             {t('name')}
                           </TextDefault>
@@ -632,7 +648,7 @@ function Profile(props) {
                 </View>
               </View>
             </View>
-            <View style={{ alignItems: 'center', padding:10 }}>
+            <View style={{ alignItems: 'center', padding: 10 }}>
               <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
                 <TextDefault
                   bolder
