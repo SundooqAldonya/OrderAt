@@ -315,7 +315,8 @@ export const UserProvider = (props) => {
         logout,
         loadingOrders: loadingOrders && calledOrders,
         errorOrders,
-        orders: dataOrders && dataOrders.orders ? dataOrders.orders : [],
+        orders:
+          token && dataOrders && dataOrders.orders ? dataOrders.orders : [],
         fetchOrders,
         fetchMoreOrdersFunc,
         networkStatusOrders,
