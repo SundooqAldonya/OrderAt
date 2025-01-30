@@ -30,6 +30,7 @@ import Banner2 from "../../assets/images/banner-2.png";
 import Banner1 from "../../assets/images/banner-1.png";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import HeroSection from "../../components/HeroSection";
 
 function Home() {
   const { t } = useTranslation();
@@ -83,12 +84,12 @@ function Home() {
         />
         {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
         {/* serch container (1st) */}
+        {/* <HeroSection /> */}
         <Box>
           <Grid container item>
             <SearchContainer loading={loading} isHome={true} />
           </Grid>
         </Box>
-        {/* Grid */}
         <Box
           sx={{
             maxWidth: "1500px",
