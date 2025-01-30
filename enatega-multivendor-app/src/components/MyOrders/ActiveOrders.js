@@ -18,7 +18,9 @@ import Spinner from '../Spinner/Spinner'
 import EmptyView from '../EmptyView/EmptyView'
 
 const ActiveOrders = ({ navigation, loading, error, activeOrders }) => {
-  const { t } = useTranslation()
+  const { i18n } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const configuration = useContext(ConfigurationContext)
@@ -81,7 +83,9 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
     `,
     { variables: { id: item._id } }
   )
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const remainingTime = calulateRemainingTime(item)
   return (
     <TouchableOpacity
@@ -91,11 +95,23 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
       <View style={{ flex: 1 }}>
         <View style={styles(currentTheme).subContainer}>
           <View style={styles().orderDescriptionContainer}>
-            <TextDefault h5 bold textColor={currentTheme.gray500}>
+            <TextDefault
+              h5
+              bold
+              textColor={currentTheme.gray500}
+              style={{
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
               {t('estimatedDeliveryTime')}
             </TextDefault>
           </View>
-          <View style={styles().orderDescriptionContainer}>
+          <View
+            style={{
+              ...styles().orderDescriptionContainer,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
             <TextDefault Regular textColor={currentTheme.gray900} H1 bolder>
               {remainingTime}-{remainingTime + 5} {t('mins')}
             </TextDefault>
@@ -112,7 +128,8 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
           <View
             style={{
               ...styles().orderDescriptionContainer,
-              ...alignment.PTxSmall
+              ...alignment.PTxSmall,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
             <TextDefault h5 bold textColor={currentTheme.secondaryText}>
@@ -124,8 +141,7 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
           <View
             style={{
               flex: 1,
-              flexDirection: 'row',
-              //alignItems: 'center',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               justifyContent: 'center',
               ...alignment.Mmedium,
               ...alignment.MTlarge,
@@ -144,13 +160,20 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
                   uppercase
                   bolder
                   numberOfLines={2}
-                  style={styles(currentTheme).restaurantName}
+                  style={{
+                    ...styles(currentTheme).restaurantName,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
                 >
                   {item.restaurant.name}
                 </TextDefault>
                 <TextDefault
                   numberOfLines={1}
-                  style={{ ...alignment.MTxSmall }}
+                  style={{
+                    ...alignment.MTxSmall,
+                    textAlign: isArabic ? 'right' : 'left',
+                    marginInlineEnd: isArabic ? 20 : 0
+                  }}
                   textColor={currentTheme.fontMainColor}
                   bolder
                   small

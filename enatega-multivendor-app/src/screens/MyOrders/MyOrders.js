@@ -39,24 +39,18 @@ function MyOrders(props) {
   const [selectedTab, setSelectedTab] = useState('current')
   const inset = useSafeAreaInsets()
   const activeOrders = useMemo(() => {
-    return orders.filter(o => orderStatusActive.includes(o.orderStatus))
+    return orders.filter((o) => orderStatusActive.includes(o.orderStatus))
   }, [orders])
   const pastOrders = useMemo(() => {
-    return orders.filter(o => orderStatusInactive.includes(o.orderStatus))
+    return orders.filter((o) => orderStatusInactive.includes(o.orderStatus))
   }, [orders])
-  const openReviewModal = ()=>{
+  const openReviewModal = () => {
     reviewModalRef.current.open()
   }
-  const closeReviewModal = ()=>{
+  const closeReviewModal = () => {
     reviewModalRef.current.close()
   }
 
-  useEffect(() => {
-    async function Track() {
-      await analytics.track(analytics.events.NAVIGATE_TO_MYORDERS)
-    }
-    Track()
-  }, [])
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
@@ -68,10 +62,14 @@ function MyOrders(props) {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View style={styles().backButton}>
-              <MaterialIcons name="arrow-back" size={25} color={currentTheme.newIconColor} />
+              <MaterialIcons
+                name='arrow-back'
+                size={25}
+                color={currentTheme.newIconColor}
+              />
             </View>
           )}
           onPress={() => {
@@ -106,12 +104,16 @@ function MyOrders(props) {
           isSelected
             ? styles(currentTheme).activeTabStyles
             : styles(currentTheme).inactiveTabStyles
-        }>
+        }
+      >
         <TouchableOpacity onPress={onPress}>
           <TextDefault
             H4
             bold
-            textColor={isSelected ? currentTheme.newFontcolor : currentTheme.gray500}>
+            textColor={
+              isSelected ? currentTheme.newFontcolor : currentTheme.gray500
+            }
+          >
             {t(text)}
           </TextDefault>
         </TouchableOpacity>
@@ -119,8 +121,8 @@ function MyOrders(props) {
     )
   }
 
-  const onPressReview = (order, selectedRating)=>{
-    setReviewInfo({order, selectedRating})
+  const onPressReview = (order, selectedRating) => {
+    setReviewInfo({ order, selectedRating })
     openReviewModal()
   }
 
@@ -167,7 +169,13 @@ function MyOrders(props) {
           }}
         />
       </View>
-      <ReviewModal ref={reviewModalRef} onOverlayPress={closeReviewModal} theme={currentTheme} orderId={reviewInfo?.order._id} rating={reviewInfo?.selectedRating}/>
+      <ReviewModal
+        ref={reviewModalRef}
+        onOverlayPress={closeReviewModal}
+        theme={currentTheme}
+        orderId={reviewInfo?.order._id}
+        rating={reviewInfo?.selectedRating}
+      />
     </>
   )
 }

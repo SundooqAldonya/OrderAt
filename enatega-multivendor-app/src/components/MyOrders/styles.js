@@ -40,7 +40,7 @@ const styles = (props = null) =>
     textContainer2: {
       width: '58%',
       // ...alignment.PTsmall,
-      ...alignment.PLsmall,
+      ...alignment.PLsmall
       //backgroundColor: props !== null ? props.newheaderColor : '#90E36D'
     },
     subContainerLeft: {
@@ -56,7 +56,7 @@ const styles = (props = null) =>
     },
     subContainerRight: {
       justifyContent: 'flex-start',
-      width: '35%',
+      width: '35%'
     },
     rateOrderContainer: {
       flex: 1,
@@ -106,7 +106,7 @@ const styles = (props = null) =>
       flex: 1,
       backgroundColor: props !== null ? props.gray100 : '#F3F4F6',
       borderColor: props !== null ? props.color10 : '#fff',
-      borderWidth:scale(1),
+      borderWidth: scale(1),
       borderRadius: scale(8),
       elevation: 1,
       ...alignment.MRmedium,
@@ -117,14 +117,14 @@ const styles = (props = null) =>
     restaurantImage: {
       height: 85,
       width: 85,
-      borderRadius: 10,
+      borderRadius: 10
     },
     restaurantImage1: {
       height: 85,
       width: 85,
       borderRadius: 10
     },
-    restaurantName: { ...alignment.MBxSmall, width: '65%' },
+    restaurantName: { ...alignment.MBxSmall, width: '75%' },
     subContainerImage: {
       flex: 1,
       justifyContent: 'center',

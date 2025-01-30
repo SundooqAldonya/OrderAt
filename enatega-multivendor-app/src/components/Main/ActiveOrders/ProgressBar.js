@@ -5,6 +5,7 @@ import { useSubscription } from '@apollo/client'
 import { subscriptionOrder } from '../../../apollo/subscriptions'
 import gql from 'graphql-tag'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'
+import { useTranslation } from 'react-i18next'
 
 export const orderStatuses = [
   {
@@ -44,14 +45,17 @@ export const orderStatuses = [
   }
 ]
 
-export const checkStatus = status => {
-  const obj = orderStatuses.filter(x => {
+export const checkStatus = (status) => {
+  const obj = orderStatuses.filter((x) => {
     return x.key === status
   })
   return obj[0]
 }
 
 export const ProgressBar = ({ currentTheme, item, customWidth }) => {
+  const { i18n } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   if (item.orderStatus === ORDER_STATUS_ENUM.CANCELLED) return null
   useSubscription(
     gql`
@@ -65,7 +69,7 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
 
   return (
     <View style={{ marginTop: scale(10) }}>
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
         {Array(checkStatus(item.orderStatus).status)
           .fill(0)
           .map((item, index) => (
