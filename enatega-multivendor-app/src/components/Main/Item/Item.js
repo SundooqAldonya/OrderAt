@@ -38,7 +38,9 @@ const RESTAURANT_DETAILS = gql`
 `
 
 function Item(props) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const navigation = useNavigation()
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props.item._id) : false
@@ -47,19 +49,6 @@ function Item(props) {
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  // const {
-  //   loading,
-  //   error,
-  //   data: item,
-  //   subscribeToMore,
-  //   refetch,
-  //   networkStatus
-  // } = useQuery(RESTAURANT_DETAILS, {
-  //   fetchPolicy: 'network-only',
-  //   pollInterval: 15000
-  // })
-
-  console.log({ item })
 
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
@@ -159,10 +148,15 @@ function Item(props) {
               </View> */}
             </View>
           </View>
-          <View style={styles().descriptionContainer}>
-            <View style={styles().aboutRestaurant}>
+          <View style={{ ...styles().descriptionContainer }}>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between',
+                width: '100%'
+              }}
+            >
               <TextDefault
-                style={{ width: '77%' }}
                 H4
                 numberOfLines={1}
                 textColor={currentTheme.fontThirdColor}
@@ -170,7 +164,7 @@ function Item(props) {
               >
                 {item.name}
               </TextDefault>
-              <View style={[styles().aboutRestaurant, { width: '23%' }]}>
+              <View style={[styles().aboutRestaurant]}>
                 <Feather
                   name='star'
                   size={18}
@@ -202,14 +196,19 @@ function Item(props) {
             >
               {item?.tags?.join(',')}
             </TextDefault>
-            <View style={styles().priceRestaurant}>
+            <View
+              style={{
+                ...styles().priceRestaurant,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
+            >
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 5,
                   justifyContent: 'center',
-                  marginRight: 18
+                  marginInlineStart: 18
                 }}
               >
                 <AntDesign
@@ -233,7 +232,7 @@ function Item(props) {
                   alignItems: 'center',
                   gap: 4,
                   justifyContent: 'center',
-                  marginRight: 10
+                  marginInlineStart: 10
                 }}
               >
                 <MaterialIcons

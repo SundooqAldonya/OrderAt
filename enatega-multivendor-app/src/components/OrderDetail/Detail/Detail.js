@@ -26,12 +26,16 @@ export default function Detail({
   rider,
   orderStatus
 }) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   return (
     <View style={styles.container(theme)}>
       {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
-          onPress={() => navigation.navigate('ChatWithRider', { id, orderNo, total })}
+          onPress={() =>
+            navigation.navigate('ChatWithRider', { id, orderNo, total })
+          }
           title={t('chatWithRider')}
           description={t('askContactlessDelivery')}
           theme={theme}
@@ -41,11 +45,17 @@ export default function Detail({
         textColor={theme.gray500}
         bolder
         H4
-        style={{ ...alignment.MBsmall }}
+        style={{ ...alignment.MBsmall, textAlign: isArabic ? 'right' : 'left' }}
       >
         {from}
       </TextDefault>
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          gap: 4
+        }}
+      >
         <TextDefault
           textColor={theme.gray500}
           bolder
@@ -63,22 +73,19 @@ export default function Detail({
           #{orderNo.toLowerCase()}
         </TextDefault>
       </View>
-      
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', ...alignment.MBsmall }}>
-        <TextDefault
-          textColor={theme.gray500}
-          bolder
-          H5
-          bold
-        >
+
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          ...alignment.MBsmall
+        }}
+      >
+        <TextDefault textColor={theme.gray500} bolder H5 bold>
           {t('itemsAndQuantity')} ({items.length})
         </TextDefault>
-        <TextDefault
-          textColor={theme.gray500}
-          bolder
-          H5
-          bold
-        >
+        <TextDefault textColor={theme.gray500} bolder H5 bold>
           {t('price')}
         </TextDefault>
       </View>
@@ -86,6 +93,7 @@ export default function Detail({
         {items.map((item) => (
           <ItemRow
             key={item._id}
+            isArabic={isArabic}
             theme={theme}
             quantity={item.quantity}
             title={`${item.title} ${item.variation.title}`}
@@ -108,11 +116,11 @@ const ItemRow = ({
   options = ['raita', '7up'],
   price,
   currency,
-  image
+  image,
+  isArabic
 }) => {
-  const { t } = useTranslation()
   return (
-    <View style={styles.itemRow(theme)}>
+    <View style={styles.itemRow(theme, isArabic)}>
       <View>
         <Image
           style={{
@@ -134,7 +142,10 @@ const ItemRow = ({
           textColor={theme.gray900}
           H5
           bolder
-          style={{ ...alignment.MBxSmall }}
+          style={{
+            ...alignment.MBxSmall,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
         >
           {title}
         </TextDefault>
@@ -144,19 +155,30 @@ const ItemRow = ({
             bold
             textColor={theme.gray600}
             left
-            style={{ ...alignment.MBxSmall }}
+            style={{
+              ...alignment.MBxSmall,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
           >
             {options.join(',')}
           </TextDefault>
         )}
 
-        <TextDefault Regular left bolder textColor={theme.gray900}>
+        <TextDefault
+          Regular
+          left
+          bolder
+          textColor={theme.gray900}
+          style={{
+            textAlign: isArabic ? 'right' : 'left'
+          }}
+        >
           x{quantity}
         </TextDefault>
       </View>
       <TextDefault
         right
-        style={{ width: '20%' }}
+        style={{ width: '10%' }}
         bolder
         textColor={theme.gray900}
         H5

@@ -4,19 +4,36 @@ import styles from './styles'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
+import { useTranslation } from 'react-i18next'
 
 function TitleComponent(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-
+  const { i18n } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.leftContainer}>
+    <View
+      style={{
+        ...styles.mainContainer
+        // flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
+    >
+      <View
+        style={{
+          ...styles.leftContainer
+          // flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+      >
         <TextDefault
           numberOfLines={1}
-          textColor={currentTheme.fontMainColor}
+          textColor={{
+            ...currentTheme.fontMainColor
+            // textAlign: isArabic ? 'right' : 'left'
+          }}
           H6
-          bolder>
+          bolder
+        >
           {props.title}
         </TextDefault>
         <TextDefault
@@ -28,12 +45,7 @@ function TitleComponent(props) {
         </TextDefault>
       </View>
       <View style={styles.rightContainer}>
-        <TextDefault
-          textColor={
-            currentTheme.color2
-          }
-          H6
-          center>
+        <TextDefault textColor={currentTheme.color2} H6 center>
           {props.status}
         </TextDefault>
       </View>

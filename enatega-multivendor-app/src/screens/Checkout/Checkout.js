@@ -94,7 +94,9 @@ function Checkout(props) {
   const themeContext = useContext(ThemeContext)
   const { location } = useContext(LocationContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const voucherModalRef = useRef(null)
   const tipModalRef = useRef(null)
   const [loadingData, setLoadingData] = useState(true)
@@ -820,7 +822,10 @@ function Checkout(props) {
                     onPress={() => {
                       onModalOpen(modalRef)
                     }}
-                    style={styles(currentTheme).deliveryTime}
+                    style={{
+                      ...styles(currentTheme).deliveryTime
+                      // flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
                   >
                     <View style={[styles().iconContainer]}>
                       <View style={styles().icon}>
@@ -828,7 +833,7 @@ function Checkout(props) {
                       </View>
                     </View>
                     <View style={styles(currentTheme).labelContainer}>
-                      <View style={{ marginLeft: scale(5) }}>
+                      <View style={{ marginInlineStart: scale(5) }}>
                         <TextDefault
                           textColor={currentTheme.newFontcolor}
                           numberOfLines={1}
@@ -877,6 +882,7 @@ function Checkout(props) {
                       </TextDefault>
                       <View>
                         <PaymentModeOption
+                          isArabic={isArabic}
                           title={'Cash'}
                           icon={'dollar'}
                           selected={paymentMode === 'COD'}
@@ -885,7 +891,7 @@ function Checkout(props) {
                             setPaymentMode('COD')
                           }}
                         />
-                        <PaymentModeOption
+                        {/* <PaymentModeOption
                           title={'Card (Stripe)'}
                           icon={'credit-card'}
                           selected={paymentMode === 'STRIPE'}
@@ -902,7 +908,7 @@ function Checkout(props) {
                           onSelect={() => {
                             setPaymentMode('PAYPAL')
                           }}
-                        />
+                        /> */}
                       </View>
                     </View>
                   </>
@@ -914,7 +920,7 @@ function Checkout(props) {
                   ]}
                 />
 
-                <View style={styles().voucherSec}>
+                {/* <View style={styles().voucherSec}>
                   {!coupon ? (
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -1006,8 +1012,8 @@ function Checkout(props) {
                       </View>
                     </>
                   )}
-                </View>
-                <View style={styles().tipSec}>
+                </View> */}
+                {/* <View style={styles().tipSec}>
                   <View style={[styles().tipRow]}>
                     <TextDefault
                       numberOfLines={1}
@@ -1085,18 +1091,26 @@ function Checkout(props) {
                       </TouchableOpacity>
                     </View>
                   )}
-                </View>
+                </View> */}
                 <View style={[styles(currentTheme).priceContainer]}>
                   <TextDefault
                     numberOfLines={1}
                     H5
                     bolder
                     textColor={currentTheme.fontNewColor}
-                    style={{ ...alignment.MBmedium }}
+                    style={{
+                      ...alignment.MBmedium,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}
                   >
                     {t('paymentSummary')}
                   </TextDefault>
-                  <View style={styles().billsec}>
+                  <View
+                    style={{
+                      ...styles().billsec,
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
+                  >
                     <TextDefault
                       numberOfLines={1}
                       normal
@@ -1119,7 +1133,12 @@ function Checkout(props) {
 
                   {!isPickup && (
                     <>
-                      <View style={styles().billsec}>
+                      <View
+                        style={{
+                          ...styles().billsec,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
                         <TextDefault
                           numberOfLines={1}
                           textColor={currentTheme.fontFourthColor}
@@ -1143,7 +1162,12 @@ function Checkout(props) {
                     </>
                   )}
 
-                  <View style={styles().billsec}>
+                  <View
+                    style={{
+                      ...styles().billsec,
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
+                  >
                     <TextDefault
                       numberOfLines={1}
                       textColor={currentTheme.fontFourthColor}
@@ -1163,7 +1187,12 @@ function Checkout(props) {
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
-                  <View style={styles().billsec}>
+                  {/* <View
+                    style={{
+                      ...styles().billsec,
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
+                  >
                     <TextDefault
                       numberOfLines={1}
                       textColor={currentTheme.fontFourthColor}
@@ -1181,11 +1210,16 @@ function Checkout(props) {
                       {configuration.currencySymbol}
                       {parseFloat(calculateTip()).toFixed(2)}
                     </TextDefault>
-                  </View>
-                  {coupon && (
+                  </View> */}
+                  {/* {coupon && (
                     <View>
                       <View style={styles(currentTheme).horizontalLine2} />
-                      <View style={styles().billsec}>
+                      <View
+                        style={{
+                          ...styles().billsec,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
                         <TextDefault
                           numberOfLines={1}
                           textColor={currentTheme.fontFourthColor}
@@ -1207,9 +1241,14 @@ function Checkout(props) {
                         </TextDefault>
                       </View>
                     </View>
-                  )}
+                  )} */}
                   <View style={styles(currentTheme).horizontalLine2} />
-                  <View style={styles().billsec}>
+                  <View
+                    style={{
+                      ...styles().billsec,
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
+                  >
                     <TextDefault
                       numberOfLines={1}
                       textColor={currentTheme.fontFourthColor}
@@ -1239,14 +1278,20 @@ function Checkout(props) {
                 >
                   <TextDefault
                     textColor={currentTheme.fontMainColor}
-                    style={alignment.MBsmall}
+                    style={{
+                      ...alignment.MBsmall,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}
                     small
                   >
                     {t('condition1')}
                   </TextDefault>
                   <TextDefault
                     textColor={currentTheme.fontSecondColor}
-                    style={alignment.MBsmall}
+                    style={{
+                      ...alignment.MBsmall,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}
                     small
                     bold
                   >

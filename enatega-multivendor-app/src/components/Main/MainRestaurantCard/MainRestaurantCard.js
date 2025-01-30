@@ -11,7 +11,9 @@ import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
 import MainLoadingUI from '../LoadingUI/MainLoadingUI'
 
 function MainRestaurantCard(props) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
@@ -26,20 +28,30 @@ function MainRestaurantCard(props) {
           textColor={currentTheme.fontFourthColor}
           bolder
           H4
-          style={styles().ItemTitle}
+          style={{
+            ...styles().ItemTitle,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
         >
           {t(props?.title)}
         </TextDefault>
         <TextDefault
           Normal
           textColor={currentTheme.secondaryText}
-          style={styles().ItemDescription}
+          style={{
+            ...styles().ItemDescription,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
         >
           {t('mostOrderedNow')}
         </TextDefault>
         <FlatList
           style={styles().offerScroll}
-          contentContainerStyle={{ flexGrow: 1, ...alignment.PRlarge }}
+          inverted={isArabic}
+          contentContainerStyle={{
+            flexGrow: 1,
+            ...alignment.PRlarge
+          }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           horizontal={true}

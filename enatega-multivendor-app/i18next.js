@@ -10,14 +10,14 @@ import { zh } from './translations/zh'
 import { ar } from './translations/ar'
 import { he } from './translations/he'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 export const languageResources = {
   en: { translation: en },
-  zh: { translation: zh },
-  de: { translation: de },
-  fr: { translation: fr },
-  km: { translation: km },
-  ar: { translation: ar },
-  he: { translation: he }
+  ar: { translation: ar }
+  // zh: { translation: zh },
+  // de: { translation: de },
+  // fr: { translation: fr },
+  // km: { translation: km },
 }
 const getStoredLanguage = async () => {
   const lng = await AsyncStorage.getItem('enatega-language')

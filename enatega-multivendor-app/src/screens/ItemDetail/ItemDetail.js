@@ -52,9 +52,10 @@ function ItemDetail(props) {
   const Analytics = analytics()
 
   const { food, addons, options, restaurant } = props.route.params
-  // console.log({ restaurant })
   const navigation = useNavigation()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
 
   const [selectedVariation, setSelectedVariation] = useState({
     ...food.variations[0],
@@ -69,12 +70,6 @@ function ItemDetail(props) {
       }
     })
   })
-
-  // console.log({
-  //   selectedVariation: selectedVariation?.addons
-  //     ? selectedVariation?.addons[0].options
-  //     : 'no addons'
-  // })
 
   const imageUrl =
     food?.image && food?.image.trim() !== '' ? food.image : IMAGE_LINK
@@ -160,13 +155,12 @@ function ItemDetail(props) {
   }
 
   async function onPressAddToCart(quantity) {
-    console.log({ quantity })
     if (validateOrderItem()) {
-      Analytics.track(Analytics.events.ADD_TO_CART, {
-        title: food.title,
-        restaurantName: food.restaurantName,
-        variations: food.variations
-      })
+      // Analytics.track(Analytics.events.ADD_TO_CART, {
+      //   title: food.title,
+      //   restaurantName: food.restaurantName,
+      //   variations: food.variations
+      // })
       if (!restaurantCart || restaurant === restaurantCart) {
         await addToCart(quantity, restaurant !== restaurantCart)
       } else if (food.restaurant !== restaurantCart) {
@@ -266,7 +260,6 @@ function ItemDetail(props) {
   }
 
   async function onSelectOption(addon, option) {
-    console.log({ addonHere: addon })
     const index = selectedAddons.findIndex((ad) => ad._id === addon._id)
     if (index > -1) {
       if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
@@ -288,12 +281,9 @@ function ItemDetail(props) {
       }
     } else {
       selectedAddons.push({ _id: addon._id, options: [option] })
-      // setSelectedAddons([...selectedAddons, { _id: addon, options: [option] }])
     }
     setSelectedAddons([...selectedAddons])
   }
-
-  console.log({ selectedAddonsHere: selectedAddons })
 
   function calculatePrice() {
     const variation = selectedVariation.price
@@ -328,7 +318,7 @@ function ItemDetail(props) {
   function renderOption(addon) {
     if (addon.quantityMinimum === 1 && addon.quantityMaximum === 1) {
       return (
-        <View>
+        <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
           <RadioComponent
             options={addon?.options}
             onPress={onSelectOption.bind(this, addon)}
@@ -342,7 +332,7 @@ function ItemDetail(props) {
       )
     } else {
       return (
-        <View>
+        <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
           <CheckComponent
             options={addon?.options}
             onPress={onSelectOption.bind(this, addon)}
@@ -427,7 +417,9 @@ function ItemDetail(props) {
           >
             <View>
               {food?.variations?.length && (
-                <View>
+                <View
+                // style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}
+                >
                   <TitleComponent
                     title={t('SelectVariation')}
                     subTitle={t('SelectOne')}

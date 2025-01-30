@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Alert, Image, TouchableOpacity, View } from 'react-native'
-import { AntDesign, Feather, EvilIcons} from '@expo/vector-icons'
+import { AntDesign, Feather, EvilIcons } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import ConfigurationContext from '../../context/Configuration'
@@ -12,9 +12,11 @@ import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { IMAGE_LINK } from '../../utils/constants'
 
-const CartItem = props => {
+const CartItem = (props) => {
   const cartRestaurant = props.cartRestaurant
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -29,27 +31,37 @@ const CartItem = props => {
   const navigation = useNavigation()
 
   return (
-    <View style={styles().itemContainer}>
+    <View
+      style={{
+        ...styles().itemContainer,
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
+    >
       <View
         style={{
-          flexDirection: 'row',
+          flexDirection: isArabic ? 'row-reverse' : 'row',
           justifyContent: 'flex-start',
           alignItems: 'center',
           gap: scale(7)
-        }}>
+        }}
+      >
         <View style={styles().suggestItemImgContainer}>
           <Image
             source={{ uri: imageUrl }}
             style={styles().suggestItemImg}
-            resizeMode="contain"
+            resizeMode='contain'
           />
         </View>
         <View>
           <TextDefault
             numberOfLines={1}
-            textColor={currentTheme.fontFourthColor}
+            textColor={{
+              ...currentTheme.fontFourthColor,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
             bolder
-            H5>
+            H5
+          >
             {props?.dealName?.length > 20
               ? props.dealName.substring(0, 17) + '...'
               : props.dealName}
@@ -61,11 +73,15 @@ const CartItem = props => {
                 <TouchableOpacity
                   onPress={toggleDropdown}
                   activeOpacity={1}
-                  style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
                   <TextDefault
                     style={{ marginRight: scale(5) }}
-                    textColor={currentTheme.secondaryText}
-                    Normal>
+                    textColor={{
+                      ...currentTheme.secondaryText
+                    }}
+                    Normal
+                  >
                     {props?.optionsTitle?.slice(0, 3)?.length}{' '}
                     {t('additionalItems')}
                   </TextDefault>
@@ -81,7 +97,8 @@ const CartItem = props => {
                       <TextDefault
                         key={index}
                         textColor={currentTheme.secondaryText}
-                        Normal>
+                        Normal
+                      >
                         {item}
                       </TextDefault>
                     ))}
@@ -97,21 +114,28 @@ const CartItem = props => {
               gap: scale(8),
               alignItems: 'center',
               marginTop: scale(4)
-            }}>
+            }}
+          >
             <TextDefault
               numberOfLines={1}
               textColor={currentTheme.fontFourthColor}
               bolder
-              Normal>
+              Normal
+            >
               {configuration.currencySymbol}
               {parseFloat(props.dealPrice).toFixed(2)}
             </TextDefault>
             <View style={styles().divider} />
-            <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { _id: cartRestaurant })}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Restaurant', { _id: cartRestaurant })
+              }
+            >
               <TextDefault
                 textColor={currentTheme.fontFourthColor}
                 bolder
-                Normal>
+                Normal
+              >
                 {t('edit')}
               </TextDefault>
             </TouchableOpacity>
@@ -125,16 +149,17 @@ const CartItem = props => {
             styles(currentTheme).actionContainerBtns,
             styles(currentTheme).minusBtn
           ]}
-          onPress={props.removeQuantity}>
+          onPress={props.removeQuantity}
+        >
           {props.quantity < 2 ? (
-            <EvilIcons 
-              name="trash"
+            <EvilIcons
+              name='trash'
               size={scale(25)}
               color={currentTheme.color4}
             />
           ) : (
             <AntDesign
-              name="minus"
+              name='minus'
               size={scale(18)}
               color={currentTheme.color4}
             />
@@ -152,8 +177,9 @@ const CartItem = props => {
             styles(currentTheme).actionContainerBtns,
             styles(currentTheme).plusBtn
           ]}
-          onPress={props.addQuantity}>
-          <AntDesign name="plus" size={scale(18)} color={currentTheme.white} />
+          onPress={props.addQuantity}
+        >
+          <AntDesign name='plus' size={scale(18)} color={currentTheme.white} />
         </TouchableOpacity>
       </View>
     </View>

@@ -14,7 +14,9 @@ import { useNavigation } from '@react-navigation/native'
 import TopBrandsLoadingUI from '../LoadingUI/TopBrandsLoadingUI'
 
 function TopBrands(props) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const { location } = useContext(LocationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -71,15 +73,19 @@ function TopBrands(props) {
         textColor={currentTheme.fontFourthColor}
         bolder
         H4
+        style={{ textAlign: isArabic ? 'right' : 'left' }}
       >
         {t('topBrands')}
       </TextDefault>
       <View style={{ ...alignment.PRsmall }}>
         <FlatList
           data={data?.topRatedVendorsPreview}
+          inverted={isArabic}
           renderItem={renderItem}
           keyExtractor={(item) => item?._id}
-          contentContainerStyle={{ flexGrow: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1
+          }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           horizontal={true}

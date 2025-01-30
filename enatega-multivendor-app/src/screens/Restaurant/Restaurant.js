@@ -56,6 +56,7 @@ import { LocationContext } from '../../context/Location'
 import PopularIcon from '../../assets/SVG/popular'
 import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
+import { Fragment } from 'react'
 
 const { height } = Dimensions.get('screen')
 
@@ -70,18 +71,16 @@ const HALF_HEADER_SCROLL = HEADER_MAX_HEIGHT - TOP_BAR_HEIGHT
 const POPULAR_ITEMS = gql`
   ${popularItems}
 `
-// const FOOD = gql`
-//   ${getSingleFood}
-// `
 const FOOD = gql`
   ${food}
 `
 
-// const concat = (...args) => args.join('')
 function Restaurant(props) {
   const { _id: restaurantId } = props.route.params
   const Analytics = analytics()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const scrollRef = useRef(null)
   const flatListRef = useRef(null)
   const navigation = useNavigation()
@@ -117,14 +116,6 @@ function Restaurant(props) {
   const { data: popularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId }
   })
-
-  const fetchFoodDetails = (itemId) => {
-    // const { data } = useQuery(FOOD, {
-    //   variables: { id: itemId }
-    // })
-    // return data
-    return client.readFragment({ id: `Food:${itemId}`, fragment: FOOD })
-  }
 
   const dataList =
     popularItems &&
@@ -607,6 +598,7 @@ function Restaurant(props) {
             searchHandler={searchHandler}
             searchPopupHandler={searchPopupHandler}
             translationY={translationY}
+            isArabic={isArabic}
           />
 
           {showSearchResults || searchOpen ? (
@@ -632,7 +624,7 @@ function Restaurant(props) {
                   >
                     <View
                       style={{
-                        flexDirection: 'row',
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
                         justifyContent: 'space-between',
                         alignItems: 'center'
                       }}
@@ -649,10 +641,15 @@ function Restaurant(props) {
                           />
                         ) : null}
                         <View style={styles(currentTheme).flex}>
-                          <View style={styles(currentTheme).dealDescription}>
+                          <View
+                            style={{ ...styles(currentTheme).dealDescription }}
+                          >
                             <TextDefault
                               textColor={currentTheme.fontMainColor}
-                              style={styles(currentTheme).headerText}
+                              style={{
+                                ...styles(currentTheme).headerText,
+                                textAlign: isArabic ? 'right' : 'left'
+                              }}
                               numberOfLines={1}
                               bolder
                             >
@@ -745,7 +742,12 @@ function Restaurant(props) {
                   }
                   return (
                     <View style={styles(currentTheme).restaurantItems}>
-                      <View style={styles().popularHeading}>
+                      <View
+                        style={{
+                          ...styles().popularHeading,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
                         <PopularIcon color={currentTheme.iconColorDark} />
                         <TextDefault
                           style={styles(currentTheme).popularText}
@@ -762,7 +764,8 @@ function Restaurant(props) {
                           ...alignment.PRmedium,
                           fontSize: scale(12),
                           fontWeight: '400',
-                          marginTop: scale(3)
+                          marginTop: scale(3),
+                          textAlign: isArabic ? 'right' : 'left'
                         }}
                       >
                         {t('mostOrderedNow')}
@@ -785,7 +788,12 @@ function Restaurant(props) {
                 return (
                   <View style={styles(currentTheme).sectionHeader}>
                     <TextDefault
-                      style={styles(currentTheme).sectionHeaderText}
+                      style={{
+                        ...styles(currentTheme).sectionHeaderText,
+                        textAlign: isArabic ? 'right' : 'left',
+                        marginInlineEnd: isArabic ? 20 : 0,
+                        marginBottom: 20
+                      }}
                       textColor={currentTheme.fontFourthColor}
                       bolder
                     >
@@ -806,80 +814,55 @@ function Restaurant(props) {
                   return null
                 }
                 return (
-                  <TouchableOpacity
-                    style={styles(currentTheme).dealSection}
-                    activeOpacity={0.7}
-                    onPress={() =>
-                      onPressItem({
-                        ...item,
-                        restaurant: restaurant?._id,
-                        restaurantName: restaurant.name
-                      })
-                    }
-                  >
-                    <View
+                  <Fragment>
+                    <TouchableOpacity
+                      onPress={() =>
+                        onPressItem({
+                          ...item,
+                          restaurant: restaurant?._id,
+                          restaurantName: restaurant.name
+                        })
+                      }
                       style={{
-                        flexDirection: 'row',
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        paddingHorizontal: 10,
+                        marginBottom: 10
                       }}
                     >
-                      <View style={styles(currentTheme).deal}>
-                        <Image
-                          style={{
-                            height: scale(60),
-                            width: scale(60),
-                            borderRadius: 30
-                          }}
-                          source={{ uri: imageUrl }}
-                        />
-                        <View style={styles(currentTheme).flex}>
-                          <View style={styles(currentTheme).dealDescription}>
-                            <TextDefault
-                              textColor={currentTheme.fontMainColor}
-                              style={styles(currentTheme).headerText}
-                              numberOfLines={1}
-                              bolder
-                            >
-                              {item.title}
-                            </TextDefault>
-                            <TextDefault
-                              style={styles(currentTheme).priceText}
-                              small
-                            >
-                              {wrapContentAfterWords(item.description, 5)}
-                            </TextDefault>
-                            <View style={styles(currentTheme).dealPrice}>
-                              <TextDefault
-                                numberOfLines={1}
-                                textColor={currentTheme.fontMainColor}
-                                style={styles(currentTheme).priceText}
-                                bolder
-                                small
-                              >
-                                {configuration.currencySymbol}{' '}
-                                {/* {item.variations[0].price} */}
-                                {parseFloat(item.variations[0].price).toFixed(
-                                  2
-                                )}
-                              </TextDefault>
-                              {item?.variations[0]?.discounted > 0 && (
-                                <TextDefault
-                                  numberOfLines={1}
-                                  textColor={currentTheme.fontSecondColor}
-                                  style={styles().priceText}
-                                  small
-                                  lineOver
-                                >
-                                  {configuration.currencySymbol}{' '}
-                                  {(
-                                    item.variations[0].price +
-                                    item.variations[0].discounted
-                                  ).toFixed(2)}
-                                </TextDefault>
-                              )}
-                            </View>
-                          </View>
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          gap: 20
+                        }}
+                      >
+                        <View>
+                          <Image
+                            style={{
+                              height: scale(60),
+                              width: scale(60),
+                              borderRadius: 30
+                            }}
+                            source={{ uri: imageUrl }}
+                          />
+                        </View>
+                        <View>
+                          <TextDefault
+                            bolder
+                            textColor={currentTheme.fontMainColor}
+                            style={{
+                              ...styles(currentTheme).headerText
+                            }}
+                          >
+                            {item.title}
+                          </TextDefault>
+                          <TextDefault
+                            style={{ textAlign: isArabic ? 'right' : 'left' }}
+                          >
+                            {configuration.currencySymbol}{' '}
+                            {parseFloat(item.variations[0].price).toFixed(2)}
+                          </TextDefault>
                         </View>
                       </View>
                       <View style={styles(currentTheme).addToCart}>
@@ -889,10 +872,98 @@ function Restaurant(props) {
                           color={currentTheme.themeBackground}
                         />
                       </View>
-                    </View>
-                    {/* )} */}
-                    {tagCart(item?._id)}
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity
+                      style={styles(currentTheme).dealSection}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        onPressItem({
+                          ...item,
+                          restaurant: restaurant?._id,
+                          restaurantName: restaurant.name
+                        })
+                      }
+                    >
+                      <View
+                        style={{
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
+                        <View
+                          style={{
+                            ...styles(currentTheme).deal,
+                            flexDirection: isArabic ? 'row-reverse' : 'row'
+                          }}
+                        >
+                          <Image
+                            style={{
+                              height: scale(60),
+                              width: scale(60),
+                              borderRadius: 30
+                            }}
+                            source={{ uri: imageUrl }}
+                          />
+                          <View style={styles(currentTheme).flex}>
+                            <View style={styles(currentTheme).dealDescription}>
+                              <TextDefault
+                                textColor={currentTheme.fontMainColor}
+                                style={styles(currentTheme).headerText}
+                                numberOfLines={1}
+                                bolder
+                              >
+                                {item.title}
+                              </TextDefault>
+                              <TextDefault
+                                style={styles(currentTheme).priceText}
+                                small
+                              >
+                                {wrapContentAfterWords(item.description, 5)}
+                              </TextDefault>
+                              <View style={styles(currentTheme).dealPrice}>
+                                <TextDefault
+                                  numberOfLines={1}
+                                  textColor={currentTheme.fontMainColor}
+                                  style={styles(currentTheme).priceText}
+                                  bolder
+                                  small
+                                >
+                                  {configuration.currencySymbol}{' '}
+                                  {parseFloat(item.variations[0].price).toFixed(
+                                    2
+                                  )}
+                                </TextDefault>
+                                {item?.variations[0]?.discounted > 0 && (
+                                  <TextDefault
+                                    numberOfLines={1}
+                                    textColor={currentTheme.fontSecondColor}
+                                    style={styles().priceText}
+                                    small
+                                    lineOver
+                                  >
+                                    {configuration.currencySymbol}{' '}
+                                    {(
+                                      item.variations[0].price +
+                                      item.variations[0].discounted
+                                    ).toFixed(2)}
+                                  </TextDefault>
+                                )}
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+                        <View style={styles(currentTheme).addToCart}>
+                          <MaterialIcons
+                            name='add'
+                            size={scale(20)}
+                            color={currentTheme.themeBackground}
+                          />
+                        </View>
+                      </View>
+                      {tagCart(item?._id)}
+                    </TouchableOpacity> */}
+                  </Fragment>
                 )
               }}
             />

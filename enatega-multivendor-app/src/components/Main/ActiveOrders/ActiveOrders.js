@@ -22,7 +22,9 @@ const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
 const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
 
 const ActiveOrders = ({ onActiveOrdersChange }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const { loadingOrders, errorOrders, orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
   const navigation = useNavigation()
@@ -65,7 +67,12 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
       modalStyle={modalStyle}
     >
       <View style={{ marginTop: scale(20), marginHorizontal: scale(10) }}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }}
+        >
           <TextDefault Regular textColor={currentTheme.fontGrayNew}>
             {t('estimatedDeliveryTime')}
           </TextDefault>
@@ -75,22 +82,42 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
             </TextDefault>
           </TouchableOpacity>
         </View>
-        <View style={{ marginTop: scale(10) }}>
-          <TextDefault Regular textColor={currentTheme.gray900} H1 bolder>
-            {remainingTime}-{remainingTime + 5} {t('mins')}
-          </TextDefault>
+        <View
+          style={{
+            marginTop: scale(10),
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }}
+        >
+          {!isArabic ? (
+            <TextDefault Regular textColor={currentTheme.gray900} H1 bolder>
+              {remainingTime}-{remainingTime + 5} {t('mins')}
+            </TextDefault>
+          ) : (
+            <TextDefault Regular textColor={currentTheme.gray900} H1 bolder>
+              {t('mins')} {remainingTime}-{remainingTime + 5}
+            </TextDefault>
+          )}
         </View>
         <View>
-          <ProgressBar
-            configuration={configuration}
-            currentTheme={currentTheme}
-            item={order}
-            navigation={navigation}
-          />
-          <View style={{ marginTop: scale(10) }}>
+          <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
+            <ProgressBar
+              configuration={configuration}
+              currentTheme={currentTheme}
+              item={order}
+              navigation={navigation}
+            />
+          </View>
+          <View
+            style={{
+              marginTop: scale(10)
+            }}
+          >
             <TextDefault
               numberOfLines={2}
-              style={styles(currentTheme).statusText}
+              style={{
+                ...styles(currentTheme).statusText,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             >
               {t(checkStatus(order.orderStatus).statusText)}
             </TextDefault>

@@ -69,7 +69,7 @@ const PROFILE = gql`
 `
 
 function ImageTextCenterHeader(props, ref) {
-  const { translationY } = props
+  const { translationY, isArabic } = props
   const flatListRef = ref
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -357,8 +357,9 @@ function ImageTextCenterHeader(props, ref) {
                 style={[
                   {
                     display: 'flex',
-                    flexDirection: 'row',
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
                     alignItems: 'center',
+                    justifyContent: isArabic ? 'flex-start' : 'flex-end',
                     gap: scale(15),
                     marginBottom: scale(20)
                   }
@@ -384,7 +385,13 @@ function ImageTextCenterHeader(props, ref) {
                   </TextDefault>
                 </View>
               </Animated.View>
-              <View style={{ display: 'flex', flexDirection: 'row', gap: 7 }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 7
+                }}
+              >
                 <TextDefault
                   style={styles().restaurantAbout}
                   textColor={currentTheme.fontMainColor}
@@ -408,7 +415,7 @@ function ImageTextCenterHeader(props, ref) {
               <View
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
                   gap: 7,
                   marginTop: scale(5)
                 }}
@@ -498,7 +505,15 @@ function ImageTextCenterHeader(props, ref) {
                   </TextDefault>
                 </AnimatedTouchable>
               </View>
-              <View style={[styles().ratingBox, { marginTop: scale(9) }]}>
+              <View
+                style={[
+                  styles().ratingBox,
+                  {
+                    marginTop: scale(9),
+                    flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }
+                ]}
+              >
                 <MaterialCommunityIcons
                   name='timer-outline'
                   size={scale(20)}
@@ -525,7 +540,10 @@ function ImageTextCenterHeader(props, ref) {
             <FlatList
               ref={flatListRef}
               style={styles(currentTheme).flatListStyle}
-              contentContainerStyle={{ flexGrow: 1 }}
+              contentContainerStyle={{
+                flexGrow: 1,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
               data={props.loading ? [] : [...props.topaBarData]}
               horizontal={true}
               ListEmptyComponent={emptyView()}

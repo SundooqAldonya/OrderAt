@@ -115,7 +115,7 @@ export const theme = {
     black: '#000',
     CustomLoadingBG: '#000',
     white: '#FFF',
-    themeBackground: '#000',
+    themeBackground: '#101218',
     newheaderColor: '#90E36D',
     menuBar: '#000',
     iconColor: '#FCFCFC',

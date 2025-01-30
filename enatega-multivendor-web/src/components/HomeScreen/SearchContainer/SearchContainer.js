@@ -51,6 +51,7 @@ function SearchContainer({
   search: searchProp,
   setSearch: setSearchProp,
 }) {
+  console.log({ isHome });
   const { t } = useTranslation();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down("md"));

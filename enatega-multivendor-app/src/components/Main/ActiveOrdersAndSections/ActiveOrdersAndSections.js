@@ -9,20 +9,21 @@ import { useTranslation } from 'react-i18next'
 import styles from './styles'
 
 function ActiveOrdersAndSections(props) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
   return (
-    <View
-      style={styles().menuPageHeading}
-    >
+    <View style={styles().menuPageHeading}>
       <TextDefault
         numberOfLines={1}
         textColor={currentTheme.fontFourthColor}
         bolder
         H4
+        style={{ textAlign: isArabic ? 'right' : 'left' }}
       >
         {props?.menuPageHeading}
       </TextDefault>
@@ -31,7 +32,8 @@ function ActiveOrdersAndSections(props) {
         regular
         textColor={currentTheme.secondaryText}
         style={{
-          marginTop: scale(5)
+          marginTop: scale(5),
+          textAlign: isArabic ? 'right' : 'left'
         }}
       >
         {t('mostOrderedNow')}

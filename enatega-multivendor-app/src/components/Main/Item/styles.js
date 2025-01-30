@@ -6,8 +6,7 @@ const styles = (props = null) =>
   StyleSheet.create({
     mainContainer: {
       width: '100%',
-      alignItems: 'center',
-    
+      alignItems: 'center'
     },
     restaurantContainer: {
       backgroundColor: props != null ? props.newheaderBG : 'white',
@@ -16,7 +15,6 @@ const styles = (props = null) =>
       borderRadius: scale(8),
       height: scale(280),
       width: '99%',
-
 
       ...alignment.MBsmall
     },
@@ -68,8 +66,8 @@ const styles = (props = null) =>
     },
     aboutRestaurant: {
       alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'flex-end'
+      flexDirection: 'row'
+      // justifyContent: 'flex-start'
     },
     descriptionContainer: {
       width: '100%',

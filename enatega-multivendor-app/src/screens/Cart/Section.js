@@ -31,7 +31,9 @@ const RESTAURANT = gql`
 `
 // const FOOD = gql`${food}`
 const Section = ({ itemId, food, restaurantId, restaurant }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const navigation = useNavigation()
   const client = useApolloClient()
   const themeContext = useContext(ThemeContext)
@@ -46,16 +48,11 @@ const Section = ({ itemId, food, restaurantId, restaurant }) => {
   if (error) return <View />
   const { relatedItems } = data
   if (relatedItems.length < 1) return <View />
-  // const result = client.readQuery({
-  //   query: RESTAURANT,
-  //   variables: { id: restaurantId }
-  // })
+
   const slicedItems =
     relatedItems.length > 3 ? relatedItems.slice(0, 3) : relatedItems
-  // const restaurant = result?.restaurant
 
   const renderItem = ({ item }) => {
-    // const food = client.readFragment({ id: `Food:${item}`, fragment: FOOD })
     const imageUrl =
       food.image && food.image.trim() !== '' ? food.image : IMAGE_LINK
 
@@ -125,8 +122,13 @@ const Section = ({ itemId, food, restaurantId, restaurant }) => {
   return (
     <View>
       <TextDefault
-        style={styles().suggestItemDesciption}
-        textColor={currentTheme.fontNewColor}
+        style={{
+          ...styles().suggestItemDesciption,
+          textAlign: isArabic ? 'right' : 'left'
+        }}
+        textColor={{
+          ...currentTheme.fontNewColor
+        }}
         H5
         bolder
       >
@@ -136,7 +138,11 @@ const Section = ({ itemId, food, restaurantId, restaurant }) => {
         data={slicedItems}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ flexGrow: 1, ...alignment.PRlarge }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          ...alignment.PRlarge,
+          justifyContent: isArabic ? 'flex-end' : 'flex-start'
+        }}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         horizontal={true}

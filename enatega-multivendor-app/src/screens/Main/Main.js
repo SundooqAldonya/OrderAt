@@ -17,11 +17,7 @@ import {
   Animated,
   RefreshControl
 } from 'react-native'
-import {
-  MaterialIcons,
-  AntDesign,
-  SimpleLineIcons
-} from '@expo/vector-icons'
+import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { useMutation, useQuery, gql } from '@apollo/client'
 import { useCollapsibleSubHeader } from 'react-navigation-collapsible'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
@@ -68,7 +64,9 @@ const SELECT_ADDRESS = gql`
 function Main(props) {
   const Analytics = analytics()
 
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const [busy, setBusy] = useState(false)
   const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
@@ -167,45 +165,45 @@ function Main(props) {
     modalRef.current.close()
   }
   async function getAddress(lat, lon) {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-        return data;
+      const response = await fetch(url)
+      const data = await response.json()
+      console.log(data)
+      return data
     } catch (error) {
-        console.error("Error fetching address:", error);
+      console.error('Error fetching address:', error)
     }
-}
+  }
 
   const setCurrentLocation = async () => {
     setBusy(true)
     const { error, coords } = await getCurrentLocation()
     console.log(coords)
     const data = getAddress(coords.latitude, coords.longitude)
-        console.log(data,'data')
-        if (data.error) {
-          console.log('Reverse geocoding request failed:', data.error)
-        } else {
-          let address = data.display_name
-          if (address.length > 21) {
-            address = address.substring(0, 21) + '...'
-          }
+    console.log(data, 'data')
+    if (data.error) {
+      console.log('Reverse geocoding request failed:', data.error)
+    } else {
+      let address = data.display_name
+      if (address.length > 21) {
+        address = address.substring(0, 21) + '...'
+      }
 
-          if (error) navigation.navigate('SelectLocation')
-          else {
-            modalRef.current.close()
-            setLocation({
-              label: 'currentLocation',
-              latitude: coords.latitude,
-              longitude: coords.longitude,
-              deliveryAddress: address
-            })
-            setBusy(false)
-          }
-          console.log(address)
-        }
-        console.error('Error fetching reverse geocoding data:', error)
+      if (error) navigation.navigate('SelectLocation')
+      else {
+        modalRef.current.close()
+        setLocation({
+          label: 'currentLocation',
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          deliveryAddress: address
+        })
+        setBusy(false)
+      }
+      console.log(address)
+    }
+    console.error('Error fetching reverse geocoding data:', error)
   }
 
   const modalHeader = () => (
@@ -218,15 +216,19 @@ function Main(props) {
           disabled={busy}
         >
           <View style={styles().addressSubContainer}>
-            {
-              busy ? <Spinner size='small' /> : (
-                <>
-                  <SimpleLineIcons name="target" size={scale(18)} color={currentTheme.black} />
-                  <View style={styles().mL5p} />
-                  <TextDefault bold>{t('currentLocation')}</TextDefault>
-                </>
-              )
-            }
+            {busy ? (
+              <Spinner size='small' />
+            ) : (
+              <>
+                <SimpleLineIcons
+                  name='target'
+                  size={scale(18)}
+                  color={currentTheme.black}
+                />
+                <View style={styles().mL5p} />
+                <TextDefault bold>{t('currentLocation')}</TextDefault>
+              </>
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -290,15 +292,14 @@ function Main(props) {
 
   const searchAllShops = (searchText) => {
     const data = []
-    const escapedSearchText = escapeRegExp(searchText);
-    const regex = new RegExp(escapedSearchText, 'i');
+    const escapedSearchText = escapeRegExp(searchText)
+    const regex = new RegExp(escapedSearchText, 'i')
     restaurants?.forEach((restaurant) => {
       const resultCatFoods = restaurant.keywords.some((keyword) => {
         const result = keyword.search(regex)
         return result > -1
       })
-      if (resultCatFoods)
-        data.push(restaurant)
+      if (resultCatFoods) data.push(restaurant)
     })
     return data
   }
@@ -312,7 +313,12 @@ function Main(props) {
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
               <View style={[styles().flex, styles().subContainer]}>
-                <View style={[styles(currentTheme).searchbar,{backgroundColor:colors.primary}]}>
+                <View
+                  style={[
+                    styles(currentTheme).searchbar,
+                    { backgroundColor: colors.primary }
+                  ]}
+                >
                   <Search
                     setSearch={setSearch}
                     search={search}
@@ -321,7 +327,12 @@ function Main(props) {
                   />
                 </View>
                 {search ? (
-                  <View style={styles().searchList}>
+                  <View
+                    style={{
+                      ...styles().searchList
+                      // flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }}
+                  >
                     <Animated.FlatList
                       contentInset={{
                         top: containerPaddingTop
@@ -375,14 +386,20 @@ function Main(props) {
                             H4
                             bolder
                             textColor={currentTheme.fontThirdColor}
-                            style={styles().ItemName}
+                            style={{
+                              ...styles().ItemName,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
                           >
                             {t('foodDelivery')}
                           </TextDefault>
                           <TextDefault
                             Normal
                             textColor={currentTheme.fontThirdColor}
-                            style={styles().ItemDescription}
+                            style={{
+                              ...styles().ItemDescription,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
                           >
                             {t('OrderfoodLove')}
                           </TextDefault>
@@ -390,7 +407,6 @@ function Main(props) {
                         <Image
                           source={require('../../assets/images/ItemsList/menu-new.png')}
                           style={styles().popularMenuImg}
-                        // resizeMode='contain'
                         />
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -406,14 +422,20 @@ function Main(props) {
                             H4
                             bolder
                             textColor={currentTheme.fontThirdColor}
-                            style={styles().ItemName}
+                            style={{
+                              ...styles().ItemName,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
                           >
                             {t('grocery')}
                           </TextDefault>
                           <TextDefault
                             Normal
                             textColor={currentTheme.fontThirdColor}
-                            style={styles().ItemDescription}
+                            style={{
+                              ...styles().ItemDescription,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
                           >
                             {t('essentialsDeliveredFast')}
                           </TextDefault>
@@ -421,7 +443,6 @@ function Main(props) {
                         <Image
                           source={require('../../assets/images/ItemsList/grocery-new.png')}
                           style={styles().popularMenuImg}
-                        // resizeMode='contain'
                         />
                       </TouchableOpacity>
                     </View>
@@ -482,7 +503,6 @@ function Main(props) {
             profile={profile}
             location={location}
           />
-
         </View>
       </SafeAreaView>
     </>

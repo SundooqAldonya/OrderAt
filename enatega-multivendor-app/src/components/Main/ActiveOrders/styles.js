@@ -74,7 +74,6 @@ const styles = (props = null) =>
       fontSize: verticalScale(13),
       fontFamily: fontStyles.MuseoSans500,
       marginBottom: scale(10),
-      // paddingLeft: 40,
       fontWeight: '500'
     },
     timeText: {

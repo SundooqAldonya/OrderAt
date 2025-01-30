@@ -4,7 +4,7 @@ import { verticalScale, scale } from '../../utils/scaling'
 const styles = (props = null) =>
   StyleSheet.create({
     container: {
-      flexDirection: 'row',
+      // flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: props !== null ? props.themeBackground : '#fff',
       padding: scale(10),
@@ -48,8 +48,7 @@ const styles = (props = null) =>
       justifyContent: 'space-between',
       paddingTop: scale(40),
       paddingHorizontal: scale(18),
-      backgroundColor: props !== null ? props.themeBackground : '#fff',
-
+      backgroundColor: props !== null ? props.themeBackground : '#fff'
     },
     modalTitle: {
       fontSize: 18,
@@ -63,8 +62,7 @@ const styles = (props = null) =>
       borderBottomColor: props !== null ? props.white : '#fff'
     },
     modalItemText: {
-      fontSize: 16,
-      
+      fontSize: 16
     },
     saveBtnContainer: {
       width: '100%',

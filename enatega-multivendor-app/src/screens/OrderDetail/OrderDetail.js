@@ -60,7 +60,9 @@ function OrderDetail(props) {
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const navigation = useNavigation()
   const headerRef = useRef(false)
   const { GOOGLE_MAPS_KEY } = useEnvVars()
@@ -107,8 +109,6 @@ function OrderDetail(props) {
       message: error.message
     })
   }
-
-  // const order = orders?.find((o) => o?._id === id)
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -200,8 +200,8 @@ function OrderDetail(props) {
               strokeColor={currentTheme.main}
               optimizeWaypoints={true}
               onReady={(result) => {
-                //result.distance} km
-                //Duration: ${result.duration} min.
+                // result.distance} km
+                // Duration: ${result.duration} min.
 
                 mapView?.current?.fitToCoordinates(result.coordinates, {
                   edgePadding: {
@@ -301,22 +301,28 @@ function OrderDetail(props) {
       </ScrollView>
       <View style={styles().bottomContainer(currentTheme)}>
         <PriceRow
+          isArabic={isArabic}
           theme={currentTheme}
           title={t('total')}
           currency={configuration.currencySymbol}
           price={total.toFixed(2)}
         />
-        {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
+        {/* {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
           <View style={{ margin: scale(20) }}>
             <Button
               text={t('cancelOrder')}
               buttonProps={{ onPress: cancelModalToggle }}
-              buttonStyles={styles().cancelButtonContainer(currentTheme)}
+              buttonStyles={{
+                ...styles().cancelButtonContainer(currentTheme)
+              }}
               textProps={{ textColor: currentTheme.red600 }}
-              textStyles={{ ...alignment.Pmedium }}
+              textStyles={{
+                ...alignment.Pmedium,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             />
           </View>
-        )}
+        )} */}
       </View>
       <CancelModal
         theme={currentTheme}

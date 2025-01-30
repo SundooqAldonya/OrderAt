@@ -141,7 +141,7 @@ function Main(props) {
     Other: 'location-pin'
   }
 
-  const setAddressLocation = async address => {
+  const setAddressLocation = async (address) => {
     setLocation({
       _id: address._id,
       label: address.label,
@@ -160,8 +160,8 @@ function Main(props) {
 
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
     fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.error) {
           console.log('Reverse geocoding request failed:', data.error)
         } else {
@@ -184,7 +184,7 @@ function Main(props) {
           console.log(address)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching reverse geocoding data:', error)
       })
   }
@@ -194,10 +194,11 @@ function Main(props) {
       <TouchableOpacity
         style={[styles(currentTheme).addressContainer]}
         activeOpacity={0.7}
-        onPress={setCurrentLocation}>
+        onPress={setCurrentLocation}
+      >
         <View style={styles().addressSubContainer}>
           <MaterialCommunityIcons
-            name="target"
+            name='target'
             size={scale(25)}
             color={currentTheme.black}
           />
@@ -208,17 +209,13 @@ function Main(props) {
       <View style={styles().addressTick}>
         {location.label === 'currentLocation' && (
           <MaterialIcons
-            name="check"
+            name='check'
             size={scale(15)}
             color={currentTheme.iconColorPink}
           />
         )}
         {busy && (
-          <Spinner
-            size={'small'}
-            backColor={currentTheme.themeBackground}
-            
-          />
+          <Spinner size={'small'} backColor={currentTheme.themeBackground} />
         )}
       </View>
     </View>
@@ -250,10 +247,11 @@ function Main(props) {
               modal?.close()
               props.navigation.navigate({ name: 'CreateAccount' })
             }
-          }}>
+          }}
+        >
           <View style={styles().addressSubContainer}>
             <AntDesign
-              name="pluscircleo"
+              name='pluscircleo'
               size={scale(12)}
               color={currentTheme.black}
             />
@@ -275,38 +273,41 @@ function Main(props) {
           placeHolder={t('searchRestaurant')}
         />
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
@@ -320,17 +321,17 @@ function Main(props) {
 
   const { restaurants, sections } = data.nearByRestaurants
 
-  const searchRestaurants = searchText => {
+  const searchRestaurants = (searchText) => {
     const data = []
-    const escapedSearchText = escapeRegExp(searchText);
-    const regex = new RegExp(escapedSearchText, 'i');
-    restaurants.forEach(restaurant => {
+    const escapedSearchText = escapeRegExp(searchText)
+    const regex = new RegExp(escapedSearchText, 'i')
+    restaurants.forEach((restaurant) => {
       const resultName = restaurant.name.search(regex)
       if (resultName < 0) {
-        const resultCatFoods = restaurant.categories.some(category => {
+        const resultCatFoods = restaurant.categories.some((category) => {
           const result = category.title.search(regex)
           if (result < 0) {
-            const result = category.foods.some(food => {
+            const result = category.foods.some((food) => {
               const result = food.title.search(regex)
               return result > -1
             })
@@ -339,12 +340,12 @@ function Main(props) {
           return true
         })
         if (!resultCatFoods) {
-          const resultOptions = restaurant.options.some(option => {
+          const resultOptions = restaurant.options.some((option) => {
             const result = option.title.search(regex)
             return result > -1
           })
           if (!resultOptions) {
-            const resultAddons = restaurant.addons.some(addon => {
+            const resultAddons = restaurant.addons.some((addon) => {
               const result = addon.title.search(regex)
               return result > -1
             })
@@ -358,10 +359,10 @@ function Main(props) {
   }
 
   // Flatten the array. That is important for data sequence
-  const restaurantSections = sections.map(sec => ({
+  const restaurantSections = sections.map((sec) => ({
     ...sec,
     restaurants: sec.restaurants
-      .map(id => restaurants.filter(res => res._id === id))
+      .map((id) => restaurants.filter((res) => res._id === id))
       .flat()
   }))
 
@@ -369,7 +370,8 @@ function Main(props) {
     <>
       <SafeAreaView
         edges={['bottom', 'left', 'right']}
-        style={[styles().flex, { backgroundColor: 'black' }]}>
+        style={[styles().flex, { backgroundColor: 'black' }]}
+      >
         <View style={[styles().flex, styles(currentTheme).screenBackground]}>
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
@@ -389,24 +391,25 @@ function Main(props) {
                           H4
                           bolder
                           textColor={currentTheme.fontThirdColor}
-                          style={styles().ItemName}>
+                          style={styles().ItemName}
+                        >
                           {t('foodDelivery')}
                         </TextDefault>
                         <TextDefault
                           Normal
                           textColor={currentTheme.fontThirdColor}
-                          style={styles().ItemDescription}>
+                          style={styles().ItemDescription}
+                        >
                           {t('OrderfoodLove')}
                         </TextDefault>
                       </View>
 
                       <Image
                         source={{
-                          uri:
-                            'https://enatega.com/wp-content/uploads/2024/02/pngimg-1.png'
+                          uri: 'https://enatega.com/wp-content/uploads/2024/02/pngimg-1.png'
                         }}
                         style={styles().popularMenuImg}
-                        resizeMode="contain"
+                        resizeMode='contain'
                       />
                     </View>
                     <View style={styles().mainItem}>
@@ -414,22 +417,23 @@ function Main(props) {
                         H4
                         bolder
                         textColor={currentTheme.fontThirdColor}
-                        style={styles().ItemName}>
+                        style={styles().ItemName}
+                      >
                         {t('grocery')}
                       </TextDefault>
                       <TextDefault
                         Normal
                         textColor={currentTheme.fontThirdColor}
-                        style={styles().ItemDescription}>
+                        style={styles().ItemDescription}
+                      >
                         {t('essentialsDeliveredFast')}
                       </TextDefault>
                       <Image
                         source={{
-                          uri:
-                            'https://enatega.com/wp-content/uploads/2024/02/pngwing-4.png'
+                          uri: 'https://enatega.com/wp-content/uploads/2024/02/pngwing-4.png'
                         }}
                         style={styles().popularMenuImg}
-                        resizeMode="contain"
+                        resizeMode='contain'
                       />
                     </View>
                   </View>
@@ -439,11 +443,11 @@ function Main(props) {
                       textColor={currentTheme.fontFourthColor}
                       style={{
                         ...alignment.MLlarge,
-
                         ...alignment.PTmedium
                       }}
                       bolder
-                      H4>
+                      H4
+                    >
                       {t('orderItAgain')}
                     </TextDefault>
                     <TextDefault
@@ -454,7 +458,8 @@ function Main(props) {
                         {
                           ...alignment.MLlarge
                         }
-                      ]}>
+                      ]}
+                    >
                       {t('mostOrderedNow')}
                     </TextDefault>
                     {search ? null : (
@@ -508,7 +513,7 @@ function Main(props) {
             modalHeight={350}
             overlayStyle={styles(currentTheme).overlay}
             handleStyle={styles(currentTheme).handle}
-            handlePosition="inside"
+            handlePosition='inside'
             openAnimationConfig={{
               timing: { duration: 400 },
               spring: { speed: 20, bounciness: 10 }
@@ -522,13 +527,14 @@ function Main(props) {
               ListHeaderComponent: modalHeader(),
               ListFooterComponent: modalFooter(),
               showsVerticalScrollIndicator: false,
-              keyExtractor: item => item._id,
+              keyExtractor: (item) => item._id,
               renderItem: ({ item: address }) => (
                 <View style={styles().addressbtn}>
                   <TouchableOpacity
                     style={styles(currentTheme).addressContainer}
                     activeOpacity={0.7}
-                    onPress={() => setAddressLocation(address)}>
+                    onPress={() => setAddressLocation(address)}
+                  >
                     <View style={styles().addressSubContainer}>
                       <SimpleLineIcons
                         name={addressIcons[address.label]}
@@ -542,7 +548,8 @@ function Main(props) {
                       <TextDefault
                         style={{ ...alignment.PLlarge }}
                         textColor={currentTheme.fontSecondColor}
-                        small>
+                        small
+                      >
                         {address.deliveryAddress}
                       </TextDefault>
                     </View>
@@ -553,7 +560,7 @@ function Main(props) {
                         location.label
                       ) && (
                         <MaterialIcons
-                          name="check"
+                          name='check'
                           size={scale(25)}
                           color={currentTheme.iconColorPink}
                         />
@@ -561,7 +568,8 @@ function Main(props) {
                   </View>
                 </View>
               )
-            }}></Modalize>
+            }}
+          ></Modalize>
         </View>
       </SafeAreaView>
     </>

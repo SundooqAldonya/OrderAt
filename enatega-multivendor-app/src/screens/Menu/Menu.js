@@ -92,7 +92,9 @@ export const FILTER_VALUES = {
 function Menu({ route, props }) {
   const Analytics = analytics()
   const { selectedType } = route.params
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const [busy, setBusy] = useState(false)
   const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
@@ -116,7 +118,7 @@ function Menu({ route, props }) {
         shopType: selectedType || null,
         ip: null
       },
-      onCompleted: data => {
+      onCompleted: (data) => {
         setRestaurantData(data.nearByRestaurantsPreview.restaurants)
         setSectionData(data.nearByRestaurantsPreview.sections)
       },
@@ -171,12 +173,12 @@ function Menu({ route, props }) {
   }, [navigation, currentTheme])
 
   useEffect(() => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       Cuisines: {
         selected: [],
         type: FILTER_TYPE.CHECKBOX,
-        values: allCuisines?.cuisines?.map(item => item.name)
+        values: allCuisines?.cuisines?.map((item) => item.name)
       }
     }))
   }, [allCuisines])
@@ -199,7 +201,7 @@ function Menu({ route, props }) {
     Other: CustomOtherIcon
   }
 
-  const setAddressLocation = async address => {
+  const setAddressLocation = async (address) => {
     setLocation({
       _id: address._id,
       label: address.label,
@@ -218,8 +220,8 @@ function Menu({ route, props }) {
 
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
     fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.error) {
           console.log('Reverse geocoding request failed:', data.error)
         } else {
@@ -242,7 +244,7 @@ function Menu({ route, props }) {
           console.log(address)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching reverse geocoding data:', error)
       })
   }
@@ -257,15 +259,19 @@ function Menu({ route, props }) {
           disabled={busy}
         >
           <View style={styles().addressSubContainer}>
-            {
-              busy ? <Spinner size='small' /> : (
-                <>
-                  <SimpleLineIcons name="target" size={scale(18)} color={currentTheme.black} />
-                  <View style={styles().mL5p} />
-                  <TextDefault bold>{t('currentLocation')}</TextDefault>
-                </>
-              )
-            }
+            {busy ? (
+              <Spinner size='small' />
+            ) : (
+              <>
+                <SimpleLineIcons
+                  name='target'
+                  size={scale(18)}
+                  color={currentTheme.black}
+                />
+                <View style={styles().mL5p} />
+                <TextDefault bold>{t('currentLocation')}</TextDefault>
+              </>
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -304,10 +310,11 @@ function Menu({ route, props }) {
               modal?.close()
               navigation.navigate({ name: 'CreateAccount' })
             }
-          }}>
+          }}
+        >
           <View style={styles().addressSubContainer}>
             <AntDesign
-              name="pluscircleo"
+              name='pluscircleo'
               size={scale(20)}
               color={currentTheme.black}
             />
@@ -326,45 +333,48 @@ function Menu({ route, props }) {
         <View style={styles(currentTheme).searchbar}>
           <Search
             search={''}
-            setSearch={() => { }}
+            setSearch={() => {}}
             newheaderColor={newheaderColor}
             placeHolder={searchPlaceholderText}
           />
         </View>
 
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
         <Placeholder
-          Animation={props => (
+          Animation={(props) => (
             <Fade
               {...props}
               style={styles(currentTheme).placeHolderFadeColor}
               duration={600}
             />
           )}
-          style={styles(currentTheme).placeHolderContainer}>
+          style={styles(currentTheme).placeHolderContainer}
+        >
           <PlaceholderLine style={styles().height200} />
           <PlaceholderLine />
         </Placeholder>
@@ -376,30 +386,29 @@ function Menu({ route, props }) {
 
   if (loading || mutationLoading || loadingOrders) return loadingScreen()
 
-  const searchRestaurants = searchText => {
+  const searchRestaurants = (searchText) => {
     const data = []
-    const escapedSearchText = escapeRegExp(searchText);
-    const regex = new RegExp(escapedSearchText, 'i');
-    restaurantData?.forEach(restaurant => {
-      const resultCatFoods = restaurant.keywords.some(keyword => {
+    const escapedSearchText = escapeRegExp(searchText)
+    const regex = new RegExp(escapedSearchText, 'i')
+    restaurantData?.forEach((restaurant) => {
+      const resultCatFoods = restaurant.keywords.some((keyword) => {
         const result = keyword.search(regex)
         return result > -1
       })
-      if (resultCatFoods)
-        data.push(restaurant)
+      if (resultCatFoods) data.push(restaurant)
     })
     return data
   }
 
   // Flatten the array. That is important for data sequence
-  const restaurantSections = sectionData?.map(sec => ({
+  const restaurantSections = sectionData?.map((sec) => ({
     ...sec,
     restaurants: sec?.restaurants
-      ?.map(id => restaurantData?.filter(res => res._id === id))
+      ?.map((id) => restaurantData?.filter((res) => res._id === id))
       .flat()
   }))
 
-  const extractRating = ratingString => parseInt(ratingString)
+  const extractRating = (ratingString) => parseInt(ratingString)
 
   const applyFilters = () => {
     let filteredData = [...data.nearByRestaurantsPreview.restaurants]
@@ -414,7 +423,7 @@ function Menu({ route, props }) {
     if (ratings?.selected?.length > 0) {
       const numericRatings = ratings.selected?.map(extractRating)
       filteredData = filteredData.filter(
-        item => item?.reviewData?.ratings >= Math.min(...numericRatings)
+        (item) => item?.reviewData?.ratings >= Math.min(...numericRatings)
       )
     }
 
@@ -433,17 +442,17 @@ function Menu({ route, props }) {
     // Offers filter
     if (offers?.selected?.length > 0) {
       if (offers.selected.includes('Free Delivery')) {
-        filteredData = filteredData.filter(item => item?.freeDelivery)
+        filteredData = filteredData.filter((item) => item?.freeDelivery)
       }
       if (offers.selected.includes('Accept Vouchers')) {
-        filteredData = filteredData.filter(item => item?.acceptVouchers)
+        filteredData = filteredData.filter((item) => item?.acceptVouchers)
       }
     }
 
     // Cuisine filter
     if (cuisines?.selected?.length > 0) {
-      filteredData = filteredData.filter(item =>
-        item.cuisines.some(cuisine => cuisines?.selected?.includes(cuisine))
+      filteredData = filteredData.filter((item) =>
+        item.cuisines.some((cuisine) => cuisines?.selected?.includes(cuisine))
       )
     }
 
@@ -455,7 +464,8 @@ function Menu({ route, props }) {
     <>
       <SafeAreaView
         edges={['bottom', 'left', 'right']}
-        style={[styles().flex, { backgroundColor: 'black' }]}>
+        style={[styles().flex, { backgroundColor: 'black' }]}
+      >
         <View style={[styles().flex, styles(currentTheme).screenBackground]}>
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
@@ -495,7 +505,12 @@ function Menu({ route, props }) {
                   renderItem={({ item }) => <Item item={item} />}
                 />
                 <CollapsibleSubHeaderAnimator translateY={translateY}>
-                  <View style={[styles(currentTheme).searchbar,{backgroundColor:colors.primary}]}>
+                  <View
+                    style={[
+                      styles(currentTheme).searchbar,
+                      { backgroundColor: colors.primary }
+                    ]}
+                  >
                     <Search
                       setSearch={setSearch}
                       search={search}

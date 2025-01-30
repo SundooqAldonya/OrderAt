@@ -23,7 +23,10 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
   const currentTheme = theme[themeContext.ThemeValue]
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('all')
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
+
   const result =
     filters &&
     Object.keys(filters).filter((k) =>
@@ -63,7 +66,10 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles(currentTheme).container}
+      contentContainerStyle={{
+        ...styles(currentTheme).container,
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
     >
       <TouchableOpacity
         style={styles(currentTheme).filterButton}
@@ -84,10 +90,13 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
             onPress={() => handleFilterClick(filter)}
           >
             <SafeAreaView style={styles(currentTheme).itemContainer}>
-              <TextDefault textColor={currentTheme.black} style={styles(currentTheme).filterButtonText}>
+              <TextDefault
+                textColor={currentTheme.black}
+                style={styles(currentTheme).filterButtonText}
+              >
                 {t(filter)}
               </TextDefault>
-              <AntDesign name='down' size={14} color={currentTheme.black}/>
+              <AntDesign name='down' size={14} color={currentTheme.black} />
             </SafeAreaView>
           </TouchableOpacity>
         ))}
@@ -95,17 +104,28 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
       <Modal visible={modalVisible} adjustToContentHeight animationType='slide'>
         <View style={styles(currentTheme).modalHeader}>
           <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <AntDesign name='arrowleft' size={24} color={currentTheme.newIconColor} />
+            <AntDesign
+              name='arrowleft'
+              size={24}
+              color={currentTheme.newIconColor}
+            />
           </TouchableOpacity>
           <Text style={styles(currentTheme).filterText}> {t('filters')}</Text>
           <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <AntDesign name='closecircleo' size={24} color={currentTheme.newIconColor}  />
+            <AntDesign
+              name='closecircleo'
+              size={24}
+              color={currentTheme.newIconColor}
+            />
           </TouchableOpacity>
         </View>
         <ScrollView style={styles(currentTheme).modalContainer}>
           {result?.map((filterValue) => (
             <View key={filterValue}>
-              <TextDefault style={styles(currentTheme).modalTitle} textColor={currentTheme.newFontcolor}>
+              <TextDefault
+                style={styles(currentTheme).modalTitle}
+                textColor={currentTheme.newFontcolor}
+              >
                 {t(filterValue)}
               </TextDefault>
               <View>
@@ -124,7 +144,10 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
                       ]}
                       onPress={() => handleValueSelection(filterValue, value)}
                     >
-                      <TextDefault style={styles(currentTheme).modalItemText} textColor={currentTheme.newFontcolor}>
+                      <TextDefault
+                        style={styles(currentTheme).modalItemText}
+                        textColor={currentTheme.newFontcolor}
+                      >
                         {t(value)}
                       </TextDefault>
                       {filters &&

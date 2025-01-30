@@ -10,8 +10,12 @@ import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { formatNumber } from '../../utils/formatNumber'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useTranslation } from 'react-i18next'
 
 const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
+  const { i18n } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const configuration = useContext(ConfigurationContext)
@@ -37,7 +41,8 @@ const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
           style={{
             fontSize: scale(12),
             fontWeight: '600',
-            marginBottom: scale(11)
+            marginBottom: scale(11),
+            textAlign: isArabic ? 'right' : 'left'
           }}
         >
           {item?.title}
