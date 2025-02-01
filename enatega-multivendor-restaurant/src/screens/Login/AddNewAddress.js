@@ -207,30 +207,32 @@ const AddNewAddress = () => {
           </TextDefault>
           <View style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#fff',
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderRadius: 8,
-                  elevation: 5,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 3,
-                  marginHorizontal: 16
-                }}
-                onPress={() => {
-                  setAreaIsVisible(!areaIsVisible)
-                }}>
-                <TextDefault
+              <View>
+                <TouchableOpacity
                   style={{
-                    color: '#000',
-                    textTransform: 'capitalize'
+                    backgroundColor: '#fff',
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3,
+                    marginHorizontal: 16
+                  }}
+                  onPress={() => {
+                    setAreaIsVisible(!areaIsVisible)
                   }}>
-                  {selectedArea ? selectedArea.title : `Select area`}
-                </TextDefault>
-              </TouchableOpacity>
+                  <TextDefault
+                    style={{
+                      color: '#000',
+                      textTransform: 'capitalize'
+                    }}>
+                    {selectedArea ? selectedArea.title : `Select area`}
+                  </TextDefault>
+                </TouchableOpacity>
+              </View>
               <TextInput
                 value={userData.address}
                 onChangeText={text =>

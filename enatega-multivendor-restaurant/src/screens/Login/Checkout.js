@@ -204,13 +204,16 @@ const Checkout = () => {
             )
           })}
         </View>
-        <View>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
           <TouchableOpacity
             style={{
               backgroundColor: '#fff',
               width: '95%',
               height: 50,
-              marginInline: 'auto',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

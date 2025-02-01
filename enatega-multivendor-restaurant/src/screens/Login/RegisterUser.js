@@ -291,7 +291,7 @@ const RegisterUser = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <Modal visible={areaIsVisible} transparent animationType="slide">
+        <Modal visible={areaIsVisible} transparent animationType="slide">
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => setAreaIsVisible(false)}
@@ -353,7 +353,7 @@ const RegisterUser = () => {
               )
             })}
           </ScrollView>
-        </Modal> */}
+        </Modal>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
