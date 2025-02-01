@@ -313,18 +313,18 @@ const typeDefs = gql`
 
   type Rider {
     _id: ID!
-    name: String!
+    name: String
     email: String
-    username: String!
-    password: String!
-    phone: String!
+    username: String
+    password: String
+    phone: String
     image: String
-    available: Boolean!
-    muted: Boolean!
-    zone: Zone!
-    isActive: Boolean!
-    createdAt: String!
-    updatedAt: String!
+    available: Boolean
+    muted: Boolean
+    zone: Zone
+    isActive: Boolean
+    createdAt: String
+    updatedAt: String
     location: Point
     accountNumber: String
     currentWalletAmount: Float

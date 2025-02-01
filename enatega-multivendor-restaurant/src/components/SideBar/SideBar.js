@@ -30,7 +30,7 @@ export default function SideBar() {
   const { logout, data, toggleSwitch, isAvailable } = useAccount()
   const [notificationStatus, setNotificationStatus] = useState(false)
   const appState = useRef(AppState.currentState)
-  // const { setSound } = useContext(SoundContext)
+  const { stopSound } = useContext(SoundContext)
 
   const {
     restaurantData,
@@ -128,7 +128,7 @@ export default function SideBar() {
     } else {
       setNotificationStatus(false)
       sendTokenToBackend({ variables: { token: null, isEnabled: false } })
-      // setSound(false)
+      stopSound()
     }
   }
 

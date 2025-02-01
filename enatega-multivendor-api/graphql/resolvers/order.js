@@ -151,6 +151,7 @@ module.exports = {
       try {
         const orders = await Order.find({ user: req.userId })
           .populate('restaurant')
+          // .populate('rider')
           .sort({ createdAt: -1 })
           .skip(args.offset || 0)
           .limit(50)

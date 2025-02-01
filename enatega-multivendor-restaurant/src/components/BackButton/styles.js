@@ -1,11 +1,11 @@
 import { StyleSheet, Platform, NativeModules } from 'react-native'
 const { StatusBarManager } = NativeModules
 
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager?.HEIGHT
+// const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager?.HEIGHT
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: STATUSBAR_HEIGHT + 20,
+    top: 50,
     left: 20,
     backgroundColor: 'black',
     width: 30,

@@ -12,6 +12,7 @@ import CountDown from 'react-native-countdown-component'
 import { useTranslation } from 'react-i18next'
 import { getAccessToken } from '../../utilities/apiServices'
 import { detectLanguageDir } from '../../../helpers'
+import SoundContext from '../../ui/context/sound'
 
 function HomeOrderDetails(props) {
   const { activeBar, navigation } = props
@@ -35,6 +36,7 @@ function HomeOrderDetails(props) {
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
   const configuration = useContext(Configuration.Context)
+  const { stopSound } = useContext(SoundContext)
 
   const prep = new Date(preparationTime)
   const diffTime = prep - timeNow
@@ -93,9 +95,11 @@ function HomeOrderDetails(props) {
         }
       ]}
       onPress={() => {
+        stopSound()
         navigation.navigate('OrderDetail', {
           activeBar,
           orderData: props?.order,
+          rider: props?.order.rider,
           remainingTime,
           createdAt,
           MAX_TIME,

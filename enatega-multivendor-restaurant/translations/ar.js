@@ -77,5 +77,8 @@ export const ar = {
   delivery_details: 'معلومات التوصيل',
   delivery_label: 'المنطقة',
   instructions: 'طلبات إضافية',
-  digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا'
+  digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا',
+  rider_details: 'معلومات الكابتن',
+  name: 'الاسم',
+  phone: 'الرقم'
 }

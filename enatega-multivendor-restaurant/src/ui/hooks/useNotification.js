@@ -20,14 +20,17 @@ export default function useNotification() {
     `,
     { fetchPolicy: 'network-only' }
   )
+
   const [sendTokenToBackend, { loading }] = useMutation(
     gql`
       ${saveToken}
     `
   )
+
   useEffect(() => {
     registerForPushNotificationsAsync()
   }, [])
+
   async function registerForPushNotificationsAsync() {
     if (!Device.isDevice) {
       alert(t('notificationText'))
@@ -37,7 +40,8 @@ export default function useNotification() {
         name: 'default',
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        sound: true,
+        // sound: true,
+        sound: require('../../assets/beep.mp3'),
         lightColor: '#FF231F7C'
       })
     }

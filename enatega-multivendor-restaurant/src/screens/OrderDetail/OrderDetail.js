@@ -20,7 +20,14 @@ import { useTranslation } from 'react-i18next'
 
 export default function OrderDetail({ navigation, route }) {
   const { t, i18n } = useTranslation()
-  const { activeBar, orderData, preparationTime, createdAt } = route.params
+  const {
+    activeBar,
+    orderData,
+    rider,
+    preparationTime,
+    createdAt
+  } = route.params
+  console.log({ rider })
   const { _id, orderDate } = orderData
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
@@ -125,8 +132,11 @@ export default function OrderDetail({ navigation, route }) {
                   style={isArabic && { textAlign: 'right' }}>
                   {activeBar === 2 ? t('prepared') : t('preparing')}
                 </TextDefault>
-                <TextDefault style={isArabic && { textAlign: 'right' }}>
-                  {activeBar === 2 ? t('delivered') : t('accepted')}
+                <TextDefault
+                  style={{
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}>
+                  {t(orderData.orderStatus)}
                 </TextDefault>
               </View>
             </View>

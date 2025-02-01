@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import * as Notifications from 'expo-notifications'
 import { Restaurant, SoundContextProvider } from '../ui/context'
 import { OrderDetailScreen } from '../screens/OrderDetail'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -15,11 +15,11 @@ import { orders } from '../apollo'
 import { useNavigation } from '@react-navigation/native'
 import { SelectLanguage } from '../screens/Setting'
 import moment from 'moment'
-import { useTranslation } from 'react-i18next'
 import { MAX_TIME } from '../utilities'
 import RegisterUser from '../screens/Login/RegisterUser'
 import Checkout from '../screens/Login/Checkout'
 import AddNewAddress from '../screens/Login/AddNewAddress'
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -27,8 +27,9 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true
   })
 })
+
 const Drawer = createDrawerNavigator()
-const Tabs = createBottomTabNavigator()
+// const Tabs = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 export default function MainStack() {
@@ -109,38 +110,39 @@ function DrawerNavigator() {
   )
 }
 
-function TabNavigator() {
-  const { t } = useTranslation()
-  return (
-    <Tabs.Navigator
-      initialRouteName={t('titleHome')}
-      screenOptions={({ route }) => tabIcon(route)}
-      tabBarLabelStyle={{
-        color: colors.green
-      }}>
-      <Tabs.Screen
-        name={t('titleProfile')}
-        component={SideBar}
-        listeners={({ navigation }) => ({
-          tabPress: e => {
-            e.preventDefault()
-            navigation.openDrawer()
-          }
-        })}
-      />
-      <Tabs.Screen name={t('titleHome')} component={StackNavigator} />
-      {/* {Platform.OS === 'ios' ? null :  */}
-      {/* <Tabs.Screen
-        name="Language"
-        options={{
-          tabBarLabel: t('language')
-        }}
-        component={SelectLanguage}
-      /> */}
-      {/* } */}
-    </Tabs.Navigator>
-  )
-}
+// function TabNavigator() {
+//   const { t } = useTranslation()
+//   return (
+//     <Tabs.Navigator
+//       initialRouteName={t('titleHome')}
+//       screenOptions={({ route }) => tabIcon(route)}
+//       tabBarLabelStyle={{
+//         color: colors.green
+//       }}>
+//       <Tabs.Screen
+//         name={t('titleProfile')}
+//         component={SideBar}
+//         listeners={({ navigation }) => ({
+//           tabPress: e => {
+//             e.preventDefault()
+//             navigation.openDrawer()
+//           }
+//         })}
+//       />
+//       <Tabs.Screen name={t('titleHome')} component={StackNavigator} />
+//       {/* {Platform.OS === 'ios' ? null :  */}
+//       {/* <Tabs.Screen
+//         name="Language"
+//         options={{
+//           tabBarLabel: t('language')
+//         }}
+//         component={SelectLanguage}
+//       /> */}
+//       {/* } */}
+//     </Tabs.Navigator>
+//   )
+// }
+
 function StackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>

@@ -92,7 +92,8 @@
     "redux-persist": "^6.0.0",
     "sentry-expo": "~7.0.0",
     "subscriptions-transport-ws": "^0.9.16",
-    "validate.js": "^0.13.1"
+    "validate.js": "^0.13.1",
+    "expo-clipboard": "~7.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

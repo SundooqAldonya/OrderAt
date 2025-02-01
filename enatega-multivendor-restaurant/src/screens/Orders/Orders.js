@@ -43,6 +43,7 @@ const Orders = props => {
     refetch,
     setActive
   } = useOrders()
+
   const navigation = useNavigation()
   const { loading: mutateLoading } = useAcceptOrder()
   const { i18n, t } = useTranslation()

@@ -12,10 +12,11 @@ export const SoundContextProvider = ({ children }) => {
         data &&
         data.restaurantOrders.filter(order => order.orderStatus === 'PENDING')
       const shouldPlaySound = activeOrders.some(o => o.isRinged)
-      // if (shouldPlaySound) playSound()
+      // if (sound && shouldPlaySound) playSound()
       // else stopSound()
     }
   }, [data])
+
   const playSound = async () => {
     await stopSound()
     const { sound } = await Audio.Sound.createAsync(
@@ -34,9 +35,11 @@ export const SoundContextProvider = ({ children }) => {
     await sound.playAsync()
     setSound(sound)
   }
+
   const stopSound = async () => {
     await sound?.unloadAsync()
   }
+
   return (
     <SoundContext.Provider value={{ playSound, stopSound }}>
       {children}

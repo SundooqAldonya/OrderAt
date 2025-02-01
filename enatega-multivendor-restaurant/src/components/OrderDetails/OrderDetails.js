@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { TextDefault } from '..'
 import styles from './styles'
 import { colors } from '../../utilities'
 import { Configuration } from '../../ui/context'
 import { useTranslation } from 'react-i18next'
+import { EvilIcons } from '@expo/vector-icons'
+import { callNumber } from '../../utilities/callNumber'
 
 export default function OrderDetails({ orderData }) {
   const { orderId, user, deliveryAddress } = orderData
@@ -15,6 +17,54 @@ export default function OrderDetails({ orderData }) {
 
   return (
     <View style={{ flex: 1 }}>
+      {orderData.orderStatus === 'ASSIGNED' && orderData.rider ? (
+        <View style={styles.cardContainer}>
+          <Text style={[styles.heading, textAlignStyle]}>
+            {t('rider_details')}
+          </Text>
+          <TextDefault
+            style={[
+              styles.text,
+              textAlignStyle,
+              {
+                textAlign: isRtl ? 'right' : 'left',
+                textTransform: 'capitalize'
+              }
+            ]}>
+            {t('name')}:{' '}
+            {orderData.rider.username ? orderData.rider.username : null}
+          </TextDefault>
+          <TouchableOpacity
+            style={{
+              flexDirection: isRtl ? 'row-reverse' : 'row',
+              alignItems: 'center'
+            }}
+            onPress={() => callNumber(orderData.rider.phone)}>
+            <TextDefault
+              style={[
+                styles.text,
+                textAlignStyle,
+                {
+                  textAlign: isRtl ? 'right' : 'left',
+                  textTransform: 'capitalize',
+                  alignItems: 'center'
+                }
+              ]}>
+              {t('phone')}:{' '}
+              {orderData.rider.phone ? orderData.rider.phone : null}{' '}
+            </TextDefault>
+            <EvilIcons
+              name="external-link"
+              size={24}
+              style={{
+                marginTop: 10,
+                marginInlineStart: !isRtl ? -100 : '',
+                marginInlineEnd: isRtl ? -140 : ''
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
       <View style={styles.cardContainer}>
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('orderNo')}</Text>

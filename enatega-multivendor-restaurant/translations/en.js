@@ -76,5 +76,8 @@ export const en = {
   delivery_label: 'Delivery Label',
   delivery_details: 'Delivery Details',
   instructions: 'Instructions',
-  digits_error: 'Phone should be 11 digits'
+  digits_error: 'Phone should be 11 digits',
+  rider_details: 'Rider details',
+  name: 'Name',
+  phone: 'Phone'
 }

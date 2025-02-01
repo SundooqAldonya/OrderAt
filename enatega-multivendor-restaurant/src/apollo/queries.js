@@ -73,6 +73,7 @@ export const orders = `query Orders{
         name
         username
         available
+        phone
       }
     }
 }`
