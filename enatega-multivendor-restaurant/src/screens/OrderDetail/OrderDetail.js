@@ -29,8 +29,6 @@ export default function OrderDetail({ navigation, route }) {
   const isAcceptButtonVisible = !moment().isBefore(orderDate)
   const [print, setPrint] = useState(false)
 
-  console.log({ orderData })
-
   const { data } = useRestaurantContext()
   const timeNow = new Date()
 
@@ -59,6 +57,7 @@ export default function OrderDetail({ navigation, route }) {
     setPrint(false)
     setOverlayVisible(!overlayVisible)
   }
+
   const togglePrintOverlay = () => {
     setPrint(true)
     setOverlayVisible(!overlayVisible)

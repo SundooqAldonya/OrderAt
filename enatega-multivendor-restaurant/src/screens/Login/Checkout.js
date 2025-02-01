@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { TextDefault } from '../../components'
-import { colors, scale } from '../../utilities'
+import { TIMES, colors, scale } from '../../utilities'
 import { TabActions, useNavigation, useRoute } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +23,8 @@ import { Image } from 'react-native'
 import { useMutation } from '@apollo/client'
 import { CHECK_OUT_PLACE_ORDER } from '../../apollo/mutations'
 import { Modal } from 'react-native'
+import OverlayCreateOrder from '../../components/Overlay/OverlayCreateOrder'
+import { useAcceptOrder, useOrderRing } from '../../ui/hooks'
 
 const { width, height } = Dimensions.get('window')
 
@@ -33,8 +35,10 @@ const Checkout = () => {
   const navigation = useNavigation()
   const [selectedAddress, setSelectedAddress] = useState({})
   const [amount, setAmount] = useState(null)
-
-  console.log({ selectedAddress: selectedAddress.detail })
+  const [overlayVisible, setOverlayVisible] = useState(false)
+  const { acceptOrder } = useAcceptOrder()
+  const { muteRing } = useOrderRing()
+  const [selectedTime, setSelectedTime] = useState(TIMES[0])
 
   useEffect(() => {
     setSelectedAddress(userData.addresses[0])
@@ -44,13 +48,24 @@ const Checkout = () => {
     CHECK_OUT_PLACE_ORDER,
     {
       onCompleted: data => {
-        console.log(
-          'Order Placed',
-          `Order ID: ${data.CheckOutPlaceOrder.orderId}`
+        console.log({ data: data.CheckOutPlaceOrder.orderId })
+        acceptOrder(data.CheckOutPlaceOrder._id, selectedTime.toString())
+        muteRing(data.CheckOutPlaceOrder.orderId)
+        navigation.replace('Orders')
+        Alert.alert(
+          `${t('ordersuccessfullycreated')}`,
+          `${t('ordernumber')} ${data?.CheckOutPlaceOrder?.orderId}`
         )
+      },
+      onError: err => {
+        console.log({ err })
       }
     }
   )
+
+  const toggleOverlay = () => {
+    setOverlayVisible(!overlayVisible)
+  }
 
   const createOrder = async () => {
     if (!userData._id || !selectedAddress._id || !amount) {
@@ -66,19 +81,6 @@ const Checkout = () => {
         resId: restaurant
       }
     })
-      .then(res => {
-        console.log('res', res)
-        if (res.data) {
-          navigation.replace('Orders')
-          Alert.alert(
-            `${t('ordersuccessfullycreated')}`,
-            `${t('ordernumber')} ${res?.data?.CheckOutPlaceOrder?.orderId}`
-          )
-        }
-      })
-      .catch(err => {
-        console.log('errrr@@@@@@@@@@', err)
-      })
   }
 
   return (
@@ -258,7 +260,7 @@ const Checkout = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={createOrder}
+        onPress={toggleOverlay}
         style={{
           backgroundColor: '#000',
           marginBottom: scale(80),
@@ -272,6 +274,14 @@ const Checkout = () => {
         <TextDefault H4 bold textColor={'#fff'}>
           {t('confirmorder')}
         </TextDefault>
+        <OverlayCreateOrder
+          visible={overlayVisible}
+          toggle={toggleOverlay}
+          createOrder={createOrder}
+          navigation={navigation}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+        />
       </TouchableOpacity>
     </SafeAreaView>
   )

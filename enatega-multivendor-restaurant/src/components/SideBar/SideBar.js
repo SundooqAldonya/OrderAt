@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import {
   View,
   ImageBackground,
@@ -11,7 +11,6 @@ import {
 } from 'react-native'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { colors } from '../../utilities/colors'
-import bg from '../../assets/restBackground.png'
 import styles from './styles'
 import { Icon } from 'react-native-elements/dist/icons/Icon'
 import { useAccount } from '../../ui/hooks'
@@ -21,6 +20,7 @@ import { PRODUCT_URL, ABOUT_URL } from '../../utilities'
 import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
+import SoundContext from '../../ui/context/sound'
 
 export default function SideBar() {
   const { t, i18n } = useTranslation()
@@ -30,6 +30,7 @@ export default function SideBar() {
   const { logout, data, toggleSwitch, isAvailable } = useAccount()
   const [notificationStatus, setNotificationStatus] = useState(false)
   const appState = useRef(AppState.currentState)
+  // const { setSound } = useContext(SoundContext)
 
   const {
     restaurantData,
@@ -127,6 +128,7 @@ export default function SideBar() {
     } else {
       setNotificationStatus(false)
       sendTokenToBackend({ variables: { token: null, isEnabled: false } })
+      // setSound(false)
     }
   }
 
