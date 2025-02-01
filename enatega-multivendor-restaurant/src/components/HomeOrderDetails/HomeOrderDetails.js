@@ -24,7 +24,9 @@ function HomeOrderDetails(props) {
     _id,
     preparationTime,
     createdAt,
-    isRinged
+    isRinged,
+    orderStatus,
+    rider
   } = props?.order
   const timeNow = new Date()
   const { i18n, t } = useTranslation()
@@ -91,7 +93,9 @@ function HomeOrderDetails(props) {
               ? colors.white
               : activeBar === 1
               ? colors.white
-              : colors.darkgreen
+              : colors.darkgreen,
+          borderColor: orderStatus === 'ASSIGNED' ? colors.rounded : '',
+          borderWidth: orderStatus === 'ASSIGNED' ? 2 : 0
         }
       ]}
       onPress={() => {
@@ -155,6 +159,7 @@ function HomeOrderDetails(props) {
           {moment(props.order?.createdAt).format('lll')}
         </TextDefault>
       </View>
+
       <View
         style={{
           borderBottomColor: colors.fontSecondColor,
