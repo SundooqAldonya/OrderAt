@@ -33,8 +33,10 @@ function Location({
     translatedLabel = t(location.label)
   }
 
-  const translatedAddress =
-    location.deliveryAddress && location.deliveryAddress === 'Current Location'
+  const translatedAddress = location.deliveryAddress
+    ? location.deliveryAddress
+    : location.deliveryAddress &&
+        location.deliveryAddress === 'Current Location'
       ? t('currentLocation')
       : location.area
         ? `${location.city.title}, ${location.area.title}`

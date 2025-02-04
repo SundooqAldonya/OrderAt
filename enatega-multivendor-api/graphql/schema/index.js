@@ -1256,6 +1256,7 @@ const typeDefs = gql`
     _id: String!
     title: String
     city: CityArea
+    address: String
     location: LocationArea
   }
 

@@ -67,7 +67,7 @@ export default function AddNewAddress(props) {
   console.log({ dataAreas: data })
   const areas = data?.areasByCity || null
 
-  console.log({ selectedArea: selectedArea?.location?.location })
+  // console.log({ selectedArea: selectedArea })
 
   const [selectedValue, setSelectedValue] = useState({
     city: '',
@@ -154,7 +154,9 @@ export default function AddNewAddress(props) {
     console.log(selectedValue)
     setLocation({
       label: 'Location',
-      deliveryAddress: selectedValue.address,
+      deliveryAddress: selectedValue.address
+        ? selectedValue.address
+        : selectedArea.address,
       details: addressDetails,
       // latitude: selectedValue.latitude,
       // longitude: selectedValue.longitude,
@@ -166,13 +168,17 @@ export default function AddNewAddress(props) {
     if (isLoggedIn) {
       navigation.navigate('SaveAddress', {
         locationData: {
-          id: city._id,
+          id: city?._id,
           label: 'Location',
-          deliveryAddress: selectedValue.address,
+          deliveryAddress: selectedValue.address
+            ? selectedValue.address
+            : selectedArea.address,
           details: addressDetails,
-          latitude: selectedValue.latitude,
-          longitude: selectedValue.longitude,
-          city,
+          // latitude: selectedValue.latitude,
+          // longitude: selectedValue.longitude,
+          latitude: selectedArea.location.location.coordinates[1],
+          longitude: selectedArea.location.location.coordinates[0],
+          city: city ? city : null,
           area: selectedArea,
           prevScreen: props.route.params.prevScreen
             ? props.route.params.prevScreen

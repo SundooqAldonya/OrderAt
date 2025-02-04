@@ -329,6 +329,7 @@ export const getCityAreas = `query AreasByCity($id: String!){
   areasByCity(id: $id){
     _id
     title
+    address
     location {
       location {
         coordinates
