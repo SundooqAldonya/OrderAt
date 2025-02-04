@@ -3,10 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { cities } from '../apollo/queries'
+import { cities, getCities } from '../apollo/queries'
 
+// const GET_CITIES = gql`
+//   ${cities}
+// `
 const GET_CITIES = gql`
-  ${cities}
+  ${getCities}
 `
 
 export const LocationContext = createContext()
@@ -14,7 +17,6 @@ export const LocationContext = createContext()
 export const LocationProvider = ({ children }) => {
   const [location, setLocation] = useState(null)
   const [country, setCountry] = useState('IL')
-  const [cities, setCities] = useState([])
   const [loadingCountry, setLoadingCountry] = useState(true)
   const [errorCountry, setErrorCountry] = useState('')
 
@@ -39,7 +41,6 @@ export const LocationProvider = ({ children }) => {
       const saveLocation = async () => {
         await AsyncStorage.setItem('location', JSON.stringify(location))
       }
-
       saveLocation()
     }
   }, [location])
@@ -63,21 +64,17 @@ export const LocationProvider = ({ children }) => {
     fetchCountry()
   }, [])
 
-  const { loading, error, data } = useQuery(GET_CITIES, {
-    variables: { iso: 'EG' }
-  })
-  //console.log('cities Data inside context', cities)
-  // useEffect(() => {
-  //   if (!loading && !error && data) {
-  //     setCities(data.getCountryByIso.cities || [])
-  //   }
-  // }, [loading, error, data])
+  const { loading, error, data } = useQuery(GET_CITIES)
+  // const { loading, error, data } = useQuery(GET_CITIES, {
+  //   variables: { iso: 'EG' }
+  // })
+
   return (
     <LocationContext.Provider
       value={{
         location,
         setLocation,
-        cities: data?.getCountryByIso?.cities || []
+        cities: data?.cities || []
       }}
     >
       {children}

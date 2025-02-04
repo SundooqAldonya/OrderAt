@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -8,14 +8,12 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import { Feather, Entypo } from '@expo/vector-icons'
-import TextDefault from '../Text/TextDefault/TextDefault'
-import { scale } from '../../utils/scaling'
-import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import { scale } from '../../utils/scaling'
 
-const ModalDropdown = ({ theme, visible, onItemPress, onClose }) => {
+const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
   const { t } = useTranslation()
-  const { cities } = useContext(LocationContext)
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -45,17 +43,25 @@ const ModalDropdown = ({ theme, visible, onItemPress, onClose }) => {
       <View style={styles.modalContainer(theme)}>
         <View style={styles.header}>
           <TextDefault textColor={theme.gray900} H3 bolder>
-            {t('exploreCities')}
+            {t('explore_areas')}
           </TextDefault>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Feather name='x-circle' size={30} color={theme.newIconColor} />
           </TouchableOpacity>
         </View>
-        <FlatList
-          data={cities}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-        />
+        {areas?.length ? (
+          <FlatList
+            data={areas}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+          />
+        ) : (
+          <Fragment>
+            <TextDefault H5 bold textColor={theme.color7}>
+              No areas for that city
+            </TextDefault>
+          </Fragment>
+        )}
       </View>
     </Modal>
   )
@@ -101,4 +107,4 @@ const styles = StyleSheet.create({
   })
 })
 
-export default ModalDropdown
+export default AreasModal

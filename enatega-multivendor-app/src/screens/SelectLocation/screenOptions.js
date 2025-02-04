@@ -8,7 +8,7 @@ import { textStyles } from '../../utils/textStyles'
 import { scale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 
-const screenOptions = props => ({
+const screenOptions = (props) => ({
   headerTitleAlign: 'center',
   title: props.title,
   headerBackTitleVisible: false,
@@ -26,10 +26,10 @@ const screenOptions = props => ({
   headerTitleContainerStyle: {
     marginHorizontal: scale(35)
   },
-  headerBackImage:()=>(<BackButton iconColor={props.iconColor} icon='leftArrow' />),
+  // headerBackImage:()=>(<BackButton iconColor={props.iconColor} icon='leftArrow' />),
   headerRight: () => (
     <RightButton
-      icon="target"
+      icon='target'
       iconColor={props.iconColor}
       onPressRight={
         props.setCurrentLocation

@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, TouchableOpacity, Linking, Platform, StatusBar } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  Linking,
+  Platform,
+  StatusBar
+} from 'react-native'
 import { useLocation } from '../../ui/hooks'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -14,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { colors } from '../../utils/colors'
+
 export default function CurrentLocation() {
   const Analytics = analytics()
   const { t } = useTranslation()
@@ -24,12 +31,6 @@ export default function CurrentLocation() {
   const currentTheme = theme[themeContext.ThemeValue]
   const { getCurrentLocation, getLocationPermission } = useLocation()
 
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_CURRENTLOCATION)
-    }
-    Track()
-  }, [])
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
@@ -37,20 +38,20 @@ export default function CurrentLocation() {
     StatusBar.setBarStyle('light-content')
   })
   const initialRegion = {
-    latitude: 30.044420,
+    latitude: 30.04442,
     longitude: 31.235712,
     latitudeDelta: 1,
     longitudeDelta: 1
   }
-  const markerCoordinate = { latitude: 30.044420, longitude: 31.235712 }
-  
-  const setCurrentLocation = async() => {
+  const markerCoordinate = { latitude: 30.04442, longitude: 31.235712 }
+
+  const setCurrentLocation = async () => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()
     if (status !== 'granted' && !canAskAgain) {
       FlashMessage({
         message: t('locationPermissionMessage'),
-        onPress: async() => {
+        onPress: async () => {
           await Linking.openSettings()
         }
       })
@@ -81,14 +82,16 @@ export default function CurrentLocation() {
             backgroundColor: currentTheme.themeBackground,
             paddingTop: inset.top
           }
-        ]}>
+        ]}
+      >
         <View style={[styles().flex, styles(currentTheme).screenBackground]}>
           <View style={styles().mapView}>
             <MapView
               style={styles().flex}
               provider={PROVIDER_GOOGLE}
               customMapStyle={customMapStyle}
-              region={initialRegion}>
+              region={initialRegion}
+            >
               <Marker coordinate={markerCoordinate} />
             </MapView>
           </View>
@@ -98,26 +101,30 @@ export default function CurrentLocation() {
               center
               bolder
               H2
-              style={styles(currentTheme).welcomeHeading}>
+              style={styles(currentTheme).welcomeHeading}
+            >
               {t('welcomeScreen')}
             </TextDefault>
             <TextDefault
               textColor={currentTheme.fontMainColor}
               bold
               center
-              style={styles(currentTheme).descriptionEmpty}>
+              style={styles(currentTheme).descriptionEmpty}
+            >
               {t('enategaUseYourLocationMessage')}
             </TextDefault>
             <View style={styles(currentTheme).line} />
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles(currentTheme).emptyButton}
-              onPress={setCurrentLocation}>
+              onPress={setCurrentLocation}
+            >
               <TextDefault
                 style={{ paddingLeft: loading ? 40 : 0 }}
                 textColor={currentTheme.buttonText}
                 center
-                H5>
+                H5
+              >
                 {t('useCurrentLocation')}
               </TextDefault>
               {loading && (
@@ -134,7 +141,8 @@ export default function CurrentLocation() {
               style={styles(currentTheme).linkButton}
               onPress={() => {
                 navigation.navigate('SelectLocation')
-              }}>
+              }}
+            >
               <TextDefault textColor={currentTheme.fontMainColor} H5 center>
                 {t('selectAnotherLocation')}
               </TextDefault>

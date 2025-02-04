@@ -19,7 +19,8 @@ function Location({
   location: locationParam,
   locationLabel,
   forwardIcon = false,
-  screenName }) {
+  screenName
+}) {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -31,12 +32,15 @@ function Location({
   } else {
     translatedLabel = t(location.label)
   }
-  const translatedAddress =
-    location.deliveryAddress === 'Current Location'
-      ? t('currentLocation')
-      : location.deliveryAddress
-  const onLocationPress = (event) => {
 
+  const translatedAddress =
+    location.deliveryAddress && location.deliveryAddress === 'Current Location'
+      ? t('currentLocation')
+      : location.area
+        ? `${location.city.title}, ${location.area.title}`
+        : null
+
+  const onLocationPress = (event) => {
     if (screenName === 'checkout') {
       if (addresses && !addresses.length) {
         navigation.navigate('NewAddress', {
@@ -47,26 +51,48 @@ function Location({
           address: location
         })
       }
-    }
-    else
-      modalOn()
+    } else modalOn()
   }
+
   return (
-    <TouchableOpacity onPress={onLocationPress} style={{ marginHorizontal: scale(10) }}>
+    <TouchableOpacity
+      onPress={onLocationPress}
+      style={{ marginHorizontal: scale(10) }}
+    >
       <View style={styles(currentTheme).headerTitleContainer}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: scale(10), gap: 5 }}>
-          <View style={[styles().locationIcon, locationIconGray,{marginTop:scale(8)}]}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: scale(10),
+            gap: 5
+          }}
+        >
+          <View
+            style={[
+              styles().locationIcon,
+              locationIconGray,
+              { marginTop: scale(8) }
+            ]}
+          >
             <EvilIcons
-              name="location"
+              name='location'
               size={scale(20)}
               color={currentTheme.secondaryText}
             />
           </View>
           <View style={styles(currentTheme).headerContainer}>
-            <View
-              style={styles.textContainer}>
-              <TextDefault textColor={colors?.background} small   numberOfLines={1} H5 bolder>
-                {translatedAddress?.slice(0, 40)}...
+            <View style={styles.textContainer}>
+              <TextDefault
+                textColor={colors?.background}
+                small
+                numberOfLines={1}
+                H5
+                bolder
+              >
+                {/* {translatedAddress?.slice(0, 40)}... */}
+                {translatedAddress}
               </TextDefault>
             </View>
             <TextDefault textColor={colors?.background} left>
@@ -74,11 +100,9 @@ function Location({
               {t(translatedLabel)}
             </TextDefault>
           </View>
-          {forwardIcon && <Feather
-            name='chevron-right'
-            size={20}
-            color={colors.background}
-          />}
+          {forwardIcon && (
+            <Feather name='chevron-right' size={20} color={colors.background} />
+          )}
         </View>
       </View>
     </TouchableOpacity>

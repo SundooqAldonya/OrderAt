@@ -26,7 +26,7 @@ import ModalDropdown from '../../components/Picker/ModalDropdown'
 import Spinner from '../../components/Spinner/Spinner'
 import { colors } from '../../utils/colors'
 
-const LATITUDE = 30.044420
+const LATITUDE = 30.04442
 const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 40
 const LONGITUDE_DELTA = 40
@@ -51,13 +51,6 @@ export default function SelectLocation(props) {
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
   const [modalVisible, setModalVisible] = useState(false)
-
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_SELECTLOCATION)
-    }
-    Track()
-  }, [])
 
   useLayoutEffect(() => {
     navigation.setOptions(
@@ -100,7 +93,9 @@ export default function SelectLocation(props) {
     navigation.navigate('AddNewAddress', {
       latitude: coords.latitude,
       longitude: coords.longitude,
-      prevScreen: props?.route?.params?.prevScreen ? props.route.params.prevScreen : null
+      prevScreen: props?.route?.params?.prevScreen
+        ? props.route.params.prevScreen
+        : null
     })
   }
 
@@ -113,9 +108,12 @@ export default function SelectLocation(props) {
   const onItemPress = (city) => {
     setModalVisible(false)
     navigation.navigate('AddNewAddress', {
-      latitude: +city.latitude,
-      longitude: +city.longitude,
-      prevScreen: props?.route?.params?.prevScreen ? props.route.params.prevScreen : null
+      // latitude: +city.latitude,
+      // longitude: +city.longitude,
+      city,
+      prevScreen: props?.route?.params?.prevScreen
+        ? props.route.params.prevScreen
+        : null
     })
   }
 

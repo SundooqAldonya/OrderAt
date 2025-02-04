@@ -549,5 +549,8 @@ export const ar = {
   asap: 'فورًا',
   selectOptionforAddon: 'يرجى اختيار خيار للوظيفة الإضافية',
   whatsAppText: 'تحتاج مساعدة أكثر؟ اتصل بنا',
-  total_without_tax: 'القيمة بدون ضريبة'
+  total_without_tax: 'القيمة بدون ضريبة',
+  select_area: 'اختر المنطقة',
+  explore_areas: 'أختر منطقة',
+  address_details: 'تفاصيل العنوان'
 }

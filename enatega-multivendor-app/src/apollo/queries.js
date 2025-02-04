@@ -318,6 +318,25 @@ export const cities = `query GetCountryByIso($iso: String!) {
   }
 }`
 
+export const getCities = `query {
+  cities {
+    _id
+    title      
+  }
+}`
+
+export const getCityAreas = `query AreasByCity($id: String!){
+  areasByCity(id: $id){
+    _id
+    title
+    location {
+      location {
+        coordinates
+      }
+    }
+  }
+}`
+
 export const order = `query Order($id:String!){
   order(id:$id){
     _id

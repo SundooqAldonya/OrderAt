@@ -173,7 +173,7 @@ function NoDrawer() {
 
 function LocationStack() {
   return (
-    <Location.Navigator>
+    <Location.Navigator initialRouteName='SelectLocation'>
       <Location.Screen
         name='CurrentLocation'
         component={CurrentLocation}

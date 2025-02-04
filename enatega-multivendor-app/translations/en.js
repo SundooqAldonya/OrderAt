@@ -554,5 +554,8 @@ export const en = {
   minimumOrder: 'Minimum Order',
   selectOptionforAddon: 'Please select an option for addon',
   whatsAppText: 'Need more help? Contact us',
-  total_without_tax: 'Total without tax'
+  total_without_tax: 'Total without tax',
+  select_area: 'Select Area',
+  explore_areas: 'Explore Areas',
+  address_details: 'Address details'
 }

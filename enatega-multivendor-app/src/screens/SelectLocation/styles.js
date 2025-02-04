@@ -19,7 +19,7 @@ const styles = (props = null) =>
       justifyContent: 'space-around',
       borderTopLeftRadius: scale(30),
       borderTopRightRadius: scale(30),
-      backgroundColor: props !==null ? props.themeBackground : '#f5f5f5',
+      backgroundColor: props !== null ? props.themeBackground : '#f5f5f5',
       borderWidth: scale(1),
       borderColor: '#DAD6D6',
       paddingTop: scale(20),
@@ -27,13 +27,12 @@ const styles = (props = null) =>
     },
     container2: {
       flex: 1,
-  
-      height: '90%',
+      height: '100%',
       overflow: 'visible',
       justifyContent: 'space-around',
-      borderTopLeftRadius: scale(30),
-      borderTopRightRadius: scale(30),
-      backgroundColor:props !==null ? props.themeBackground : '#f5f5f5',
+      // borderTopLeftRadius: scale(30),
+      // borderTopRightRadius: scale(30),
+      backgroundColor: props !== null ? props.themeBackground : '#f5f5f5',
       borderWidth: scale(1),
       borderColor: '#DAD6D6',
       padding: scale(25)
@@ -72,15 +71,15 @@ const styles = (props = null) =>
       padding: 10
     },
     cityField: {
-      fontSize:scale(12),
-      color:props != null ? props.newFontcolor : '#E5E7EB',
+      fontSize: scale(12),
+      color: props != null ? props.newFontcolor : '#E5E7EB'
     },
     icon1: {
       marginLeft: 10
     },
     textInput: {
       width: '100%',
-      height: '22%',
+      height: 80,
       justifyContent: 'center',
       paddingHorizontal: scale(10),
       marginTop: scale(15),
@@ -113,12 +112,12 @@ const styles = (props = null) =>
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: '20%',
+      height: 80,
       backgroundColor: props !== null ? props.main : 'transparent',
       justifyContent: 'space-evenly',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: scale(28),
+      borderRadius: scale(28)
       // marginTop: scale(50)
     },
     mainContainer: {
