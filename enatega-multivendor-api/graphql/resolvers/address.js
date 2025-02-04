@@ -4,8 +4,10 @@ const Point = require('../../models/point')
 const { transformUser } = require('./merge')
 module.exports = {
   Mutation: {
-    createAddress: async(_, { addressInput }, { req, res }) => {
-      console.log('createAddress')
+    createAddress: async (_, { addressInput }, { req, res }) => {
+      // delivery address is not passed
+      // details is not passed
+      console.log('createAddress', { addressInput })
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
 
@@ -18,17 +20,11 @@ module.exports = {
           throw new Error('User not found')
         }
 
-        console.log(typeof(addressInput.longitude) , 'hello-1')
-        console.log(typeof(addressInput.latitude) , 'hello-2')
-
         const address = new Address({
           ...addressInput,
           location: new Point({
             type: 'Point',
-            coordinates: [
-              addressInput.longitude,
-              addressInput.latitude
-            ]
+            coordinates: [addressInput.longitude, addressInput.latitude]
           })
         })
         user.addresses.push(address)
@@ -39,7 +35,7 @@ module.exports = {
         throw e
       }
     },
-    editAddress: async(_, { addressInput }, { req, res }) => {
+    editAddress: async (_, { addressInput }, { req, res }) => {
       console.log('editAddress')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -48,8 +44,8 @@ module.exports = {
           throw new Error('User not found')
         }
 
-        console.log(typeof(addressInput.longitude) , 'hello-1')
-        console.log(typeof(addressInput.latitude) , 'hello-2')
+        console.log(typeof addressInput.longitude, 'hello-1')
+        console.log(typeof addressInput.latitude, 'hello-2')
 
         const location = new Point({
           type: 'Point',
@@ -71,7 +67,7 @@ module.exports = {
         throw e
       }
     },
-    deleteAddress: async(_, { id }, { req, res }) => {
+    deleteAddress: async (_, { id }, { req, res }) => {
       console.log('deleteAddress')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -86,7 +82,7 @@ module.exports = {
         throw e
       }
     },
-    deleteBulkAddresses: async(_, { ids }, { req, res }) => {
+    deleteBulkAddresses: async (_, { ids }, { req, res }) => {
       console.log('deleteBulkAddress => ', ids)
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -107,7 +103,7 @@ module.exports = {
         throw e
       }
     },
-    selectAddress: async(_, { id }, { req }) => {
+    selectAddress: async (_, { id }, { req }) => {
       console.log('selectAddress')
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')

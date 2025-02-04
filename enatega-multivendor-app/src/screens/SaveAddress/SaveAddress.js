@@ -52,13 +52,19 @@ function SaveAddress(props) {
   const [selectedLabel, setSelectedLabel] = useState('')
   const inset = useSafeAreaInsets()
 
-  const [mutate, { loading }] = useMutation(
-    locationData?.id ? EDIT_ADDRESS : CREATE_ADDRESS,
-    {
-      onCompleted,
-      onError
-    }
-  )
+  console.log({ locationData })
+
+  const [mutate, { loading }] = useMutation(CREATE_ADDRESS, {
+    onCompleted,
+    onError
+  })
+  // const [mutate, { loading }] = useMutation(
+  //   locationData?.id ? EDIT_ADDRESS : CREATE_ADDRESS,
+  //   {
+  //     onCompleted,
+  //     onError
+  //   }
+  // )
   function onCompleted({ createAddress, editAddress }) {
     FlashMessage({
       message: t('addressUpdated')
@@ -145,7 +151,7 @@ function SaveAddress(props) {
       longitude: `${locationData.longitude}`,
       latitude: `${locationData.latitude}`,
       deliveryAddress: locationData.deliveryAddress,
-      details: locationData.deliveryAddress,
+      details: locationData.details,
       label: selectedLabel
     }
     if (locationData.id) {
@@ -190,12 +196,19 @@ function SaveAddress(props) {
                         bold
                         textColor={currentTheme.newFontcolor}
                       >
-                        {locationData.city}
+                        {locationData?.city ? locationData.city.title : ''}
                       </TextDefault>
                     </View>
                     <View style={styles().addressDetails}>
                       <TextDefault bold textColor={currentTheme.gray600}>
-                        {locationData.deliveryAddress}
+                        {locationData?.deliveryAddress
+                          ? locationData.deliveryAddress
+                          : ''}
+                      </TextDefault>
+                    </View>
+                    <View style={styles().addressDetails}>
+                      <TextDefault bold textColor={currentTheme.gray600}>
+                        {locationData?.details ? locationData.details : ''}
                       </TextDefault>
                     </View>
                   </View>

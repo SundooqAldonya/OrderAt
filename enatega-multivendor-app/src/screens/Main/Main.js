@@ -261,7 +261,7 @@ function Main(props) {
           style={styles(currentTheme).addButton}
           onPress={() => {
             if (isLoggedIn) {
-              navigation.navigate('AddNewAddress', {
+              navigation.navigate('SelectLocation', {
                 ...locationData
               })
             } else {
