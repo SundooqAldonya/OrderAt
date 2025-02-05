@@ -13,7 +13,6 @@ const RESTAURANT_BY_OWNER = gql`
   ${restaurantByOwner}
 `
 const Restaurant = props => {
-  console.log('here')
   const theme = useTheme()
   const { t } = props
   const [owner, setOwner] = useState()

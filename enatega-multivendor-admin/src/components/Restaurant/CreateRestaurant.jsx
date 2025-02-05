@@ -2,7 +2,13 @@ import React, { useState, useRef, useMemo } from 'react'
 import { validateFunc } from '../../constraints/constraints'
 import { withTranslation } from 'react-i18next'
 import { useMutation, gql, useQuery } from '@apollo/client'
-import { createRestaurant, getCuisines, restaurantByOwner } from '../../apollo'
+import {
+  createRestaurant,
+  getCities,
+  getCuisines,
+  getShopCategories,
+  restaurantByOwner
+} from '../../apollo'
 import defaultLogo from '../../assets/img/defaultLogo.png'
 import { IconButton } from '@mui/material'
 import Close from '@mui/icons-material/Close'
@@ -42,7 +48,13 @@ const RESTAURANT_BY_OWNER = gql`
 const CUISINES = gql`
   ${getCuisines}
 `
+const GET_SHOP_CATEGORIES = gql`
+  ${getShopCategories}
+`
 
+const GET_CITIES = gql`
+  ${getCities}
+`
 const UPLOAD_FILE = gql`
   mutation uploadFile($id: ID!, $file: Upload!) {
     uploadFile(id: $id, file: $file) {
@@ -93,6 +105,23 @@ const CreateRestaurant = props => {
   // const [shopType, setShopType] = useState(SHOP_TYPE.RESTAURANT)
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
+  const [category, setCategory] = useState('')
+  const [selectedCity, setSelectedCity] = useState('')
+
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCategories
+  } = useQuery(GET_SHOP_CATEGORIES)
+
+  const {
+    data: dataCities,
+    error: errorCities,
+    loading: loadingCities
+  } = useQuery(GET_CITIES)
+
+  const cities = dataCities?.cities || null
+  const shopCategories = dataCategories?.getShopCategories || null
 
   const onCompleted = async data => {
     console.log({ data })
@@ -318,6 +347,10 @@ const CreateRestaurant = props => {
     setImgUrl('')
   }
 
+  const handleCategoryChange = e => {
+    setCategory(e.target.value)
+  }
+
   const handleCuisineChange = event => {
     const {
       target: { value }
@@ -532,14 +565,55 @@ const CreateRestaurant = props => {
               </Box>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Dropdown
-                title={t('Shop Category')}
-                values={Object.values(SHOP_TYPE)}
-                defaultValue={SHOP_TYPE.RESTAURANT}
-                id={'shop-type'}
-                name={'shopType'}
-                displayEmpty={true}
-              />
+              <Typography className={classes.labelText}>
+                {t('Select City')}
+              </Typography>
+              <Select
+                id="input-city"
+                name="input-city"
+                value={selectedCity}
+                onChange={e => setSelectedCity(e.target.value)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                className={[globalClasses.input]}>
+                {cities?.map(city => (
+                  <MenuItem
+                    value={city._id}
+                    key={city._id}
+                    style={{ color: 'black' }}>
+                    {city.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {loadingCategories && <Typography>Loading...</Typography>}
+              {errorCategories && (
+                <Typography>Error fetching categories</Typography>
+              )}
+              {shopCategories?.length && !loadingCategories ? (
+                <Box>
+                  <Typography className={classes.labelText}>
+                    {t('Shop Category')}
+                  </Typography>
+                  <Select
+                    style={{ margin: '0 0 0 0', padding: '0px 0px' }}
+                    defaultValue={shopCategories[0]._id}
+                    className={[globalClasses.input]}
+                    onChange={handleCategoryChange}>
+                    {shopCategories?.map(item => (
+                      <MenuItem
+                        value={item._id}
+                        key={item._id}
+                        style={{ color: 'black' }}>
+                        {item.title.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
+              ) : (
+                <Typography>Add shop categories</Typography>
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
               <Box>
@@ -627,6 +701,7 @@ const CreateRestaurant = props => {
               </Box>
             </Grid>
           </Grid>
+          {console.log({ selectedCity })}
           <Box>
             <Button
               className={globalClasses.button}
@@ -644,8 +719,8 @@ const CreateRestaurant = props => {
                   const minimumOrder = form.minimumOrder.value
                   const username = form.username.value
                   const password = form.password.value
-                  const shopType = form.shopType.value
-
+                  const shopType = category
+                  console.log({ shopType })
                   mutate({
                     variables: {
                       owner,
@@ -661,7 +736,8 @@ const CreateRestaurant = props => {
                         username,
                         password,
                         shopType,
-                        cuisines: restaurantCuisines
+                        cuisines: restaurantCuisines,
+                        city: selectedCity
                       }
                     }
                   })

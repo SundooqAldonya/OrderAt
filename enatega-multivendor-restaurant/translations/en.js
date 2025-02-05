@@ -78,6 +78,14 @@ export const en = {
   instructions: 'Instructions',
   digits_error: 'Phone should be 11 digits',
   rider_details: 'Rider details',
+  order_status: 'Order Status',
   name: 'Name',
-  phone: 'Phone'
+  phone: 'Phone',
+  ACCEPTED: 'Accepted',
+  ASSIGNED: 'Assigned',
+  PENDING: 'Pending',
+  PICKED: 'Picked',
+  DELIVERED: 'Delivered',
+  CANCELlED: 'Cancelled',
+  COD: 'Cash'
 }

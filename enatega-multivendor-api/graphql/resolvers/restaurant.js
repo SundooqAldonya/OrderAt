@@ -279,7 +279,7 @@ module.exports = {
         }
         const restaurant = await Restaurant.findOne(filters)
         if (!restaurant) throw Error('Restaurant not found')
-        const result = await restaurant.populate('city')
+        const result = await restaurant.populate(['city', 'shopCategory'])
         console.log({ result })
 
         return transformRestaurant(result)
@@ -779,9 +779,10 @@ module.exports = {
           owner: args.owner,
           tax: args.salesTax,
           cuisines: args.restaurant.cuisines ?? [],
-          shopType: args.restaurant.shopType || SHOP_TYPE.RESTAURANT, //  default value 'restaurant' for backward compatibility
+          shopCategory: args.restaurant.shopType,
           restaurantUrl: args.restaurant.restaurantUrl,
-          phone: args.restaurant.phone
+          phone: args.restaurant.phone,
+          city: args.restaurant.city
         })
         console.log('New Restaurant: ', restaurant)
 
@@ -850,7 +851,7 @@ module.exports = {
           .split(' ')
           .join('-')
         restaurant.tax = args.restaurant.salesTax
-        restaurant.shopType = args.restaurant.shopType
+        restaurant.shopCategory = args.restaurant.shopType
         restaurant.cuisines = args.restaurant.cuisines
         restaurant.restaurantUrl = args.restaurant.restaurantUrl
         restaurant.phone = args.restaurant.phone

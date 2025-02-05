@@ -127,6 +127,10 @@ const restaurantSchema = new Schema(
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'
+    },
+    shopCategory: {
+      type: Schema.Types.ObjectId,
+      ref: 'ShopCategory'
     }
   },
 

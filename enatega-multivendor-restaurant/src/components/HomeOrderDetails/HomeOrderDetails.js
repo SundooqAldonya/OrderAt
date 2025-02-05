@@ -147,10 +147,11 @@ function HomeOrderDetails(props) {
       </View>
       <View style={[styles.itemRowBar, { flexDirection }]}>
         <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
-          {t('paymentMethod')}
+          {t('paymentMethod')}:
         </TextDefault>
-        <TextDefault style={styles.text}>{paymentMethod}</TextDefault>
+        <TextDefault style={styles.text}>{t(paymentMethod)}</TextDefault>
       </View>
+
       <View style={[styles.itemRowBar, { flexDirection }]}>
         <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
           {t('time')}:
@@ -159,13 +160,19 @@ function HomeOrderDetails(props) {
           {moment(props.order?.createdAt).format('lll')}
         </TextDefault>
       </View>
-
+      <View style={[styles.itemRowBar, { flexDirection }]}>
+        <TextDefault style={[styles.heading, { textAlign: textAlignment }]}>
+          {t('order_status')}:
+        </TextDefault>
+        <TextDefault style={styles.text}>{t(orderStatus)}</TextDefault>
+      </View>
       <View
         style={{
           borderBottomColor: colors.fontSecondColor,
           borderBottomWidth: 1
         }}
       />
+
       <View style={styles.timerBar}>
         {activeBar === 0 && (
           <View

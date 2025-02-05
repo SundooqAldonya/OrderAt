@@ -59,6 +59,7 @@ import Banners from './views/Banners'
 import Cities from './views/Cities'
 import Areas from './views/Areas'
 import Businesses from './views/Businesses'
+import ShopCategories from './views/ShopCategories'
 
 var routes = [
   {
@@ -174,6 +175,15 @@ var routes = [
     name: 'Areas',
     icon: ZonesIcon,
     component: Areas,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/shop-categories',
+    name: 'Shop Categories',
+    icon: ZonesIcon,
+    component: ShopCategories,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

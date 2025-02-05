@@ -340,7 +340,10 @@ const en = {
     business_address: 'Business Address',
     tell_us_business: 'Tell us more about your business',
     created_business: 'Created business successfully!',
-    add_business: 'Create Business'
+    add_business: 'Create Business',
+    shop_categories: 'Shop Categories',
+    shop_category_create: 'Create a shop category',
+    shop_category_created: 'Shop category created successfully!'
   }
 }
 

@@ -79,6 +79,14 @@ export const ar = {
   instructions: 'طلبات إضافية',
   digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا',
   rider_details: 'معلومات الكابتن',
+  order_status: 'الحالة',
   name: 'الاسم',
-  phone: 'الرقم'
+  phone: 'الرقم',
+  ACCEPTED: 'تم القبول',
+  ASSIGNED: 'تم تحديد الكابتن',
+  PICKED: 'تم الاستلام',
+  DELIVERED: 'تم التسليم',
+  CANCELlED: 'تم الإلغاء',
+  PENDING: 'قيد الانتظار',
+  COD: 'نقدي'
 }

@@ -7,7 +7,8 @@ import {
   getRestaurantProfile,
   editRestaurant,
   getCuisines,
-  getCities
+  getCities,
+  getShopCategories
 } from '../apollo'
 import ConfigurableValues from '../config/constants'
 import useStyles from '../components/Restaurant/styles'
@@ -47,6 +48,9 @@ const GET_CITIES = gql`
   ${getCities}
 `
 
+const GET_SHOP_CATEGORIES = gql`
+  ${getShopCategories}
+`
 const UPLOAD_FILE = gql`
   mutation uploadFile($id: ID!, $file: Upload!) {
     uploadFile(id: $id, file: $file) {
@@ -99,6 +103,7 @@ const VendorProfile = () => {
   const [image, setImage] = useState(null)
   const [logo, setLogo] = useState(null)
   const [selectedCity, setSelectedCity] = useState('')
+  const [category, setCategory] = useState('')
 
   const onCompleted = data => {
     setNameError(null)
@@ -143,24 +148,39 @@ const VendorProfile = () => {
       variables: { id: restaurantId }
     }
   )
-  console.log({ restaurant: data })
+
+  console.log({ data })
+
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCategories
+  } = useQuery(GET_SHOP_CATEGORIES)
+
   const {
     data: dataCities,
     error: errorCities,
     loading: loadingCities
   } = useQuery(GET_CITIES)
 
-  console.log({ dataCities })
   const cities = dataCities?.cities || null
-  console.log({ cities })
   const restaurantImage = data?.restaurant?.image
   const restaurantLogo = data?.restaurant?.logo
+  const shopCategories = dataCategories?.getShopCategories || null
 
   const [mutate, { loading }] = useMutation(EDIT_RESTAURANT, {
     onError,
     onCompleted,
     refetchQueries: [GET_PROFILE]
   })
+
+  useEffect(() => {
+    if (data?.restaurant?.shopCategory) {
+      setCategory(data?.restaurant.shopCategory._id)
+    }
+  }, [data?.restaurant])
+
+  console.log({ category })
 
   const formRef = useRef(null)
 
@@ -312,9 +332,9 @@ const VendorProfile = () => {
       const username = form.username.value
       const password = form.password.value
       const salesTax = form.salesTax.value
-      const shopType = form.shopType.value
+      const shopType = !category ? data?.restaurant.shopCategory._id : category
       const city = selectedCity
-      console.log({ city })
+      console.log({ shopType })
       mutate({
         variables: {
           restaurantInput: {
@@ -348,6 +368,10 @@ const VendorProfile = () => {
       })
       console.log('Logo uploaded:', restaurantLogo.data)
     }
+  }
+
+  const handleCategoryChange = e => {
+    setCategory(e.target.value)
   }
 
   const classes = useStyles()
@@ -621,16 +645,42 @@ const VendorProfile = () => {
                     </Select>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Dropdown
-                      title={t('Shop Category')}
-                      values={Object.values(SHOP_TYPE)}
-                      defaultValue={
-                        data?.restaurant.shopType || SHOP_TYPE.RESTAURANT
-                      }
-                      id={'shop-type'}
-                      name={'shopType'}
-                      displayEmpty={true}
-                    />
+                    {loadingCategories && <Typography>Loading...</Typography>}
+                    {errorCategories && (
+                      <Typography>Error fetching categories</Typography>
+                    )}
+                    {shopCategories?.length && !loadingCategories ? (
+                      <Box>
+                        <Typography className={classes.labelText}>
+                          {t('Shop Category')}
+                        </Typography>
+                        <Select
+                          style={{ margin: '0 0 0 0', padding: '0px 0px' }}
+                          defaultValue={
+                            data?.restaurant.shopCategory._id
+                              ? data?.restaurant.shopCategory._id
+                              : category
+                          }
+                          // value={
+                          //   data?.restaurant.shopCategory._id
+                          //     ? data?.restaurant.shopCategory._id
+                          //     : category
+                          // }
+                          className={[globalClasses.input]}
+                          onChange={handleCategoryChange}>
+                          {shopCategories?.map(item => (
+                            <MenuItem
+                              value={item._id}
+                              key={item._id}
+                              style={{ color: 'black' }}>
+                              {item.title}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Box>
+                    ) : (
+                      <Typography>Add shop categories</Typography>
+                    )}
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Box>

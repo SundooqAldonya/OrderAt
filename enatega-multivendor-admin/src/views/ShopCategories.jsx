@@ -16,36 +16,36 @@ import SearchBar from '../components/TableHeader/SearchBar'
 import TableHeader from '../components/TableHeader'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
-import { getAreas, getCities, removeArea } from '../apollo'
+import { getShopCategories, removeArea, removeShopCategory } from '../apollo'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import AreaCreate from '../components/AreaCreate'
 import { customStyles } from '../utils/tableCustomStyles'
 import orderBy from 'lodash/orderBy'
 import DataTable from 'react-data-table-component'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import ShopCategoryCreate from '../components/ShopCategoryCreate'
 
-const GET_AREAS = gql`
-  ${getAreas}
+const GET_SHOP_CATEGORIES = gql`
+  ${getShopCategories}
 `
-const REMOVE_AREAS = gql`
-  ${removeArea}
+const REMOVE_SHOP_CATEGORY = gql`
+  ${removeShopCategory}
 `
 
-const Areas = () => {
+const ShopCategories = () => {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [type, setType] = useState('')
   const [openEdit, setOpenEdit] = useState(false)
-  const [area, setArea] = useState(null)
+  const [category, setCategory] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const toggleModal = item => {
     setOpenEdit(!openEdit)
-    setArea(item)
+    setCategory(item)
   }
 
   const closeEditModal = () => {
@@ -53,31 +53,25 @@ const Areas = () => {
   }
 
   const { data, loading: loadingAreas, error: errorAreas, refetch } = useQuery(
-    GET_AREAS
+    GET_SHOP_CATEGORIES
   )
 
-  const [removeArea] = useMutation(REMOVE_AREAS, {
-    refetchQueries: [{ query: GET_AREAS }],
+  const [removeArea] = useMutation(REMOVE_SHOP_CATEGORY, {
+    refetchQueries: [{ query: GET_SHOP_CATEGORIES }],
     onCompleted: data => {
-      setMessage(data.removeArea.message)
+      setMessage(data.removeShopCategory.message)
       setType('success')
       setIsOpen(true)
     }
   })
 
-  const areas = data?.areas || null
+  const shopCategories = data?.getShopCategories || null
 
   const columns = [
     {
       name: t('Title'),
       selector: 'title',
       sortable: true
-    },
-    {
-      name: t('City'),
-      selector: 'city',
-      sortable: true,
-      cell: row => <>{row.city?.title || 'N/A'}</>
     },
 
     {
@@ -177,7 +171,7 @@ const Areas = () => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <AreaCreate />
+        <ShopCategoryCreate />
         {/* Table */}
         {isOpen && (
           <Alert
@@ -189,7 +183,7 @@ const Areas = () => {
         )}
         {errorAreas ? <span>{`Error! ${errorAreas.message}`}</span> : null}
         {loadingAreas ? <CustomLoader /> : null}
-        {areas && (
+        {shopCategories && (
           <DataTable
             subHeader={true}
             subHeaderComponent={
@@ -199,9 +193,9 @@ const Areas = () => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Areas')} />}
+            title={<TableHeader title={t('shop_categories')} />}
             columns={columns}
-            data={areas}
+            data={shopCategories}
             pagination
             progressPending={loadingAreas}
             progressComponent={<CustomLoader />}
@@ -221,11 +215,11 @@ const Areas = () => {
           onClose={() => {
             toggleModal()
           }}>
-          <AreaCreate area={area} onClose={closeEditModal} />
+          <ShopCategoryCreate category={category} onClose={closeEditModal} />
         </Modal>
       </Container>
     </Fragment>
   )
 }
 
-export default Areas
+export default ShopCategories

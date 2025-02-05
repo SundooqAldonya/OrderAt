@@ -151,6 +151,7 @@ const typeDefs = gql`
     notificationToken: String
     enableNotification: Boolean
     shopType: String
+    shopCategory: ShopCategory
     cuisines: [String]
     keywords: [String]
     tags: [String]
@@ -193,6 +194,7 @@ const typeDefs = gql`
     notificationToken: String
     enableNotification: Boolean
     shopType: String
+    shopCategory: ShopCategory
     cuisines: [String]
     keywords: [String]
     tags: [String]
@@ -1268,7 +1270,13 @@ const typeDefs = gql`
     phone: String!
   }
 
+  type ShopCategory {
+    _id: String!
+    title: String
+  }
+
   type Query {
+    getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
     areasByCity(id: String!): [Area!]
     areas: [Area!]
@@ -1439,7 +1447,17 @@ const typeDefs = gql`
     phone: String!
   }
 
+  input ShopCategoryInput {
+    title: String!
+  }
+
   type Mutation {
+    createShopCategory(shopCategoryInput: ShopCategoryInput!): Message
+    editShopCategory(
+      id: String!
+      shopCategoryInput: ShopCategoryInput!
+    ): Message
+    removeShopCategory(id: String!): Message
     createBusiness(businessInput: BusinessInput): Message
     searchUsersByBusiness(searchText: String!): User
     createArea(areaInput: AreaInput!): Message

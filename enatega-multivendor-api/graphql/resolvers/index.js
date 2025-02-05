@@ -31,6 +31,7 @@ const food = require('./food')
 const cities = require('./cities')
 const areas = require('./areas')
 const businesses = require('./businesses')
+const shopCategories = require('./shopCategories')
 
 const rootResolver = {
   Query: {
@@ -62,7 +63,8 @@ const rootResolver = {
     ...food.Query,
     ...cities.Query,
     ...areas.Query,
-    ...businesses.Query
+    ...businesses.Query,
+    ...shopCategories.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -95,7 +97,8 @@ const rootResolver = {
     ...demo.Mutation,
     ...cities.Mutation,
     ...areas.Mutation,
-    ...businesses.Mutation
+    ...businesses.Mutation,
+    ...shopCategories.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

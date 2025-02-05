@@ -859,3 +859,28 @@ export const createBusiness = gql`
     }
   }
 `
+
+export const createShopCategory = gql`
+  mutation CreateShopCategory($shopCategoryInput: ShopCategoryInput!) {
+    createShopCategory(shopCategoryInput: $shopCategoryInput) {
+      message
+    }
+  }
+`
+export const editShopCategory = gql`
+  mutation EditShopCategory(
+    $id: String!
+    $shopCategoryInput: ShopCategoryInput!
+  ) {
+    editShopCategory(id: $id, shopCategoryInput: $shopCategoryInput) {
+      message
+    }
+  }
+`
+export const removeShopCategory = gql`
+  mutation RemoveShopCategory($id: String!) {
+    removeShopCategory(id: $id) {
+      message
+    }
+  }
+`

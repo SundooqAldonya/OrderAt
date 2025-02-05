@@ -555,6 +555,10 @@ export const getRestaurantProfile = `query Restaurant($id:String){
           endTime
         }
       }
+      shopCategory {
+        _id
+        title
+      }
       owner{
         _id
         email
@@ -775,6 +779,15 @@ export const getBusinesses = gql`
       phone
       businessName
       address
+    }
+  }
+`
+
+export const getShopCategories = gql`
+  query GetShopCategories {
+    getShopCategories {
+      _id
+      title
     }
   }
 `

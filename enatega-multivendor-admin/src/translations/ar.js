@@ -323,7 +323,10 @@ const ar = {
     business_address: 'عنوان الشركة',
     tell_us_business: 'كلمنا عن عملك',
     created_business: 'تم إنشاء الشركة!',
-    add_business: 'إنشئ شركة'
+    add_business: 'إنشئ شركة',
+    shop_categories: 'نوعية المتجر',
+    shop_category_create: 'اضف نوعية متجر',
+    shop_category_created: 'تم إنشاء نوعية متجر بنجاح'
   }
 }
 
