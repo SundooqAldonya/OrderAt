@@ -107,9 +107,17 @@ const OrdersData = props => {
       sortable: true,
       selector: 'orderId'
     },
+    // {
+    //   name: t('Items'),
+    //   cell: row => <>{getItems(row.items)}</>
+    // },
     {
-      name: t('Items'),
-      cell: row => <>{getItems(row.items)}</>
+      name: t('name'),
+      cell: row => <>{row.user.name}</>
+    },
+    {
+      name: t('phone'),
+      cell: row => <>{row.user.phone}</>
     },
     {
       name: t('Payment'),
@@ -126,13 +134,13 @@ const OrdersData = props => {
       cell: row => (
         <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
       )
-    },
-    {
-      name: t('Address'),
-      cell: row => (
-        <>{transformToNewline(row?.deliveryAddress?.deliveryAddress, 3)}</>
-      )
     }
+    // {
+    //   name: t('Address'),
+    //   cell: row => (
+    //     <>{transformToNewline(row?.deliveryAddress?.deliveryAddress, 3)}</>
+    //   )
+    // }
   ]
 
   const conditionalRowStyles = [

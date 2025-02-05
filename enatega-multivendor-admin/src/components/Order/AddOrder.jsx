@@ -24,8 +24,12 @@ import useGlobalStyles from '../../utils/globalStyles'
 import { AreaContext } from '../../context/AreaContext'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
-import { UPDATE_USER_ADDRESS } from '../../apollo'
+import { UPDATE_USER_ADDRESS, getOrdersByRestaurant } from '../../apollo'
 import AddNewAddress from './AddNewAddress'
+
+const GET_ORDERS = gql`
+  ${getOrdersByRestaurant}
+`
 
 const CHECKOUT_PLACE_ORDER = gql`
   mutation CheckOutPlaceOrder(
@@ -127,7 +131,27 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [orderMode, setOrderMode] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState(null)
   const [selectedAddress, setSelectedAddress] = useState('')
-  const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER)
+  const restaurantId = localStorage.getItem('restaurantId')
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [search] = useState('')
+  const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
+    refetchQueries: [
+      {
+        query: GET_ORDERS,
+        variables: {
+          restaurant: restaurantId,
+          page: 1,
+          rows: rowsPerPage,
+          search
+        }
+      }
+    ],
+    onCompleted: () => {
+      setSuccess('Order Created Successfully!')
+      setOrderMode(false)
+    }
+  })
+
   const { areas } = useContext(AreaContext)
   const [selectedArea, setSelectedArea] = useState('')
   const [addressFreeText, setAddressFreeText] = useState('')
@@ -341,9 +365,8 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
       setCost(value)
     }
   }
-  const handleSubmitOrder = async () => {
-    const restaurantId = localStorage.getItem('restaurantId')
 
+  const handleSubmitOrder = async () => {
     try {
       if (!cost || !selectedCustomer) {
         throw new Error('Cost, customer details, and address are required!')
@@ -366,7 +389,7 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
       }
 
       // Call the checkout mutation
-      const { data } = await checkOutPlaceOrder({
+      await checkOutPlaceOrder({
         variables: {
           userId: _id,
           addressId,
@@ -376,13 +399,13 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
         }
       })
 
-      console.log('Order placement response:', data)
-      const orderId = data.CheckOutPlaceOrder.orderId
-      console.log('Order ID:', orderId)
+      // console.log('Order placement response:', data)
+      // const orderId = data.CheckOutPlaceOrder.orderId
+      // console.log('Order ID:', orderId)
 
-      setSuccess('Order Created Successfully!')
-      console.log('Order placed:', data.CheckOutPlaceOrder)
-      setOrderMode(false)
+      // setSuccess('Order Created Successfully!')
+      // console.log('Order placed:', data.CheckOutPlaceOrder)
+      // setOrderMode(false)
     } catch (err) {
       console.error('Error placing order:', err)
       setSuccess(`Error: ${err.message}`)

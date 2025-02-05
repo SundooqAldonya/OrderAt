@@ -216,6 +216,7 @@ module.exports = {
             .sort({ createdAt: -1 })
             .skip((args.page || 0) * args.rows)
             .limit(args.rows)
+          console.log({ ordersRest: orders })
           return orders.map(order => {
             return transformOrder(order)
           })

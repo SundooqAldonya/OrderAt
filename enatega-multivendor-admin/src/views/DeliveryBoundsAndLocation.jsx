@@ -83,7 +83,6 @@ function DeliveryBoundsAndLocation() {
     }
   )
 
-  console.log('here')
   // Call setPath with new edited path
   const onEdit = useCallback(() => {
     if (polygonRef.current) {
