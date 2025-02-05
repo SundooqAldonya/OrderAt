@@ -75,6 +75,7 @@ const Vendors = props => {
 
   const toggleModal = vendor => {
     setEditModal(!editModal)
+    console.log({ setVendor: vendor })
     setVendor(vendor)
   }
 

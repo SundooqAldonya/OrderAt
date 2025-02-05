@@ -514,6 +514,8 @@ const typeDefs = gql`
   type OwnerData {
     _id: ID!
     email: String!
+    name: String
+    phone: String
     userType: String!
     restaurants: [Restaurant]!
     pushToken: String
@@ -924,6 +926,8 @@ const typeDefs = gql`
   input VendorInput {
     _id: String
     email: String
+    name: String
+    phone: String
     password: String
   }
 

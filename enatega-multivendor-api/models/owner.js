@@ -9,9 +9,16 @@ const ownerSchema = new Schema(
       type: String,
       required: true
     },
-    password: {
+    name: {
       type: String,
-      required: true
+      require: true
+    },
+    phone: {
+      type: String,
+      require: true
+    },
+    password: {
+      type: String
     },
     restaurants: [
       {

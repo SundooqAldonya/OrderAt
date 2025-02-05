@@ -343,7 +343,8 @@ const en = {
     add_business: 'Create Business',
     shop_categories: 'Shop Categories',
     shop_category_create: 'Create a shop category',
-    shop_category_created: 'Shop category created successfully!'
+    shop_category_created: 'Shop category created successfully!',
+    email_or_phone: 'Email or phone'
   }
 }
 

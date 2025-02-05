@@ -326,7 +326,8 @@ const ar = {
     add_business: 'إنشئ شركة',
     shop_categories: 'نوعية المتجر',
     shop_category_create: 'اضف نوعية متجر',
-    shop_category_created: 'تم إنشاء نوعية متجر بنجاح'
+    shop_category_created: 'تم إنشاء نوعية متجر بنجاح',
+    email_or_phone: 'البريد الاليكتروني او التليفون'
   }
 }
 

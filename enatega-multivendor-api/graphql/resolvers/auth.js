@@ -39,9 +39,9 @@ module.exports = {
         throw error
       }
     },
-    ownerLogin: async (_, { email, password }, context) => {
+    ownerLogin: async (_, { email, phone, password }, context) => {
       console.log('ownerLogin')
-      const owner = await Owner.findOne({ email: email })
+      const owner = await Owner.findOne({ $or: [{ email }, { phone: email }] })
       if (!owner) {
         throw new Error('User does not exist!')
       }
@@ -50,7 +50,7 @@ module.exports = {
       //   throw new Error('Invalid credentials!')
       //   // throw new Error('Password is incorrect!');
       // }
-      const { user, err } = await Owner.authenticate()(email, password)
+      const { user, err } = await Owner.authenticate()(owner.email, password)
       if (!user || err) throw new Error("Email and password don't match!")
 
       const token = jwt.sign(

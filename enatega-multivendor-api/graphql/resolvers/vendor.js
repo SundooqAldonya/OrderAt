@@ -36,7 +36,7 @@ module.exports = {
   Mutation: {
     // TODO: need to rethink about how restaurants are being added
     createVendor: async (_, args, context) => {
-      console.log('createVendor')
+      console.log('createVendor', args)
       try {
         if (args.vendorInput.email) {
           const existingEmail = await Owner.findOne({
@@ -46,12 +46,13 @@ module.exports = {
             throw new Error('Email is already associated with another account.')
           }
         }
-        const hashedPassword = await bcrypt.hash(args.vendorInput.password, 12)
-        const owner = Owner({
+        const owner = new Owner({
           email: args.vendorInput.email,
-          password: hashedPassword,
+          name: args.vendorInput.name,
+          phone: args.vendorInput.phone,
           userType: 'VENDOR'
         })
+        await owner.setPassword(args.vendorInput.password)
         const result = await owner.save()
         return transformOwner(result)
       } catch (err) {
@@ -78,6 +79,11 @@ module.exports = {
             throw Error('Email is associated with another account')
           }
           owner.email = args.vendorInput.email
+          owner.name = args.vendorInput.name
+          owner.phone = args.vendorInput.phone
+          if (args?.vendorInput?.password) {
+            await owner.setPassword(args.vendorInput.password)
+          }
           const result = await owner.save()
           return transformOwner(result)
         } else {
@@ -96,10 +102,10 @@ module.exports = {
         owner.restaurants.forEach(async element => {
           const restaurant = await Restaurant.findById(element)
           restaurant.isActive = false
-          await restaurant.save()
+          await restaurant.deleteOne()
         })
         owner.isActive = false
-        await owner.save()
+        await owner.deleteOne()
         return true
       } catch (error) {
         console.log(error)

@@ -34,12 +34,15 @@ const Login = props => {
   const [stateData, setStateData] = useState({
     email: '',
     password: '',
-    emailError: null,
-    passwordError: null,
-    error: null,
+    // emailError: null,
+    // passwordError: null,
+    // error: null,
     type: null, /// 0 for vendor
     redirectToReferrer: !!localStorage.getItem('user-enatega')
   })
+  const [error, setError] = useState(null)
+  const [emailError, setEmailError] = useState(null)
+  const [passwordError, setPasswordError] = useState(null)
   const formRef = useRef()
   const { t } = props
   const history = useHistory()
@@ -51,13 +54,15 @@ const Login = props => {
     })
   }
   const validate = () => {
-    const emailError = !validateFunc({ email: stateData.email }, 'email')
-    const passwordError = !validateFunc(
+    // const emailError = !validateFunc({ email: stateData.email }, 'email')
+    const passwordErrors = !validateFunc(
       { password: stateData.password },
       'password'
     )
-    setStateData({ ...stateData, emailError, passwordError })
-    return emailError && passwordError
+    // setStateData({ ...stateData, passwordError })
+    setPasswordError(passwordErrors)
+    // return emailError && passwordError
+    return passwordErrors
   }
   const { redirectToReferrer, type } = stateData
 
@@ -108,30 +113,27 @@ const Login = props => {
     })
   }
   const hideAlert = () => {
-    setStateData({
-      ...stateData,
-      emailError: null,
-      passwordError: null
-    })
+    setError(null)
+    setEmailError(null)
+    setPasswordError(null)
   }
+
   const onError = error => {
     console.log({ error })
     if (error.graphQLErrors.length) {
-      setStateData({
-        ...stateData,
-        error: error.graphQLErrors[0].message
-      })
+      setError(error.graphQLErrors[0].message)
     }
     if (error.networkError) {
-      setStateData({
-        ...stateData,
-        error: error.message
-      })
+      setError(error.message)
     }
     setIsLogged(false)
     setTimeout(hideAlert, 5000)
   }
   const [mutate] = useMutation(LOGIN, { onError, onCompleted })
+
+  const handleChange = e => {
+    setStateData({ ...stateData, [e.target.name]: e.target.value })
+  }
 
   const loginFunc = e => {
     e.preventDefault()
@@ -201,27 +203,25 @@ const Login = props => {
               <form ref={formRef} onSubmit={loginFunc}>
                 <Box>
                   <Typography className={classes.labelText}>
-                    {t('Email')}
+                    {t('email_or_phone')}
                   </Typography>
                   <Input
                     style={{ marginTop: -1 }}
                     id="input-email"
-                    name="input-email"
+                    name="email"
                     value={stateData.email}
-                    onChange={event => {
-                      setStateData({ ...stateData, email: event.target.value })
-                    }}
+                    onChange={handleChange}
                     onBlur={event => {
                       onBlur(event, 'email')
                     }}
                     placeholder={t('Email')}
-                    type="email"
+                    type="text"
                     disableUnderline
                     className={[
                       globalClasses.input,
-                      stateData.emailError === false
+                      emailError === false
                         ? globalClasses.inputError
-                        : stateData.emailError === true
+                        : emailError === true
                         ? globalClasses.inputSuccess
                         : ''
                     ]}
@@ -234,25 +234,20 @@ const Login = props => {
                   <Input
                     style={{ marginTop: -1 }}
                     id="input-password"
-                    name="input-password"
+                    name="password"
                     placeholder={t('Password')}
                     value={stateData.password}
                     type={showPassword ? 'text' : 'password'}
-                    onChange={event => {
-                      setStateData({
-                        ...stateData,
-                        password: event.target.value
-                      })
-                    }}
+                    onChange={handleChange}
                     onBlur={event => {
                       onBlur(event, 'password')
                     }}
                     disableUnderline
                     className={[
                       globalClasses.input,
-                      stateData.passwordError === false
+                      passwordError === false
                         ? globalClasses.inputError
-                        : stateData.passwordError === true
+                        : passwordError === true
                         ? globalClasses.inputSuccess
                         : ''
                     ]}
@@ -306,12 +301,12 @@ const Login = props => {
                 </Box>
               </form>
               <Box mt={2}>
-                {stateData.error && (
+                {error && (
                   <Alert
                     className={globalClasses.alertError}
                     variant="filled"
                     severity="error">
-                    {stateData.error}
+                    {error}
                   </Alert>
                 )}
               </Box>

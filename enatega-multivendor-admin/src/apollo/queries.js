@@ -379,6 +379,8 @@ export const getVendors = `query Vendors{
     vendors{
       _id
       email
+      name
+      phone
       userType
       restaurants{
         _id

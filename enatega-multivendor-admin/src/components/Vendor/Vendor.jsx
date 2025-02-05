@@ -24,7 +24,16 @@ function Vendor(props) {
   const formRef = useRef()
   const [showPassword, setShowPassword] = useState(false)
   const mutation = props.vendor ? EDIT_VENDOR : CREATE_VENDOR
-  const email = props.vendor ? props.vendor.email : ''
+
+  const [values, setValues] = useState({
+    email: props.vendor ? props.vendor.email : '',
+    name: props.vendor ? props.vendor.name : '',
+    phone: props.vendor ? props.vendor.phone : '',
+    password: ''
+  })
+
+  const { email, phone, name, password } = values
+
   const [error, errorSetter] = useState('')
   const [success, successSetter] = useState('')
   const [emailError, emailErrorSetter] = useState(null)
@@ -59,30 +68,61 @@ function Vendor(props) {
   }
 
   const onSubmitValidaiton = () => {
-    const emailError = !validateFunc(
-      { email: formRef.current['input-email'].value },
-      'email'
-    )
-    const passwordError = props.vendor
-      ? true
-      : !validateFunc(
-          { password: formRef.current['input-password'].value },
-          'password'
-        )
+    const emailErrors = !validateFunc({ email }, 'email')
+    // const passwordError = props.vendor
+    //   ? true
+    //   : !validateFunc({ password }, 'password')
 
-    emailErrorSetter(emailError)
-    passErrorSetter(passwordError)
-    return emailError && passwordError
+    emailErrorSetter(emailErrors)
+    // passErrorSetter(passwordError)
+    // return emailError && passwordError
+    return emailErrors
   }
+
   const clearFields = () => {
-    formRef.current.reset()
     emailErrorSetter('')
     passErrorSetter('')
+    setValues({
+      email: '',
+      name: '',
+      phone: '',
+      password: ''
+    })
   }
 
   const hideAlert = () => {
     errorSetter('')
     successSetter('')
+  }
+
+  const handleChange = e => {
+    setValues({ ...values, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (onSubmitValidaiton() && !mutateLoading) {
+      if (!props.vendor && !password) {
+        passErrorSetter(true)
+      }
+      mutate({
+        variables: {
+          vendorInput: {
+            _id: props.vendor ? props.vendor._id : '',
+            email,
+            name,
+            phone,
+            password
+          }
+        }
+      })
+      // Close the modal after 3 seconds by calling the parent's onClose callback
+      setTimeout(() => {
+        if (typeof props.onClose === 'function') {
+          props.onClose() // Close the modal
+        }
+      }, 4000)
+    }
   }
 
   const classes = useStyles()
@@ -96,13 +136,12 @@ function Vendor(props) {
       </Box>
       {/* <Box item lg={12} className={[globalClasses.flex, classes.form]}> */}
       <Box className={classes.form}>
-        <form ref={formRef}>
-          {/* <Box > */}
+        <form onSubmit={handleSubmit}>
           <Typography className={classes.labelText}>{t('Email')}</Typography>
           <Input
             style={{ marginTop: -1 }}
             id="input-email"
-            name="input-email"
+            name="email"
             placeholder={t('Email')}
             margin="0px"
             type="email"
@@ -115,74 +154,103 @@ function Vendor(props) {
                 ? globalClasses.inputSuccess
                 : ''
             ]}
-            defaultValue={email}
+            value={email}
+            onChange={handleChange}
             onBlur={event =>
               onBlur(emailErrorSetter, 'email', event.target.value)
             }
           />
-          {/* </Box> */}
-          {!props.vendor ? (
-            <>
-              <Typography className={classes.labelText}>
-                {t('Password')}
-              </Typography>
-              <Input
-                style={{ marginTop: -1 }}
-                placeholder={t('Password')}
-                disableUnderline
-                className={[
-                  globalClasses.input,
-                  passError === false
-                    ? globalClasses.inputError
-                    : passError === true
-                    ? globalClasses.inputSuccess
-                    : ''
-                ]}
-                id="input-password"
-                name="input-password"
-                type={showPassword ? 'text' : 'password'}
-                onBlur={event => {
-                  onBlur(passErrorSetter, 'password', event.target.value)
-                }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <Checkbox
-                      checked={showPassword}
-                      onChange={() => setShowPassword(!showPassword)}
-                      color="primary"
-                      icon={<VisibilityOffIcon />}
-                      checkedIcon={<VisibilityIcon />}
-                    />
-                  </InputAdornment>
-                }
-              />
-            </>
-          ) : null}
+          <Typography
+            sx={{ textTransform: 'capitalize' }}
+            className={classes.labelText}>
+            {t('phone')}
+          </Typography>
+          <Input
+            style={{ marginTop: 5 }}
+            id="input-phone"
+            name="phone"
+            placeholder={t('Phone')}
+            margin="0px"
+            type="text"
+            disableUnderline
+            className={[
+              globalClasses.input,
+              emailError === false
+                ? globalClasses.inputError
+                : emailError === true
+                ? globalClasses.inputSuccess
+                : ''
+            ]}
+            value={phone}
+            onChange={handleChange}
+            // onBlur={event =>
+            //   onBlur(emailErrorSetter, 'email', event.target.value)
+            // }
+          />
+          <Typography
+            sx={{ textTransform: 'capitalize' }}
+            className={classes.labelText}>
+            {t('name')}
+          </Typography>
+          <Input
+            style={{ marginTop: 5 }}
+            id="input-name"
+            name="name"
+            placeholder={t('Name')}
+            margin="0px"
+            type="text"
+            disableUnderline
+            className={[
+              globalClasses.input,
+              emailError === false
+                ? globalClasses.inputError
+                : emailError === true
+                ? globalClasses.inputSuccess
+                : ''
+            ]}
+            value={name}
+            onChange={handleChange}
+            // onBlur={event =>
+            //   onBlur(emailErrorSetter, 'email', event.target.value)
+            // }
+          />
+          <Typography className={classes.labelText}>{t('Password')}</Typography>
+          <Input
+            style={{ marginTop: -1 }}
+            placeholder={t('Password')}
+            disableUnderline
+            className={[
+              globalClasses.input,
+              passError === false
+                ? globalClasses.inputError
+                : passError === true
+                ? globalClasses.inputSuccess
+                : ''
+            ]}
+            id="input-password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+            type={showPassword ? 'text' : 'password'}
+            onBlur={event => {
+              onBlur(passErrorSetter, 'password', event.target.value)
+            }}
+            endAdornment={
+              <InputAdornment position="end">
+                <Checkbox
+                  checked={showPassword}
+                  onChange={() => setShowPassword(!showPassword)}
+                  color="primary"
+                  icon={<VisibilityOffIcon />}
+                  checkedIcon={<VisibilityIcon />}
+                />
+              </InputAdornment>
+            }
+          />
           <Button
             className={globalClasses.button}
             disabled={mutateLoading}
-            onClick={async e => {
-              e.preventDefault()
-              if (onSubmitValidaiton() && !mutateLoading) {
-                mutate({
-                  variables: {
-                    vendorInput: {
-                      _id: props.vendor ? props.vendor._id : '',
-                      email: formRef.current['input-email'].value.toLowerCase(),
-                      password: formRef.current['input-password']
-                        ? formRef.current['input-password'].value
-                        : ''
-                    }
-                  }
-                })
-                // Close the modal after 3 seconds by calling the parent's onClose callback
-                setTimeout(() => {
-                  if (typeof props.onClose === 'function') {
-                    props.onClose() // Close the modal
-                  }
-                }, 4000)
-              }
-            }}>
+            type="submit">
             {props.vendor ? t('Update') : t('Save')}
           </Button>
         </form>
