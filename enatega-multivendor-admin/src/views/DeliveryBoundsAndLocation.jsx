@@ -19,6 +19,8 @@ import {
   useTheme
 } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
+import { isAuthenticated } from '../helpers/user'
+import { Fragment } from 'react'
 
 const UPDATE_DELIVERY_BOUNDS_AND_LOCATION = gql`
   ${updateDeliveryBoundsAndLocation}
@@ -38,6 +40,8 @@ function DeliveryBoundsAndLocation() {
   const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker') // polygon
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const user = isAuthenticated() ? isAuthenticated() : null
+  console.log({ user })
 
   const [center, setCenter] = useState({ lat: 33.684422, lng: 73.047882 })
   const [marker, setMarker] = useState({ lat: 33.684422, lng: 73.047882 })
@@ -78,6 +82,8 @@ function DeliveryBoundsAndLocation() {
       onCompleted
     }
   )
+
+  console.log('here')
   // Call setPath with new edited path
   const onEdit = useCallback(() => {
     if (polygonRef.current) {
@@ -241,90 +247,94 @@ function DeliveryBoundsAndLocation() {
               )}
             </GoogleMap>
           </Box>
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '0 30px'
-            }}>
-            <Button
-              style={{
-                color: theme.palette.warning.dark,
-                backgroundColor: theme.palette.common.black
-              }}
-              className={globalClasses.button}
-              onClick={() => toggleDrawingMode('polygon')}>
-              {t('DrawDeliveryBounds')}
-            </Button>
-            <Button
-              style={{
-                color: theme.palette.warning.dark,
-                backgroundColor: theme.palette.common.black
-              }}
-              className={globalClasses.button}
-              onClick={() => toggleDrawingMode('marker')}>
-              {t('SetRestaurantLocation')}
-            </Button>
-          </Box>
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '0 30px'
-            }}>
-            <Button
-              style={{
-                color: theme.palette.common.black,
-                backgroundColor: theme.palette.grey[300],
-                marginRight: 20
-              }}
-              className={globalClasses.button}
-              onClick={removePolygon}>
-              {t('RemoveDeliveryBounds')}
-            </Button>
-            <Button
-              style={{
-                color: theme.palette.common.black,
-                backgroundColor: theme.palette.grey[300]
-              }}
-              className={globalClasses.button}
-              onClick={removeMarker}>
-              {t('RemoveRestaurantLocation')}
-            </Button>
-          </Box>
-          <Box mt={5} mb={3}>
-            <Button
-              disabled={loading}
-              className={globalClasses.button}
-              onClick={() => {
-                const result = validate()
-                if (result) {
-                  const location = {
-                    latitude: marker.lat,
-                    longitude: marker.lng
-                  }
-                  const bounds = transformPath(path)
-                  let variables = {
-                    id: restaurantId,
-                    location,
-                    boundType: 'Polygon',
-                    address: 'nil',
-                    location,
-                    bounds
-                  }
+          {user.userType === 'ADMIN' ? (
+            <Fragment>
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '0 30px'
+                }}>
+                <Button
+                  style={{
+                    color: theme.palette.warning.dark,
+                    backgroundColor: theme.palette.common.black
+                  }}
+                  className={globalClasses.button}
+                  onClick={() => toggleDrawingMode('polygon')}>
+                  {t('DrawDeliveryBounds')}
+                </Button>
+                <Button
+                  style={{
+                    color: theme.palette.warning.dark,
+                    backgroundColor: theme.palette.common.black
+                  }}
+                  className={globalClasses.button}
+                  onClick={() => toggleDrawingMode('marker')}>
+                  {t('SetRestaurantLocation')}
+                </Button>
+              </Box>
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '0 30px'
+                }}>
+                <Button
+                  style={{
+                    color: theme.palette.common.black,
+                    backgroundColor: theme.palette.grey[300],
+                    marginRight: 20
+                  }}
+                  className={globalClasses.button}
+                  onClick={removePolygon}>
+                  {t('RemoveDeliveryBounds')}
+                </Button>
+                <Button
+                  style={{
+                    color: theme.palette.common.black,
+                    backgroundColor: theme.palette.grey[300]
+                  }}
+                  className={globalClasses.button}
+                  onClick={removeMarker}>
+                  {t('RemoveRestaurantLocation')}
+                </Button>
+              </Box>
+              <Box mt={5} mb={3}>
+                <Button
+                  disabled={loading}
+                  className={globalClasses.button}
+                  onClick={() => {
+                    const result = validate()
+                    if (result) {
+                      const location = {
+                        latitude: marker.lat,
+                        longitude: marker.lng
+                      }
+                      const bounds = transformPath(path)
+                      let variables = {
+                        id: restaurantId,
+                        location,
+                        boundType: 'Polygon',
+                        address: 'nil',
+                        location,
+                        bounds
+                      }
 
-                  variables = {
-                    ...variables,
-                    circleBounds: {
-                      radius: 0.0 // Convert kilometers to meters
+                      variables = {
+                        ...variables,
+                        circleBounds: {
+                          radius: 0.0 // Convert kilometers to meters
+                        }
+                      }
+                      mutate({ variables })
                     }
-                  }
-                  mutate({ variables })
-                }
-              }}>
-              {t('Save')}
-            </Button>
-          </Box>
+                  }}>
+                  {t('Save')}
+                </Button>
+              </Box>
+            </Fragment>
+          ) : null}
           {successMessage && (
             <Alert
               className={globalClasses.alertSuccess}

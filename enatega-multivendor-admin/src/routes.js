@@ -333,15 +333,15 @@ var routes = [
     appearInSidebar: true,
     admin: false
   },
-  {
-    path: '/payment',
-    name: 'Payment',
-    icon: PaymentIcon,
-    component: Payment,
-    layout: '/admin',
-    appearInSidebar: true,
-    admin: false
-  },
+  // {
+  //   path: '/payment',
+  //   name: 'Payment',
+  //   icon: PaymentIcon,
+  //   component: Payment,
+  //   layout: '/admin',
+  //   appearInSidebar: true,
+  //   admin: false
+  // },
   {
     path: '/deliverybounds',
     name: 'Location',
@@ -368,15 +368,15 @@ var routes = [
     layout: '/auth',
     appearInSidebar: false
   },
-  {
-    path: '/dispatch/:id',
-    name: 'Dispatch',
-    icon: DeliveryIcon,
-    component: DispatchRestaurant,
-    layout: '/admin',
-    appearInSidebar: true,
-    admin: false
-  },
+  // {
+  //   path: '/dispatch/:id',
+  //   name: 'Dispatch',
+  //   icon: DeliveryIcon,
+  //   component: DispatchRestaurant,
+  //   layout: '/admin',
+  //   appearInSidebar: true,
+  //   admin: false
+  // },
   {
     path: '/vendors',
     name: 'Back to Admin',
