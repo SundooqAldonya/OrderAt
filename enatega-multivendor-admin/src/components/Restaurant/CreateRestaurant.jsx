@@ -38,6 +38,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { SHOP_TYPE } from '../../utils/enums'
 import Dropdown from '../Dropdown'
+import { useEffect } from 'react'
 
 const CREATE_RESTAURANT = gql`
   ${createRestaurant}
@@ -179,6 +180,12 @@ const CreateRestaurant = props => {
     setErrors('')
     setSuccess('')
   }
+
+  useEffect(() => {
+    if (shopCategories?.length) {
+      setCategory(shopCategories[0]._id)
+    }
+  }, [shopCategories])
 
   const { data: cuisines } = useQuery(CUISINES)
   const cuisinesInDropdown = useMemo(
