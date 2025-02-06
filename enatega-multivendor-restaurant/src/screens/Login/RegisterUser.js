@@ -132,7 +132,7 @@ const RegisterUser = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
         style={{
           flex: 1,
           flexDirection: 'column',
@@ -140,40 +140,36 @@ const RegisterUser = () => {
           zIndex: 99999999999999999
         }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-          <TouchableOpacity
-            style={{ marginRight: 10 }}
-            onPress={() => navigation.goBack()}>
-            <Ionicons
-              name="arrow-back-outline"
-              size={scale(25)}
-              color={'#000'}
-            />
-          </TouchableOpacity>
-        </View>
-        <Image
-          source={require('../../assets/orders.png')}
-          resizeMode="center"
-          style={{ height: scale(100), width: scale(200), alignSelf: 'center' }}
-        />
+        enabled> */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+        <TouchableOpacity
+          style={{ marginRight: 10 }}
+          onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" size={scale(25)} color={'#000'} />
+        </TouchableOpacity>
+      </View>
+      <Image
+        source={require('../../assets/orders.png')}
+        resizeMode="center"
+        style={{ height: scale(100), width: scale(200), alignSelf: 'center' }}
+      />
 
+      <View style={{ flex: 1 }}>
+        <View>
+          <TextDefault
+            H5
+            bold
+            style={{
+              marginHorizontal: 10,
+              textAlign: 'center',
+              marginHorizontal: scale(30)
+            }}
+            textColor={'#000'}>
+            {t('saveuserdetailsandcontinuetocompletetheorder')}
+          </TextDefault>
+        </View>
         <View style={{ flex: 1 }}>
-          <View>
-            <TextDefault
-              H5
-              bold
-              style={{
-                marginHorizontal: 10,
-                textAlign: 'center',
-                marginHorizontal: scale(30)
-              }}
-              textColor={'#000'}>
-              {t('saveuserdetailsandcontinuetocompletetheorder')}
-            </TextDefault>
-          </View>
-          <View style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <View>
               <TextInput
                 value={userData.phone}
@@ -241,7 +237,7 @@ const RegisterUser = () => {
                 </TouchableOpacity>
               </View>
               {isClicked ? (
-                <View style={{ flex: 1, marginBottom: 80 }}>
+                <View style={{ flex: 1, marginBottom: 20 }}>
                   <GooglePlacesAutocomplete
                     placeholder={t('searchforaplace')}
                     onPress={(data, details = null) => {
@@ -289,72 +285,73 @@ const RegisterUser = () => {
                 {t('saveandcontinue')}
               </TextDefault>
             </TouchableOpacity>
-          </View>
-        </View>
-        <Modal visible={areaIsVisible} transparent animationType="slide">
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => setAreaIsVisible(false)}
-            style={{
-              flex: 1,
-              backgroundColor: '#00000050',
-              marginBottom: -20
-            }}></TouchableOpacity>
-          <ScrollView
-            contentContainerStyle={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              gap: 20
-            }}
-            style={{
-              flex: 1,
-              backgroundColor: colors.green,
-              padding: 16,
-              height: 400,
-              elevation: 10,
-              borderTopRightRadius: 10,
-              borderTopLeftRadius: 10
-            }}>
-            {dataAreas?.areasByCity?.map(area => {
-              console.log({ area })
-              return (
-                <TouchableOpacity
-                  key={area._id}
-                  style={{
-                    backgroundColor:
-                      selectedArea?._id === area._id ? '#000' : '#fff',
-                    paddingVertical: 12,
-                    paddingHorizontal: 24,
-                    borderRadius: 8,
-                    elevation: 5,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 3
-                  }}
-                  onPress={() => {
-                    if (selectedArea?._id === area._id) {
-                      setSelectedArea(null)
-                    } else {
-                      setSelectedArea(area)
-                      setAreaIsVisible(false)
-                    }
-                  }}>
-                  <TextDefault
-                    style={{
-                      color: selectedArea?._id === area._id ? '#fff' : '#000',
-                      textTransform: 'capitalize'
-                    }}>
-                    {area.title}
-                  </TextDefault>
-                </TouchableOpacity>
-              )
-            })}
           </ScrollView>
-        </Modal>
-      </KeyboardAvoidingView>
+        </View>
+      </View>
+      <Modal visible={areaIsVisible} transparent animationType="slide">
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setAreaIsVisible(false)}
+          style={{
+            flex: 1,
+            backgroundColor: '#00000050',
+            marginBottom: -20
+          }}></TouchableOpacity>
+        <ScrollView
+          contentContainerStyle={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            gap: 20
+          }}
+          style={{
+            flex: 1,
+            backgroundColor: colors.green,
+            padding: 16,
+            height: 400,
+            elevation: 10,
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10
+          }}>
+          {dataAreas?.areasByCity?.map(area => {
+            console.log({ area })
+            return (
+              <TouchableOpacity
+                key={area._id}
+                style={{
+                  backgroundColor:
+                    selectedArea?._id === area._id ? '#000' : '#fff',
+                  paddingVertical: 12,
+                  paddingHorizontal: 24,
+                  borderRadius: 8,
+                  elevation: 5,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3
+                }}
+                onPress={() => {
+                  if (selectedArea?._id === area._id) {
+                    setSelectedArea(null)
+                  } else {
+                    setSelectedArea(area)
+                    setAreaIsVisible(false)
+                  }
+                }}>
+                <TextDefault
+                  style={{
+                    color: selectedArea?._id === area._id ? '#fff' : '#000',
+                    textTransform: 'capitalize'
+                  }}>
+                  {area.title}
+                </TextDefault>
+              </TouchableOpacity>
+            )
+          })}
+        </ScrollView>
+      </Modal>
+      {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   )
 }

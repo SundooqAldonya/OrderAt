@@ -858,7 +858,7 @@ const AddOrder = ({ t, refetchOrders }) => {
                 Address
               </Typography>
               <GooglePlacesAutocomplete
-                apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY" // Replace this with your Google API key
+                apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
                 onPlaceSelected={place => {
                   const selectedAddress = place.formatted_address || place.name
 
@@ -876,13 +876,13 @@ const AddOrder = ({ t, refetchOrders }) => {
                 }}
                 options={{
                   types: ['address'],
-                  componentRestrictions: { country: 'eg' }
+                  componentRestrictions: { country: 'eg' },
+                  language: 'ar'
                 }}
                 style={{
                   width: '100%',
                   padding: '16.5px 14px',
                   borderRadius: '4px',
-                  //  border: `1px solid ${validationErrors.address ? "red" : "#ccc"}`,
                   marginBottom: '1rem',
                   color: 'black',
                   fontSize: '16px',
