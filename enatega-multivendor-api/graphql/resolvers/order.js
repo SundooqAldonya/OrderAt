@@ -499,7 +499,7 @@ module.exports = {
           orderId: newOrderId,
           user: userId,
           resId: resId,
-          orderStatus: 'PENDING',
+          orderStatus: 'ACCEPTED',
           //orderAmount: orderAmount, // The original order amount (before additional fees)
           orderAmount: totalOrderAmount,
           deliveryAddress: address ? address : { ...area, details },
@@ -512,7 +512,11 @@ module.exports = {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           restaurant: restaurant._id, // Adding restaurant ID to order
-          zone: zone._id // Adding zone ID to order
+          zone: zone._id, // Adding zone ID to order
+          completionTime: new Date(
+            Date.now() + restaurant.deliveryTime * 60 * 1000
+          ),
+          preparationTime: new Date(Date.now() + 30 * 60 * 1000)
         })
 
         const savedOrder = await order.save()

@@ -35,8 +35,6 @@ const Orders = () => {
 
   const restaurantId = localStorage.getItem('restaurantId')
 
-  console.log({ orderStatus: order?.status })
-
   const {
     data,
     error: errorQuery,
@@ -92,9 +90,9 @@ const Orders = () => {
           rows={setRowsPerPage}
         />
         <Modal
-          style={{
-            width: '75%',
-            marginLeft: '13%',
+          sx={{
+            width: { sm: '100%', lg: '75%' }, // 90% width on extra-small screens, 75% on small and up
+            marginLeft: { sm: 0, lg: '13%' },
             overflowY: 'auto'
           }}
           open={detailsModal}

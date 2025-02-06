@@ -12,8 +12,18 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     boxShadow: `0px 0px 38px ${theme.palette.common.blackShade}`,
     textAlign: 'center',
-    marginLeft: '15%',
-    marginRight: '15%'
+    marginInline: '15%',
+    [theme.breakpoints.up('md')]: {
+      marginInline: '25%'
+    },
+    [theme.breakpoints.up('sm')]: {
+      marginInline: '5%'
+    },
+    [theme.breakpoints.up('xs')]: {
+      marginInline: '5%'
+    }
+    // marginLeft: '15%',
+    // marginRight: '15%'
     // paddingBottom: 5
   },
   bgPrimary: {

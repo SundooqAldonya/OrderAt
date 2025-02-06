@@ -323,7 +323,6 @@ const en = {
     REJECTED: 'REJECTED',
     shopType: 'Shop Type',
     UploadaLogo: 'Upload a logo',
-
     StatusUpdated: 'Status Updated!',
     'Status updated to {{status}}': 'Status updated to {{status}}',
     'Failed to update status!': 'Failed to update status!',
@@ -344,7 +343,10 @@ const en = {
     shop_categories: 'Shop Categories',
     shop_category_create: 'Create a shop category',
     shop_category_created: 'Shop category created successfully!',
-    email_or_phone: 'Email or phone'
+    email_or_phone: 'Email or phone',
+    delivery_address: 'Delivery address',
+    delivery_details: 'Delivery details',
+    no_items: 'No items ordered'
   }
 }
 

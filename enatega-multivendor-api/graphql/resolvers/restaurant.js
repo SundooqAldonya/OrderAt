@@ -958,9 +958,7 @@ module.exports = {
       return { token, restaurantId: restaurant.id, city: restaurant.city }
     },
     acceptOrder: async (_, args, { req }) => {
-      var newDateObj = await new Date(
-        Date.now() + (parseInt(args.time) || 0) * 60000
-      )
+      var newDateObj = new Date(Date.now() + (parseInt(args.time) || 0) * 60000)
       console.log('preparation', newDateObj)
       if (!req.restaurantId) {
         throw new Error('Unauthenticated!')

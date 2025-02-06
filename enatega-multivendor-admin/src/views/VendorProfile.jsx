@@ -661,11 +661,6 @@ const VendorProfile = () => {
                               ? data?.restaurant.shopCategory._id
                               : category
                           }
-                          // value={
-                          //   data?.restaurant.shopCategory._id
-                          //     ? data?.restaurant.shopCategory._id
-                          //     : category
-                          // }
                           className={[globalClasses.input]}
                           onChange={handleCategoryChange}>
                           {shopCategories?.map(item => (
