@@ -10,11 +10,10 @@ const FoodCard = ({
   variations,
   onClick,
   restaurant,
-  item,
+  food,
 }) => {
   const configuration = useContext(ConfigurationContext);
   const theme = useTheme();
-
   return (
     <Grid
       item
@@ -25,7 +24,7 @@ const FoodCard = ({
         minHeight: 300,
         cursor: "pointer",
       }}
-      onClick={() => onClick({ ...item, restaurant })}
+      onClick={() => onClick({ ...food, ...restaurant })}
     >
       <Box
         sx={{ width: "100%", height: 150, borderRadius: 2, overflow: "hidden" }}

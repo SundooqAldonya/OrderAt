@@ -37,7 +37,7 @@ function ItemCard(props) {
             <FoodCard
               key={item._id}
               {...item}
-              item={item}
+              food={item}
               onClick={props.onPress}
               restaurant={props.restaurant}
             />
