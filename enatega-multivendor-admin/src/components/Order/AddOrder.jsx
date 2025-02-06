@@ -110,7 +110,7 @@ const GET_USERS_BY_SEARCH = gql`
   }
 `
 
-const AddOrder = ({ t, onSubmit, onCancel }) => {
+const AddOrder = ({ t, refetchOrders }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [PhoneError, setPhoneError] = useState(false)
   const [searchTrigger, setSearchTrigger] = useState('')
@@ -135,19 +135,9 @@ const AddOrder = ({ t, onSubmit, onCancel }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [search] = useState('')
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
-    refetchQueries: [
-      {
-        query: GET_ORDERS,
-        variables: {
-          restaurant: restaurantId,
-          page: 1,
-          rows: rowsPerPage,
-          search
-        }
-      }
-    ],
     onCompleted: () => {
       setSuccess('Order Created Successfully!')
+      refetchOrders()
       setOrderMode(false)
     }
   })

@@ -29,7 +29,7 @@ const ORDER_PLACED = gql`
 
 const OrdersData = props => {
   const theme = useTheme()
-  const { t } = props
+  const { t, refetchOrders } = props
   const { selected, updateSelected } = props
   const [searchQuery, setSearchQuery] = useState('')
   const [isOrderFormVisible, setIsOrderFormVisible] = useState(false) // Track visibility of the form
@@ -213,8 +213,9 @@ const OrdersData = props => {
       {isOrderFormVisible && (
         <AddOrder
           t={t}
-          onSubmit={handleSubmitOrder}
-          onCancel={handleCloseOrderForm}
+          // onSubmit={handleSubmitOrder}
+          // onCancel={handleCloseOrderForm}
+          refetchOrders={refetchOrders}
         />
       )}
 

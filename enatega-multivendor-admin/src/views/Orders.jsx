@@ -39,7 +39,8 @@ const Orders = () => {
     data,
     error: errorQuery,
     loading: loadingQuery,
-    subscribeToMore
+    subscribeToMore,
+    refetch: refetchOrders
   } = useQuery(GET_ORDERS, {
     variables: {
       restaurant: restaurantId,
@@ -88,6 +89,7 @@ const Orders = () => {
           updateSelected={setOrder}
           page={setPage}
           rows={setRowsPerPage}
+          refetchOrders={refetchOrders}
         />
         <Modal
           sx={{
