@@ -330,7 +330,14 @@ const ar = {
     email_or_phone: 'البريد الاليكتروني او التليفون',
     delivery_address: 'العنوان',
     delivery_details: 'تفاصيل التوصيل',
-    no_items: 'لا يوجد منتجات مطلوبة'
+    no_items: 'لا يوجد منتجات مطلوبة',
+    rider_information: 'معلومات الكابتن',
+    ACCEPTED: 'تم القبول',
+    ASSIGNED: 'تم تحديد الكابتن',
+    PICKED: 'تم الاستلام',
+    DELIVERED: 'تم التسليم',
+    CANCELlED: 'تم الإلغاء',
+    PENDING: 'قيد الانتظار'
   }
 }
 

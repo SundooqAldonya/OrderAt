@@ -346,7 +346,14 @@ const en = {
     email_or_phone: 'Email or phone',
     delivery_address: 'Delivery address',
     delivery_details: 'Delivery details',
-    no_items: 'No items ordered'
+    no_items: 'No items ordered',
+    rider_information: 'Rider information',
+    ACCEPTED: 'Accepted',
+    ASSIGNED: 'Assigned',
+    PENDING: 'Pending',
+    PICKED: 'Picked',
+    DELIVERED: 'Delivered',
+    CANCELlED: 'Cancelled'
   }
 }
 

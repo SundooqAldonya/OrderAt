@@ -35,6 +35,8 @@ function Order({ order, t, modal, toggleModal }) {
   const [error, errorSetter] = useState('')
   const [success, successSetter] = useState('')
 
+  console.log({ orderRider: order?.rider })
+
   const onCompleted = ({ updateOrderStatus }) => {
     if (updateOrderStatus) {
       successSetter(t('OrderStatusUpdated'))
@@ -71,7 +73,7 @@ function Order({ order, t, modal, toggleModal }) {
       <Box className={classes.flexRow}>
         <Box item className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
-            {t('Order')} # {order.orderId}
+            {t('Order')} # {order.orderId} - {t(order.orderStatus)}
           </Typography>
         </Box>
       </Box>
@@ -122,6 +124,34 @@ function Order({ order, t, modal, toggleModal }) {
           {/* <Divider /> */}
         </Box>
       </Box>
+
+      {order?.rider ? (
+        <Box className={[classes.container]}>
+          <Typography className={classes.itemHeader} variant="h6">
+            {t('rider_information')}
+          </Typography>
+          <Box container className={classes.innerContainer}>
+            <Grid container mb={1} mt={2} spacing={2}>
+              <Grid className={classes.textBlack} item lg={9}>
+                {t('name')}:
+              </Grid>
+              <Grid className={[classes.textBlack]} item lg={3}>
+                {order?.rider?.name}
+              </Grid>
+            </Grid>
+            <Divider />
+            <Grid container mb={1} mt={2} spacing={2}>
+              <Grid className={classes.textBlack} item lg={9}>
+                {t('phone')}:
+              </Grid>
+              <Grid className={[classes.textBlack]} item lg={3}>
+                {order?.rider?.phone}
+              </Grid>
+            </Grid>
+            <Divider />
+          </Box>
+        </Box>
+      ) : null}
       <Box className={[classes.container]}>
         <Typography className={classes.itemHeader} variant="h6">
           {t('items')}

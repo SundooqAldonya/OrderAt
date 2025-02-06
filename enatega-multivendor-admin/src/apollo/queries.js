@@ -166,6 +166,7 @@ export const getOrdersByRestaurant = `query ordersByRestId($restaurant:String!,$
         _id
         name
         username
+        phone
         available
       }
     }
