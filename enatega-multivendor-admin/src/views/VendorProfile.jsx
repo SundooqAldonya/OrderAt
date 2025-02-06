@@ -657,7 +657,7 @@ const VendorProfile = () => {
                         <Select
                           style={{ margin: '0 0 0 0', padding: '0px 0px' }}
                           defaultValue={
-                            data?.restaurant.shopCategory._id
+                            data?.restaurant?.shopCategory?._id
                               ? data?.restaurant.shopCategory._id
                               : category
                           }
