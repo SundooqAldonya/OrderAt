@@ -172,6 +172,7 @@ const AddOrder = ({ t, refetchOrders }) => {
   })
 
   const globalClasses = useGlobalStyles()
+
   const handleSearchClick = () => {
     if (searchQuery.trim() == '') {
       setPhoneError(true)
@@ -179,6 +180,7 @@ const AddOrder = ({ t, refetchOrders }) => {
     } else {
       setPhoneError(false)
     }
+    console.log({ searchQuery })
     setSearchTrigger(searchQuery)
   }
 
@@ -215,11 +217,14 @@ const AddOrder = ({ t, refetchOrders }) => {
       setSelectedAddress(selectedCustomer.addresses[0].deliveryAddress)
     }
   }, [selectedCustomer])
+
   const [findOrCreateUser] = useMutation(FIND_OR_CREATE_USER)
+
   const handleAddCustomer = event => {
     event.preventDefault()
     setOpenModal(true)
   }
+
   const handleInputChange = event => {
     const {
       name,
@@ -339,14 +344,7 @@ const AddOrder = ({ t, refetchOrders }) => {
       // Display success message
       setSuccess('Customer Created Successfully!')
 
-      // Automatically close the modal after showing success
-      setTimeout(() => {
-        setOpenModal(false) // Close modal
-        setSuccess('') // Clear success message
-      }, 3000) // 3 seconds timeout
-
       const createdCustomer = data.findOrCreateUser
-      // here
       setSelectedCustomer(createdCustomer)
       setAddressFreeText(createdCustomer.addresses[0].details)
 
@@ -365,6 +363,16 @@ const AddOrder = ({ t, refetchOrders }) => {
       setCost(value)
     }
   }
+
+  useEffect(() => {
+    if (success) {
+      let timeout = setTimeout(() => {
+        setOpenModal(false)
+        setSuccess('')
+      }, 3000)
+      return () => clearTimeout(timeout)
+    }
+  }, [success])
 
   const handleSubmitOrder = async () => {
     try {
@@ -398,7 +406,7 @@ const AddOrder = ({ t, refetchOrders }) => {
           orderAmount
         }
       })
-
+      setSearchQuery('')
       // console.log('Order placement response:', data)
       // const orderId = data.CheckOutPlaceOrder.orderId
       // console.log('Order ID:', orderId)
@@ -503,7 +511,6 @@ const AddOrder = ({ t, refetchOrders }) => {
             }}
           />
         </Box>
-        {console.log({ selectedCustomer })}
         {selectedCustomer?.addresses?.length ? (
           <Box sx={{ mb: 2 }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
@@ -523,7 +530,6 @@ const AddOrder = ({ t, refetchOrders }) => {
                   '& .MuiOutlinedInput-root': { borderRadius: 2 }
                 }}>
                 {selectedCustomer?.addresses.map((address, index) => {
-                  console.log({ addressItem: address })
                   return (
                     <MenuItem
                       key={index}
