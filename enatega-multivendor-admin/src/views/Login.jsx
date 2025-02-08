@@ -154,28 +154,34 @@ const Login = props => {
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          minHeight: '100vh', // Full screen height
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
-          // height: '100%'
+          justifyContent: 'center',
+          px: { xs: 2, sm: 4, md: 6 } // Responsive padding
         }}>
+        {/* Left Side Image (Hidden on Small Screens) */}
         <Grid
           item
           lg={5}
           sm={12}
-          pt={5}
-          pb={5}
           sx={{
-            display: { xs: 'none', lg: 'flex' },
+            display: { xs: 'none', md: 'none', lg: 'flex' },
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            p: { lg: 5, md: 3 }
           }}>
           <img
             src={LoginPageIcon}
             alt="login img"
-            style={{ height: '50%', width: '70%' }}
+            style={{
+              maxHeight: '60%',
+              maxWidth: '80%'
+            }}
           />
         </Grid>
+
+        {/* Login Form */}
         <Grid
           item
           lg={7}
@@ -185,13 +191,21 @@ const Login = props => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            marginInlineStart: -10,
+            px: { xs: 2, sm: 4, md: 6 }, // Responsive horizontal padding
             width: '100%'
           }}>
-          <Typography sx={{ fontSize: 20, fontWeight: 'bold' }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 18, sm: 22, md: 24 },
+              fontWeight: 'bold',
+              textAlign: 'center'
+            }}>
             {t('enterYourDetailsBelow')}
           </Typography>
-          <Box container sx={{ width: 600 }} className={classes.container}>
+
+          <Box
+            sx={{ width: { xs: '100%', sm: '80%', md: 600 } }}
+            className={classes.container}>
             <Box className={classes.flexRow}>
               <Box item className={classes.heading}>
                 <Typography variant="h6" className={classes.text}>
@@ -203,22 +217,21 @@ const Login = props => {
             <Box className={classes.form}>
               <form ref={formRef} onSubmit={loginFunc}>
                 <Grid container>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  {/* Email Input */}
+                  <Grid item xs={12}>
                     <Typography className={classes.labelText}>
                       {t('email_or_phone')}
                     </Typography>
                     <Input
-                      style={{ marginTop: -1 }}
                       id="input-email"
                       name="email"
                       value={stateData.email}
                       onChange={handleChange}
-                      onBlur={event => {
-                        onBlur(event, 'email')
-                      }}
+                      onBlur={event => onBlur(event, 'email')}
                       placeholder={t('Email')}
                       type="text"
                       disableUnderline
+                      fullWidth
                       className={[
                         globalClasses.input,
                         emailError === false
@@ -229,22 +242,22 @@ const Login = props => {
                       ]}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+
+                  {/* Password Input */}
+                  <Grid item xs={12}>
                     <Typography className={classes.labelText}>
                       {t('Password')}
                     </Typography>
                     <Input
-                      style={{ marginTop: -1 }}
                       id="input-password"
                       name="password"
                       placeholder={t('Password')}
                       value={stateData.password}
                       type={showPassword ? 'text' : 'password'}
                       onChange={handleChange}
-                      onBlur={event => {
-                        onBlur(event, 'password')
-                      }}
+                      onBlur={event => onBlur(event, 'password')}
                       disableUnderline
+                      fullWidth
                       className={[
                         globalClasses.input,
                         passwordError === false
@@ -268,49 +281,63 @@ const Login = props => {
                   </Grid>
                 </Grid>
 
-                <Box
-                  pl={3}
-                  pr={4}
-                  pt={2}
+                {/* Remember Me & Forgot Password */}
+                <Grid
+                  container
                   sx={{
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    mt: 2
                   }}>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={<Checkbox defaultChecked />}
-                      label={t('RememberMe')}
-                    />
-                  </FormGroup>
-                  <Link
-                    href="/#/auth/reset"
+                  <Grid item xs={12} md={6}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox defaultChecked />}
+                        label={t('RememberMe')}
+                      />
+                    </FormGroup>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
                     sx={{
-                      textDecoration: 'none',
-                      color: 'primary.main',
-                      fontWeight: 'bold'
+                      display: 'flex',
+                      justifyContent: { xs: 'flex-start', md: 'flex-end' }
                     }}>
-                    {t('ForgotYourPassword')}
-                  </Link>
-                </Box>
+                    <Link
+                      href="/#/auth/reset"
+                      sx={{
+                        textDecoration: 'none',
+                        color: 'primary.main',
+                        fontWeight: 'bold'
+                      }}>
+                      {t('ForgotYourPassword')}
+                    </Link>
+                  </Grid>
+                </Grid>
 
-                <Box>
+                {/* Login Button */}
+                <Box mt={3}>
                   <Button type="submit" className={globalClasses.button100}>
                     {t('Login')}
                   </Button>
                 </Box>
               </form>
-              <Box mt={2}>
-                {error && (
+
+              {/* Error Message */}
+              {error && (
+                <Box mt={2}>
                   <Alert
                     className={globalClasses.alertError}
                     variant="filled"
                     severity="error">
                     {error}
                   </Alert>
-                )}
-              </Box>
+                </Box>
+              )}
             </Box>
           </Box>
         </Grid>

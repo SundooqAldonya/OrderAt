@@ -14,7 +14,7 @@ const useGlobalStyles = makeStyles(theme => ({
   },
   input: {
     backgroundColor: theme.palette.common.white,
-    margin: '20px 20px 0 0',
+    margin: '10px 20px 0 0',
     height: 40,
     width: '90%',
     fontSize: 15,
