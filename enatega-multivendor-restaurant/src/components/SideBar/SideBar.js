@@ -265,7 +265,7 @@ export default function SideBar() {
               {t('language')}
             </TextDefault>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() =>
@@ -328,7 +328,7 @@ export default function SideBar() {
               style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('aboutUs')}
             </TextDefault>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View style={styles.lowerContainer}>

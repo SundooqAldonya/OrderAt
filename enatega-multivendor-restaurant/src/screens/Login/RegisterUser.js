@@ -203,9 +203,10 @@ const RegisterUser = () => {
                 <TextDefault
                   style={{
                     color: '#000',
-                    textTransform: 'capitalize'
+                    textTransform: 'capitalize',
+                    marginHorizontal: 'auto'
                   }}>
-                  {selectedArea ? selectedArea.title : `Select area`}
+                  {selectedArea ? selectedArea.title : `${t('select_area')}`}
                 </TextDefault>
               </TouchableOpacity>
               <TextInput
@@ -215,7 +216,7 @@ const RegisterUser = () => {
                 }
                 multiline
                 numberOfLines={4}
-                placeholder={`${t('Address details')} ex: 2nd floor`}
+                placeholder={`${t('address_details')}`}
                 style={styles.inputs}
               />
               <View

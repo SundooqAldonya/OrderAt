@@ -198,7 +198,7 @@ const AddNewAddress = () => {
             marginBottom: 20
           }}
           textColor={'#000'}>
-          {t('Add new address')}
+          {t('add_new_address')}
         </TextDefault>
         <View style={{ flex: 1 }}>
           <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
@@ -223,9 +223,10 @@ const AddNewAddress = () => {
                   <TextDefault
                     style={{
                       color: '#000',
-                      textTransform: 'capitalize'
+                      textTransform: 'capitalize',
+                      marginHorizontal: 'auto'
                     }}>
-                    {selectedArea ? selectedArea.title : `Select area`}
+                    {selectedArea ? selectedArea.title : `${t('select_area')}`}
                   </TextDefault>
                 </TouchableOpacity>
               </View>
@@ -236,7 +237,7 @@ const AddNewAddress = () => {
                 }
                 multiline
                 numberOfLines={4}
-                placeholder={`${t('Address details')} ex: 2nd floor`}
+                placeholder={`${t('address_details')}`}
                 style={styles.inputs}
               />
               <View

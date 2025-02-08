@@ -88,5 +88,8 @@ export const ar = {
   DELIVERED: 'تم التسليم',
   CANCELlED: 'تم الإلغاء',
   PENDING: 'قيد الانتظار',
-  COD: 'نقدي'
+  COD: 'نقدي',
+  add_new_address: 'إضافة عنوان جديد',
+  select_area: 'أختر المنطقة',
+  address_details: 'تفاصيل العنوان مثال: عمارة 5 - الدور الثاني - شقة 2'
 }

@@ -87,5 +87,8 @@ export const en = {
   PICKED: 'Picked',
   DELIVERED: 'Delivered',
   CANCELlED: 'Cancelled',
-  COD: 'Cash'
+  COD: 'Cash',
+  add_new_address: 'Add new address',
+  select_area: 'Select Area',
+  address_details: 'Address details ex: 2nd floor'
 }
