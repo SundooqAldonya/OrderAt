@@ -248,7 +248,7 @@ module.exports = {
     restaurants: async _ => {
       console.log('restaurants')
       try {
-        const restaurants = await Restaurant.find()
+        const restaurants = await Restaurant.find().populate('owner')
         // return transformRestaurants(restaurants)
         return restaurants
       } catch (e) {

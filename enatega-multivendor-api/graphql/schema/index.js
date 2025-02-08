@@ -76,6 +76,8 @@ const typeDefs = gql`
   type Owner {
     _id: String
     email: String
+    name: String
+    phone: String
   }
 
   type OrdersWithCashOnDeliveryInfo {

@@ -100,7 +100,19 @@ const Vendors = props => {
       name: t('Email'),
       sortable: true,
       selector: 'email',
-      cell: row => <>{row.email}</>
+      cell: row => <>{row.email ? row.email : 'N/A'}</>
+    },
+    {
+      name: t('Name'),
+      sortable: true,
+      selector: 'name',
+      cell: row => <>{row.name ? row.name : 'N/A'}</>
+    },
+    {
+      name: t('Phone'),
+      sortable: true,
+      selector: 'phone',
+      cell: row => <>{row.phone ? row.phone : 'N/A'}</>
     },
     {
       name: t('TotalRestaurants'),

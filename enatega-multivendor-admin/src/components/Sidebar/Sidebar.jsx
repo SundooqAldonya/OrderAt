@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from 'react'
+import React, { Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
 // nodejs library to set properties for components
 
@@ -17,8 +17,9 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import routes from '../../routes'
 import useStyles from './styles'
-import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
+// import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import { useLocation } from 'react-router-dom'
+import Logo from '../../assets/logo.png'
 
 const drawerWidth = 240
 function Sidebar(props) {
@@ -30,7 +31,7 @@ function Sidebar(props) {
   const restaurantName = localStorage.getItem('restaurantName')
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const { window, t } = props
-  console.log('SideBar props are here: ', props)
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
@@ -40,12 +41,14 @@ function Sidebar(props) {
   const createLinks = (
     <Box className={classes.sidebarBox}>
       <Toolbar className={[classes.rowDisplay, classes.logo]}>
-        <Logo />
-        {/* <Typography
-          variant="h2"
-          className={[classes.headingText, classes.logoText]}>
-          Orderat
-        </Typography> */}
+        {/* <Logo /> */}
+        <Box
+          style={{
+            width: 300,
+            height: 100
+          }}>
+          <img src={Logo} style={{ width: '100%' }} />
+        </Box>
       </Toolbar>
       {restaurantName && restaurantImage ? (
         <Box className={[classes.rowDisplay, classes.restContainer]}>
@@ -67,13 +70,12 @@ function Sidebar(props) {
 
       <Box className={classes.sidebarList}>
         {routes.map((prop, key) => {
-          
           if (
             JSON.parse(localStorage.getItem('user-enatega')).userType ===
             'ADMIN'
           ) {
             return prop.appearInSidebar && !prop.admin ? (
-              <>
+              <Fragment key={key}>
                 {key === 14 ? (
                   <Typography className={classes.headingText} variant="h3">
                     {t('RESTAURANT')}
@@ -107,7 +109,7 @@ function Sidebar(props) {
                     {t(prop.name)}
                   </Typography>
                 </Link>
-              </>
+              </Fragment>
             ) : null
           } else {
             return prop.appearInSidebar &&

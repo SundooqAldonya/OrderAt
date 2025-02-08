@@ -111,7 +111,7 @@ const Restaurants = props => {
       style: {
         cursor: 'pointer'
       },
-      cell: row => <>{row.owner ? row.owner.email : null}</>
+      cell: row => <>{row.owner && row.owner.name ? row.owner.name : 'N/A'}</>
     },
     {
       name: t('Action'),

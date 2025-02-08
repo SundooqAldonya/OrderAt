@@ -523,6 +523,7 @@ export const restaurants = `query Restaurants{
     owner{
       _id
       email
+      name
     }
     shopType
   }

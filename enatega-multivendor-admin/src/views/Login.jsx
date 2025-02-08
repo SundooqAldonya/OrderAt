@@ -162,14 +162,13 @@ const Login = props => {
         <Grid
           item
           lg={5}
+          sm={12}
           pt={5}
           pb={5}
           sx={{
-            display: 'flex',
+            display: { xs: 'none', lg: 'flex' },
             alignItems: 'center',
             justifyContent: 'center'
-            // backgroundColor: 'green'
-            // marginTop: '5%'
           }}>
           <img
             src={LoginPageIcon}
@@ -180,12 +179,14 @@ const Login = props => {
         <Grid
           item
           lg={7}
-          ml={-10}
+          sm={12}
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            marginInlineStart: -10,
+            width: '100%'
           }}>
           <Typography sx={{ fontSize: 20, fontWeight: 'bold' }}>
             {t('enterYourDetailsBelow')}
@@ -201,69 +202,72 @@ const Login = props => {
 
             <Box className={classes.form}>
               <form ref={formRef} onSubmit={loginFunc}>
-                <Box>
-                  <Typography className={classes.labelText}>
-                    {t('email_or_phone')}
-                  </Typography>
-                  <Input
-                    style={{ marginTop: -1 }}
-                    id="input-email"
-                    name="email"
-                    value={stateData.email}
-                    onChange={handleChange}
-                    onBlur={event => {
-                      onBlur(event, 'email')
-                    }}
-                    placeholder={t('Email')}
-                    type="text"
-                    disableUnderline
-                    className={[
-                      globalClasses.input,
-                      emailError === false
-                        ? globalClasses.inputError
-                        : emailError === true
-                        ? globalClasses.inputSuccess
-                        : ''
-                    ]}
-                  />
-                </Box>
-                <Box>
-                  <Typography className={classes.labelText}>
-                    {t('Password')}
-                  </Typography>
-                  <Input
-                    style={{ marginTop: -1 }}
-                    id="input-password"
-                    name="password"
-                    placeholder={t('Password')}
-                    value={stateData.password}
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={handleChange}
-                    onBlur={event => {
-                      onBlur(event, 'password')
-                    }}
-                    disableUnderline
-                    className={[
-                      globalClasses.input,
-                      passwordError === false
-                        ? globalClasses.inputError
-                        : passwordError === true
-                        ? globalClasses.inputSuccess
-                        : ''
-                    ]}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <Checkbox
-                          checked={showPassword}
-                          onChange={() => setShowPassword(!showPassword)}
-                          color="primary"
-                          icon={<VisibilityOffIcon />}
-                          checkedIcon={<VisibilityIcon />}
-                        />
-                      </InputAdornment>
-                    }
-                  />
-                </Box>
+                <Grid container>
+                  <Grid item xs={12} sm={12} lg={12}>
+                    <Typography className={classes.labelText}>
+                      {t('email_or_phone')}
+                    </Typography>
+                    <Input
+                      style={{ marginTop: -1 }}
+                      id="input-email"
+                      name="email"
+                      value={stateData.email}
+                      onChange={handleChange}
+                      onBlur={event => {
+                        onBlur(event, 'email')
+                      }}
+                      placeholder={t('Email')}
+                      type="text"
+                      disableUnderline
+                      className={[
+                        globalClasses.input,
+                        emailError === false
+                          ? globalClasses.inputError
+                          : emailError === true
+                          ? globalClasses.inputSuccess
+                          : ''
+                      ]}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} lg={12}>
+                    <Typography className={classes.labelText}>
+                      {t('Password')}
+                    </Typography>
+                    <Input
+                      style={{ marginTop: -1 }}
+                      id="input-password"
+                      name="password"
+                      placeholder={t('Password')}
+                      value={stateData.password}
+                      type={showPassword ? 'text' : 'password'}
+                      onChange={handleChange}
+                      onBlur={event => {
+                        onBlur(event, 'password')
+                      }}
+                      disableUnderline
+                      className={[
+                        globalClasses.input,
+                        passwordError === false
+                          ? globalClasses.inputError
+                          : passwordError === true
+                          ? globalClasses.inputSuccess
+                          : ''
+                      ]}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <Checkbox
+                            checked={showPassword}
+                            onChange={() => setShowPassword(!showPassword)}
+                            color="primary"
+                            icon={<VisibilityOffIcon />}
+                            checkedIcon={<VisibilityIcon />}
+                          />
+                        </InputAdornment>
+                      }
+                    />
+                  </Grid>
+                </Grid>
+
                 <Box
                   pl={3}
                   pr={4}
@@ -290,12 +294,9 @@ const Login = props => {
                     {t('ForgotYourPassword')}
                   </Link>
                 </Box>
+
                 <Box>
-                  <Button
-                    type="submit"
-                    className={globalClasses.button100}
-                    // onClick={loginFunc}
-                  >
+                  <Button type="submit" className={globalClasses.button100}>
                     {t('Login')}
                   </Button>
                 </Box>
