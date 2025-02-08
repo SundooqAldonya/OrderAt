@@ -413,7 +413,7 @@ const AddOrder = ({ t, refetchOrders }) => {
   }
 
   const handleClearClick = () => {
-    setLocationAddress('')
+    // setLocationAddress('')
   }
 
   const handleLocationSelection = selectedLocation => {
