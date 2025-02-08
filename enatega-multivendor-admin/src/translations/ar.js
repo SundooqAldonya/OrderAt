@@ -337,7 +337,8 @@ const ar = {
     PICKED: 'تم الاستلام',
     DELIVERED: 'تم التسليم',
     CANCELlED: 'تم الإلغاء',
-    PENDING: 'قيد الانتظار'
+    PENDING: 'قيد الانتظار',
+    your_area: 'المنطقة'
   }
 }
 

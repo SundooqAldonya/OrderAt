@@ -8,7 +8,11 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Divider
+  Divider,
+  InputAdornment,
+  CircularProgress,
+  IconButton,
+  useTheme
 } from '@mui/material'
 import { validateFunc } from '../../constraints/constraints'
 import Button from '@mui/material/Button'
@@ -26,6 +30,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import { UPDATE_USER_ADDRESS, getOrdersByRestaurant } from '../../apollo'
 import AddNewAddress from './AddNewAddress'
+import PlacesAutocomplete from 'react-places-autocomplete'
+import ClearIcon from '@mui/icons-material/Clear'
+
+const GOOGLE_MAPS_KEY = 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY'
 
 const GET_ORDERS = gql`
   ${getOrdersByRestaurant}
@@ -141,6 +149,8 @@ const AddOrder = ({ t, refetchOrders }) => {
       setOrderMode(false)
     }
   })
+
+  const theme = useTheme()
 
   const { areas } = useContext(AreaContext)
   const [selectedArea, setSelectedArea] = useState('')
@@ -401,6 +411,35 @@ const AddOrder = ({ t, refetchOrders }) => {
       setSuccess(`Error: ${err.message}`)
     }
   }
+
+  const handleClearClick = () => {
+    setLocationAddress('')
+  }
+
+  const handleLocationSelection = selectedLocation => {
+    // setLocationAddress(selectedLocation)
+    const encodedLocation = encodeURIComponent(selectedLocation)
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${GOOGLE_MAPS_KEY}`
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'OK' && data.results.length > 0) {
+          const location = data.results[0].geometry.location
+          const latitude = location.lat
+          const longitude = location.lng
+          console.log({ longitude, latitude })
+          setLatitude(latitude)
+          setLongitude(longitude)
+          setNewCustomer(prevCustomer => ({
+            ...prevCustomer,
+            address: selectedLocation
+          }))
+        } else {
+          console.error('Location not found')
+        }
+      })
+  }
+
   if (orderMode) {
     return (
       <Box
@@ -857,7 +896,70 @@ const AddOrder = ({ t, refetchOrders }) => {
                 sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
                 Address
               </Typography>
-              <GooglePlacesAutocomplete
+              <PlacesAutocomplete
+                value={newCustomer.address}
+                onChange={text =>
+                  setNewCustomer({ ...newCustomer, address: text })
+                }
+                onSelect={handleLocationSelection}>
+                {({
+                  getInputProps,
+                  suggestions,
+                  getSuggestionItemProps,
+                  loading
+                }) => (
+                  <div>
+                    <TextField
+                      variant="outlined"
+                      label={t('your_area')}
+                      inputProps={{ style: { color: '#000' } }}
+                      fullWidth
+                      {...getInputProps()}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {loading ? (
+                              <CircularProgress size={24} />
+                            ) : (
+                              <>
+                                {newCustomer.address && (
+                                  <IconButton onClick={handleClearClick}>
+                                    <ClearIcon color="primary" />
+                                  </IconButton>
+                                )}
+                                {/* <IconButton size="large">
+                                <GpsFixedIcon color="primary" />
+                              </IconButton> */}
+                              </>
+                            )}
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <div>
+                      {loading ? <div>Loading...</div> : null}
+                      {suggestions.map(suggestion => {
+                        const style = {
+                          backgroundColor: suggestion.active
+                            ? theme.palette.primary.main
+                            : theme.palette.common.white,
+                          color: 'black',
+                          fontSize: '16px',
+                          padding: '10px 16px'
+                        }
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, { style })}
+                            key={suggestion.placeId}>
+                            {suggestion.description}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+              </PlacesAutocomplete>
+              {/* <GooglePlacesAutocomplete
                 apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
                 onPlaceSelected={place => {
                   const selectedAddress = place.formatted_address || place.name
@@ -875,7 +977,7 @@ const AddOrder = ({ t, refetchOrders }) => {
                   })
                 }}
                 options={{
-                  types: ['address'],
+                  types: '(regions)',
                   componentRestrictions: { country: 'eg' },
                   language: 'ar'
                 }}
@@ -895,7 +997,7 @@ const AddOrder = ({ t, refetchOrders }) => {
                   zIndex: 2000 // Ensures dropdown is above the modal
                 }}
                 className="custom-autocomplete-input"
-              />
+              /> */}
             </Box>
           )}
 

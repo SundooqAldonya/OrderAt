@@ -204,7 +204,7 @@ module.exports = {
           address['details'] = userInput?.address_free_text
           address['location'] = {
             type: 'Point',
-            coordinates: [address.latitude, address.longitude]
+            coordinates: [address.longitude, address.latitude]
           }
 
           delete address['latitude']

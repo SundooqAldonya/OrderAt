@@ -353,7 +353,8 @@ const en = {
     PENDING: 'Pending',
     PICKED: 'Picked',
     DELIVERED: 'Delivered',
-    CANCELlED: 'Cancelled'
+    CANCELlED: 'Cancelled',
+    your_area: 'Your area'
   }
 }
 

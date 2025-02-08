@@ -8,7 +8,11 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Divider
+  Divider,
+  InputAdornment,
+  CircularProgress,
+  IconButton,
+  useTheme
 } from '@mui/material'
 import { validateFunc } from '../../constraints/constraints'
 import Button from '@mui/material/Button'
@@ -26,31 +30,36 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import { UPDATE_USER_ADDRESS } from '../../apollo'
 import { useTranslation } from 'react-i18next'
+import PlacesAutocomplete from 'react-places-autocomplete'
+import ClearIcon from '@mui/icons-material/Clear'
 
-const GET_USERS_BY_SEARCH = gql`
-  query Users($search: String) {
-    search_users(search: $search) {
-      _id
-      name
-      email
-      phone
-      address_free_text
-      addresses {
-        _id
-        deliveryAddress
-        details
-        label
-        selected
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`
+// const GET_USERS_BY_SEARCH = gql`
+//   query Users($search: String) {
+//     search_users(search: $search) {
+//       _id
+//       name
+//       email
+//       phone
+//       address_free_text
+//       addresses {
+//         _id
+//         deliveryAddress
+//         details
+//         label
+//         selected
+//         createdAt
+//         updatedAt
+//       }
+//     }
+//   }
+// `
+
+const GOOGLE_MAPS_KEY = 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY'
 
 const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
   const { t } = useTranslation()
   const globalClasses = useGlobalStyles()
+  const theme = useTheme()
 
   const [openAddress, setOpenAddress] = useState(false)
   const [locationAddress, setLocationAddress] = useState('')
@@ -58,6 +67,7 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
   const [selectedArea, setSelectedArea] = useState('')
+  const [locationName, setLocationName] = useState('')
   const { areas } = useContext(AreaContext)
   console.log({ areas })
   const [updateUserAddress] = useMutation(UPDATE_USER_ADDRESS, {
@@ -112,6 +122,30 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
         }
       }
     })
+  }
+
+  const handleClearClick = () => {
+    setLocationAddress('')
+  }
+
+  const handleLocationSelection = selectedLocation => {
+    setLocationAddress(selectedLocation)
+    const encodedLocation = encodeURIComponent(selectedLocation)
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${GOOGLE_MAPS_KEY}`
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'OK' && data.results.length > 0) {
+          const location = data.results[0].geometry.location
+          const latitude = location.lat
+          const longitude = location.lng
+
+          setLatitude(latitude)
+          setLongitude(longitude)
+        } else {
+          console.error('Location not found')
+        }
+      })
   }
 
   return (
@@ -230,9 +264,71 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
               sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
               Address
             </Typography>
-            <GooglePlacesAutocomplete
-              apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY" // Replace this with your Google API key
+            <PlacesAutocomplete
+              value={locationAddress}
+              onChange={setLocationAddress}
+              onSelect={handleLocationSelection}>
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading
+              }) => (
+                <div>
+                  <TextField
+                    variant="outlined"
+                    label={t('your_area')}
+                    inputProps={{ style: { color: '#000' } }}
+                    fullWidth
+                    {...getInputProps()}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {loading ? (
+                            <CircularProgress size={24} />
+                          ) : (
+                            <>
+                              {locationAddress && (
+                                <IconButton onClick={handleClearClick}>
+                                  <ClearIcon color="primary" />
+                                </IconButton>
+                              )}
+                              {/* <IconButton size="large">
+                                <GpsFixedIcon color="primary" />
+                              </IconButton> */}
+                            </>
+                          )}
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                  <div>
+                    {loading ? <div>Loading...</div> : null}
+                    {suggestions.map(suggestion => {
+                      const style = {
+                        backgroundColor: suggestion.active
+                          ? theme.palette.primary.main
+                          : theme.palette.common.white,
+                        color: 'black',
+                        fontSize: '16px',
+                        padding: '10px 16px'
+                      }
+                      return (
+                        <div
+                          {...getSuggestionItemProps(suggestion, { style })}
+                          key={suggestion.placeId}>
+                          {suggestion.description}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </PlacesAutocomplete>
+            {/* <GooglePlacesAutocomplete
+              apiKey="AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
               onPlaceSelected={place => {
+                console.log({ place })
                 const selectedAddress = place.formatted_address || place.name
                 const newLatitude = place.geometry?.location?.lat() ?? null // Get latitude
                 const newLongitude = place.geometry?.location?.lng() ?? null // Get longitude
@@ -241,9 +337,10 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
                 setLongitude(newLongitude)
               }}
               options={{
-                types: ['address'],
+                types: '(regions)',
                 componentRestrictions: { country: 'eg' }
               }}
+              fetchDetails={true}
               style={{
                 width: '100%',
                 padding: '16.5px 14px',
@@ -261,7 +358,7 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
                 zIndex: 2000 // Ensures dropdown is above the modal
               }}
               className="custom-autocomplete-input"
-            />
+            /> */}
           </Box>
         )}
 

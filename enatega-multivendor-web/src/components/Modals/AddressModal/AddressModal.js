@@ -28,8 +28,6 @@ import ConfigurableValues from "../../../config/constants";
 
 import { useTranslation } from "react-i18next";
 
-
-
 function AddressModal({
   toggleModal,
   isVisible,
@@ -39,7 +37,6 @@ function AddressModal({
   setShowDetail,
 }) {
   console.log(settingRegionDetail);
-
 
   const { GOOGLE_MAPS_KEY } = ConfigurableValues();
 
@@ -53,12 +50,11 @@ function AddressModal({
   const { getCurrentLocation } = useLocation();
   const { latLngToGeoString } = useLocation();
   const [loading, setLoading] = useState();
+
   const handleLocationSelection = (selectedLocation) => {
     const apiKey = GOOGLE_MAPS_KEY;
-
     setLocationName(selectedLocation);
     const encodedLocation = encodeURIComponent(selectedLocation);
-
     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${apiKey}`;
     fetch(apiUrl)
       .then((response) => response.json())
