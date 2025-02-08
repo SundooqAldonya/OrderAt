@@ -46,17 +46,19 @@ module.exports = {
     },
     search_users: async (_, args, context) => {
       console.log({ argsSearchUser: { args } })
+      // here
       try {
         let query = {}
 
         if (args.search) {
-          // const searchRegex = { $regex: args.search, $options: 'i' } // Case-insensitive search
+          const searchRegex = args.search.includes('+2')
+            ? args.search
+            : `+2${args.search}`
+          // if (args.search.length < 11) {
+          //   throw new Error('digits_error')
+          // }
           query = {
-            $or: [
-              { name: args.search },
-              { email: args.search },
-              { phone: args.search }
-            ]
+            $or: [{ phone: searchRegex }]
           }
         }
 
