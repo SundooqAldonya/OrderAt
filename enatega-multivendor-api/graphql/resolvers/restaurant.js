@@ -960,7 +960,7 @@ module.exports = {
     acceptOrder: async (_, args, { req }) => {
       var newDateObj = new Date(Date.now() + (parseInt(args.time) || 0) * 60000)
       console.log('preparation', newDateObj)
-      if (!req.restaurantId) {
+      if (!req.isAuth) {
         throw new Error('Unauthenticated!')
       }
       try {
@@ -968,6 +968,46 @@ module.exports = {
         const status = order_status[1] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
         order.orderStatus = status
         const restaurant = await Restaurant.findById(req.restaurantId)
+        order.preparationTime = newDateObj
+        order.completionTime = new Date(
+          Date.now() + restaurant.deliveryTime * 60 * 1000
+        )
+        order.acceptedAt = new Date()
+        const result = await order.save()
+        const user = await User.findById(result.user)
+        const transformedOrder = await transformOrder(result)
+
+        console.log({ transformedOrder })
+        if (!transformedOrder.isPickedUp) {
+          publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
+          sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+        }
+        publishToUser(result.user.toString(), transformedOrder, 'update')
+        sendNotificationToCustomerWeb(
+          user.notificationTokenWeb,
+          `Order status: ${result.orderStatus}`,
+          `Order ID ${result.orderId}`
+        )
+        publishOrder(transformedOrder)
+        sendNotificationToUser(result.user.toString(), transformedOrder)
+        return transformedOrder
+      } catch (err) {
+        console.log('acceptOrder', err)
+        throw err
+      }
+    },
+    acceptOrderAdmin: async (_, args, { req }) => {
+      var newDateObj = new Date(Date.now() + (parseInt(args.time) || 0) * 60000)
+      console.log('preparation', newDateObj)
+      console.log({ acceptOrderAdminArgs: args })
+      if (!req.isAuth) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const order = await Order.findById(args._id)
+        const status = order_status[1] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
+        order.orderStatus = status
+        const restaurant = await Restaurant.findById(args.restaurantId)
         order.preparationTime = newDateObj
         order.completionTime = new Date(
           Date.now() + restaurant.deliveryTime * 60 * 1000

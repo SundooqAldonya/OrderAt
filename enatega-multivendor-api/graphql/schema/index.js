@@ -1531,6 +1531,7 @@ const typeDefs = gql`
     editOrder(_id: String!, orderInput: [OrderInput!]!): Order!
     reviewOrder(reviewInput: ReviewInput!): Order!
     acceptOrder(_id: String!, time: String): Order!
+    acceptOrderAdmin(_id: String!, restaurantId: String!, time: String): Order!
     orderPickedUp(_id: String!): Order!
     cancelOrder(_id: String!, reason: String!): Order!
     likeFood(foodId: String!): Food!

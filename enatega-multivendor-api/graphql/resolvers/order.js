@@ -499,7 +499,7 @@ module.exports = {
           orderId: newOrderId,
           user: userId,
           resId: resId,
-          orderStatus: 'ACCEPTED',
+          orderStatus: 'PENDING',
           //orderAmount: orderAmount, // The original order amount (before additional fees)
           orderAmount: totalOrderAmount,
           deliveryAddress: address ? address : { ...area, details },
@@ -527,7 +527,7 @@ module.exports = {
           orderId: savedOrder.orderId,
           resId: savedOrder.resId,
           paidAmount: 0,
-          orderStatus: 'PENDING',
+          orderStatus: savedOrder.orderStatus,
           paymentMethod: 'COD',
           isPickedUp: false,
           taxationAmount: 0,

@@ -166,7 +166,7 @@ module.exports = {
         //   ]
         // })
 
-        console.log({ undeliveredOrders })
+        // console.log({ undeliveredOrders })
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',

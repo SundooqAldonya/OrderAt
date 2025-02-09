@@ -32,6 +32,7 @@ import { UPDATE_USER_ADDRESS, getOrdersByRestaurant } from '../../apollo'
 import AddNewAddress from './AddNewAddress'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import ClearIcon from '@mui/icons-material/Clear'
+import useAcceptOrder from '../../context/useAcceptOrder'
 
 const GOOGLE_MAPS_KEY = 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY'
 
@@ -142,11 +143,14 @@ const AddOrder = ({ t, refetchOrders }) => {
   const restaurantId = localStorage.getItem('restaurantId')
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [search] = useState('')
+  const { acceptOrder } = useAcceptOrder()
+  const [selectedTime, setSelectedTime] = useState(new Date())
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
-    onCompleted: () => {
+    onCompleted: (data) => {
       setSuccess('Order Created Successfully!')
       refetchOrders()
       setOrderMode(false)
+      acceptOrder(data.CheckOutPlaceOrder._id, restaurantId, selectedTime.toString())
     }
   })
 
@@ -705,13 +709,13 @@ const AddOrder = ({ t, refetchOrders }) => {
             {error.message.includes(
               'No users found matching the search criteria'
             ) && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddCustomer}>
-                {t('Add Customer')}
-              </Button>
-            )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddCustomer}>
+                  {t('Add Customer')}
+                </Button>
+              )}
           </>
         )}
       </div>
