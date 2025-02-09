@@ -129,7 +129,7 @@ const sendNotificationMobile = async messages => {
   }
   const receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds)
   // eslint-disable-next-line no-unused-expressions
-  ;async () => {
+  const generateFunc = async () => {
     // Like sending notifications, there are different strategies you could use
     // to retrieve batches of receipts from the Expo service.
     for (const chunk of receiptIdChunks) {
@@ -137,7 +137,8 @@ const sendNotificationMobile = async messages => {
         const receipt = await expo.getPushNotificationReceiptsAsync(chunk)
         // The receipts specify whether Apple or Google successfully received the
         // notification and information about an error, if one occurred.
-        console.log(receipt)
+        // console.log({ receipt })
+        // console.log(receipt)
         if (receipt.status === 'ok') {
           // eslint-disable-next-line no-undef
           return response.send({ message: 'working' })
@@ -157,6 +158,7 @@ const sendNotificationMobile = async messages => {
       }
     }
   }
+  generateFunc()
 }
 
 const toRad = value => {
