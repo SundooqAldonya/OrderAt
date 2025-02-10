@@ -311,8 +311,13 @@ module.exports = {
       }
       try {
         const rider = await Rider.findById(userId)
-        rider.isActive = !rider.isActive
-        rider.available = !rider.available
+        if (rider.isActive) {
+          rider.isActive = false
+          rider.available = false
+        } else {
+          rider.isActive = true
+          rider.available = true
+        }
         const result = await rider.save()
         console.log({ result })
         return transformRider(result)
