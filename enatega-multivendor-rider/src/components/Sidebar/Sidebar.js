@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Platform, Switch, ImageBackground } from 'react-native'
 import NavItem from './NavItem/NavItem'
 import Profile from './Profile/Profile'
@@ -9,11 +9,15 @@ const rider = require('../../assets/rider.png')
 import useSidebar from './useSidebar'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
+import UserContext from '../../context/user'
 
 function SidebBar() {
   const navigation = useNavigation()
   const { t, i18n } = useTranslation()
+  const {
 
+    dataProfile
+  } = useContext(UserContext)
   const {
     logout,
     isEnabled,
@@ -59,8 +63,9 @@ function SidebBar() {
               <Switch
                 trackColor={{
                   false: colors.fontSecondColor,
-                  true: colors.primary
+                  true: dataProfile?.rider?.isActive ? colors.primary : 'gray'
                 }}
+                disabled={!dataProfile?.rider?.isActive}
                 thumbColor={isEnabled ? colors.headerBackground : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}

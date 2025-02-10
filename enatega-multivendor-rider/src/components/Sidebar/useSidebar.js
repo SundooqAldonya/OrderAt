@@ -71,11 +71,13 @@ const useSidebar = () => {
   console.log({ isMuted })
 
   const toggleSwitch = () => {
-    mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
-    if (isEnabled) {
-      setIsMuted(true)
+    if (dataProfile?.rider?.isActive) {
+      mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
+      if (isEnabled) {
+        setIsMuted(true)
+      }
+      setIsEnabled(previousState => !previousState)
     }
-    setIsEnabled(previousState => !previousState)
   }
 
   const toggleMute = async () => {

@@ -22,11 +22,11 @@ export const SoundContextProvider = ({ children }) => {
       console.log({ unseenOrderIds })
       // const shouldPlaySound = assignedOrders.some(order => order?.isRiderRinged)
       // console.log({ shouldPlaySound })
-      if (unseenOrderIds.length) {
-        playSound()
-      } else {
-        stopSound()
-      }
+      // if (unseenOrderIds.length) {
+      //   playSound()
+      // } else {
+      //   stopSound()
+      // }
     }
   }, [assignedOrders])
 

@@ -45,6 +45,8 @@ export const UserProvider = props => {
     onError: error1
   })
 
+  console.log({ dataProfile })
+
   const {
     client,
     loading: loadingAssigned,

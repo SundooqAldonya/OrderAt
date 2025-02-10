@@ -52,7 +52,7 @@ const Order = ({ order, orderAmount }) => {
           flexDirection: isArabic ? 'row-reverse' : 'row'
         }}>
         {order?.orderStatus === 'ACCEPTED' ||
-        order?.orderStatus === 'PICKED' ? (
+          order?.orderStatus === 'PICKED' ? (
           <View
             style={[
               styles.badge,
@@ -109,7 +109,7 @@ const Order = ({ order, orderAmount }) => {
               </View>
               <View style={styles.row}>
                 <TextDefault style={styles.rowItem2} bolder H5>
-                  {order?.paymentMethod}
+                  {t(order?.paymentMethod)}
                 </TextDefault>
                 <TextDefault
                   style={{ ...styles.rowItem1, textAlign: 'right' }}

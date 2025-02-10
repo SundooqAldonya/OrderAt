@@ -23,6 +23,7 @@ const { height, width } = Dimensions.get('window')
 const NewOrders = ({ navigation }) => {
   const { t } = useTranslation()
   const [orders, setOrders] = useState([])
+  const [riderIsActive, setRiderIsActive] = useState(false);
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
   const {
@@ -30,7 +31,8 @@ const NewOrders = ({ navigation }) => {
     errorAssigned,
     assignedOrders,
     refetchAssigned,
-    networkStatusAssigned
+    networkStatusAssigned,
+    dataProfile
   } = useContext(UserContext)
 
   const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
@@ -52,6 +54,16 @@ const NewOrders = ({ navigation }) => {
     }
   }, [assignedOrders])
 
+
+  useEffect(() => {
+    if (dataProfile) {
+      setRiderIsActive(dataProfile?.rider?.isActive)
+    }
+  }, [dataProfile, riderIsActive])
+
+  console.log({ riderIsActive })
+
+
   const noNewOrders = orders.length === 0
   useEffect(() => {
     // Trigger refetch when orders length changes
@@ -65,7 +77,7 @@ const NewOrders = ({ navigation }) => {
     <ScreenBackground>
       <View style={styles.innerContainer}>
         <View>
-          <Tabs navigation={navigation} />
+          <Tabs navigation={navigation} riderIsActive={riderIsActive} />
         </View>
         {loadingAssigned && (
           <View style={styles.margin500}>
@@ -77,7 +89,20 @@ const NewOrders = ({ navigation }) => {
             <TextError text={t('errorText')} />
           </View>
         )}
-        {isEnabled ? (
+        {!riderIsActive ? (
+          <View>
+            <TextDefault bold
+              center
+              H3
+              textColor={colors.fontSecondColor}
+              style={{
+                marginTop: 100
+              }}>{t('inactive_screen_message')}</TextDefault>
+            <TouchableOpacity style={styles.btn} onPress={() => logout()}>
+              <TextDefault style={styles.btnText}>{t('titleLogout')}</TextDefault>
+            </TouchableOpacity>
+          </View>
+        ) : riderIsActive && isEnabled ? (
           <FlatList
             ListEmptyComponent={() => {
               return (
@@ -135,18 +160,19 @@ const NewOrders = ({ navigation }) => {
               />
             )}
           />
-        ) : (
-          <TextDefault
-            bold
-            center
-            H3
-            textColor={colors.fontSecondColor}
-            style={{
-              marginTop: 100
-            }}>
-            {t('turnOnAvailability')}
-          </TextDefault>
-        )}
+        ) :
+          (
+            <TextDefault
+              bold
+              center
+              H3
+              textColor={colors.fontSecondColor}
+              style={{
+                marginTop: 100
+              }}>
+              {t('turnOnAvailability')}
+            </TextDefault>
+          )}
       </View>
     </ScreenBackground>
   )

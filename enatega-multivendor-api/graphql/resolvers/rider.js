@@ -140,14 +140,17 @@ module.exports = {
       try {
         const rider = await Rider.findById(req.userId)
         if (!rider) throw new Error('Rider does not exist')
-        const date = new Date()
-        date.setDate(date.getDate() - 1)
+        // const date = new Date()
+        // date.setDate(date.getDate() - 1)
+        const date = new Date();
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(date.getDate() - 2);
+        twoDaysAgo.setHours(0, 0, 0, 0);
         const assignedOrders = await Order.find({
           rider: req.userId,
           createdAt: {
-            $gte: `${date.getFullYear()}-${
-              date.getMonth() + 1
-            }-${date.getDate()}`
+            $gte: twoDaysAgo,
+            $lte: date
           },
           $or: [
             { orderStatus: 'ACCEPTED' },
@@ -172,9 +175,8 @@ module.exports = {
           orderStatus: 'ACCEPTED',
           rider: null,
           createdAt: {
-            $gte: `${date.getFullYear()}-${
-              date.getMonth() + 1
-            }-${date.getDate()}`
+            $gte: `${date.getFullYear()}-${date.getMonth() + 1
+              }-${date.getDate()}`
           }
         }).sort({ createdAt: -1 })
         // const orders =
@@ -292,7 +294,9 @@ module.exports = {
       }
       try {
         const rider = await Rider.findById(userId)
-        rider.available = !rider.available
+        if (rider.isActive) {
+          rider.available = !rider.available
+        }
         const result = await rider.save()
         return transformRider(result)
       } catch (err) {
@@ -308,6 +312,7 @@ module.exports = {
       try {
         const rider = await Rider.findById(userId)
         rider.isActive = !rider.isActive
+        rider.available = !rider.available
         const result = await rider.save()
         console.log({ result })
         return transformRider(result)

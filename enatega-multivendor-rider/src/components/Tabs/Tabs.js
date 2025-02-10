@@ -8,6 +8,7 @@ import UserContext from '../../context/user'
 import { useTranslation } from 'react-i18next'
 
 const Tabs = props => {
+  const { riderIsActive } = props
   const { t, i18n } = useTranslation()
   const { active } = useContext(TabsContext)
   const { assignedOrders } = useContext(UserContext)
@@ -44,7 +45,7 @@ const Tabs = props => {
   return (
     <View
       style={[styles.container, isArabic && { flexDirection: 'row-reverse' }]}>
-      {active === 'MyOrders' && (
+      {riderIsActive && active === 'MyOrders' && (
         <View style={styles.badge}>
           <TextDefault textColor={colors.black}>
             {ordersLength > 0 ? ordersLength : 0}
@@ -82,7 +83,7 @@ const Tabs = props => {
           textColor={active === 'MyOrders' ? colors.black : colors.white}>
           {t('myorders')}
         </TextDefault>
-        {active === 'NewOrders' && (
+        {riderIsActive && active === 'NewOrders' && (
           <View style={styles.rightBadge}>
             <TextDefault textColor={colors.black}>
               {myOrdersLength > 0 ? myOrdersLength : 0}

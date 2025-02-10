@@ -213,5 +213,9 @@ export const ar = {
   customer_name: 'الاسم',
   delivery_section: 'معلومات التوصيل',
   delivery_label: 'المنطقة',
-  delivery_details: 'تفاصيل العنوان'
+  delivery_details: 'تفاصيل العنوان',
+  notMuted: 'غير صامت',
+  turnOnAvailability: 'قم بتغير الحاله لمتاح',
+  COD: 'نقدي',
+  inactive_screen_message: 'قم بالتواصل مع اوردرات'
 }

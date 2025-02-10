@@ -35,6 +35,19 @@ const styles = {
   },
   margin500: {
     marginTop: -500
+  },
+  btn: {
+    backgroundColor: '#000',
+    width: 300,
+    height: 50,
+    marginVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    marginHorizontal: 'auto'
+  },
+  btnText: {
+    color: '#fff',
   }
 }
 

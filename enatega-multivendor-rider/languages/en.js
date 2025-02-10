@@ -216,5 +216,9 @@ export const en = {
   customer_name: 'Name',
   delivery_section: 'Delivery Details',
   delivery_label: 'Delivery Label',
-  delivery_details: 'Details'
+  delivery_details: 'Details',
+  notMuted: 'Not muted',
+  turnOnAvailability: 'Turn on Availability',
+  COD: 'Cash',
+  inactive_screen_message: 'Please contact Orderat support'
 }

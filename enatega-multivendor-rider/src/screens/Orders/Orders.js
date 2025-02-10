@@ -18,6 +18,8 @@ import { useTranslation } from 'react-i18next'
 const { height, width } = Dimensions.get('window')
 const Orders = ({ navigation }) => {
   const { t } = useTranslation()
+  const [riderIsActive, setRiderIsActive] = useState(false);
+
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
   const {
@@ -37,13 +39,13 @@ const Orders = ({ navigation }) => {
       setOrders(
         assignedOrders.length > 0
           ? assignedOrders.filter(
-              o =>
-                ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
-                  o?.orderStatus
-                ) &&
-                o?.rider &&
-                dataProfile?.rider?._id === o?.rider?._id
-            )
+            o =>
+              ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
+                o?.orderStatus
+              ) &&
+              o?.rider &&
+              dataProfile?.rider?._id === o?.rider?._id
+          )
           : []
       )
     }
@@ -53,76 +55,97 @@ const Orders = ({ navigation }) => {
     setActive('MyOrders')
   })
 
+
+  useEffect(() => {
+    if (dataProfile) {
+      setRiderIsActive(dataProfile?.rider?.isActive)
+    }
+  }, [dataProfile, riderIsActive])
+
+  console.log({ riderIsActive })
+
   return (
     <ScreenBackground>
       <View style={styles.innerContainer}>
         <View>
-          <Tabs navigation={navigation} />
+          <Tabs navigation={navigation} riderIsActive={riderIsActive} />
         </View>
-        {loadingProfile || loadingAssigned ? (
-          <View style={styles.margin500}>
-            <Spinner />
-          </View>
-        ) : errorProfile || errorAssigned ? (
-          <View style={styles.margin500}>
-            <TextError text={t('errorText')} />
-          </View>
-        ) : orders.length > 0 ? (
-          <FlatList
-            style={styles.ordersContainer}
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-            keyExtractor={item => item._id}
-            data={orders.sort((a, b) => {
-              const order = ['DELIVERED', 'PICKED', 'ACCEPTED', 'ASSIGNED']
-              if (
-                a.orderStatus === b.orderStatus &&
-                order.includes(a.orderStatus)
-              ) {
-                return a.orderStatus - b.orderStatus
-              } else {
-                return (
-                  order.indexOf(b.orderStatus) - order.indexOf(a.orderStatus)
-                )
-              }
-            })}
-            showsVerticalScrollIndicator={false}
-            refreshing={networkStatusAssigned === 4}
-            onRefresh={refetchAssigned}
-            renderItem={({ item }) => (
-              <Order
-                order={item}
-                alwaysShow={true}
-                key={item._id}
-                id={item._id}
-                orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
-              />
-            )}
-          />
-        ) : (
-          <View
+        {!riderIsActive ? (<View>
+          <TextDefault bold
+            center
+            H3
+            textColor={colors.fontSecondColor}
             style={{
-              minHeight:
-                height > 670 ? height - height * 0.5 : height - height * 0.6,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <LottieView
-              style={{
-                width: width - 100,
-                height: 250
+              marginTop: 100
+            }}>{t('inactive_screen_message')}</TextDefault>
+          <TouchableOpacity style={styles.btn} onPress={() => logout()}>
+            <TextDefault style={styles.btnText}>{t('titleLogout')}</TextDefault>
+          </TouchableOpacity>
+        </View>) :
+          riderIsActive && loadingProfile || loadingAssigned ? (
+            <View style={styles.margin500}>
+              <Spinner />
+            </View>
+          ) : errorProfile || errorAssigned ? (
+            <View style={styles.margin500}>
+              <TextError text={t('errorText')} />
+            </View>
+          ) : orders.length > 0 ? (
+            <FlatList
+              style={styles.ordersContainer}
+              contentContainerStyle={{
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
-              source={require('../../assets/loader.json')}
-              autoPlay
-              loop
+              keyExtractor={item => item._id}
+              data={orders.sort((a, b) => {
+                const order = ['DELIVERED', 'PICKED', 'ACCEPTED', 'ASSIGNED']
+                if (
+                  a.orderStatus === b.orderStatus &&
+                  order.includes(a.orderStatus)
+                ) {
+                  return a.orderStatus - b.orderStatus
+                } else {
+                  return (
+                    order.indexOf(b.orderStatus) - order.indexOf(a.orderStatus)
+                  )
+                }
+              })}
+              showsVerticalScrollIndicator={false}
+              refreshing={networkStatusAssigned === 4}
+              onRefresh={refetchAssigned}
+              renderItem={({ item }) => (
+                <Order
+                  order={item}
+                  alwaysShow={true}
+                  key={item._id}
+                  id={item._id}
+                  orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
+                />
+              )}
             />
-            <TextDefault bolder center H3 textColor={colors.fontSecondColor}>
-              {t('notAnyOrdersYet')}
-            </TextDefault>
-          </View>
-        )}
+          ) : (
+            <View
+              style={{
+                minHeight:
+                  height > 670 ? height - height * 0.5 : height - height * 0.6,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+              <LottieView
+                style={{
+                  width: width - 100,
+                  height: 250
+                }}
+                source={require('../../assets/loader.json')}
+                autoPlay
+                loop
+              />
+              <TextDefault bolder center H3 textColor={colors.fontSecondColor}>
+                {t('notAnyOrdersYet')}
+              </TextDefault>
+            </View>
+          )}
       </View>
     </ScreenBackground>
   )

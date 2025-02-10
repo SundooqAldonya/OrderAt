@@ -33,6 +33,7 @@ import { riderOrders } from '../apollo/queries'
 import { useTranslation } from 'react-i18next'
 import * as Sentry from '@sentry/react-native'
 import ConfigurationContext from '../context/configuration'
+import { useUserContext } from '../context/user'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -112,7 +113,9 @@ function LocationStack() {
 
 function Main() {
   const { locationPermission } = useLocationContext()
+  const { dataProfile } = useUserContext()
   const client = useApolloClient()
+
   // const lastNotificationResponse = Notifications.useLastNotificationResponse()
 
   // const handleNotification = useCallback(async response => {

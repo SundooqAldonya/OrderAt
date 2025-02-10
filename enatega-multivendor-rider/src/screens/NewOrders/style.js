@@ -49,6 +49,19 @@ const styles = {
     height: 2,
     backgroundColor: '#000',
     width: '100%'
+  },
+  btn: {
+    backgroundColor: '#000',
+    width: 300,
+    height: 50,
+    marginVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    marginHorizontal: 'auto'
+  },
+  btnText: {
+    color: '#fff',
   }
 }
 
