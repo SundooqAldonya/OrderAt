@@ -1,7 +1,7 @@
 export const ar = {
   username: 'الاسم',
   titleLogout: 'تسجيل خروج',
-  status: 'حالة',
+  status: 'الحالة',
   notifications: 'إشعارات',
   online: 'متصل',
   closed: 'مغلق',

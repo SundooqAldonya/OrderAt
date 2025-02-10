@@ -160,8 +160,8 @@ const Orders = props => {
                   active === 0
                     ? colors.green
                     : active === 1
-                    ? colors.white
-                    : colors.white
+                      ? colors.white
+                      : colors.white
               }
             ]}>
             <TabBars
@@ -203,116 +203,116 @@ const Orders = props => {
                 <View style={{ marginBottom: 30 }}>
                   {active === 0 && activeOrders > 0
                     ? data &&
-                      data.restaurantOrders
-                        .filter(order => order.orderStatus === 'PENDING')
-                        .map((order, index) => {
-                          return (
-                            <HomeOrderDetails
-                              key={index}
-                              activeBar={active}
-                              setActiveBar={setActive}
-                              navigation={props.navigation}
-                              order={order}
-                            />
-                          )
-                        })
-                    : active === 0 && (
-                        <View
-                          style={{
-                            minHeight: height - height * 0.45,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                          <TextDefault H2 bold>
-                            {t('unReadOrders')}
-                          </TextDefault>
-                          <LottieView
-                            style={{
-                              width: width - 100,
-                              height: 250
-                            }}
-                            source={require('../../assets/loader.json')}
-                            autoPlay
-                            loop
+                    data.restaurantOrders
+                      .filter(order => order.orderStatus === 'PENDING')
+                      .map((order, index) => {
+                        return (
+                          <HomeOrderDetails
+                            key={index}
+                            activeBar={active}
+                            setActiveBar={setActive}
+                            navigation={props.navigation}
+                            order={order}
                           />
-                        </View>
-                      )}
+                        )
+                      })
+                    : active === 0 && (
+                      <View
+                        style={{
+                          minHeight: height - height * 0.45,
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        <TextDefault H2 bold>
+                          {t('unReadOrders')}
+                        </TextDefault>
+                        <LottieView
+                          style={{
+                            width: width - 100,
+                            height: 250
+                          }}
+                          source={require('../../assets/loader.json')}
+                          autoPlay
+                          loop
+                        />
+                      </View>
+                    )}
                   {active === 1 && processingOrders > 0
                     ? data &&
-                      data.restaurantOrders
-                        .filter(order =>
-                          ['ACCEPTED', 'ASSIGNED', 'PICKED'].includes(
-                            order.orderStatus
-                          )
+                    data.restaurantOrders
+                      .filter(order =>
+                        ['ACCEPTED', 'ASSIGNED', 'PICKED'].includes(
+                          order.orderStatus
                         )
-                        .map((order, index) => {
-                          return (
-                            <HomeOrderDetails
-                              key={index}
-                              activeBar={active}
-                              setActiveBar={setActive}
-                              navigation={props.navigation}
-                              order={order}
-                            />
-                          )
-                        })
-                    : active === 1 && (
-                        <View
-                          style={{
-                            minHeight: height - height * 0.45,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                          <TextDefault H2 bold>
-                            {t('unReadOrders')}
-                          </TextDefault>
-                          <LottieView
-                            style={{
-                              width: width - 100,
-                              height: 250
-                            }}
-                            source={require('../../assets/loader.json')}
-                            autoPlay
-                            loop
+                      )
+                      .map((order, index) => {
+                        return (
+                          <HomeOrderDetails
+                            key={index}
+                            activeBar={active}
+                            setActiveBar={setActive}
+                            navigation={props.navigation}
+                            order={order}
                           />
-                        </View>
-                      )}
+                        )
+                      })
+                    : active === 1 && (
+                      <View
+                        style={{
+                          minHeight: height - height * 0.45,
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        <TextDefault H2 bold>
+                          {t('unReadOrders')}
+                        </TextDefault>
+                        <LottieView
+                          style={{
+                            width: width - 100,
+                            height: 250
+                          }}
+                          source={require('../../assets/loader.json')}
+                          autoPlay
+                          loop
+                        />
+                      </View>
+                    )}
                   {active === 2 && deliveredOrders > 0
                     ? data &&
-                      data.restaurantOrders
-                        .filter(order => order.orderStatus === 'DELIVERED')
-                        .map((order, index) => {
-                          return (
-                            <HomeOrderDetails
-                              key={index}
-                              activeBar={active}
-                              setActiveBar={setActive}
-                              navigation={props.navigation}
-                              order={order}
-                            />
-                          )
-                        })
-                    : active === 2 && (
-                        <View
-                          style={{
-                            minHeight: height - height * 0.45,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                          <TextDefault H2 bold>
-                            {t('unReadOrders')}
-                          </TextDefault>
-                          <LottieView
-                            style={{
-                              width: width - 100,
-                              height: 250
-                            }}
-                            source={require('../../assets/loader.json')}
-                            autoPlay
-                            loop
+                    data.restaurantOrders
+                      .filter(order => order.orderStatus === 'DELIVERED')
+                      .map((order, index) => {
+                        return (
+                          <HomeOrderDetails
+                            key={index}
+                            activeBar={active}
+                            setActiveBar={setActive}
+                            navigation={props.navigation}
+                            order={order}
                           />
-                        </View>
-                      )}
+                        )
+                      })
+                    : active === 2 && (
+                      <View
+                        style={{
+                          minHeight: height - height * 0.45,
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        <TextDefault H2 bold>
+                          {t('unReadOrders')}
+                        </TextDefault>
+                        <LottieView
+                          style={{
+                            width: width - 100,
+                            height: 250
+                          }}
+                          source={require('../../assets/loader.json')}
+                          autoPlay
+                          loop
+                        />
+                      </View>
+                    )}
                 </View>
               </ScrollView>
             )}
@@ -449,28 +449,28 @@ const Orders = props => {
 
                   {customer?.addresses.length
                     ? customer?.addresses?.map((address, index) => (
+                      <View
+                        key={address._id}
+                        style={{
+                          flexDirection: 'row',
+                          marginTop: 10,
+                          alignItems: 'flex-start',
+                          gap: 5,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}>
                         <View
-                          key={address._id}
                           style={{
-                            flexDirection: 'row',
-                            marginTop: 10,
-                            alignItems: 'flex-start',
-                            gap: 5,
-                            flexDirection: isArabic ? 'row-reverse' : 'row'
+                            height: scale(20),
+                            width: scale(20),
+                            paddingTop: 5
                           }}>
-                          <View
-                            style={{
-                              height: scale(20),
-                              width: scale(20),
-                              paddingTop: 5
-                            }}>
-                            <FontAwesome name="location-arrow" size={22} />
-                          </View>
-                          <TextDefault style={{ width: '90%' }}>
-                            {address.deliveryAddress}
-                          </TextDefault>
+                          <FontAwesome name="location-arrow" size={22} />
                         </View>
-                      ))
+                        <TextDefault style={{ width: '90%' }}>
+                          {address.deliveryAddress}
+                        </TextDefault>
+                      </View>
+                    ))
                     : null}
                 </View>
               </TouchableOpacity>
