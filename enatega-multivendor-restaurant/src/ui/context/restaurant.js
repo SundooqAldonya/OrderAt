@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import { subscribePlaceOrder, orders } from '../../apollo'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -9,12 +9,14 @@ const Provider = props => {
   const [printer, setPrinter] = useState()
   const [notificationToken, setNotificationToken] = useState()
   const [addressToken, setAddressToken] = useState('')
+  const unsubscribeRef = useRef(null)
 
   useEffect(() => {
-    ;(async () => {
+    const getPrinter = async () => {
       const printerStr = await AsyncStorage.getItem('printer')
       if (printerStr) setPrinter(JSON.parse(printerStr))
-    })()
+    }
+    getPrinter()
   }, [])
 
   const {
@@ -28,14 +30,21 @@ const Provider = props => {
     gql`
       ${orders}
     `,
-    { fetchPolicy: 'network-only', pollInterval: 15000, onError }
+    {
+      fetchPolicy: 'network-only',
+      //  pollInterval: 15000,
+      onError
+    }
   )
 
   console.log('useQuery called:', { loading, error, data, networkStatus })
+
   function onError(error) {
     console.log(JSON.stringify(error))
   }
+
   let unsubscribe = null
+
   useEffect(() => {
     return () => {
       unsubscribe && unsubscribe()
@@ -45,6 +54,13 @@ const Provider = props => {
   useEffect(() => {
     console.log('runnnnnnnnnnnnnnnnn')
     subscribeToMoreOrders()
+    return () => {
+      console.log('Cleaning up subscription')
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current()
+        unsubscribeRef.current = null
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -65,7 +81,11 @@ const Provider = props => {
     const restaurant = await AsyncStorage.getItem('restaurantId')
     console.log('restaurant@@@@@@@@', restaurant)
     if (!restaurant) return
-    unsubscribe = subscribeToMore({
+    if (unsubscribeRef.current) {
+      console.log('Unsubscribing from previous subscription')
+      unsubscribeRef.current()
+    }
+    unsubscribeRef.current = subscribeToMore({
       document: gql`
         ${subscribePlaceOrder}
       `,
