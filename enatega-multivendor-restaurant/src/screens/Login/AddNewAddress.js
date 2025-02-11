@@ -38,52 +38,27 @@ import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
 import 'react-native-get-random-values'
 import { useSelector } from 'react-redux'
-import * as SecureStore from 'expo-secure-store'
+// import * as SecureStore from 'expo-secure-store'
 
-const { width, height } = Dimensions.get('window')
+// const { width, height } = Dimensions.get('window')
 
 const GET_CITY_AREAS = gql`
   ${getCityAreas}
 `
 
-const token =
-  'nzu3zF6IpFPbvb-8-JY6dwcOJsKDhqXbW4bLkbWjrtt0ldh0ZHc0tTkr0GfqOSdaM4U'
 const AddNewAddress = () => {
   const { t } = useTranslation()
   const { user } = useRoute().params
   const [selectedLocation, setSelectedLocation] = useState(null)
+  const [locationAddress, setLocationAddress] = useState('')
   const [isClicked, setIsClicked] = useState(false)
-  const [checkoutModal, setCheckoutModal] = useState(true)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isVisible2, setIsVisible2] = useState(false)
   const [areaIsVisible, setAreaIsVisible] = useState(false)
   const [userData, setUserData] = useState({
     address: ''
   })
-  const [cities, setCities] = useState([])
-  const [currentData, setCurrentData] = useState([])
-  const [governate, setGovernate] = useState([])
-  const cityRef = useRef < TextInput > null
-  const stateRef = useRef < TextInput > null
-  const [selectedGovernate, setSelectedGovernate] = useState('')
-  const [selectedCity, setSelectedCity] = useState('')
+
   const [selectedArea, setSelectedArea] = useState(null)
-  const [locationAddress, setLocationAddress] = useState('')
-  // const { city, setCity } = useContext(RestaurantContext)
   const { cityId } = useSelector(state => state.city)
-
-  const getCity = async () => {
-    const city = await SecureStore.getItemAsync('cityId')
-
-    if (city) {
-      const value = JSON.parse(city)
-      console.log({ value })
-      return value
-    }
-    return null
-  }
-
-  console.log({ cityId: getCity() })
 
   const {
     data: dataAreas,
@@ -95,28 +70,9 @@ const AddNewAddress = () => {
   })
 
   console.log({ here: dataAreas })
-  // console.log({ city })
 
   const navigation = useNavigation()
-  const laodGovernates = async () => {
-    await getGovernate()
-      .then(res => {
-        if (res) {
-          setGovernate(res.data)
-        }
-      })
-      .catch(res => console.log(res))
-  }
-  const loadCities = async () => {
-    await getCities(selectedGovernate)
-      .then(res => {
-        if (res) {
-          console.log(res.data)
-          setCities(res.data)
-        }
-      })
-      .catch(res => console.log(res))
-  }
+
   const [updateUserAddress, { loading, error }] = useMutation(
     UPDATE_USER_ADDRESS,
     {
@@ -132,10 +88,6 @@ const AddNewAddress = () => {
       }
     }
   )
-
-  useEffect(() => {
-    laodGovernates()
-  }, [])
 
   const onSave = () => {
     let addresses = []
@@ -259,15 +211,18 @@ const AddNewAddress = () => {
                 </TouchableOpacity>
               </View>
               {isClicked ? (
-                <View style={{ marginBottom: 20, flex: 1 }}>
+                <KeyboardAvoidingView style={{ marginBottom: 20, flex: 1 }}>
                   <GooglePlacesAutocomplete
                     placeholder={t('searchforaplace')}
                     onPress={(data, details = null) => {
-                      setLocationAddress(details?.formatted_address)
-                      setSelectedLocation({
-                        latitude: details.geometry.location.lat,
-                        longitude: details.geometry.location.lng
-                      })
+                      if (details) {
+                        setLocationAddress(details?.formatted_address)
+                        setSelectedLocation({
+                          latitude: details?.geometry?.location?.lat,
+                          longitude: details?.geometry?.location?.lng
+                        })
+                      }
+                      console.log({ addressDetails: data })
                     }}
                     query={{
                       key: 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
@@ -288,7 +243,7 @@ const AddNewAddress = () => {
                       scrollEnabled: true
                     }}
                   />
-                </View>
+                </KeyboardAvoidingView>
               ) : null}
             </View>
             <TouchableOpacity

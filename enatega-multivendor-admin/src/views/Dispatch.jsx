@@ -57,7 +57,7 @@ const Orders = props => {
     loading: loadingOrders,
     refetch: refetchOrders
   } = useQuery(GET_ACTIVE_ORDERS, {
-    variables: { restaurantId },
+    variables: { restaurantId: null },
     pollInterval: 3000,
     skip: restaurantId === null
   })

@@ -98,7 +98,7 @@ export default function App() {
   }, [I18nManager.isRTL])
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       const token = await SecureStore.getItemAsync('token')
       if (token) setToken(token)
       setIsAppReady(true)
@@ -108,17 +108,17 @@ export default function App() {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
-    ;(async () => {
-      const { isAvailable } = await Updates.checkForUpdateAsync()
-      if (isAvailable) {
-        setIsUpdating(true)
-        const { isNew } = await Updates.fetchUpdateAsync()
-        if (isNew) {
-          await Updates.reloadAsync()
+      ; (async () => {
+        const { isAvailable } = await Updates.checkForUpdateAsync()
+        if (isAvailable) {
+          setIsUpdating(true)
+          const { isNew } = await Updates.fetchUpdateAsync()
+          if (isNew) {
+            await Updates.reloadAsync()
+          }
+          setIsUpdating(false)
         }
-        setIsUpdating(false)
-      }
-    })()
+      })()
   }, [])
 
   const login = async (token, restaurantId, city) => {

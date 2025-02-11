@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { getAccessToken } from '../../utilities/apiServices'
 import { detectLanguageDir } from '../../../helpers'
 import SoundContext from '../../ui/context/sound'
+import 'moment-timezone';
 
 function HomeOrderDetails(props) {
   const { activeBar, navigation } = props
@@ -26,7 +27,11 @@ function HomeOrderDetails(props) {
     createdAt,
     isRinged,
     orderStatus,
-    user
+    user,
+    deliveredAt,
+    pickedAt,
+    assignedAt,
+    acceptedAt,
   } = props?.order
   const timeNow = new Date()
   const { i18n, t } = useTranslation()
@@ -37,6 +42,7 @@ function HomeOrderDetails(props) {
   var remainingTime = moment(createdTime)
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
+
   const configuration = useContext(Configuration.Context)
   const { stopSound } = useContext(SoundContext)
 
@@ -221,7 +227,7 @@ function HomeOrderDetails(props) {
             />
           </View>
         )}
-        {activeBar === 1 && (
+        {/* {activeBar === 1 && (
           <View>
             <CountDown
               until={totalPrep}
@@ -242,7 +248,27 @@ function HomeOrderDetails(props) {
               }}
             />
           </View>
-        )}
+        )} */}
+        {activeBar === 2 && orderStatus === 'DELIVERED' ? (
+          <View>
+            <TextDefault bolder>{moment(deliveredAt).format('hh:mm:ss A')}</TextDefault>
+          </View>
+        ) : null}
+        {activeBar === 1 && orderStatus === 'PICKED' ? (
+          <View>
+            <TextDefault bolder>{moment(pickedAt).format('hh:mm:ss A')}</TextDefault>
+          </View>
+        ) : null}
+        {activeBar === 1 && orderStatus === 'ASSIGNED' ? (
+          <View>
+            <TextDefault bolder>{moment(assignedAt).format('hh:mm:ss A')}</TextDefault>
+          </View>
+        ) : null}
+        {activeBar === 1 && orderStatus === 'ACCEPTED' ? (
+          <View>
+            <TextDefault bolder>{moment(acceptedAt).format('hh:mm:ss A')}</TextDefault>
+          </View>
+        ) : null}
         <View>
           <Pressable
             style={[

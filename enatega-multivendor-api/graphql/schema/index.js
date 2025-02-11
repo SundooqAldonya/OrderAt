@@ -428,7 +428,7 @@ const typeDefs = gql`
   }
   type Order {
     _id: ID!
-    orderId: String!
+    orderId: String
     resId: String!
     restaurant: RestaurantDetail!
     deliveryAddress: OrderAddress

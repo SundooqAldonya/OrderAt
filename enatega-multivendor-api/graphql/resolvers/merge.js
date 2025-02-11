@@ -114,14 +114,14 @@ const transformFoods = async foodIds => {
 
 const transformOrder = async order => {
   return {
-    ...order._doc,
-    _id: order.id,
-    zone: zone(order.zone),
-    review: review.bind(this, order.review),
-    user: await user.bind(this, order._doc.user),
-    userId: order._doc.user.toString(),
-    orderDate: dateToString(order._doc.orderDate) || dateToString(new Date()),
-    items: await order.items.map(item => {
+    ...order?._doc,
+    _id: order?.id,
+    zone: zone(order?.zone),
+    review: review.bind(this, order?.review),
+    user: await user.bind(this, order?._doc?.user),
+    userId: order?._doc.user.toString(),
+    orderDate: dateToString(order?._doc.orderDate) || dateToString(new Date()),
+    items: await order?.items.map(item => {
       return {
         ...item._doc,
         _id: item.id,
@@ -134,29 +134,29 @@ const transformOrder = async order => {
     }),
     restaurant: await populateRestaurantDetail.bind(
       this,
-      order._doc.restaurant
+      order?._doc?.restaurant
     ),
-    restaurantId: order.restaurant,
-    isRinged: order.isRinged,
-    isRiderRinged: order.isRiderRinged,
-    rider: order._doc.rider ? rider.bind(this, order._doc.rider) : null,
-    riderId: order._doc.rider ? order._doc.rider.toString() : '',
-    createdAt: dateToString(order._doc.createdAt),
-    updatedAt: dateToString(order._doc.updatedAt),
-    completionTime: dateToString(order._doc.completionTime),
-    expectedTime: dateToString(order._doc.expectedTime),
-    preparationTime: dateToString(order._doc.preparationTime),
-    acceptedAt: order._doc.acceptedAt
-      ? dateToString(order._doc.acceptedAt)
+    restaurantId: order?.restaurant,
+    isRinged: order?.isRinged,
+    isRiderRinged: order?.isRiderRinged,
+    rider: order?._doc?.rider ? rider.bind(this, order?._doc?.rider) : null,
+    riderId: order?._doc?.rider ? order?._doc?.rider.toString() : '',
+    createdAt: dateToString(order?._doc?.createdAt),
+    updatedAt: dateToString(order?._doc?.updatedAt),
+    completionTime: dateToString(order?._doc?.completionTime),
+    expectedTime: dateToString(order?._doc?.expectedTime),
+    preparationTime: dateToString(order?._doc?.preparationTime),
+    acceptedAt: order?._doc?.acceptedAt
+      ? dateToString(order?._doc?.acceptedAt)
       : '',
-    pickedAt: order._doc.pickedAt ? dateToString(order._doc.pickedAt) : '',
-    deliveredAt: order._doc.deliveredAt
-      ? dateToString(order._doc.deliveredAt)
+    pickedAt: order?._doc?.pickedAt ? dateToString(order?._doc?.pickedAt) : '',
+    deliveredAt: order?._doc?.deliveredAt
+      ? dateToString(order?._doc?.deliveredAt)
       : '',
-    cancelledAt: order._doc.cancelledAt
-      ? dateToString(order._doc.cancelledAt)
+    cancelledAt: order?._doc?.cancelledAt
+      ? dateToString(order?._doc?.cancelledAt)
       : '',
-    assignedAt: order._doc.assignedAt ? dateToString(order._doc.assignedAt) : ''
+    assignedAt: order?._doc?.assignedAt ? dateToString(order._doc.assignedAt) : ''
   }
 }
 
