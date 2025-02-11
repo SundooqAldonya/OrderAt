@@ -66,7 +66,6 @@ export const orders = `query Orders{
       deliveryCharges
       isPickedUp
       preparationTime
-      acceptedAt
       deliveredAt
       pickedAt
       assignedAt

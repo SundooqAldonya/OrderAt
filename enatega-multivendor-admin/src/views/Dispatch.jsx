@@ -23,6 +23,7 @@ import TableHeader from '../components/TableHeader'
 import { NotificationContainer, NotificationManager } from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
 import RiderFunc from '../components/RiderFunc'
+import moment from 'moment'
 
 const SUBSCRIPTION_ORDER = gql`
   ${subscriptionOrder}
@@ -164,7 +165,7 @@ const Orders = props => {
       name: t('OrderInformation'),
       sortable: true,
       selector: 'orderId',
-      cell: row => SubscribeFunc(row)
+      cell: row => row?.orderId ? row?.orderId : 'N/A'
     },
     {
       name: t('RestaurantCol'),
@@ -202,7 +203,7 @@ const Orders = props => {
     {
       name: t('OrderTime'),
       cell: row => (
-        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
+        TimeFunc({row})
       )
     }
   ]
@@ -281,18 +282,52 @@ const Orders = props => {
   )
 }
 
-const SubscribeFunc = row => {
-  const { data: dataSubscription } = useSubscription(SUBSCRIPTION_ORDER, {
-    variables: { id: row._id }
-  })
-  console.log(dataSubscription)
+const TimeFunc = ({row}) => {
+  const { createdAt, preparationTime, orderStatus, acceptedAt } = row;
+
+  const [notAccepted, setNotAccepted] = useState(false);
+  const [notAssigned, setNotAssigned] = useState(false);
+  const [notDelivered, setNotDelivered] = useState(false);
+  const [isPastTen, setIsPastTen] = useState(false)
+  const now = moment()
+  const orderCreatedAt = moment(createdAt);
+
+  useEffect(() => {
+    if (!acceptedAt && orderStatus === "PENDING" && now.diff(orderCreatedAt, "minutes") > 5) {
+      setNotAccepted(true)
+    }
+
+    // If order is not assigned (status !== ASSIGNED) within (preparationTime - 5) minutes
+    const timeLimitForAssignment = orderCreatedAt.add(preparationTime - 5, "minutes");
+    console.log({timeLimitForAssignment: now.isAfter(timeLimitForAssignment)})
+    if (acceptedAt && orderStatus !== "ASSIGNED" && now.isAfter(timeLimitForAssignment)) {
+      setNotAssigned(true)
+    }
+  }, [])
+
+  console.log({createdAt})
   return (
-    <div style={{ overflow: 'visible', whiteSpace: 'pre' }}>
-      {row.orderId}
-      <br />
-      {transformToNewline(row.deliveryAddress.deliveryAddress, 3)}
+    <div style={{color: notAccepted || notAssigned ? 'red' : '#000'}}>
+      {new Date(createdAt).toLocaleString().replace(/ /g, '\n')}
+      {" "}
+      {notAccepted ? '(Order is not accepted)' : null}
+      {notAssigned ? '(Order is not assigned)' : null}
     </div>
   )
 }
+
+// const SubscribeFunc = row => {
+//   const { data: dataSubscription } = useSubscription(SUBSCRIPTION_ORDER, {
+//     variables: { id: row._id }
+//   })
+//   console.log(dataSubscription)
+//   return (
+//     <div style={{ overflow: 'visible', whiteSpace: 'pre' }}>
+//       {row.orderId}
+//       <br />
+//       {transformToNewline(row.deliveryAddress.deliveryAddress, 3)}
+//     </div>
+//   )
+// }
 
 export default withTranslation()(Orders)

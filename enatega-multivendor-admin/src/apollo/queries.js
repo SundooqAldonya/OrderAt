@@ -341,6 +341,11 @@ export const getActiveOrders = `query GetActiveOrders($restaurantId:ID){
     reason
     isActive
     createdAt
+    preparationTime
+    deliveredAt
+    pickedAt
+    assignedAt
+    acceptedAt
     deliveryCharges
     rider{
       _id
