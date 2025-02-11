@@ -11,6 +11,7 @@ const DISPATCH_ORDER = 'DISPATCH_ORDER'
 const SUBSCRIPTION_MESSAGE = 'SUBSCRIPTION_MESSAGE'
 const pubsub = new PubSub()
 // pubsub.setMaxListeners(50)
+// pubsub.asyncIterator
 
 const publishToUser = (userId, order, origin) => {
   const orderStatusChanged = {

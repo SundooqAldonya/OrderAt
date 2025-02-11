@@ -78,9 +78,20 @@ module.exports = {
     },
     subscriptionOrder: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(SUBSCRIPTION_ORDER),
+        (_, args, { pubsub }) => {
+          const asyncIterator = pubsub.asyncIterator(SUBSCRIPTION_ORDER);
+          // Override return() to remove listener when unsubscribed
+          const originalReturn = asyncIterator.return;
+          asyncIterator.return = async () => {
+            console.log(`Cleaning up subscription for ORDER ID: ${args.id}`);
+            if (originalReturn) await originalReturn.call(asyncIterator);
+          };
+
+          return asyncIterator;
+        },
         (payload, args) => {
-          const orderId = payload.subscriptionOrder._id.toString()
+          if (!payload?.subscriptionOrder?._id) return false;
+          const orderId = payload?.subscriptionOrder?._id?.toString()
           return orderId === args.id
         }
       )
@@ -377,9 +388,8 @@ module.exports = {
         if (!zone) throw new Error('Zone not found')
 
         // Generate dynamic orderId
-        const newOrderId = `${restaurant.orderPrefix}-${
-          Number(restaurant.orderId) + 1
-        }`
+        const newOrderId = `${restaurant.orderPrefix}-${Number(restaurant.orderId) + 1
+          }`
         restaurant.orderId = Number(restaurant.orderId) + 1
         await restaurant.save()
 
@@ -745,9 +755,8 @@ module.exports = {
             })
           }
           price += itemPrice * item.quantity
-          return `${item.quantity} x ${item.title}${
-            item.variation.title ? `(${item.variation.title})` : ''
-          }	${configuration.currencySymbol}${item.variation.price}`
+          return `${item.quantity} x ${item.title}${item.variation.title ? `(${item.variation.title})` : ''
+            }	${configuration.currencySymbol}${item.variation.price}`
         })
         let coupon = null
         if (args.couponCode) {
