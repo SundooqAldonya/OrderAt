@@ -80,8 +80,8 @@ const zone = async id => {
   try {
     const zone = await Zone.findById(id)
     return {
-      ...zone._doc,
-      _id: zone.id
+      ...zone?._doc,
+      _id: zone?.id
     }
   } catch (error) {
     throw error
@@ -156,7 +156,9 @@ const transformOrder = async order => {
     cancelledAt: order?._doc?.cancelledAt
       ? dateToString(order?._doc?.cancelledAt)
       : '',
-    assignedAt: order?._doc?.assignedAt ? dateToString(order._doc.assignedAt) : ''
+    assignedAt: order?._doc?.assignedAt
+      ? dateToString(order._doc.assignedAt)
+      : ''
   }
 }
 
@@ -197,8 +199,8 @@ const populateRestaurantDetail = async restaurantId => {
     _id: restaurantId
   })
   return {
-    ...restaurant._doc,
-    _id: restaurant.id
+    ...restaurant?._doc,
+    _id: restaurant?.id
   }
 }
 

@@ -1369,6 +1369,11 @@ const typeDefs = gql`
       rows: Int
       search: String
     ): [Order!]
+    getOrdersByAdmin(
+      page: Int
+      rows: Int
+      search: String
+    ): [Order!]
     getOrdersByDateRange(
       startingDate: String!
       endingDate: String!

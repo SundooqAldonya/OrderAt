@@ -79,18 +79,18 @@ module.exports = {
     subscriptionOrder: {
       subscribe: withFilter(
         (_, args, { pubsub }) => {
-          const asyncIterator = pubsub.asyncIterator(SUBSCRIPTION_ORDER);
+          const asyncIterator = pubsub.asyncIterator(SUBSCRIPTION_ORDER)
           // Override return() to remove listener when unsubscribed
-          const originalReturn = asyncIterator.return;
+          const originalReturn = asyncIterator.return
           asyncIterator.return = async () => {
-            console.log(`Cleaning up subscription for ORDER ID: ${args.id}`);
-            if (originalReturn) await originalReturn.call(asyncIterator);
-          };
+            console.log(`Cleaning up subscription for ORDER ID: ${args.id}`)
+            if (originalReturn) await originalReturn.call(asyncIterator)
+          }
 
-          return asyncIterator;
+          return asyncIterator
         },
         (payload, args) => {
-          if (!payload?.subscriptionOrder?._id) return false;
+          if (!payload?.subscriptionOrder?._id) return false
           const orderId = payload?.subscriptionOrder?._id?.toString()
           return orderId === args.id
         }
@@ -224,6 +224,36 @@ module.exports = {
           })
         } else {
           orders = await Order.find({ restaurant: args.restaurant })
+            .sort({ createdAt: -1 })
+            .skip((args.page || 0) * args.rows)
+            .limit(args.rows)
+          console.log({ ordersRest: orders })
+          return orders.map(order => {
+            return transformOrder(order)
+          })
+        }
+      } catch (err) {
+        throw err
+      }
+    },
+    getOrdersByAdmin: async (_, args, context) => {
+      console.log('admin orders')
+      try {
+        let orders = []
+        if (args.search) {
+          const search = new RegExp(
+            // eslint-disable-next-line no-useless-escape
+            args.search.replace(/[\\\[\]()+?.*]/g, c => '\\' + c),
+            'i'
+          )
+          orders = await Order.find({
+            orderId: search
+          }).sort({ createdAt: -1 })
+          return orders.map(order => {
+            return transformOrder(order)
+          })
+        } else {
+          orders = await Order.find()
             .sort({ createdAt: -1 })
             .skip((args.page || 0) * args.rows)
             .limit(args.rows)
@@ -388,8 +418,9 @@ module.exports = {
         if (!zone) throw new Error('Zone not found')
 
         // Generate dynamic orderId
-        const newOrderId = `${restaurant.orderPrefix}-${Number(restaurant.orderId) + 1
-          }`
+        const newOrderId = `${restaurant.orderPrefix}-${
+          Number(restaurant.orderId) + 1
+        }`
         restaurant.orderId = Number(restaurant.orderId) + 1
         await restaurant.save()
 
@@ -755,8 +786,9 @@ module.exports = {
             })
           }
           price += itemPrice * item.quantity
-          return `${item.quantity} x ${item.title}${item.variation.title ? `(${item.variation.title})` : ''
-            }	${configuration.currencySymbol}${item.variation.price}`
+          return `${item.quantity} x ${item.title}${
+            item.variation.title ? `(${item.variation.title})` : ''
+          }	${configuration.currencySymbol}${item.variation.price}`
         })
         let coupon = null
         if (args.couponCode) {

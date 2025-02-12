@@ -29,8 +29,7 @@ const ORDER_PLACED = gql`
 
 const OrdersData = props => {
   const theme = useTheme()
-  const { t, refetchOrders } = props
-  const { selected, updateSelected } = props
+  const { t, refetchOrders, isAdminPage } = props
   const [searchQuery, setSearchQuery] = useState('')
   const [isOrderFormVisible, setIsOrderFormVisible] = useState(false) // Track visibility of the form
   const [orderDetails, setOrderDetails] = useState({
@@ -195,29 +194,23 @@ const OrdersData = props => {
   return (
     <>
       {/* Add Order Button on the Right Side */}
-      <Grid container spacing={2} style={{ marginBottom: '20px' }}>
-        <Grid item xs={9}></Grid>{' '}
-        {/* Empty space on the left to push the button to the right */}
-        <Grid item xs={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenOrderForm}
-            fullWidth>
-            {t('Addorder')}
-          </Button>
+      {!isAdminPage ? (
+        <Grid container spacing={2} style={{ marginBottom: '20px' }}>
+          <Grid item xs={9}></Grid>{' '}
+          <Grid item xs={3}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenOrderForm}
+              fullWidth>
+              {t('Addorder')}
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : null}
 
       {/* Order Form (Appears Below the Table) */}
-      {isOrderFormVisible && (
-        <AddOrder
-          t={t}
-          // onSubmit={handleSubmitOrder}
-          // onCancel={handleCloseOrderForm}
-          refetchOrders={refetchOrders}
-        />
-      )}
+      {isOrderFormVisible && <AddOrder t={t} refetchOrders={refetchOrders} />}
 
       {/* Data Table (Slides Up when Order Form is Visible) */}
       <div

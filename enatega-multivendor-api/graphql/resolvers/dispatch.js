@@ -42,7 +42,9 @@ module.exports = {
         if (args.restaurantId) {
           filters.restaurant = args.restaurantId
         }
-        const orders = await Order.find(filters).sort({ createdAt: -1 }).limit(10)
+        const orders = await Order.find(filters)
+          .sort({ createdAt: -1 })
+          .limit(10)
         return orders.map(transformOrder)
       } catch (err) {
         throw err

@@ -172,6 +172,81 @@ export const getOrdersByRestaurant = `query ordersByRestId($restaurant:String!,$
     }
   }`
 
+export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int,$rows:Int,$search:String){
+    getOrdersByAdmin(page:$page,rows:$rows,search:$search){
+      _id
+      orderId
+      restaurant{
+        _id
+        name
+        image
+        address
+        location{coordinates}
+      }
+      deliveryAddress{
+        location{coordinates}
+        deliveryAddress
+        details
+        label
+      }
+      items{
+        _id
+        title
+        description
+        image
+        quantity
+        variation{
+          _id
+          title
+          price
+          discounted
+        }
+        addons{
+          _id
+          options{
+            _id
+            title
+            description
+            price
+          }
+          description
+          title
+          quantityMinimum
+          quantityMaximum
+        }
+        specialInstructions
+        isActive
+        createdAt
+        updatedAt
+      }
+      user{
+        _id
+        name
+        phone
+        email
+      }
+      paymentMethod
+      paidAmount
+      orderAmount
+      orderStatus
+      status
+      paymentStatus
+      reason
+      isActive
+      createdAt
+      deliveryCharges
+      tipping
+      taxationAmount
+      rider{
+        _id
+        name
+        username
+        phone
+        available
+      }
+    }
+  }`
+
 export const getDashboardTotal = `query GetDashboardTotal($startingDate: String, $endingDate: String,$restaurant:String!){
     getDashboardTotal(starting_date: $startingDate, ending_date: $endingDate,restaurant:$restaurant){
       totalOrders

@@ -60,6 +60,7 @@ import Cities from './views/Cities'
 import Areas from './views/Areas'
 import Businesses from './views/Businesses'
 import ShopCategories from './views/ShopCategories'
+import OrdersAdmin from './views/OrdersAdmin'
 
 var routes = [
   {
@@ -211,6 +212,15 @@ var routes = [
     name: 'Dispatch',
     icon: DeliveryIcon,
     component: Dispatch,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    icon: DeliveryIcon,
+    component: OrdersAdmin,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true
