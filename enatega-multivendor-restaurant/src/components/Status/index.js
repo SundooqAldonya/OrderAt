@@ -62,7 +62,7 @@ const Status = ({ order }) => {
           order={order}
           // address={order.restaurant.address}
           // location={order.restaurant.location}
-          time={order.assignedAt ? formatTime(order.assignedAt) : null}
+          time={order.createdAt ? formatTime(order.createdAt) : null}
         />
         <View
           style={{
@@ -87,7 +87,7 @@ const Status = ({ order }) => {
           order={order}
           // address={order.restaurant.address}
           // location={order.restaurant.location}
-          time={order.assignedAt ? formatTime(order.assignedAt) : null}
+          time={order.acceptedAt ? formatTime(order.acceptedAt) : null}
         />
         <View
           style={{

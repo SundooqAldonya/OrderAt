@@ -144,13 +144,18 @@ const AddOrder = ({ t, refetchOrders }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [search] = useState('')
   const { acceptOrder } = useAcceptOrder()
-  const [selectedTime, setSelectedTime] = useState(new Date())
+  // const addedTime = moment().add(30, 'minutes')
+  const [selectedTime, setSelectedTime] = useState(30)
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
-    onCompleted: (data) => {
+    onCompleted: data => {
       setSuccess('Order Created Successfully!')
       refetchOrders()
       setOrderMode(false)
-      acceptOrder(data.CheckOutPlaceOrder._id, restaurantId, selectedTime.toString())
+      acceptOrder(
+        data.CheckOutPlaceOrder._id,
+        restaurantId,
+        selectedTime.toString()
+      )
     }
   })
 
@@ -709,13 +714,13 @@ const AddOrder = ({ t, refetchOrders }) => {
             {error.message.includes(
               'No users found matching the search criteria'
             ) && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddCustomer}>
-                  {t('Add Customer')}
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddCustomer}>
+                {t('Add Customer')}
+              </Button>
+            )}
           </>
         )}
       </div>

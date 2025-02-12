@@ -15,6 +15,7 @@ const StatusRow = ({
   order,
   fillColor = styles.bgSecondary
 }) => {
+  console.log({ time })
   const { i18n } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
