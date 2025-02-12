@@ -5,7 +5,7 @@ export const colors = {
   iconPink: '#6FCF97',
   radioColor: '#FFF',
   radioOuterColor: '#6FCF97',
-  borderColor:'#F6F6F6',
+  borderColor: '#F6F6F6',
   spinnerColor: '#6FCF97',
   orderComplete: '#1DB20D',
   orderUncomplete: '#fe0000',
@@ -23,7 +23,8 @@ export const colors = {
   dimWhite: '#d0d0d0',
   green: '#06C167',
   darkgreen: '#6FCF97',
-  rounded: '#3E6F52'
+  rounded: '#3E6F52',
+  primary: '#6FCF97'
 }
 // export const colors = {
 //   primary:'#06C167',

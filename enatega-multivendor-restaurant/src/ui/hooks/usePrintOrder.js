@@ -12,7 +12,7 @@ export default function usePrintOrder() {
 
   const printOrder = async id => {
     if (!loading && !error) {
-      const order = data.restaurantOrders.find(order => order._id === id)
+      const order = data?.restaurantOrders.find(order => order._id === id)
       const result = await printAsync(
         { ...order, currencySymbol },
         Platform.OS === 'ios' ? (printer ? printer.url : null) : null

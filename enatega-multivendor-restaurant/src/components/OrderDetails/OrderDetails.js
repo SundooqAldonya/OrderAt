@@ -14,7 +14,9 @@ export default function OrderDetails({ orderData }) {
   const isRtl = i18n.language === 'ar'
   const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
   const textAlignStyle = isRtl ? { textAlign: 'right' } : {}
-
+  const phone = orderData?.rider?.phone.includes('+2')
+    ? orderData?.rider?.phone.replace('+2', '')
+    : orderData?.rider?.phone
   return (
     <View style={{ flex: 1 }}>
       {orderData.orderStatus === 'ASSIGNED' && orderData.rider ? (
@@ -50,8 +52,7 @@ export default function OrderDetails({ orderData }) {
                   alignItems: 'center'
                 }
               ]}>
-              {t('phone')}:{' '}
-              {orderData.rider.phone ? orderData.rider.phone : null}{' '}
+              {t('phone')}: {orderData.rider.phone ? phone : null}{' '}
             </TextDefault>
             <EvilIcons
               name="external-link"
@@ -81,7 +82,7 @@ export default function OrderDetails({ orderData }) {
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('contact')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
-            {user.phone}
+            {user.phone.replace('+2', '')}
           </Text>
         </View>
         <View style={[styles.row, directionStyle]}>

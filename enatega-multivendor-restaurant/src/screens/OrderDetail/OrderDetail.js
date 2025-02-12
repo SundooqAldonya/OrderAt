@@ -17,6 +17,7 @@ import { useCancelOrder, useOrderPickedUp, useOrderRing } from '../../ui/hooks'
 import CountDown from 'react-native-countdown-component'
 import { useRestaurantContext } from '../../ui/context/restaurant'
 import { useTranslation } from 'react-i18next'
+import Status from '../../components/Status'
 
 export default function OrderDetail({ navigation, route }) {
   const { t, i18n } = useTranslation()
@@ -57,7 +58,7 @@ export default function OrderDetail({ navigation, route }) {
     ? remainingTime
     : 0
 
-  const order = data.restaurantOrders.find(o => o._id === _id)
+  const order = data?.restaurantOrders?.find(o => o._id === _id)
   const imagePath = require('../../assets/bowl.png')
 
   const toggleOverlay = () => {
@@ -288,8 +289,16 @@ export default function OrderDetail({ navigation, route }) {
                 {t('orderDetail')}
               </TextDefault>
             </View>
-
+            {/* order details */}
             <OrderDetails orderData={orderData} isArabic={isArabic} />
+            {/* order status */}
+            <Status
+              order={orderData}
+              itemId={order?._id}
+              pickedAt={order?.pickedAt}
+              deliveredAt={order?.deliveredAt}
+              assignedAt={order?.assignedAt}
+            />
           </ScrollView>
         </View>
       </ImageBackground>

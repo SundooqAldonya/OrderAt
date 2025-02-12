@@ -32,7 +32,7 @@ const Provider = props => {
     `,
     {
       fetchPolicy: 'network-only',
-      //  pollInterval: 15000,
+      pollInterval: 15000,
       onError
     }
   )
