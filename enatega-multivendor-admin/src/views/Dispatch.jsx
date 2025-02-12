@@ -59,8 +59,7 @@ const Orders = props => {
     refetch: refetchOrders
   } = useQuery(GET_ACTIVE_ORDERS, {
     variables: { restaurantId: null },
-    pollInterval: 3000,
-    skip: restaurantId === null
+    pollInterval: 3000
   })
 
   const statusFunc = row => {
@@ -165,7 +164,7 @@ const Orders = props => {
       name: t('OrderInformation'),
       sortable: true,
       selector: 'orderId',
-      cell: row => row?.orderId ? row?.orderId : 'N/A'
+      cell: row => (row?.orderId ? row?.orderId : 'N/A')
     },
     {
       name: t('RestaurantCol'),
@@ -202,9 +201,7 @@ const Orders = props => {
     },
     {
       name: t('OrderTime'),
-      cell: row => (
-        TimeFunc({row})
-      )
+      cell: row => TimeFunc({ row })
     }
   ]
 
@@ -282,36 +279,99 @@ const Orders = props => {
   )
 }
 
-const TimeFunc = ({row}) => {
-  const { createdAt, preparationTime, orderStatus, acceptedAt } = row;
+const TimeFunc = ({ row }) => {
+  const {
+    createdAt,
+    preparationTime,
+    orderStatus,
+    acceptedAt,
+    assignedAt,
+    pickedAt,
+    deliveredAt
+  } = row
 
-  const [notAccepted, setNotAccepted] = useState(false);
-  const [notAssigned, setNotAssigned] = useState(false);
-  const [notDelivered, setNotDelivered] = useState(false);
-  const [isPastTen, setIsPastTen] = useState(false)
+  const [notAccepted, setNotAccepted] = useState(false)
+  const [notAssigned, setNotAssigned] = useState(false)
+  const [notPicked, setNotPicked] = useState(false)
+  const [notDelivered, setNotDelivered] = useState(false)
   const now = moment()
-  const orderCreatedAt = moment(createdAt);
+  const orderCreatedAt = moment(createdAt).clone()
+  const orderAcceptedAt = moment(acceptedAt).clone()
 
   useEffect(() => {
-    if (!acceptedAt && orderStatus === "PENDING" && now.diff(orderCreatedAt, "minutes") > 5) {
+    console.log({ orderId: row.orderId, Now: now.format('HH:mm:ss') })
+    console.log({
+      orderId: row.orderId,
+      'Order Created At': orderCreatedAt.format('HH:mm:ss')
+    })
+    console.log({
+      orderId: row.orderId,
+      'Accepted At': acceptedAt
+        ? moment(acceptedAt).format('HH:mm:ss')
+        : 'Not accepted yet'
+    })
+    console.log({
+      orderId: row.orderId,
+      'Prepration time': preparationTime
+        ? moment(preparationTime).format('HH:mm:ss')
+        : 'Not accepted yet'
+    })
+    console.log({
+      orderId: row.orderId,
+      'Rider Assigned At': assignedAt
+        ? moment(assignedAt).format('HH:mm:ss')
+        : 'Not assigned yet'
+    })
+
+    if (
+      !acceptedAt &&
+      orderStatus === 'PENDING' &&
+      now.diff(orderCreatedAt, 'minutes') > 10
+    ) {
       setNotAccepted(true)
     }
 
     // If order is not assigned (status !== ASSIGNED) within (preparationTime - 5) minutes
-    const timeLimitForAssignment = orderCreatedAt.add(preparationTime - 5, "minutes");
-    console.log({timeLimitForAssignment: now.isAfter(timeLimitForAssignment)})
-    if (acceptedAt && orderStatus !== "ASSIGNED" && now.isAfter(timeLimitForAssignment)) {
-      setNotAssigned(true)
+    if (acceptedAt) {
+      // If no rider assigned within (preparationTime - 5 minutes)
+      // const assignmentDeadline = orderAcceptedAt.add(
+      //   preparationTime - 5,
+      //   'minutes'
+      // )
+      const assignmentDeadline = moment(preparationTime).subtract(5, 'minutes')
+      console.log('Assignment Deadline:', assignmentDeadline.format('HH:mm:ss'))
+      if (!assignedAt && now.isAfter(assignmentDeadline)) {
+        setNotAssigned(true)
+      }
+    }
+    // If order is NOT PICKED after (preparationTime + 10 minutes)
+    const pickUpDeadline = moment(preparationTime).add(10, 'minutes')
+    if (assignedAt && orderStatus !== 'PICKED' && now.isAfter(pickUpDeadline)) {
+      setNotPicked(true)
+    }
+
+    if (pickedAt) {
+      const deliveryDeadline = moment(pickedAt).add(30, 'minutes')
+      if (!deliveredAt && now.isAfter(deliveryDeadline)) {
+        setNotDelivered(true)
+      }
     }
   }, [])
 
-  console.log({createdAt})
+  console.log({ assignedAt })
   return (
-    <div style={{color: notAccepted || notAssigned ? 'red' : '#000'}}>
-      {new Date(createdAt).toLocaleString().replace(/ /g, '\n')}
-      {" "}
+    <div
+      style={{
+        color:
+          notDelivered || notPicked || notAccepted || notAssigned
+            ? 'red'
+            : '#000'
+      }}>
+      {new Date(createdAt).toLocaleString().replace(/ /g, '\n')}{' '}
       {notAccepted ? '(Order is not accepted)' : null}
       {notAssigned ? '(Order is not assigned)' : null}
+      {notPicked ? '(Order is not picked)' : null}
+      {notDelivered ? '(Order is not delivered)' : null}
     </div>
   )
 }
