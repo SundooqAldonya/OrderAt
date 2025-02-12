@@ -136,7 +136,7 @@ function Sidebar(props) {
                         ? classes.blackText
                         : classes.whiteText
                     ]}>
-                    {prop.name}
+                    {t(prop.name)}
                   </Typography>
                 </Link>
               </>

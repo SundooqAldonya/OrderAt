@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import OrderComponent from '../components/Order/Order'
-import OrdersData from '../components/Order/OrdersData'
 import Header from '../components/Headers/Header'
 import { useQuery, gql } from '@apollo/client'
 import { getCityAreas, getOrdersByAdmin, getRestaurantProfile } from '../apollo'
@@ -9,6 +8,7 @@ import useGlobalStyles from '../utils/globalStyles'
 import { Container, Modal } from '@mui/material'
 import CustomLoader from '../components/Loader/CustomLoader'
 import { AreaContext } from '../context/AreaContext'
+import OrdersDataAdmin from '../components/Order/OrdersDataAdmin'
 
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
@@ -75,7 +75,7 @@ const OrdersAdmin = () => {
             <td>{`${'Error'} ${errorQuery.message}`}</td>
           </tr>
         )}
-        <OrdersData
+        <OrdersDataAdmin
           orders={data && orders}
           toggleModal={toggleModal}
           subscribeToMore={subscribeToMore}
