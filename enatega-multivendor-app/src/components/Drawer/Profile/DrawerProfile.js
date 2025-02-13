@@ -18,9 +18,12 @@ function DrawerProfile(props) {
 
   if (loadingProfile) return <TextDefault>{t('loading')}</TextDefault>
   return (
-    <View style={[styles(currentTheme).mainContainer, { backgroundColor: colors.background, borderWidth: 0 }]}>
-
-
+    <View
+      style={[
+        styles(currentTheme).mainContainer,
+        { backgroundColor: colors.background, borderWidth: 0 }
+      ]}
+    >
       <View style={styles().loggedInContainer}>
         <View style={styles().subContainer}>
           <View style={styles(currentTheme).imgContainer}>
@@ -28,13 +31,12 @@ function DrawerProfile(props) {
               {profile?.name?.substr(0, 1)?.toUpperCase() ?? 'G'}
             </TextDefault>
           </View>
-          <View style={{flex:1}}>
-
+          <View style={{ flex: 1 }}>
             <TextDefault textColor={colors.dark} bolder H2>
-              {profile?.name ?? 'Mohammadaitia'}
+              {profile?.name ? profile?.name : 'Guest'}
             </TextDefault>
-            <TextDefault textColor={colors.dark} H5  >
-              {profile?.email ?? 'guest@gmail.com'}
+            <TextDefault textColor={colors.dark} H5>
+              {profile?.email ? profile?.email : null}
             </TextDefault>
           </View>
         </View>

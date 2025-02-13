@@ -8,7 +8,7 @@ const styles = (props = null) =>
       flex: 1
     },
     mapView: {
-      height: '70%',
+      height: '50%',
       marginBottom: scale(-20)
     },
     container: {
@@ -47,7 +47,7 @@ const styles = (props = null) =>
     },
     button: {
       width: '100%',
-      height: '20%',
+      height: 20,
       alignItems: 'center',
       display: 'flex',
       flexDirection: 'row',

@@ -153,7 +153,9 @@ export default function SearchModal({
                     color={currentTheme.newIconColor}
                   />
                 </View>
-                <TextDefault>{data?.description}</TextDefault>
+                <TextDefault style={{ color: '#000' }}>
+                  {data?.description}
+                </TextDefault>
               </View>
             )} //
             onPress={(data, details) => {

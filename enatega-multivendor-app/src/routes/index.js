@@ -55,6 +55,8 @@ import Menu from '../screens/Menu/Menu'
 import Reviews from '../screens/Reviews'
 import useEnvVars from '../../environment'
 import * as Sentry from '@sentry/react-native'
+import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
+import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -164,6 +166,14 @@ function NoDrawer() {
         component={SelectLocation}
       />
       <NavigationStack.Screen name='AddNewAddress' component={AddNewAddress} />
+      <NavigationStack.Screen
+        name='AddNewAddressUser'
+        component={AddNewAddressUser}
+      />
+      <NavigationStack.Screen
+        name='EditUserAddress'
+        component={EditUserAddress}
+      />
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Favourite' component={Favourite} />
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />

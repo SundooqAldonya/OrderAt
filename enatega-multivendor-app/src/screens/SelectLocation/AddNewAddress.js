@@ -60,8 +60,9 @@ export default function AddNewAddress(props) {
     error: errorAreas
   } = useQuery(GET_AREAS, {
     variables: {
-      id: city._id
-    }
+      id: city?._id
+    },
+    skip: !city
   })
 
   console.log({ dataAreas: data })
@@ -249,7 +250,7 @@ export default function AddNewAddress(props) {
 
           {/* selected city */}
           <View style={[styles(currentTheme).textInput]}>
-            <TextDefault>{city.title}</TextDefault>
+            <TextDefault>{city?.title}</TextDefault>
           </View>
 
           {/* select area */}

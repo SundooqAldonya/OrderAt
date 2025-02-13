@@ -110,6 +110,7 @@ const styles = (props = null) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
+      gap: 20,
       paddingBottom: scale(3)
     },
     rowContainer: {

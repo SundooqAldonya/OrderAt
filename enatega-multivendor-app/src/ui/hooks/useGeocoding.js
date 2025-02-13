@@ -35,7 +35,7 @@ const useGeocoding = () => {
       throw error
     }
   }
-  return {getAddress}
+  return { getAddress }
 }
 
 export default useGeocoding

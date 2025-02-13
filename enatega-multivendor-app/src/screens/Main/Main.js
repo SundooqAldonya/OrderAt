@@ -261,11 +261,11 @@ function Main(props) {
           style={styles(currentTheme).addButton}
           onPress={() => {
             if (isLoggedIn) {
-              navigation.navigate('SelectLocation', {
+              navigation.navigate('AddNewAddressUser', {
                 ...locationData
               })
             } else {
-              navigation.navigate('AddNewAddress', {
+              navigation.navigate('SelectLocation', {
                 ...locationData
               })
               const modal = modalRef.current
@@ -304,7 +304,7 @@ function Main(props) {
     return data
   }
 
-  if (error) return <ErrorView />
+  // if (error) return <ErrorView />
 
   return (
     <>

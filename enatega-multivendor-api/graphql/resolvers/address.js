@@ -36,7 +36,7 @@ module.exports = {
       }
     },
     editAddress: async (_, { addressInput }, { req, res }) => {
-      console.log('editAddress')
+      console.log('editAddress', { addressInput })
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
         const user = await User.findById(req.userId)

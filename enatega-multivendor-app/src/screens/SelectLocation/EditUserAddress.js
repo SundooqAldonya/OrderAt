@@ -5,7 +5,13 @@ import React, {
   useEffect,
   useRef
 } from 'react'
-import { View, TouchableOpacity, StatusBar, Linking } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Linking,
+  TextInput
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import { theme } from '../../utils/themeColors'
@@ -30,10 +36,10 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
-import { createAddress } from '../../apollo/mutations'
+import { createAddress, editAddress } from '../../apollo/mutations'
 
-const CREATE_ADDRESS = gql`
-  ${createAddress}
+const EDIT_ADDRESS = gql`
+  ${editAddress}
 `
 
 const LATITUDE = 30.04442
@@ -41,21 +47,22 @@ const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
-export default function SelectLocation(props) {
-  const Analytics = analytics()
-
+export default function EditUserAddress(props) {
   const { t } = useTranslation()
-  const { longitude, latitude } = props.route.params || {}
+  const { longitude, latitude, address } = props.route.params || {}
+  // TODO: add the address presaved information
+  console.log({ address })
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const navigation = useNavigation()
   const inset = useSafeAreaInsets()
   const [loading, setLoading] = useState(false)
+  const [addressDetails, setAddressDetails] = useState('')
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
-  const { setLocation } = useContext(LocationContext)
+  const { location, setLocation } = useContext(LocationContext)
   const { getAddress } = useGeocoding()
-  const { isLoggedIn } = useContext(UserContext)
+  const { isLoggedIn, refetchProfile } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
     latitude: latitude || LATITUDE,
@@ -65,6 +72,26 @@ export default function SelectLocation(props) {
   })
   const [modalVisible, setModalVisible] = useState(false)
 
+  useEffect(() => {
+    if (address) {
+      setAddressDetails(address.details)
+      setLocation({
+        _id: address._id,
+        label: address.label,
+        latitude: String(address.location.coordinates[1]),
+        longitude: String(address.location.coordinates[0]),
+        deliveryAddress: address.deliveryAddress,
+        details: address.details
+      })
+
+      setCoordinates({
+        ...coordinates,
+        latitude: address.location.coordinates[1],
+        longitude: address.location.coordinates[0]
+      })
+    }
+  }, [address])
+
   useLayoutEffect(() => {
     navigation.setOptions(
       screenOptions({
@@ -72,8 +99,8 @@ export default function SelectLocation(props) {
         fontColor: currentTheme.newFontcolor,
         backColor: currentTheme.newheaderBG,
         iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor,
-        setCurrentLocation
+        lineColor: currentTheme.newIconColor
+        // getCurrentPosition
       })
     )
   })
@@ -85,26 +112,45 @@ export default function SelectLocation(props) {
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
 
-  const getCurrentPosition = async () => {
+  const getCurrentPosition = async ({ longitude, latitude }) => {
     const position = await Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High
     })
-    setCoordinates({
-      ...coordinates,
-      longitude: position.coords.longitude,
-      latitude: position.coords.latitude
+    const lat = latitude ? latitude : coordinates.latitude
+    const lng = longitude ? longitude : coordinates.longitude
+    getAddress(lat, lng).then((res) => {
+      console.log({ res })
+      setLocation({
+        _id: '',
+        label: 'Home',
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        deliveryAddress: res.formattedAddress,
+        details: addressDetails
+      })
+      // setCoordinates({
+      //   ...coordinates,
+      //   longitude: position.coords.longitude,
+      //   latitude: position.coords.latitude
+      // })
     })
+    // setCoordinates({
+    //   ...coordinates,
+    //   longitude: position.coords.longitude,
+    //   latitude: position.coords.latitude
+    // })
   }
-  const [mutate] = useMutation(CREATE_ADDRESS, {
+  const [mutate] = useMutation(EDIT_ADDRESS, {
     onCompleted: (data) => {
       console.log({ data })
-      navigation.navigate('Main')
+      refetchProfile()
+      navigation.goBack()
     },
     onError: (err) => {
       console.log({ err })
     }
   })
-  const setCurrentLocation = async () => {
+  const handleCurrentLocation = async () => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()
     if (status !== 'granted' && !canAskAgain) {
@@ -118,7 +164,6 @@ export default function SelectLocation(props) {
       return
     }
     const { error, coords, message } = await getCurrentLocation()
-    console.log({ coords })
     if (error) {
       FlashMessage({
         message
@@ -127,18 +172,17 @@ export default function SelectLocation(props) {
       return
     }
     setLoading(false)
-    // setCoordinates({ latitude: coords.latitude, longitude: coords.longitude })
     getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
       console.log({ res })
       if (isLoggedIn) {
         // save the location
         const addressInput = {
-          _id: '',
+          _id: address?._id,
           label: 'Home',
           latitude: String(coordinates.latitude),
           longitude: String(coordinates.longitude),
           deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
+          details: addressDetails
         }
         mutate({ variables: { addressInput } })
         // set location
@@ -148,16 +192,7 @@ export default function SelectLocation(props) {
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
           deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
-        })
-      } else {
-        setLocation({
-          _id: '',
-          label: 'Home',
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-          deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
+          details: addressDetails
         })
       }
     })
@@ -173,6 +208,7 @@ export default function SelectLocation(props) {
 
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
+    getCurrentPosition({ ...coords })
     setCoordinates({
       ...coords
     })
@@ -206,6 +242,7 @@ export default function SelectLocation(props) {
             //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
             // }
             onRegionChangeComplete={onRegionChangeComplete}
+            bounce
           />
           <View style={styles().mainContainer}>
             <CustomMarker
@@ -226,17 +263,39 @@ export default function SelectLocation(props) {
           >
             {t('selectLocation')}
           </TextDefault>
-
+          <View
+            style={{ ...styles(currentTheme).button, height: 50 }}
+            // onPress={() => setModalVisible(true)}
+          >
+            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+              {location?.deliveryAddress ? location.deliveryAddress : null}
+            </TextDefault>
+          </View>
+          <View style={[styles(currentTheme).textInput]}>
+            <TextInput
+              value={addressDetails}
+              onChangeText={(text) => setAddressDetails(text)}
+              placeholder={t('address_details')}
+              placeholderTextColor={
+                themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
+              }
+              style={{
+                color: themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
+              }}
+            />
+          </View>
+          <View style={styles(currentTheme).line} />
           <TouchableOpacity
             activeOpacity={0.7}
-            style={styles(currentTheme).button}
-            onPress={setCurrentLocation}
+            style={{
+              ...styles(currentTheme).button,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={handleCurrentLocation}
           >
-            <View style={styles(currentTheme).icon}>
-              <EvilIcons name='location' size={18} color='black' />
-            </View>
             <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('useCurrentLocation')}
+              {t('save')}
             </TextDefault>
             {loading && (
               <Spinner
@@ -247,31 +306,16 @@ export default function SelectLocation(props) {
             )}
           </TouchableOpacity>
           <View style={styles(currentTheme).line} />
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles(currentTheme).button}
-            onPress={() => setModalVisible(true)}
-          >
-            <View style={styles(currentTheme).icon}>
-              <Feather name='list' size={18} color='black' />
-            </View>
-
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('browseCities')}
-            </TextDefault>
-          </TouchableOpacity>
-          <View style={styles(currentTheme).line} />
         </View>
         <View style={{ paddingBottom: inset.bottom }} />
       </View>
 
-      <ModalDropdown
+      {/* <ModalDropdown
         theme={currentTheme}
         visible={modalVisible}
         onItemPress={onItemPress}
         onClose={() => setModalVisible(false)}
-      />
+      /> */}
     </>
   )
 }
