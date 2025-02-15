@@ -120,6 +120,18 @@ const styles = (props = null) =>
       borderRadius: scale(28)
       // marginTop: scale(50)
     },
+    disabledButton: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      height: 80,
+      backgroundColor: 'gray',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      alignSelf: 'center',
+      borderRadius: scale(28)
+      // marginTop: scale(50)
+    },
     mainContainer: {
       width: scale(50),
       height: scale(50),

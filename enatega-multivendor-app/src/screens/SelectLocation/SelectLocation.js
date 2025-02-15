@@ -58,8 +58,8 @@ export default function SelectLocation(props) {
   const { isLoggedIn } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
-    latitude: latitude || LATITUDE,
-    longitude: longitude || LONGITUDE,
+    latitude: latitude || null,
+    longitude: longitude || null,
     latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
@@ -79,8 +79,10 @@ export default function SelectLocation(props) {
   })
 
   useEffect(() => {
-    getCurrentPosition()
-  }, [])
+    if (!coordinates.latitude) {
+      getCurrentPosition()
+    }
+  }, [coordinates.latitude])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
@@ -95,6 +97,7 @@ export default function SelectLocation(props) {
       latitude: position.coords.latitude
     })
   }
+
   const [mutate] = useMutation(CREATE_ADDRESS, {
     onCompleted: (data) => {
       console.log({ data })
@@ -104,6 +107,7 @@ export default function SelectLocation(props) {
       console.log({ err })
     }
   })
+
   const setCurrentLocation = async () => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()
@@ -161,20 +165,14 @@ export default function SelectLocation(props) {
         })
       }
     })
-
-    // navigation.navigate('AddNewAddress', {
-    //   latitude: coords.latitude,
-    //   longitude: coords.longitude,
-    //   prevScreen: props?.route?.params?.prevScreen
-    //     ? props.route.params.prevScreen
-    //     : null
-    // })
   }
 
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
     setCoordinates({
-      ...coords
+      ...coordinates,
+      longitude: coords.longitude,
+      latitude: coords.latitude
     })
   }
 
@@ -193,29 +191,28 @@ export default function SelectLocation(props) {
   return (
     <>
       <View style={styles().flex}>
-        <View style={styles().mapView}>
-          <MapView
-            ref={mapRef}
-            initialRegion={coordinates}
-            region={coordinates}
-            style={{ flex: 1 }}
-            provider={PROVIDER_GOOGLE}
-            showsTraffic={false}
-            maxZoomLevel={15}
-            // customMapStyle={
-            //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
-            // }
-            onRegionChangeComplete={onRegionChangeComplete}
-          />
-          <View style={styles().mainContainer}>
-            <CustomMarker
-              width={40}
-              height={40}
-              transform={[{ translateY: -20 }]}
-              translateY={-20}
+        {coordinates.latitude ? (
+          <View style={styles().mapView}>
+            <MapView
+              ref={mapRef}
+              initialRegion={coordinates}
+              region={coordinates}
+              style={{ flex: 1 }}
+              provider={PROVIDER_GOOGLE}
+              showsTraffic={false}
+              maxZoomLevel={15}
+              onRegionChangeComplete={onRegionChangeComplete}
             />
+            <View style={styles().mainContainer}>
+              <CustomMarker
+                width={40}
+                height={40}
+                transform={[{ translateY: -20 }]}
+                translateY={-20}
+              />
+            </View>
           </View>
-        </View>
+        ) : null}
         <View style={styles(currentTheme).container}>
           <TextDefault
             textColor={currentTheme.newFontcolor}

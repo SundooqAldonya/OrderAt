@@ -60,15 +60,15 @@ function Addresses() {
   const currentTheme = theme[themeContext.ThemeValue]
   const { t } = useTranslation()
   const { location, setLocation } = useContext(LocationContext)
-  // const { refetch: refetchRestaurants } = useQuery(RESTAURANTS, {
-  //   variables: {
-  //     longitude: location.longitude || null,
-  //     latitude: location.latitude || null,
-  //     shopType: null,
-  //     ip: null
-  //   },
-  //   fetchPolicy: 'network-only'
-  // })
+  const { refetch: refetchRestaurants } = useQuery(RESTAURANTS, {
+    variables: {
+      longitude: location.longitude || null,
+      latitude: location.latitude || null,
+      shopType: null,
+      ip: null
+    },
+    fetchPolicy: 'network-only'
+  })
   function onCompleted() {
     const newArr = addresses.filter((item) => item._id !== addressId)
     const lastAddress = newArr[newArr.length - 1]
@@ -77,12 +77,12 @@ function Addresses() {
     setLocation({
       _id: lastAddress._id,
       label: lastAddress.label,
-      latitude: String(lastAddress.location.coordinates[1]),
-      longitude: String(lastAddress.location.coordinates[0]),
+      latitude: Number(lastAddress.location.coordinates[1]),
+      longitude: Number(lastAddress.location.coordinates[0]),
       deliveryAddress: lastAddress.deliveryAddress,
       details: lastAddress.details
     })
-    // refetchRestaurants()
+    refetchRestaurants()
     FlashMessage({ message: t('addressDeletedMessage') })
   }
 
@@ -177,92 +177,94 @@ function Addresses() {
 
   return (
     <View style={styles(currentTheme).flex}>
-      <FlatList
-        onRefresh={refetchProfile}
-        refreshing={networkStatus === NetworkStatus.refetch}
-        data={profile?.addresses}
-        ListEmptyComponent={emptyView}
-        keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={() => (
-          <View style={styles(currentTheme).line} />
-        )}
-        ListHeaderComponent={() => <View style={{ ...alignment.MTmedium }} />}
-        renderItem={({ item: address }) => (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles(currentTheme).containerSpace]}
-          >
-            <View style={[styles().width100, styles().rowContainer]}>
-              <View style={[styles(currentTheme).homeIcon]}>
-                {addressIcons[address.label]
-                  ? React.createElement(addressIcons[address.label], {
-                      fill: currentTheme.darkBgFont
-                    })
-                  : React.createElement(addressIcons['Other'], {
-                      fill: currentTheme.darkBgFont
-                    })}
-              </View>
-              <View style={[styles().titleAddress]}>
-                <TextDefault
-                  textColor={currentTheme.darkBgFont}
-                  style={styles(currentTheme).labelStyle}
-                >
-                  {t(address.label)}
-                </TextDefault>
-              </View>
-              <View style={styles().buttonsAddress}>
-                <TouchableOpacity
-                  disabled={loadingMutation}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    const [longitude, latitude] = address.location.coordinates
-                    navigation.navigate('EditUserAddress', {
-                      address,
-                      id: address._id,
-                      longitude: +longitude,
-                      latitude: +latitude,
-                      prevScreen: 'Addresses'
-                    })
-                  }}
-                >
-                  <SimpleLineIcons
-                    name='pencil'
-                    size={scale(20)}
-                    color={currentTheme.darkBgFont}
-                  />
-                </TouchableOpacity>
+      {profile?.addresses.length ? (
+        <FlatList
+          onRefresh={refetchProfile}
+          refreshing={networkStatus === NetworkStatus.refetch}
+          data={profile?.addresses ? addresses : null}
+          ListEmptyComponent={emptyView}
+          keyExtractor={(item, index) => index}
+          ItemSeparatorComponent={() => (
+            <View style={styles(currentTheme).line} />
+          )}
+          ListHeaderComponent={() => <View style={{ ...alignment.MTmedium }} />}
+          renderItem={({ item: address }) => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[styles(currentTheme).containerSpace]}
+            >
+              <View style={[styles().width100, styles().rowContainer]}>
+                <View style={[styles(currentTheme).homeIcon]}>
+                  {addressIcons[address.label]
+                    ? React.createElement(addressIcons[address.label], {
+                        fill: currentTheme.darkBgFont
+                      })
+                    : React.createElement(addressIcons['Other'], {
+                        fill: currentTheme.darkBgFont
+                      })}
+                </View>
+                <View style={[styles().titleAddress]}>
+                  <TextDefault
+                    textColor={currentTheme.darkBgFont}
+                    style={styles(currentTheme).labelStyle}
+                  >
+                    {t(address.label)}
+                  </TextDefault>
+                </View>
+                <View style={styles().buttonsAddress}>
+                  <TouchableOpacity
+                    disabled={loadingMutation}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      const [longitude, latitude] = address.location.coordinates
+                      navigation.navigate('EditUserAddress', {
+                        address,
+                        id: address._id,
+                        longitude: +longitude,
+                        latitude: +latitude,
+                        prevScreen: 'Addresses'
+                      })
+                    }}
+                  >
+                    <SimpleLineIcons
+                      name='pencil'
+                      size={scale(20)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  disabled={loadingMutation}
-                  onPress={() => {
-                    setAddressId(address._id)
-                    mutate({ variables: { id: address._id } })
-                  }}
-                >
-                  <EvilIcons
-                    name='trash'
-                    size={scale(33)}
-                    color={currentTheme.darkBgFont}
-                  />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    disabled={loadingMutation}
+                    onPress={() => {
+                      setAddressId(address._id)
+                      mutate({ variables: { id: address._id } })
+                    }}
+                  >
+                    <EvilIcons
+                      name='trash'
+                      size={scale(33)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ ...alignment.MTxSmall }}></View>
               </View>
-              <View style={{ ...alignment.MTxSmall }}></View>
-            </View>
-            <View style={styles().midContainer}>
-              <View style={styles(currentTheme).addressDetail}>
-                <TextDefault
-                  numberOfLines={2}
-                  textColor={currentTheme.darkBgFont}
-                  style={{ ...alignment.PBxSmall }}
-                >
-                  {address.deliveryAddress}
-                </TextDefault>
+              <View style={styles().midContainer}>
+                <View style={styles(currentTheme).addressDetail}>
+                  <TextDefault
+                    numberOfLines={2}
+                    textColor={currentTheme.darkBgFont}
+                    style={{ ...alignment.PBxSmall }}
+                  >
+                    {address.deliveryAddress}
+                  </TextDefault>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      ) : null}
       {/* </ScrollView> */}
       <View>
         <View style={styles(currentTheme).containerButton}>

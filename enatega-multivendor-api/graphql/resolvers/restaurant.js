@@ -148,7 +148,7 @@ module.exports = {
           query.shopType = shopType
         }
         const restaurants = await Restaurant.find(query)
-
+        console.log({ restaurants })
         if (!restaurants.length) {
           return {
             restaurants: [],
@@ -1162,7 +1162,7 @@ module.exports = {
       }
     },
     updateDeliveryBoundsAndLocation: async (_, args) => {
-      console.log('updateDeliveryBoundsAndLocation')
+      console.log('updateDeliveryBoundsAndLocation', { args })
       const { id, bounds: newBounds, location: newLocation } = args
       try {
         const restaurant = await Restaurant.findById(id)
@@ -1197,10 +1197,7 @@ module.exports = {
         }
       } catch (error) {
         console.log('updateDeliveryBoundsAndLocation', error)
-        return {
-          success: false,
-          message: error.message
-        }
+        throw new Error(error)
       }
     }
   }

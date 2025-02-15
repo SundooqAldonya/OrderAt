@@ -15,7 +15,8 @@ import {
   Image,
   ScrollView,
   Animated,
-  RefreshControl
+  RefreshControl,
+  Linking
 } from 'react-native'
 import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { useMutation, useQuery, gql } from '@apollo/client'
@@ -54,6 +55,8 @@ import MainModalize from '../../components/Main/Modalize/MainModalize'
 
 import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
+import useGeocoding from '../../ui/hooks/useGeocoding'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -75,15 +78,18 @@ function Main(props) {
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const { getCurrentLocation } = useLocation()
+  const { getCurrentLocation, getLocationPermission } = useLocation()
+  const { getAddress } = useGeocoding()
+
   const locationData = location
+  console.log({ location })
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
     {
       variables: {
-        longitude: location.longitude || null,
-        latitude: location.latitude || null,
+        longitude: Number(location.longitude) || null,
+        latitude: Number(location.latitude) || null,
         shopType: null,
         ip: null
       },
@@ -164,46 +170,113 @@ function Main(props) {
     mutate({ variables: { id: address._id } })
     modalRef.current.close()
   }
-  async function getAddress(lat, lon) {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
-      console.log(data)
-      return data
-    } catch (error) {
-      console.error('Error fetching address:', error)
-    }
-  }
+  // async function getAddress(lat, lon) {
+  //   const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
+  //   try {
+  //     const response = await fetch(url)
+  //     const data = await response.json()
+  //     console.log(data)
+  //     return data
+  //   } catch (error) {
+  //     console.error('Error fetching address:', error)
+  //   }
+  // }
 
+  // const setCurrentLocation = async () => {
+  //   setBusy(true)
+  //   const { error, coords } = await getCurrentLocation()
+  //   console.log(coords)
+  //   const data = getAddress(coords.latitude, coords.longitude)
+  //   console.log(data, 'data')
+  //   if (data.error) {
+  //     console.log('Reverse geocoding request failed:', data.error)
+  //   } else {
+  //     let address = data.display_name
+  //     if (address.length > 21) {
+  //       address = address.substring(0, 21) + '...'
+  //     }
+
+  //     if (error) navigation.navigate('SelectLocation')
+  //     else {
+  //       modalRef.current.close()
+  //       setLocation({
+  //         label: 'currentLocation',
+  //         latitude: coords.latitude,
+  //         longitude: coords.longitude,
+  //         deliveryAddress: address
+  //       })
+  //       setBusy(false)
+  //     }
+  //     console.log(address)
+  //   }
+  //   console.error('Error fetching reverse geocoding data:', error)
+  // }
   const setCurrentLocation = async () => {
     setBusy(true)
-    const { error, coords } = await getCurrentLocation()
-    console.log(coords)
-    const data = getAddress(coords.latitude, coords.longitude)
-    console.log(data, 'data')
-    if (data.error) {
-      console.log('Reverse geocoding request failed:', data.error)
-    } else {
-      let address = data.display_name
-      if (address.length > 21) {
-        address = address.substring(0, 21) + '...'
-      }
-
-      if (error) navigation.navigate('SelectLocation')
-      else {
-        modalRef.current.close()
+    const { status, canAskAgain } = await getLocationPermission()
+    if (status !== 'granted' && !canAskAgain) {
+      FlashMessage({
+        message: t('locationPermissionMessage'),
+        onPress: async () => {
+          await Linking.openSettings()
+        }
+      })
+      setBusy(false)
+      return
+    }
+    const { error, coords, message } = await getCurrentLocation()
+    console.log({ coords })
+    if (error) {
+      FlashMessage({
+        message
+      })
+      setBusy(false)
+      return
+    }
+    setBusy(false)
+    // setCoordinates({ latitude: coords.latitude, longitude: coords.longitude })
+    getAddress(coords.latitude, coords.longitude).then((res) => {
+      console.log({ res })
+      if (isLoggedIn) {
+        // save the location
+        const addressInput = {
+          _id: '',
+          label: 'Home',
+          latitude: String(coords.latitude),
+          longitude: String(coords.longitude),
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        }
+        mutate({ variables: { addressInput } })
+        // set location
         setLocation({
-          label: 'currentLocation',
+          _id: '',
+          label: 'Home',
           latitude: coords.latitude,
           longitude: coords.longitude,
-          deliveryAddress: address
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
         })
-        setBusy(false)
+      } else {
+        setLocation({
+          _id: '',
+          label: 'Home',
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        })
       }
-      console.log(address)
-    }
-    console.error('Error fetching reverse geocoding data:', error)
+      refetch()
+    })
+
+    // navigation.navigate('AddNewAddress', {
+    //   latitude: coords.latitude,
+    //   longitude: coords.longitude,
+    //   prevScreen: props?.route?.params?.prevScreen
+    //     ? props.route.params.prevScreen
+    //     : null
+    // })
   }
 
   const modalHeader = () => (

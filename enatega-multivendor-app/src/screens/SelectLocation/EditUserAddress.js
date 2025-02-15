@@ -42,8 +42,8 @@ const EDIT_ADDRESS = gql`
   ${editAddress}
 `
 
-const LATITUDE = 30.04442
-const LONGITUDE = 31.235712
+// const LATITUDE = 30.04442
+// const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
@@ -65,8 +65,8 @@ export default function EditUserAddress(props) {
   const { isLoggedIn, refetchProfile } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
-    latitude: latitude || LATITUDE,
-    longitude: longitude || LONGITUDE,
+    latitude: latitude || null,
+    longitude: longitude || null,
     latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
@@ -105,41 +105,9 @@ export default function EditUserAddress(props) {
     )
   })
 
-  useEffect(() => {
-    getCurrentPosition()
-  }, [])
-
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
 
-  const getCurrentPosition = async ({ longitude, latitude }) => {
-    const position = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High
-    })
-    const lat = latitude ? latitude : coordinates.latitude
-    const lng = longitude ? longitude : coordinates.longitude
-    getAddress(lat, lng).then((res) => {
-      console.log({ res })
-      setLocation({
-        _id: '',
-        label: 'Home',
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-        deliveryAddress: res.formattedAddress,
-        details: addressDetails
-      })
-      // setCoordinates({
-      //   ...coordinates,
-      //   longitude: position.coords.longitude,
-      //   latitude: position.coords.latitude
-      // })
-    })
-    // setCoordinates({
-    //   ...coordinates,
-    //   longitude: position.coords.longitude,
-    //   latitude: position.coords.latitude
-    // })
-  }
   const [mutate] = useMutation(EDIT_ADDRESS, {
     onCompleted: (data) => {
       console.log({ data })
@@ -187,8 +155,8 @@ export default function EditUserAddress(props) {
         mutate({ variables: { addressInput } })
         // set location
         setLocation({
-          _id: '',
-          label: 'Home',
+          _id: address._id,
+          label: address.label,
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
           deliveryAddress: res.formattedAddress,
@@ -208,10 +176,33 @@ export default function EditUserAddress(props) {
 
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
-    getCurrentPosition({ ...coords })
+    // getCurrentPosition({ ...coords })
     setCoordinates({
-      ...coords
+      ...coordinates,
+      longitude: coords.longitude,
+      latitude: coords.latitude
     })
+    getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+      console.log({ res })
+
+      // set location
+      setLocation({
+        _id: address._id,
+        label: address.label,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        deliveryAddress: res.formattedAddress,
+        details: addressDetails
+      })
+    })
+    // setLocation({
+    //   _id: address._id,
+    //   label: address.label,
+    //   latitude: String(address.location.coordinates[1]),
+    //   longitude: String(address.location.coordinates[0]),
+    //   deliveryAddress: address.deliveryAddress,
+    //   details: address.details
+    // })
   }
 
   const onItemPress = (city) => {

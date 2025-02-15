@@ -158,11 +158,15 @@ export default function AddNewAddress(props) {
       deliveryAddress: selectedValue.address
         ? selectedValue.address
         : selectedArea.address,
-      details: addressDetails,
-      // latitude: selectedValue.latitude,
-      // longitude: selectedValue.longitude,
-      latitude: selectedArea.location.location.coordinates[1],
-      longitude: selectedArea.location.location.coordinates[0],
+      details: selectedValue.address
+        ? selectedValue.address
+        : selectedArea.address,
+      latitude: selectedArea
+        ? selectedArea.location.location.coordinates[1]
+        : null,
+      longitude: selectedArea
+        ? selectedArea.location.location.coordinates[0]
+        : null,
       city,
       area: selectedArea
     })
@@ -263,7 +267,8 @@ export default function AddNewAddress(props) {
             </TextDefault>
           </TouchableOpacity>
 
-          <View style={[styles(currentTheme).textInput]}>
+          {/* address_details  */}
+          {/* <View style={[styles(currentTheme).textInput]}>
             <TextInput
               value={addressDetails}
               onChangeText={(text) => setAddressDetails(text)}
@@ -275,7 +280,7 @@ export default function AddNewAddress(props) {
                 color: themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
               }}
             />
-          </View>
+          </View> */}
 
           {/* toggle address api button */}
           <View
@@ -320,16 +325,30 @@ export default function AddNewAddress(props) {
 
           {/* saving address */}
           <View style={{ flex: 1 }} />
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles(currentTheme).emptyButton}
-            onPress={onSelectLocation}
-            disabled={!addressDetails || !city || !selectedArea}
-          >
-            <TextDefault textColor={currentTheme.buttonText} center H5>
-              {t('saveBtn')}
-            </TextDefault>
-          </TouchableOpacity>
+          {city && selectedArea ? (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles(currentTheme).emptyButton}
+              onPress={onSelectLocation}
+              disabled={!city || !selectedArea}
+            >
+              <TextDefault textColor={currentTheme.buttonText} center H5>
+                {t('saveBtn')}
+              </TextDefault>
+            </TouchableOpacity>
+          ) : null}
+          {!city || !selectedArea ? (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles(currentTheme).disabledButton}
+              onPress={onSelectLocation}
+              disabled={!city || !selectedArea}
+            >
+              <TextDefault textColor={currentTheme.buttonText} center H5>
+                {t('saveBtn')}
+              </TextDefault>
+            </TouchableOpacity>
+          ) : null}
 
           {/* search address google api */}
           <SearchModal

@@ -42,10 +42,10 @@ const MainModalize = ({
       }}
       flatListProps={{
         data: isLoggedIn && profile ? profile.addresses : '',
-        ListHeaderComponent: modalFooter(),
-        // ListFooterComponent: modalFooter(),
+        ListHeaderComponent: modalHeader(),
+        ListFooterComponent: modalFooter(),
         showsVerticalScrollIndicator: false,
-        keyExtractor: (item) => item._id,
+        keyExtractor: (item, index) => index,
         renderItem: ({ item: address }) => (
           <View style={styles(currentTheme).addressbtn}>
             <TouchableOpacity

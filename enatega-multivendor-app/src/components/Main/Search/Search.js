@@ -12,7 +12,6 @@ function Search(props) {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-
   return (
     <View
       style={[
@@ -31,9 +30,9 @@ function Search(props) {
             <View style={styles().inputContainer}>
               <TextInput
                 style={styles(currentTheme).bodyStyleOne}
-                placeholder={props.placeHolder}
+                placeholder={t(props.placeHolder)}
                 placeholderTextColor={
-                  currentTheme === 'Dark' ? '#fff' : colors.border1
+                  themeContext.ThemeValue === 'Dark' ? '#fff' : colors.border1
                 }
                 onChangeText={(text) => props.setSearch(text)}
                 value={props.search}

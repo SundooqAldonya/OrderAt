@@ -43,25 +43,25 @@ function DeliveryBoundsAndLocation() {
   const user = isAuthenticated() ? isAuthenticated() : null
   console.log({ user })
 
-  const [center, setCenter] = useState({ lat: 33.684422, lng: 73.047882 })
-  const [marker, setMarker] = useState({ lat: 33.684422, lng: 73.047882 })
+  const [center, setCenter] = useState({ lat: 30.9388, lng: 31.1107 })
+  const [marker, setMarker] = useState({ lat: 30.9388, lng: 31.1107 })
   const [path, setPath] = useState([
-    {
-      lat: 33.6981335731709,
-      lng: 73.036895671875
-    },
-    {
-      lat: 33.684779099960515,
-      lng: 73.04650870898438
-    },
-    {
-      lat: 33.693206228391965,
-      lng: 73.06461898425293
-    },
-    {
-      lat: 33.706880699271096,
-      lng: 73.05410472491455
-    }
+    // {
+    //   lat: 33.6981335731709,
+    //   lng: 73.036895671875
+    // },
+    // {
+    //   lat: 33.684779099960515,
+    //   lng: 73.04650870898438
+    // },
+    // {
+    //   lat: 33.693206228391965,
+    //   lng: 73.06461898425293
+    // },
+    // {
+    //   lat: 33.706880699271096,
+    //   lng: 73.05410472491455
+    // }
   ])
   const polygonRef = useRef()
   const listenersRef = useRef([])
@@ -79,7 +79,27 @@ function DeliveryBoundsAndLocation() {
     {
       update: updateCache,
       onError,
-      onCompleted
+      onCompleted: ({ result }) => {
+        const restaurant = result?.data || null
+        console.log({ restaurant })
+
+        if (restaurant) {
+          setCenter({
+            lat: +restaurant.location.coordinates[1],
+            lng: +restaurant.location.coordinates[0]
+          })
+          setMarker({
+            lat: +restaurant.location.coordinates[1],
+            lng: +restaurant.location.coordinates[0]
+          })
+          setPath(
+            restaurant.deliveryBounds
+              ? transformPolygon(restaurant.deliveryBounds.coordinates[0])
+              : path
+          )
+          setSuccessMessage(t('LocationUpdatedSuccessfully'))
+        }
+      }
     }
   )
 
@@ -167,8 +187,13 @@ function DeliveryBoundsAndLocation() {
     }
   }
 
-  function onError({ networkError, graphqlErrors }) {
-    setErrorMessage(t('UpdatingLocationError'))
+  function onError(error) {
+    console.log({ error })
+    const errorZone = error?.message?.includes('delivery zone')
+    if (errorZone) {
+      const errorMessage = error.message.split(': ').pop()
+      setErrorMessage(errorMessage)
+    }
     setTimeout(() => setErrorMessage(''), 5000) // Clear error message after 5 seconds
   }
 
@@ -183,9 +208,9 @@ function DeliveryBoundsAndLocation() {
       setTimeout(() => setErrorMessage(''), 5000) // Clear success message after 5 seconds
       return false
     }
-    setSuccessMessage(t('LocationUpdatedSuccessfully'))
+
     setTimeout(() => setSuccessMessage(''), 5000) // Clear success message after 5 seconds
-    setErrorMessage('')
+    // setErrorMessage('')
     return true
   }
 
@@ -224,7 +249,7 @@ function DeliveryBoundsAndLocation() {
               zoom={14}
               center={center}
               onClick={onClick}>
-              {
+              {path?.length ? (
                 <Polygon
                   editable
                   draggable
@@ -235,7 +260,7 @@ function DeliveryBoundsAndLocation() {
                   onRightClick={removePolygon}
                   paths={path}
                 />
-              }
+              ) : null}
               {marker && (
                 <Marker
                   position={marker}
@@ -316,7 +341,7 @@ function DeliveryBoundsAndLocation() {
                         location,
                         boundType: 'Polygon',
                         address: 'nil',
-                        location,
+                        // location,
                         bounds
                       }
 

@@ -36,12 +36,13 @@ const Rider = require('./models/rider.js')
 const EventEmitter = require('events')
 const emitter = new EventEmitter()
 
-emitter.setMaxListeners(20)
+emitter.setMaxListeners(50)
 async function startApolloServer() {
   const httpServer = http.createServer(app)
   mongoose
     .connect(config.CONNECTION_STRING, {
-      dbName: config.DB_NAME
+      dbName: config.DB_NAME,
+      serverSelectionTimeoutMS: 30000
     })
     .then(() => {
       console.log('Connected to DB!')
