@@ -20,6 +20,7 @@ import { direction } from "../../utils/helper";
 import { SearchContext } from "../../context/useSearch";
 import SearchRestaurantNav from "./SearchRestaurantNav";
 import PickDeliveryTabs from "./PickDeliveryTabs";
+import { Fragment } from "react";
 
 function DHeader({
   navitems,
@@ -38,9 +39,7 @@ function DHeader({
   const { i18n } = useTranslation();
   const { language } = i18n;
   const { search, setSearch } = useContext(SearchContext);
-
   const currentLang = localStorage.getItem("enatega-language") || language;
-  console.log({ currentLang });
 
   const handleLanguageChange = () => {
     const savedLanguage = localStorage.getItem("enatega-language");
@@ -74,8 +73,8 @@ function DHeader({
           {/* <Logo height={37} width={169} /> */}
           <Box
             style={{
-              width: 200,
-              height: 64,
+              width: mobile ? 50 : 200,
+              height: mobile ? 20 : 64,
             }}
           >
             <img
@@ -89,12 +88,16 @@ function DHeader({
           </Box>
         </RouterLink>
         <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>
-          <PickDeliveryTabs />
-          <SearchRestaurantNav
-            search={search}
-            setSearch={setSearch}
-            navbar={true}
-          />
+          {!mobile ? (
+            <Fragment>
+              <PickDeliveryTabs />
+              <SearchRestaurantNav
+                search={search}
+                setSearch={setSearch}
+                navbar={true}
+              />
+            </Fragment>
+          ) : null}
         </Box>
         <Box
           className={classes.flex}
