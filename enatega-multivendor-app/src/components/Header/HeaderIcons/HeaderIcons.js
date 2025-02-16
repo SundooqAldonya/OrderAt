@@ -262,23 +262,21 @@ function RightButton(props) {
         )}
       </View>
     )
-  }
-  //  else if (props.icon === 'target') {
-  //   return (
-  //     <HeaderBackButton
-  //       truncatedLabel=''
-  //       pressColorAndroid={rippleColor}
-  //       labelVisible={false}
-  //       backImage={() => (
-  //         <View style={[styles().rightContainer]}>
-  //           {BackButton({ iconColor: colors.background, icon: 'target' })}
-  //         </View>
-  //       )}
-  //       onPress={props.onPressRight}
-  //     />
-  //   )
-  // }
-  else {
+  } else if (props.icon === 'target') {
+    return (
+      <HeaderBackButton
+        truncatedLabel=''
+        pressColorAndroid={rippleColor}
+        labelVisible={false}
+        backImage={() => (
+          <View style={[styles().rightContainer]}>
+            {BackButton({ iconColor: colors.background, icon: 'target' })}
+          </View>
+        )}
+        onPress={props.onPressRight}
+      />
+    )
+  } else {
     return null
   }
 }

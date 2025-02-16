@@ -66,7 +66,10 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
       modalHeight={MODAL_HEIGHT}
       modalStyle={modalStyle}
     >
-      <View style={{ marginTop: scale(20), marginHorizontal: scale(10) }}>
+      <TouchableOpacity
+        style={{ marginTop: scale(20), marginHorizontal: scale(10) }}
+        onPress={() => onPressDetails(order)}
+      >
         <View
           style={{
             justifyContent: 'space-between',
@@ -123,7 +126,7 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
             </TextDefault>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modalize>
   )
 }

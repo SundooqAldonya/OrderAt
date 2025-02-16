@@ -557,5 +557,6 @@ export const en = {
   total_without_tax: 'Total without tax',
   select_area: 'Select Area',
   explore_areas: 'Explore Areas',
-  address_details: 'Address details'
+  address_details: 'Address details',
+  set_location: 'Set location'
 }

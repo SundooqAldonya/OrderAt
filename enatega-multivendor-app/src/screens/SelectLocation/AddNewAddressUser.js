@@ -3,14 +3,16 @@ import React, {
   useContext,
   useLayoutEffect,
   useEffect,
-  useRef
+  useRef,
+  Fragment
 } from 'react'
 import {
   View,
   TouchableOpacity,
   StatusBar,
   Linking,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
@@ -25,7 +27,12 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
 import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import analytics from '../../utils/analytics'
-import { Feather, EvilIcons } from '@expo/vector-icons'
+import {
+  Feather,
+  EvilIcons,
+  createIconSetFromFontello,
+  Entypo
+} from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
@@ -42,8 +49,8 @@ const CREATE_ADDRESS = gql`
   ${createAddress}
 `
 
-const LATITUDE = 30.04442
-const LONGITUDE = 31.235712
+// const LATITUDE = 30.04442
+// const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
@@ -63,11 +70,12 @@ export default function AddNewAddressUser(props) {
   const { isLoggedIn } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
-    latitude: latitude || LATITUDE,
-    longitude: longitude || LONGITUDE,
+    latitude: latitude || null,
+    longitude: longitude || null,
     latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
+
   const [modalVisible, setModalVisible] = useState(false)
 
   useLayoutEffect(() => {
@@ -77,23 +85,74 @@ export default function AddNewAddressUser(props) {
         fontColor: currentTheme.newFontcolor,
         backColor: currentTheme.newheaderBG,
         iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor
-        // getCurrentPosition
+        lineColor: currentTheme.newIconColor,
+        setCurrentLocation: getCurrentPositionNav
       })
     )
   })
 
   useEffect(() => {
-    getCurrentPosition()
-  }, [])
+    if (!coordinates.latitude) {
+      getCurrentPositionNav()
+    }
+  }, [coordinates])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
 
+  const getCurrentPositionNav = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
+        })
+        return
+      }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 0,
+        timeout: 5000
+      })
+      console.log('Current Position:', position.coords)
+      setCoordinates({
+        ...coordinates,
+        longitude: position.coords.longitude,
+        latitude: position.coords.latitude
+      })
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          setLocation({
+            _id: '',
+            label: 'Home',
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            deliveryAddress: res.formattedAddress,
+            details: addressDetails
+          })
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+
+          if (mapRef.current) {
+            mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+          }
+        }
+      )
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
+  }
+
   const getCurrentPosition = async ({ longitude, latitude }) => {
-    const position = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High
-    })
     const lat = latitude ? latitude : coordinates.latitude
     const lng = longitude ? longitude : coordinates.longitude
     getAddress(lat, lng).then((res) => {
@@ -101,8 +160,8 @@ export default function AddNewAddressUser(props) {
       setLocation({
         _id: '',
         label: 'Home',
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
+        latitude: lat,
+        longitude: lng,
         deliveryAddress: res.formattedAddress,
         details: addressDetails
       })
@@ -140,19 +199,26 @@ export default function AddNewAddressUser(props) {
       setLoading(false)
       return
     }
-    const { error, coords, message } = await getCurrentLocation()
-    if (error) {
-      FlashMessage({
-        message
-      })
-      setLoading(false)
-      return
-    }
+    // const { error, coords, message } = await getCurrentLocation()
+    // if (error) {
+    //   FlashMessage({
+    //     message
+    //   })
+    //   setLoading(false)
+    //   return
+    // }
     setLoading(false)
     getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
       console.log({ res })
       if (isLoggedIn) {
         // save the location
+        // if (!addressDetails) {
+        //   Alert.alert(
+        //     'Address details is required',
+        //     'Please add address details'
+        //   )
+        //   return
+        // }
         const addressInput = {
           _id: '',
           label: 'Home',
@@ -186,9 +252,11 @@ export default function AddNewAddressUser(props) {
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
     getCurrentPosition({ ...coords })
-    setCoordinates({
-      ...coords
-    })
+    setCoordinates((prev) => ({
+      ...prev,
+      latitude: coords.latitude,
+      longitude: coords.longitude
+    }))
   }
 
   const onItemPress = (city) => {
@@ -207,30 +275,61 @@ export default function AddNewAddressUser(props) {
     <>
       <View style={styles().flex}>
         <View style={styles().mapView}>
-          <MapView
-            ref={mapRef}
-            initialRegion={coordinates}
-            region={coordinates}
-            style={{ flex: 1 }}
-            provider={PROVIDER_GOOGLE}
-            showsTraffic={false}
-            maxZoomLevel={15}
-            // customMapStyle={
-            //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
-            // }
-            onRegionChangeComplete={onRegionChangeComplete}
-            bounce
-          />
-          <View style={styles().mainContainer}>
-            <CustomMarker
-              width={40}
-              height={40}
-              transform={[{ translateY: -20 }]}
-              translateY={-20}
-            />
-          </View>
+          {coordinates.latitude ? (
+            <Fragment>
+              <MapView
+                ref={mapRef}
+                initialRegion={coordinates}
+                region={coordinates}
+                style={{ flex: 1 }}
+                provider={PROVIDER_GOOGLE}
+                showsTraffic={false}
+                maxZoomLevel={15}
+                // customMapStyle={
+                //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
+                // }
+                onRegionChangeComplete={onRegionChangeComplete}
+                bounce
+              />
+              <View style={styles().mainContainer}>
+                <CustomMarker
+                  width={40}
+                  height={40}
+                  transform={[{ translateY: -20 }]}
+                  translateY={-20}
+                />
+              </View>
+            </Fragment>
+          ) : null}
         </View>
+
         <View style={styles(currentTheme).container}>
+          <TouchableOpacity
+            style={{
+              alignSelf: 'center',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderBottomWidth: 1,
+              borderBottomColor: currentTheme.newFontcolor
+            }}
+            onPress={getCurrentPositionNav}
+          >
+            <TextDefault
+              textColor={currentTheme.newFontcolor}
+              bolder
+              Left
+              style={{ ...styles().heading, paddingLeft: 0 }}
+            >
+              {t('useCurrentLocation')}
+            </TextDefault>
+            <Entypo
+              name='location'
+              size={15}
+              color={currentTheme.newFontcolor}
+              style={{ marginTop: -20 }}
+            />
+          </TouchableOpacity>
           <TextDefault
             textColor={currentTheme.newFontcolor}
             H3

@@ -111,9 +111,11 @@ function Login(props) {
                           : {}
                       ]}
                       placeholderTextColor={currentTheme.fontSecondColor}
-                      // value={email}
+                      autoCapitalize='none'
                       defaultValue=''
-                      onChangeText={(e) => setEmail(e.toLowerCase().trim())}
+                      onChangeText={(text) =>
+                        setEmail(text.toLowerCase().trim())
+                      }
                     />
                     {emailError !== null && (
                       <TextDefault

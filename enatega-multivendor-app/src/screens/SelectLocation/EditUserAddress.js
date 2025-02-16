@@ -25,7 +25,7 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
 import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import analytics from '../../utils/analytics'
-import { Feather, EvilIcons } from '@expo/vector-icons'
+import { Feather, EvilIcons, Entypo } from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
@@ -57,6 +57,7 @@ export default function EditUserAddress(props) {
   const navigation = useNavigation()
   const inset = useSafeAreaInsets()
   const [loading, setLoading] = useState(false)
+  const [locationChangeLoading, setLocationChangeLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
@@ -99,8 +100,8 @@ export default function EditUserAddress(props) {
         fontColor: currentTheme.newFontcolor,
         backColor: currentTheme.newheaderBG,
         iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor
-        // getCurrentPosition
+        lineColor: currentTheme.newIconColor,
+        setCurrentLocation: getCurrentPositionNav
       })
     )
   })
@@ -118,6 +119,54 @@ export default function EditUserAddress(props) {
       console.log({ err })
     }
   })
+
+  const getCurrentPositionNav = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
+        })
+        return
+      }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 1000,
+        timeout: 1000
+      })
+      console.log('Current Position:', position.coords)
+
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          setLocation({
+            _id: '',
+            label: 'Home',
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            deliveryAddress: res.formattedAddress,
+            details: addressDetails
+          })
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+          if (mapRef.current) {
+            mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+          }
+        }
+      )
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
+  }
+
   const handleCurrentLocation = async () => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()
@@ -176,15 +225,14 @@ export default function EditUserAddress(props) {
 
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
-    // getCurrentPosition({ ...coords })
+
     setCoordinates({
       ...coordinates,
       longitude: coords.longitude,
       latitude: coords.latitude
     })
-    getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+    getAddress(coords.latitude, coords.longitude).then((res) => {
       console.log({ res })
-
       // set location
       setLocation({
         _id: address._id,
@@ -195,14 +243,6 @@ export default function EditUserAddress(props) {
         details: addressDetails
       })
     })
-    // setLocation({
-    //   _id: address._id,
-    //   label: address.label,
-    //   latitude: String(address.location.coordinates[1]),
-    //   longitude: String(address.location.coordinates[0]),
-    //   deliveryAddress: address.deliveryAddress,
-    //   details: address.details
-    // })
   }
 
   const onItemPress = (city) => {
@@ -245,6 +285,32 @@ export default function EditUserAddress(props) {
           </View>
         </View>
         <View style={styles(currentTheme).container}>
+          <TouchableOpacity
+            style={{
+              alignSelf: 'center',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderBottomWidth: 1,
+              borderBottomColor: currentTheme.newFontcolor
+            }}
+            onPress={getCurrentPositionNav}
+          >
+            <TextDefault
+              textColor={currentTheme.newFontcolor}
+              bolder
+              Left
+              style={{ ...styles().heading, paddingLeft: 0 }}
+            >
+              {t('useCurrentLocation')}
+            </TextDefault>
+            <Entypo
+              name='location'
+              size={15}
+              color={currentTheme.newFontcolor}
+              style={{ marginTop: -20 }}
+            />
+          </TouchableOpacity>
           <TextDefault
             textColor={currentTheme.newFontcolor}
             H3

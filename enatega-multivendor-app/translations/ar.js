@@ -552,5 +552,6 @@ export const ar = {
   total_without_tax: 'القيمة بدون ضريبة',
   select_area: 'اختر المنطقة',
   explore_areas: 'أختر منطقة',
-  address_details: 'تفاصيل العنوان'
+  address_details: 'تفاصيل العنوان',
+  set_location: 'قم باختيار الموقع'
 }

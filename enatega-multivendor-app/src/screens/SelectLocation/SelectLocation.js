@@ -3,7 +3,8 @@ import React, {
   useContext,
   useLayoutEffect,
   useEffect,
-  useRef
+  useRef,
+  Fragment
 } from 'react'
 import { View, TouchableOpacity, StatusBar, Linking } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -36,8 +37,8 @@ const CREATE_ADDRESS = gql`
   ${createAddress}
 `
 
-const LATITUDE = 30.04442
-const LONGITUDE = 31.235712
+// const LATITUDE = 30.04442
+// const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
@@ -73,7 +74,7 @@ export default function SelectLocation(props) {
         backColor: currentTheme.newheaderBG,
         iconColor: currentTheme.newIconColor,
         lineColor: currentTheme.newIconColor,
-        setCurrentLocation
+        setCurrentLocation: getCurrentPosition
       })
     )
   })
@@ -82,20 +83,51 @@ export default function SelectLocation(props) {
     if (!coordinates.latitude) {
       getCurrentPosition()
     }
-  }, [coordinates.latitude])
+  }, [coordinates])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
 
   const getCurrentPosition = async () => {
-    const position = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High
-    })
-    setCoordinates({
-      ...coordinates,
-      longitude: position.coords.longitude,
-      latitude: position.coords.latitude
-    })
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
+        })
+        return
+      }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 0,
+        timeout: 5000
+      })
+      console.log('Current Position:', position.coords)
+      // const lat =
+      // getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+      const newCoordinates = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+      }
+      setCoordinates((prev) => ({
+        ...prev, // Creates a new reference
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      }))
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+      }
+      // })
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
   }
 
   const [mutate] = useMutation(CREATE_ADDRESS, {
@@ -191,28 +223,30 @@ export default function SelectLocation(props) {
   return (
     <>
       <View style={styles().flex}>
-        {coordinates.latitude ? (
-          <View style={styles().mapView}>
-            <MapView
-              ref={mapRef}
-              initialRegion={coordinates}
-              region={coordinates}
-              style={{ flex: 1 }}
-              provider={PROVIDER_GOOGLE}
-              showsTraffic={false}
-              maxZoomLevel={15}
-              onRegionChangeComplete={onRegionChangeComplete}
-            />
-            <View style={styles().mainContainer}>
-              <CustomMarker
-                width={40}
-                height={40}
-                transform={[{ translateY: -20 }]}
-                translateY={-20}
+        <View style={styles().mapView}>
+          {coordinates.latitude ? (
+            <Fragment>
+              <MapView
+                ref={mapRef}
+                initialRegion={coordinates}
+                region={coordinates}
+                style={{ flex: 1 }}
+                provider={PROVIDER_GOOGLE}
+                showsTraffic={false}
+                maxZoomLevel={15}
+                onRegionChangeComplete={onRegionChangeComplete}
               />
-            </View>
-          </View>
-        ) : null}
+              <View style={styles().mainContainer}>
+                <CustomMarker
+                  width={40}
+                  height={40}
+                  transform={[{ translateY: -20 }]}
+                  translateY={-20}
+                />
+              </View>
+            </Fragment>
+          ) : null}
+        </View>
         <View style={styles(currentTheme).container}>
           <TextDefault
             textColor={currentTheme.newFontcolor}
@@ -233,7 +267,7 @@ export default function SelectLocation(props) {
               <EvilIcons name='location' size={18} color='black' />
             </View>
             <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('useCurrentLocation')}
+              {t('set_location')}
             </TextDefault>
             {loading && (
               <Spinner
