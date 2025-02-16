@@ -11,14 +11,17 @@ import { useTheme } from "@emotion/react";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { useTranslation } from "react-i18next";
+import logo from "../../../assets/8.png";
+import logoAr from "../../../assets/9.png";
 
 function LoginDesktopHeader({ title, showIcon, showCart = false }) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const classes = useStyle();
   const theme = useTheme();
   const location = useLocation();
-  const currentLang = localStorage.getItem("enatega-language");
-
+  const { language } = i18n;
+  const currentLang = localStorage.getItem("enatega-language") || language;
+  console.log({ currentLang });
   const handleLanguageChange = () => {
     const savedLanguage = localStorage.getItem("enatega-language");
     if (savedLanguage === "en") {
@@ -36,7 +39,22 @@ function LoginDesktopHeader({ title, showIcon, showCart = false }) {
           to={location.pathname === "/checkout" ? "/business-list" : "/"}
           className={classes.linkDecoration}
         >
-          <Logo height={37} width={169} />
+          {/* <Logo height={37} width={169} /> */}
+          <Box
+            style={{
+              width: 200,
+              height: 64,
+            }}
+          >
+            <img
+              src={currentLang === "en" ? logo : logoAr}
+              alt="logo"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </Box>
         </RouterLink>
 
         <Box

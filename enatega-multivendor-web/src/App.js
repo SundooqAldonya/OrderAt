@@ -165,7 +165,7 @@ function App() {
         VAPID_KEY={VAPID_KEY}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={isLoggedIn ? <BusinessList /> : <Home />} />
           <Route path="/business-list" element={<BusinessList />} />
           <Route path="/add-your-business" element={<AddYourBusiness />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />

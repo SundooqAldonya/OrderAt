@@ -13,11 +13,13 @@ import { ReactComponent as PersonIcon } from "../../assets/icons/user.svg";
 import { ReactComponent as FavoriteBorderIcon } from "../../assets/icons/favourite.svg";
 import { ReactComponent as LocalMallIcon } from "../../assets/icons/cart.svg";
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/8.png";
+import logoAr from "../../assets/9.png";
 import { useTranslation } from "react-i18next";
 import { direction } from "../../utils/helper";
-import { SearchRestaurant } from "../RestaurantComponent";
 import { SearchContext } from "../../context/useSearch";
+import SearchRestaurantNav from "./SearchRestaurantNav";
+import PickDeliveryTabs from "./PickDeliveryTabs";
 
 function DHeader({
   navitems,
@@ -37,7 +39,8 @@ function DHeader({
   const { language } = i18n;
   const { search, setSearch } = useContext(SearchContext);
 
-  const currentLang = localStorage.getItem("enatega-language");
+  const currentLang = localStorage.getItem("enatega-language") || language;
+  console.log({ currentLang });
 
   const handleLanguageChange = () => {
     const savedLanguage = localStorage.getItem("enatega-language");
@@ -72,11 +75,11 @@ function DHeader({
           <Box
             style={{
               width: 200,
-              height: 100,
+              height: 64,
             }}
           >
             <img
-              src={logo}
+              src={currentLang === "en" ? logo : logoAr}
               alt="logo"
               style={{
                 width: "100%",
@@ -85,8 +88,9 @@ function DHeader({
             />
           </Box>
         </RouterLink>
-        <Box sx={{ width: "40%" }}>
-          <SearchRestaurant
+        <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>
+          <PickDeliveryTabs />
+          <SearchRestaurantNav
             search={search}
             setSearch={setSearch}
             navbar={true}

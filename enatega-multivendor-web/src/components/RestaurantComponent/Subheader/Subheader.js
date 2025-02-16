@@ -24,8 +24,10 @@ import { useLocationContext } from "../../../context/Location";
 import { useLocation } from "../../../hooks";
 import FlashMessage from "../../FlashMessage";
 import useStyles from "./styles";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { DeliveryCard } from "../../Checkout";
+import { ExpandContext } from "../../../context/useExpand";
+import { useContext } from "react";
 
 const autocompleteService = { current: null };
 
@@ -35,7 +37,9 @@ function Subheader() {
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
   const spacingTop = mobile ? "52px" : "63px";
   const classes = useStyles();
-  const [expand, setExpand] = useState(false);
+  // const [expand, setExpand] = useState(false);
+  const { expand, setExpand } = useContext(ExpandContext);
+
   const { location, setLocation } = useLocationContext();
   const { getCurrentLocation } = useLocation();
   const [search, setSearch] = useState(
@@ -135,7 +139,11 @@ function Subheader() {
         }}
         className={`${classes.root} ${classes.shadow} ${classes.mainContainer}`}
       >
-        <FlashMessage alertMessage={alertMessage} open={open} setOpen={setOpen} />
+        <FlashMessage
+          alertMessage={alertMessage}
+          open={open}
+          setOpen={setOpen}
+        />
         <Grid container>
           <Grid item xs={12}>
             <Button
@@ -152,10 +160,10 @@ function Subheader() {
                 style={{
                   backgroundColor: theme.palette.primary.main,
                   fontWeight: theme.typography.fontWeightBold,
-                  color:theme.palette.common.white,
+                  color: theme.palette.common.white,
                 }}
               >
-                {t('deliveringTo')}
+                {t("deliveringTo")}
               </Typography>
               <Box
                 style={{

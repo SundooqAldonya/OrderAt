@@ -168,7 +168,8 @@ function BusinessList() {
         handleClose={toggleSnackbar}
       />
       {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
-      <Subheader />
+
+      {isLoggedIn && <Subheader />}
       <Box dir={direction(i18n.language)} className={classes.searchWrapper}>
         <Grid container item>
           <SearchContainer

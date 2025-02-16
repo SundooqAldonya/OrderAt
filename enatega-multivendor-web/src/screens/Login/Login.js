@@ -104,7 +104,7 @@ function Login() {
       >
         {t("signUpOrLogin")}
       </Typography>
-      <LoginSocialFacebook
+      {/* <LoginSocialFacebook
         // appId={"3511551789148450"}
         appId={"922954276598263"}
         onLoginStart={onLoginStart}
@@ -118,7 +118,7 @@ function Login() {
         }}
       >
         <FacebookLoginButton />
-      </LoginSocialFacebook>
+      </LoginSocialFacebook> */}
       <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         render={(renderProps) => (

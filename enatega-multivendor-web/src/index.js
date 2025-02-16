@@ -11,6 +11,7 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import theme from "./utils/theme";
 import { SearchProvider } from "./context/useSearch";
+import { ExpandProvider } from "./context/useExpand";
 
 function Main() {
   const client = setupAplloClient();
@@ -20,11 +21,13 @@ function Main() {
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
             <UserProvider>
-              <LocationProvider>
-                <SearchProvider>
-                  <App />
-                </SearchProvider>
-              </LocationProvider>
+              <ExpandProvider>
+                <LocationProvider>
+                  <SearchProvider>
+                    <App />
+                  </SearchProvider>
+                </LocationProvider>
+              </ExpandProvider>
             </UserProvider>
           </ThemeProvider>
         </StyledEngineProvider>
