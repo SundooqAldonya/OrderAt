@@ -169,7 +169,7 @@ function BusinessList() {
       />
       {isLoggedIn ? <Header /> : <LoginHeader showIcon />}
 
-      {!isLoggedIn && <Subheader />}
+      <Subheader />
       <Box dir={direction(i18n.language)} className={classes.searchWrapper}>
         <Grid container item>
           <SearchContainer
