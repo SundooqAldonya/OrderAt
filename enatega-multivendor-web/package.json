@@ -54,7 +54,6 @@
     "stripe": "^12.3.0",
     "stylis-plugin-rtl": "^2.1.1",
     "subscriptions-transport-ws": "^0.9.19",
-    "swiper": "^11.2.4",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"
   },
