@@ -168,7 +168,7 @@ function App() {
         <Routes>
           <Route path="/" element={isLoggedIn ? <BusinessList /> : <Home />} />
           <Route path="/business-list" element={<BusinessList />} />
-          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/landing1" element={<LandingPage />} />
           <Route path="/add-your-business" element={<AddYourBusiness />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
