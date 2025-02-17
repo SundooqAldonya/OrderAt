@@ -1,11 +1,11 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import { t } from "i18next";
 import React, { useState } from "react";
 
 const Aboutus = () => {
   const [data, setData] = useState({
-    title: "About us",
-    description:
-      "Ordrat is an advanced delivery platform that connects businesses, customers, and delivery technicians in a seamless experience. Whether you’re looking to expand your business, earn extra income as a delivery captain, or order products easily – we’re here to serve you.",
+    title: t("aboutus"),
+    description: t("about_us_description"),
     image:
       "https://images.unsplash.com/photo-1602306834394-6c8b7ea0ed9d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   });

@@ -207,6 +207,26 @@ const ar = {
     created_business: "تم إنشاء الشركة!",
     label: "المنطقة",
     delivery_details: "معلومات التوصيل",
+    welcome_to_orderat: "مرحبًا بك في أوردات!",
+    "Order from one of our restaurants": "اطلب من أحد مطاعمنا",
+    "Be our delivery team": "مستقبل التوصيل الذكي – اسهل - اسرع و اقرب.",
+    "Become our partner": "كن شريكنا",
+    aboutus: "رؤيتنا",
+    about_us_description:
+      "أوردرات هي منصة توصيل متقدمة تربط بين الشركات والعملاء وفنيي التوصيل في تجربة سلسة. سواء كنت تتطلع إلى توسيع نطاق عملك أو كسب دخل إضافي كقائد توصيل أو طلب المنتجات بسهولة - فنحن هنا لخدمتك.",
+    for_companies_title: "للشركات",
+    for_companies_description: "وسع نطاق عملك مع حلول توصيل سريعة وموثوقة",
+    btn_text_partner: "انضم كشريك",
+    for_riders: "للسائقين",
+    for_riders_description:
+      "انضم إلى أوردات وابدأ في تحقيق دخل مرن من التوصيل.",
+    btn_text_rider: "انضم كسائق",
+    for_customers: "للعملاء",
+    for_customers_description: "استمتع بتجربة طلب سهلة وسريعة",
+    btn_text_customer: "أطلب الآن",
+    facing_problem: "هل تواجه مشكلة؟",
+    contactus: "قم بالتواصل معنا",
+    contact_email: "يرجى الاتصال بنا على البريد الإلكتروني الخاص بنا",
   },
 };
 export default ar;

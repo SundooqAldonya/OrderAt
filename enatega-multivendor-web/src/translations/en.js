@@ -212,6 +212,26 @@ const en = {
     created_business: "Created business successfully!",
     label: "Label",
     delivery_details: "Delivery Details",
+    welcome_to_orderat: "Welcome to orderat",
+    "Order from one of our restaurants": "Order from one of our restaurants",
+    "Be our delivery team": "Be our delivery team",
+    "Become our partner": "Become our partner",
+    aboutus: "About us",
+    about_us_description:
+      "Ordrat is an advanced delivery platform that connects businesses, customers, and delivery technicians in a seamless experience. Whether you’re looking to expand your business, earn extra income as a delivery captain, or order products easily – we’re here to serve you.",
+    for_companies_title: "For Companies",
+    for_companies_description:
+      "Expand your business with fast and reliable delivery solutions.",
+    btn_text_partner: "Join as partner",
+    for_riders: "For riders",
+    for_riders_description: "Join Oradat and start making flexible delivery.",
+    btn_text_rider: "Join as rider",
+    for_customers: "For customers",
+    for_customers_description: "Enjoy a quick and easy ordering experience.",
+    btn_text_customer: "Order now",
+    facing_problem: "Are you facing a problem?",
+    contactus: "Contact us",
+    contact_email: "Please contact us on our email",
   },
 };
 export default en;
