@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router";
-import LoginDesktopHeader from "./DesktopHeader";
+import DesktopHeader from "./DesktopHeader";
 
 const TITLE = "Enatega";
 
@@ -12,16 +12,14 @@ const REGISTRATION_PATH = [
   "/forgot-password",
   "/email-sent",
   "/phone-number",
-  "/verify-email"
+  "/verify-email",
 ];
 
 function Header({ showIcon = false }) {
   const location = useLocation();
   const showCart = !REGISTRATION_PATH.includes(location.pathname);
 
-  return (
-    <LoginDesktopHeader showIcon={showIcon} title={TITLE} showCart={showCart} />
-  );
+  return <DesktopHeader showIcon={showIcon} title={TITLE} showCart={false} />;
 }
 
 export default React.memo(Header);

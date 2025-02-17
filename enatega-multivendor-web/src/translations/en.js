@@ -232,6 +232,7 @@ const en = {
     facing_problem: "Are you facing a problem?",
     contactus: "Contact us",
     contact_email: "Please contact us on our email",
+    home: "Home",
   },
 };
 export default en;

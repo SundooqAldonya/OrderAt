@@ -227,6 +227,7 @@ const ar = {
     facing_problem: "هل تواجه مشكلة؟",
     contactus: "قم بالتواصل معنا",
     contact_email: "يرجى الاتصال بنا على البريد الإلكتروني الخاص بنا",
+    home: "الرئيسية",
   },
 };
 export default ar;

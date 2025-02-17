@@ -21,6 +21,8 @@ import { SearchContext } from "../../context/useSearch";
 import SearchRestaurantNav from "./SearchRestaurantNav";
 import PickDeliveryTabs from "./PickDeliveryTabs";
 import { Fragment } from "react";
+import LunchDiningIcon from "@mui/icons-material/LunchDining";
+import DrawerMenu from "./LoginHeader/DrawerMenu";
 
 function DHeader({
   navitems,
@@ -33,6 +35,7 @@ function DHeader({
   cartCount = 0,
   mobile,
 }) {
+  const [openDrawer, setOpenDrawer] = useState(false);
   const theme = useTheme();
   const classes = useStyle();
   const location = useLocation();
@@ -40,6 +43,10 @@ function DHeader({
   const { language } = i18n;
   const { search, setSearch } = useContext(SearchContext);
   const currentLang = localStorage.getItem("enatega-language") || language;
+
+  const toggleDrawer = () => {
+    setOpenDrawer(!openDrawer);
+  };
 
   const handleLanguageChange = () => {
     const savedLanguage = localStorage.getItem("enatega-language");
@@ -70,11 +77,10 @@ function DHeader({
           }
           className={classes.linkDecoration}
         >
-          {/* <Logo height={37} width={169} /> */}
           <Box
             style={{
-              width: mobile ? 50 : 200,
-              height: mobile ? 20 : 64,
+              width: mobile ? 100 : 200,
+              height: mobile ? 40 : 64,
             }}
           >
             <img
@@ -87,133 +93,164 @@ function DHeader({
             />
           </Box>
         </RouterLink>
-        <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>
-          {!mobile ? (
-            <Fragment>
-              <PickDeliveryTabs />
-              <SearchRestaurantNav
-                search={search}
-                setSearch={setSearch}
-                navbar={true}
-              />
-            </Fragment>
-          ) : null}
-        </Box>
-        <Box
-          className={classes.flex}
-          sx={{
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Button
-              onClick={handleLanguageChange}
-              sx={{ fontSize: "20px", color: "#000" }}
-            >
-              {currentLang === "en" ? "عربي" : "EN"}
-            </Button>
-          </Box>
-
-          <Button
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            onClick={(event) => open(event)}
-          >
-            <PersonIcon className={classes.icon} />
-            {!mobile && (
-              <Typography
-                variant="button"
-                color="textSecondary"
-                noWrap
-                className={`${classes.ml} ${classes.font700}`}
-                style={{ maxWidth: 70 }}
-              >
-                {name}
-              </Typography>
-            )}
-
-            {anchor === null ? (
-              <ExpandMoreIcon color="primary" className={classes.icon} />
-            ) : (
-              <ExpandLessIcon color="primary" className={classes.icon} />
-            )}
-          </Button>
-          <Divider flexItem orientation="vertical" light />
-          <Menu
-            id="long-menu"
-            anchorEl={anchor}
-            keepMounted
-            open={Boolean(anchor)}
-            onClose={close}
-            getcontentanchorel={null}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            style={{
-              marginTop: "48px",
-            }}
-            MenuListProps={{
-              style: {
-                background: "rgba(243, 244, 248, 0.8)",
-                backdropFilter: "blur(6px)",
-                padding: 0,
-              },
-            }}
-          >
-            {navitems.map((item, index) => (
-              <Box key={index}>
-                <RouterLink to={item.link} className={classes.linkDecoration}>
-                  <MenuItem
-                    className={classes.menuItem}
-                    onClick={() => close(item.title)}
-                  >
-                    <Typography color="textSecondary" variant="body2">
-                      {item.title}
-                    </Typography>
-                  </MenuItem>
-                </RouterLink>
-              </Box>
-            ))}
-          </Menu>
-          <Box display="flex" alignItems="center">
-            <Box marginInline={theme.spacing(3)} alignItems={"center"}>
-              <RouterLink to="/favourite">
-                {favLength > 0 ? (
-                  <FavoriteIcon className={classes.icon} />
-                ) : (
-                  <FavoriteBorderIcon className={classes.icon} />
-                )}
-              </RouterLink>
+        {!mobile && (
+          <Fragment>
+            <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>
+              {!mobile ? (
+                <Fragment>
+                  <PickDeliveryTabs />
+                  <SearchRestaurantNav
+                    search={search}
+                    setSearch={setSearch}
+                    navbar={true}
+                  />
+                </Fragment>
+              ) : null}
             </Box>
-            {cartCount && (
-              <>
-                <Divider orientation="vertical" light />
-                <RouterLink to="/checkout" className={classes.linkDecoration}>
-                  <Box
-                    display="flex"
-                    flexDirection="row"
-                    alignItems="center"
-                    marginInlineStart={theme.spacing(3)}
+            <Box
+              className={classes.flex}
+              sx={{
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Button
+                  onClick={handleLanguageChange}
+                  sx={{ fontSize: "20px", color: "#000" }}
+                >
+                  {currentLang === "en" ? "عربي" : "EN"}
+                </Button>
+              </Box>
+
+              <Button
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={(event) => open(event)}
+              >
+                <PersonIcon className={classes.icon} />
+                {!mobile && (
+                  <Typography
+                    variant="button"
+                    color="textSecondary"
+                    noWrap
+                    className={`${classes.ml} ${classes.font700}`}
+                    style={{ maxWidth: 70 }}
                   >
-                    <LocalMallIcon className={classes.icon} />
-                    <Typography
-                      variant="caption"
-                      color="textSecondary"
-                      className={classes.cartText}
+                    {name}
+                  </Typography>
+                )}
+
+                {anchor === null ? (
+                  <ExpandMoreIcon color="primary" className={classes.icon} />
+                ) : (
+                  <ExpandLessIcon color="primary" className={classes.icon} />
+                )}
+              </Button>
+              <Divider flexItem orientation="vertical" light />
+              <Menu
+                id="long-menu"
+                anchorEl={anchor}
+                keepMounted
+                open={Boolean(anchor)}
+                onClose={close}
+                getcontentanchorel={null}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                style={{
+                  marginTop: "48px",
+                }}
+                MenuListProps={{
+                  style: {
+                    background: "rgba(243, 244, 248, 0.8)",
+                    backdropFilter: "blur(6px)",
+                    padding: 0,
+                  },
+                }}
+              >
+                {navitems.map((item, index) => (
+                  <Box key={index}>
+                    <RouterLink
+                      to={item.link}
+                      className={classes.linkDecoration}
                     >
-                      {cartCount}
-                    </Typography>
+                      <MenuItem
+                        className={classes.menuItem}
+                        onClick={() => close(item.title)}
+                      >
+                        <Typography color="textSecondary" variant="body2">
+                          {item.title}
+                        </Typography>
+                      </MenuItem>
+                    </RouterLink>
                   </Box>
-                </RouterLink>
-              </>
-            )}
-          </Box>
-        </Box>
+                ))}
+              </Menu>
+              <Box display="flex" alignItems="center">
+                <Box marginInline={theme.spacing(3)} alignItems={"center"}>
+                  <RouterLink to="/favourite">
+                    {favLength > 0 ? (
+                      <FavoriteIcon className={classes.icon} />
+                    ) : (
+                      <FavoriteBorderIcon className={classes.icon} />
+                    )}
+                  </RouterLink>
+                </Box>
+                {cartCount && (
+                  <>
+                    <Divider orientation="vertical" light />
+                    <RouterLink
+                      to="/checkout"
+                      className={classes.linkDecoration}
+                    >
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        marginInlineStart={theme.spacing(3)}
+                      >
+                        <LocalMallIcon className={classes.icon} />
+                        <Typography
+                          variant="caption"
+                          color="textSecondary"
+                          className={classes.cartText}
+                        >
+                          {cartCount}
+                        </Typography>
+                      </Box>
+                    </RouterLink>
+                  </>
+                )}
+              </Box>
+            </Box>
+          </Fragment>
+        )}
+
+        {mobile && (
+          <Button
+            onClick={toggleDrawer}
+            sx={{
+              justifyContent: "flex-end",
+              marginInlineEnd: -15,
+            }}
+          >
+            <LunchDiningIcon />
+          </Button>
+        )}
+
+        {mobile && (
+          <DrawerMenu
+            open={openDrawer}
+            setOpen={setOpenDrawer}
+            toggleDrawer={toggleDrawer}
+            handleLanguageChange={handleLanguageChange}
+          />
+        )}
       </Toolbar>
     </AppBar>
   );
