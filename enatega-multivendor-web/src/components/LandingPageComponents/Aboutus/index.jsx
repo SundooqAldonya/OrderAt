@@ -11,7 +11,7 @@ const Aboutus = () => {
   });
 
   return (
-    <Box style={{ height: 300, marginBlock: 40 }}>
+    <Box style={{ height: 200, marginBlock: 40 }}>
       <Grid style={{ height: "100%" }} container spacing={2}>
         <Grid item sm={12} md={6} style={{ marginInline: "auto" }}>
           <Box sx={{ padding: 2, textAlign: "center" }}>
