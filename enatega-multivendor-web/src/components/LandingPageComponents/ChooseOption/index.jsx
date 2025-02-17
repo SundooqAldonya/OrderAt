@@ -11,18 +11,21 @@ const ChooseOption = () => {
       title: t("for_companies_title"),
       description: t("for_companies_description"),
       btnText: t("btn_text_partner"),
+      link: "/add-your-business",
     },
     {
       url: "https://images.unsplash.com/photo-1609923519519-7f470620fa10?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: t("for_riders"),
       description: t("for_riders_description"),
       btnText: t("btn_text_rider"),
+      link: "/",
     },
     {
       url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: t("for_customers"),
       description: t("for_customers_description"),
       btnText: t("btn_text_customer"),
+      link: "/",
     },
   ];
 
@@ -71,6 +74,7 @@ const ChooseOption = () => {
                     marginTop: 15,
                     cursor: "pointer",
                   }}
+                  to={item.link}
                 >
                   <Typography variant="h6">{item.btnText}</Typography>
                 </Link>
