@@ -37,6 +37,7 @@ import UserContext from "./context/User";
 import { useTranslation } from "react-i18next";
 import AddYourBusiness from "./screens/AddYourBusiness";
 import BusinessList from "./screens/BusinessList";
+import LandingPage from "./screens/LandingPage";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -167,6 +168,7 @@ function App() {
         <Routes>
           <Route path="/" element={isLoggedIn ? <BusinessList /> : <Home />} />
           <Route path="/business-list" element={<BusinessList />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/add-your-business" element={<AddYourBusiness />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
