@@ -150,8 +150,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
         </ListItem>
         <Divider />
         <Box>
-          <Typography
-            // variant="h6"
+          {/* <Typography
             style={{
               textAlign: "center",
               fontSize: 18,
@@ -159,7 +158,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
             }}
           >
             {t("contactus")}
-          </Typography>
+          </Typography> */}
           <Box
             style={{
               display: "flex",
