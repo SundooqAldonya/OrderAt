@@ -9,6 +9,7 @@ import { Box } from "@mui/material";
 import Footer from "../../components/Footer/Footer";
 import UserContext from "../../context/User";
 import Layout from "../../components/Layout";
+import Aboutus from "../../components/LandingPageComponents/Aboutus";
 
 const LandingPage = () => {
   const classes = useStyles();
@@ -32,6 +33,7 @@ const LandingPage = () => {
   return (
     <Layout>
       <HeaderLanding />
+      <Aboutus />
     </Layout>
   );
 };
