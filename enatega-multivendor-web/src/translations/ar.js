@@ -228,6 +228,7 @@ const ar = {
     contactus: "قم بالتواصل معنا",
     contact_email: "يرجى الاتصال بنا على البريد الإلكتروني الخاص بنا",
     home: "الرئيسية",
+    address_selected: "تم اختيار العنوان",
   },
 };
 export default ar;

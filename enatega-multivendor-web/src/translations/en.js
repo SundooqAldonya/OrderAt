@@ -233,6 +233,7 @@ const en = {
     contactus: "Contact us",
     contact_email: "Please contact us on our email",
     home: "Home",
+    address_selected: "Address selected",
   },
 };
 export default en;

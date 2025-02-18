@@ -159,12 +159,12 @@ function DeliveryCard({
           <Container>
             {showDetail ? (
               <Fragment>
-                {/* <AddressDetail
+                <AddressDetail
                   toggleDetail={toggleShowDetail}
                   addressDetail={addressInfo}
                   locationModal={toggleAddressModal}
                   notification={setMainError}
-                /> */}
+                />
               </Fragment>
             ) : (
               <>

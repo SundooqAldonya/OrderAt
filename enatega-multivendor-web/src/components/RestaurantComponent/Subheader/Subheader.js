@@ -65,6 +65,9 @@ function Subheader() {
       deliveryAddress: item?.deliveryAddress,
       details: item?.details,
     });
+    setAlertMessage(t("address_selected"));
+    setOpen(true);
+    setExpand(false);
   };
   const fetch = React.useMemo(
     () =>
@@ -125,6 +128,11 @@ function Subheader() {
       lng: data.longitude,
     });
   };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box
       style={{
@@ -143,7 +151,8 @@ function Subheader() {
         <FlashMessage
           alertMessage={alertMessage}
           open={open}
-          setOpen={setOpen}
+          severity={"success"}
+          handleClose={handleClose}
         />
         <Grid container>
           <Grid item xs={12}>

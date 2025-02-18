@@ -13,12 +13,16 @@ function FlashMessage(props) {
       autoHideDuration={!props.alive ? 5000 : undefined}
       key={`${props.message} top`}
       action={
-        <IconButton size="small" aria-label="close" color="inherit" onClick={props.handleClose}>
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={props.handleClose}
+        >
           <CloseIcon fontSize="small" />
         </IconButton>
       }
-    >
-    </Snackbar>
+    ></Snackbar>
   );
 }
 
