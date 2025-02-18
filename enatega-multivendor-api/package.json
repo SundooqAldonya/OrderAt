@@ -48,6 +48,7 @@
     "express": "^4.17.2",
     "express-session": "^1.18.1",
     "firebase-admin": "^10.0.1",
+    "google-auth-library": "^9.15.1",
     "graphql": "^16.2.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-upload": "^13.0.0",

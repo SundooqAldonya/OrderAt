@@ -1472,6 +1472,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    googleAuth(code: String!): Message
     createShopCategory(shopCategoryInput: ShopCategoryInput!): Message
     editShopCategory(
       id: String!

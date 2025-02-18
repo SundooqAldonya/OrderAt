@@ -13,6 +13,13 @@ const {
   signupTemplate
 } = require('../../helpers/templates')
 const { v4 } = require('uuid')
+const { OAuth2Client } = require('google-auth-library')
+
+const client = new OAuth2Client(
+  '41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com',
+  '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',
+  'YOUR_REDIRECT_URI'
+)
 
 module.exports = {
   Mutation: {
@@ -65,6 +72,42 @@ module.exports = {
       return {
         ...result,
         token: token
+      }
+    },
+    googleAuth: async (_, { code }) => {
+      try {
+        // Exchange authorization code for access token and ID token
+        const { tokens } = await client.getToken(code)
+
+        // Verify the ID token
+        const ticket = await client.verifyIdToken({
+          idToken: tokens.id_token,
+          audience:
+            '41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com'
+        })
+
+        const { sub, name, email, picture } = ticket.getPayload()
+        console.log({ googleAccount: { name, email, sub } })
+
+        let user = await User.findOne({ email })
+
+        if (!user) {
+          user = new User({
+            email,
+            name,
+            notificationToken,
+            isOrderNotification: !!notificationToken,
+            isOfferNotification: !!notificationToken,
+            userType: 'google',
+            emailIsVerified: true
+          })
+          await user.save()
+        }
+
+        return user
+      } catch (error) {
+        console.error('Error verifying Google token:', error)
+        throw new Error('Invalid token')
       }
     },
     login: async (

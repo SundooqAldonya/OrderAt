@@ -15,8 +15,13 @@ import useRegistration from "../../hooks/useRegistration";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
-import { LoginSocialFacebook } from "reactjs-social-login";
-import { FacebookLoginButton } from "react-social-login-buttons";
+import { LoginSocialFacebook, LoginSocialGoogle } from "reactjs-social-login";
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
+import { googleAuth } from "../../apollo/server";
+import { useMutation } from "@apollo/client";
 
 function Login() {
   const { GOOGLE_CLIENT_ID } = ConfigurableValues();
@@ -36,6 +41,8 @@ function Login() {
     loginError,
   } = useRegistration();
   const location = useLocation();
+
+  const [mutateGoogleLogin] = useMutation(googleAuth);
 
   const showMessage = useCallback((messageObj) => {
     setMainError(messageObj);
@@ -86,6 +93,18 @@ function Login() {
     alert("logout success");
   }, []);
 
+  const handleGoogleLogin = ({ provider, data }) => {
+    console.log({ data, provider });
+    mutateGoogleLogin({
+      variables: {
+        code: data.code,
+      },
+    });
+
+    // setProvider(provider);
+    // setProfile(data);
+  };
+
   return (
     <LoginWrapper>
       <FlashMessage
@@ -119,7 +138,23 @@ function Login() {
       >
         <FacebookLoginButton />
       </LoginSocialFacebook> */}
-      <GoogleLogin
+      <LoginSocialGoogle
+        client_id={
+          "41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com"
+        }
+        // onLoginStart={onLoginStart}
+        // redirect_uri={REDIRECT_URI}
+        scope="openid profile email"
+        discoveryDocs="claims_supported"
+        access_type="offline"
+        onResolve={handleGoogleLogin}
+        onReject={(err) => {
+          console.log(err);
+        }}
+      >
+        <GoogleLoginButton />
+      </LoginSocialGoogle>
+      {/* <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         render={(renderProps) => (
           <Button
@@ -152,7 +187,7 @@ function Login() {
         onSuccess={goolgeSuccess}
         onFailure={authenticationFailure}
         cookiePolicy={"single_host_origin"}
-      />
+      /> */}
 
       <Box
         sx={{
