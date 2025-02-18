@@ -238,6 +238,10 @@ const en = {
     city: "City",
     register_successful: "Registered successfully!",
     register_as_rider: "Register as rider!",
+    your_restaurant: "Your restaurant",
+    add_your_restaurant: "Add your restaurant",
+    deliver_with_orderat: "Deliver with orderat",
+    signup_to_deliver: "Signup to deliver",
   },
 };
 export default en;

@@ -232,7 +232,11 @@ const ar = {
     search: "بحث",
     city: "المدينة",
     register_successful: "تم التسجيل بنجاح!",
-    register_as_rider: "قم بالتسجيل كموصل!",
+    register_as_rider: "تسجيل الكباتن!",
+    your_restaurant: "مطعمك",
+    add_your_restaurant: "سجل مطعمك",
+    deliver_with_orderat: "قم بالتوصيل مع اوردرات",
+    signup_to_deliver: "سجل لتقم بالتوصيل",
   },
 };
 export default ar;

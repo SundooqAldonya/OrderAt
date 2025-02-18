@@ -31,9 +31,11 @@ import Banner1 from "../../assets/images/banner-1.png";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import HeroSection from "../../components/HeroSection";
+import { direction } from "../../utils/helper";
 
 function Home() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
   const classes = useStyles();
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
@@ -43,15 +45,15 @@ function Home() {
     {
       image:
         "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Your restaurant, delivered",
-      subtitle: "Add your restaurant",
+      title: t("your_restaurant"),
+      subtitle: t("add_your_restaurant"),
       link: "/add-your-business",
     },
     {
       image:
         "https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Deliver with Orderat",
-      subtitle: "Signup to deliver",
+      title: t("deliver_with_orderat"),
+      subtitle: t("signup_to_deliver"),
       link: "/signup-as-rider",
     },
   ]);
@@ -97,10 +99,17 @@ function Home() {
             marginTop: "50px",
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ paddingInline: { sm: 2, md: 4 } }}>
             {body?.map((item, index) => {
               return (
-                <Grid key={index} item xs={12} sm={6} md={6}>
+                <Grid
+                  dir={direction(language)}
+                  key={index}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={6}
+                >
                   <Box
                     sx={{
                       width: "100%",
