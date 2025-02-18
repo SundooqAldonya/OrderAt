@@ -323,6 +323,7 @@ const ar = {
     business_address: 'عنوان الشركة',
     tell_us_business: 'كلمنا عن عملك',
     created_business: 'تم إنشاء الشركة!',
+    businesses: 'تسجيلات الأعمال',
     add_business: 'إنشئ شركة',
     shop_categories: 'نوعية المتجر',
     shop_category_create: 'اضف نوعية متجر',
@@ -338,7 +339,9 @@ const ar = {
     DELIVERED: 'تم التسليم',
     CANCELlED: 'تم الإلغاء',
     PENDING: 'قيد الانتظار',
-    your_area: 'المنطقة'
+    your_area: 'المنطقة',
+    removed_riderRegister: 'تم حذف التسجيل!',
+    registered_riders: 'السائقين المسجلين'
   }
 }
 

@@ -335,6 +335,7 @@ const en = {
     FixedCost: 'Fixed Cost',
     add_addons: 'Add addons',
     edit_addons: 'Edit addons',
+    businesses: 'Businesses',
     business_name: 'Business Name',
     business_address: 'Business Address',
     tell_us_business: 'Tell us more about your business',
@@ -354,7 +355,9 @@ const en = {
     PICKED: 'Picked',
     DELIVERED: 'Delivered',
     CANCELlED: 'Cancelled',
-    your_area: 'Your area'
+    your_area: 'Your area',
+    removed_riderRegister: 'Removed registered rider!',
+    registered_riders: 'Registered Riders'
   }
 }
 

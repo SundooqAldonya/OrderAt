@@ -1480,6 +1480,7 @@ const typeDefs = gql`
     removeShopCategory(id: String!): Message
     createBusiness(businessInput: BusinessInput): Message
     createRiderRegister(riderRegisterInput: RiderRegisterInput): Message
+    removeRiderRegistered(id: String!): Message
     searchUsersByBusiness(searchText: String!): User
     createArea(areaInput: AreaInput!): Message
     editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message

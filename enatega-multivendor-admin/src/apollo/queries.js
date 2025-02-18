@@ -866,6 +866,16 @@ export const getBusinesses = gql`
     }
   }
 `
+export const getRidersRegistered = gql`
+  query GetRidersRegistered {
+    getRidersRegistered {
+      _id
+      name
+      phone
+      city
+    }
+  }
+`
 
 export const getShopCategories = gql`
   query GetShopCategories {

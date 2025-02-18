@@ -21,30 +21,17 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+
+    async removeRiderRegistered(_, args) {
+      console.log({ args })
+      try {
+        const riderRegister = await RiderRegister.findById(args.id)
+        await riderRegister.deleteOne()
+        return { message: 'removed_riderRegister' }
+      } catch (err) {
+        throw new Error(err)
+      }
     }
-    // async editRiderRegister(_, args) {
-    //   console.log({ args })
-    //   try {
-    //     const riderRegister = await RiderRegister.findById(args.id)
-    //     riderRegister.name = args.riderRegisterInput.name
-    //     riderRegister.riderRegisterName = args.riderRegisterInput.riderRegisterName
-    //     riderRegister.address = args.riderRegisterInput.address
-    //     riderRegister.phone = args.riderRegisterInput.phone
-    //     await riderRegister.save()
-    //     return { message: 'edited_riderRegister' }
-    //   } catch (err) {
-    //     throw new Error(err)
-    //   }
-    // },
-    // async removeRiderRegister(_, args) {
-    //   console.log({ args })
-    //   try {
-    //     const riderRegister = await RiderRegister.findById(args.id)
-    //     await riderRegister.deleteOne()
-    //     return { message: 'removed_riderRegister' }
-    //   } catch (err) {
-    //     throw new Error(err)
-    //   }
-    // }
   }
 }

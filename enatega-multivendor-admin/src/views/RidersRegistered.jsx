@@ -16,7 +16,7 @@ import SearchBar from '../components/TableHeader/SearchBar'
 import TableHeader from '../components/TableHeader'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
-import { getAreas, getBusinesses, getCities, removeArea } from '../apollo'
+import { getRidersRegistered, removeRiderRegistered } from '../apollo'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import AreaCreate from '../components/AreaCreate'
 import { customStyles } from '../utils/tableCustomStyles'
@@ -27,11 +27,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import BusinessCreate from '../components/BusinessCreate'
 
-const REMOVE_AREAS = gql`
-  ${removeArea}
-`
-
-const Businesses = () => {
+const RidersRegistered = () => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState('')
@@ -51,23 +47,23 @@ const Businesses = () => {
 
   const {
     data,
-    loading: loadingBusinesses,
-    error: errorBusinesses,
+    loading: loadingRiders,
+    error: errorRiders,
     refetch
-  } = useQuery(getBusinesses)
+  } = useQuery(getRidersRegistered)
 
   console.log({ data })
 
-  const [removeArea] = useMutation(REMOVE_AREAS, {
-    refetchQueries: getBusinesses,
+  const [removeRider] = useMutation(removeRiderRegistered, {
+    refetchQueries: [{ query: getRidersRegistered }],
     onCompleted: data => {
-      setMessage(data.removeArea.message)
+      setMessage(data.removeRiderRegistered.message)
       setType('success')
       setIsOpen(true)
     }
   })
 
-  const businesses = data?.getBusinesses || null
+  const riders = data?.getRidersRegistered || null
 
   const columns = [
     {
@@ -75,12 +71,7 @@ const Businesses = () => {
       selector: 'name',
       sortable: true
     },
-    {
-      name: t('Business Name'),
-      selector: 'businessName',
-      sortable: true,
-      cell: row => <>{row.businessName || 'N/A'}</>
-    },
+
     {
       name: t('phone'),
       selector: 'phone',
@@ -88,10 +79,10 @@ const Businesses = () => {
       cell: row => <>{row.phone || 'N/A'}</>
     },
     {
-      name: t('address'),
-      selector: 'address',
+      name: t('city'),
+      selector: 'city',
       sortable: true,
-      cell: row => <>{row.address || 'N/A'}</>
+      cell: row => <>{row.city || 'N/A'}</>
     },
     {
       name: t('Action'),
@@ -120,8 +111,8 @@ const Businesses = () => {
     setSearchQuery(e.target.value)
   }
 
-  const handleRemoveArea = itemId => {
-    removeArea({
+  const handleRemoveRider = itemId => {
+    removeRider({
       variables: {
         id: itemId
       }
@@ -159,7 +150,7 @@ const Businesses = () => {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}>
-              <MenuItem
+              {/* <MenuItem
                 onClick={e => {
                   e.preventDefault()
                   toggleModal(row)
@@ -169,9 +160,9 @@ const Businesses = () => {
                   <EditIcon fontSize="small" style={{ color: 'green' }} />
                 </ListItemIcon>
                 <Typography color="green">{t('Edit')}</Typography>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem
-                onClick={() => handleRemoveArea(row._id)}
+                onClick={() => handleRemoveRider(row._id)}
                 style={{ height: 25 }}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" style={{ color: 'red' }} />
@@ -190,7 +181,7 @@ const Businesses = () => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <BusinessCreate />
+        {/* <BusinessCreate /> */}
         {/* Table */}
         {isOpen && (
           <Alert
@@ -200,11 +191,9 @@ const Businesses = () => {
             {message}
           </Alert>
         )}
-        {errorBusinesses ? (
-          <span>{`Error! ${errorBusinesses.message}`}</span>
-        ) : null}
-        {loadingBusinesses ? <CustomLoader /> : null}
-        {businesses && (
+        {errorRiders ? <span>{`Error! ${errorRiders.message}`}</span> : null}
+        {loadingRiders ? <CustomLoader /> : null}
+        {riders && (
           <DataTable
             subHeader={true}
             subHeaderComponent={
@@ -214,11 +203,11 @@ const Businesses = () => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('businesses')} />}
+            title={<TableHeader title={t('registered_riders')} />}
             columns={columns}
-            data={businesses}
+            data={riders}
             pagination
-            progressPending={loadingBusinesses}
+            progressPending={loadingRiders}
             progressComponent={<CustomLoader />}
             sortFunction={customSort}
             defaultSortField="title"
@@ -226,7 +215,7 @@ const Businesses = () => {
             selectableRows
           />
         )}
-        <Modal
+        {/* <Modal
           style={{
             width: '70%',
             marginLeft: '15%',
@@ -237,10 +226,10 @@ const Businesses = () => {
             toggleModal()
           }}>
           <BusinessCreate area={area} onClose={closeEditModal} />
-        </Modal>
+        </Modal> */}
       </Container>
     </Fragment>
   )
 }
 
-export default Businesses
+export default RidersRegistered

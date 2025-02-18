@@ -61,6 +61,8 @@ import Areas from './views/Areas'
 import Businesses from './views/Businesses'
 import ShopCategories from './views/ShopCategories'
 import OrdersAdmin from './views/OrdersAdmin'
+import RidersRegistered from './views/RidersRegistered'
+import ElectricMopedIcon from '@mui/icons-material/ElectricMoped'
 
 var routes = [
   {
@@ -194,6 +196,15 @@ var routes = [
     name: 'Businesses',
     icon: BusinessCenterIcon,
     component: Businesses,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/riders-registered',
+    name: 'Riders Registered',
+    icon: ElectricMopedIcon,
+    component: RidersRegistered,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

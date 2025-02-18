@@ -886,10 +886,23 @@ export const removeShopCategory = gql`
 `
 
 export const acceptOrder = gql`
-mutation AcceptOrderAdmin($_id:String!, $restaurantId: String!, $time:String){
-  acceptOrderAdmin(_id:$_id, restaurantId: $restaurantId, time:$time){
+  mutation AcceptOrderAdmin(
+    $_id: String!
+    $restaurantId: String!
+    $time: String
+  ) {
+    acceptOrderAdmin(_id: $_id, restaurantId: $restaurantId, time: $time) {
       _id
-    orderStatus
-    preparationTime
+      orderStatus
+      preparationTime
+    }
   }
-}`
+`
+
+export const removeRiderRegistered = gql`
+  mutation RemoveRiderRegistered($id: String!) {
+    removeRiderRegistered(id: $id) {
+      message
+    }
+  }
+`
