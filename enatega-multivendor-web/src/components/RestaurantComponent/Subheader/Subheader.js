@@ -55,6 +55,7 @@ function Subheader() {
   const [selectedAddress, setSelectedAddress] = useState();
 
   const setDeliveryAddress = (item) => {
+    console.log({ item });
     setSelectedAddress(item);
     setLocation({
       _id: item?._id,
@@ -326,6 +327,15 @@ function Subheader() {
                   e.preventDefault();
                   setExpand(false);
                   if (search) {
+                    // setSelectedAddress({
+                    //   _id: "",
+                    //   deliveryAddress: search,
+                    //   details: search,
+                    //   label: "Home",
+                    //   location: {
+                    //     coordinates: [latLng.lng, latLng.lat],
+                    //   },
+                    // });
                     setLocation({
                       label: "Home",
                       latitude: latLng.lat,

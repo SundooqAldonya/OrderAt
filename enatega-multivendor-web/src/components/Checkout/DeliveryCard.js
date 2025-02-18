@@ -71,11 +71,12 @@ function DeliveryCard({
   }, [location]);
 
   useEffect(() => {
-    if (profile?.addresses < 1) {
+    if (profile?.addresses?.length < 1) {
       toggleShowDetail();
-    } else {
-      setSelectedAddress(profile?.addresses[0]);
     }
+    // else {
+    //   setSelectedAddress(profile?.addresses[0]);
+    // }
   }, [profile]);
 
   const currentLocation = useCallback(() => {
@@ -157,12 +158,14 @@ function DeliveryCard({
         >
           <Container>
             {showDetail ? (
-              <AddressDetail
-                toggleDetail={toggleShowDetail}
-                addressDetail={addressInfo}
-                locationModal={toggleAddressModal}
-                notification={setMainError}
-              />
+              <Fragment>
+                {/* <AddressDetail
+                  toggleDetail={toggleShowDetail}
+                  addressDetail={addressInfo}
+                  locationModal={toggleAddressModal}
+                  notification={setMainError}
+                /> */}
+              </Fragment>
             ) : (
               <>
                 <Grid container spacing={2}>
