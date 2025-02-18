@@ -38,6 +38,7 @@ import { useTranslation } from "react-i18next";
 import AddYourBusiness from "./screens/AddYourBusiness";
 import BusinessList from "./screens/BusinessList";
 import LandingPage from "./screens/LandingPage";
+import SignupAsRider from "./screens/SignupAsRider";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -170,6 +171,7 @@ function App() {
           <Route path="/business-list" element={<BusinessList />} />
           <Route path="/landing1" element={<LandingPage />} />
           <Route path="/add-your-business" element={<AddYourBusiness />} />
+          <Route path="/signup-as-rider" element={<SignupAsRider />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />

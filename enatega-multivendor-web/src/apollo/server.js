@@ -1170,3 +1170,11 @@ export const createBusiness = gql`
     }
   }
 `;
+
+export const createRiderRegister = gql`
+  mutation CreateRiderRegister($riderRegisterInput: RiderRegisterInput) {
+    createRiderRegister(riderRegisterInput: $riderRegisterInput) {
+      message
+    }
+  }
+`;

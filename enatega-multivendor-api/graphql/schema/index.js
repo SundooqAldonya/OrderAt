@@ -1275,6 +1275,12 @@ const typeDefs = gql`
     address: String!
     phone: String!
   }
+  type RiderRegister {
+    _id: String!
+    name: String!
+    city: String!
+    phone: String!
+  }
 
   type ShopCategory {
     _id: String!
@@ -1284,6 +1290,7 @@ const typeDefs = gql`
   type Query {
     getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
+    getRidersRegistered: [RiderRegister!]
     areasByCity(id: String!): [Area!]
     areas: [Area!]
     cities: [CityArea!]
@@ -1454,6 +1461,12 @@ const typeDefs = gql`
     phone: String!
   }
 
+  input RiderRegisterInput {
+    name: String!
+    city: String!
+    phone: String!
+  }
+
   input ShopCategoryInput {
     title: String!
   }
@@ -1466,6 +1479,7 @@ const typeDefs = gql`
     ): Message
     removeShopCategory(id: String!): Message
     createBusiness(businessInput: BusinessInput): Message
+    createRiderRegister(riderRegisterInput: RiderRegisterInput): Message
     searchUsersByBusiness(searchText: String!): User
     createArea(areaInput: AreaInput!): Message
     editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message

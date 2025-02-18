@@ -45,14 +45,14 @@ function Home() {
         "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Your restaurant, delivered",
       subtitle: "Add your restaurant",
-      link: "add-your-business",
+      link: "/add-your-business",
     },
     {
       image:
         "https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Deliver with Orderat",
       subtitle: "Signup to deliver",
-      link: "",
+      link: "/signup-as-rider",
     },
   ]);
 
@@ -120,7 +120,7 @@ function Home() {
                   <Box>
                     <Typography variant="h5">{item.title}</Typography>
                     <Link
-                      to={`/${item.link}`}
+                      to={item.link}
                       style={{ fontSize: 17, color: "#000" }}
                     >
                       {item.subtitle}

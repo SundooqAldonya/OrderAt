@@ -235,6 +235,9 @@ const en = {
     home: "Home",
     address_selected: "Address selected",
     search: "Search",
+    city: "City",
+    register_successful: "Registered successfully!",
+    register_as_rider: "Register as rider!",
   },
 };
 export default en;

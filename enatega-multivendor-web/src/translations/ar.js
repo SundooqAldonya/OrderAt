@@ -230,6 +230,9 @@ const ar = {
     home: "الرئيسية",
     address_selected: "تم اختيار العنوان",
     search: "بحث",
+    city: "المدينة",
+    register_successful: "تم التسجيل بنجاح!",
+    register_as_rider: "قم بالتسجيل كموصل!",
   },
 };
 export default ar;
