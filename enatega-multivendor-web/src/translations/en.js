@@ -234,6 +234,7 @@ const en = {
     contact_email: "Please contact us on our email",
     home: "Home",
     address_selected: "Address selected",
+    search: "Search",
   },
 };
 export default en;

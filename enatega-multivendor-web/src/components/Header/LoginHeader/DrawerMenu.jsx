@@ -23,6 +23,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import useStyles from "./styles";
+import SearchRestaurantNav from "../SearchRestaurantNav";
+import { SearchContext } from "../../../context/useSearch";
+import SearchRestaurantSidebar from "../SearchRestaurantSidebar";
 
 const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
   const { i18n, t } = useTranslation();
@@ -41,12 +44,14 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
     window.open(link, "_blank");
   };
 
+  const { search, setSearch } = useContext(SearchContext);
+
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer}>
+    <Box sx={{ width: 250 }} role="presentation">
       <List>
         {isLoggedIn && (
           <Fragment>
-            <ListItem disablePadding>
+            <ListItem disablePadding onClick={toggleDrawer}>
               <ListItemButton>
                 <ListItemIcon>
                   <PersonIcon style={{ color: theme.palette.common.black }} />
@@ -68,6 +73,23 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
           </Fragment>
         )}
         <ListItem disablePadding>
+          <ListItemButton sx={{ flexDirection: "column" }}>
+            <SearchRestaurantSidebar
+              search={search}
+              setSearch={setSearch}
+              sidebar={true}
+            />
+            <Button
+              sx={{
+                alignSelf: "flex-end",
+              }}
+              onClick={() => navigate("/business-list")}
+            >
+              {t("search")}
+            </Button>
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding onClick={toggleDrawer}>
           <ListItemButton>
             <ListItemIcon>
               <HomeIcon style={{ color: theme.palette.common.black }} />
@@ -80,7 +102,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
           </ListItemButton>
         </ListItem>
         {!isLoggedIn && (
-          <ListItem disablePadding>
+          <ListItem disablePadding onClick={toggleDrawer}>
             <ListItemButton>
               <ListItemIcon>
                 <PersonIcon style={{ color: theme.palette.common.black }} />
@@ -96,7 +118,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
 
         {isLoggedIn && (
           <Fragment>
-            <ListItem disablePadding>
+            <ListItem disablePadding onClick={toggleDrawer}>
               <ListItemButton>
                 <ListItemIcon>
                   <LocalShippingIcon
@@ -110,7 +132,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
                 />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
+            <ListItem disablePadding onClick={toggleDrawer}>
               <ListItemButton>
                 <ListItemIcon>
                   <PersonIcon style={{ color: theme.palette.common.black }} />
@@ -122,7 +144,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
                 />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
+            <ListItem disablePadding onClick={toggleDrawer}>
               <ListItemButton>
                 <ListItemIcon>
                   <LogoutIcon style={{ color: theme.palette.common.black }} />

@@ -229,6 +229,7 @@ const ar = {
     contact_email: "يرجى الاتصال بنا على البريد الإلكتروني الخاص بنا",
     home: "الرئيسية",
     address_selected: "تم اختيار العنوان",
+    search: "بحث",
   },
 };
 export default ar;

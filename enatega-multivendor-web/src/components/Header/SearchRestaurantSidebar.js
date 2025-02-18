@@ -12,7 +12,7 @@ import SearchIcon from "../../assets/icons/SearchIcon";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
 
-function SearchRestaurantNav({ search, setSearch, navbar }) {
+function SearchRestaurantSidebar({ search, setSearch, navbar }) {
   const { i18n, t } = useTranslation();
   const { language } = i18n;
   const isArabic = language === "ar" ? "rtl" : "ltr";
@@ -72,4 +72,4 @@ function SearchRestaurantNav({ search, setSearch, navbar }) {
   );
 }
 
-export default React.memo(SearchRestaurantNav);
+export default React.memo(SearchRestaurantSidebar);
