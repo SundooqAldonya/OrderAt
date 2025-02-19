@@ -233,7 +233,7 @@ async function startApolloServer() {
   )
 
   // populate countries data.
-  await populateCountries()
+  // await populateCountries()
   //
   await new Promise(resolve => httpServer.listen(config.PORT, resolve))
   // start subscription server
