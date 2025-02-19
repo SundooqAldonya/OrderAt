@@ -63,6 +63,7 @@ export default function AddNewAddressUser(props) {
   const inset = useSafeAreaInsets()
   const [loading, setLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
+  const [selectedAddress, setSelectedAddress] = useState(null)
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { location, setLocation } = useContext(LocationContext)
@@ -95,7 +96,7 @@ export default function AddNewAddressUser(props) {
     if (!coordinates.latitude) {
       getCurrentPositionNav()
     }
-  }, [coordinates])
+  }, [coordinates.latitude])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
@@ -126,7 +127,7 @@ export default function AddNewAddressUser(props) {
       })
       getAddress(position.coords.latitude, position.coords.longitude).then(
         (res) => {
-          setLocation({
+          setSelectedAddress({
             _id: '',
             label: 'Home',
             latitude: position.coords.latitude,
@@ -157,7 +158,7 @@ export default function AddNewAddressUser(props) {
     const lng = longitude ? longitude : coordinates.longitude
     getAddress(lat, lng).then((res) => {
       console.log({ res })
-      setLocation({
+      setSelectedAddress({
         _id: '',
         label: 'Home',
         latitude: lat,
@@ -344,7 +345,9 @@ export default function AddNewAddressUser(props) {
             // onPress={() => setModalVisible(true)}
           >
             <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {location?.deliveryAddress ? location.deliveryAddress : null}
+              {selectedAddress?.deliveryAddress
+                ? selectedAddress.deliveryAddress
+                : null}
             </TextDefault>
           </View>
           <View style={[styles(currentTheme).textInput]}>

@@ -36,7 +36,7 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
-import { createAddress, editAddress } from '../../apollo/mutations'
+import { editAddress } from '../../apollo/mutations'
 
 const EDIT_ADDRESS = gql`
   ${editAddress}
@@ -59,24 +59,28 @@ export default function EditUserAddress(props) {
   const [loading, setLoading] = useState(false)
   const [locationChangeLoading, setLocationChangeLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
+  const [selectedAddress, setSelectedAddress] = useState(null)
+
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { location, setLocation } = useContext(LocationContext)
   const { getAddress } = useGeocoding()
   const { isLoggedIn, refetchProfile } = useContext(UserContext)
 
+  console.log({ address })
+
   const [coordinates, setCoordinates] = useState({
     latitude: latitude || null,
     longitude: longitude || null,
-    latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
-    longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
+    latitudeDelta: latitude ? 0.01 : LATITUDE_DELTA,
+    longitudeDelta: longitude ? 0.01 : LONGITUDE_DELTA
   })
   const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     if (address) {
       setAddressDetails(address.details)
-      setLocation({
+      setSelectedAddress({
         _id: address._id,
         label: address.label,
         latitude: String(address.location.coordinates[1]),
@@ -93,6 +97,37 @@ export default function EditUserAddress(props) {
     }
   }, [address])
 
+  useEffect(() => {
+    // if (mapRef && mapRef.current) {
+    console.log('zooming in')
+    if (address?.location && mapRef?.current) {
+      zoomIn()
+    } else {
+      // Retry after a short delay if mapRef is not available yet
+      const timeout = setTimeout(() => {
+        if (mapRef.current) {
+          console.log('zooming in after delay')
+          zoomIn()
+        }
+      }, 500) // Adjust delay if needed
+
+      return () => clearTimeout(timeout)
+    }
+  }, [mapRef])
+
+  const zoomIn = () => {
+    const newCoordinates = {
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+      // zoom: 15
+    }
+    if (mapRef?.current) {
+      mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+    }
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions(
       screenOptions({
@@ -100,8 +135,8 @@ export default function EditUserAddress(props) {
         fontColor: currentTheme.newFontcolor,
         backColor: currentTheme.newheaderBG,
         iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor,
-        setCurrentLocation: getCurrentPositionNav
+        lineColor: currentTheme.newIconColor
+        // setCurrentLocation: getCurrentPositionNav
       })
     )
   })
@@ -142,7 +177,7 @@ export default function EditUserAddress(props) {
 
       getAddress(position.coords.latitude, position.coords.longitude).then(
         (res) => {
-          setLocation({
+          setSelectedAddress({
             _id: '',
             label: 'Home',
             latitude: position.coords.latitude,
@@ -213,14 +248,6 @@ export default function EditUserAddress(props) {
         })
       }
     })
-
-    // navigation.navigate('AddNewAddress', {
-    //   latitude: coords.latitude,
-    //   longitude: coords.longitude,
-    //   prevScreen: props?.route?.params?.prevScreen
-    //     ? props.route.params.prevScreen
-    //     : null
-    // })
   }
 
   const onRegionChangeComplete = (coords) => {
@@ -234,7 +261,7 @@ export default function EditUserAddress(props) {
     getAddress(coords.latitude, coords.longitude).then((res) => {
       console.log({ res })
       // set location
-      setLocation({
+      setSelectedAddress({
         _id: address._id,
         label: address.label,
         latitude: coords.latitude,
@@ -264,11 +291,14 @@ export default function EditUserAddress(props) {
           <MapView
             ref={mapRef}
             initialRegion={coordinates}
-            region={coordinates}
+            // region={coordinates}
             style={{ flex: 1 }}
             provider={PROVIDER_GOOGLE}
             showsTraffic={false}
-            maxZoomLevel={15}
+            onMapReady={() => {
+              zoomIn()
+            }}
+            // maxZoomLevel={5}
             // customMapStyle={
             //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
             // }
@@ -325,7 +355,9 @@ export default function EditUserAddress(props) {
             // onPress={() => setModalVisible(true)}
           >
             <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {location?.deliveryAddress ? location.deliveryAddress : null}
+              {selectedAddress?.deliveryAddress
+                ? selectedAddress.deliveryAddress
+                : null}
             </TextDefault>
           </View>
           <View style={[styles(currentTheme).textInput]}>
