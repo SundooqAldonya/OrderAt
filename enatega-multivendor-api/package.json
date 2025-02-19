@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "node seed/user-seeder.js && node seed/configuration-seeder.js",
-    "start": "node app.js",
+    "start": "export NODE_ENV=production && node app.js",
     "start:dev": "node app.js --watch",
     "dev": "SET NODE_ENV=development && nodemon app",
     "prod": "export NODE_ENV=production && nodemon app.js",
