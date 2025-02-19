@@ -42,8 +42,8 @@ const AreaCreate = ({ onClose, area }) => {
   const [mainError, setMainError] = useState(false)
   const [selectedCity, setSelectedCity] = useState(area ? area.city._id : '')
   const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker')
-  const [center, setCenter] = useState({ lat: 30.0444, lng: 31.2357 })
-  const [marker, setMarker] = useState({ lat: 30.0444, lng: 31.2357 })
+  const [center, setCenter] = useState({ lat: 31.1107, lng: 30.9388 })
+  const [marker, setMarker] = useState({ lat: 31.1107, lng: 30.9388 })
 
   console.log({ selectedCity })
 
@@ -131,11 +131,12 @@ const AreaCreate = ({ onClose, area }) => {
     })
   }
 
+  console.log({ marker })
+
   const handleSubmit = async e => {
     e.preventDefault()
     const coordinates = [marker.lng, marker.lat]
-    // wrong
-    // const coordinates = [marker.lat, marker.lng]
+
     if (!area) {
       mutate({
         variables: {
