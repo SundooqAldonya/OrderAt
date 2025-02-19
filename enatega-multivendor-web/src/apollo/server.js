@@ -1182,7 +1182,12 @@ export const createRiderRegister = gql`
 export const googleAuth = gql`
   mutation GoogleAuth($code: String!) {
     googleAuth(code: $code) {
-      message
+      token
+      user {
+        _id
+        name
+        email
+      }
     }
   }
 `;

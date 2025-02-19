@@ -242,6 +242,7 @@ const en = {
     add_your_restaurant: "Add your restaurant",
     deliver_with_orderat: "Deliver with orderat",
     signup_to_deliver: "Signup to deliver",
+    user_registered: "User signup successfully!",
   },
 };
 export default en;

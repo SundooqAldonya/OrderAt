@@ -18,7 +18,11 @@ const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(
   '41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com',
   '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',
-  'YOUR_REDIRECT_URI'
+  `${
+    process.env.NODE_ENV === 'production'
+      ? 'https://orderat.ai'
+      : 'http://localhost:3000'
+  }`
 )
 
 module.exports = {
@@ -95,19 +99,25 @@ module.exports = {
           user = new User({
             email,
             name,
-            notificationToken,
-            isOrderNotification: !!notificationToken,
-            isOfferNotification: !!notificationToken,
+            // notificationToken,
+            // isOrderNotification: !!notificationToken,
+            // isOfferNotification: !!notificationToken,
             userType: 'google',
             emailIsVerified: true
           })
           await user.save()
         }
-
-        return user
+        const token = jwt.sign(
+          {
+            userId: user._id,
+            email: user.email || user.appleId
+          },
+          process.env.SECRETKEY
+        )
+        return { token, user }
       } catch (error) {
         console.error('Error verifying Google token:', error)
-        throw new Error('Invalid token')
+        throw new Error('Something went wrong for google auth')
       }
     },
     login: async (

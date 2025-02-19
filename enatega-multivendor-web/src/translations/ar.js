@@ -237,6 +237,7 @@ const ar = {
     add_your_restaurant: "سجل مطعمك",
     deliver_with_orderat: "قم بالتوصيل مع اوردرات",
     signup_to_deliver: "سجل لتقم بالتوصيل",
+    user_registered: "تم التسجيل بنجاح!",
   },
 };
 export default ar;

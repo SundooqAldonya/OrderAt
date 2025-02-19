@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { GoogleLogin } from "react-google-login";
 import { gapi } from "gapi-script";
 import Box from "@mui/material/Box";
@@ -8,41 +8,54 @@ import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import ConfigurableValues from "../../config/constants";
 import { Link as RouterLink } from "react-router-dom";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import GoogleIcon from "../../assets/icons/GoogleIcon";
 import FlashMessage from "../../components/FlashMessage";
 import useRegistration from "../../hooks/useRegistration";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
-import { LoginSocialFacebook, LoginSocialGoogle } from "reactjs-social-login";
-import {
-  FacebookLoginButton,
-  GoogleLoginButton,
-} from "react-social-login-buttons";
+import { LoginSocialGoogle } from "reactjs-social-login";
+import { GoogleLoginButton } from "react-social-login-buttons";
 import { googleAuth } from "../../apollo/server";
 import { useMutation } from "@apollo/client";
+import UserContext from "../../context/User";
 
 function Login() {
   const { GOOGLE_CLIENT_ID } = ConfigurableValues();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const theme = useTheme();
   const [mainError, setMainError] = useState({});
   const [profile, setProfile] = useState({});
   const [provider, setProvider] = useState({});
+  const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState("");
   const classes = useStyles();
   const {
     goolgeSuccess,
     authenticationFailure,
     loading,
     setLoading,
+    setLogin,
     loginButton,
     loginButtonSetter,
     loginError,
   } = useRegistration();
   const location = useLocation();
+  const { setTokenAsync } = useContext(UserContext);
 
-  const [mutateGoogleLogin] = useMutation(googleAuth);
+  const [mutateGoogleLogin] = useMutation(googleAuth, {
+    onCompleted: async ({ googleAuth }) => {
+      setLogin(true);
+      await setTokenAsync(googleAuth.token);
+      setMessage(googleAuth.message);
+      setType("success");
+      setOpen(true);
+      navigate("/");
+    },
+  });
 
   const showMessage = useCallback((messageObj) => {
     setMainError(messageObj);
@@ -78,9 +91,9 @@ function Login() {
     [loading, loginButtonSetter, setLoading] // Added loginButtonSetter and setLoading to the dependency array
   );
 
-  const toggleSnackbar = useCallback(() => {
-    setMainError({});
-  }, []);
+  // const toggleSnackbar = useCallback(() => {
+  //   setMainError({});
+  // }, []);
 
   const onLoginStart = useCallback(() => {
     console.log("login start");
@@ -105,13 +118,17 @@ function Login() {
     // setProfile(data);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <LoginWrapper>
       <FlashMessage
-        open={Boolean(mainError.type)}
-        severity={mainError.type}
-        alertMessage={mainError.message}
-        handleClose={toggleSnackbar}
+        open={open}
+        severity={type}
+        alertMessage={message}
+        handleClose={handleClose}
       />
       <Typography variant="h5" className={classes.font700}>
         {t("welcome")}

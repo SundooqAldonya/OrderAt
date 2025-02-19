@@ -111,6 +111,7 @@ function useRegistration() {
     setLoginError,
     loginError,
     login,
+    setLogin,
     toggleSnackbar,
   };
 }
