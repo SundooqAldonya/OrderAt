@@ -58,7 +58,7 @@ const DrawerMenu = ({ open, setOpen, toggleDrawer, handleLanguageChange }) => {
                 </ListItemIcon>
                 <ListItemText
                   onClick={() => navigate("/profile")}
-                  primary={profile.name}
+                  primary={profile?.name}
                   sx={{
                     color: "#000",
                     textTransform: "capitalize",
