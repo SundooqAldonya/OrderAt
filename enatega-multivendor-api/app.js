@@ -35,6 +35,7 @@ const Restaurant = require('./models/restaurant.js')
 const Rider = require('./models/rider.js')
 const EventEmitter = require('events')
 const emitter = new EventEmitter()
+console.log({ environment: process.env.NODE_ENV })
 
 emitter.setMaxListeners(50)
 async function startApolloServer() {
