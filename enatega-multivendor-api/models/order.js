@@ -11,6 +11,7 @@ const { messageSchema } = require('./message')
 const Earning = require('./earnings')
 const Rider = require('./rider')
 const { v4 } = require('uuid')
+const mongoosePagination = require('mongoose-paginate-v2')
 const Schema = mongoose.Schema
 
 const orderSchema = new Schema(
@@ -148,6 +149,9 @@ const orderSchema = new Schema(
   },
   { timestamps: true }
 )
+
+orderSchema.plugin(mongoosePagination)
+
 orderSchema.pre('save', async function (next) {
   const isOrderStatusUpdated = this.modifiedPaths().includes('orderStatus')
   if (

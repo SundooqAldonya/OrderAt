@@ -350,86 +350,102 @@ query OrderCount($restaurant:String!){
   orderCount(restaurant:$restaurant)
 }`
 
-export const getActiveOrders = `query GetActiveOrders($restaurantId:ID){
-  getActiveOrders(restaurantId:$restaurantId){
-    _id
-    zone{
-      _id
-    }
-    orderId
-    restaurant{
-      _id
-      name
-      image
-      address
-      location{coordinates}
-    }
-    deliveryAddress{
-      location{coordinates}
-      deliveryAddress
-      details
-      label
-    }
-    items{
-      _id
-      title
-      description
-      image
-      quantity
-      variation{
+export const getActiveOrders = gql`
+  query GetActiveOrders($page: Float, $restaurantId: ID) {
+    getActiveOrders(page: $page, restaurantId: $restaurantId) {
+      docs {
         _id
-        title
-        price
-        discounted
-      }
-      addons{
-        _id
-        options{
+        zone {
+          _id
+        }
+        orderId
+        restaurant {
+          _id
+          name
+          image
+          address
+          location {
+            coordinates
+          }
+        }
+        deliveryAddress {
+          location {
+            coordinates
+          }
+          deliveryAddress
+          details
+          label
+        }
+        items {
           _id
           title
           description
-          price
+          image
+          quantity
+          variation {
+            _id
+            title
+            price
+            discounted
+          }
+          addons {
+            _id
+            options {
+              _id
+              title
+              description
+              price
+            }
+            description
+            title
+            quantityMinimum
+            quantityMaximum
+          }
+          specialInstructions
+          isActive
+          createdAt
+          updatedAt
         }
-        description
-        title
-        quantityMinimum
-        quantityMaximum
+        user {
+          _id
+          name
+          phone
+          email
+        }
+        paymentMethod
+        paidAmount
+        orderAmount
+        orderStatus
+        isPickedUp
+        status
+        paymentStatus
+        reason
+        isActive
+        createdAt
+        preparationTime
+        deliveredAt
+        pickedAt
+        assignedAt
+        acceptedAt
+        deliveryCharges
+        rider {
+          _id
+          name
+          username
+          available
+        }
       }
-      specialInstructions
-      isActive
-      createdAt
-      updatedAt
-    }
-    user{
-      _id
-      name
-      phone
-      email
-    }
-    paymentMethod
-    paidAmount
-    orderAmount
-    orderStatus
-    isPickedUp
-    status
-    paymentStatus
-    reason
-    isActive
-    createdAt
-    preparationTime
-    deliveredAt
-    pickedAt
-    assignedAt
-    acceptedAt
-    deliveryCharges
-    rider{
-      _id
-      name
-      username
-      available
+      totalDocs
+      limit
+      totalPages
+      page
+      hasPrevPage
+      hasNextPage
+      prevPage
+      nextPage
     }
   }
-}`
+`
 
 export const getRidersByZone = `query RidersByZone($id:String!){
   ridersByZone(id:$id){

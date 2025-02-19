@@ -42,10 +42,31 @@ module.exports = {
         if (args.restaurantId) {
           filters.restaurant = args.restaurantId
         }
-        const orders = await Order.find(filters)
-          .sort({ createdAt: -1 })
-          .limit(10)
-        return orders.map(transformOrder)
+        const result = await Order.paginate(filters, {
+          page: args.page ? args.page : 1,
+          limit: 10,
+          sort: {
+            createdAt: -1
+          },
+          populate: ['rider', 'restaurant', 'user']
+        })
+
+        console.log({ result: result.docs[0] })
+        return {
+          docs: result.docs.map(order => ({
+            ...order.toObject(),
+            createdAt: order.createdAt.toISOString(), // ✅ Convert to String
+            updatedAt: order.updatedAt.toISOString()
+          })),
+          totalDocs: result.totalDocs,
+          limit: result.limit,
+          totalPages: result.totalPages,
+          page: result.page,
+          hasPrevPage: result.hasPrevPage,
+          hasNextPage: result.hasNextPage,
+          prevPage: result.prevPage,
+          nextPage: result.nextPage
+        }
       } catch (err) {
         throw err
       }

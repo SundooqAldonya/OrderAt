@@ -426,13 +426,14 @@ const typeDefs = gql`
     delivered: String
     cancelled: String
   }
+
   type Order {
     _id: ID!
     orderId: String
     resId: String!
     restaurant: RestaurantDetail!
     deliveryAddress: OrderAddress
-    items: [Item!]!
+    items: [Item!]
     user: User!
     paymentMethod: String
     paidAmount: Float
@@ -1287,6 +1288,19 @@ const typeDefs = gql`
     title: String
   }
 
+  type OrdersPaginate {
+    docs: [Order]
+    totalDocs: Float
+    limit: Float
+    totalPages: Float
+    page: Float
+    pagingCounter: Float
+    hasPrevPage: Boolean
+    hasNextPage: Boolean
+    prevPage: Float
+    nextPage: Float
+  }
+
   type Query {
     getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
@@ -1402,7 +1416,7 @@ const typeDefs = gql`
     zone(id: String!): Zone!
     unassignedOrdersByZone: [Order!]
     riderOrders: [Order!]
-    getActiveOrders(restaurantId: ID): [Order!]
+    getActiveOrders(page: Float, restaurantId: ID): OrdersPaginate
     orderDetails(id: String!): Order!
     ridersByZone(id: String!): [Rider!]
     chat(order: ID!): [ChatMessageOutput!]

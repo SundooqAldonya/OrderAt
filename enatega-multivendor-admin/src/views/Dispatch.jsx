@@ -31,9 +31,9 @@ const SUBSCRIPTION_ORDER = gql`
 const UPDATE_STATUS = gql`
   ${updateStatus}
 `
-const GET_ACTIVE_ORDERS = gql`
-  ${getActiveOrders}
-`
+// const GET_ACTIVE_ORDERS = gql`
+//   ${getActiveOrders}
+// `
 
 const Orders = props => {
   const theme = useTheme()
@@ -57,10 +57,12 @@ const Orders = props => {
     error: errorOrders,
     loading: loadingOrders,
     refetch: refetchOrders
-  } = useQuery(GET_ACTIVE_ORDERS, {
-    variables: { restaurantId: null },
-    pollInterval: 3000
+  } = useQuery(getActiveOrders, {
+    variables: { restaurantId: null }
+    // pollInterval: 3000
   })
+
+  console.log({ dataOrders: dataOrders?.getActiveOrders?.docs[0] })
 
   const statusFunc = row => {
     const handleStatusSuccessNotification = status => {
@@ -218,9 +220,9 @@ const Orders = props => {
 
   const filtered =
     searchQuery.length < 3
-      ? dataOrders && dataOrders.getActiveOrders
+      ? dataOrders && dataOrders.getActiveOrders?.docs
       : dataOrders &&
-        dataOrders.getActiveOrders.filter(order => {
+        dataOrders.getActiveOrders?.docs.filter(order => {
           return (
             order.restaurant.name.toLowerCase().search(regex) > -1 ||
             order.orderId.toLowerCase().search(regex) > -1 ||
@@ -289,6 +291,8 @@ const TimeFunc = ({ row }) => {
     pickedAt,
     deliveredAt
   } = row
+
+  console.log({ createdAt })
 
   const [notAccepted, setNotAccepted] = useState(false)
   const [notAssigned, setNotAssigned] = useState(false)
