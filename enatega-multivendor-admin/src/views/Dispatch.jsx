@@ -371,12 +371,25 @@ const TimeFunc = ({ row }) => {
   const [notAssigned, setNotAssigned] = useState(false)
   const [notPicked, setNotPicked] = useState(false)
   const [notDelivered, setNotDelivered] = useState(false)
-  const now = moment()
-  const orderCreatedAt = moment(createdAt).clone()
+  // const now = moment()
+  const [now, setNow] = useState(moment())
+  const orderCreatedAt = moment(createdAt, moment.ISO_8601, true).clone()
   const orderAcceptedAt = moment(acceptedAt).clone()
 
   useEffect(() => {
-    console.log({ orderId: row.orderId, Now: now.format('HH:mm:ss') })
+    let interval = setInterval(() => {
+      setNow(moment())
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    console.log({
+      orderId: row.orderId,
+      Now: now.format('HH:mm:ss'),
+      createdAt
+    })
+
     console.log({
       orderId: row.orderId,
       'Order Created At': orderCreatedAt.format('HH:mm:ss')
@@ -400,6 +413,8 @@ const TimeFunc = ({ row }) => {
         : 'Not assigned yet'
     })
 
+    console.log({ difference: now.diff(orderCreatedAt, 'minutes') })
+
     if (
       !acceptedAt &&
       orderStatus === 'PENDING' &&
@@ -411,10 +426,6 @@ const TimeFunc = ({ row }) => {
     // If order is not assigned (status !== ASSIGNED) within (preparationTime - 5) minutes
     if (acceptedAt) {
       // If no rider assigned within (preparationTime - 5 minutes)
-      // const assignmentDeadline = orderAcceptedAt.add(
-      //   preparationTime - 5,
-      //   'minutes'
-      // )
       const assignmentDeadline = moment(preparationTime).subtract(5, 'minutes')
       console.log('Assignment Deadline:', assignmentDeadline.format('HH:mm:ss'))
       if (!assignedAt && now.isAfter(assignmentDeadline)) {
@@ -433,7 +444,7 @@ const TimeFunc = ({ row }) => {
         setNotDelivered(true)
       }
     }
-  }, [])
+  }, [now])
 
   console.log({ assignedAt })
   return (
