@@ -172,78 +172,88 @@ export const getOrdersByRestaurant = `query ordersByRestId($restaurant:String!,$
     }
   }`
 
-export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int,$rows:Int,$search:String){
-    getOrdersByAdmin(page:$page,rows:$rows,search:$search){
-      _id
-      orderId
-      restaurant{
+export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $search:String){
+    getOrdersByAdmin(page:$page, limit:$limit, search:$search){
+      docs {
         _id
-        name
-        image
-        address
-        location{coordinates}
-      }
-      deliveryAddress{
-        location{coordinates}
-        deliveryAddress
-        details
-        label
-      }
-      items{
-        _id
-        title
-        description
-        image
-        quantity
-        variation{
+        orderId
+        restaurant{
+          _id
+          name
+          image
+          address
+          location{coordinates}
+        }
+        deliveryAddress{
+          location{coordinates}
+          deliveryAddress
+          details
+          label
+        }
+        items{
           _id
           title
-          price
-          discounted
-        }
-        addons{
-          _id
-          options{
+          description
+          image
+          quantity
+          variation{
             _id
             title
-            description
             price
+            discounted
           }
-          description
-          title
-          quantityMinimum
-          quantityMaximum
+          addons{
+            _id
+            options{
+              _id
+              title
+              description
+              price
+            }
+            description
+            title
+            quantityMinimum
+            quantityMaximum
+          }
+          specialInstructions
+          isActive
+          createdAt
+          updatedAt
         }
-        specialInstructions
+        user{
+          _id
+          name
+          phone
+          email
+        }
+        paymentMethod
+        paidAmount
+        orderAmount
+        orderStatus
+        status
+        paymentStatus
+        reason
         isActive
         createdAt
-        updatedAt
+        deliveryCharges
+        tipping
+        taxationAmount
+        rider{
+          _id
+          name
+          username
+          phone
+          available
+        }
       }
-      user{
-        _id
-        name
-        phone
-        email
-      }
-      paymentMethod
-      paidAmount
-      orderAmount
-      orderStatus
-      status
-      paymentStatus
-      reason
-      isActive
-      createdAt
-      deliveryCharges
-      tipping
-      taxationAmount
-      rider{
-        _id
-        name
-        username
-        phone
-        available
-      }
+      totalDocs
+      limit
+      totalPages
+      page
+      hasPrevPage
+      hasNextPage
+      prevPage
+      nextPage
     }
   }`
 

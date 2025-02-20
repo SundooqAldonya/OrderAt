@@ -239,31 +239,38 @@ module.exports = {
     getOrdersByAdmin: async (_, args, context) => {
       console.log('admin orders')
       try {
-        let orders = []
-        if (args.search) {
-          const search = new RegExp(
-            // eslint-disable-next-line no-useless-escape
-            args.search.replace(/[\\\[\]()+?.*]/g, c => '\\' + c),
-            'i'
-          )
-          orders = await Order.find({
-            orderId: search
-          }).sort({ createdAt: -1 })
-          return orders.map(order => {
-            return transformOrder(order)
-          })
-        } else {
-          orders = await Order.find()
-            .sort({ createdAt: -1 })
-            .skip((args.page || 0) * args.rows)
-            .limit(args.rows)
-          console.log({ ordersRest: orders })
-          return orders.map(order => {
-            return transformOrder(order)
-          })
+        const search = args.search
+          ? new RegExp(
+              args.search.replace(/[\\\[\]()+?.*]/g, c => '\\' + c),
+              'i'
+            )
+          : null
+        const query = search ? { orderId: search } : {}
+        const result = await Order.paginate(query, {
+          page: args?.page ? args.page : 1,
+          limit: args?.limit ? args?.limit : 10,
+          sort: {
+            createdAt: -1
+          },
+          populate: ['rider', 'restaurant', 'user']
+        })
+        return {
+          docs: result.docs.map(order => ({
+            ...order.toObject(),
+            createdAt: order.createdAt.toISOString(),
+            updatedAt: order.updatedAt.toISOString()
+          })),
+          totalDocs: result.totalDocs,
+          limit: result.limit,
+          totalPages: result.totalPages,
+          page: result.page,
+          hasPrevPage: result.hasPrevPage,
+          hasNextPage: result.hasNextPage,
+          prevPage: result.prevPage,
+          nextPage: result.nextPage
         }
       } catch (err) {
-        throw err
+        throw new Error(err)
       }
     },
     undeliveredOrders: async (_, args, { req, res }) => {

@@ -1390,7 +1390,9 @@ const typeDefs = gql`
       rows: Int
       search: String
     ): [Order!]
-    getOrdersByAdmin(page: Int, rows: Int, search: String): [Order!]
+    getOrdersByAdmin(page: Int, limit: Int, search: String): OrdersPaginate
+    getActiveOrders(page: Float, limit: Float, restaurantId: ID): OrdersPaginate
+
     getOrdersByDateRange(
       startingDate: String!
       endingDate: String!
@@ -1416,7 +1418,6 @@ const typeDefs = gql`
     zone(id: String!): Zone!
     unassignedOrdersByZone: [Order!]
     riderOrders: [Order!]
-    getActiveOrders(page: Float, limit: Float, restaurantId: ID): OrdersPaginate
     orderDetails(id: String!): Order!
     ridersByZone(id: String!): [Rider!]
     chat(order: ID!): [ChatMessageOutput!]

@@ -55,7 +55,7 @@ module.exports = {
         return {
           docs: result.docs.map(order => ({
             ...order.toObject(),
-            createdAt: order.createdAt.toISOString(), // ✅ Convert to String
+            createdAt: order.createdAt.toISOString(),
             updatedAt: order.updatedAt.toISOString()
           })),
           totalDocs: result.totalDocs,

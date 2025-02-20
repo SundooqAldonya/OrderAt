@@ -207,6 +207,7 @@ const OrdersDataAdmin = props => {
           columns={columns}
           data={filtered}
           onRowClicked={props.toggleModal}
+          // onRowClicked={item => console.log({ item })}
           progressPending={props.loading || loadingQuery}
           pointerOnHover
           progressComponent={<CustomLoader />}
@@ -215,11 +216,11 @@ const OrdersDataAdmin = props => {
           subHeaderComponent={
             <SearchBar value={searchQuery} onChange={onChangeSearch} />
           }
-          pagination
-          paginationServer
-          paginationTotalRows={data && data.orderCount}
-          onChangeRowsPerPage={handlePerRowsChange}
-          onChangePage={handlePageChange}
+          // pagination
+          // paginationServer
+          // paginationTotalRows={data && data.orderCount}
+          // onChangeRowsPerPage={handlePerRowsChange}
+          // onChangePage={handlePageChange}
           conditionalRowStyles={conditionalRowStyles}
           customStyles={customStyles}
           selectableRows
