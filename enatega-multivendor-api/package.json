@@ -5,7 +5,6 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "node seed/user-seeder.js && node seed/configuration-seeder.js",
     "start": "cross-env NODE_ENV=production node app.js",
     "start:dev": "node app.js --watch",
     "dev": "cross-env NODE_ENV=development && nodemon app",
