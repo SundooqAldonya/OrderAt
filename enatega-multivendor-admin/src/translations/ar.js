@@ -341,7 +341,9 @@ const ar = {
     PENDING: 'قيد الانتظار',
     your_area: 'المنطقة',
     removed_riderRegister: 'تم حذف التسجيل!',
-    registered_riders: 'السائقين المسجلين'
+    registered_riders: 'السائقين المسجلين',
+    OrderTimeAdvance: 'متابعة تقدم الوقت',
+    createdAt: 'وقت الإنشاء'
   }
 }
 

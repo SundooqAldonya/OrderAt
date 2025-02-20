@@ -1392,7 +1392,6 @@ const typeDefs = gql`
     ): [Order!]
     getOrdersByAdmin(page: Int, limit: Int, search: String): OrdersPaginate
     getActiveOrders(page: Float, limit: Float, restaurantId: ID): OrdersPaginate
-
     getOrdersByDateRange(
       startingDate: String!
       endingDate: String!

@@ -209,7 +209,15 @@ const Orders = props => {
       )
     },
     {
-      name: t('OrderTime'),
+      name: t('createdAt'),
+      selector: 'createdAt',
+      sortable: true,
+      cell: row => (
+        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
+      )
+    },
+    {
+      name: t('OrderTimeAdvance'),
       cell: row => TimeFunc({ row })
     }
   ]

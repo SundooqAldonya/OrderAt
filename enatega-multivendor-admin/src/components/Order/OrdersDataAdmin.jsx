@@ -130,16 +130,12 @@ const OrdersDataAdmin = props => {
     },
     {
       name: t('Datetime'),
+      selector: 'createdAt',
+      sortable: true,
       cell: row => (
         <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
       )
     }
-    // {
-    //   name: t('Address'),
-    //   cell: row => (
-    //     <>{transformToNewline(row?.deliveryAddress?.deliveryAddress, 3)}</>
-    //   )
-    // }
   ]
 
   const conditionalRowStyles = [

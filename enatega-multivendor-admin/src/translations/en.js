@@ -357,7 +357,9 @@ const en = {
     CANCELlED: 'Cancelled',
     your_area: 'Your area',
     removed_riderRegister: 'Removed registered rider!',
-    registered_riders: 'Registered Riders'
+    registered_riders: 'Registered Riders',
+    OrderTimeAdvance: 'Order Time Advance',
+    createdAt: 'Created At'
   }
 }
 
