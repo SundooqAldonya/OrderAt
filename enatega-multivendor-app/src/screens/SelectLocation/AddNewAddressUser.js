@@ -281,7 +281,7 @@ export default function AddNewAddressUser(props) {
               <MapView
                 ref={mapRef}
                 initialRegion={coordinates}
-                region={coordinates}
+                // region={coordinates}
                 style={{ flex: 1 }}
                 provider={PROVIDER_GOOGLE}
                 showsTraffic={false}

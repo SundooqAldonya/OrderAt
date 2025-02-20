@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
 import { useQuery, useMutation, useSubscription, gql } from '@apollo/client'
 import DataTable from 'react-data-table-component'
@@ -17,7 +17,15 @@ import { transformToNewline } from '../utils/stringManipulations'
 import SearchBar from '../components/TableHeader/SearchBar'
 import useGlobalStyles from '../utils/globalStyles'
 import { customStyles } from '../utils/tableCustomStyles'
-import { Container, MenuItem, Select, Box, useTheme } from '@mui/material'
+import {
+  Container,
+  MenuItem,
+  Select,
+  Box,
+  useTheme,
+  TablePagination,
+  Paper
+} from '@mui/material'
 import { ReactComponent as DispatchIcon } from '../assets/svg/svg/Dispatch.svg'
 import TableHeader from '../components/TableHeader'
 import { NotificationContainer, NotificationManager } from 'react-notifications'
@@ -31,15 +39,14 @@ const SUBSCRIPTION_ORDER = gql`
 const UPDATE_STATUS = gql`
   ${updateStatus}
 `
-// const GET_ACTIVE_ORDERS = gql`
-//   ${getActiveOrders}
-// `
 
 const Orders = props => {
   const theme = useTheme()
   const params = useParams()
   const { t } = props
   const [searchQuery, setSearchQuery] = useState('')
+  const [limit, setLimit] = useState(10)
+  const [page, setPage] = useState(1)
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const [mutateUpdate] = useMutation(UPDATE_STATUS)
   const globalClasses = useGlobalStyles()
@@ -58,8 +65,8 @@ const Orders = props => {
     loading: loadingOrders,
     refetch: refetchOrders
   } = useQuery(getActiveOrders, {
-    variables: { restaurantId: null }
-    // pollInterval: 3000
+    variables: { restaurantId: null, page, limit },
+    pollInterval: 3000
   })
 
   console.log({ dataOrders: dataOrders?.getActiveOrders?.docs[0] })
@@ -237,6 +244,23 @@ const Orders = props => {
           )
         })
 
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage)
+    refetchOrders({
+      restaurantId: null,
+      page: newPage,
+      limit
+    })
+  }
+  const handleChangeRowsPerPage = e => {
+    setLimit(e.target.value)
+    refetchOrders({
+      restaurantId: null,
+      page: 1,
+      limit: parseInt(e.target.value, 10)
+    })
+  }
+
   return (
     <>
       <NotificationContainer />
@@ -255,26 +279,67 @@ const Orders = props => {
         {loadingOrders ? (
           <CustomLoader />
         ) : (
-          <DataTable
-            subHeader={true}
-            subHeaderComponent={
-              <SearchBar
-                value={searchQuery}
-                onChange={onChangeSearch}
-                onClick={() => refetchOrders()}
-              />
-            }
-            title={<TableHeader title={t('Dispatch')} />}
-            columns={columns}
-            data={filtered}
-            progressPending={loadingOrders}
-            pointerOnHover
-            progressComponent={<CustomLoader />}
-            pagination
-            conditionalRowStyles={conditionalRowStyles}
-            customStyles={customStyles}
-            selectableRows
-          />
+          <Paper>
+            <DataTable
+              subHeader={true}
+              subHeaderComponent={
+                <SearchBar
+                  value={searchQuery}
+                  onChange={onChangeSearch}
+                  onClick={() => refetchOrders()}
+                />
+              }
+              title={<TableHeader title={t('Dispatch')} />}
+              columns={columns}
+              data={filtered}
+              progressPending={loadingOrders}
+              pointerOnHover
+              progressComponent={<CustomLoader />}
+              conditionalRowStyles={conditionalRowStyles}
+              customStyles={customStyles}
+              selectableRows
+            />
+            <TablePagination
+              component="div"
+              count={dataOrders?.getActiveOrders?.totalDocs}
+              page={dataOrders?.getActiveOrders?.page}
+              onPageChange={handleChangePage}
+              rowsPerPage={dataOrders?.getActiveOrders?.limit}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 20, 50]}
+              sx={{
+                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                  color: '#000' // Change text color for labels
+                },
+                '& .MuiSelect-select': {
+                  color: '#000' // Change selected dropdown text color
+                },
+                '& .MuiMenuItem-root': {
+                  color: '#000 !important' // Change text color inside dropdown list
+                },
+                '& .MuiSvgIcon-root': {
+                  color: '#000' // Change dropdown arrow color
+                }
+              }}
+              slotProps={{
+                select: {
+                  MenuProps: {
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: '#f5f5f5', // Background color of dropdown
+                        '& .MuiMenuItem-root': {
+                          color: '#000', // Text color of options
+                          '&:hover': {
+                            backgroundColor: '#ddd' // Hover background color
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }}
+            />
+          </Paper>
         )}
       </Container>
     </>

@@ -29,8 +29,6 @@ const OrdersAdmin = () => {
   const [search] = useState('')
   const { setAreas } = useContext(AreaContext)
 
-  const restaurantId = localStorage.getItem('restaurantId')
-
   const {
     data,
     error: errorQuery,
@@ -45,18 +43,6 @@ const OrdersAdmin = () => {
     }
   })
   const orders = data?.getOrdersByAdmin || null
-  // const { data: dataProfile } = useQuery(GET_PROFILE, {
-  //   variables: { id: restaurantId }
-  // })
-
-  // useQuery(CITY_AREAS, {
-  //   skip: !dataProfile?.restaurant?.city?._id,
-  //   variables: { id: dataProfile?.restaurant?.city?._id },
-  //   onCompleted: fetchedData => {
-  //     console.log({ fetchedData })
-  //     setAreas(fetchedData ? fetchedData.areasByCity : null)
-  //   }
-  // })
 
   const toggleModal = order => {
     setOrder(order)

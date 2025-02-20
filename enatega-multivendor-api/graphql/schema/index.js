@@ -1416,7 +1416,7 @@ const typeDefs = gql`
     zone(id: String!): Zone!
     unassignedOrdersByZone: [Order!]
     riderOrders: [Order!]
-    getActiveOrders(page: Float, restaurantId: ID): OrdersPaginate
+    getActiveOrders(page: Float, limit: Float, restaurantId: ID): OrdersPaginate
     orderDetails(id: String!): Order!
     ridersByZone(id: String!): [Rider!]
     chat(order: ID!): [ChatMessageOutput!]

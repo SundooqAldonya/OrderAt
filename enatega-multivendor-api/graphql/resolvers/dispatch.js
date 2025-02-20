@@ -44,14 +44,14 @@ module.exports = {
         }
         const result = await Order.paginate(filters, {
           page: args.page ? args.page : 1,
-          limit: 10,
+          limit: args.limit ? args.limit : 10,
           sort: {
             createdAt: -1
           },
           populate: ['rider', 'restaurant', 'user']
         })
 
-        console.log({ result: result.docs[0] })
+        console.log({ result: result })
         return {
           docs: result.docs.map(order => ({
             ...order.toObject(),

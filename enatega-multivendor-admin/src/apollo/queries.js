@@ -351,8 +351,8 @@ query OrderCount($restaurant:String!){
 }`
 
 export const getActiveOrders = gql`
-  query GetActiveOrders($page: Float, $restaurantId: ID) {
-    getActiveOrders(page: $page, restaurantId: $restaurantId) {
+  query GetActiveOrders($page: Float, $limit: Float, $restaurantId: ID) {
+    getActiveOrders(page: $page, limit: $limit, restaurantId: $restaurantId) {
       docs {
         _id
         zone {
