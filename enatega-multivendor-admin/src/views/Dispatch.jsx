@@ -177,7 +177,8 @@ const Orders = props => {
     },
     {
       name: t('RestaurantCol'),
-      selector: 'restaurant.name'
+      selector: 'restaurant.name',
+      cell: row => (row?.restaurant ? row.restaurant.name : 'N/A')
     },
     {
       name: t('Payment'),
