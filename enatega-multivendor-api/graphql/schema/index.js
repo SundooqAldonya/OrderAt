@@ -431,7 +431,7 @@ const typeDefs = gql`
     _id: ID!
     orderId: String
     resId: String!
-    restaurant: RestaurantDetail!
+    restaurant: RestaurantDetail
     deliveryAddress: OrderAddress
     items: [Item!]
     user: User!
