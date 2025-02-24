@@ -31,7 +31,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rider.app",
+      "bundleIdentifier": "com.orderatrider.app",
       "config": {
         "googleMapsApiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
       },
@@ -54,7 +54,7 @@
           "apiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
         }
       },
-      "package": "com.rider.app"
+      "package": "com.orderatrider.app"
     },
     "extra": {
       "eas": {

@@ -19,7 +19,7 @@
       }
     },
     "android": {
-      "versionCode": 63,
+      "versionCode": 64,
       "package": "com.orderatbusiness.app",
       "googleServicesFile": "./google-services.json",
       "permissions": [
