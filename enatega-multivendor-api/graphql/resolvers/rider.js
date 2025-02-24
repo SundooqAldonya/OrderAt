@@ -142,10 +142,10 @@ module.exports = {
         if (!rider) throw new Error('Rider does not exist')
         // const date = new Date()
         // date.setDate(date.getDate() - 1)
-        const date = new Date();
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(date.getDate() - 2);
-        twoDaysAgo.setHours(0, 0, 0, 0);
+        const date = new Date()
+        const twoDaysAgo = new Date()
+        twoDaysAgo.setDate(date.getDate() - 2)
+        twoDaysAgo.setHours(0, 0, 0, 0)
         const assignedOrders = await Order.find({
           rider: req.userId,
           createdAt: {
@@ -159,6 +159,7 @@ module.exports = {
             { orderStatus: 'ASSIGNED' }
           ]
         }).sort({ createdAt: -1 })
+
         // how many not delivered orders the rider have, if more than 3 don't update orders
         // const undeliveredOrders = await Order.countDocuments({
         //   rider: req.userId,
@@ -175,10 +176,13 @@ module.exports = {
           orderStatus: 'ACCEPTED',
           rider: null,
           createdAt: {
-            $gte: `${date.getFullYear()}-${date.getMonth() + 1
-              }-${date.getDate()}`
+            $gte: `${date.getFullYear()}-${
+              date.getMonth() + 1
+            }-${date.getDate()}`
           }
         }).sort({ createdAt: -1 })
+        const foundOrder = orders.find(item => item.orderId === 'IEHYB-410')
+        console.log({ foundOrder })
         // const orders =
         //   undeliveredOrders < 3
         //     ? await Order.find({

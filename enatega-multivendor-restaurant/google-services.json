@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "133710632137",
-    "project_id": "enatega-mobile-app",
+    "project_id": "orderat-business",
     "storage_bucket": "enatega-mobile-app.firebasestorage.app"
   },
   "client": [
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:133710632137:android:c1ae77eeedd54df9996918",
         "android_client_info": {
-          "package_name": "com.restaurant.app"
+          "package_name": "com.orderatbusiness.app"
         }
       },
       "oauth_client": [],
