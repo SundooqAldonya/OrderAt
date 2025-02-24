@@ -171,22 +171,12 @@ module.exports = {
         // })
 
         // console.log({ undeliveredOrders })
-        const startOfDay = new Date(
-          Date.UTC(date.getFullYear(), date.getMonth() + 1, date.getDate())
-        )
+
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',
           rider: null
-          // createdAt: { $gte: startOfDay }
-          // createdAt: {
-          //   $gte: `${date.getFullYear()}-${
-          //     date.getMonth() + 1
-          //   }-${date.getDate()}`
-          // }
-        }).sort({ createdAt: -1 })
-        const foundOrder = orders.find(item => item.orderId === 'IEHYB-410')
-        console.log({ foundOrder })
+        }).sort({ preparationTime: -1 })
         // const orders =
         //   undeliveredOrders < 3
         //     ? await Order.find({
@@ -431,6 +421,7 @@ module.exports = {
 
       const location = new Point({
         coordinates: [args.longitude, args.latitude]
+        // rider: '_id'
       })
       rider.location = location
       const result = await rider.save()

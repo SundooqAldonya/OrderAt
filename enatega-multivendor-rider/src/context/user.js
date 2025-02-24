@@ -59,8 +59,8 @@ export const UserProvider = props => {
     onCompleted,
     onError: error2,
     fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true
-    // pollInterval: 15000
+    notifyOnNetworkStatusChange: true,
+    pollInterval: 60000
   })
 
   console.log({ dataAssigned: dataAssigned?.riderOrders[0] })
