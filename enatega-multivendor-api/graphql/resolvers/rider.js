@@ -171,15 +171,19 @@ module.exports = {
         // })
 
         // console.log({ undeliveredOrders })
+        const startOfDay = new Date(
+          Date.UTC(date.getFullYear(), date.getMonth() + 1, date.getDate())
+        )
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',
-          rider: null,
-          createdAt: {
-            $gte: `${date.getFullYear()}-${
-              date.getMonth() + 1
-            }-${date.getDate()}`
-          }
+          rider: null
+          // createdAt: { $gte: startOfDay }
+          // createdAt: {
+          //   $gte: `${date.getFullYear()}-${
+          //     date.getMonth() + 1
+          //   }-${date.getDate()}`
+          // }
         }).sort({ createdAt: -1 })
         const foundOrder = orders.find(item => item.orderId === 'IEHYB-410')
         console.log({ foundOrder })
