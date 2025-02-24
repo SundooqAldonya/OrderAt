@@ -145,6 +145,10 @@ const orderSchema = new Schema(
     },
     instructions: {
       type: String
+    },
+    searchRadius: {
+      type: Number,
+      default: 1
     }
   },
   { timestamps: true }

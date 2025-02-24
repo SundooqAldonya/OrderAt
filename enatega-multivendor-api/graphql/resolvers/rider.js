@@ -160,37 +160,13 @@ module.exports = {
           ]
         }).sort({ createdAt: -1 })
 
-        // how many not delivered orders the rider have, if more than 3 don't update orders
-        // const undeliveredOrders = await Order.countDocuments({
-        //   rider: req.userId,
-        //   // orderStatus: { $in: ['ASSIGNED'] }
-        //   $and: [
-        //     { orderStatus: { $ne: 'DELIVERED' } },
-        //     { orderStatus: { $in: ['ASSIGNED'] } }
-        //   ]
-        // })
-
-        // console.log({ undeliveredOrders })
-
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',
           rider: null
         }).sort({ preparationTime: -1 })
-        // const orders =
-        //   undeliveredOrders < 3
-        //     ? await Order.find({
-        //         zone: rider.zone,
-        //         orderStatus: 'ACCEPTED',
-        //         rider: null,
-        //         createdAt: {
-        //           $gte: `${date.getFullYear()}-${
-        //             date.getMonth() + 1
-        //           }-${date.getDate()}`
-        //         }
-        //       }).sort({ createdAt: -1 })
-        //     : []
-        // [orders, assignedOrders]
+        // const orders = await findOrdersWithinRadius(rider, 1)
+
         return orders.concat(...assignedOrders).map(order => {
           return transformOrder(order)
         })

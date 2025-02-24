@@ -60,12 +60,12 @@ const sendNotification = async orderId => {
       },
       token: owner.pushToken,
       notification: {
-        title: 'New Order | Enatega Multivendor',
-        body: 'There are new orders in Enatega multivendor'
+        title: 'New Order | Orderat',
+        body: 'There are new orders in Orderat'
       },
       webpush: {
         fcm_options: {
-          link: 'https://enatega.com/dashboard'
+          link: 'https://admin.orderat.ai/dashboard'
         }
       }
     }
