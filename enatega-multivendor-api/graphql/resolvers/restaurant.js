@@ -43,6 +43,7 @@ const { cloudinary } = require('../../helpers/cloudinary')
 const Addon = require('../../models/addon')
 const Variation = require('../../models/variation')
 const Option = require('../../models/option')
+const { sendPushNotification } = require('../../helpers/findRiders')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -980,8 +981,10 @@ module.exports = {
         console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-          sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+          // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+          // await sendPushNotification(order.zone.toString(), transformedOrder)
         }
+        console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')
         sendNotificationToCustomerWeb(
           user.notificationTokenWeb,
@@ -1020,7 +1023,8 @@ module.exports = {
         console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-          sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+          // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+          await sendPushNotification(order.zone.toString(), transformedOrder)
         }
         publishToUser(result.user.toString(), transformedOrder, 'update')
         sendNotificationToCustomerWeb(

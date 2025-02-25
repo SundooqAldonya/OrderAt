@@ -6,8 +6,9 @@ const getEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
 
   console.log('configuration', configuration)
+  console.log('node_env', env)
 
-  if (env === 'production' || env === 'staging') {
+  if (env && (env === 'production' || env === 'staging')) {
     return {
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',
       WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',

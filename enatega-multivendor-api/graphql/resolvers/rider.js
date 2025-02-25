@@ -21,6 +21,7 @@ const {
   JOB_TYPE,
   JOB_DELAY_DEFAULT
 } = require('../../queue')
+const { sendPushNotification } = require('../../helpers/findRiders')
 
 module.exports = {
   Subscription: {
@@ -165,6 +166,8 @@ module.exports = {
           orderStatus: 'ACCEPTED',
           rider: null
         }).sort({ preparationTime: -1 })
+
+        // await sendPushNotification(rider.notificationToken, orders[0])
         // const orders = await findOrdersWithinRadius(rider, 1)
 
         return orders.concat(...assignedOrders).map(order => {

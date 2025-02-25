@@ -95,26 +95,70 @@ module.exports = {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
     return R * c // Distance in km
+  },
+  async sendPushNotification(zoneId, order) {
+    const riders = await Rider.find({ zone: zoneId })
+    riders.forEach(async rider => {
+      const message = {
+        to: rider.notificationToken,
+        sound: 'default',
+        title: `New Order ${order.orderId}`,
+        body: order.searchRadius
+          ? `New order available ${order.searchRadius} KM`
+          : 'New order available',
+        data: { orderId: order.orderId }
+      }
+
+      try {
+        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(message)
+        })
+
+        const data = await response.json()
+        console.log('Expo push notification sent:', data)
+      } catch (error) {
+        console.error('Error sending Expo push notification:', error)
+      }
+    })
   }
 }
 
-const sendPushNotification = async (expoPushToken, message) => {
-  const payload = {
-    message: {
-      token: expoPushToken,
-      notification: {
-        title: message.title,
-        body: message.body
-      }
+const sendPushNotification = async (zoneId, expoPushToken, order) => {
+  const riders = await Rider.find({ zone: zoneId })
+  riders.forEach(async rider => {
+    const message = {
+      to: rider.notificationToken,
+      sound: 'default',
+      title: `New Order ${order.orderId}`,
+      body: order.searchRadius
+        ? `${order.searchRadius} KM`
+        : 'New order available',
+      data: { orderId: order.orderId }
     }
-  }
 
-  try {
-    const response = await admin.messaging().send(payload)
-    console.log('Push notification sent successfully:', response)
-  } catch (error) {
-    console.error('Error sending push notification:', error)
-  }
+    try {
+      const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message)
+      })
+
+      const data = await response.json()
+      console.log('Expo push notification sent:', data)
+    } catch (error) {
+      console.error('Error sending Expo push notification:', error)
+    }
+  })
 }
 
 // Run this job every 3 minutes

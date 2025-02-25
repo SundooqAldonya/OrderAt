@@ -144,8 +144,8 @@ const AddOrder = ({ t, refetchOrders }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [search] = useState('')
   const { acceptOrder } = useAcceptOrder()
-  // const addedTime = moment().add(30, 'minutes')
   const [selectedTime, setSelectedTime] = useState(30)
+
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
     onCompleted: data => {
       setSuccess('Order Created Successfully!')

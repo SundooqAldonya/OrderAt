@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
+import useAcceptOrder from '../../context/useAcceptOrder'
 
 // constants
 const UPDATE_STATUS = gql`
@@ -34,12 +35,21 @@ function Order({ order, t, modal, toggleModal }) {
   const [reasonError, reasonErrorSetter] = useState(null)
   const [error, errorSetter] = useState('')
   const [success, successSetter] = useState('')
-
-  console.log({ orderRider: order?.rider })
+  const { acceptOrder } = useAcceptOrder()
+  const [selectedTime, setSelectedTime] = useState(30)
+  const restaurantId = localStorage.getItem('restaurantId')
 
   const onCompleted = ({ updateOrderStatus }) => {
+    console.log({ updateOrderStatus })
     if (updateOrderStatus) {
       successSetter(t('OrderStatusUpdated'))
+      if (updateOrderStatus.orderStatus === 'ACCEPTED') {
+        acceptOrder(
+          updateOrderStatus._id,
+          restaurantId,
+          selectedTime.toString()
+        )
+      }
     }
     setTimeout(onDismiss, 5000)
   }
