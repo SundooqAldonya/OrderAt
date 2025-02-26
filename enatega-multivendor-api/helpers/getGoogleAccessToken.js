@@ -1,27 +1,48 @@
-const { google } = require('google-auth-library')
+const { GoogleAuth } = require('google-auth-library')
 const path = require('path')
+const fs = require('fs')
 
-const SERVICE_ACCOUNT_PATH = path.join(__dirname, '../serviceAccountKey.json')
-
-const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging']
+const SERVICE_ACCOUNT_PATH = path.resolve(
+  __dirname,
+  '../serviceAccountKey.json'
+)
 
 async function getAccessToken() {
   try {
-    const key = require(SERVICE_ACCOUNT_PATH)
+    console.log('🔍 Checking service account file...')
 
-    const jwtClient = new google.auth.JWT(
-      key.client_email,
-      null,
-      key.private_key,
-      SCOPES
+    const keyFileContent = JSON.parse(
+      fs.readFileSync(SERVICE_ACCOUNT_PATH, 'utf8')
     )
 
-    const tokens = await jwtClient.authorize()
-    return tokens.access_token // Returns the access token
+    // Ensure correct private key formatting
+    if (keyFileContent.private_key.includes('\\n')) {
+      keyFileContent.private_key = keyFileContent.private_key.replace(
+        /\\n/g,
+        '\n'
+      )
+    }
+
+    const auth = new GoogleAuth({
+      credentials: keyFileContent,
+      scopes: ['https://www.googleapis.com/auth/firebase.messaging']
+    })
+
+    console.log('🚀 Requesting access token...')
+    const client = await auth.getClient()
+    const accessToken = await client.getAccessToken()
+
+    console.log('✅ Google Access Token:', accessToken.token)
+    return accessToken.token
   } catch (error) {
-    console.error('Error getting access token:', error)
+    console.error('🚨 Error getting Google Access Token:', error)
     throw error
   }
 }
+
+// Test the function
+getAccessToken()
+  .then(token => console.log('🎉 Token received successfully!'))
+  .catch(err => console.error('❌ Failed to get token:', err))
 
 module.exports = { getAccessToken }
