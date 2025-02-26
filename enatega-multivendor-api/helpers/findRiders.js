@@ -104,14 +104,26 @@ module.exports = {
     const riders = await Rider.find({ zone: zoneId })
     console.log({ rider: riders[0].notificationToken })
     // riders.forEach(async rider => {
+    // const message = {
+    //   to: riders[0].notificationToken,
+    //   sound: 'default',
+    //   title: `New Order ${order.orderId}`,
+    //   body: order.searchRadius
+    //     ? `New order available ${order.searchRadius} KM`
+    //     : 'New order available',
+    //   data: { orderId: order.orderId }
+    // }
     const message = {
-      to: riders[0].notificationToken,
-      sound: 'default',
-      title: `New Order ${order.orderId}`,
-      body: order.searchRadius
-        ? `New order available ${order.searchRadius} KM`
-        : 'New order available',
-      data: { orderId: order.orderId }
+      message: {
+        token: riders[0].notificationToken, // 🔴 Use "token" instead of "to"
+        notification: {
+          title: `New Order ${order.orderId}`,
+          body: order.searchRadius
+            ? `New order available ${order.searchRadius} KM`
+            : 'New order available'
+        },
+        data: { orderId: order.orderId }
+      }
     }
 
     const projectId = 'food-delivery-api-ab4e4'
