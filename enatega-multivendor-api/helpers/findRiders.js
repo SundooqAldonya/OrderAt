@@ -114,16 +114,21 @@ module.exports = {
       data: { orderId: order.orderId }
     }
 
+    const projectId = 'food-delivery-api-ab4e4'
+
     try {
-      const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-        },
-        body: JSON.stringify(message)
-      })
+      const response = await fetch(
+        `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+          },
+          body: JSON.stringify(message)
+        }
+      )
 
       const data = await response.json()
       console.log('FCM push notification sent:', data)
