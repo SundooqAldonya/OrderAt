@@ -97,35 +97,37 @@ module.exports = {
     return R * c // Distance in km
   },
   async sendPushNotification(zoneId, order) {
+    console.log({ zoneId })
     const riders = await Rider.find({ zone: zoneId })
-    riders.forEach(async rider => {
-      const message = {
-        to: rider.notificationToken,
-        sound: 'default',
-        title: `New Order ${order.orderId}`,
-        body: order.searchRadius
-          ? `New order available ${order.searchRadius} KM`
-          : 'New order available',
-        data: { orderId: order.orderId }
-      }
+    console.log({ rider: riders[0].notificationToken })
+    // riders.forEach(async rider => {
+    const message = {
+      to: riders[0].notificationToken,
+      sound: 'default',
+      title: `New Order ${order.orderId}`,
+      body: order.searchRadius
+        ? `New order available ${order.searchRadius} KM`
+        : 'New order available',
+      data: { orderId: order.orderId }
+    }
 
-      try {
-        const response = await fetch('https://exp.host/--/api/v2/push/send', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Accept-Encoding': 'gzip, deflate',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(message)
-        })
+    try {
+      const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message)
+      })
 
-        const data = await response.json()
-        console.log('Expo push notification sent:', data)
-      } catch (error) {
-        console.error('Error sending Expo push notification:', error)
-      }
-    })
+      const data = await response.json()
+      console.log('Expo push notification sent:', data)
+    } catch (error) {
+      console.error('Error sending Expo push notification:', error)
+    }
+    // })
   }
 }
 

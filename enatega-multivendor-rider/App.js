@@ -49,6 +49,7 @@ import {
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
+import { PaperProvider } from 'react-native-paper'
 
 moment.tz.setDefault('Asia/Karachi')
 LogBox.ignoreLogs([
@@ -182,7 +183,9 @@ export default function App() {
           <AuthContext.Provider value={{ token, setTokenAsync, logout }}>
             <LocationProvider>
               <TabsContext.Provider value={{ active, setActive }}>
-                <AppContainer />
+                <PaperProvider>
+                  <AppContainer />
+                </PaperProvider>
               </TabsContext.Provider>
             </LocationProvider>
           </AuthContext.Provider>

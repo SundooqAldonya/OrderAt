@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -35,6 +35,8 @@ import * as Sentry from '@sentry/react-native'
 import ConfigurationContext from '../context/configuration'
 import { useUserContext } from '../context/user'
 import { registerForPushNotificationsAsync } from '../utilities/pushNotifications'
+import { Button, Snackbar, Portal } from 'react-native-paper'
+import { View } from 'react-native'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -232,7 +234,8 @@ function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
   const client = useApolloClient()
-
+  const [visible, setVisible] = useState(false)
+  const [message, setMessage] = useState('')
   // useEffect(() => {
   //   if (token) {
   //     registerForPushNotificationsAsync().then(resToken => {
@@ -241,6 +244,32 @@ function AppContainer() {
   //     })
   //   }
   // }, [])
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(
+      notification => {
+        console.log('🔔 Notification Received:', notification)
+        setMessage(
+          `${notification.request.content.title}: ${notification.request.content.body}`
+        )
+        setVisible(true)
+      }
+    )
+
+    return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    const responseListener = Notifications.addNotificationResponseReceivedListener(
+      response => {
+        console.log('🔔 Notification Clicked:', response)
+        // setMessage(response.content.title)
+        // setVisible(true)
+      }
+    )
+
+    return () => responseListener.remove()
+  }, [])
 
   useEffect(() => {
     const dsn = configuration?.riderAppSentryUrl
@@ -256,8 +285,31 @@ function AppContainer() {
     }
   }, [configuration?.riderAppSentryUrl])
 
+  const onDismissSnackBar = () => setVisible(false)
+
   return (
     <SafeAreaProvider>
+      <View
+        style={{
+          flex: 1,
+          position: 'absolute',
+          width: '100%',
+          zIndex: 999999
+        }}>
+        <Snackbar
+          visible={visible}
+          style={{
+            position: 'absolute',
+            top: 20,
+            left: 10,
+            right: 10
+          }}
+          duration={3000}
+          onDismiss={onDismissSnackBar}>
+          {message}
+        </Snackbar>
+      </View>
+
       <NavigationContainer
         ref={ref => {
           navigationService.setGlobalRef(ref)
