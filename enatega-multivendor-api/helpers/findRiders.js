@@ -2,6 +2,7 @@ const Rider = require('../models/rider')
 const Order = require('../models/order')
 const admin = require('firebase-admin')
 const serviceAccount = require('../serviceAccountKey.json')
+const { getAccessToken } = require('./getGoogleAccessToken')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -98,6 +99,8 @@ module.exports = {
   },
   async sendPushNotification(zoneId, order) {
     console.log({ zoneId })
+    const accessToken = await getAccessToken()
+    console.log({ accessToken })
     const riders = await Rider.find({ zone: zoneId })
     console.log({ rider: riders[0].notificationToken })
     // riders.forEach(async rider => {
@@ -116,14 +119,14 @@ module.exports = {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Accept-Encoding': 'gzip, deflate',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
         },
         body: JSON.stringify(message)
       })
 
       const data = await response.json()
-      console.log('Expo push notification sent:', data)
+      console.log('FCM push notification sent:', data)
     } catch (error) {
       console.error('Error sending Expo push notification:', error)
     }
