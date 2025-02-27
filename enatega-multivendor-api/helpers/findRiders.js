@@ -105,7 +105,7 @@ module.exports = {
     console.log({ rider: riders[0].notificationToken })
     // riders.forEach(async rider => {
     const message = {
-      to: riders[0].notificationToken,
+      token: riders[0].notificationToken,
       sound: 'default',
       title: `New Order ${order.orderId}`,
       body: order.searchRadius
