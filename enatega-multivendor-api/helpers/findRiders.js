@@ -111,8 +111,8 @@ module.exports = {
         body: order.searchRadius
           ? `New order available ${order.searchRadius} KM`
           : 'New order available'
-      },
-      data: { orderId: order.orderId }
+      }
+      // data: { orderId: order.orderId }
     }
     // const message = {
     //   message: {
