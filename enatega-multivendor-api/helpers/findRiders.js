@@ -111,8 +111,8 @@ module.exports = {
         body: order.searchRadius
           ? `New order available ${order.searchRadius} KM`
           : 'New order available'
-      }
-      // data: { orderId: order.orderId }
+      },
+      data: { orderId: order.orderId }
     }
     // const message = {
     //   message: {
@@ -153,7 +153,7 @@ module.exports = {
       // )
 
       // const data = await response.json()
-      console.log('FCM push notification sent:', data)
+      // console.log('FCM push notification sent:', data)
     } catch (error) {
       console.error('Error sending Expo push notification:', error)
     }
