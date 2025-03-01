@@ -240,7 +240,7 @@ const ar = {
     user_registered: "تم التسجيل بنجاح!",
     cities_serving: "مدن نخدمها",
     select: "أختر",
-    select_area: "أختر المنطقة",
+    select_area: "قم باختيار المنطقة",
     no_areas: "لا يوجد مناطق بعد نعمل بها",
   },
 };

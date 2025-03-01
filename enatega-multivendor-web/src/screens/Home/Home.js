@@ -129,31 +129,34 @@ function Home() {
             <Typography variant="h5" sx={{ marginInlineStart: 2 }}>
               {t("cities_serving")}
             </Typography>
+            {errorCities && <Typography>{errorCities}</Typography>}
             <Grid container spacing={2} my={2}>
               {cities?.map((item) => {
-                return (
-                  <Grid
-                    sm={12}
-                    md={6}
-                    lg={4}
-                    key={item._id}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <Paper
-                      sx={{
-                        marginInline: 2,
-                        padding: 2,
-                        mb: 2,
-                        backgroundColor: "#8BC34A",
-                      }}
-                      onClick={() => handleCitySelect(item._id)}
+                if (item?.isActive) {
+                  return (
+                    <Grid
+                      sm={12}
+                      md={6}
+                      lg={4}
+                      key={item._id}
+                      style={{ cursor: "pointer" }}
                     >
-                      <Typography sx={{ color: "#fff" }}>
-                        {item.title}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                );
+                      <Paper
+                        sx={{
+                          marginInline: 2,
+                          padding: 2,
+                          mb: 2,
+                          backgroundColor: "#8BC34A",
+                        }}
+                        onClick={() => handleCitySelect(item._id)}
+                      >
+                        <Typography sx={{ color: "#fff" }}>
+                          {item.title}
+                        </Typography>
+                      </Paper>
+                    </Grid>
+                  );
+                }
               })}
             </Grid>
           </Box>
@@ -164,6 +167,8 @@ function Home() {
           open={openAreaModal}
           handleClose={handleClose}
           cityId={selectedCity}
+          setSelectedCity={setSelectedCity}
+          cities={cities}
         />
 
         <Box

@@ -1197,6 +1197,7 @@ export const getCities = gql`
     cities {
       _id
       title
+      isActive
     }
   }
 `;

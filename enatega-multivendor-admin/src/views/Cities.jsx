@@ -56,6 +56,8 @@ const Cities = () => {
   })
 
   const [mutateActive] = useMutation(toggleCityActive, {
+    refetchQueries: [{ query: GET_CITIES }],
+    awaitRefetchQueries: true,
     onCompleted: ({ toggleCityActive }) => {
       console.log({ toggleCityActive })
       // setMessage(toggleCityActive.message)

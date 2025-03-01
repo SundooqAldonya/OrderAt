@@ -14,18 +14,29 @@ import {
   NativeSelect,
   Typography,
   useTheme,
+  Box,
+  Grid,
+  Paper,
 } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { getCityAreas } from "../../../apollo/server";
+import { getCities, getCityAreas } from "../../../apollo/server";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useLocationContext } from "../../../context/Location";
 import { useNavigate } from "react-router-dom";
+import RiderImage from "../../../assets/images/rider.png";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const DialogAreaSelect = ({ open, handleClose, cityId }) => {
+const DialogAreaSelect = ({
+  open,
+  handleClose,
+  cityId,
+  setSelectedCity,
+  cities,
+}) => {
   const { i18n, t } = useTranslation();
   const { language } = i18n;
   const { location, setLocation } = useLocationContext();
@@ -40,19 +51,24 @@ const DialogAreaSelect = ({ open, handleClose, cityId }) => {
     skip: !cityId,
   });
 
+  const areas = data?.areasByCity || null;
+
   console.log({ dataAreas: data });
 
-  const handleChange = (e) => {
-    console.log({ value: e.target.value });
-    const foundArea = data?.areasByCity?.find(
-      (item) => item._id === e.target.value
-    );
+  const handleSelectArea = (itemId) => {
+    const foundArea = data?.areasByCity?.find((item) => item._id === itemId);
     setArea(foundArea);
   };
 
+  const handleSelectCity = (itemId) => {
+    setSelectedCity(itemId);
+  };
+
+  console.log({ cityId });
+
   console.log({ area });
 
-  const handleSelectArea = () => {
+  const handleSelectLocation = () => {
     setLocation({
       label: "Home",
       deliveryAddress: area.address,
@@ -61,10 +77,6 @@ const DialogAreaSelect = ({ open, handleClose, cityId }) => {
     });
     navigate("/business-list");
   };
-
-  // if (loading) {
-  //   return <CircularProgress color="success" />;
-  // }
 
   return (
     <React.Fragment>
@@ -75,42 +87,103 @@ const DialogAreaSelect = ({ open, handleClose, cityId }) => {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
         dir={direction(language)}
+        sx={{
+          "& .MuiPaper-root": {
+            width: 700,
+          },
+        }}
       >
-        <DialogTitle sx={{ color: "#000" }}>{t("select_area")}</DialogTitle>
-        <DialogContent>
+        <Box
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+          }}
+        >
+          <Box
+            style={{
+              width: 80,
+            }}
+          >
+            <img src={RiderImage} alt={"logo"} style={{ width: "100%" }} />
+          </Box>
+        </Box>
+        <DialogTitle sx={{ color: "#000", textAlign: "center" }}>
+          {t("select_area")}
+        </DialogTitle>
+        <DialogContent sx={{ overflowY: "auto" }}>
           {/* <DialogContentText id="alert-dialog-slide-description">
             Let Google help apps determine location. This means sending
             anonymous location data to Google, even when no apps are running.
           </DialogContentText> */}
           {loading && <CircularProgress color="success" />}
-          {!loading && data?.areasByCity.length ? (
-            <FormControl fullWidth>
-              <NativeSelect
-                sx={{ width: 300, color: "#000" }}
-                defaultValue={data?.areasByCity[0]._id}
-                inputProps={{
-                  name: "area",
-                  id: "uncontrolled-native",
-                }}
-                onChange={handleChange}
-              >
-                {data?.areasByCity?.map((area) => {
-                  return (
-                    <option key={area._id} value={area._id}>
-                      {area.title}
-                    </option>
-                  );
-                })}
-              </NativeSelect>
-            </FormControl>
-          ) : (
-            <Typography sx={{ color: "#000" }}>{t("no_areas")}</Typography>
-          )}
+          {/* {!loading && data?.areasByCity.length ? ( */}
+          <Grid
+            container
+            spacing={2}
+            style={{
+              // display: "flex",
+              // justifyContent: "space-between",
+              overflowY: "auto",
+            }}
+          >
+            <Grid
+              md={6}
+              sx={{ overflowY: "auto", maxHeight: "300px", width: "100px" }}
+            >
+              {cities?.map((city) => {
+                return (
+                  <Box
+                    sx={{
+                      px: 2,
+                      py: 2,
+                      my: 1,
+                      width: "200px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleSelectCity(city._id)}
+                  >
+                    <LocationOnIcon sx={{ color: "#8BC34A" }} />
+                    <Typography color="#000">{city.title}</Typography>
+                  </Box>
+                );
+              })}
+            </Grid>
+            <Grid
+              md={6}
+              sx={{ overflowY: "auto", maxHeight: "300px", width: "100px" }}
+            >
+              {areas?.map((area) => {
+                return (
+                  <Box
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      my: 1,
+                      width: "200px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleSelectArea(area._id)}
+                  >
+                    <Typography color="#000">{area.title}</Typography>
+                  </Box>
+                );
+              })}
+            </Grid>
+          </Grid>
+          {/* // ) : (  */}
+          {/* <Typography sx={{ color: "#000" }}>{t("no_areas")}</Typography> */}
+          {/* // )} */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>{t("cancel")}</Button>
           {data?.areasByCity.length ? (
-            <Button onClick={handleSelectArea}>{t("select")}</Button>
+            <Button onClick={handleSelectLocation}>{t("select")}</Button>
           ) : null}
         </DialogActions>
       </Dialog>
