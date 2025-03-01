@@ -104,7 +104,7 @@ const DialogAreaSelect = ({ open, handleClose, cityId }) => {
               </NativeSelect>
             </FormControl>
           ) : (
-            <Typography>{t("no_areas")}</Typography>
+            <Typography sx={{ color: "#000" }}>{t("no_areas")}</Typography>
           )}
         </DialogContent>
         <DialogActions>
