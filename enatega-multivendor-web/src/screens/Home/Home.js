@@ -6,6 +6,7 @@ import {
   useTheme,
   useMediaQuery,
   Typography,
+  Paper,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import FlashMessage from "../../components/FlashMessage";
@@ -32,6 +33,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import HeroSection from "../../components/HeroSection";
 import { direction } from "../../utils/helper";
+import { useQuery } from "@apollo/client";
+import { getCities } from "../../apollo/server";
+import DialogAreaSelect from "../../components/HomeScreen/DialogAreaSelect";
 
 function Home() {
   const { i18n, t } = useTranslation();
@@ -40,6 +44,18 @@ function Home() {
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
   const medium = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const {
+    data,
+    error: errorCities,
+    loading: loadingCities,
+  } = useQuery(getCities);
+
+  console.log({ data });
+
+  const cities = data?.cities || null;
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [openAreaModal, setOpenAreaModal] = useState(false);
 
   const [body, setBody] = useState([
     {
@@ -65,6 +81,7 @@ function Home() {
 
   const handleClose = useCallback(() => {
     setOpen(false);
+    setOpenAreaModal(false);
   }, []);
 
   useEffect(() => {
@@ -74,6 +91,12 @@ function Home() {
       check = true;
     }
   }, [error]);
+
+  const handleCitySelect = (itemId) => {
+    console.log({ itemId });
+    setSelectedCity(itemId);
+    setOpenAreaModal(true);
+  };
 
   return (
     <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
@@ -92,6 +115,57 @@ function Home() {
             <SearchContainer loading={loading} isHome={true} />
           </Grid>
         </Box>
+
+        {/* cities */}
+        {data?.cities ? (
+          <Box
+            dir={direction(language)}
+            sx={{
+              maxWidth: "1200px",
+              marginInline: "auto",
+              marginTop: "50px",
+            }}
+          >
+            <Typography variant="h5" sx={{ marginInlineStart: 2 }}>
+              {t("cities_serving")}
+            </Typography>
+            <Grid container spacing={2} my={2}>
+              {cities?.map((item) => {
+                return (
+                  <Grid
+                    sm={12}
+                    md={6}
+                    lg={4}
+                    key={item._id}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Paper
+                      sx={{
+                        marginInline: 2,
+                        padding: 2,
+                        mb: 2,
+                        backgroundColor: "#8BC34A",
+                      }}
+                      onClick={() => handleCitySelect(item._id)}
+                    >
+                      <Typography sx={{ color: "#fff" }}>
+                        {item.title}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        ) : null}
+
+        {/* dialog area select */}
+        <DialogAreaSelect
+          open={openAreaModal}
+          handleClose={handleClose}
+          cityId={selectedCity}
+        />
+
         <Box
           sx={{
             maxWidth: "1500px",

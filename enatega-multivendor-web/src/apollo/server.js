@@ -1191,3 +1191,31 @@ export const googleAuth = gql`
     }
   }
 `;
+
+export const getCities = gql`
+  query {
+    cities {
+      _id
+      title
+    }
+  }
+`;
+
+export const getCityAreas = gql`
+  query AreasByCity($id: String!) {
+    areasByCity(id: $id) {
+      _id
+      title
+      address
+      city {
+        _id
+        title
+      }
+      location {
+        location {
+          coordinates
+        }
+      }
+    }
+  }
+`;

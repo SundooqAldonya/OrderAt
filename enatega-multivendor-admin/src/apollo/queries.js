@@ -782,12 +782,14 @@ export const getUsers = `query{
       }
     }
   }`
+
 export const getCities = `query {
     cities {
       _id
       title      
     }
   }`
+
 export const getAreas = `query {
     areas {
       _id
