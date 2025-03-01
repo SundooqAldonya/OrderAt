@@ -38,6 +38,18 @@ module.exports = {
       }
     },
 
+    async toggleCityActive(_, args) {
+      try {
+        const city = await City.findById(args.id)
+        city.isActive = !city.isActive
+        await city.save()
+        return { message: 'city_updated' }
+      } catch (err) {
+        console.log({ err })
+        throw new Error('Something went wrong!')
+      }
+    },
+
     async removeCity(_, args) {
       console.log({ argsRemoveCity: args })
       try {

@@ -15,7 +15,7 @@ import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
 import CityForm from '../components/CityForm'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { REMOVE_CITY, getCities } from '../apollo'
+import { REMOVE_CITY, getCities, toggleCityActive } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -25,6 +25,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import orderBy from 'lodash/orderBy'
 import TableHeader from '../components/TableHeader'
 import { customStyles } from '../utils/tableCustomStyles'
+import { Switch } from '@material-ui/core'
 
 const GET_CITIES = gql`
   ${getCities}
@@ -54,6 +55,17 @@ const Cities = () => {
     refetchQueries: GET_CITIES
   })
 
+  const [mutateActive] = useMutation(toggleCityActive, {
+    onCompleted: ({ toggleCityActive }) => {
+      console.log({ toggleCityActive })
+      // setMessage(toggleCityActive.message)
+      // setSuccess(true)
+    },
+    onError: err => {
+      console.log({ err })
+    }
+  })
+
   const onChangeSearch = e => setSearchQuery(e.target.value)
 
   const toggleModal = item => {
@@ -70,7 +82,10 @@ const Cities = () => {
       selector: 'title',
       sortable: true
     },
-
+    {
+      name: t('Active'),
+      cell: row => <>{isActiveStatus(row)}</>
+    },
     {
       name: t('Action'),
       cell: row => <>{ActionButtons(row, toggleModal)}</>
@@ -102,6 +117,22 @@ const Cities = () => {
     })
   }
 
+  const isActiveStatus = row => {
+    return (
+      <Fragment>
+        {/* {row.isActive} */}
+        <Switch
+          size="small"
+          defaultChecked={row.isActive}
+          onChange={_event => {
+            mutateActive({ variables: { id: row._id } })
+          }}
+          style={{ color: 'black' }}
+        />
+      </Fragment>
+    )
+  }
+
   const ActionButtons = row => {
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
@@ -113,6 +144,7 @@ const Cities = () => {
     const handleClose = () => {
       setAnchorEl(null)
     }
+
     return (
       <>
         <div>

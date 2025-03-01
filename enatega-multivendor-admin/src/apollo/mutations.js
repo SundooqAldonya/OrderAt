@@ -906,3 +906,10 @@ export const removeRiderRegistered = gql`
     }
   }
 `
+export const toggleCityActive = gql`
+  mutation ToggleCityActive($id: String!) {
+    toggleCityActive(id: $id) {
+      message
+    }
+  }
+`
