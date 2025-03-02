@@ -1027,13 +1027,13 @@ module.exports = {
           await sendPushNotification(order.zone.toString(), transformedOrder)
         }
         publishToUser(result.user.toString(), transformedOrder, 'update')
-        sendNotificationToCustomerWeb(
-          user.notificationTokenWeb,
-          `Order status: ${result.orderStatus}`,
-          `Order ID ${result.orderId}`
-        )
+        // sendNotificationToCustomerWeb(
+        //   user.notificationTokenWeb,
+        //   `Order status: ${result.orderStatus}`,
+        //   `Order ID ${result.orderId}`
+        // )
         publishOrder(transformedOrder)
-        sendNotificationToUser(result.user.toString(), transformedOrder)
+        // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {
         console.log('acceptOrder', err)

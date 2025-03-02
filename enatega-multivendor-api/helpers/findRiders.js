@@ -3,6 +3,7 @@ const Order = require('../models/order')
 const admin = require('firebase-admin')
 const serviceAccount = require('../serviceAccountKey.json')
 const { getAccessToken } = require('./getGoogleAccessToken')
+const axios = require('axios')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -102,7 +103,7 @@ module.exports = {
     const accessToken = await getAccessToken()
     console.log({ accessToken })
     const riders = await Rider.find({ zone: zoneId })
-    console.log({ rider: riders[0].notificationToken })
+    console.log({ riderNotification: riders[0].notificationToken })
     // riders.forEach(async rider => {
     const message = {
       token: riders[0].notificationToken, // ✅ Use "token" instead of "to"
@@ -130,15 +131,30 @@ module.exports = {
     // const projectId = 'food-delivery-api-ab4e4'
 
     try {
-      admin
-        .messaging()
-        .send(message)
+      await axios
+        .post('https://exp.host/--/api/v2/push/send', {
+          to: riders[0].notificationToken,
+          title: `New order ${order.orderId}`,
+          body: order.searchRadius
+            ? `New order available ${order.searchRadius} KM`
+            : 'New order available'
+        })
         .then(res => {
-          console.log('Notification sent:', res)
+          console.log({ notificationResponse: res.data })
         })
         .catch(err => {
-          console.log('Error sending notification:', err)
+          console.log({ errorSendingNotification: err.response.data })
         })
+
+      // admin
+      //   .messaging()
+      //   .send(message)
+      //   .then(res => {
+      //     console.log('Notification sent:', res)
+      //   })
+      //   .catch(err => {
+      //     console.log('Error sending notification:', err)
+      //   })
       // const response = await fetch(
       //   `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
       //   {
