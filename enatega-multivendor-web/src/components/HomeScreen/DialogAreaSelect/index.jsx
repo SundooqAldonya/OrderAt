@@ -58,25 +58,32 @@ const DialogAreaSelect = ({
   const handleSelectArea = (itemId) => {
     const foundArea = data?.areasByCity?.find((item) => item._id === itemId);
     setArea(foundArea);
+    setLocation({
+      label: "Home",
+      deliveryAddress: foundArea.address,
+      latitude: foundArea.location.location.coordinates[1],
+      longitude: foundArea.location.location.coordinates[0],
+    });
+    navigate("/business-list");
   };
 
   const handleSelectCity = (itemId) => {
     setSelectedCity(itemId);
   };
 
-  console.log({ cityId });
+  // console.log({ cityId });
 
-  console.log({ area });
+  // console.log({ area });
 
-  const handleSelectLocation = () => {
-    setLocation({
-      label: "Home",
-      deliveryAddress: area.address,
-      latitude: area.location.location.coordinates[1],
-      longitude: area.location.location.coordinates[0],
-    });
-    navigate("/business-list");
-  };
+  // const handleSelectLocation = () => {
+  //   setLocation({
+  //     label: "Home",
+  //     deliveryAddress: area.address,
+  //     latitude: area.location.location.coordinates[1],
+  //     longitude: area.location.location.coordinates[0],
+  //   });
+  //   navigate("/business-list");
+  // };
 
   return (
     <React.Fragment>
@@ -119,14 +126,12 @@ const DialogAreaSelect = ({
             anonymous location data to Google, even when no apps are running.
           </DialogContentText> */}
           {loading && <CircularProgress color="success" />}
-          {/* {!loading && data?.areasByCity.length ? ( */}
           <Grid
             container
             spacing={2}
             style={{
-              // display: "flex",
-              // justifyContent: "space-between",
               overflowY: "auto",
+              paddingTop: "20px",
             }}
           >
             <Grid
@@ -145,6 +150,8 @@ const DialogAreaSelect = ({
                       alignItems: "center",
                       gap: 2,
                       cursor: "pointer",
+                      backgroundColor: cityId === city._id ? "#efefef" : null,
+                      borderRadius: 3,
                     }}
                     onClick={() => handleSelectCity(city._id)}
                   >
@@ -176,15 +183,12 @@ const DialogAreaSelect = ({
               })}
             </Grid>
           </Grid>
-          {/* // ) : (  */}
-          {/* <Typography sx={{ color: "#000" }}>{t("no_areas")}</Typography> */}
-          {/* // )} */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>{t("cancel")}</Button>
-          {data?.areasByCity.length ? (
+          {/* {data?.areasByCity.length ? (
             <Button onClick={handleSelectLocation}>{t("select")}</Button>
-          ) : null}
+          ) : null} */}
         </DialogActions>
       </Dialog>
     </React.Fragment>
