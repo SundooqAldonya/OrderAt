@@ -60,7 +60,8 @@
     "extra": {
       "eas": {
         "projectId": "417dbabb-e049-4341-b2f3-88f1cd3f491d"
-      }
+      },
+      "firebaseProjectId": "food-delivery-api-ab4e4"
     },
     "runtimeVersion": {
       "policy": "sdkVersion"

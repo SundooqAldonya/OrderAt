@@ -127,9 +127,13 @@ const useLogin = () => {
               Notifications.IosAuthorizationStatus.PROVISIONAL) &&
           Device.isDevice
         ) {
+          const projectId =
+            Constants.expoConfig?.extra?.firebaseProjectId ||
+            Constants.expoConfig?.projectId
+
           notificationToken = (
             await Notifications.getDevicePushTokenAsync({
-              projectId: Constants.expoConfig.extra.eas.projectId
+              projectId: Constants.expoConfig?.extra?.firebaseProjectId
             })
           ).data
         }

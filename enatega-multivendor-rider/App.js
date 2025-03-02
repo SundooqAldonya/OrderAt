@@ -50,6 +50,7 @@ import {
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
 import { PaperProvider } from 'react-native-paper'
+import Constants from 'expo-constants'
 
 moment.tz.setDefault('Asia/Karachi')
 LogBox.ignoreLogs([
@@ -62,6 +63,7 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 export default function App() {
   // const { t } = useTranslation();
   useKeepAwake()
+  console.log({ projectId: Constants.expoConfig.extra.firebaseProjectId })
   const [appIsReady, setAppIsReady] = useState(false)
   const [token, setToken] = useState(null)
   const [isUpdating, setIsUpdating] = useState(false)

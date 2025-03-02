@@ -2,7 +2,7 @@ const Rider = require('../models/rider')
 const Order = require('../models/order')
 const admin = require('firebase-admin')
 const serviceAccount = require('../serviceAccountKey.json')
-const { getAccessToken } = require('./getGoogleAccessToken')
+// const { getAccessToken } = require('./getGoogleAccessToken')
 const axios = require('axios')
 
 admin.initializeApp({
@@ -117,16 +117,16 @@ module.exports = {
     // }
     const messageBody = {
       message: {
-        token: riders[0].notificationToken,
-        data: {
-          channelId: 'default',
-          message: 'Testing',
+        token: riders[0].notificationToken, // Ensure this is a valid FCM token
+        notification: {
           title: `New Order ${order.orderId}`,
           body: order.searchRadius
             ? `New order available ${order.searchRadius} KM`
-            : 'New order available',
-          scopeKey: '@MahmoudAttia/enatega-rider-app-latest',
-          experienceId: '@MahmoudAttia/enatega-rider-app-latest'
+            : 'New order available'
+        },
+        data: {
+          channelId: 'default', // For Android channel support
+          message: 'Testing'
         }
       }
     }
@@ -179,6 +179,11 @@ module.exports = {
     }
     // })
   }
+}
+
+async function getAccessToken() {
+  const auth = await admin.credential.applicationDefault().getAccessToken()
+  return auth.access_token
 }
 
 const sendPushNotification = async (zoneId, expoPushToken, order) => {
