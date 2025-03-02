@@ -2,7 +2,7 @@ const Rider = require('../models/rider')
 const Order = require('../models/order')
 const admin = require('firebase-admin')
 const serviceAccount = require('../serviceAccountKey.json')
-// const { getAccessToken } = require('./getGoogleAccessToken')
+const { getAccessToken } = require('./getGoogleAccessToken')
 const axios = require('axios')
 
 admin.initializeApp({
@@ -181,10 +181,10 @@ module.exports = {
   }
 }
 
-async function getAccessToken() {
-  const auth = await admin.credential.applicationDefault().getAccessToken()
-  return auth.access_token
-}
+// async function getAccessToken() {
+//   const auth = await admin.credential.applicationDefault().getAccessToken()
+//   return auth.access_token
+// }
 
 const sendPushNotification = async (zoneId, expoPushToken, order) => {
   const riders = await Rider.find({ zone: zoneId })
