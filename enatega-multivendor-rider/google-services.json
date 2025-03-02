@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "367659375678",
-    "project_id": "orderatdriverapp",
-    "storage_bucket": "orderatdriverapp.firebasestorage.app"
+    "project_number": "41071470725",
+    "project_id": "food-delivery-api-ab4e4",
+    "storage_bucket": "food-delivery-api-ab4e4.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:367659375678:android:f82f272439c191bc2b056f",
+        "mobilesdk_app_id": "1:41071470725:android:e28d7636ccdfb2e07aa1ec",
         "android_client_info": {
           "package_name": "com.orderatrider.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCvxo1AX6vZXH0Qnbr3qzl2w8ZqF96hnBE"
+          "current_key": "AIzaSyCrJRPPEFDx2tdkOIqK4rTNkS37tcd9jhc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
