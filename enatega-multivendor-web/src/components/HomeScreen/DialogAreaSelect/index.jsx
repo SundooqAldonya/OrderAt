@@ -136,7 +136,7 @@ const DialogAreaSelect = ({
           >
             <Grid
               md={6}
-              sx={{ overflowY: "auto", maxHeight: "300px", width: "100px" }}
+              sx={{ overflowY: "auto", maxHeight: "300px", width: "100%" }}
             >
               {cities?.map((city) => {
                 return (
@@ -163,7 +163,7 @@ const DialogAreaSelect = ({
             </Grid>
             <Grid
               md={6}
-              sx={{ overflowY: "auto", maxHeight: "300px", width: "100px" }}
+              sx={{ overflowY: "auto", maxHeight: "300px", width: "100%" }}
             >
               {areas?.map((area) => {
                 return (
