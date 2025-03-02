@@ -105,46 +105,65 @@ module.exports = {
     const riders = await Rider.find({ zone: zoneId })
     console.log({ riderNotification: riders[0].notificationToken })
     // riders.forEach(async rider => {
-    const message = {
-      token: riders[0].notificationToken, // ✅ Use "token" instead of "to"
-      notification: {
-        title: `New Order ${order.orderId}`,
-        body: order.searchRadius
-          ? `New order available ${order.searchRadius} KM`
-          : 'New order available'
-      },
-      data: { orderId: order.orderId }
-    }
     // const message = {
-    //   message: {
-    //     token: riders[0].notificationToken, // 🔴 Use "token" instead of "to"
-    //     notification: {
-    //       title: `New Order ${order.orderId}`,
-    //       body: order.searchRadius
-    //         ? `New order available ${order.searchRadius} KM`
-    //         : 'New order available'
-    //     },
-    //     data: { orderId: order.orderId }
-    //   }
+    //   token: riders[0].notificationToken, // ✅ Use "token" instead of "to"
+    //   notification: {
+    //     title: `New Order ${order.orderId}`,
+    //     body: order.searchRadius
+    //       ? `New order available ${order.searchRadius} KM`
+    //       : 'New order available'
+    //   },
+    //   data: { orderId: order.orderId }
     // }
-
-    // const projectId = 'food-delivery-api-ab4e4'
-
-    try {
-      await axios
-        .post('https://exp.host/--/api/v2/push/send', {
-          to: riders[0].notificationToken,
-          title: `New order ${order.orderId}`,
+    const messageBody = {
+      message: {
+        token: riders[0].notificationToken,
+        data: {
+          channelId: 'default',
+          message: 'Testing',
+          title: `New Order ${order.orderId}`,
           body: order.searchRadius
             ? `New order available ${order.searchRadius} KM`
-            : 'New order available'
-        })
-        .then(res => {
-          console.log({ notificationResponse: res.data })
-        })
-        .catch(err => {
-          console.log({ errorSendingNotification: err.response.data })
-        })
+            : 'New order available',
+          scopeKey: '@MahmoudAttia/enatega-rider-app-latest',
+          experienceId: '@MahmoudAttia/enatega-rider-app-latest'
+        }
+      }
+    }
+
+    const projectId = 'food-delivery-api-ab4e4'
+
+    try {
+      const response = await fetch(
+        `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+          },
+          body: JSON.stringify(messageBody)
+        }
+      )
+
+      const data = await response.json()
+      console.log('FCM push notification sent:', data)
+      // await axios
+      //   .post('https://exp.host/--/api/v2/push/send', {
+      //     to: riders[0].notificationToken,
+      //     title: `New order ${order.orderId}`,
+      //     body: order.searchRadius
+      //       ? `New order available ${order.searchRadius} KM`
+      //       : 'New order available'
+      //   })
+      //   .then(res => {
+      //     console.log({ notificationResponse: res.data })
+      //   })
+      //   .catch(err => {
+      //     console.log({ errorSendingNotification: err.response.data })
+      //   })
 
       // admin
       //   .messaging()
@@ -155,21 +174,6 @@ module.exports = {
       //   .catch(err => {
       //     console.log('Error sending notification:', err)
       //   })
-      // const response = await fetch(
-      //   `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       Accept: 'application/json',
-      //       'Content-Type': 'application/json',
-      //       Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-      //     },
-      //     body: JSON.stringify(message)
-      //   }
-      // )
-
-      // const data = await response.json()
-      // console.log('FCM push notification sent:', data)
     } catch (error) {
       console.error('Error sending Expo push notification:', error)
     }

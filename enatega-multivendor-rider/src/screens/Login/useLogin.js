@@ -128,7 +128,7 @@ const useLogin = () => {
           Device.isDevice
         ) {
           notificationToken = (
-            await Notifications.getExpoPushTokenAsync({
+            await Notifications.getDevicePushTokenAsync({
               projectId: Constants.expoConfig.extra.eas.projectId
             })
           ).data
