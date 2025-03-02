@@ -29,9 +29,11 @@ import UserContext from "../../../context/User";
 import HeadingView from "./HeadingView";
 import { useTranslation } from "react-i18next";
 import useStyles from "./styles";
+import { direction } from "../../../utils/helper";
 
 function VariationModal({ isVisible, toggleModal, data }) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
   const theme = useTheme();
   const classes = useStyles();
   const configuration = useContext(ConfigurationContext);
@@ -323,6 +325,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
         maxWidth="lg"
         pt={theme.spacing(0.5)}
         className={classes.root}
+        dir={direction(language)}
       >
         <Box className={classes.outerContainer}>
           <Box
@@ -359,7 +362,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
               <DialogContent>
                 {data?.food?.variations?.length && (
                   <>
-                    <HeadingView option={false} />
+                    <HeadingView quantityMinimum={1} option={false} />
                     <FormControl style={{ width: "100%" }}>
                       <RadioGroup>
                         {data?.food?.variations?.map((variation, index) => (
@@ -372,6 +375,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                               checked={variation._id === selectedVariation._id}
                               value={variation._id}
                               onClick={() => onSelectVariation(variation)}
+                              sx={{ marginInline: 0 }}
                               control={<Radio color="primary" />}
                               label={
                                 <Typography
@@ -402,7 +406,6 @@ function VariationModal({ isVisible, toggleModal, data }) {
                 )}
                 <Box />
                 <FormControl style={{ flex: 1, display: "flex" }}>
-                  {console.log({ selectedVariation })}
                   <FormGroup>
                     {selectedVariation?.addons?.map((addon, index) => {
                       console.log({ addonItem: addon });
@@ -413,10 +416,11 @@ function VariationModal({ isVisible, toggleModal, data }) {
                             subTitle={addon.description}
                             error={false}
                             option={true}
+                            quantityMinimum={addon.quantityMinimum}
                             status={
                               addon.quantityMinimum === 0
-                                ? t("optional")
-                                : `${addon.quantityMinimum} ${t("required")}`
+                                ? "optional"
+                                : "required"
                             }
                           />
                           {radioORcheckboxes(addon)}
@@ -428,7 +432,7 @@ function VariationModal({ isVisible, toggleModal, data }) {
                     <HeadingView
                       title={t("specialInstructions")}
                       subTitle={t("anySpecific")}
-                      status={t("optional")}
+                      status={"optional"}
                       error={false}
                       option={false}
                       notice={true}
@@ -462,46 +466,56 @@ function VariationModal({ isVisible, toggleModal, data }) {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
+                  gap={3}
                 >
-                  <IconButton
-                    size="small"
-                    className={classes.mr}
-                    style={{
-                      minWidth: "auto",
-                      backgroundColor: theme.palette.common.black,
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onRemove();
-                    }}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    <RemoveIcon fontSize="medium" style={{ color: "white" }} />
-                  </IconButton>
-                  <Typography
-                    style={{
-                      fontSize: "1.25rem",
-                      border: "1px solid",
-                      padding: "5px 15px",
-                      borderRadius: 10,
-                    }}
-                    className={`${classes.mr} ${classes.itemTitle}`}
-                  >
-                    {quantity}
-                  </Typography>
-                  <IconButton
-                    size="small"
-                    className={classes.mr}
-                    style={{
-                      minWidth: "auto",
-                      backgroundColor: theme.palette.common.black,
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onAdd();
-                    }}
-                  >
-                    <AddIcon fontSize="medium" style={{ color: "white" }} />
-                  </IconButton>
+                    <IconButton
+                      size="small"
+                      className={classes.mr}
+                      style={{
+                        minWidth: "auto",
+                        backgroundColor: theme.palette.common.black,
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onRemove();
+                      }}
+                    >
+                      <RemoveIcon
+                        fontSize="medium"
+                        style={{ color: "white" }}
+                      />
+                    </IconButton>
+                    <Typography
+                      style={{
+                        fontSize: "1.25rem",
+                        border: "1px solid",
+                        padding: "5px 15px",
+                        borderRadius: 10,
+                      }}
+                      className={`${classes.mr} ${classes.itemTitle}`}
+                    >
+                      {quantity}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      className={classes.mr}
+                      style={{
+                        minWidth: "auto",
+                        backgroundColor: theme.palette.common.black,
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onAdd();
+                      }}
+                    >
+                      <AddIcon fontSize="medium" style={{ color: "white" }} />
+                    </IconButton>
+                  </Box>
                   <Button
                     variant="contained"
                     color="primary"

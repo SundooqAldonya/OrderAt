@@ -247,6 +247,7 @@ const en = {
     select: "Select",
     select_area: "Select Area",
     no_areas: "No Areas for the selected city yet",
+    select_option: "Select option",
   },
 };
 export default en;

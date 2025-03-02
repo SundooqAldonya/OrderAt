@@ -17,6 +17,7 @@ import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useStyles from "./styles";
 import TabContainer from "./TabContainer";
+import { direction } from "../../../utils/helper";
 
 function a11yProps(index) {
   return {
@@ -30,7 +31,8 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
   const classes = useStyles();
   const extraSmall = useMediaQuery(theme.breakpoints.down("md"));
   const [tabValue, setTabValue] = useState(0);
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { language } = i18n;
 
   const handleChange = useCallback((event, newValue) => {
     setTabValue(newValue);
@@ -44,6 +46,7 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
       scroll="body"
       fullWidth={true}
       maxWidth="md"
+      dir={direction(language)}
     >
       <Box display="flex" justifyContent="flex-end">
         <IconButton
@@ -63,7 +66,12 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
         className={classes.restaurantContainer}
       >
         <Box pt={theme.spacing(2)}>
-          <Box display="flex" alignItems="center" justifyContent="center">
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={1}
+            justifyContent="center"
+          >
             <Typography
               className={classes.titleText}
               color={theme.palette.text.secondary}
@@ -71,24 +79,29 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
             >
               {restaurantInfo.name}
             </Typography>
-            <Box pl={theme.spacing(1)} pr={theme.spacing(1)} />
             <StarSharpIcon className={classes.starIcon} />
-            <Typography
-              className={classes.xSmallText}
-              color={theme.palette.text.secondary}
-              fontWeight={theme.typography.fontWeightBold}
-            >
-              {restaurantInfo.reviewData.ratings}
-            </Typography>
-            <Typography className={classes.xSmallText}>/5</Typography>
-            <Typography marginLeft={3} className={classes.SmallText}>
-              {` (${restaurantInfo.reviewData.total})`}
-            </Typography>
+            {restaurantInfo?.reviewData ? (
+              <Typography
+                className={classes.xSmallText}
+                color={theme.palette.text.secondary}
+                fontWeight={theme.typography.fontWeightBold}
+              >
+                {restaurantInfo?.reviewData?.ratings}
+              </Typography>
+            ) : null}
+            <Typography className={classes.xSmallText}>5</Typography>
+            <Typography className={classes.xSmallText}>/</Typography>
+            {restaurantInfo?.reviewData?.total ? (
+              <Typography className={classes.xSmallText}>
+                {` (${restaurantInfo?.reviewData?.total})`}
+              </Typography>
+            ) : (
+              <Typography className={classes.xSmallText}>0</Typography>
+            )}
             <Box pb={theme.spacing(2)} />
           </Box>
           <Box
             display="flex"
-            paddingLeft={`${theme.spacing(1)}`}
             alignItems="center"
             justifyContent="center"
             pt={theme.spacing(2)}
@@ -102,7 +115,6 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
                 <FiberManualRecordIcon
                   color={theme.palette.text.disabled}
                   fontSize="5px"
-                  paddingRight="5px"
                 />
                 <Typography className={classes.xSmallText}>
                   {item.title}
@@ -142,6 +154,7 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
           <Typography
             className={classes.titleText}
             color={theme.palette.text.secondary}
+            sx={{ textAlign: "center" }}
           >
             {t("deliveryHours")}
           </Typography>
@@ -161,6 +174,7 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
                 padding="10px"
                 marginBottom="10px"
                 justifyContent="center"
+                gap={1}
                 alignItems="center"
                 width="80%"
               >
@@ -170,7 +184,6 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
                 </Typography>
                 {dayOb?.times?.length < 1 ? (
                   <Typography key={"closed"} className={classes.smallText}>
-                    {" "}
                     {t("closedAllDay")}
                   </Typography>
                 ) : (
@@ -194,6 +207,7 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
           <Typography
             className={classes.titleText}
             color={theme.palette.text.secondary}
+            sx={{ textAlign: "center" }}
           >
             {t("address")}
           </Typography>
@@ -221,12 +235,29 @@ function RestaurantInfo({ isVisible, toggleModal, restaurantInfo }) {
           </Box>
         </TabContainer>
         <TabContainer value={tabValue} index={1}>
-          <Typography
-            className={classes.titleText}
-            color={theme.palette.common.white}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+            }}
           >
-            {`${restaurantInfo.reviewData.total} ${t("reviews")}`}
-          </Typography>
+            {restaurantInfo?.reviewData?.total ? (
+              <Typography
+                className={classes.titleText}
+                color={theme.palette.common.white}
+              >
+                {`(${restaurantInfo?.reviewData?.total})`}
+              </Typography>
+            ) : null}
+            <Typography
+              className={classes.titleText}
+              color={theme.palette.common.white}
+            >
+              {t("reviews")}
+            </Typography>
+          </Box>
           <Box className={classes.line}>
             <Divider />
           </Box>
