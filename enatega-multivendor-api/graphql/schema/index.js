@@ -1250,6 +1250,7 @@ const typeDefs = gql`
     _id: String!
     title: String
     address: String
+    isActive: Boolean
   }
 
   type InsideLocationArea {
@@ -1507,6 +1508,7 @@ const typeDefs = gql`
     removeArea(id: String!): Message
     createCity(title: String!): Message
     editCity(id: String!, title: String!): Message
+    toggleCityActive(id: String!): Message
     removeCity(id: String!): Message
     CheckOutPlaceOrder(
       userId: ID!

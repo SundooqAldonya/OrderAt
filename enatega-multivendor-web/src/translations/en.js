@@ -243,6 +243,11 @@ const en = {
     deliver_with_orderat: "Deliver with orderat",
     signup_to_deliver: "Signup to deliver",
     user_registered: "User signup successfully!",
+    cities_serving: "Cities we are serving",
+    select: "Select",
+    select_area: "Select Area",
+    no_areas: "No Areas for the selected city yet",
+    select_option: "Select option",
   },
 };
 export default en;

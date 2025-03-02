@@ -98,7 +98,7 @@ function DHeader({
             <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>
               {!mobile ? (
                 <Fragment>
-                  <PickDeliveryTabs />
+                  {/* <PickDeliveryTabs /> */}
                   <SearchRestaurantNav
                     search={search}
                     setSearch={setSearch}

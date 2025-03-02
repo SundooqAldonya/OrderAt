@@ -782,12 +782,15 @@ export const getUsers = `query{
       }
     }
   }`
+
 export const getCities = `query {
     cities {
       _id
-      title      
+      title    
+      isActive  
     }
   }`
+
 export const getAreas = `query {
     areas {
       _id

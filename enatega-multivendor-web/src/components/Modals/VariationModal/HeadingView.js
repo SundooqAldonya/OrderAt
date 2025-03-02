@@ -5,9 +5,10 @@ import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
 
 function ItemHeadingView({
-  /*title = "Select Variation",
-  subTitle = "Select 1",
-  status = "Required",*/
+  title,
+  // subTitle = "Select 1",
+  quantityMinimum = 0,
+  // status = "required",
   error = false,
   option,
   notice,
@@ -21,17 +22,21 @@ function ItemHeadingView({
           style={{ fontSize: "1.25rem" }}
           className={classes.itemTitle}
         >
-          {option
-            ? "Select option"
+          {title
+            ? title
+            : option
+            ? t("select_option")
             : notice
-            ? "Write a notice"
+            ? t("specialInstructions")
             : t("selectVariation")}
         </Typography>
         <Box>
           <Typography
             className={clsx(classes.infoStyle, { [classes.itemError]: error })}
           >
-            {t("required")}
+            {quantityMinimum
+              ? `${t("required")} ${quantityMinimum}`
+              : t("optional")}
           </Typography>
         </Box>
       </Box>

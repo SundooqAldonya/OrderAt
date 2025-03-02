@@ -162,7 +162,7 @@ const ar = {
     resendCode: "إعادة إرسال الرمز",
     retryAfter: "إعادة المحاولة بعد",
     loginBtn: "تسجيل الدخول",
-    addToCart: "أضف إلى سلتك.",
+    addToCart: "أضف إلى سلتك",
     customize: "اختار تفاصيل طلبك",
     optional: "اختياري",
     required: "مطلوب",
@@ -238,6 +238,11 @@ const ar = {
     deliver_with_orderat: "قم بالتوصيل مع اوردرات",
     signup_to_deliver: "سجل لتقم بالتوصيل",
     user_registered: "تم التسجيل بنجاح!",
+    cities_serving: "مدن نخدمها",
+    select: "أختر",
+    select_area: "قم باختيار المنطقة",
+    no_areas: "لا يوجد مناطق بعد نعمل بها",
+    select_option: "حدد الخيار",
   },
 };
 export default ar;
