@@ -269,9 +269,21 @@ function VariationModal({ isVisible, toggleModal, data }) {
                     </Typography>
                   }
                 />
-                <Typography className={classes.priceTitle}>
-                  {`${configuration.currencySymbol} ${option.price.toFixed(2)}`}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexDirection: language === "en" ? "row" : "row-reverse",
+                  }}
+                >
+                  <Typography className={classes.priceTitle}>
+                    {configuration.currencySymbol}
+                  </Typography>
+                  <Typography className={classes.priceTitle}>
+                    {option.price.toFixed(2)}
+                  </Typography>
+                </Box>
               </Box>
             ))}
           </RadioGroup>
@@ -301,11 +313,21 @@ function VariationModal({ isVisible, toggleModal, data }) {
                     </Typography>
                   }
                 />
-                <Typography className={classes.priceTitle}>
-                  {`${configuration.currencySymbol} ${option?.price.toFixed(
-                    2
-                  )}`}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexDirection: language === "en" ? "row" : "row-reverse",
+                  }}
+                >
+                  <Typography className={classes.priceTitle}>
+                    {configuration.currencySymbol}
+                  </Typography>
+                  <Typography className={classes.priceTitle}>
+                    {option.price.toFixed(2)}
+                  </Typography>
+                </Box>
               </Box>
             );
           })
@@ -348,9 +370,21 @@ function VariationModal({ isVisible, toggleModal, data }) {
                   <Typography className={classes.itemTitle}>
                     {data?.food?.title ?? ""}
                   </Typography>
-                  <Typography className={classes.priceTitle}>{` ${
-                    configuration.currencySymbol
-                  } ${calculatePrice()}`}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      flexDirection: language === "en" ? "row" : "row-reverse",
+                    }}
+                  >
+                    <Typography className={classes.priceTitle}>
+                      {configuration.currencySymbol}
+                    </Typography>
+                    <Typography className={classes.priceTitle}>
+                      {calculatePrice()}
+                    </Typography>
+                  </Box>
                 </Box>
                 <Box mb={theme.spacing(2)}>
                   <Typography className={classes.priceTitle}>
@@ -388,12 +422,22 @@ function VariationModal({ isVisible, toggleModal, data }) {
                                 </Typography>
                               }
                             />
-
-                            <Typography className={classes.priceTitle}>
-                              {`${
-                                configuration.currencySymbol
-                              } ${variation.price.toFixed(2)}`}
-                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                flexDirection:
+                                  language === "en" ? "row" : "row-reverse",
+                              }}
+                            >
+                              <Typography className={classes.priceTitle}>
+                                {configuration.currencySymbol}
+                              </Typography>
+                              <Typography className={classes.priceTitle}>
+                                {variation.price.toFixed(2)}
+                              </Typography>
+                            </Box>
                           </Box>
                         ))}
                       </RadioGroup>

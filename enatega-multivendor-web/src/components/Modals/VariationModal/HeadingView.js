@@ -5,7 +5,7 @@ import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
 
 function ItemHeadingView({
-  // title = "Select Variation",
+  title,
   // subTitle = "Select 1",
   quantityMinimum = 0,
   // status = "required",
@@ -22,7 +22,9 @@ function ItemHeadingView({
           style={{ fontSize: "1.25rem" }}
           className={classes.itemTitle}
         >
-          {option
+          {title
+            ? title
+            : option
             ? t("select_option")
             : notice
             ? t("specialInstructions")
