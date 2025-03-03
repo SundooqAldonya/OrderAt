@@ -1,12 +1,11 @@
 /* eslint-disable react/display-name */
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import * as Notifications from 'expo-notifications'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import Login from '../screens/Login/Login'
 import Sidebar from '../components/Sidebar/Sidebar'
 import Orders from '../screens/Orders/Orders'
@@ -28,19 +27,34 @@ import AvailableCash from '../screens/AvailableCash/AvailableCash'
 import ChatScreen from '../screens/ChatWithCustomer/ChatScreen'
 import { AuthContext } from '../context/auth'
 import { SoundContextProvider } from '../context/sound'
-import { gql, useApolloClient } from '@apollo/client'
-import { riderOrders } from '../apollo/queries'
 import { useTranslation } from 'react-i18next'
 import * as Sentry from '@sentry/react-native'
 import ConfigurationContext from '../context/configuration'
-import { useUserContext } from '../context/user'
-import { registerForPushNotificationsAsync } from '../utilities/pushNotifications'
-import { Button, Snackbar, Portal } from 'react-native-paper'
-import { View } from 'react-native'
+import { playCustomSound } from '../utilities/playSound'
+import ToastManager, { Toast } from 'toastify-react-native'
+import messaging from '@react-native-firebase/messaging'
+import { Alert } from 'react-native'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 const Tab = createBottomTabNavigator()
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async notification => {
+//     console.log('✅ Notification received in handler:', notification)
+
+//     // // Check if notification includes sound
+//     // if (notification.request.content.sound) {
+//     //   await playCustomSound()
+//     // }
+
+//     return {
+//       shouldShowAlert: true,
+//       shouldPlaySound: true, // We play it manually
+//       shouldSetBadge: false
+//     }
+//   }
+// })
 
 function MyTabs() {
   const { t } = useTranslation()
@@ -116,59 +130,6 @@ function LocationStack() {
 
 function Main() {
   const { locationPermission } = useLocationContext()
-  const { dataProfile } = useUserContext()
-  const client = useApolloClient()
-
-  // const lastNotificationResponse = Notifications.useLastNotificationResponse()
-
-  // const handleNotification = useCallback(async response => {
-  //   if (
-  //     response &&
-  //     response.notification &&
-  //     response.notification.request &&
-  //     response.notification.request.content &&
-  //     response.notification.request.content.data
-  //   ) {
-  //     const { _id } = response.notification.request.content.data
-  //     const { data } = await client.query({
-  //       query: gql`
-  //         ${riderOrders}
-  //       `,
-  //       fetchPolicy: 'network-only'
-  //     })
-  //     const order = data.riderOrders.find(o => o._id === _id)
-  //     const lastNotificationHandledId = await AsyncStorage.getItem(
-  //       '@lastNotificationHandledId'
-  //     )
-  //     if (lastNotificationHandledId === _id) return
-  //     await AsyncStorage.setItem('@lastNotificationHandledId', _id)
-  //     navigationService.navigate('OrderDetail', {
-  //       itemId: _id,
-  //       order
-  //     })
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   const subscription = Notifications.addNotificationResponseReceivedListener(
-  //     handleNotification
-  //   )
-
-  //   return () => subscription.remove()
-  // }, [handleNotification])
-
-  // useEffect(() => {
-  //   // Register a notification handler that will be called when a notification is received.
-  //   Notifications.setNotificationHandler({
-  //     handleNotification: async notification => {
-  //       return {
-  //         shouldShowAlert: false, // Prevent the app from closing
-  //         shouldPlaySound: false,
-  //         shouldSetBadge: false
-  //       }
-  //     }
-  //   })
-  // }, [])
 
   return locationPermission ? (
     <UserProvider>
@@ -233,42 +194,39 @@ function NoDrawer() {
 function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
-  const client = useApolloClient()
-  const [visible, setVisible] = useState(false)
-  const [message, setMessage] = useState('')
-  // useEffect(() => {
-  //   if (token) {
-  //     registerForPushNotificationsAsync().then(resToken => {
-  //       console.log('Push Token here:', resToken)
-  //       // Send this token to your backend
-  //     })
-  //   }
-  // }, [])
 
   useEffect(() => {
-    const subscription = Notifications.addNotificationReceivedListener(
-      notification => {
-        console.log('🔔 Notification Received:', notification)
-        setMessage(
-          `${notification.request.content.title}: ${notification.request.content.body}`
-        )
-        setVisible(true)
-      }
-    )
+    async function checkPermissions() {
+      const { status } = await Notifications.getPermissionsAsync()
+      console.log('🔍 Notification permission status:', status)
 
-    return () => subscription.remove()
+      if (status !== 'granted') {
+        console.log(
+          '⚠️ Notifications are not enabled, requesting permission...'
+        )
+        const {
+          status: newStatus
+        } = await Notifications.requestPermissionsAsync()
+        console.log('🔍 New notification status:', newStatus)
+      }
+    }
+
+    checkPermissions()
   }, [])
 
   useEffect(() => {
-    const responseListener = Notifications.addNotificationResponseReceivedListener(
-      response => {
-        console.log('🔔 Notification Clicked:', response)
-        // setMessage(response.content.title)
-        // setVisible(true)
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Alert.alert(
+      //   'A new FCM message arrived!',
+      //   JSON.stringify(remoteMessage, 2, null)
+      // )
+      Toast.info(remoteMessage.notification.body)
+      if (remoteMessage.notification.android.sound !== 'false') {
+        playCustomSound()
       }
-    )
+    })
 
-    return () => responseListener.remove()
+    return unsubscribe
   }, [])
 
   useEffect(() => {
@@ -285,30 +243,13 @@ function AppContainer() {
     }
   }, [configuration?.riderAppSentryUrl])
 
-  const onDismissSnackBar = () => setVisible(false)
-
   return (
     <SafeAreaProvider>
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          width: '100%',
-          zIndex: 999999
-        }}>
-        <Snackbar
-          visible={visible}
-          style={{
-            position: 'absolute',
-            top: 20,
-            left: 10,
-            right: 10
-          }}
-          duration={3000}
-          onDismiss={onDismissSnackBar}>
-          {message}
-        </Snackbar>
-      </View>
+      <ToastManager
+        textStyle={{
+          fontSize: 14
+        }}
+      />
 
       <NavigationContainer
         ref={ref => {

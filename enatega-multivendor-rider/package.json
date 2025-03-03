@@ -103,7 +103,8 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.12.2",
     "sentry-expo": "~7.0.0",
-    "subscriptions-transport-ws": "^0.9.19"
+    "subscriptions-transport-ws": "^0.9.19",
+    "toastify-react-native": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

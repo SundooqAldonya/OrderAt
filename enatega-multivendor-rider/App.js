@@ -22,11 +22,10 @@ import { AuthContext } from './src/context/auth'
 import { TabsContext } from './src/context/tabs'
 import TextDefault from './src/components/Text/TextDefault/TextDefault'
 import { LocationProvider } from './src/context/location'
-import getEnvVars from './environment'
 import moment from 'moment-timezone'
-import { useTranslation } from 'react-i18next'
 import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
+import * as Notifications from 'expo-notifications'
 
 import {
   useFonts,
@@ -59,6 +58,18 @@ LogBox.ignoreLogs([
   'Constants.deviceYearClass'
 ]) // Ignore log notification by message
 LogBox.ignoreAllLogs() // Ignore all log notifications
+
+Notifications.setNotificationHandler({
+  handleNotification: async notification => {
+    console.log('✅ Notification received in handler:', notification)
+
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true, // We play it manually
+      shouldSetBadge: false
+    }
+  }
+})
 
 export default function App() {
   // const { t } = useTranslation();

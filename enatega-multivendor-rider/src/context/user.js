@@ -45,7 +45,7 @@ export const UserProvider = props => {
     onError: error1
   })
 
-  console.log({ dataProfile })
+  // console.log({ dataProfile })
 
   const {
     client,
@@ -63,7 +63,7 @@ export const UserProvider = props => {
     // pollInterval: 60000
   })
 
-  console.log({ dataAssigned: dataAssigned?.riderOrders[0] })
+  // console.log({ dataAssigned: dataAssigned?.riderOrders[0] })
 
   let unsubscribeZoneOrder = null
   let unsubscribeAssignOrder = null

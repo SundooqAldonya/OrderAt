@@ -9,7 +9,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
-module.exports = {
+const findRiders = {
   async findOrdersWithinRadius(rider, radius) {
     return Order.find({
       orderStatus: 'ACCEPTED',
@@ -71,7 +71,7 @@ module.exports = {
           `Found ${riders.length} riders within ${newRadius} km for order ${order._id}`
         )
         riders.forEach(async rider => {
-          await sendPushNotification(rider.notificationToken, order)
+          await this.sendPushNotification(rider.notificationToken, order)
         })
       }
 
@@ -98,23 +98,13 @@ module.exports = {
 
     return R * c // Distance in km
   },
+
   async sendPushNotification(zoneId, order) {
     console.log({ zoneId })
     const accessToken = await getAccessToken()
     console.log({ accessToken })
     const riders = await Rider.find({ zone: zoneId })
     console.log({ riderNotification: riders[0].notificationToken })
-    // riders.forEach(async rider => {
-    // const message = {
-    //   token: riders[0].notificationToken, // ✅ Use "token" instead of "to"
-    //   notification: {
-    //     title: `New Order ${order.orderId}`,
-    //     body: order.searchRadius
-    //       ? `New order available ${order.searchRadius} KM`
-    //       : 'New order available'
-    //   },
-    //   data: { orderId: order.orderId }
-    // }
     const messageBody = {
       message: {
         token: riders[0].notificationToken, // Ensure this is a valid FCM token
@@ -126,7 +116,15 @@ module.exports = {
         },
         data: {
           channelId: 'default', // For Android channel support
-          message: 'Testing'
+          message: 'Testing',
+          playSound: 'true',
+          sound: riders[0].muted ? 'false' : 'beep1.wav'
+        },
+        android: {
+          notification: {
+            sound: riders[0].muted ? 'false' : 'beep1',
+            channelId: 'default'
+          }
         }
       }
     }
@@ -134,89 +132,31 @@ module.exports = {
     const projectId = 'food-delivery-api-ab4e4'
 
     try {
-      const response = await fetch(
-        `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-          },
-          body: JSON.stringify(messageBody)
-        }
-      )
+      if (riders[0].available && riders[0].isActive) {
+        const response = await fetch(
+          `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Accept-encoding': 'gzip, deflate',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+            },
+            body: JSON.stringify(messageBody)
+          }
+        )
 
-      const data = await response.json()
-      console.log('FCM push notification sent:', data)
-      // await axios
-      //   .post('https://exp.host/--/api/v2/push/send', {
-      //     to: riders[0].notificationToken,
-      //     title: `New order ${order.orderId}`,
-      //     body: order.searchRadius
-      //       ? `New order available ${order.searchRadius} KM`
-      //       : 'New order available'
-      //   })
-      //   .then(res => {
-      //     console.log({ notificationResponse: res.data })
-      //   })
-      //   .catch(err => {
-      //     console.log({ errorSendingNotification: err.response.data })
-      //   })
-
-      // admin
-      //   .messaging()
-      //   .send(message)
-      //   .then(res => {
-      //     console.log('Notification sent:', res)
-      //   })
-      //   .catch(err => {
-      //     console.log('Error sending notification:', err)
-      //   })
+        const data = await response.json()
+        console.log('FCM push notification sent:', data)
+      }
     } catch (error) {
       console.error('Error sending Expo push notification:', error)
     }
-    // })
   }
-}
-
-// async function getAccessToken() {
-//   const auth = await admin.credential.applicationDefault().getAccessToken()
-//   return auth.access_token
-// }
-
-const sendPushNotification = async (zoneId, expoPushToken, order) => {
-  const riders = await Rider.find({ zone: zoneId })
-  riders.forEach(async rider => {
-    const message = {
-      to: rider.notificationToken,
-      sound: 'default',
-      title: `New Order ${order.orderId}`,
-      body: order.searchRadius
-        ? `${order.searchRadius} KM`
-        : 'New order available',
-      data: { orderId: order.orderId }
-    }
-
-    try {
-      const response = await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Accept-Encoding': 'gzip, deflate',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(message)
-      })
-
-      const data = await response.json()
-      console.log('Expo push notification sent:', data)
-    } catch (error) {
-      console.error('Error sending Expo push notification:', error)
-    }
-  })
 }
 
 // Run this job every 3 minutes
 // setInterval(expandSearchRadius, 3 * 60 * 1000)
+
+module.exports = findRiders

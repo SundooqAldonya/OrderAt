@@ -11,6 +11,7 @@ import * as Device from 'expo-device'
 import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
+import { playCustomSound } from '../../utilities/playSound'
 
 const RIDER_LOGIN = gql`
   ${riderLogin}
@@ -18,6 +19,23 @@ const RIDER_LOGIN = gql`
 const RIDER_CREDS = gql`
   ${defaultRiderCreds}
 `
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async notification => {
+//     console.log('Notification received:', notification)
+
+//     // Check if notification includes sound
+//     if (notification.request.content.sound) {
+//       await playCustomSound()
+//     }
+
+//     return {
+//       shouldShowAlert: true,
+//       shouldPlaySound: false, // We play it manually
+//       shouldSetBadge: false
+//     }
+//   }
+// })
 
 const useLogin = () => {
   const { t } = useTranslation()
@@ -127,10 +145,6 @@ const useLogin = () => {
               Notifications.IosAuthorizationStatus.PROVISIONAL) &&
           Device.isDevice
         ) {
-          const projectId =
-            Constants.expoConfig?.extra?.firebaseProjectId ||
-            Constants.expoConfig?.projectId
-
           notificationToken = (
             await Notifications.getDevicePushTokenAsync({
               projectId: Constants.expoConfig?.extra?.firebaseProjectId
