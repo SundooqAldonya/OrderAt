@@ -378,7 +378,16 @@ module.exports = {
   Mutation: {
     CheckOutPlaceOrder: async (
       _,
-      { userId, addressId, resId, orderAmount, isPickedUp, tipping, details },
+      {
+        userId,
+        addressId,
+        resId,
+        orderAmount,
+        isPickedUp,
+        tipping,
+        details,
+        preparationTime
+      },
       { req }
     ) => {
       console.log('Entered CheckOutPlaceOrder resolver')
@@ -389,7 +398,8 @@ module.exports = {
         orderAmount,
         isPickedUp,
         tipping,
-        details
+        details,
+        preparationTime
       })
       try {
         // Fetch the user
@@ -564,7 +574,7 @@ module.exports = {
           completionTime: new Date(
             Date.now() + restaurant.deliveryTime * 60 * 1000
           ),
-          preparationTime: new Date(Date.now() + 30 * 60 * 1000)
+          preparationTime: new Date(Date.now() + preparationTime * 60 * 1000)
         })
 
         const savedOrder = await order.save()

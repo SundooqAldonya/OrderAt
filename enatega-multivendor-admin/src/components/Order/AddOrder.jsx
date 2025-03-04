@@ -46,12 +46,14 @@ const CHECKOUT_PLACE_ORDER = gql`
     $resId: String!
     $addressId: ID
     $orderAmount: Float!
+    $preparationTime: Float!
   ) {
     CheckOutPlaceOrder(
       userId: $userId
       resId: $resId
       addressId: $addressId
       orderAmount: $orderAmount
+      preparationTime: $preparationTime
     ) {
       _id
       orderId
@@ -145,6 +147,7 @@ const AddOrder = ({ t, refetchOrders }) => {
   const [search] = useState('')
   const { acceptOrder } = useAcceptOrder()
   const [selectedTime, setSelectedTime] = useState(30)
+  const [times, setTimes] = useState([10, 20, 30, 40, 50, 60, 70, 80, 90])
 
   const [checkOutPlaceOrder] = useMutation(CHECKOUT_PLACE_ORDER, {
     onCompleted: data => {
@@ -414,11 +417,13 @@ const AddOrder = ({ t, refetchOrders }) => {
           addressId,
           details: addressFreeText,
           resId: restaurantId,
+          preparationTime: selectedTime,
           orderAmount
         }
       })
       setSearchQuery('')
       setSearchTrigger('')
+      setCost('')
       // console.log('Order placement response:', data)
       // const orderId = data.CheckOutPlaceOrder.orderId
       // console.log('Order ID:', orderId)
@@ -458,6 +463,10 @@ const AddOrder = ({ t, refetchOrders }) => {
           console.error('Location not found')
         }
       })
+  }
+
+  const handleTimeChange = e => {
+    setSelectedTime(e.target.value)
   }
 
   if (orderMode) {
@@ -592,7 +601,29 @@ const AddOrder = ({ t, refetchOrders }) => {
             />
           </FormControl>
         </Box>
-
+        <Box mb={2}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
+            Time of preparation
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Time</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedTime}
+              label="Time"
+              onChange={handleTimeChange}
+              sx={{ color: '#000' }}>
+              {times?.map((time, index) => {
+                return (
+                  <MenuItem key={index} value={time} sx={{ color: '#000' }}>
+                    {time}
+                  </MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
+        </Box>
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
             Cost
@@ -629,6 +660,7 @@ const AddOrder = ({ t, refetchOrders }) => {
               setOrderMode(false)
               setSearchQuery('')
               setSearchTrigger('')
+              setCost('')
             }}>
             Cancel
           </Button>
