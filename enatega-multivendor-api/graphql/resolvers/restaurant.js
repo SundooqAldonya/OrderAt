@@ -937,8 +937,8 @@ module.exports = {
         const owner = await Owner.findOne({
           restaurants: mongoose.Types.ObjectId(id)
         })
-        if (!owner) throw new Error('Owner does not exist')
-        if (!owner.isActive) throw new Error('Owner was deleted')
+        // if (!owner) throw new Error('Owner does not exist')
+        // if (!owner.isActive) throw new Error('Owner was deleted')
         const restaurant = await Restaurant.findById(id)
         restaurant.isActive = !restaurant.isActive
         const result = await restaurant.save()
