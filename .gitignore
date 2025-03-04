@@ -1,3 +1,6 @@
-.expo
-.DS_Store
-enatega-multivendor-api/serviceAccountKey.json
+.expo
+.DS_Store
+enatega-multivendor-api/serviceAccountKey.json
+config.bat
+node_modules
+.env
