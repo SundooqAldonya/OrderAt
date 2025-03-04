@@ -379,7 +379,8 @@ const en = {
     phone: 'Phone',
     deliveryAddress: 'Delivery Address',
     orderDetail: 'Order Details',
-    riderDetail: 'Rider Details'
+    riderDetail: 'Rider Details',
+    AddNewBusiness: 'Add New Business'
   }
 }
 

@@ -362,7 +362,8 @@ const ar = {
     phone: 'التليفون',
     deliveryAddress: 'عنوان التوصيل',
     orderDetail: 'تفاصيل الطلب',
-    riderDetail: 'تفاصيل الكابتن'
+    riderDetail: 'تفاصيل الكابتن',
+    AddNewBusiness: 'إنشئ جديد'
   }
 }
 

@@ -96,7 +96,7 @@ const Restaurant = props => {
                 borderRadius: 10
               }}
               startIcon={<AddIcon fill={theme.palette.common.black} />}>
-              {t('AddNewRestaurant')}
+              {t('AddNewBusiness')}
             </Button>
           </Box>
         ) : null}
