@@ -574,7 +574,9 @@ module.exports = {
           completionTime: new Date(
             Date.now() + restaurant.deliveryTime * 60 * 1000
           ),
-          preparationTime: new Date(Date.now() + preparationTime * 60 * 1000)
+          preparationTime: preparationTime
+            ? new Date(Date.now() + preparationTime * 60 * 1000)
+            : new Date(Date.now() + 30 * 60 * 1000)
         })
 
         const savedOrder = await order.save()
