@@ -1515,7 +1515,7 @@ const typeDefs = gql`
       addressId: ID
       resId: String!
       orderAmount: Float!
-      preparationTime: Float!
+      preparationTime: Float
     ): Order!
     createWithdrawRequest(amount: Float!): WithdrawRequest!
     updateWithdrawReqStatus(id: ID!, status: String!): UpdateWithdrawResponse!
