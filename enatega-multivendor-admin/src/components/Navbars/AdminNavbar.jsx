@@ -17,7 +17,7 @@ import {
   useTheme
 } from '@mui/material'
 import profileImg from '../../assets/img/theme/team-4-800x800.jpg'
-
+import { isAuthenticated } from '../../helpers/user'
 
 function AdminNavbar(props) {
   const theme = useTheme()
@@ -27,7 +27,7 @@ function AdminNavbar(props) {
     localStorage.getItem('enatega-language') || 'en'
   )
   const [anchorEl, setAnchorEl] = useState(null) // Define anchorEl state
-
+  const user = isAuthenticated()
   const { t, i18n } = props
 
   const toggleModal = () => {
@@ -76,35 +76,16 @@ function AdminNavbar(props) {
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'center',
+                alignItems: 'center',
                 backgroundColor: 'white',
-                paddingRight: '10px',
                 borderRadius: '40px',
                 height: 40,
-                width: 90
-              }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit">
-                <img
-                  alt="..."
-                  src={profileImg}
-                  style={{
-                    height: 35,
-                    width: 35,
-                    borderRadius: '50%',
-                    marginLeft: -10
-                  }}
-                />
-              </IconButton>
-              <Typography
-                mt={1}
-                sx={{ fontWeight: 'bold' }}
-                color="common.black">
-                Orderat
+                width: 90,
+                cursor: 'pointer'
+              }}
+              onClick={handleMenu}>
+              <Typography sx={{ fontWeight: 'bold' }} color="common.black">
+                {user ? user.userType : null}
               </Typography>
             </Box>
             <Menu
@@ -137,7 +118,7 @@ function AdminNavbar(props) {
                       value="ar">
                       Arabic
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       sx={{ color: theme.palette.common.black }}
                       value="de">
                       Deutsche
@@ -156,7 +137,7 @@ function AdminNavbar(props) {
                       sx={{ color: theme.palette.common.black }}
                       value="fr">
                       français
-                    </MenuItem>
+                    </MenuItem> */}
                   </Select>
                 </FormControl>
               </MenuItem>
