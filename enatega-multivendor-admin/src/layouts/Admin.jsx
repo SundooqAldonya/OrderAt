@@ -32,6 +32,12 @@ function Admin(props) {
     })
   }
   const getBrandText = path => {
+    const location = props.location.pathname.split('/')[2].replace('-', ' ')
+    console.log({ location })
+
+    if (location === 'order details') {
+      return location
+    }
     for (let i = 0; i < routes.length; i++) {
       if (
         props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==

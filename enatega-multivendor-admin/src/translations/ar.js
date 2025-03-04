@@ -343,7 +343,26 @@ const ar = {
     removed_riderRegister: 'تم حذف التسجيل!',
     registered_riders: 'السائقين المسجلين',
     OrderTimeAdvance: 'متابعة تقدم الوقت',
-    createdAt: 'وقت الإنشاء'
+    createdAt: 'وقت الإنشاء',
+    orderLateText: 'آسف! طلبك متأخر قليلاً.',
+    pendingText: 'في انتظار الرد من',
+    acceptedText: 'الوقت المقدر للتحضير',
+    orderLateText: 'آسف! طلبك متأخر قليلاً.',
+    riderPickText: 'سيقوم سائقك بالحصول عليه عندما يكون جاهزًا.',
+    orderIs: 'طلبك هو',
+    orderAssigned: 'تم تحديد الكابتن',
+    orderAssignedToRider: 'تم تحدي الكابتن',
+    riderOnWay: 'سائقك في الطريق.',
+    orderHasBeen: 'تم طلبك',
+    enjoyYourMeal: 'استمتع بوجبتك!',
+    cancelled: 'تم الإلغاء',
+    orderFrom: 'الطلب من',
+    orderNo: 'رقم الطلب',
+    driver: 'الكابتن',
+    phone: 'التليفون',
+    deliveryAddress: 'عنوان التوصيل',
+    orderDetail: 'تفاصيل الطلب',
+    riderDetail: 'تفاصيل الكابتن'
   }
 }
 

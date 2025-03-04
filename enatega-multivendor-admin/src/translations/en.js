@@ -359,7 +359,27 @@ const en = {
     removed_riderRegister: 'Removed registered rider!',
     registered_riders: 'Registered Riders',
     OrderTimeAdvance: 'Order Time Advance',
-    createdAt: 'Created At'
+    createdAt: 'Created At',
+    orderLateText: 'Sorry! Your order is bit late.',
+    pendingText: 'Waiting response from',
+    acceptedText: 'Estimated preparation time',
+    orderLateText: 'Sorry! Your order is bit late.',
+    riderPickText: 'Your rider will pick it up once its ready',
+    orderIs: 'Your order is',
+    orderAssigned: 'assigned to the rider',
+    orderAssignedToRider:
+      'Your order is assigned to our rider, order will be picked once its ready.',
+    riderOnWay: 'Your rider is on the way.',
+    orderHasBeen: 'Your order has been',
+    enjoyYourMeal: 'Enjoy your meal!',
+    cancelled: 'Cancelled',
+    orderFrom: 'Your Order From',
+    orderNo: 'Your Order No.',
+    driver: 'Driver',
+    phone: 'Phone',
+    deliveryAddress: 'Delivery Address',
+    orderDetail: 'Order Details',
+    riderDetail: 'Rider Details'
   }
 }
 

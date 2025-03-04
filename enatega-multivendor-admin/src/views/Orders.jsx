@@ -64,8 +64,9 @@ const Orders = () => {
   })
 
   const toggleModal = order => {
-    setOrder(order)
-    setDetailModal(!detailsModal)
+    // setOrder(order)
+    // setDetailModal(!detailsModal)
+    window.open(`/#/admin/order-details/${order._id}`)
   }
 
   const globalClasses = useGlobalStyles()
@@ -94,7 +95,7 @@ const Orders = () => {
         />
         <Modal
           sx={{
-            width: { sm: '100%', lg: '75%' }, // 90% width on extra-small screens, 75% on small and up
+            width: { sm: '100%', lg: '75%' },
             marginLeft: { sm: 0, lg: '13%' },
             overflowY: 'auto'
           }}

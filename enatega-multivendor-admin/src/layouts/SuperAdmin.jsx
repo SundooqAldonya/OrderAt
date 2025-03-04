@@ -43,6 +43,7 @@ function SuperAdmin(props) {
     }
     return 'Brand'
   }
+
   return (
     <Box>
       <AdminSidebar />
