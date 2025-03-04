@@ -45,9 +45,10 @@ const OrdersAdmin = () => {
   const orders = data?.getOrdersByAdmin?.docs || null
 
   const toggleModal = order => {
-    console.log({ order })
-    setOrder(order)
-    setDetailModal(!detailsModal)
+    // console.log({ order })
+    // setOrder(order)
+    // setDetailModal(!detailsModal)
+    window.open(`/#/admin/order-details/${order._id}`)
   }
 
   const handleChangePage = (e, newPage) => {
