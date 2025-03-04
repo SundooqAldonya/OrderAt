@@ -182,7 +182,8 @@ const AddOrder = ({ t, refetchOrders }) => {
 
   const globalClasses = useGlobalStyles()
 
-  const handleSearchClick = () => {
+  const handleSearchClick = e => {
+    e.preventDefault()
     if (searchQuery.trim() == '') {
       setPhoneError(true)
       return
@@ -383,7 +384,8 @@ const AddOrder = ({ t, refetchOrders }) => {
     }
   }, [success])
 
-  const handleSubmitOrder = async () => {
+  const handleSubmitOrder = async e => {
+    e.preventDefault()
     try {
       if (!cost || !selectedCustomer) {
         throw new Error('Cost, customer details, and address are required!')
@@ -416,6 +418,7 @@ const AddOrder = ({ t, refetchOrders }) => {
         }
       })
       setSearchQuery('')
+      setSearchTrigger('')
       // console.log('Order placement response:', data)
       // const orderId = data.CheckOutPlaceOrder.orderId
       // console.log('Order ID:', orderId)
@@ -468,7 +471,9 @@ const AddOrder = ({ t, refetchOrders }) => {
           borderRadius: 2,
           transition: 'all 0.3s ease-in-out',
           boxShadow: 3
-        }}>
+        }}
+        component="form"
+        onSubmit={handleSubmitOrder}>
         {success && (
           <Alert
             severity="success"
@@ -612,19 +617,19 @@ const AddOrder = ({ t, refetchOrders }) => {
         </Box>
         {/* Submit and Cancel Buttons */}
         <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleSubmitOrder}>
+          <Button variant="contained" color="primary" fullWidth type="submit">
             Submit Order
           </Button>
           <Button
             variant="outlined"
             color="secondary"
             fullWidth
-            sx={{ mt: 1 }}
-            onClick={() => setOrderMode(false)}>
+            sx={{ mt: 1, color: '#32620E', borderColor: '#32620E' }}
+            onClick={() => {
+              setOrderMode(false)
+              setSearchQuery('')
+              setSearchTrigger('')
+            }}>
             Cancel
           </Button>
         </Box>
@@ -637,6 +642,7 @@ const AddOrder = ({ t, refetchOrders }) => {
       </Box>
     )
   }
+
   return (
     <Box
       sx={{
@@ -659,7 +665,7 @@ const AddOrder = ({ t, refetchOrders }) => {
         </Alert>
       )}
       <h2>{t('Search Customer')}</h2>
-      <Box>
+      <Box component="form" onSubmit={handleSearchClick}>
         <Typography
           variant="subtitle1"
           sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
@@ -693,15 +699,16 @@ const AddOrder = ({ t, refetchOrders }) => {
             (PhoneError ? globalClasses.inputError : globalClasses.inputSuccess)
           }
         />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          type="submit"
+          style={{ marginTop: '10px' }}>
+          {t('Search Customer')}
+        </Button>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={handleSearchClick} // Trigger the query on click
-        style={{ marginTop: '10px' }}>
-        Search Customer
-      </Button>
+
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
         {loading && <p>Loading...</p>}
         {!success && error && (
