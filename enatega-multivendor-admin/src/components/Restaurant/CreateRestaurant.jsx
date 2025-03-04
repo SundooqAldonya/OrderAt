@@ -358,6 +358,8 @@ const CreateRestaurant = props => {
     setCategory(e.target.value)
   }
 
+  console.log({ salesTax: formRef?.current?.salesTax?.value })
+
   const handleCuisineChange = event => {
     const {
       target: { value }
@@ -726,8 +728,9 @@ const CreateRestaurant = props => {
                   const minimumOrder = form.minimumOrder.value
                   const username = form.username.value
                   const password = form.password.value
+                  const salesTax = form.salesTax.value
                   const shopType = category
-                  console.log({ shopType })
+                  console.log({ salesTax })
                   mutate({
                     variables: {
                       owner,
@@ -744,6 +747,7 @@ const CreateRestaurant = props => {
                         password,
                         shopType,
                         cuisines: restaurantCuisines,
+                        salesTax: parseInt(form.salesTax.value),
                         city: selectedCity
                       }
                     }

@@ -751,7 +751,7 @@ module.exports = {
   },
   Mutation: {
     createRestaurant: async (_, args, { req }) => {
-      console.log('createRestanrant', args)
+      console.log('createRestaurant', args)
       try {
         // console.log({ authenticatedCreate: req.isAuth })
         if (!req.isAuth) throw new Error('Unauthenticated')
@@ -778,7 +778,7 @@ module.exports = {
           username: args.restaurant.username,
           password: args.restaurant.password,
           owner: args.owner,
-          tax: args.salesTax,
+          tax: args.restaurant.salesTax,
           cuisines: args.restaurant.cuisines ?? [],
           shopCategory: args.restaurant.shopType,
           restaurantUrl: args.restaurant.restaurantUrl,

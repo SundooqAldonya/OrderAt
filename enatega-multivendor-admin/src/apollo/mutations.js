@@ -726,7 +726,6 @@ export const createRestaurant = `mutation CreateRestaurant($restaurant: Restaura
     location{coordinates}
     shopType
     cuisines
-  
   }
 }`
 

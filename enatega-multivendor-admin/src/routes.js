@@ -86,7 +86,7 @@ var routes = [
   },
   {
     path: '/restaurants',
-    name: 'Restaurants',
+    name: 'Businesses',
     icon: RestaurantIcon,
     component: RestaurantList,
     layout: '/super_admin',
@@ -95,7 +95,7 @@ var routes = [
   },
   {
     path: '/sections',
-    name: 'Restaurant Sections',
+    name: 'Business Sections',
     icon: RestaurantSectionIcon,
     component: Sections,
     layout: '/super_admin',
