@@ -118,7 +118,7 @@ const findRiders = {
           channelId: 'default', // For Android channel support
           message: 'Testing',
           playSound: 'true',
-          sound: riders[0].muted ? 'false' : 'beep1'
+          sound: riders[0].muted ? 'false' : 'beep1.wav'
         },
         android: {
           notification: {
