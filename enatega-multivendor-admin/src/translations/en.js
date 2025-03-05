@@ -380,7 +380,14 @@ const en = {
     deliveryAddress: 'Delivery Address',
     orderDetail: 'Order Details',
     riderDetail: 'Rider Details',
-    AddNewBusiness: 'Add New Business'
+    AddNewBusiness: 'Add New Business',
+    COD: 'COD',
+    ACCEPTED: 'Accepted',
+    ASSIGNED: 'Assigned',
+    PENDING: 'Pending',
+    PICKED: 'Picked',
+    DELIVERED: 'Delivered',
+    CANCELLED: 'Cancelled'
   }
 }
 

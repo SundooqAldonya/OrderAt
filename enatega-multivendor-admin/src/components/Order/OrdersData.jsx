@@ -121,12 +121,14 @@ const OrdersData = props => {
     {
       name: t('Payment'),
       selector: 'paymentMethod',
-      sortable: true
+      sortable: true,
+      cell: row => <>{t(row.paymentMethod)}</>
     },
     {
       name: t('Status'),
       selector: 'orderStatus',
-      sortable: true
+      sortable: true,
+      cell: row => <>{t(row.orderStatus)}</>
     },
     {
       name: t('Datetime'),

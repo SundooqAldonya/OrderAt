@@ -43,8 +43,8 @@ function DeliveryBoundsAndLocation() {
   const user = isAuthenticated() ? isAuthenticated() : null
   console.log({ user })
 
-  const [center, setCenter] = useState({ lat: 30.9388, lng: 31.1107 })
-  const [marker, setMarker] = useState({ lat: 30.9388, lng: 31.1107 })
+  const [center, setCenter] = useState({ lat: 31.1107, lng: 30.9388 })
+  const [marker, setMarker] = useState({ lat: 31.1107, lng: 30.9388 })
   const [path, setPath] = useState([
     // {
     //   lat: 33.6981335731709,
@@ -170,7 +170,12 @@ function DeliveryBoundsAndLocation() {
   }
 
   function onCompleted({ restaurant }) {
-    if (restaurant) {
+    console.log({ restaurantOnCompleted: restaurant })
+    if (
+      restaurant &&
+      restaurant.location.coordinates[0] !== '0' &&
+      restaurant.location.coordinates[1] !== '0'
+    ) {
       setCenter({
         lat: +restaurant.location.coordinates[1],
         lng: +restaurant.location.coordinates[0]

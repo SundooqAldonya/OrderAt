@@ -363,7 +363,14 @@ const ar = {
     deliveryAddress: 'عنوان التوصيل',
     orderDetail: 'تفاصيل الطلب',
     riderDetail: 'تفاصيل الكابتن',
-    AddNewBusiness: 'إنشئ جديد'
+    AddNewBusiness: 'إنشئ جديد',
+    COD: 'كاش',
+    ACCEPTED: 'تم القبول',
+    ASSIGNED: 'تم تحديد الكابتن',
+    PICKED: 'تم الاستلام',
+    DELIVERED: 'تم التسليم',
+    CANCELLED: 'تم الإلغاء',
+    PENDING: 'قيد الانتظار'
   }
 }
 

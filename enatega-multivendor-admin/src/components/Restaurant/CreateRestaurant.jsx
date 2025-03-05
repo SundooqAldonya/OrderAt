@@ -82,10 +82,7 @@ const MenuProps = {
 }
 
 const CreateRestaurant = props => {
-  const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues()
-
   const { t } = props
-
   const owner = props.owner
   const [showPassword, setShowPassword] = useState(false)
   const [imgUrl, setImgUrl] = useState('')
@@ -234,29 +231,6 @@ const CreateRestaurant = props => {
       }
     }
     fileReader.readAsDataURL(imgUrl)
-  }
-
-  const uploadImageToCloudinary = async uploadType => {
-    if (!uploadType) return
-
-    const apiUrl = CLOUDINARY_UPLOAD_URL
-    const data = {
-      file: uploadType,
-      upload_preset: CLOUDINARY_FOOD
-    }
-    try {
-      const result = await fetch(apiUrl, {
-        body: JSON.stringify(data),
-        headers: {
-          'content-type': 'application/json'
-        },
-        method: 'POST'
-      })
-      const imageData = await result.json()
-      return imageData.secure_url
-    } catch (e) {
-      console.log(e)
-    }
   }
 
   const handleCloseModal = () => {

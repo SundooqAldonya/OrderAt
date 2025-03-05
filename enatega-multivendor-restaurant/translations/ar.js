@@ -86,7 +86,7 @@ export const ar = {
   ASSIGNED: 'تم تحديد الكابتن',
   PICKED: 'تم الاستلام',
   DELIVERED: 'تم التسليم',
-  CANCELlED: 'تم الإلغاء',
+  CANCELLED: 'تم الإلغاء',
   PENDING: 'قيد الانتظار',
   COD: 'نقدي',
   add_new_address: 'إضافة عنوان جديد',
