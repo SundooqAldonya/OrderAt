@@ -168,6 +168,7 @@ function AdminNavbar(props) {
                   e.preventDefault()
                   localStorage.removeItem('user-enatega')
                   localStorage.removeItem('restaurant_id')
+                  localStorage.removeItem('restaurantId')
                   client.clearStore()
                   props.history.push('/auth/login')
                 }}>

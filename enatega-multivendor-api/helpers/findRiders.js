@@ -123,7 +123,8 @@ const findRiders = {
         android: {
           notification: {
             sound: riders[0].muted ? 'false' : 'beep1',
-            channelId: 'default'
+            channelId: 'default',
+            priority: 'HIGH'
           }
         }
       }
