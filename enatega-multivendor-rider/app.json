@@ -16,9 +16,12 @@
       "expo-font",
       "expo-localization",
       "sentry-expo",
-      {
-        "sounds": ["./assets/beep1.wav"]
-      }
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/beep1.wav"]
+        }
+      ]
     ],
     "androidStatusBar": {
       "backgroundColor": "#000"

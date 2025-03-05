@@ -34,6 +34,7 @@ import { playCustomSound } from '../utilities/playSound'
 import ToastManager, { Toast } from 'toastify-react-native'
 import messaging from '@react-native-firebase/messaging'
 import { Alert } from 'react-native'
+import { setupNotificationChannel } from '../utilities/pushNotifications'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -212,6 +213,10 @@ function AppContainer() {
     }
 
     checkPermissions()
+  }, [])
+
+  useEffect(() => {
+    setupNotificationChannel()
   }, [])
 
   useEffect(() => {

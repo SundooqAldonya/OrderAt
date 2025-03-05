@@ -32,3 +32,15 @@ export async function registerForPushNotificationsAsync() {
 
   return token
 }
+
+export async function setupNotificationChannel() {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'Default Channel',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'beep1', // This must match the filename in res/raw
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C'
+    })
+  }
+}
