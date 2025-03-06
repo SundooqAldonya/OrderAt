@@ -19,7 +19,7 @@
       [
         "expo-notifications",
         {
-          "sounds": ["./assets/beep1.wav", "./assets/beep3.mp3"]
+          "sounds": ["./assets/beep1.wav", "./assets/beep3.wav"]
         }
       ]
     ],
