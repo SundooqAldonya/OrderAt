@@ -109,10 +109,8 @@ const findRiders = {
       message: {
         token: riders[0].notificationToken, // Ensure this is a valid FCM token
         notification: {
-          title: `New Order ${order.orderId}`,
-          body: order.searchRadius
-            ? `New order available ${order.searchRadius} KM`
-            : 'New order available'
+          title: `طلب جديد`,
+          body: `طلب جديد من ${order.restaurant.name}`
         },
         data: {
           channelId: 'default', // For Android channel support
