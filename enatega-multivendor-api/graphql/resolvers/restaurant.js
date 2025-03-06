@@ -1008,7 +1008,7 @@ module.exports = {
         throw new Error('Unauthenticated!')
       }
       try {
-        const order = await Order.findById(args._id)
+        const order = await Order.findById(args._id).populate('restaurant')
         const status = order_status[1] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
         order.orderStatus = status
         const restaurant = await Restaurant.findById(args.restaurantId)
@@ -1025,7 +1025,7 @@ module.exports = {
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-          await sendPushNotification(order.zone.toString(), transformedOrder)
+          await sendPushNotification(order.zone.toString(), order)
         }
         publishToUser(result.user.toString(), transformedOrder, 'update')
         // sendNotificationToCustomerWeb(
