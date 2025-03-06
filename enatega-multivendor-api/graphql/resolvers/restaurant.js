@@ -983,7 +983,7 @@ module.exports = {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           // await sendPushNotification(order.zone.toString(), transformedOrder)
-          await sendPushNotification(order.zone.toString(), transformedOrder)
+          await sendPushNotification(order.zone.toString(), order)
         }
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')
