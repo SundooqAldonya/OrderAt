@@ -101,6 +101,7 @@ const findRiders = {
 
   async sendPushNotification(zoneId, order) {
     console.log({ zoneId })
+    console.log({ orderRestaurant: order.restaurant })
     const accessToken = await getAccessToken()
     console.log({ accessToken })
     const riders = await Rider.find({ zone: zoneId })
