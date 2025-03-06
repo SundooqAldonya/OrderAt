@@ -965,7 +965,7 @@ module.exports = {
         throw new Error('Unauthenticated!')
       }
       try {
-        const order = await Order.findById(args._id)
+        const order = await Order.findById(args._id).populate('restaurant')
         const status = order_status[1] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
         order.orderStatus = status
         const restaurant = await Restaurant.findById(req.restaurantId)
