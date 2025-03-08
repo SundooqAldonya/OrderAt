@@ -55,7 +55,14 @@ const riderSchema = new Schema(
     },
     currentWalletAmount: { type: Number, default: 0 },
     totalWalletAmount: { type: Number, default: 0 },
-    withdrawnWalletAmount: { type: Number, default: 0 }
+    withdrawnWalletAmount: { type: Number, default: 0 },
+    isOnline: {
+      type: Boolean,
+      default: false
+    },
+    token: {
+      type: String
+    }
   },
   { timestamps: true }
 )

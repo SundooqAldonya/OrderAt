@@ -105,53 +105,54 @@ const findRiders = {
     const accessToken = await getAccessToken()
     console.log({ accessToken })
     const riders = await Rider.find({ zone: zoneId })
-    console.log({ riderNotification: riders[0].notificationToken })
-    const messageBody = {
-      message: {
-        token: riders[0].notificationToken, // Ensure this is a valid FCM token
-        notification: {
-          title: `طلب جديد`,
-          body: `طلب جديد من ${order.restaurant.name}`
-        },
-        data: {
-          channelId: 'default', // For Android channel support
-          message: 'Testing',
-          playSound: 'true',
-          sound: riders[0].muted ? 'false' : 'beep3.wav'
-        },
-        android: {
+    riders.forEach(async rider => {
+      const messageBody = {
+        message: {
+          token: rider.notificationToken,
           notification: {
-            sound: riders[0].muted ? 'false' : 'beep3',
-            channelId: 'default'
+            title: `طلب جديد`,
+            body: `طلب جديد من ${order.restaurant.name}`
+          },
+          data: {
+            channelId: 'default',
+            message: 'Testing',
+            playSound: 'true',
+            sound: rider.muted ? 'false' : 'beep3.wav'
+          },
+          android: {
+            notification: {
+              sound: rider.muted ? 'false' : 'beep3',
+              channelId: 'default'
+            }
           }
         }
       }
-    }
 
-    const projectId = 'food-delivery-api-ab4e4'
+      const projectId = 'food-delivery-api-ab4e4'
 
-    try {
-      if (riders[0].available && riders[0].isActive) {
-        const response = await fetch(
-          `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Accept-encoding': 'gzip, deflate',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-            },
-            body: JSON.stringify(messageBody)
-          }
-        )
+      try {
+        if (rider.available && rider.isActive && rider.token) {
+          const response = await fetch(
+            `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+              },
+              body: JSON.stringify(messageBody)
+            }
+          )
 
-        const data = await response.json()
-        console.log('FCM push notification sent:', data)
+          const data = await response.json()
+          console.log('FCM push notification sent:', data)
+        }
+      } catch (error) {
+        console.error('Error sending Expo push notification:', error)
       }
-    } catch (error) {
-      console.error('Error sending Expo push notification:', error)
-    }
+    })
   }
 }
 

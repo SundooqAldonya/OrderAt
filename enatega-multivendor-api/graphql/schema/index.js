@@ -1648,6 +1648,7 @@ const typeDefs = gql`
       password: String
       notificationToken: String
     ): AuthData!
+    riderLogout(token: String!): Message
     updateOrderStatusRider(id: String!, status: String!): Order!
     updatePaymentStatus(id: String, status: String): Order!
     createOptions(id: String, optionInput: CreateOptionInput): [Option!]

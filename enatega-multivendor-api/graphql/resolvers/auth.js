@@ -203,38 +203,50 @@ module.exports = {
       }
     },
     riderLogin: async (_, args, context) => {
-      // try {
-      console.log('riderLogin', args.username, args.password)
-      const rider = await Rider.findOne({ username: args.username })
-      if (!rider) throw new Error('Email not registered!')
+      try {
+        console.log('riderLogin', args.username, args.password)
+        const rider = await Rider.findOne({ username: args.username })
+        if (!rider) throw new Error('Email not registered!')
 
-      if (rider.password !== args.password) {
-        throw new Error('Email and password do not match!')
+        if (rider.password !== args.password) {
+          throw new Error('Email and password do not match!')
+        }
+
+        if (!rider.isActive) {
+          throw new Error('Rider is disabled!. Please contact support')
+        }
+        const token = jwt.sign(
+          { userId: rider._id, email: rider.username },
+          process.env.SECRETKEY
+        )
+        rider.notificationToken = args.notificationToken
+        rider.isOnline = true
+        rider.token = token
+        await rider.save()
+
+        return {
+          ...rider._doc,
+          email: rider.username,
+          password: '',
+          userId: rider.id,
+          token: token,
+          tokenExpiration: 1
+        }
+      } catch (err) {
+        console.log({ err })
+        throw new Error(err)
       }
-
-      if (!rider.isActive) {
-        throw new Error('Rider is disabled!. Please contact support')
+    },
+    async riderLogout(_, args) {
+      try {
+        const rider = await Rider.findOne({ token: args.token })
+        rider.isOnline = false
+        rider.token = null
+        await rider.save()
+        return { message: 'Rider logged out' }
+      } catch (err) {
+        throw new Error(err)
       }
-
-      rider.notificationToken = args.notificationToken
-      await rider.save()
-
-      const token = jwt.sign(
-        { userId: rider._id, email: rider.username },
-        process.env.SECRETKEY
-      )
-      return {
-        ...rider._doc,
-        email: rider.username,
-        password: '',
-        userId: rider.id,
-        token: token,
-        tokenExpiration: 1
-      }
-      // } catch (err) {
-      //   console.log({ err })
-      //   throw new Error(err)
-      // }
     },
     pushToken: async (_, args, { req, res }) => {
       if (!req.isAuth) throw new Error('Unauthenticated')
