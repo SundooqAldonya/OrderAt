@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const riderLogin = `mutation RiderLogin($username:String,$password:String,$notificationToken:String){
   riderLogin(username:$username,password:$password,notificationToken:$notificationToken){
     userId
@@ -92,4 +94,11 @@ export const sendChatMessage = `mutation SendChatMessage($orderId: ID!, $message
     }
   }
 }
+`
+export const riderLogout = gql`
+  mutation RiderLogout($token: String!) {
+    riderLogout(token: $token) {
+      message
+    }
+  }
 `

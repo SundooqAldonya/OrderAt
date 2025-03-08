@@ -88,7 +88,7 @@ function setupApolloClient() {
   }, wsLink)
 
   const client = new ApolloClient({
-    link: concat(ApolloLink.from([terminatingLink, requestLink]), httpLink),
+    link: ApolloLink.from([terminatingLink, requestLink, httpLink]),
     cache,
     resolvers: {}
   })

@@ -7,18 +7,16 @@ import {
   LogBox,
   I18nManager
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Font from 'expo-font'
 import { ApolloProvider } from '@apollo/client'
 import FlashMessage from 'react-native-flash-message'
-import * as Location from 'expo-location'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Updates from 'expo-updates'
 import AppContainer from './src/routes/index'
 import colors from './src/utilities/colors'
 import setupApolloClient from './src/apollo/index'
 import { ConfigurationProvider } from './src/context/configuration'
-import { AuthContext } from './src/context/auth'
+import { AuthProvider } from './src/context/auth'
 import { TabsContext } from './src/context/tabs'
 import TextDefault from './src/components/Text/TextDefault/TextDefault'
 import { LocationProvider } from './src/context/location'
@@ -76,7 +74,6 @@ export default function App() {
   useKeepAwake()
   console.log({ projectId: Constants.expoConfig.extra.firebaseProjectId })
   const [appIsReady, setAppIsReady] = useState(false)
-  const [token, setToken] = useState(null)
   const [isUpdating, setIsUpdating] = useState(false)
   const [active, setActive] = useState('NewOrder')
 
@@ -119,8 +116,7 @@ export default function App() {
         MuseoSans500: require('./src/assets/font/MuseoSans//MuseoSans500.ttf'),
         MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf')
       })
-      const token = await AsyncStorage.getItem('rider-token')
-      if (token) setToken(token)
+
       setAppIsReady(true)
       await SplashScreen.hideAsync()
     })()
@@ -146,26 +142,6 @@ export default function App() {
       }
     })()
   }, [])
-
-  const setTokenAsync = async token => {
-    await AsyncStorage.setItem('rider-token', token)
-    client.clearStore()
-    setToken(token)
-  }
-
-  const logout = async () => {
-    try {
-      client.clearStore()
-      await AsyncStorage.removeItem('rider-token')
-
-      setToken(null)
-      if (await Location.hasStartedLocationUpdatesAsync('RIDER_LOCATION')) {
-        await Location.stopLocationUpdatesAsync('RIDER_LOCATION')
-      }
-    } catch (e) {
-      console.log('Logout Error: ', e)
-    }
-  }
 
   if (isUpdating) {
     return (
@@ -193,7 +169,7 @@ export default function App() {
           barStyle="dark-content"
         />
         <ConfigurationProvider>
-          <AuthContext.Provider value={{ token, setTokenAsync, logout }}>
+          <AuthProvider>
             <LocationProvider>
               <TabsContext.Provider value={{ active, setActive }}>
                 <PaperProvider>
@@ -201,7 +177,7 @@ export default function App() {
                 </PaperProvider>
               </TabsContext.Provider>
             </LocationProvider>
-          </AuthContext.Provider>
+          </AuthProvider>
         </ConfigurationProvider>
         <FlashMessage />
       </ApolloProvider>
