@@ -131,7 +131,7 @@ const findRiders = {
       const projectId = 'food-delivery-api-ab4e4'
 
       try {
-        if (rider.available && rider.isActive && rider.token) {
+        if (rider.available && rider.isActive && rider.token && !rider.muted) {
           const response = await fetch(
             `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
             {

@@ -225,6 +225,7 @@ function AppContainer() {
       //   'A new FCM message arrived!',
       //   JSON.stringify(remoteMessage, 2, null)
       // )
+      console.log({ remoteMessage: remoteMessage.notification.android })
       Toast.info(remoteMessage.notification.body)
       if (remoteMessage.notification.android.sound !== 'false') {
         playCustomSound()
