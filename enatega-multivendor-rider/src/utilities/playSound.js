@@ -1,10 +1,9 @@
 import { Audio } from 'expo-av'
 import beep1 from '../assets/beep1.wav'
 
-export async function playCustomSound(audio) {
-  console.log({ audio })
+export async function playCustomSound() {
   try {
-    const { sound } = await Audio.Sound.createAsync(audio)
+    const { sound } = await Audio.Sound.createAsync(beep1)
     await sound.playAsync()
   } catch (error) {
     console.error('Error playing sound:', error)

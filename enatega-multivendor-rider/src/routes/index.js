@@ -35,7 +35,6 @@ import ToastManager, { Toast } from 'toastify-react-native'
 import messaging from '@react-native-firebase/messaging'
 import { Alert } from 'react-native'
 import { setupNotificationChannel } from '../utilities/pushNotifications'
-import beep3 from '../assets/beep3.wav'
 import beep1 from '../assets/beep1.wav'
 
 const Stack = createStackNavigator()
@@ -233,12 +232,12 @@ function AppContainer() {
         ? remoteMessage.notification.android.sound
         : null
       if (sound !== 'false') {
-        if (sound === 'beep3') {
-          playCustomSound(beep3)
-        }
-        if (sound === 'beep1') {
-          playCustomSound(beep1)
-        }
+        // if (sound === 'beep3') {
+        playCustomSound()
+        // }
+        // if (sound === 'beep1') {
+        //   playCustomSound(beep1)
+        // }
       }
     })
 

@@ -3,6 +3,7 @@ import { useTabsContext } from './tabs'
 import { Audio } from 'expo-av'
 import { useUserContext } from './user'
 import useSidebar from '../components/Sidebar/useSidebar'
+import beep1 from '../assets/beep1.wav'
 
 const SoundContext = React.createContext()
 
@@ -35,9 +36,7 @@ export const SoundContextProvider = ({ children }) => {
     if (isEnabled && !isMuted) {
       if (sound) await stopSound()
       if (active === 'NewOrders') {
-        const { sound } = await Audio.Sound.createAsync(
-          require('../assets/beep3.mp3')
-        )
+        const { sound } = await Audio.Sound.createAsync(beep1)
         await sound.setIsLoopingAsync(true)
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
