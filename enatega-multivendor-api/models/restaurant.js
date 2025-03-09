@@ -91,8 +91,10 @@ const restaurantSchema = new Schema(
       default: []
     },
     notificationToken: {
-      type: String,
-      default: null
+      type: String
+    },
+    token: {
+      type: String
     },
     enableNotification: {
       type: Boolean,

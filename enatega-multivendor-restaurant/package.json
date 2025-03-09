@@ -40,6 +40,8 @@
     "@expo/config-plugins": "~9.0.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/masked-view": "0.1.11",
+    "@react-native-firebase/app": "^21.12.0",
+    "@react-native-firebase/messaging": "^21.12.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/drawer": "^6.3.1",
     "@react-navigation/material-top-tabs": "^5.3.19",
@@ -54,6 +56,7 @@
     "expo-build-properties": "~0.13.2",
     "expo-clipboard": "~7.0.1",
     "expo-constants": "~17.0.4",
+    "expo-dev-client": "~5.0.12",
     "expo-device": "~7.0.2",
     "expo-font": "~13.0.3",
     "expo-localization": "~16.0.1",
@@ -95,8 +98,7 @@
     "redux-persist": "^6.0.0",
     "sentry-expo": "~7.0.0",
     "subscriptions-transport-ws": "^0.9.16",
-    "validate.js": "^0.13.1",
-    "expo-dev-client": "~5.0.12"
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

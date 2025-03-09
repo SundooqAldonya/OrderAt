@@ -50,7 +50,7 @@ export default function useNotification() {
   return {
     getPermission: Notifications.getPermissionsAsync,
     requestPermission: Notifications.requestPermissionsAsync,
-    getExpoPushToken: Notifications.getExpoPushTokenAsync,
+    getDevicePushTokenAsync: Notifications.getDevicePushTokenAsync,
     sendTokenToBackend,
     restaurantData: data,
     savingToken: loading

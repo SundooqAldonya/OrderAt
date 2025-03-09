@@ -44,6 +44,9 @@ const {
 const Food = require('../../models/food')
 const Addon = require('../../models/addon')
 const Option = require('../../models/option')
+const {
+  sendRestaurantNotifications
+} = require('../../helpers/restaurantNotifications')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -689,7 +692,6 @@ module.exports = {
               options: selectedOptions
             })
           })
-
           return new Item({
             food: item.food,
             title: food.title,
@@ -871,30 +873,32 @@ module.exports = {
           ])
           const transformedOrder = await transformOrder(result)
 
-          publishToDashboard(
-            order.restaurant.toString(),
-            transformedOrder,
-            'new'
-          )
-          publishToDispatcher(transformedOrder)
-          const attachment = path.join(
-            __dirname,
-            '../../public/assets/tempImages/enatega.png'
-          )
-          sendEmail(
-            user.email,
-            'Order Placed',
-            '',
-            placeOrder_template,
-            attachment
-          )
-          sendNotification(result.orderId)
-          sendNotificationToCustomerWeb(
-            user.notificationTokenWeb,
-            'Order placed',
-            `Order ID ${result.orderId}`
-          )
-          sendNotificationToRestaurant(result.restaurant, result)
+          // publishToDashboard(
+          //   order.restaurant.toString(),
+          //   transformedOrder,
+          //   'new'
+          // )
+          // publishToDispatcher(transformedOrder)
+          // const attachment = path.join(
+          //   __dirname,
+          //   '../../public/assets/tempImages/enatega.png'
+          // )
+          // sendEmail(
+          //   user.email,
+          //   'Order Placed',
+          //   '',
+          //   placeOrder_template,
+          //   attachment
+          // )
+          // sendNotification(result.orderId)
+          // sendNotificationToCustomerWeb(
+          //   user.notificationTokenWeb,
+          //   'Order placed',
+          //   `Order ID ${result.orderId}`
+          // )
+          await sendRestaurantNotifications(restaurant)
+
+          // sendNotificationToRestaurant(result.restaurant, result)
         } else if (args.paymentMethod === 'PAYPAL') {
           orderObj.paymentMethod = args.paymentMethod
           const paypal = new Paypal(orderObj)

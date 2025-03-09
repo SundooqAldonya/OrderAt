@@ -7,7 +7,7 @@ import * as SecureStore from 'expo-secure-store'
 const Context = React.createContext({})
 const Provider = props => {
   const [printer, setPrinter] = useState()
-  const [notificationToken, setNotificationToken] = useState()
+  // const [notificationToken, setNotificationToken] = useState()
   const [addressToken, setAddressToken] = useState('')
   const unsubscribeRef = useRef(null)
 
@@ -63,18 +63,18 @@ const Provider = props => {
     }
   }, [])
 
-  useEffect(() => {
-    console.log('hillllewdewwerw')
-    async function GetToken() {
-      const result = await SecureStore.getItemAsync('notification-token')
-      if (result) {
-        setNotificationToken(JSON.parse(result))
-      } else {
-        setNotificationToken(null)
-      }
-    }
-    GetToken()
-  }, [])
+  // useEffect(() => {
+  //   console.log('hillllewdewwerw')
+  //   async function GetToken() {
+  //     const result = await SecureStore.getItemAsync('notification-token')
+  //     if (result) {
+  //       setNotificationToken(JSON.parse(result))
+  //     } else {
+  //       setNotificationToken(null)
+  //     }
+  //   }
+  //   GetToken()
+  // }, [])
 
   const subscribeToMoreOrders = async () => {
     console.log('subscribeToMoreOrders calledddd')
@@ -118,7 +118,7 @@ const Provider = props => {
         networkStatus,
         printer,
         setPrinter,
-        notificationToken,
+        // notificationToken,
         addressToken,
         setAddressToken
       }}>

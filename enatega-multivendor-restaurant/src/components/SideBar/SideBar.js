@@ -35,7 +35,7 @@ export default function SideBar() {
   const {
     restaurantData,
     getPermission,
-    getExpoPushToken,
+    getDevicePushTokenAsync,
     requestPermission,
     sendTokenToBackend
   } = useNotification()
@@ -53,7 +53,7 @@ export default function SideBar() {
           if (permissionStatus.granted) {
             setNotificationStatus(true)
             const token = (
-              await getExpoPushToken({
+              await getDevicePushTokenAsync({
                 projectId: Constants.expoConfig.extra.eas.projectId
               })
             ).data
@@ -80,7 +80,7 @@ export default function SideBar() {
           ) {
             setNotificationStatus(true)
             const token = (
-              await getExpoPushToken({
+              await getDevicePushTokenAsync({
                 projectId: Constants.expoConfig.extra.eas.projectId
               })
             ).data
@@ -103,7 +103,7 @@ export default function SideBar() {
       if (permissionStatus.granted) {
         setNotificationStatus(true)
         const token = (
-          await getExpoPushToken({
+          await getDevicePushTokenAsync({
             projectId: Constants.expoConfig.extra.eas.projectId
           })
         ).data
@@ -113,7 +113,7 @@ export default function SideBar() {
         if (result.granted) {
           setNotificationStatus(true)
           const token = (
-            await getExpoPushToken({
+            await getDevicePushTokenAsync({
               projectId: Constants.expoConfig.extra.eas.projectId
             })
           ).data

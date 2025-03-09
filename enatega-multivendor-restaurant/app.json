@@ -34,7 +34,8 @@
     "extra": {
       "eas": {
         "projectId": "321c1437-c038-47fa-aae2-3588254cf938"
-      }
+      },
+      "firebaseProjectId": "food-delivery-api-ab4e4"
     },
     "owner": "mahmoudattia",
     "plugins": [

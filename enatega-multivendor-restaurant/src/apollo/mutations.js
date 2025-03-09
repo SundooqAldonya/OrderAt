@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const login = `mutation RestaurantLogin($username:String!,$password:String!){
-    restaurantLogin(username:$username,password:$password){
+export const login = `mutation RestaurantLogin($username:String!, $password:String!, $notificationToken: String!){
+    restaurantLogin(username:$username, password:$password, notificationToken: $notificationToken){
         token
         restaurantId
         city
@@ -138,6 +138,14 @@ export const QUERY_USERS_MUTATION = gql`
       favourite
       createdAt
       updatedAt
+    }
+  }
+`
+
+export const restaurantLogout = gql`
+  mutation RestaurantLogout($id: String!) {
+    restaurantLogout(id: $id) {
+      message
     }
   }
 `

@@ -948,15 +948,42 @@ module.exports = {
       }
     },
     restaurantLogin: async (_, args) => {
-      console.log('restaurantLogin')
-      const restaurant = await Restaurant.findOne({ ...args })
-      console.log({ restaurant })
-      if (!restaurant) throw new Error('Invalid credentials')
-      const token = jwt.sign(
-        { restaurantId: restaurant.id },
-        process.env.SECRETKEY // TODO: move this key to .env and use that everywhere
-      )
-      return { token, restaurantId: restaurant.id, city: restaurant.city }
+      console.log('restaurantLogin', args)
+      try {
+        const restaurant = await Restaurant.findOne({
+          username: args.username,
+          password: args.password
+        })
+        if (!restaurant) throw new Error('Invalid credentials')
+        const token = jwt.sign(
+          { restaurantId: restaurant._id },
+          process.env.SECRETKEY
+        )
+        await Restaurant.findByIdAndUpdate(
+          restaurant._id,
+          { $set: { notificationToken: args.notificationToken } },
+          { new: true } // Returns the updated document
+        )
+        return { token, restaurantId: restaurant._id, city: restaurant.city }
+      } catch (err) {
+        console.log({ err })
+        throw new Error(err)
+      }
+    },
+    restaurantLogout: async (_, args) => {
+      console.log('restaurantLogout', args)
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        console.log({ restaurant })
+        if (!restaurant) throw new Error('Invalid Business ID')
+        restaurant.token = null
+        restaurant.notificationToken = null
+        await restaurant.save()
+        return { message: 'Business logged out successfully!' }
+      } catch (err) {
+        console.log({ err })
+        throw new Error(err)
+      }
     },
     acceptOrder: async (_, args, { req }) => {
       var newDateObj = new Date(Date.now() + (parseInt(args.time) || 0) * 60000)
