@@ -44,6 +44,12 @@
       "sentry-expo",
       "expo-font",
       [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/beep1.wav"]
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {

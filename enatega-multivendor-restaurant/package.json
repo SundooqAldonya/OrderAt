@@ -98,6 +98,7 @@
     "redux-persist": "^6.0.0",
     "sentry-expo": "~7.0.0",
     "subscriptions-transport-ws": "^0.9.16",
+    "toastify-react-native": "^6.0.0",
     "validate.js": "^0.13.1"
   },
   "devDependencies": {

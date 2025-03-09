@@ -15,11 +15,11 @@ const notifications = {
           channelId: 'default',
           message: 'Testing',
           playSound: 'true',
-          sound: restaurant.enableNotification ? 'false' : 'beep3.wav'
+          sound: restaurant.enableNotification ? 'beep1.wav' : 'false'
         },
         android: {
           notification: {
-            sound: restaurant.enableNotification ? 'false' : 'beep3',
+            sound: restaurant.enableNotification ? 'beep1' : 'false',
             channelId: 'default'
           }
         }

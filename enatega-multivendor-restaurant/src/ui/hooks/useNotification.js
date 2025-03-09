@@ -5,6 +5,7 @@ import { saveToken, restaurantInfo } from '../../apollo'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import { useTranslation } from 'react-i18next'
+import beep1 from '../../assets/beep1.wav'
 
 export default function useNotification() {
   const { t } = useTranslation()
@@ -41,7 +42,7 @@ export default function useNotification() {
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         // sound: true,
-        sound: require('../../assets/beep.mp3'),
+        sound: beep1,
         lightColor: '#FF231F7C'
       })
     }

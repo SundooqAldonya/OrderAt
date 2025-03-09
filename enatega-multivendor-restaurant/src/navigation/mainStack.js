@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import * as Notifications from 'expo-notifications'
 import { Restaurant, SoundContextProvider } from '../ui/context'
 import { OrderDetailScreen } from '../screens/OrderDetail'
@@ -19,6 +19,10 @@ import { MAX_TIME } from '../utilities'
 import RegisterUser from '../screens/Login/RegisterUser'
 import Checkout from '../screens/Login/Checkout'
 import AddNewAddress from '../screens/Login/AddNewAddress'
+import messaging from '@react-native-firebase/messaging'
+import { playCustomSound } from '../utilities/playSound'
+import { Alert } from 'react-native'
+import ToastManager, { Toast } from 'toastify-react-native'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -95,6 +99,21 @@ function DrawerNavigator() {
 // }
 
 function StackNavigator() {
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
+      Toast.info(remoteMessage.notification.body)
+      const sound = remoteMessage?.notification?.android?.sound
+        ? remoteMessage.notification.android.sound
+        : null
+      console.log({ sound })
+      if (sound !== 'false') {
+        playCustomSound()
+      }
+    })
+
+    return unsubscribe
+  }, [])
   return (
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
       <Stack.Screen name="Orders" component={OrdersScreen} />

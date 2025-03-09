@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Audio } from 'expo-av'
 import { useRestaurantContext } from './restaurant'
+import beep1 from '../../assets/beep1.wav'
+
 const SoundContext = React.createContext()
+
 export const SoundContextProvider = ({ children }) => {
   const [sound, setSound] = useState(null)
   const { data } = useRestaurantContext()
@@ -19,9 +22,7 @@ export const SoundContextProvider = ({ children }) => {
 
   const playSound = async () => {
     await stopSound()
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/beep.mp3')
-    )
+    const { sound } = await Audio.Sound.createAsync(beep1)
     await sound.setIsLoopingAsync(true)
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
