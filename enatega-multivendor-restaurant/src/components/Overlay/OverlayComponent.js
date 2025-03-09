@@ -5,15 +5,17 @@ import styles from './styles'
 import { colors, TIMES } from '../../utilities'
 import { Overlay } from 'react-native-elements'
 import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export default function OverlayComponent(props) {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const { visible, toggle, order, print, navigation } = props
   const [selectedTime, setSelectedTime] = useState(TIMES[0])
   const { acceptOrder, loading } = useAcceptOrder()
   const { muteRing } = useOrderRing()
   const { printOrder } = usePrintOrder()
+
+  console.log({ print })
 
   const btnPress = () => {
     if (print) {

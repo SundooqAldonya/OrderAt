@@ -28,7 +28,7 @@ export default function OrderDetail({ navigation, route }) {
     preparationTime,
     createdAt
   } = route.params
-  console.log({ rider })
+
   const { _id, orderDate } = orderData
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
