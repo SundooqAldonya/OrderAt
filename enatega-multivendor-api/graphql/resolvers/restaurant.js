@@ -959,11 +959,11 @@ module.exports = {
           { restaurantId: restaurant._id },
           process.env.SECRETKEY
         )
-        await Restaurant.findByIdAndUpdate(
-          restaurant._id,
-          { $set: { notificationToken: args.notificationToken } },
-          { new: true } // Returns the updated document
-        )
+        // await Restaurant.findByIdAndUpdate(
+        //   restaurant._id,
+        //   { $set: { notificationToken: args.notificationToken } },
+        //   { new: true } // Returns the updated document
+        // )
         return { token, restaurantId: restaurant._id, city: restaurant.city }
       } catch (err) {
         console.log({ err })
