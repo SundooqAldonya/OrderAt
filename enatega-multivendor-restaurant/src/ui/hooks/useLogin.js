@@ -6,6 +6,9 @@ import { validateLogin } from '../validate'
 import { AuthContext } from '../context'
 import { useDispatch } from 'react-redux'
 import { setCity } from '../../../store/citySlice'
+import * as Notifications from 'expo-notifications'
+import * as Device from 'expo-device'
+import * as Constants from 'expo-constants'
 
 export default function useLogin() {
   const dispatch = useDispatch()
@@ -84,10 +87,42 @@ export default function useLogin() {
     const valid = await isValid()
     if (valid) {
       console.log('1111111111', valid)
-      // const username = await usernameRef.current.value
-      // const password = await passwordRef.current.value
-      console.log('username', username, password)
-      mutate({ variables: { username, password } })
+      const settings = await Notifications.getPermissionsAsync()
+      let notificationPermissions = { ...settings }
+
+      // Request notification permissions if not granted or not provisional on iOS
+      if (
+        settings?.status !== 'granted' ||
+        settings.ios?.status !==
+          Notifications.IosAuthorizationStatus.PROVISIONAL
+      ) {
+        notificationPermissions = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowProvisional: true,
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true
+          }
+        })
+      }
+
+      let notificationToken = null
+      // Get notification token if permissions are granted and it's a device
+      if (
+        (notificationPermissions?.status === 'granted' ||
+          notificationPermissions.ios?.status ===
+            Notifications.IosAuthorizationStatus.PROVISIONAL) &&
+        Device.isDevice
+      ) {
+        notificationToken = (
+          await Notifications.getDevicePushTokenAsync({
+            projectId: Constants.expoConfig?.extra?.firebaseProjectId
+          })
+        ).data
+      }
+      console.log({ notificationToken })
+      mutate({ variables: { username, password, notificationToken } })
     }
   }
 
