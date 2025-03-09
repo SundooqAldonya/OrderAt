@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import React, { useState, useEffect, useContext } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider, useMutation } from '@apollo/client'
 import { StatusBar } from 'expo-status-bar'
 import FlashMessage from 'react-native-flash-message'
 // import { useFonts } from '@use-expo/font'
@@ -48,6 +47,8 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './store/presistor'
 import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
+import { restaurantLogout } from './src/apollo'
+import { AuthProvider } from './src/ui/context/auth'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -58,13 +59,9 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 
 export default function App() {
   useKeepAwake()
-  const [isAppReady, setIsAppReady] = useState(false)
-  const [token, setToken] = useState(null)
-  const { i18n } = useTranslation()
+  // const [isAppReady, setIsAppReady] = useState(false)
+  // const { isAppReady } = useContext(AuthContext)
   const [isUpdating, setIsUpdating] = useState(false)
-  console.log({ isRTL: I18nManager.isRTL })
-  console.log({ language: i18n.language })
-  // const [city, setCity] = useState(null)
 
   const client = setupApolloClient()
 
@@ -98,43 +95,20 @@ export default function App() {
   }, [I18nManager.isRTL])
 
   useEffect(() => {
-    ; (async () => {
-      const token = await SecureStore.getItemAsync('token')
-      if (token) setToken(token)
-      setIsAppReady(true)
-    })()
-  }, [])
-
-  useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
-      ; (async () => {
-        const { isAvailable } = await Updates.checkForUpdateAsync()
-        if (isAvailable) {
-          setIsUpdating(true)
-          const { isNew } = await Updates.fetchUpdateAsync()
-          if (isNew) {
-            await Updates.reloadAsync()
-          }
-          setIsUpdating(false)
+    ;(async () => {
+      const { isAvailable } = await Updates.checkForUpdateAsync()
+      if (isAvailable) {
+        setIsUpdating(true)
+        const { isNew } = await Updates.fetchUpdateAsync()
+        if (isNew) {
+          await Updates.reloadAsync()
         }
-      })()
+        setIsUpdating(false)
+      }
+    })()
   }, [])
-
-  const login = async (token, restaurantId, city) => {
-    await SecureStore.setItemAsync('token', token)
-    await AsyncStorage.setItem('restaurantId', restaurantId)
-    await SecureStore.setItemAsync('cityId', city)
-    setToken(token)
-  }
-
-  // console.log({ onLoginRestaurantId: city })
-
-  const logout = async () => {
-    await SecureStore.deleteItemAsync('token')
-    await AsyncStorage.removeItem('restaurantId')
-    setToken(null)
-  }
 
   const [fontLoaded] = useFonts({
     MuseoSans300: require('./assets/font/MuseoSans/MuseoSans300.ttf'),
@@ -158,21 +132,18 @@ export default function App() {
     )
   }
 
-  if (fontLoaded && isAppReady) {
+  if (fontLoaded) {
     return (
       <Provider store={store}>
         <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
           <ApolloProvider client={client}>
             <StatusBar style="dark" backgroundColor={colors.headerBackground} />
             <Configuration.Provider>
-              <AuthContext.Provider
-                value={{ isLoggedIn: !!token, login, logout }}>
-                {/* <RestaurantContext.Provider value={{ city, setCity }}> */}
+              <AuthProvider>
                 <SafeAreaProvider>
                   <AppContainer />
                 </SafeAreaProvider>
-                {/* </RestaurantContext.Provider> */}
-              </AuthContext.Provider>
+              </AuthProvider>
             </Configuration.Provider>
             <FlashMessage />
           </ApolloProvider>
