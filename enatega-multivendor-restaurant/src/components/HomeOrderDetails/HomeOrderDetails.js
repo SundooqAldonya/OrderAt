@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { getAccessToken } from '../../utilities/apiServices'
 import { detectLanguageDir } from '../../../helpers'
 import SoundContext from '../../ui/context/sound'
-import 'moment-timezone';
+import 'moment-timezone'
 
 function HomeOrderDetails(props) {
   const { activeBar, navigation } = props
@@ -31,7 +31,7 @@ function HomeOrderDetails(props) {
     deliveredAt,
     pickedAt,
     assignedAt,
-    acceptedAt,
+    acceptedAt
   } = props?.order
   const timeNow = new Date()
   const { i18n, t } = useTranslation()
@@ -57,22 +57,22 @@ function HomeOrderDetails(props) {
   const decision = !isAcceptButtonVisible
     ? acceptanceTime
     : remainingTime > 0
-      ? remainingTime
-      : 0
+    ? remainingTime
+    : 0
   if (decision === acceptanceTime) {
     remainingTime = 0
   }
   useEffect(() => {
     let isSubscribed = true
-      ; (() => {
-        timer.current = setInterval(() => {
-          const isAcceptButtonVisible = !moment().isBefore(orderDate)
-          isSubscribed && setIsAcceptButtonVisible(isAcceptButtonVisible)
-          if (isAcceptButtonVisible) {
-            timer.current && clearInterval(timer.current)
-          }
-        }, 10000)
-      })()
+    ;(() => {
+      timer.current = setInterval(() => {
+        const isAcceptButtonVisible = !moment().isBefore(orderDate)
+        isSubscribed && setIsAcceptButtonVisible(isAcceptButtonVisible)
+        if (isAcceptButtonVisible) {
+          timer.current && clearInterval(timer.current)
+        }
+      }, 10000)
+    })()
     return () => {
       timer.current && clearInterval(timer.current)
       isSubscribed = false
@@ -98,8 +98,8 @@ function HomeOrderDetails(props) {
             activeBar === 0
               ? colors.white
               : activeBar === 1
-                ? colors.white
-                : colors.darkgreen,
+              ? colors.white
+              : colors.darkgreen,
           borderColor: orderStatus === 'ASSIGNED' ? colors.rounded : '',
           borderWidth: orderStatus === 'ASSIGNED' ? 2 : 0
         }
@@ -148,29 +148,36 @@ function HomeOrderDetails(props) {
           bolder>
           {t('name')}:
         </TextDefault>
-        <TextDefault style={{ ...styles.text, textTransform: 'capitalize' }} H5 bolder>
+        <TextDefault
+          style={{ ...styles.text, textTransform: 'capitalize' }}
+          H5
+          bolder>
           {user.name}
         </TextDefault>
       </View>
       <View style={[styles.itemRowBar, { flexDirection }]}>
-        <TextDefault H5
-          bolder style={[styles.heading, { textAlign: textAlignment }]}>
+        <TextDefault
+          H5
+          bolder
+          style={[styles.heading, { textAlign: textAlignment }]}>
           {t('orderAmount')}:
         </TextDefault>
-        <TextDefault H5
-          bolder style={styles.text}>
+        <TextDefault H5 bolder style={styles.text}>
           {dir === 'rtl'
             ? `${orderAmount} ${configuration.currencySymbol}`
             : `${configuration.currencySymbol} ${orderAmount}`}
         </TextDefault>
       </View>
       <View style={[styles.itemRowBar, { flexDirection }]}>
-        <TextDefault H5
-          bolder style={[styles.heading, { textAlign: textAlignment }]}>
+        <TextDefault
+          H5
+          bolder
+          style={[styles.heading, { textAlign: textAlignment }]}>
           {t('paymentMethod')}:
         </TextDefault>
-        <TextDefault H5
-          bolder style={styles.text}>{t(paymentMethod)}</TextDefault>
+        <TextDefault H5 bolder style={styles.text}>
+          {t(paymentMethod)}
+        </TextDefault>
       </View>
 
       {/* <View style={[styles.itemRowBar, { flexDirection }]}>
@@ -184,12 +191,15 @@ function HomeOrderDetails(props) {
         </TextDefault>
       </View> */}
       <View style={[styles.itemRowBar, { flexDirection }]}>
-        <TextDefault H5
-          bolder style={[styles.heading, { textAlign: textAlignment }]}>
+        <TextDefault
+          H5
+          bolder
+          style={[styles.heading, { textAlign: textAlignment }]}>
           {t('status')}:
         </TextDefault>
-        <TextDefault H5
-          bolder style={styles.text}>{t(orderStatus)}</TextDefault>
+        <TextDefault H5 bolder style={styles.text}>
+          {t(orderStatus)}
+        </TextDefault>
       </View>
       <View
         style={{
@@ -251,22 +261,30 @@ function HomeOrderDetails(props) {
         )} */}
         {activeBar === 2 && orderStatus === 'DELIVERED' ? (
           <View>
-            <TextDefault bolder>{moment(deliveredAt).format('hh:mm:ss A')}</TextDefault>
+            <TextDefault bolder>
+              {moment(deliveredAt).format('hh:mm:ss A')}
+            </TextDefault>
           </View>
         ) : null}
         {activeBar === 1 && orderStatus === 'PICKED' ? (
           <View>
-            <TextDefault bolder>{moment(pickedAt).format('hh:mm:ss A')}</TextDefault>
+            <TextDefault bolder>
+              {moment(pickedAt).format('hh:mm:ss A')}
+            </TextDefault>
           </View>
         ) : null}
         {activeBar === 1 && orderStatus === 'ASSIGNED' ? (
           <View>
-            <TextDefault bolder>{moment(assignedAt).format('hh:mm:ss A')}</TextDefault>
+            <TextDefault bolder>
+              {moment(assignedAt).format('hh:mm:ss A')}
+            </TextDefault>
           </View>
         ) : null}
         {activeBar === 1 && orderStatus === 'ACCEPTED' ? (
           <View>
-            <TextDefault bolder>{moment(acceptedAt).format('hh:mm:ss A')}</TextDefault>
+            <TextDefault bolder>
+              {moment(acceptedAt).format('hh:mm:ss A')}
+            </TextDefault>
           </View>
         ) : null}
         <View>
@@ -278,8 +296,8 @@ function HomeOrderDetails(props) {
                   activeBar === 0
                     ? 'black'
                     : activeBar === 1
-                      ? colors.green
-                      : colors.white
+                    ? colors.green
+                    : colors.white
               }
             ]}
             onPress={() =>
@@ -301,14 +319,14 @@ function HomeOrderDetails(props) {
                   activeBar === 0
                     ? colors.green
                     : activeBar === 1
-                      ? colors.orderUncomplete
-                      : 'black'
+                    ? colors.orderUncomplete
+                    : 'black'
               }}>
               {activeBar === 0
                 ? t('pending')
                 : activeBar === 1
-                  ? t('reject')
-                  : t('delivered')}
+                ? t('reject')
+                : t('delivered')}
             </TextDefault>
           </Pressable>
         </View>

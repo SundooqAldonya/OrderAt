@@ -27,7 +27,7 @@ export default function OverlayComponent(props) {
       muteRing(order.orderId)
     }
     toggle()
-    loading ? <Spinner /> : navigation.goBack()
+    loading ? <Spinner /> : navigation.navigate('Orders')
   }
   return (
     <Overlay

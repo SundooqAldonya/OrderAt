@@ -15,7 +15,7 @@ import {
 export let clientRef = null
 function setupApolloClient() {
   const { GRAPHQL_URL, WS_GRAPHQL_URL } = getEnvVars()
-  console.log("graph,", GRAPHQL_URL, WS_GRAPHQL_URL)
+  console.log('graph,', GRAPHQL_URL, WS_GRAPHQL_URL)
   const wsLink = new WebSocketLink({
     uri: WS_GRAPHQL_URL,
     options: {
@@ -34,7 +34,7 @@ function setupApolloClient() {
 
   const request = async operation => {
     const token = await SecureStore.getItemAsync('token')
-    console.log(token,'token')
+    console.log(token, 'token')
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : ''
@@ -63,7 +63,7 @@ function setupApolloClient() {
 
   const client = new ApolloClient({
     cache: cache,
-    link: concat(ApolloLink.from([terminatingLink, requestLink]), httpLink)
+    link: ApolloLink.from([terminatingLink, requestLink, httpLink])
   })
   clientRef = client
   return client

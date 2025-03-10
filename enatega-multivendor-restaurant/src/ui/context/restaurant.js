@@ -3,9 +3,13 @@ import { useQuery, gql } from '@apollo/client'
 import { subscribePlaceOrder, orders } from '../../apollo'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SecureStore from 'expo-secure-store'
+import { useNavigation } from '@react-navigation/native'
+import moment from 'moment'
+import { MAX_TIME } from '../../utilities'
 
 const Context = React.createContext({})
 const Provider = props => {
+  const navigation = useNavigation()
   const [printer, setPrinter] = useState()
   // const [notificationToken, setNotificationToken] = useState()
   const [addressToken, setAddressToken] = useState('')
@@ -32,7 +36,7 @@ const Provider = props => {
     `,
     {
       fetchPolicy: 'network-only',
-      pollInterval: 15000,
+      // pollInterval: 15000,
       onError
     }
   )
@@ -94,9 +98,22 @@ const Provider = props => {
         if (!subscriptionData.data) return prev
         const { restaurantOrders } = prev
         const { origin, order } = subscriptionData.data.subscribePlaceOrder
+        const updatedOrders = [order, ...restaurantOrders]
+        navigation.navigate('NewOrderScreen', {
+          activeBar: 0,
+          orderData: order,
+          rider: order.rider,
+          remainingTime: moment(order.createdAt)
+            .add(MAX_TIME, 'seconds')
+            .diff(moment(), 'seconds'),
+          createdAt: order.createdAt,
+          MAX_TIME,
+          acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
+          preparationTime: new Date(order.preparationTime).toISOString()
+        })
         if (origin === 'new') {
           return {
-            restaurantOrders: [order, ...restaurantOrders]
+            restaurantOrders: [...updatedOrders]
           }
         }
         return prev

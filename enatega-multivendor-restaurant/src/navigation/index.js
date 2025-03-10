@@ -5,7 +5,8 @@ import AuthStack from './authStack'
 import { AuthContext } from '../ui/context'
 import * as Sentry from '@sentry/react-native'
 import getEnvVars from '../../environment'
-import ToastManager from 'toastify-react-native'
+// import ToastManager from 'toastify-react-native'
+import Toast from 'react-native-toast-message'
 
 function AppContainer() {
   const { isLoggedIn } = useContext(AuthContext)
@@ -26,13 +27,9 @@ function AppContainer() {
 
   return (
     <NavigationContainer>
-      <ToastManager
-        textStyle={{
-          fontSize: 14
-        }}
-      />
       {/* {isLoggedIn ? <AuthStack />:<MainStack />  } */}
       {isLoggedIn ? <MainStack /> : <AuthStack />}
+      <Toast />
     </NavigationContainer>
   )
 }

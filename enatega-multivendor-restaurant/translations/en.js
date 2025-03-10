@@ -90,5 +90,7 @@ export const en = {
   COD: 'Cash',
   add_new_address: 'Add new address',
   select_area: 'Select Area',
-  address_details: 'Address details ex: 2nd floor'
+  address_details: 'Address details ex: 2nd floor',
+  new_order_title: 'New Order',
+  review_new_order: 'Review New Order'
 }

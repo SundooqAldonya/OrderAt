@@ -4,9 +4,14 @@ import { Restaurant } from '../context'
 export default function useOrders() {
   const [active, setActive] = useState(0)
 
-  const { loading, error, data, refetch, networkStatus } = useContext(
-    Restaurant.Context
-  )
+  const {
+    loading,
+    error,
+    data,
+    refetch,
+    networkStatus,
+    subscribeToMoreOrders
+  } = useContext(Restaurant.Context)
   const activeOrders =
     data &&
     data.restaurantOrders.filter(order => order.orderStatus === 'PENDING')
@@ -31,6 +36,7 @@ export default function useOrders() {
     processingOrders,
     deliveredOrders,
     active,
-    setActive
+    setActive,
+    subscribeToMoreOrders
   }
 }

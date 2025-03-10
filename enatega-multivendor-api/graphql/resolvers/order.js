@@ -873,12 +873,12 @@ module.exports = {
           ])
           const transformedOrder = await transformOrder(result)
 
-          // publishToDashboard(
-          //   order.restaurant.toString(),
-          //   transformedOrder,
-          //   'new'
-          // )
-          // publishToDispatcher(transformedOrder)
+          publishToDashboard(
+            order.restaurant.toString(),
+            transformedOrder,
+            'new'
+          )
+          publishToDispatcher(transformedOrder)
           // const attachment = path.join(
           //   __dirname,
           //   '../../public/assets/tempImages/enatega.png'
@@ -896,7 +896,7 @@ module.exports = {
           //   'Order placed',
           //   `Order ID ${result.orderId}`
           // )
-          await sendRestaurantNotifications(restaurant)
+          await sendRestaurantNotifications(restaurant, transformedOrder)
 
           // sendNotificationToRestaurant(result.restaurant, result)
         } else if (args.paymentMethod === 'PAYPAL') {

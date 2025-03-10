@@ -91,5 +91,7 @@ export const ar = {
   COD: 'نقدي',
   add_new_address: 'إضافة عنوان جديد',
   select_area: 'أختر المنطقة',
-  address_details: 'تفاصيل العنوان مثال: عمارة 5 - الدور الثاني - شقة 2'
+  address_details: 'تفاصيل العنوان مثال: عمارة 5 - الدور الثاني - شقة 2',
+  new_order_title: 'طلب جديد',
+  review_new_order: 'عرض الطلب'
 }

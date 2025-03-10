@@ -6,9 +6,6 @@ import { validateLogin } from '../validate'
 import { AuthContext } from '../context'
 import { useDispatch } from 'react-redux'
 import { setCity } from '../../../store/citySlice'
-import * as Notifications from 'expo-notifications'
-import * as Device from 'expo-device'
-import * as Constants from 'expo-constants'
 
 export default function useLogin() {
   const dispatch = useDispatch()
@@ -83,7 +80,6 @@ export default function useLogin() {
   }
 
   const onLogin = async () => {
-    console.log('login calleldddddddddddd')
     const valid = await isValid()
     if (valid) {
       mutate({ variables: { username, password } })
