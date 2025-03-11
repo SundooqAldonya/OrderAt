@@ -28,25 +28,25 @@ export default function useNotification() {
     `
   )
 
-  useEffect(() => {
-    registerForPushNotificationsAsync()
-  }, [])
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync()
+  // }, [])
 
-  async function registerForPushNotificationsAsync() {
-    if (!Device.isDevice) {
-      alert(t('notificationText'))
-    }
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        // sound: true,
-        sound: beep1,
-        lightColor: '#FF231F7C'
-      })
-    }
-  }
+  // async function registerForPushNotificationsAsync() {
+  //   if (!Device.isDevice) {
+  //     alert(t('notificationText'))
+  //   }
+  //   if (Platform.OS === 'android') {
+  //     Notifications.setNotificationChannelAsync('default', {
+  //       name: 'Default Channel',
+  //       importance: Notifications.AndroidImportance.MAX,
+  //       vibrationPattern: [0, 250, 250, 250],
+  //       // sound: true,
+  //       sound: beep1,
+  //       lightColor: '#FF231F7C'
+  //     })
+  //   }
+  // }
 
   return {
     getPermission: Notifications.getPermissionsAsync,

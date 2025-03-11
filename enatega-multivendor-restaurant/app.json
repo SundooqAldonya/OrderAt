@@ -39,16 +39,16 @@
     },
     "owner": "mahmoudattia",
     "plugins": [
-      "expo-localization",
-      "expo-secure-store",
-      "sentry-expo",
-      "expo-font",
       [
         "expo-notifications",
         {
           "sounds": ["./assets/beep1.wav"]
         }
       ],
+      "expo-localization",
+      "expo-secure-store",
+      "sentry-expo",
+      "expo-font",
       [
         "expo-build-properties",
         {

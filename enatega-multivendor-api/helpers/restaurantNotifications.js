@@ -3,6 +3,7 @@ const { getAccessToken } = require('./getGoogleAccessToken')
 const notifications = {
   async sendRestaurantNotifications(restaurant, order) {
     const accessToken = await getAccessToken()
+    const newChannelId = 'default_sound4'
     console.log({ accessToken })
     const messageBody = {
       message: {
@@ -12,17 +13,16 @@ const notifications = {
           body: `طلب جديد`
         },
         data: {
-          channelId: 'default',
+          channelId: newChannelId,
           message: 'Testing',
           playSound: 'true',
-          sound: restaurant.enableNotification ? 'beep1.wav' : 'false',
-          screen: 'OrderDetails',
+          sound: 'beep1.wav',
           details: JSON.stringify(order)
         },
         android: {
           notification: {
-            sound: restaurant.enableNotification ? 'beep1' : 'false',
-            channelId: 'default'
+            sound: 'beep1',
+            channelId: newChannelId
           }
         }
       }

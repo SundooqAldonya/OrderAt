@@ -1,5 +1,7 @@
 import { Audio } from 'expo-av'
-// import beep1 from '../assets/beep1.wav'
+import beep1 from '../assets/beep1.wav'
+import { Platform } from 'react-native'
+import * as Notifications from 'expo-notifications'
 
 export async function playCustomSound() {
   try {
@@ -18,12 +20,22 @@ export async function playCustomSound() {
 }
 
 export async function setupNotificationChannel() {
+  const newChannelId = 'default_sound4'
+  const existingChannel = await Notifications.getNotificationChannelAsync(
+    newChannelId
+  )
+
+  console.log({ existingChannel })
+
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
+    console.log('playing notification')
+    await Notifications.setNotificationChannelAsync(newChannelId, {
       name: 'Default Channel',
       importance: Notifications.AndroidImportance.MAX,
-      sound: require('../assets/beep1.wav'), // 🔹 Ensure the sound filename matches your FCM payload
-      enableVibrate: true
+      sound: 'beep1', // This must match the filename in res/raw
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C'
     })
+    console.log('finished notifications')
   }
 }

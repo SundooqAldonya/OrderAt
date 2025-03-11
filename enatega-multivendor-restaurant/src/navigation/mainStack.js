@@ -20,17 +20,22 @@ import RegisterUser from '../screens/Login/RegisterUser'
 import Checkout from '../screens/Login/Checkout'
 import AddNewAddress from '../screens/Login/AddNewAddress'
 import messaging from '@react-native-firebase/messaging'
-import { playCustomSound } from '../utilities/playSound'
+import {
+  playCustomSound,
+  setupNotificationChannel
+} from '../utilities/playSound'
 import { Alert } from 'react-native'
 // import ToastManager, { Toast } from 'toastify-react-native'
 import Toast from 'react-native-toast-message'
 import NewOrderScreen from '../screens/NewOrderScreen'
+import { testingNotifications } from '../utilities/setupNotificationChannel'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: true
+    shouldSetBadge: true,
+    priority: Notifications.AndroidNotificationPriority.HIGH
   })
 })
 
@@ -105,43 +110,19 @@ function StackNavigator() {
   const timeNow = new Date()
 
   useEffect(() => {
+    setupNotificationChannel()
+    // testingNotifications()
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       try {
-        // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
-        // Toast.info(remoteMessage.notification.body)
-        // Toast.show({
-        //   type: 'success',
-        //   text1: remoteMessage.notification.title,
-        //   text2: remoteMessage.notification.body,
-        //   onPress: () => {
-        //     console.log('Toast pressed:', remoteMessage)
-        //     handleNotificationPress(remoteMessage)
-        //   },
-        //   visibilityTime: 4000
-        // })
-
         const sound = remoteMessage?.notification?.android?.sound
           ? remoteMessage?.notification?.android?.sound
           : null
-        console.log({ sound })
         if (sound !== 'false') {
           await playCustomSound()
         }
-        // const order = remoteMessage?.data?.details
-        //   ? JSON.parse(remoteMessage.data.details)
-        //   : null
-        // navigation.navigate('NewOrderScreen', {
-        //   activeBar: 1,
-        //   orderData: order,
-        //   rider: order.rider,
-        //   remainingTime: moment(order.createdAt)
-        //     .add(MAX_TIME, 'seconds')
-        //     .diff(moment(), 'seconds'),
-        //   createdAt: order.createdAt,
-        //   MAX_TIME,
-        //   acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
-        //   preparationTime: new Date(order.preparationTime).toISOString()
-        // })
       } catch (error) {
         console.error('Error handling FCM message:', error)
       }
@@ -149,12 +130,6 @@ function StackNavigator() {
 
     return unsubscribe
   }, [navigation])
-
-  const handleNotificationPress = remoteMessage => {
-    if (remoteMessage?.data?.screen) {
-      navigation.navigate(remoteMessage.data.screen, remoteMessage.data)
-    }
-  }
 
   return (
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>

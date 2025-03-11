@@ -36,7 +36,7 @@ const Provider = props => {
     `,
     {
       fetchPolicy: 'network-only',
-      // pollInterval: 15000,
+      pollInterval: 15000,
       onError
     }
   )
@@ -99,6 +99,7 @@ const Provider = props => {
         const { restaurantOrders } = prev
         const { origin, order } = subscriptionData.data.subscribePlaceOrder
         const updatedOrders = [order, ...restaurantOrders]
+        console.log('navigating to NewOrderScreen')
         navigation.navigate('NewOrderScreen', {
           activeBar: 0,
           orderData: order,
@@ -135,7 +136,6 @@ const Provider = props => {
         networkStatus,
         printer,
         setPrinter,
-        // notificationToken,
         addressToken,
         setAddressToken
       }}>

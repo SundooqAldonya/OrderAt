@@ -76,7 +76,7 @@ export default function OrderDetail({ navigation, route }) {
     if (cancelLoading) {
       return <Spinner />
     } else {
-      navigation.goBack()
+      navigation.navigate('Orders')
     }
   }
   const pickUpOrderFunc = () => {
@@ -84,7 +84,7 @@ export default function OrderDetail({ navigation, route }) {
     if (loadingPicked) {
       return <Spinner />
     } else {
-      navigation.goBack()
+      navigation.navigate('Orders')
     }
   }
 
