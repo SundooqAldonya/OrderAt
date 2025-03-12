@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useRef } from 'react'
 import { sendOtpToEmail, createUser } from '../../../apollo/mutations'
 import gql from 'graphql-tag'
-import Constants  from 'expo-constants'
+import Constants from 'expo-constants'
 import { useMutation } from '@apollo/client'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
@@ -109,7 +109,11 @@ const useEmailOtp = () => {
     if (Device.isDevice) {
       const { status } = await Notifications.requestPermissionsAsync()
       if (status === 'granted') {
-        notificationToken = (await Notifications.getExpoPushTokenAsync({  projectId: Constants.expoConfig.extra.eas.projectId})).data
+        notificationToken = (
+          await Notifications.getDevicePushTokenAsync({
+            projectId: Constants.expoConfig.extra.eas.projectId
+          })
+        ).data
       }
     }
     mutateUser({
@@ -124,7 +128,7 @@ const useEmailOtp = () => {
     })
   }
 
-  const onCodeFilled = code => {
+  const onCodeFilled = (code) => {
     if (configuration.skipEmailVerification || code === otpFrom.current) {
       mutateRegister()
     } else {

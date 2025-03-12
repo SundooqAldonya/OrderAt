@@ -83,7 +83,7 @@ export default function SelectLocation(props) {
     if (!coordinates.latitude) {
       getCurrentPosition()
     }
-  }, [coordinates])
+  }, [])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
