@@ -1014,7 +1014,7 @@ module.exports = {
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
-        sendCustomerNotifications(order.user, order)
+        sendCustomerNotifications(transformedOrder.user, transformedOrder)
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')
         sendNotificationToCustomerWeb(
@@ -1057,6 +1057,7 @@ module.exports = {
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
+        sendCustomerNotifications(transformedOrder.user, order)
         publishToUser(result.user.toString(), transformedOrder, 'update')
         // sendNotificationToCustomerWeb(
         //   user.notificationTokenWeb,

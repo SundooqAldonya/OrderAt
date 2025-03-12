@@ -109,13 +109,15 @@
     "react-native-screens": "~4.4.0",
     "react-native-star-rating": "^1.0.8",
     "react-native-svg": "15.8.0",
+    "react-native-toast-message": "^2.2.1",
     "react-native-webview": "13.12.5",
     "react-navigation-collapsible": "^6.3.0",
     "rn-placeholder": "^3.0.1",
     "sentry-expo": "~7.0.0",
     "subscriptions-transport-ws": "^0.11.0",
     "uglify-js": "^3.17.4",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "expo-av": "~15.0.2"
   },
   "devDependencies": {
     "@expo/metro-config": "^0.19.0",

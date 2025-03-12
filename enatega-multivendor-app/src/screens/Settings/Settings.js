@@ -14,7 +14,11 @@ import Modal from 'react-native-modal'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { profile } from '../../apollo/queries'
 
-import { pushToken, updateNotificationStatus } from '../../apollo/mutations'
+import {
+  disableUserNotifications,
+  pushToken,
+  updateNotificationStatus
+} from '../../apollo/mutations'
 
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
@@ -79,6 +83,7 @@ function Settings(props) {
   const [btnText, setBtnText] = useState(null)
   const [appState, setAppState] = useState(AppState.currentState)
   const [uploadToken] = useMutation(PUSH_TOKEN)
+  const [mutateDisableToken] = useMutation(disableUserNotifications)
   const [mutate, { loading }] = useMutation(UPDATE_NOTIFICATION_TOKEN, {
     onCompleted,
     onError,
@@ -93,12 +98,14 @@ function Settings(props) {
   }, [])
 
   useEffect(() => {
-    if (profile?.notificationToken) {
+    if (profile?.isOrderNotification) {
       setOrderNotification(true)
     } else {
       setOrderNotification(false)
     }
   }, [])
+
+  console.log({ orderNotification })
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -154,7 +161,11 @@ function Settings(props) {
       let token = null
       const permission = await getPermission()
       if (permission === 'granted') {
-        if (!profile.notificationToken) {
+        if (profile.notificationToken) {
+          console.log('Disabling notification token')
+          mutateDisableToken({ variables: { id: profile?._id } })
+        } else {
+          console.log('Generating new push notification token')
           token = await Notifications.getDevicePushTokenAsync({
             projectId: Constants.expoConfig.extra.eas.projectId
           })
@@ -170,9 +181,9 @@ function Settings(props) {
     setAppState(nextAppState)
   }
 
-  useEffect(() => {
-    AppState.addEventListener('change', _handleAppStateChange)
-  }, [])
+  // useEffect(() => {
+  //   AppState.addEventListener('change', _handleAppStateChange)
+  // }, [])
 
   async function checkPermission() {
     const permission = await getPermission()

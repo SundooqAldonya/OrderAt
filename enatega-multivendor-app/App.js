@@ -5,7 +5,6 @@ import * as Device from 'expo-device'
 import * as Font from 'expo-font'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import * as SplashScreen from 'expo-splash-screen'
-
 import {
   BackHandler,
   Platform,
@@ -39,6 +38,7 @@ import { NOTIFICATION_TYPES } from './src/utils/enums'
 import { useColorScheme } from 'react-native'
 import useWatchLocation from './src/ui/hooks/useWatchLocation'
 import RNRestart from 'react-native-restart'
+import Toast from 'react-native-toast-message'
 
 import {
   useFonts,
@@ -299,6 +299,7 @@ export default function App() {
   if (appIsReady) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
+        <Toast />
         <ApolloProvider client={client}>
           <ThemeContext.Provider
             value={{ ThemeValue: theme, dispatch: themeSetter }}

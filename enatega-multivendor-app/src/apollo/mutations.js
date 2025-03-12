@@ -1,3 +1,5 @@
+import gql from 'graphql-tag'
+
 export const sendChatMessage = `mutation SendChatMessage($orderId: ID!, $messageInput: ChatMessageInput!) {
     sendChatMessage(message: $messageInput, orderId: $orderId) {
       success
@@ -360,14 +362,14 @@ export const updateUser = `
         }`
 
 export const updateNotificationStatus = `
-          mutation UpdateNotificationStatus($offerNotification:Boolean!,$orderNotification:Boolean!){
-            updateNotificationStatus(offerNotification:$offerNotification,orderNotification:$orderNotification){
-              _id
-              notificationToken
-              isOrderNotification
-              isOfferNotification
-            }
-          }`
+  mutation UpdateNotificationStatus($offerNotification:Boolean!,$orderNotification:Boolean!){
+    updateNotificationStatus(offerNotification:$offerNotification,orderNotification:$orderNotification){
+      _id
+      notificationToken
+      isOrderNotification
+      isOfferNotification
+    }
+  }`
 
 export const cancelOrder = `
           mutation($abortOrderId: String!){
@@ -376,3 +378,11 @@ export const cancelOrder = `
               orderStatus
             }
           }`
+
+export const disableUserNotifications = gql`
+  mutation DisableUserPushNotification($id: String!) {
+    disableUserPushNotification(id: $id) {
+      message
+    }
+  }
+`

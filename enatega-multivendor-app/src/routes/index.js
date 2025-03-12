@@ -57,6 +57,13 @@ import useEnvVars from '../../environment'
 import * as Sentry from '@sentry/react-native'
 import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
+import messaging from '@react-native-firebase/messaging'
+import {
+  playCustomSound
+  // setupNotificationChannel
+} from '../utils/playSound'
+import { Alert } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -84,6 +91,30 @@ function Drawer() {
 function NoDrawer() {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      try {
+        Alert.alert(remoteMessage)
+        const sound = remoteMessage?.notification?.android?.sound
+          ? remoteMessage?.notification?.android?.sound
+          : null
+        if (sound !== 'false') {
+          await playCustomSound()
+        }
+        // Toast.show({
+        //   type: 'success', // 'success', 'error', 'info'
+        //   text1: 'Hello!',
+        //   text2: 'This is a toast message 👋',
+        // });
+      } catch (error) {
+        console.error('Error handling FCM message:', error)
+      }
+    })
+
+    return unsubscribe
+  }, [navigation])
+
   return (
     <NavigationStack.Navigator
       screenOptions={screenOptions({

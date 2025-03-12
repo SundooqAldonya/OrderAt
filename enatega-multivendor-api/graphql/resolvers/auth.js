@@ -248,17 +248,30 @@ module.exports = {
         throw new Error(err)
       }
     },
-    pushToken: async (_, args, { req, res }) => {
+    pushToken: async (_, args, { req }) => {
       if (!req.isAuth) throw new Error('Unauthenticated')
       try {
         console.log(args)
         const user = await User.findById(req.userId)
         user.notificationToken = args.token
+        user.isOrderNotification = true
         await user.save()
 
         return transformUser(user)
       } catch (err) {
         throw err
+      }
+    },
+    async disableUserPushNotification(_, args, { req }) {
+      if (!req.isAuth) throw new Error('Unauthenticated')
+      try {
+        const user = await User.findById(req.userId)
+        user.notificationToken = null
+        user.isOrderNotification = false
+        await user.save()
+        return { message: 'Disabled user notification token' }
+      } catch (err) {
+        throw new Error(err)
       }
     },
     forgotPassword: async (_, { email, otp }, context) => {

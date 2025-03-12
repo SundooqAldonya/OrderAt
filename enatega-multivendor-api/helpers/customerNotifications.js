@@ -10,7 +10,10 @@ const notifications = {
         token: customer?.notificationToken,
         notification: {
           title: `طلب إلى ${customer.name}`,
-          body: `الطلب ${order.orderId} من ${order.restaurant.name} ليتم توصيله إليك، تحقق من الحالة`
+          body:
+            order.orderStatus === 'ACCEPTED'
+              ? `الطلب ${order.orderId} من ${order.restaurant.name} ليتم توصيله إليك، تحقق من الحالة`
+              : `طلبك من ${order.restaurant.name} في طريقه إليك`
         },
         data: {
           channelId: newChannelId,

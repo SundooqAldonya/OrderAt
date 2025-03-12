@@ -1628,6 +1628,7 @@ const typeDefs = gql`
       configurationInput: CurrencyConfigurationInput!
     ): Configuration!
     pushToken(token: String): User!
+    disableUserPushNotification(id: String!): Message
     updateOrderStatus(id: String!, status: String!, reason: String): Order!
     uploadToken(id: String!, pushToken: String!): OwnerData!
     forgotPassword(email: String!, otp: String!): ForgotPassword!
