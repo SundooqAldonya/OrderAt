@@ -44,6 +44,9 @@ const Addon = require('../../models/addon')
 const Variation = require('../../models/variation')
 const Option = require('../../models/option')
 const { sendPushNotification } = require('../../helpers/findRiders')
+const {
+  sendCustomerNotifications
+} = require('../../helpers/customerNotifications')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -1009,9 +1012,9 @@ module.exports = {
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-          // await sendPushNotification(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
+        sendCustomerNotifications(order.user, order)
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')
         sendNotificationToCustomerWeb(
@@ -1020,7 +1023,7 @@ module.exports = {
           `Order ID ${result.orderId}`
         )
         publishOrder(transformedOrder)
-        sendNotificationToUser(result.user.toString(), transformedOrder)
+        // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {
         console.log('acceptOrder', err)

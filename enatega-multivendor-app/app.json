@@ -1,20 +1,15 @@
 {
   "expo": {
     "name": "Orderat",
-    "scheme": "Customermultivendor",
+    "scheme": ["orderatcustomer"],
     "version": "1.0.64",
-    "description": "Customer is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
+    "description": "Orderat Customer is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
     "slug": "enatega-customer-app-latest",
     "owner": "mahmoudattia",
-    "privacy": "public",
     "androidStatusBar": {
       "backgroundColor": "#000"
     },
     "platforms": ["ios", "android"],
-    "google": {
-      "iosClientId": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
-      "androidClientId": "133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com"
-    },
     "orientation": "portrait",
     "icon": "./assets/logo.jpg",
     "splash": {
@@ -27,7 +22,7 @@
     "ios": {
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
-      "bundleIdentifier": "com.customer.app",
+      "bundleIdentifier": "com.orderatcustomer.app",
       "config": {
         "googleMapsApiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
       },
@@ -54,7 +49,7 @@
     },
     "android": {
       "versionCode": 62,
-      "package": "com.customer.app",
+      "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
       "config": {
@@ -69,11 +64,10 @@
         "android.permission.FOREGROUND_SERVICE"
       ]
     },
-    "hooks": {
-      "postPublish": []
-    },
     "plugins": [
       "@react-native-google-signin/google-signin",
+      "expo-localization",
+      "sentry-expo",
       [
         "expo-tracking-transparency",
         {
@@ -99,7 +93,25 @@
         }
       ],
       ["expo-font"],
-      "sentry-expo"
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "-keep class com.google.firebase.** { *; }",
+            "gradleProperties": {
+              "android.useAndroidX": "true",
+              "android.enableJetifier": "true"
+            }
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/beep1.wav"]
+        }
+      ],
+      "./app.plugin.js"
     ],
     "extra": {
       "eas": {

@@ -70,8 +70,8 @@ function Settings(props) {
   const { t } = useTranslation()
 
   const [languageName, languageNameSetter] = useState('English')
-  const [orderNotification, orderNotificationSetter] = useState()
-  const [offerNotification, offerNotificationSetter] = useState()
+  const [orderNotification, setOrderNotification] = useState(false)
+  const [offerNotification, offerNotificationSetter] = useState(false)
   const [modalVisible, modalVisibleSetter] = useState(false)
   const [loadinglang, setLoadingLang] = useState(false)
   const [activeRadio, activeRadioSetter] = useState(languageTypes[0].index)
@@ -91,6 +91,15 @@ function Settings(props) {
     }
     Track()
   }, [])
+
+  useEffect(() => {
+    if (profile?.notificationToken) {
+      setOrderNotification(true)
+    } else {
+      setOrderNotification(false)
+    }
+  }, [])
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
@@ -146,16 +155,16 @@ function Settings(props) {
       const permission = await getPermission()
       if (permission === 'granted') {
         if (!profile.notificationToken) {
-          token = await Notifications.getExpoPushTokenAsync({
+          token = await Notifications.getDevicePushTokenAsync({
             projectId: Constants.expoConfig.extra.eas.projectId
           })
           uploadToken({ variables: { token: token.data } })
         }
         offerNotificationSetter(profile.isOfferNotification)
-        orderNotificationSetter(profile.isOrderNotification)
+        setOrderNotification(profile.isOrderNotification)
       } else {
         offerNotificationSetter(false)
-        orderNotificationSetter(false)
+        setOrderNotification(false)
       }
     }
     setAppState(nextAppState)
@@ -169,10 +178,10 @@ function Settings(props) {
     const permission = await getPermission()
     if (permission !== 'granted') {
       offerNotificationSetter(false)
-      orderNotificationSetter(false)
+      setOrderNotification(false)
     } else {
       offerNotificationSetter(profile.isOfferNotification)
-      orderNotificationSetter(profile.isOrderNotification)
+      setOrderNotification(profile.isOrderNotification)
     }
   }
 
@@ -257,7 +266,7 @@ function Settings(props) {
     }
 
     if (notificationCheck === 'order') {
-      orderNotificationSetter(!orderNotification)
+      setOrderNotification(!orderNotification)
       orderNotify = !orderNotification
       offerNotify = offerNotification
     }
