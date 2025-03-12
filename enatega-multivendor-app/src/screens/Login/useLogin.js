@@ -153,7 +153,7 @@ export const useLogin = () => {
             await Notifications.getPermissionsAsync()
           if (existingStatus === 'granted') {
             notificationToken = (
-              await Notifications.getExpoPushTokenAsync({
+              await Notifications.getDevicePushTokenAsync({
                 projectId: Constants.expoConfig.extra.eas.projectId
               })
             ).data

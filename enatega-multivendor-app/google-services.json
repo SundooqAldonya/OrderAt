@@ -1,64 +1,94 @@
 {
   "project_info": {
-    "project_number": "133710632137",
-    "project_id": "enatega-mobile-app",
-    "storage_bucket": "enatega-mobile-app.firebasestorage.app"
+    "project_number": "41071470725",
+    "project_id": "food-delivery-api-ab4e4",
+    "storage_bucket": "food-delivery-api-ab4e4.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:b9f2e7a5b37ce341996918",
+        "mobilesdk_app_id": "1:41071470725:android:855fa505c00d597c7aa1ec",
         "android_client_info": {
-          "package_name": "com.customer.app"
+          "package_name": "com.orderatbusiness.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
+          "current_key": "AIzaSyCrJRPPEFDx2tdkOIqK4rTNkS37tcd9jhc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:c1ae77eeedd54df9996918",
+        "mobilesdk_app_id": "1:41071470725:android:cd89333fc974871f7aa1ec",
         "android_client_info": {
-          "package_name": "com.restaurant.app"
+          "package_name": "com.orderatcustomer.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
+          "current_key": "AIzaSyCrJRPPEFDx2tdkOIqK4rTNkS37tcd9jhc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710632137:android:63aa3f6b3cdb01e4996918",
+        "mobilesdk_app_id": "1:41071470725:android:e28d7636ccdfb2e07aa1ec",
         "android_client_info": {
-          "package_name": "com.rider.app"
+          "package_name": "com.orderatrider.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAJIyz3O-qZDPiPKD090lXzZdGP_Gocask"
+          "current_key": "AIzaSyCrJRPPEFDx2tdkOIqK4rTNkS37tcd9jhc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41071470725-7a8k3e1cj6fgcf50p3kkt77jnesfk25n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

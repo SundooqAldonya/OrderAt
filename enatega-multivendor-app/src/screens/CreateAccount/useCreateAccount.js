@@ -20,7 +20,6 @@ import { useTranslation } from 'react-i18next'
 import * as Google from 'expo-auth-session/providers/google'
 import { colors } from '../../utils/colors'
 
-
 const LOGIN = gql`
   ${login}
 `
@@ -52,10 +51,10 @@ export const useCreateAccount = () => {
   // }
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',
+    androidClientId:
+      '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',
     iosClientId: IOS_CLIENT_ID_GOOGLE
   })
-
 
   const getUserInfo = async (token) => {
     //absent token
@@ -69,7 +68,6 @@ export const useCreateAccount = () => {
         }
       )
       return await response.json()
-     
     } catch (error) {
       console.error(
         'Failed to fetch user data:',
@@ -90,11 +88,11 @@ export const useCreateAccount = () => {
 
   const signInWithGoogle = async () => {
     try {
-  
       if (response?.type === 'success') {
+        const google_user = await getUserInfo(
+          response.authentication.accessToken
+        )
 
-        const google_user = await getUserInfo(response.authentication.accessToken)
-       
         const userData = {
           phone: '',
           email: google_user.email,
@@ -105,7 +103,7 @@ export const useCreateAccount = () => {
         }
 
         await mutateLogin(userData)
-      } 
+      }
     } catch (error) {
       // Handle any errors that occur during AsyncStorage retrieval or other operations
       console.error('Error retrieving user data from AsyncStorage:', error)
@@ -116,9 +114,8 @@ export const useCreateAccount = () => {
   useEffect(() => {
     signInWithGoogle()
   }, [response])
-  
 
-/*   const signIn = async () => {
+  /*   const signIn = async () => {
     try {
       loginButtonSetter('Google')
       await GoogleSignin.hasPlayServices()
@@ -158,7 +155,7 @@ export const useCreateAccount = () => {
     navigation.navigate('Register')
   }
   const navigateToPhone = () => {
-    navigation.navigate('PhoneNumber', { backScreen: 'Main'})
+    navigation.navigate('PhoneNumber', { backScreen: 'Main' })
   }
   const navigateToMain = () => {
     navigation.navigate({
@@ -174,7 +171,7 @@ export const useCreateAccount = () => {
         await Notifications.getPermissionsAsync()
       if (existingStatus === 'granted') {
         notificationToken = (
-          await Notifications.getExpoPushTokenAsync({
+          await Notifications.getDevicePushTokenAsync({
             projectId: Constants.expoConfig.extra.eas.projectId
           })
         ).data

@@ -251,7 +251,7 @@ module.exports = {
     pushToken: async (_, args, { req, res }) => {
       if (!req.isAuth) throw new Error('Unauthenticated')
       try {
-        console.log(args.token)
+        console.log(args)
         const user = await User.findById(req.userId)
         user.notificationToken = args.token
         await user.save()
