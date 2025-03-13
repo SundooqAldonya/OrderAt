@@ -12,7 +12,12 @@ const notificationsQueue = new Queue(QUEUE_NAME, {
   redis: {
     host: REDIS_HOST,
     password: REDIS_PASSWORD,
-    port: REDIS_PORT
+    port: REDIS_PORT,
+    maxRetriesPerRequest: null, // Fixes "MaxRetriesPerRequestError"
+    retryStrategy(times) {
+      return Math.min(times * 100, 2000) // Exponential backoff
+    },
+    enableReadyCheck: false // Prevents connection delay issues
   }
 })
 
