@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -58,10 +58,7 @@ import * as Sentry from '@sentry/react-native'
 import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 import messaging from '@react-native-firebase/messaging'
-import {
-  playCustomSound
-  // setupNotificationChannel
-} from '../utils/playSound'
+import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
 import { Alert } from 'react-native'
 import Toast from 'react-native-toast-message'
 
@@ -91,22 +88,29 @@ function Drawer() {
 function NoDrawer() {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    setupNotificationChannel()
+  }, [])
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      console.log({ remoteMessage })
       try {
-        Alert.alert(remoteMessage)
+        // Alert.alert(JSON.stringify(remoteMessage))
         const sound = remoteMessage?.notification?.android?.sound
           ? remoteMessage?.notification?.android?.sound
           : null
         if (sound !== 'false') {
           await playCustomSound()
         }
-        // Toast.show({
-        //   type: 'success', // 'success', 'error', 'info'
-        //   text1: 'Hello!',
-        //   text2: 'This is a toast message 👋',
-        // });
+        Toast.show({
+          type: 'success',
+          text1: remoteMessage?.notification?.title,
+          text2: remoteMessage?.notification?.body,
+          visibilityTime: 10000
+        })
       } catch (error) {
         console.error('Error handling FCM message:', error)
       }
@@ -232,6 +236,7 @@ function AppContainer() {
   const { location } = useContext(LocationContext)
   const { SENTRY_DSN } = useEnvVars()
   const lastNotificationResponse = Notifications.useLastNotificationResponse()
+
   const handleNotification = useCallback(
     async (response) => {
       const { _id } = response.notification.request.content.data
@@ -253,6 +258,7 @@ function AppContainer() {
     },
     [lastNotificationResponse]
   )
+
   useEffect(() => {
     if (
       lastNotificationResponse &&

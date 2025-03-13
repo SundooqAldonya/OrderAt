@@ -2,25 +2,26 @@ const { getAccessToken } = require('./getGoogleAccessToken')
 
 const notifications = {
   async sendCustomerNotifications(customer, order) {
+    console.log('Sending notification to customer app')
     const accessToken = await getAccessToken()
     const newChannelId = 'default_sound4'
-    console.log({ accessToken })
+    console.log({ customer })
     const messageBody = {
       message: {
         token: customer?.notificationToken,
         notification: {
-          title: `طلب إلى ${customer.name}`,
+          title: `طلبك إلى ${order.restaurant.name}`,
           body:
             order.orderStatus === 'ACCEPTED'
-              ? `الطلب ${order.orderId} من ${order.restaurant.name} ليتم توصيله إليك، تحقق من الحالة`
+              ? `تم الموافقة على طلبك`
               : `طلبك من ${order.restaurant.name} في طريقه إليك`
         },
         data: {
           channelId: newChannelId,
           message: 'Testing',
           playSound: 'true',
-          sound: 'beep1.wav',
-          details: JSON.stringify(order)
+          sound: 'beep1.wav'
+          // details: JSON.stringify(order)
         },
         android: {
           notification: {
@@ -34,29 +35,28 @@ const notifications = {
     const projectId = 'food-delivery-api-ab4e4'
 
     try {
-      if (
-        customer?.isAvailable &&
-        customer?.isActive &&
-        customer?.notificationToken &&
-        customer?.enableNotification
-      ) {
-        const response = await fetch(
-          `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Accept-encoding': 'gzip, deflate',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-            },
-            body: JSON.stringify(messageBody)
-          }
-        )
+      // if (
+      //   customer?.isActive &&
+      //   customer?.notificationToken &&
+      //   customer?.isOrderNotification
+      // ) {
+      const response = await fetch(
+        `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+          },
+          body: JSON.stringify(messageBody)
+        }
+      )
 
-        const data = await response.json()
-        console.log('FCM push notification sent:', data)
-      }
+      const data = await response.json()
+      console.log('Customer FCM push notification sent:', data)
+      // }
     } catch (error) {
       console.error('Error sending Expo push notification:', error)
     }

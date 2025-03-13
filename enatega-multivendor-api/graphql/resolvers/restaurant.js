@@ -1050,14 +1050,16 @@ module.exports = {
         const result = await order.save()
         const user = await User.findById(result.user)
         const transformedOrder = await transformOrder(result)
-
+        const populatedOrder = await order.populate('user')
         console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
-        sendCustomerNotifications(transformedOrder.user, order)
+        console.log('Starting to send notification')
+        sendCustomerNotifications(populatedOrder.user, order)
+        console.log('Finished sending notification to customer')
         publishToUser(result.user.toString(), transformedOrder, 'update')
         // sendNotificationToCustomerWeb(
         //   user.notificationTokenWeb,

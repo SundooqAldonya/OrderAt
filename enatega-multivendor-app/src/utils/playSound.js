@@ -8,7 +8,9 @@ export async function playCustomSound() {
     const { sound } = await Audio.Sound.createAsync(
       require('../assets/beep1.wav')
     )
-    await sound.playAsync()
+    setImmediate(async () => {
+      await sound.playAsync()
+    })
     sound.setOnPlaybackStatusUpdate((status) => {
       if (status.didJustFinish) {
         sound.unloadAsync()

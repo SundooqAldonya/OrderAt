@@ -299,7 +299,6 @@ export default function App() {
   if (appIsReady) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Toast />
         <ApolloProvider client={client}>
           <ThemeContext.Provider
             value={{ ThemeValue: theme, dispatch: themeSetter }}
@@ -328,6 +327,7 @@ export default function App() {
             <FlashMessage MessageComponent={MessageComponent} />
           </ThemeContext.Provider>
         </ApolloProvider>
+        <Toast />
       </GestureHandlerRootView>
     )
   } else {
