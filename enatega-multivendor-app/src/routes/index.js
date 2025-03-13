@@ -109,15 +109,48 @@ function NoDrawer() {
           type: 'success',
           text1: remoteMessage?.notification?.title,
           text2: remoteMessage?.notification?.body,
-          visibilityTime: 10000
+          visibilityTime: 10000,
+          onPress: () => {
+            handleNavigation(remoteMessage)
+          }
         })
       } catch (error) {
         console.error('Error handling FCM message:', error)
       }
     })
 
+    // Background & Killed state notification handler
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage
+      )
+      handleNavigation(remoteMessage)
+    })
+
+    // When the app is opened from a **killed state**
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from killed state:',
+            remoteMessage
+          )
+          handleNavigation(remoteMessage)
+        }
+      })
+
     return unsubscribe
   }, [navigation])
+
+  const handleNavigation = (remoteMessage) => {
+    if (remoteMessage?.data?.orderId) {
+      navigation.navigate('OrderDetail', {
+        _id: remoteMessage.data.orderId
+      })
+    }
+  }
 
   return (
     <NavigationStack.Navigator

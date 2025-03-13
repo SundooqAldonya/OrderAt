@@ -20,8 +20,8 @@ const notifications = {
           channelId: newChannelId,
           message: 'Testing',
           playSound: 'true',
-          sound: 'beep1.wav'
-          // details: JSON.stringify(order)
+          sound: 'beep1.wav',
+          orderId: order._id
         },
         android: {
           notification: {
