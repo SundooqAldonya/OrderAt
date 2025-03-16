@@ -231,7 +231,6 @@ module.exports = {
             .sort({ createdAt: -1 })
             .skip((args.page || 0) * args.rows)
             .limit(args.rows)
-          console.log({ ordersRest: orders })
           return orders.map(order => {
             return transformOrder(order)
           })
@@ -389,25 +388,27 @@ module.exports = {
           restaurantId,
           preparationTime
         } = args.input
-        let user = await User.findOne({ phone })
+
+        const phoneNumber = phone.replace('+2', '')
+        let user = await User.findOne({ phone: `+2${phoneNumber}` })
+        console.log({ user })
         const area = await Area.findById(areaId).populate('location')
         console.log({ areaId, area })
         let address = {}
-        if (!user) {
-          address['deliveryAddress'] = area.address
-          address['details'] = area.address
-          address['label'] = 'N/A'
-          address['location'] = {
-            type: 'Point',
-            coordinates: [
-              area.location.location.coordinates[0],
-              area.location.location.coordinates[1]
-            ]
-          }
+        address['deliveryAddress'] = area.address
+        address['details'] = area.address
+        address['label'] = 'N/A'
+        address['location'] = {
+          type: 'Point',
+          coordinates: [
+            area.location.location.coordinates[0],
+            area.location.location.coordinates[1]
+          ]
+        }
+        delete address['latitude']
+        delete address['longitude']
 
-          delete address['latitude']
-          delete address['longitude']
-          const phoneNumber = phone.replace('+2', '')
+        if (!user) {
           user = new User({
             name: 'N/A',
             phone: `+2${phoneNumber}`,
