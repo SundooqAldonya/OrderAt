@@ -912,3 +912,28 @@ export const toggleCityActive = gql`
     }
   }
 `
+export const newCheckoutPlaceOrder = gql`
+  mutation NewCheckoutPlaceOrder($input: NewCheckoutOrderInput) {
+    newCheckoutPlaceOrder(input: $input) {
+      _id
+      orderId
+      user {
+        _id
+        name
+        phone
+      }
+      deliveryAddress {
+        id
+        deliveryAddress
+        details
+        label
+      }
+      orderAmount
+      paymentStatus
+      orderStatus
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`

@@ -9,7 +9,7 @@ import { useQuery, gql } from '@apollo/client'
 import SearchBar from '../TableHeader/SearchBar'
 import { customStyles } from '../../utils/tableCustomStyles'
 import TableHeader from '../TableHeader'
-import { useTheme } from '@mui/material'
+import { Alert, useTheme } from '@mui/material'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
@@ -19,6 +19,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { Box } from '@mui/system'
 import AddOrder from './AddOrder'
+import AddNewOrder from './AddNewOrder'
 
 const ORDERCOUNT = gql`
   ${orderCount}
@@ -31,13 +32,15 @@ const OrdersData = props => {
   const theme = useTheme()
   const { t, refetchOrders, isAdminPage } = props
   const [searchQuery, setSearchQuery] = useState('')
-  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false) // Track visibility of the form
+  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false)
+  const [newFormVisible, setNewFormVisible] = useState(false)
   const [orderDetails, setOrderDetails] = useState({
     items: '',
     quantity: 1,
     paymentMethod: '',
     address: ''
   })
+  const [success, setSuccess] = useState(null)
 
   const onChangeSearch = e => setSearchQuery(e.target.value)
 
@@ -203,7 +206,8 @@ const OrdersData = props => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleOpenOrderForm}
+              // onClick={handleOpenOrderForm}
+              onClick={() => setNewFormVisible(true)}
               fullWidth>
               {t('Addorder')}
             </Button>
@@ -211,8 +215,32 @@ const OrdersData = props => {
         </Grid>
       ) : null}
 
+      {success && (
+        <Alert
+          severity="success"
+          sx={{
+            mb: 2,
+            color: 'white', // Text color
+            backgroundColor: '#32620e', // Background color
+            fontWeight: 'bold',
+            '& .MuiAlert-icon': {
+              color: 'white' // Icon color
+            }
+          }}>
+          {success}
+        </Alert>
+      )}
+
       {/* Order Form (Appears Below the Table) */}
-      {isOrderFormVisible && <AddOrder t={t} refetchOrders={refetchOrders} />}
+      {/* {isOrderFormVisible && <AddOrder t={t} refetchOrders={refetchOrders} />} */}
+      {newFormVisible && (
+        <AddNewOrder
+          refetchOrders={refetchOrders}
+          setNewFormVisible={setNewFormVisible}
+          success={success}
+          setSuccess={setSuccess}
+        />
+      )}
 
       {/* Data Table (Slides Up when Order Form is Visible) */}
       <div

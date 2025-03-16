@@ -1493,6 +1493,7 @@ const typeDefs = gql`
 
   input NewCheckoutOrderInput {
     phone: String
+    name: String
     areaId: String
     orderAmount: Int
     restaurantId: String
