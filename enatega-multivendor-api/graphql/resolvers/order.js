@@ -393,7 +393,9 @@ module.exports = {
         const area = await Area.findById(areaId).populate('location')
         let address = {}
         if (!user) {
+          address['deliveryAddress'] = area.address
           address['details'] = area.address
+          address['label'] = 'N/A'
           address['location'] = {
             type: 'Point',
             coordinates: [
@@ -482,7 +484,7 @@ module.exports = {
           resId: restaurantId,
           orderStatus: 'PENDING',
           orderAmount: orderAmount ? totalOrderAmount : 0,
-          deliveryAddress: { ...area },
+          deliveryAddress: { ...address },
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: 0, // Store tipping amount
