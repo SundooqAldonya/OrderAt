@@ -1491,7 +1491,16 @@ const typeDefs = gql`
     user: User
   }
 
+  input NewCheckoutOrderInput {
+    phone: String
+    areaId: String
+    orderAmount: Int
+    restaurantId: String
+    preparationTime: Int
+  }
+
   type Mutation {
+    newCheckoutPlaceOrder(input: NewCheckoutOrderInput): Order!
     googleAuth(code: String!): GoogleUserLogin
     createShopCategory(shopCategoryInput: ShopCategoryInput!): Message
     editShopCategory(

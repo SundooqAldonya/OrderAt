@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
-const NewOrderScreen = ({ route }) => {
+const NewOrderScreenNotification = ({ route }) => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const {
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default NewOrderScreen
+export default NewOrderScreenNotification

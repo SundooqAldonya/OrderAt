@@ -99,8 +99,8 @@ const Provider = props => {
         const { restaurantOrders } = prev
         const { origin, order } = subscriptionData.data.subscribePlaceOrder
         const updatedOrders = [order, ...restaurantOrders]
-        console.log('navigating to NewOrderScreen')
-        navigation.navigate('NewOrderScreen', {
+        console.log('navigating to NewOrderScreenNotification')
+        navigation.navigate('NewOrderScreenNotification', {
           activeBar: 0,
           orderData: order,
           rider: order.rider,

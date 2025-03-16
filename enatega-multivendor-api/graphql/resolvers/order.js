@@ -47,6 +47,7 @@ const Option = require('../../models/option')
 const {
   sendRestaurantNotifications
 } = require('../../helpers/restaurantNotifications')
+const Area = require('../../models/area')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -379,6 +380,171 @@ module.exports = {
     }
   },
   Mutation: {
+    async newCheckoutPlaceOrder(_, args) {
+      try {
+        const {
+          phone,
+          areaId,
+          orderAmount,
+          restaurantId,
+          preparationTime
+        } = args.input
+        let user = await User.findOne({ phone })
+        const area = await Area.findById(areaId).populate('location')
+        let address = {}
+        if (!user) {
+          address['details'] = area.address
+          address['location'] = {
+            type: 'Point',
+            coordinates: [
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
+            ]
+          }
+
+          delete address['latitude']
+          delete address['longitude']
+          const phoneNumber = phone.replace('+2', '')
+          user = new User({
+            name: 'N/A',
+            phone: `+2${phoneNumber}`,
+            governate: 'N/A',
+            address_free_text: area.address,
+            addresses: address || [],
+            email: `+2${phoneNumber}`,
+            userType: 'default',
+            emailIsVerified: true,
+            phoneIsVerified: false,
+            isActive: true,
+            area: area || null
+          })
+          await user.save()
+        }
+
+        console.log({ address })
+
+        const restaurant = await Restaurant.findById(restaurantId)
+        // Generate dynamic orderId
+        const newOrderId = `${restaurant.orderPrefix}-${
+          Number(restaurant.orderId) + 1
+        }`
+        restaurant.orderId = Number(restaurant.orderId) + 1
+        await restaurant.save()
+
+        const zone = await Zone.findOne({
+          location: { $geoIntersects: { $geometry: restaurant.location } }
+        })
+        const latOrigin = +restaurant.location.coordinates[1]
+        const lonOrigin = +restaurant.location.coordinates[0]
+
+        const latDest = address['location']
+          ? +address?.location.coordinates[1]
+          : +area.location.location.coordinates[1]
+        const longDest = address['location']
+          ? +address?.location.coordinates[0]
+          : +area.location.location.coordinates[0]
+
+        const distance = calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+
+        let configuration = await Configuration.findOne()
+        const costType = configuration.costType
+
+        let amount = calculateAmount(
+          costType,
+          configuration.deliveryRate,
+          distance
+        )
+
+        let deliveryCharges = amount
+
+        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+          deliveryCharges = configuration.minimumDeliveryFee
+        }
+
+        let taxationAmount = 0
+        const taxRate = restaurant.tax / 100 || 0
+        taxationAmount = (orderAmount + deliveryCharges) * taxRate
+        let tipping = 0
+        let totalOrderAmount = 0
+        if (orderAmount) {
+          totalOrderAmount =
+            orderAmount + deliveryCharges + taxationAmount + tipping
+        }
+
+        const order = new Order({
+          orderId: newOrderId,
+          user: user._id,
+          resId: restaurantId,
+          orderStatus: 'PENDING',
+          orderAmount: orderAmount ? totalOrderAmount : 0,
+          deliveryAddress: { ...area },
+          items: [], // Add items logic if applicable
+          isActive: true,
+          tipping: 0, // Store tipping amount
+          taxationAmount: 0, // Store taxation amount
+          deliveryCharges: orderAmount ? deliveryCharges : 0, // Store delivery charges
+          //totalAmount: totalOrderAmount, // The final total amount including all fees
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          restaurant: restaurantId, // Adding restaurant ID to order
+          zone: zone._id, // Adding zone ID to order
+          completionTime: new Date(
+            Date.now() + restaurant.deliveryTime * 60 * 1000
+          ),
+          preparationTime: preparationTime
+            ? new Date(Date.now() + preparationTime * 60 * 1000)
+            : new Date(Date.now() + 20 * 60 * 1000)
+        })
+
+        const savedOrder = await order.save()
+        return {
+          _id: savedOrder._id,
+          orderId: savedOrder.orderId,
+          resId: savedOrder.resId,
+          paidAmount: 0,
+          orderStatus: savedOrder.orderStatus,
+          paymentMethod: 'COD',
+          isPickedUp: false,
+          taxationAmount: 0,
+          orderDate: savedOrder.createdAt,
+          user: {
+            _id: user._id,
+            name: user.name,
+            phone: user.phone
+          },
+          deliveryAddress: savedOrder.deliveryAddress,
+          //orderAmount: savedOrder.orderAmount,
+          orderAmount: savedOrder.totalOrderAmount,
+          //totalAmount: savedOrder.totalAmount,
+          paymentStatus: savedOrder.paymentStatus,
+          deliveryCharges: savedOrder.deliveryCharges,
+          taxationAmount: savedOrder.taxationAmount,
+          tipping: 0, // Return tipping amount
+          totalAmount: savedOrder.orderAmount, // Return total order amount including all fees
+          isActive: savedOrder.isActive,
+          createdAt: savedOrder.createdAt,
+          updatedAt: savedOrder.updatedAt,
+          restaurant: {
+            _id: savedOrder.restaurant, // Returning restaurant details
+            name: restaurant.name,
+            address: restaurant.address
+          },
+          zone: {
+            _id: savedOrder.zone, // Returning zone details
+            name: zone.name,
+            region: zone.region
+          }
+        }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     CheckOutPlaceOrder: async (
       _,
       {

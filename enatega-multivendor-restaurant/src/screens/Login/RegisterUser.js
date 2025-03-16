@@ -132,15 +132,6 @@ const RegisterUser = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
-      {/* <KeyboardAvoidingView
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          zIndex: 99999999999999999
-        }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled> */}
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
         <TouchableOpacity
           style={{ marginRight: 10 }}
@@ -352,7 +343,6 @@ const RegisterUser = () => {
           })}
         </ScrollView>
       </Modal>
-      {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   )
 }

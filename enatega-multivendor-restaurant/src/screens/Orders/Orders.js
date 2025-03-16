@@ -178,7 +178,8 @@ const Orders = props => {
               }
             />
             <TouchableOpacity
-              onPress={() => setIsVisible(true)}
+              // onPress={() => setIsVisible(true)}
+              onPress={() => navigation.navigate('AddNewOrder')}
               style={{
                 backgroundColor: '#000',
                 marginHorizontal: 16,

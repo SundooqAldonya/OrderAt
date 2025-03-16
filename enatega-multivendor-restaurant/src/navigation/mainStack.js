@@ -27,8 +27,9 @@ import {
 import { Alert } from 'react-native'
 // import ToastManager, { Toast } from 'toastify-react-native'
 import Toast from 'react-native-toast-message'
-import NewOrderScreen from '../screens/NewOrderScreen'
 import { testingNotifications } from '../utilities/setupNotificationChannel'
+import NewOrderScreenNotification from '../screens/NewOrderScreenNotification'
+import AddNewOrder from '../screens/AddNewOrder'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -139,7 +140,11 @@ function StackNavigator() {
       <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
       <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
-      <Stack.Screen name="NewOrderScreen" component={NewOrderScreen} />
+      <Stack.Screen
+        name="NewOrderScreenNotification"
+        component={NewOrderScreenNotification}
+      />
+      <Stack.Screen name="AddNewOrder" component={AddNewOrder} />
     </Stack.Navigator>
   )
 }
