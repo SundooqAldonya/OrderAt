@@ -455,6 +455,8 @@ module.exports = {
           longDest
         )
 
+        console.log({ distance })
+
         let configuration = await Configuration.findOne()
         const costType = configuration.costType
 
@@ -479,6 +481,8 @@ module.exports = {
           totalOrderAmount =
             orderAmount + deliveryCharges + taxationAmount + tipping
         }
+
+        console.log({ orderAmount })
 
         const order = new Order({
           orderId: newOrderId,

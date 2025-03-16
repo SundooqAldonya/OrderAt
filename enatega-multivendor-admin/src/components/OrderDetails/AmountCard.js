@@ -160,10 +160,12 @@ export default function AmountCard(props) {
                       props.tipping
                   ).toFixed(2)}`} */}
                   {`${configuration.currencySymbol} ${parseFloat(
-                    props.orderAmount -
-                      props.deliveryCharges -
-                      props.taxationAmount -
-                      props.tipping
+                    Math.abs(
+                      props.orderAmount -
+                        props.deliveryCharges -
+                        props.taxationAmount -
+                        props.tipping
+                    )
                   ).toFixed(2)}`}
                 </Typography>
               </Grid>

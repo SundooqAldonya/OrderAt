@@ -67,6 +67,14 @@ const AddNewOrder = ({
 
   const handleSubmitOrder = e => {
     e.preventDefault()
+    if (!phone) {
+      alert('Please add phone number')
+      return
+    }
+    if (!selectedArea) {
+      alert('Please select area')
+      return
+    }
     mutateCreateOrder({
       variables: {
         input: {

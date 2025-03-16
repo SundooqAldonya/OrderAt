@@ -130,7 +130,9 @@ function OrderItems({ orderData }) {
   const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
   const textAlignStyle = isRtl ? { textAlign: 'right' } : {}
 
-  let subTotal = orderAmount - deliveryCharges - tipping - taxationAmount
+  let subTotal = Math.abs(
+    orderAmount - deliveryCharges - tipping - taxationAmount
+  )
 
   const formatAmount = amount => {
     return isRtl
