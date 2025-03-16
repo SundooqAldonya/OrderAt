@@ -391,6 +391,7 @@ module.exports = {
         } = args.input
         let user = await User.findOne({ phone })
         const area = await Area.findById(areaId).populate('location')
+        console.log({ areaId, area })
         let address = {}
         if (!user) {
           address['deliveryAddress'] = area.address
@@ -489,7 +490,7 @@ module.exports = {
           isActive: true,
           tipping: 0, // Store tipping amount
           taxationAmount: 0, // Store taxation amount
-          deliveryCharges: orderAmount ? deliveryCharges : 0, // Store delivery charges
+          deliveryCharges, // Store delivery charges
           //totalAmount: totalOrderAmount, // The final total amount including all fees
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

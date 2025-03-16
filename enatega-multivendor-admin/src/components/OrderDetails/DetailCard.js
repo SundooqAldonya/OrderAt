@@ -8,7 +8,7 @@ function DetailCard(props) {
   const classes = useStyles()
   const theme = useTheme()
   const { t } = useTranslation()
-
+  console.log({ deliveryAddress: props.deliveryAddress })
   return (
     <Grid container item xs={12}>
       <Grid item xs={1} />
