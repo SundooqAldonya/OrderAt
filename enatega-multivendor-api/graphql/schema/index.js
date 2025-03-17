@@ -1495,6 +1495,7 @@ const typeDefs = gql`
     phone: String
     name: String
     areaId: String
+    addressDetails: String
     orderAmount: Int
     restaurantId: String
     preparationTime: Int

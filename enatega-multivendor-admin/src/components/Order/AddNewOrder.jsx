@@ -34,12 +34,13 @@ const AddNewOrder = ({
   const [selectedArea, setSelectedArea] = useState(null)
   const [values, setValues] = useState({
     phone: '',
-    name: ''
+    name: '',
+    addressDetails: ''
   })
   const { areas } = useContext(AreaContext)
   const { acceptOrder } = useAcceptOrder()
 
-  const { phone, name } = values
+  const { phone, name, addressDetails } = values
 
   const [mutateCreateOrder] = useMutation(newCheckoutPlaceOrder, {
     onCompleted: data => {
@@ -81,6 +82,7 @@ const AddNewOrder = ({
           name,
           phone,
           restaurantId,
+          addressDetails,
           areaId: selectedArea,
           preparationTime: selectedTime,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0
@@ -186,6 +188,39 @@ const AddNewOrder = ({
             </MenuItem>
           ))}
         </Select>
+      </Box>
+      <Box>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', color: 'black' }}>
+          Address Free Text
+        </Typography>
+        <TextField
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          placeholder={'ex: 2nd floor'}
+          sx={{
+            '& .MuiInputBase-input': { color: 'black' },
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+              '& fieldset': {
+                color: '#ccc',
+                borderWidth: 1
+              },
+              '&:hover fieldset': {
+                borderColor: '#888'
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#000',
+                borderWidth: 1
+              }
+            }
+          }}
+          name="addressDetails"
+          value={addressDetails}
+          onChange={handleChange}
+        />
       </Box>
       <Box mb={2}>
         <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>

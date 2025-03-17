@@ -38,6 +38,7 @@ const AddNewOrder = ({ navigation }) => {
   const [userData, setUserData] = useState({
     phone: '',
     name: '',
+    addressDetails: '',
     preparationTime: ''
   })
   const [areaIsVisible, setAreaIsVisible] = useState(false)
@@ -99,6 +100,7 @@ const AddNewOrder = ({ navigation }) => {
         input: {
           phone: userData?.phone,
           areaId: selectedArea?._id,
+          addressDetails: userData?.addressDetails,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
           restaurantId,
           preparationTime: selectedTime
@@ -178,16 +180,16 @@ const AddNewOrder = ({ navigation }) => {
                   {selectedArea ? selectedArea.title : `${t('select_area')} *`}
                 </TextDefault>
               </TouchableOpacity>
-              {/* <TextInput
-                value={userData.address}
+              <TextInput
+                value={userData.addressDetails}
                 onChangeText={text =>
-                  setUserData({ ...userData, address: text })
+                  setUserData({ ...userData, addressDetails: text })
                 }
-                multiline
-                numberOfLines={4}
+                // multiline
+                // numberOfLines={4}
                 placeholder={`${t('address_details')}`}
                 style={styles.inputs}
-              /> */}
+              />
               <TextInput
                 value={cost}
                 onChangeText={text => setCost(text)}

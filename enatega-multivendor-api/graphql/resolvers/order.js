@@ -380,12 +380,14 @@ module.exports = {
   },
   Mutation: {
     async newCheckoutPlaceOrder(_, args) {
+      console.log({ args })
       try {
         const {
           phone,
           areaId,
           orderAmount,
           restaurantId,
+          addressDetails,
           preparationTime
         } = args.input
 
@@ -396,7 +398,7 @@ module.exports = {
         console.log({ areaId, area })
         let address = {}
         address['deliveryAddress'] = area.address
-        address['details'] = area.address
+        address['details'] = addressDetails ? addressDetails : area.address
         address['label'] = 'N/A'
         address['location'] = {
           type: 'Point',
@@ -413,7 +415,7 @@ module.exports = {
             name: 'N/A',
             phone: `+2${phoneNumber}`,
             governate: 'N/A',
-            address_free_text: area.address,
+            address_free_text: address.details,
             addresses: address || [],
             email: `+2${phoneNumber}`,
             userType: 'default',
@@ -489,7 +491,7 @@ module.exports = {
           user: user._id,
           resId: restaurantId,
           orderStatus: 'PENDING',
-          orderAmount: orderAmount ? totalOrderAmount : 0,
+          orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
           deliveryAddress: { ...address },
           items: [], // Add items logic if applicable
           isActive: true,
