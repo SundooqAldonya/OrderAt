@@ -142,7 +142,7 @@ const AddNewOrder = ({ navigation }) => {
               <TextInput
                 value={userData.phone}
                 onChangeText={text => setUserData({ ...userData, phone: text })}
-                placeholder={t('enterphone')}
+                placeholder={`${t('enterphone')} *`}
                 style={styles.inputs}
                 keyboardType="number-pad"
               />
@@ -175,7 +175,7 @@ const AddNewOrder = ({ navigation }) => {
                     textTransform: 'capitalize',
                     marginHorizontal: 'auto'
                   }}>
-                  {selectedArea ? selectedArea.title : `${t('select_area')}`}
+                  {selectedArea ? selectedArea.title : `${t('select_area')} *`}
                 </TextDefault>
               </TouchableOpacity>
               {/* <TextInput

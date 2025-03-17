@@ -123,7 +123,7 @@ const AddNewOrder = ({
       </Typography>
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Phone Number
+          Phone Number *
         </Typography>
         <TextField
           variant="outlined"
@@ -160,7 +160,7 @@ const AddNewOrder = ({
         <Typography
           variant="subtitle1"
           sx={{ fontWeight: 'bold', color: 'black' }}>
-          {t('Select Area')}
+          {t('Select Area')} *
         </Typography>
         <Select
           id="input-area"
