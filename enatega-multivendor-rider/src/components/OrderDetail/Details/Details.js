@@ -11,6 +11,9 @@ import { useTranslation } from 'react-i18next'
 import { callNumber } from '../../../utilities/callNumber'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { openGoogleMaps } from '../../../utilities/callMaps'
+import { Camera } from 'expo-camera'
+import { useRef } from 'react'
+import { StyleSheet } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -27,11 +30,30 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     loadingOrderStatus
   } = useDetails(orderData)
   const { t } = useTranslation()
+  const cameraRef = useRef(null)
+  const [photo, setPhoto] = useState(null)
 
   if (!order) return null
 
+  const captureReceipt = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync()
+    if (status === 'granted' && cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync()
+      setPhoto(photo.uri)
+    }
+  }
+
+  // mutateOrderStatus({
+  //   variables: { id: itemId, status: 'PICKED' }
+  // })
+
   return (
     <View style={styles.container}>
+      {!photo ? (
+        <Camera ref={cameraRef} style={styles.camera} />
+      ) : (
+        <Image source={{ uri: photo }} style={styles.camera} />
+      )}
       {order.orderStatus !== 'DELIVERED' ? (
         <>
           <View>
@@ -95,11 +117,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
             <View style={styles.btnContainer}>
               <ChatWithCustomerButton navigation={navigation} order={order} />
               <TouchableOpacity
-                onPress={() => {
-                  mutateOrderStatus({
-                    variables: { id: itemId, status: 'PICKED' }
-                  })
-                }}
+                onPress={captureReceipt}
                 activeOpacity={0.8}
                 style={[styles.btn, { backgroundColor: colors.black }]}>
                 <TextDefault center bold H5 textColor={colors.white}>
@@ -588,4 +606,19 @@ const ChatWithCustomerButton = ({ navigation, order }) => {
     </TouchableOpacity>
   )
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  camera: { flex: 1 },
+  button: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10
+  },
+  buttonText: { fontSize: 18, fontWeight: 'bold' }
+})
+
 export default Details

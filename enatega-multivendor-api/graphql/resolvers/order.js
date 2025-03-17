@@ -399,7 +399,7 @@ module.exports = {
         let address = {}
         address['deliveryAddress'] = area.address
         address['details'] = addressDetails ? addressDetails : area.address
-        address['label'] = 'N/A'
+        address['label'] = area.title
         address['location'] = {
           type: 'Point',
           coordinates: [
