@@ -36,6 +36,7 @@ import messaging from '@react-native-firebase/messaging'
 import { Alert } from 'react-native'
 import { setupNotificationChannel } from '../utilities/pushNotifications'
 import beep1 from '../assets/beep1.wav'
+import CameraCaptureReceipt from '../screens/CameraCaptureReceipt'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -157,8 +158,6 @@ function NoDrawer() {
   return (
     <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions()}>
       <Stack.Screen
-        // name="Orders"
-        // component={MyTabs}
         name="Home"
         component={NewOrders}
         options={{
@@ -189,6 +188,10 @@ function NoDrawer() {
       <Stack.Screen name="Help" component={Help} />
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="HelpBrowser" component={HelpBrowser} />
+      <Stack.Screen
+        name="CameraCaptureReceipt"
+        component={CameraCaptureReceipt}
+      />
     </Stack.Navigator>
   )
 }
@@ -222,22 +225,12 @@ function AppContainer() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // Alert.alert(
-      //   'A new FCM message arrived!',
-      //   JSON.stringify(remoteMessage, 2, null)
-      // )
-      console.log({ remoteMessage: remoteMessage.notification.android })
       Toast.info(remoteMessage.notification.body)
       const sound = remoteMessage?.notification?.android?.sound
         ? remoteMessage.notification.android.sound
         : null
       if (sound !== 'false') {
-        // if (sound === 'beep3') {
         playCustomSound()
-        // }
-        // if (sound === 'beep1') {
-        //   playCustomSound(beep1)
-        // }
       }
     })
 

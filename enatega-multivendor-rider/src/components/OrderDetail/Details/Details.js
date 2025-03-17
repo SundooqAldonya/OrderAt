@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Linking, Alert } from 'react-native'
+import { View, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -11,9 +11,10 @@ import { useTranslation } from 'react-i18next'
 import { callNumber } from '../../../utilities/callNumber'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { openGoogleMaps } from '../../../utilities/callMaps'
-import { Camera } from 'expo-camera'
+import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRef } from 'react'
 import { StyleSheet } from 'react-native'
+import { Image } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const {
@@ -30,30 +31,17 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     loadingOrderStatus
   } = useDetails(orderData)
   const { t } = useTranslation()
-  const cameraRef = useRef(null)
-  const [photo, setPhoto] = useState(null)
 
   if (!order) return null
 
-  const captureReceipt = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync()
-    if (status === 'granted' && cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync()
-      setPhoto(photo.uri)
-    }
+  const captureReceipt = () => {
+    navigation.navigate('CameraCaptureReceipt', {
+      itemId: order._id
+    })
   }
-
-  // mutateOrderStatus({
-  //   variables: { id: itemId, status: 'PICKED' }
-  // })
 
   return (
     <View style={styles.container}>
-      {!photo ? (
-        <Camera ref={cameraRef} style={styles.camera} />
-      ) : (
-        <Image source={{ uri: photo }} style={styles.camera} />
-      )}
       {order.orderStatus !== 'DELIVERED' ? (
         <>
           <View>
@@ -117,7 +105,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
             <View style={styles.btnContainer}>
               <ChatWithCustomerButton navigation={navigation} order={order} />
               <TouchableOpacity
-                onPress={captureReceipt}
+                onPress={() => captureReceipt()}
                 activeOpacity={0.8}
                 style={[styles.btn, { backgroundColor: colors.black }]}>
                 <TextDefault center bold H5 textColor={colors.white}>
@@ -607,18 +595,34 @@ const ChatWithCustomerButton = ({ navigation, order }) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  camera: { flex: 1 },
-  button: {
-    position: 'absolute',
-    bottom: 50,
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10
+const cameraStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center'
   },
-  buttonText: { fontSize: 18, fontWeight: 'bold' }
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10
+  },
+  camera: {
+    flex: 1
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64
+  },
+  button: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center'
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white'
+  }
 })
 
 export default Details
