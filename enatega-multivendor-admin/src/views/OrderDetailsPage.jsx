@@ -11,7 +11,7 @@ import {
   singleOrder
 } from '../apollo'
 import useGlobalStyles from '../utils/globalStyles'
-import { Container, Grid, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Container, Grid, useMediaQuery, useTheme } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import CustomLoader from '../components/Loader/CustomLoader'
@@ -20,6 +20,7 @@ import useStyles from '../components/OrderDetails/styles'
 import DetailCard from '../components/OrderDetails/DetailCard'
 import AmountCard from '../components/OrderDetails/AmountCard'
 import RiderDetails from '../components/OrderDetails/RiderDetails'
+import PickedUpImage from '../components/OrderDetails/PickedUpImage'
 
 const OrderDetailsPage = () => {
   const { id: orderId } = useParams()
@@ -59,6 +60,16 @@ const OrderDetailsPage = () => {
         {order.rider ? (
           <Grid container style={{ marginTop: theme.spacing(5) }}>
             <RiderDetails rider={order.rider} order={order} />
+          </Grid>
+        ) : null}
+        {/* image receipt captured by driver */}
+        {order.pickedImage?.url ? (
+          <Grid
+            container
+            style={{
+              marginTop: theme.spacing(5)
+            }}>
+            <PickedUpImage pickedImage={order.pickedImage} />
           </Grid>
         ) : null}
         <Grid

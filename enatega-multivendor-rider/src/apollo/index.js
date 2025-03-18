@@ -13,6 +13,7 @@ import {
   getMainDefinition,
   offsetLimitPagination
 } from '@apollo/client/utilities'
+import { createUploadLink } from 'apollo-upload-client'
 
 import getEnvVars from '../../environment'
 
@@ -39,9 +40,21 @@ function setupApolloClient() {
     }
   })
 
-  const httpLink = createHttpLink({
-    uri: GRAPHQL_URL
+  // const httpLink = createHttpLink({
+  //   uri: GRAPHQL_URL
+  // })
+
+  const uploadLink = createUploadLink({
+    uri: GRAPHQL_URL,
+    headers: async () => {
+      const token = await AsyncStorage.getItem('rider-token')
+      return {
+        authorization: token ? `Bearer ${token}` : '',
+        'Apollo-Require-Preflight': 'true' // Optional: Fix some upload issues
+      }
+    }
   })
+
   const wsLink = new WebSocketLink({
     uri: WS_GRAPHQL_URL,
     options: {
@@ -88,7 +101,7 @@ function setupApolloClient() {
   }, wsLink)
 
   const client = new ApolloClient({
-    link: ApolloLink.from([terminatingLink, requestLink, httpLink]),
+    link: ApolloLink.from([terminatingLink, requestLink, uploadLink]),
     cache,
     resolvers: {}
   })

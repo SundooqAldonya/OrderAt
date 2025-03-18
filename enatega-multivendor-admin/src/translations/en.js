@@ -387,7 +387,9 @@ const en = {
     PENDING: 'Pending',
     PICKED: 'Picked',
     DELIVERED: 'Delivered',
-    CANCELLED: 'Cancelled'
+    CANCELLED: 'Cancelled',
+    amount_details: 'Amount Details',
+    picked_up_image: 'Pick up receipt'
   }
 }
 

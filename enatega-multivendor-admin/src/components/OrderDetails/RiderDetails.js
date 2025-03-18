@@ -8,7 +8,7 @@ function RiderDetails({ rider, order }) {
   const classes = useStyles()
   const theme = useTheme()
   const { t } = useTranslation()
-  console.log({ rider })
+
   return (
     <Grid container item xs={12}>
       <Grid item xs={1} />

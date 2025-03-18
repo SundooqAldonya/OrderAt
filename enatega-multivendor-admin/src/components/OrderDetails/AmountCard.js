@@ -64,7 +64,22 @@ export default function AmountCard(props) {
       <Grid container item xs={12}>
         <Grid item xs={1} />
         <Grid item xs={10} sm={6} md={4}>
-          <Paper style={{ padding: theme.spacing(5) }} elevation={1}>
+          <Typography
+            className={`${classes.heading} ${classes.textBold}`}
+            textAlign="center"
+            color={theme.palette.primary.main}>
+            {t('amount_details')}
+          </Typography>
+          <Divider
+            orientation="horizontal"
+            flexItem
+            style={{ backgroundColor: theme.palette.primary.main }}
+            variant="middle"
+          />
+          <Paper
+            style={{ padding: theme.spacing(5) }}
+            elevation={1}
+            className={classes.mt3}>
             <Grid
               container
               className={clsx(classes.cardRow, classes.mv2)}

@@ -464,6 +464,12 @@ const typeDefs = gql`
     isRinged: Boolean!
     isRiderRinged: Boolean!
     instructions: String
+    pickedImage: PickedImage
+  }
+
+  type PickedImage {
+    url: String
+    publicId: String
   }
 
   type MyOrders {
@@ -1661,7 +1667,7 @@ const typeDefs = gql`
       notificationToken: String
     ): AuthData!
     riderLogout(token: String!): Message
-    updateOrderStatusRider(id: String!, status: String!): Order!
+    updateOrderStatusRider(id: String!, status: String!, file: Upload): Order!
     updatePaymentStatus(id: String, status: String): Order!
     createOptions(id: String, optionInput: CreateOptionInput): [Option!]
     editOption(optionInput: editOptionInput): Message!

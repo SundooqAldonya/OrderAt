@@ -22,8 +22,11 @@ const {
   JOB_DELAY_DEFAULT
 } = require('../../queue')
 const { sendPushNotification } = require('../../helpers/findRiders')
+const { uploadReceiptImage } = require('../../helpers/cloudinary')
+const { GraphQLUpload } = require('graphql-upload')
 
 module.exports = {
+  Upload: GraphQLUpload,
   Subscription: {
     subscriptionRiderLocation: {
       subscribe: withFilter(
@@ -325,6 +328,13 @@ module.exports = {
         const order = await Order.findById(args.id)
         order.orderStatus = args.status
         if (args.status === 'PICKED') {
+          console.log({ argsFile: args })
+          if (args.file?.file && args.file?.file['createReadStream']) {
+            await uploadReceiptImage({
+              id: order._id,
+              file: args.file
+            })
+          }
           order.completionTime = new Date(Date.now() + 15 * 60 * 1000)
           order.pickedAt = new Date()
         }

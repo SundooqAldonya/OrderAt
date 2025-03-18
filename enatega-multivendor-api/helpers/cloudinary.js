@@ -1,4 +1,5 @@
 const Food = require('../models/food')
+const Order = require('../models/order')
 
 const cloudinary = require('cloudinary').v2
 
@@ -56,6 +57,39 @@ module.exports = {
     } catch (err) {
       console.log(err)
       throw err
+    }
+  },
+  async uploadReceiptImage({ id, file }) {
+    console.log({ file })
+    try {
+      const { createReadStream, filename, mimetype, encoding } = await file.file
+      const stream = createReadStream()
+      let result_url
+      const image = await cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto'
+        },
+        async (error, result) => {
+          if (error) {
+            throw new Error('Upload failed')
+          }
+          console.log({ image: result.secure_url })
+          const order = await Order.findById(id)
+          order.pickedImage.url = result.secure_url
+          order.pickedImage.publicId = result.public_id
+          console.log({ order })
+          result_url = result.secure_url
+          await order.save()
+          return result.secure_url // Return the URL of the uploaded image
+        }
+      )
+
+      stream.pipe(image)
+      // console.log({ image: image })
+      return { message: 'image uploaded' }
+    } catch (err) {
+      console.log(err)
+      throw new Error(err)
     }
   }
 }

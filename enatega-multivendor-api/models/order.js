@@ -149,6 +149,10 @@ const orderSchema = new Schema(
     searchRadius: {
       type: Number,
       default: 1
+    },
+    pickedImage: {
+      url: String,
+      publicId: String
     }
   },
   { timestamps: true }

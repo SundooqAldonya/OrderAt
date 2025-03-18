@@ -994,6 +994,10 @@ export const singleOrder = gql`
       acceptedAt
       pickedAt
       preparationTime
+      pickedImage {
+        url
+        publicId
+      }
     }
   }
 `

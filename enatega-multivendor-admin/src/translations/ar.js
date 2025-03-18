@@ -370,7 +370,9 @@ const ar = {
     PICKED: 'تم الاستلام',
     DELIVERED: 'تم التسليم',
     CANCELLED: 'تم الإلغاء',
-    PENDING: 'قيد الانتظار'
+    PENDING: 'قيد الانتظار',
+    amount_details: 'القيمة',
+    picked_up_image: 'الفاتورة'
   }
 }
 
