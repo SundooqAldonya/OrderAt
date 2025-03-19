@@ -220,5 +220,8 @@ export const en = {
   notMuted: 'Not muted',
   turnOnAvailability: 'Turn on Availability',
   COD: 'Cash',
-  inactive_screen_message: 'Please contact Orderat support'
+  inactive_screen_message: 'Please contact Orderat support',
+  capture_receipt_title: 'Capture the receipt',
+  without_capture_receipt_title: "Don't capture receipt",
+  okay: 'Okay'
 }

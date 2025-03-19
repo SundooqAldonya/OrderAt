@@ -217,5 +217,8 @@ export const ar = {
   notMuted: 'غير صامت',
   turnOnAvailability: 'قم بتغير الحاله لمتاح',
   COD: 'نقدي',
-  inactive_screen_message: 'قم بالتواصل مع اوردرات'
+  inactive_screen_message: 'قم بالتواصل مع اوردرات',
+  capture_receipt_title: 'قم بإتخاذ صورة من الفاتورة',
+  without_capture_receipt_title: 'لا تلتقط الإيصال',
+  okay: 'نعم'
 }

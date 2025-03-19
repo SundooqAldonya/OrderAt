@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Alert } from 'react-native'
+import { View, TouchableOpacity, Alert, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -17,6 +17,10 @@ import { StyleSheet } from 'react-native'
 import { Image } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
+  const [captureCamera, setCaptureCamera] = useState(false)
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+
   const {
     active,
     order,
@@ -30,18 +34,63 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     loadingAssignOrder,
     loadingOrderStatus
   } = useDetails(orderData)
-  const { t } = useTranslation()
 
   if (!order) return null
 
   const captureReceipt = () => {
+    setCaptureCamera(false)
     navigation.navigate('CameraCaptureReceipt', {
       itemId: order._id
     })
   }
 
+  const handlePickedPress = () => {
+    setCaptureCamera(true)
+  }
+
+  const handlePickedSubmit = () => {
+    setCaptureCamera(false)
+    mutateOrderStatus({
+      variables: { id: itemId, status: 'PICKED', file: null }
+    })
+  }
+
   return (
     <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={captureCamera}
+        onRequestClose={() => {
+          setCaptureCamera(!captureCamera)
+        }}>
+        <View style={modalStyle.centeredView}>
+          <View style={modalStyle.modalView}>
+            {/* <TextDefault style={modalStyle.modalText}>
+              {t('capture_receipt_title')}
+            </TextDefault> */}
+            <View
+              style={{
+                gap: 10
+              }}>
+              <TouchableOpacity
+                style={[modalStyle.button, modalStyle.buttonClose]}
+                onPress={() => captureReceipt()}>
+                <TextDefault style={modalStyle.textStyle}>
+                  {t('capture_receipt_title')}
+                </TextDefault>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[modalStyle.button, modalStyle.buttonCancel]}
+                onPress={() => handlePickedSubmit()}>
+                <TextDefault style={modalStyle.textStyle}>
+                  {t('without_capture_receipt_title')}
+                </TextDefault>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       {order.orderStatus !== 'DELIVERED' ? (
         <>
           <View>
@@ -105,7 +154,7 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
             <View style={styles.btnContainer}>
               <ChatWithCustomerButton navigation={navigation} order={order} />
               <TouchableOpacity
-                onPress={() => captureReceipt()}
+                onPress={() => handlePickedPress()}
                 activeOpacity={0.8}
                 style={[styles.btn, { backgroundColor: colors.black }]}>
                 <TextDefault center bold H5 textColor={colors.white}>
@@ -595,33 +644,49 @@ const ChatWithCustomerButton = ({ navigation, order }) => {
   )
 }
 
-const cameraStyle = StyleSheet.create({
-  container: {
+const modalStyle = StyleSheet.create({
+  centeredView: {
     flex: 1,
-    justifyContent: 'center'
-  },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10
-  },
-  camera: {
-    flex: 1
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center'
   },
-  text: {
-    fontSize: 24,
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF'
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3'
+  },
+  buttonCancel: {
+    backgroundColor: 'red'
+  },
+  textStyle: {
+    color: 'white',
     fontWeight: 'bold',
-    color: 'white'
+    textAlign: 'center'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center'
   }
 })
 
