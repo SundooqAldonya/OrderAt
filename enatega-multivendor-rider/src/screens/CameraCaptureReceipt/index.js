@@ -37,6 +37,9 @@ const CameraCaptureReceipt = () => {
     onCompleted: data => {
       console.log({ data })
       navigation.goBack()
+    },
+    onError: err => {
+      console.log({ err })
     }
   })
 
@@ -97,7 +100,8 @@ const CameraCaptureReceipt = () => {
         staysActiveInBackground: false
       })
       const photoData = await cameraRef.current.takePictureAsync({
-        shutterSound: false
+        shutterSound: false,
+        skipProcessing: true
       })
       setPhoto(photoData.uri)
       // await uploadImage(photoData.uri)
