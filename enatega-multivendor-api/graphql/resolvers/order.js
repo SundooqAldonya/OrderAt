@@ -388,11 +388,16 @@ module.exports = {
           orderAmount,
           restaurantId,
           addressDetails,
-          preparationTime
+          preparationTime,
+          name
         } = args.input
 
         const phoneNumber = phone.replace('+2', '')
         let user = await User.findOne({ phone: `+2${phoneNumber}` })
+        if (user && name) {
+          user.name = name
+          await user.save()
+        }
         console.log({ user })
         const area = await Area.findById(areaId).populate('location')
         console.log({ areaId, area })
@@ -412,7 +417,7 @@ module.exports = {
 
         if (!user) {
           user = new User({
-            name: 'N/A',
+            name: name ? name : 'N/A',
             phone: `+2${phoneNumber}`,
             governate: 'N/A',
             address_free_text: address.details,
