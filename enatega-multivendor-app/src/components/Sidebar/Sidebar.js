@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { View, StatusBar, Platform } from 'react-native'
 import SideDrawerItems from '../Drawer/Items/DrawerItems'
 import SideDrawerProfile from '../Drawer/Profile/DrawerProfile'
@@ -16,6 +16,7 @@ import analytics from '../../utils/analytics'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import { colors } from '../../utils/colors'
+import TextDefault from '../Text/TextDefault/TextDefault'
 
 const datas = [
   {
@@ -107,30 +108,36 @@ function SidebBar(props) {
       ]}
     >
       <View style={{ flexGrow: 1 }}>
-        <SideDrawerProfile navigation={props.navigation} />
+        <View style={{ height: 200 }}>
+          <SideDrawerProfile navigation={props.navigation} />
+        </View>
         <View style={styles(currentTheme).botContainer}>
-          {datas.map((dataItem, ind) => (
-            <View
-              key={ind}
-              style={[
-                styles().item,
-                { borderBottomWidth: 0, marginVertical: 5 }
-              ]}
-            >
-              <SideDrawerItems
-                style={styles(currentTheme).iconContainer}
-                onPress={async () => {
-                  if (dataItem.isAuth && !isLoggedIn) {
-                    props.navigation.navigate('CreateAccount')
-                  } else {
-                    props.navigation.navigate(dataItem.navigateTo)
-                  }
-                }}
-                icon={dataItem.icon}
-                title={t(dataItem.title)}
-              />
-            </View>
-          ))}
+          {/* {isLoggedIn ? (
+            <View></View>
+          ) : null} */}
+          {isLoggedIn &&
+            datas.map((dataItem, ind) => (
+              <View
+                key={ind}
+                style={[
+                  styles().item,
+                  { borderBottomWidth: 0, marginVertical: 5 }
+                ]}
+              >
+                <SideDrawerItems
+                  style={styles(currentTheme).iconContainer}
+                  onPress={async () => {
+                    if (dataItem.isAuth && !isLoggedIn) {
+                      props.navigation.navigate('CreateAccount')
+                    } else {
+                      props.navigation.navigate(dataItem.navigateTo)
+                    }
+                  }}
+                  icon={dataItem.icon}
+                  title={t(dataItem.title)}
+                />
+              </View>
+            ))}
           {isLoggedIn ? (
             <View
               style={[
@@ -145,18 +152,40 @@ function SidebBar(props) {
               />
             </View>
           ) : (
-            <View
-              style={[
-                styles().item,
-                { borderBottomWidth: 0, marginVertical: 5 }
-              ]}
-            >
-              <SideDrawerItems
-                onPress={() => props.navigation.navigate('CreateAccount')}
-                icon={'login'}
-                title={t('login')}
-              />
-            </View>
+            <Fragment>
+              <View
+                style={[
+                  styles().item,
+                  {
+                    borderBottomWidth: 0,
+                    marginVertical: 10,
+                    height: 50
+                  }
+                ]}
+              >
+                <SideDrawerItems
+                  onPress={() => props.navigation.navigate(datas[4].navigateTo)}
+                  icon={datas[4].icon}
+                  title={t(datas[4].title)}
+                />
+              </View>
+              <View
+                style={[
+                  styles().item,
+                  {
+                    borderBottomWidth: 0,
+                    marginVertical: 10,
+                    height: 50
+                  }
+                ]}
+              >
+                <SideDrawerItems
+                  onPress={() => props.navigation.navigate('CreateAccount')}
+                  icon={'login'}
+                  title={t('login_or_create')}
+                />
+              </View>
+            </Fragment>
           )}
         </View>
       </View>

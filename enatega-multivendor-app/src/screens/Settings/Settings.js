@@ -67,7 +67,8 @@ const appVersion = Constants.default.expoConfig.version
 function Settings(props) {
   const Analytics = analytics()
 
-  const { profile, loadingProfile, errorProfile } = useContext(UserContext)
+  const { profile, loadingProfile, errorProfile, isLoggedIn } =
+    useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
@@ -356,122 +357,141 @@ function Settings(props) {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        <View style={styles(currentTheme).mainContainerArea}>
-          <View
-            style={[
-              styles(currentTheme).languageContainer,
-              styles().checkboxSettings,
-              {
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 10
-              }
-            ]}
-          >
-            <View>
-              <CheckboxBtn
-                checked={orderNotification}
+        {isLoggedIn ? (
+          <View style={styles(currentTheme).mainContainerArea}>
+            <View
+              style={[
+                styles(currentTheme).languageContainer,
+                styles().checkboxSettings,
+                {
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 10
+                }
+              ]}
+            >
+              <View>
+                <CheckboxBtn
+                  checked={orderNotification}
+                  onPress={() => {
+                    updateNotificationStatus('order')
+                    setBtnText('order')
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => {
                   updateNotificationStatus('order')
                   setBtnText('order')
                 }}
-              />
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => {
-                updateNotificationStatus('order')
-                setBtnText('order')
-              }}
-            >
-              <View style={styles().notificationChekboxContainer}>
-                <TextDefault
-                  numberOfLines={1}
-                  textColor={darkTheme ? '#fff' : colors.dark}
-                >
-                  {t('receivePushNotification')}
-                </TextDefault>
-              </View>
-              {loading && btnText === 'order' && (
-                <View>
-                  <Spinner
-                    size='small'
-                    backColor='transparent'
-                    spinnerColor={currentTheme.main}
-                  />
+              >
+                <View style={styles().notificationChekboxContainer}>
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={darkTheme ? '#fff' : colors.dark}
+                  >
+                    {t('receivePushNotification')}
+                  </TextDefault>
                 </View>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View
-            style={[
-              styles(currentTheme).languageContainer,
-              styles().checkboxSettings,
-              {
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 10
-              }
-            ]}
-          >
-            <View>
-              <CheckboxBtn
-                checked={offerNotification}
+                {loading && btnText === 'order' && (
+                  <View>
+                    <Spinner
+                      size='small'
+                      backColor='transparent'
+                      spinnerColor={currentTheme.main}
+                    />
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles(currentTheme).languageContainer,
+                styles().checkboxSettings,
+                {
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 10
+                }
+              ]}
+            >
+              <View>
+                <CheckboxBtn
+                  checked={offerNotification}
+                  onPress={() => {
+                    updateNotificationStatus('offer')
+                    setBtnText('offer')
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => {
                   updateNotificationStatus('offer')
                   setBtnText('offer')
                 }}
-              />
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => {
-                updateNotificationStatus('offer')
-                setBtnText('offer')
-              }}
-            >
-              <View style={styles(currentTheme).notificationChekboxContainer}>
-                <TextDefault
-                  numberOfLines={1}
-                  textColor={darkTheme ? '#fff' : colors.dark}
-                >
-                  {t('receiveOfferByEmail')}
-                </TextDefault>
-              </View>
-              {loading && btnText === 'offer' && (
-                <View>
-                  <Spinner
-                    size='small'
-                    backColor='transparent'
-                    spinnerColor={currentTheme.main}
-                  />
+              >
+                <View style={styles(currentTheme).notificationChekboxContainer}>
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={darkTheme ? '#fff' : colors.dark}
+                  >
+                    {t('receiveOfferByEmail')}
+                  </TextDefault>
                 </View>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View
-            style={[
-              styles(currentTheme).languageContainer,
-              styles().checkboxSettings,
-              {
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 10
-              }
-            ]}
-          >
-            <View>
-              <CheckboxBtn checked={darkTheme} onPress={() => toggleTheme()} />
+                {loading && btnText === 'offer' && (
+                  <View>
+                    <Spinner
+                      size='small'
+                      backColor='transparent'
+                      spinnerColor={currentTheme.main}
+                    />
+                  </View>
+                )}
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => toggleTheme()}>
-              <View style={styles().notificationChekboxContainer}>
-                <TextDefault
-                  numberOfLines={1}
-                  textColor={darkTheme ? '#fff' : colors.dark}
-                >
-                  {t('turnOnDarkTheme')}
-                </TextDefault>
+            <View
+              style={[
+                styles(currentTheme).languageContainer,
+                styles().checkboxSettings,
+                {
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 10
+                }
+              ]}
+            >
+              <View>
+                <CheckboxBtn
+                  checked={darkTheme}
+                  onPress={() => toggleTheme()}
+                />
               </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => toggleTheme()}
+              >
+                <View style={styles().notificationChekboxContainer}>
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={darkTheme ? '#fff' : colors.dark}
+                  >
+                    {t('turnOnDarkTheme')}
+                  </TextDefault>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View
+            style={{
+              marginHorizontal: 'auto',
+              marginTop: 50
+            }}
+          >
+            <TextDefault textColor={darkTheme ? '#fff' : colors.dark}>
+              Please login to check other features
+            </TextDefault>
+          </View>
+        )}
         <View style={styles().versionContainer}>
           <TextDefault textColor={currentTheme.statusSecondColor}>
             Version: {appVersion}
