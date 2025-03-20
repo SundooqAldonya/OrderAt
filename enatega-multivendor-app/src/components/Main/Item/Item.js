@@ -199,7 +199,9 @@ function Item(props) {
             <View
               style={{
                 ...styles().priceRestaurant,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between',
+                marginBottom: 10
               }}
             >
               <View

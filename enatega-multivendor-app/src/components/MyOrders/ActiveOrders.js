@@ -138,56 +138,41 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
                 : t('PenddingText1')}
             </TextDefault>
           </View>
+
+          {/* bottom */}
           <View
             style={{
-              flex: 1,
               flexDirection: isArabic ? 'row-reverse' : 'row',
-              justifyContent: 'center',
-              ...alignment.Mmedium,
-              ...alignment.MTlarge,
-              ...alignment.PLmedium
+              justifyContent: 'space-between',
+              marginTop: 10
             }}
           >
-            <Image
-              style={styles(currentTheme).restaurantImage1}
-              resizeMode='cover'
-              source={{ uri: item.restaurant.image }}
-            />
-            <View style={styles(currentTheme).textContainer2}>
-              <View style={styles().subContainerLeft}>
-                <TextDefault
-                  textColor={currentTheme.fontMainColor}
-                  uppercase
-                  bolder
-                  numberOfLines={2}
-                  style={{
-                    ...styles(currentTheme).restaurantName,
-                    textAlign: isArabic ? 'right' : 'left'
-                  }}
-                >
-                  {item.restaurant.name}
-                </TextDefault>
-                <TextDefault
-                  numberOfLines={1}
-                  style={{
-                    ...alignment.MTxSmall,
-                    textAlign: isArabic ? 'right' : 'left',
-                    marginInlineEnd: isArabic ? 20 : 0
-                  }}
-                  textColor={currentTheme.fontMainColor}
-                  bolder
-                  small
-                >
-                  {getItems(item.items)}
-                </TextDefault>
-              </View>
+            {/* image */}
+            <View>
+              <Image
+                style={styles(currentTheme).restaurantImage1}
+                resizeMode='cover'
+                source={{ uri: item.restaurant.image }}
+              />
             </View>
-            <View style={styles(currentTheme).subContainerRight}>
+            {/* restaurant name */}
+            <View>
               <TextDefault
-                //numberOfLines={1}
                 textColor={currentTheme.fontMainColor}
+                uppercase
                 bolder
+                numberOfLines={2}
+                style={{
+                  ...styles(currentTheme).restaurantName,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
               >
+                {item.restaurant.name}
+              </TextDefault>
+            </View>
+            {/* order total */}
+            <View>
+              <TextDefault textColor={currentTheme.fontMainColor} bolder>
                 {configuration.currencySymbol}
                 {parseFloat(item.orderAmount).toFixed(2)}
               </TextDefault>

@@ -39,10 +39,10 @@ function MyOrders(props) {
   const [selectedTab, setSelectedTab] = useState('current')
   const inset = useSafeAreaInsets()
   const activeOrders = useMemo(() => {
-    return orders.filter((o) => orderStatusActive.includes(o.orderStatus))
+    return orders?.filter((o) => orderStatusActive.includes(o.orderStatus))
   }, [orders])
   const pastOrders = useMemo(() => {
-    return orders.filter((o) => orderStatusInactive.includes(o.orderStatus))
+    return orders?.filter((o) => orderStatusInactive.includes(o.orderStatus))
   }, [orders])
   const openReviewModal = () => {
     reviewModalRef.current.open()

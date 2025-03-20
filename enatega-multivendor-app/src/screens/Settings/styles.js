@@ -9,7 +9,7 @@ const styles = (props = null) =>
       flex: 1
     },
     width85: {
-      width: '70%',
+      width: '70%'
       //backgroundColor: theme.Pink.deleteButton
     },
     shadow: {
@@ -40,7 +40,7 @@ const styles = (props = null) =>
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
       ...alignment.PLxSmall,
       ...alignment.PRxSmall,
-      ...alignment.PTmedium,
+      ...alignment.PTmedium
     },
     languageContainer: {
       width: '100%',
@@ -58,6 +58,7 @@ const styles = (props = null) =>
     changeLanguage: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      paddingInline: 0,
       width: '100%',
       ...alignment.MBsmall
     },
@@ -115,9 +116,8 @@ const styles = (props = null) =>
       borderRadius: verticalScale(4),
       ...alignment.Plarge,
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
-      borderWidth:scale(1),
-      borderRadius:scale(10)
-
+      borderWidth: scale(1),
+      borderRadius: scale(10)
     },
     radioContainer: {
       width: '100%',

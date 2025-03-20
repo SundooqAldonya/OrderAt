@@ -136,7 +136,7 @@ function Profile(props) {
         marginLeft: 0
       },
       headerStyle: {
-        backgroundColor: colors.newheaderBG,
+        backgroundColor: colors.primary,
         elevation: 0
       },
       passChecker: showPass,
@@ -264,13 +264,20 @@ function Profile(props) {
   function changeNameTab() {
     return (
       <>
-        <View style={styles(currentTheme).containerInfo}>
+        <View
+          style={{
+            ...styles(currentTheme).containerInfo
+          }}
+        >
           <TextDefault
             textColor={currentTheme.iconColor}
-            style={{ fontSize: scale(13) }}
+            style={{
+              fontSize: scale(13),
+              textAlign: isArabic ? 'right' : 'left'
+            }}
             bolder
           >
-            {profile?.name}
+            {profile?.name ? profile?.name : 'N/A'}
           </TextDefault>
         </View>
       </>
@@ -380,7 +387,7 @@ function Profile(props) {
           setModalVisible(false)
         }}
       />
-      <View style={styles(currentTheme).formContainer}>
+      <View style={{ ...styles(currentTheme).formContainer, paddingTop: 20 }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={styles(currentTheme).flex}
@@ -393,14 +400,19 @@ function Profile(props) {
             <View>
               <View
                 style={{
-                  ...styles(currentTheme).formSubContainer
-                  // flexDirection: 'row-reverse',
+                  ...styles(currentTheme).formSubContainer,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
                   // justifyContent: 'space-between',
                   // backgroundColor: 'red'
                 }}
               >
                 <View style={{ flex: 1 }}>
-                  <View style={{ ...styles(currentTheme).containerHeading }}>
+                  <View
+                    style={{
+                      ...styles(currentTheme).containerHeading,
+                      justifyContent: isArabic ? 'flex-end' : 'flex-start'
+                    }}
+                  >
                     {!toggleNameView && (
                       <>
                         <View style={{ ...styles(currentTheme).headingTitle }}>
@@ -412,7 +424,7 @@ function Profile(props) {
                             textColor={currentTheme.darkBgFont}
                             style={{
                               ...styles(currentTheme).textAlignLeft,
-                              textAlign: 'right'
+                              textAlign: isArabic ? 'right' : 'left'
                             }}
                           >
                             {t('name')}
@@ -458,7 +470,9 @@ function Profile(props) {
                       <TouchableOpacity
                         disabled={loadingMutation}
                         activeOpacity={0.7}
-                        style={styles(currentTheme).saveContainer}
+                        style={{
+                          ...styles(currentTheme).saveContainer
+                        }}
                         onPress={handleNamePressUpdate}
                       >
                         <TextDefault bold>{t('update')}</TextDefault>
@@ -469,7 +483,10 @@ function Profile(props) {
                 <View style={styles().headingLink}>
                   <TouchableOpacity
                     activeOpacity={0.3}
-                    style={styles().headingButton}
+                    style={{
+                      ...styles().headingButton,
+                      alignSelf: isArabic ? 'flex-start' : 'flex-end'
+                    }}
                     onPress={handleNamePress}
                   >
                     <TextDefault textColor={colors.blue}>
@@ -480,17 +497,23 @@ function Profile(props) {
               </View>
 
               {/* email */}
-              <View style={styles(currentTheme).formSubContainer}>
-                <View style={{ flex: 3 }}>
+              {/* <View style={styles(currentTheme).formSubContainer}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={styles().containerHeading}>
-                    <View style={styles().headingTitle}>
+                    <View
+                      style={{
+                        ...styles().headingTitle,
+                        width: '100%',
+                        backgroundColor: 'red'
+                      }}
+                    >
                       <TextDefault
                         H5
                         B700
                         bolder
                         left
                         textColor={currentTheme.darkBgFont}
-                        style={styles(currentTheme).textAlignLeft}
+                        style={{ textAlign: 'right' }}
                       >
                         {t('email')}
                       </TextDefault>
@@ -499,42 +522,147 @@ function Profile(props) {
                   {changeEmailTab()}
                 </View>
                 <View style={{ flex: 1 }} />
+              </View> */}
+
+              <View
+                style={{
+                  borderRadius: scale(8),
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  backgroundColor: 'transparent',
+                  alignSelf: 'center',
+                  elevation: 1,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  marginBottom: 0,
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <View>
+                  <TextDefault
+                    style={{ textAlign: isArabic ? 'right' : 'left' }}
+                  >
+                    {t('email')}
+                  </TextDefault>
+                  <TextDefault>
+                    {profile?.email ? profile?.email : 'N/A'}
+                  </TextDefault>
+                </View>
+                {profile?.email !== '' && (
+                  <View
+                    style={[
+                      styles().verifiedButton,
+                      {
+                        backgroundColor: profile?.emailIsVerified
+                          ? colors.primary
+                          : colors.dark
+                      }
+                    ]}
+                  >
+                    <TextDefault textColor={currentTheme.color4} bold>
+                      {profile?.emailIsVerified
+                        ? t('verified')
+                        : t('unverified')}
+                    </TextDefault>
+                  </View>
+                )}
               </View>
 
               {/* password */}
-              <View style={styles(currentTheme).formSubContainer}>
-                <View style={{ flex: 3 }}>
-                  <View style={styles().containerHeading}>
-                    <View style={styles().headingTitle}>
-                      <TextDefault
-                        H5
-                        B700
-                        bolder
-                        left
-                        textColor={currentTheme.darkBgFont}
-                        style={styles(currentTheme).textAlignLeft}
-                      >
-                        {t('password')}
-                      </TextDefault>
-                    </View>
-                  </View>
-                  {changePasswordTab()}
+              <TouchableOpacity
+                style={{
+                  borderRadius: scale(8),
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  backgroundColor: 'transparent',
+                  alignSelf: 'center',
+                  elevation: 1,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  marginBottom: 0,
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                  justifyContent: 'flex-start',
+                  alignItems: 'center'
+                }}
+                onPress={showModal}
+              >
+                <TextDefault
+                  H5
+                  B700
+                  bolder
+                  left
+                  textColor={currentTheme.darkBgFont}
+                >
+                  {t('change_password')}
+                </TextDefault>
+              </TouchableOpacity>
+
+              {/* phone */}
+
+              <View
+                style={{
+                  borderRadius: scale(8),
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  backgroundColor: 'transparent',
+                  alignSelf: 'center',
+                  elevation: 1,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  marginBottom: 0,
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <View>
+                  <TextDefault
+                    H5
+                    B700
+                    bolder
+                    left
+                    textColor={currentTheme.darkBgFont}
+                    style={styles(currentTheme).textAlignLeft}
+                  >
+                    {t('mobileNumber')}
+                  </TextDefault>
+                  <TextDefault
+                    H5
+                    B700
+                    bolder
+                    left
+                    textColor={currentTheme.darkBgFont}
+                    style={styles(currentTheme).textAlignLeft}
+                  >
+                    {profile?.phone ? profile?.phone : 'N/A'}
+                  </TextDefault>
                 </View>
-                <View style={styles().headingLink}>
+                <View>
                   <TouchableOpacity
                     activeOpacity={0.3}
-                    style={{ ...styles().headingButton }}
-                    onPress={showModal}
+                    style={styles().headingButton}
+                    onPress={() =>
+                      props.navigation.navigate('PhoneNumber', {
+                        prevScreen: 'Profile'
+                      })
+                    }
                   >
                     <TextDefault textColor={colors.blue}>
-                      {t('change')}
+                      {t('edit')}
                     </TextDefault>
                   </TouchableOpacity>
                 </View>
               </View>
 
-              {/* phone */}
-              <View style={styles(currentTheme).formSubContainer}>
+              {/* <View style={styles(currentTheme).formSubContainer}>
                 <View style={{ flex: 3 }}>
                   <View style={styles().containerHeading}>
                     {toggleView && (
@@ -646,7 +774,7 @@ function Profile(props) {
                     </TextDefault>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </View> */}
             </View>
             <View style={{ alignItems: 'center', padding: 10 }}>
               <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>

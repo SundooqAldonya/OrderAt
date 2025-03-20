@@ -9,21 +9,21 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     bodyStyleOne: {
       fontFamily: 'Montserrat_500Medium',
       fontSize: scale(12),
-      color:  '#000',
-      flex:1
+      color: '#000',
+      flex: 1
     },
     mainContainerHolder: {
       zIndex: 333,
       width: '100%',
-      alignItems: 'center',     
-      backgroundColor:newheaderColor,
+      alignItems: 'center',
+      backgroundColor: newheaderColor,
       shadowColor: props != null ? props.shadowColor : 'black',
       shadowOffset: {
         width: 0,
         height: verticalScale(1)
       },
       shadowOpacity: 0.1,
-      shadowRadius: verticalScale(1),
+      shadowRadius: verticalScale(1)
       // ...alignment.MBmedium
     },
     mainContainer: {
@@ -41,8 +41,7 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
         height: verticalScale(1)
       },
       shadowOpacity: 0.2,
-      shadowRadius: verticalScale(1),
-
+      shadowRadius: verticalScale(1)
     },
     subContainer: {
       width: '90%',
@@ -53,16 +52,16 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     },
     leftContainer: {
       flexDirection: 'row',
-      alignItems:'center',
-      width: '90%',
+      alignItems: 'center',
+      width: '95%'
     },
     searchContainer: {
-      width: '10%',
+      width: '10%'
     },
     inputContainer: {
       width: '100%',
       height: scale(36),
-      
+
       justifyContent: 'center',
       ...alignment.MLxSmall,
       ...alignment.MRxSmall

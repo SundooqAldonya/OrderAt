@@ -1014,7 +1014,7 @@ module.exports = {
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
-        if (user && user.notificationToken) {
+        if (user && user.isOrderNotification) {
           sendCustomerNotifications(transformedOrder.user, transformedOrder)
         }
         console.log('restaurant accepted order')

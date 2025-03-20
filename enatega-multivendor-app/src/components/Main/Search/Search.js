@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next'
 import { colors } from '../../../utils/colors'
 
 function Search(props) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   return (
@@ -20,16 +21,28 @@ function Search(props) {
       ]}
     >
       <View style={styles(currentTheme, props.cartContainer).mainContainer}>
-        <View style={styles().subContainer}>
+        <View style={{ ...styles().subContainer }}>
           <View style={styles().leftContainer}>
-            <Ionicons
-              name='search'
-              color={currentTheme.gray500}
-              size={scale(20)}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                props.setSearch('')
+              }}
+            >
+              {props.search?.length ? (
+                <AntDesign
+                  name='closecircleo'
+                  size={scale(18)}
+                  color={currentTheme.fontSecondColor}
+                />
+              ) : null}
+            </TouchableOpacity>
             <View style={styles().inputContainer}>
               <TextInput
-                style={styles(currentTheme).bodyStyleOne}
+                style={{
+                  ...styles(currentTheme).bodyStyleOne,
+                  color: currentTheme.secondaryText,
+                  paddingRight: 25
+                }}
                 placeholder={t(props.placeHolder)}
                 placeholderTextColor={
                   themeContext.ThemeValue === 'Dark' ? '#fff' : colors.border1
@@ -40,21 +53,11 @@ function Search(props) {
             </View>
           </View>
           <View style={styles().filterContainer}>
-            {props.search ? (
-              <TouchableOpacity
-                onPress={() => {
-                  props.setSearch('')
-                }}
-              >
-                <AntDesign
-                  name='closecircleo'
-                  size={scale(18)}
-                  color={currentTheme.fontSecondColor}
-                />
-              </TouchableOpacity>
-            ) : (
-              <></>
-            )}
+            <Ionicons
+              name='search'
+              color={currentTheme.gray500}
+              size={scale(20)}
+            />
           </View>
         </View>
       </View>

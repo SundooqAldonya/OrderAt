@@ -172,7 +172,79 @@ const Item = ({
       >
         <View style={styles(currentTheme).subContainer}>
           <View>
-            <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between'
+              }}
+            >
+              {/* image */}
+              <View>
+                <Image
+                  style={styles(currentTheme).restaurantImage}
+                  resizeMode='cover'
+                  source={{ uri: item.restaurant.image }}
+                />
+              </View>
+              {/* restaurant name */}
+              <View>
+                <TextDefault
+                  textColor={currentTheme.fontMainColor}
+                  uppercase
+                  bolder
+                  numberOfLines={2}
+                  style={{
+                    ...styles(currentTheme).restaurantName,
+                    textAlign: isArabic ? 'right' : 'left',
+                    marginInlineStart: !isArabic ? 10 : 0
+                  }}
+                >
+                  {item.restaurant.name}
+                </TextDefault>
+              </View>
+              {/* order total */}
+              <View>
+                {!isArabic ? (
+                  <TextDefault textColor={currentTheme.fontMainColor} bolder>
+                    {configuration.currencySymbol}
+                    {parseFloat(item.orderAmount).toFixed(2)}
+                  </TextDefault>
+                ) : (
+                  <TextDefault textColor={currentTheme.fontMainColor} bolder>
+                    {parseFloat(item.orderAmount).toFixed(2)}
+                    {configuration.currencySymbol}
+                  </TextDefault>
+                )}
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.secondaryText}
+                style={{
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginInlineEnd: isArabic ? 10 : 0,
+                  marginInlineStart: !isArabic ? 10 : 0
+                }}
+              >
+                {t('deliveredOn')} {formatDeliveredAt(item.deliveredAt)}
+              </TextDefault>
+              {item.items?.length ? (
+                <TextDefault
+                  numberOfLines={1}
+                  style={{
+                    ...alignment.MTxSmall,
+                    textAlign: isArabic ? 'right' : 'left',
+                    marginInlineEnd: isArabic ? 10 : 0,
+                    marginInlineStart: !isArabic ? 10 : 0
+                  }}
+                  textColor={'#fff'}
+                >
+                  {getItems(item.items)}
+                </TextDefault>
+              ) : null}
+            </View>
+            {/* <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
               <View>
                 <Image
                   style={styles(currentTheme).restaurantImage}
@@ -236,7 +308,7 @@ const Item = ({
                   </TextDefault>
                 </View>
               </View>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles().rateOrderContainer}>

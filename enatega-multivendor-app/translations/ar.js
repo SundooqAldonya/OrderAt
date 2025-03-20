@@ -553,5 +553,6 @@ export const ar = {
   select_area: 'اختر المنطقة',
   explore_areas: 'أختر منطقة',
   address_details: 'تفاصيل العنوان',
-  set_location: 'قم باختيار الموقع'
+  set_location: 'قم باختيار الموقع',
+  change_password: 'تغيير كلمة المرور'
 }

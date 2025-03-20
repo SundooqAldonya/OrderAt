@@ -362,20 +362,15 @@ function Main(props) {
   const restaurants = data?.nearByRestaurantsPreview?.restaurants
 
   const searchAllShops = (searchText) => {
-    const data = []
-    const escapedSearchText = escapeRegExp(searchText)
+    if (!searchText) return []
+
+    const escapedSearchText = searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special regex characters
     const regex = new RegExp(escapedSearchText, 'i')
-    restaurants?.forEach((restaurant) => {
-      const resultCatFoods = restaurant.keywords.some((keyword) => {
-        const result = keyword.search(regex)
-        return result > -1
-      })
-      if (resultCatFoods) data.push(restaurant)
-    })
-    return data
+
+    return restaurants.filter((restaurant) => regex.test(restaurant.name))
   }
 
-  // if (error) return <ErrorView />
+  if (error) return <ErrorView />
 
   return (
     <>

@@ -81,7 +81,7 @@ const styles = (props = null) =>
     verifiedButton: {
       padding: scale(8),
       borderRadius: scale(16),
-      marginTop: scale(10),
+      // marginTop: scale(10),
       justifyContent: 'center',
       alignItems: 'center',
       width: scale(120)

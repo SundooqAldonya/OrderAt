@@ -56,7 +56,7 @@ export const theme = {
     backIcon: '#fff',
     editProfileButton: '#0EA5E9',
     backIconBackground: '#000',
-    secondaryText: '#4B5563',
+    secondaryText: '#fff',
     main: '#06C167',
     secondaryBackground: '#ECECEC',
     shadow: '#707070',

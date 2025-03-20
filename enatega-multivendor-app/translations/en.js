@@ -558,5 +558,6 @@ export const en = {
   select_area: 'Select Area',
   explore_areas: 'Explore Areas',
   address_details: 'Address details',
-  set_location: 'Set location'
+  set_location: 'Set location',
+  change_password: 'Change password'
 }

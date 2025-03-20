@@ -71,7 +71,8 @@ function Settings(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const [languageName, languageNameSetter] = useState('English')
   const [orderNotification, setOrderNotification] = useState(false)
@@ -307,11 +308,19 @@ function Settings(props) {
     >
       <View style={styles().flex}>
         <TouchableOpacity
-          style={[styles(currentTheme).languageContainer]}
+          style={[
+            styles(currentTheme).languageContainer,
+            { flexDirection: isArabic ? 'row-reverse' : 'row' }
+          ]}
           onPress={() => modalVisibleSetter(true)}
         >
           <View style={{ flex: 1 }}>
-            <View style={styles().changeLanguage}>
+            <View
+              style={{
+                ...styles().changeLanguage,
+                justifyContent: isArabic ? 'flex-end' : 'flex-start'
+              }}
+            >
               <View>
                 <TextDefault
                   numberOfLines={1}
@@ -327,6 +336,7 @@ function Settings(props) {
               H5
               B700
               left
+              style={{ alignSelf: isArabic ? 'flex-end' : 'flex-start' }}
             >
               {languageName}
             </TextDefault>
@@ -335,7 +345,10 @@ function Settings(props) {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => modalVisibleSetter(true)}
-              style={styles().button}
+              style={{
+                ...styles().button,
+                alignSelf: isArabic ? 'flex-start' : 'flex-end'
+              }}
             >
               <TextDefault H5 bold textColor={colors.blue}>
                 {t('edit')}
@@ -347,7 +360,11 @@ function Settings(props) {
           <View
             style={[
               styles(currentTheme).languageContainer,
-              styles().checkboxSettings
+              styles().checkboxSettings,
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 10
+              }
             ]}
           >
             <View>
@@ -370,10 +387,8 @@ function Settings(props) {
                 <TextDefault
                   numberOfLines={1}
                   textColor={darkTheme ? '#fff' : colors.dark}
-                  style={alignment.MLsmall}
                 >
-                  {' '}
-                  {t('receivePushNotification')}{' '}
+                  {t('receivePushNotification')}
                 </TextDefault>
               </View>
               {loading && btnText === 'order' && (
@@ -390,7 +405,11 @@ function Settings(props) {
           <View
             style={[
               styles(currentTheme).languageContainer,
-              styles().checkboxSettings
+              styles().checkboxSettings,
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 10
+              }
             ]}
           >
             <View>
@@ -413,10 +432,8 @@ function Settings(props) {
                 <TextDefault
                   numberOfLines={1}
                   textColor={darkTheme ? '#fff' : colors.dark}
-                  style={alignment.MLsmall}
                 >
-                  {' '}
-                  {t('receiveOfferByEmail')}{' '}
+                  {t('receiveOfferByEmail')}
                 </TextDefault>
               </View>
               {loading && btnText === 'offer' && (
@@ -433,7 +450,11 @@ function Settings(props) {
           <View
             style={[
               styles(currentTheme).languageContainer,
-              styles().checkboxSettings
+              styles().checkboxSettings,
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 10
+              }
             ]}
           >
             <View>
@@ -444,10 +465,8 @@ function Settings(props) {
                 <TextDefault
                   numberOfLines={1}
                   textColor={darkTheme ? '#fff' : colors.dark}
-                  style={alignment.MLsmall}
                 >
-                  {' '}
-                  {t('turnOnDarkTheme')}{' '}
+                  {t('turnOnDarkTheme')}
                 </TextDefault>
               </View>
             </TouchableOpacity>

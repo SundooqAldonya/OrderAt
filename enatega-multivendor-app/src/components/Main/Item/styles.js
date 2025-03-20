@@ -13,7 +13,7 @@ const styles = (props = null) =>
       borderColor: props != null ? props.borderColor : 'grey',
       borderWidth: scale(1),
       borderRadius: scale(8),
-      height: scale(280),
+      height: scale(290),
       width: '99%',
 
       ...alignment.MBsmall

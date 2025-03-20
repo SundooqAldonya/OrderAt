@@ -124,7 +124,7 @@ const styles = (props = null) =>
       width: 85,
       borderRadius: 10
     },
-    restaurantName: { ...alignment.MBxSmall, width: '75%' },
+    restaurantName: { ...alignment.MBxSmall },
     subContainerImage: {
       flex: 1,
       justifyContent: 'center',
