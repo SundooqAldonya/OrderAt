@@ -404,13 +404,23 @@ function ImageTextCenterHeader(props, ref) {
                 >
                   |
                 </TextDefault>
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
-                  {t('deliveryCharges')}
-                </TextDefault>
+                {isArabic ? (
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {t('tax')} {aboutObject.restaurantTax}{' '}
+                    {configuration.currencySymbol}
+                  </TextDefault>
+                ) : (
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
+                    {t('tax')}
+                  </TextDefault>
+                )}
               </View>
               <View
                 style={{
@@ -420,13 +430,24 @@ function ImageTextCenterHeader(props, ref) {
                   marginTop: scale(5)
                 }}
               >
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  {configuration.currencySymbol}{' '}
-                  {aboutObject.restaurantMinOrder} {t('minimum')}
-                </TextDefault>
+                {isArabic ? (
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {' '}
+                    {aboutObject.restaurantMinOrder}{' '}
+                    {configuration.currencySymbol} {t('minimum')}
+                  </TextDefault>
+                ) : (
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {configuration.currencySymbol}{' '}
+                    {aboutObject.restaurantMinOrder} {t('minimum')}
+                  </TextDefault>
+                )}
                 <TextDefault
                   style={styles().restaurantAbout}
                   textColor={currentTheme.fontMainColor}

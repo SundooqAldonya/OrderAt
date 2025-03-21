@@ -670,10 +670,10 @@ function Restaurant(props) {
                                 small
                               >
                                 {configuration.currencySymbol}{' '}
-                                {item.variations[0].price}
-                                {/* {parseFloat(item.variations[0].price).toFixed(
+                                {/* {item.variations[0].price} */}
+                                {parseFloat(item.variations[0].price).toFixed(
                                   2
-                                )} */}
+                                )}
                               </TextDefault>
                               {item?.variations[0]?.discounted > 0 && (
                                 <TextDefault
@@ -857,12 +857,24 @@ function Restaurant(props) {
                           >
                             {item.title}
                           </TextDefault>
-                          <TextDefault
-                            style={{ textAlign: isArabic ? 'right' : 'left' }}
-                          >
-                            {configuration.currencySymbol}{' '}
-                            {parseFloat(item.variations[0].price).toFixed(2)}
-                          </TextDefault>
+                          {isArabic ? (
+                            <TextDefault
+                              style={{ textAlign: isArabic ? 'right' : 'left' }}
+                            >
+                              {' '}
+                              {parseFloat(item.variations[0].price).toFixed(
+                                2
+                              )}{' '}
+                              {configuration.currencySymbol}
+                            </TextDefault>
+                          ) : (
+                            <TextDefault
+                              style={{ textAlign: isArabic ? 'right' : 'left' }}
+                            >
+                              {configuration.currencySymbol}{' '}
+                              {parseFloat(item.variations[0].price).toFixed(2)}
+                            </TextDefault>
+                          )}
                         </View>
                       </View>
                       <View style={styles(currentTheme).addToCart}>

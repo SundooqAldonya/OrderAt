@@ -55,10 +55,8 @@ const CartItem = (props) => {
         <View>
           <TextDefault
             numberOfLines={1}
-            textColor={{
-              ...currentTheme.fontFourthColor,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
+            textColor={currentTheme.fontNewColor}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}
             bolder
             H5
           >
@@ -77,9 +75,7 @@ const CartItem = (props) => {
                 >
                   <TextDefault
                     style={{ marginRight: scale(5) }}
-                    textColor={{
-                      ...currentTheme.secondaryText
-                    }}
+                    textColor={currentTheme.fontNewColor}
                     Normal
                   >
                     {props?.optionsTitle?.slice(0, 3)?.length}{' '}
@@ -116,15 +112,27 @@ const CartItem = (props) => {
               marginTop: scale(4)
             }}
           >
-            <TextDefault
-              numberOfLines={1}
-              textColor={currentTheme.fontFourthColor}
-              bolder
-              Normal
-            >
-              {configuration.currencySymbol}
-              {parseFloat(props.dealPrice).toFixed(2)}
-            </TextDefault>
+            {isArabic ? (
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.fontFourthColor}
+                bolder
+                Normal
+              >
+                {parseFloat(props.dealPrice).toFixed(2)}{' '}
+                {configuration.currencySymbol}
+              </TextDefault>
+            ) : (
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.fontFourthColor}
+                bolder
+                Normal
+              >
+                {configuration.currencySymbol}
+                {parseFloat(props.dealPrice).toFixed(2)}
+              </TextDefault>
+            )}
             <View style={styles().divider} />
             <TouchableOpacity
               onPress={() =>

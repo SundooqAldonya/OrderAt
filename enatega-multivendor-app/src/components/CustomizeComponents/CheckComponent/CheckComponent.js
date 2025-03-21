@@ -56,7 +56,7 @@ function CheckComponent(props) {
               textColor={currentTheme.gray900}
               H6
               bolder
-            >{`${configuration.currencySymbol} ${option.price}`}</TextDefault>
+            >{`${option.price} ${configuration.currencySymbol}`}</TextDefault>
           </View>
         </TouchableOpacity>
       ))}

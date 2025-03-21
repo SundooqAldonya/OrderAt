@@ -15,7 +15,7 @@ export const PriceRow = ({ theme, title, currency, price, isArabic }) => {
         {title}
       </TextDefault>
       <TextDefault H4 textColor={theme.gray900} bolder>
-        {currency} {price}
+        {price} {currency}
       </TextDefault>
     </View>
   )

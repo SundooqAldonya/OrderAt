@@ -27,10 +27,7 @@ function TitleComponent(props) {
       >
         <TextDefault
           numberOfLines={1}
-          textColor={{
-            ...currentTheme.fontMainColor
-            // textAlign: isArabic ? 'right' : 'left'
-          }}
+          textColor={currentTheme.fontMainColor}
           H6
           bolder
         >

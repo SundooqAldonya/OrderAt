@@ -1125,8 +1125,7 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {configuration.currencySymbol}
-                      {calculatePrice(0, false)}
+                      {calculatePrice(0, false)} {configuration.currencySymbol}
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
@@ -1153,8 +1152,8 @@ function Checkout(props) {
                           normal
                           bold
                         >
+                          {deliveryCharges.toFixed(2)}{' '}
                           {configuration.currencySymbol}
-                          {deliveryCharges.toFixed(2)}
                           {/* {deliveryCharges} */}
                         </TextDefault>
                       </View>
@@ -1182,8 +1181,7 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {configuration.currencySymbol}
-                      {taxCalculation()}
+                      {taxCalculation()} {configuration.currencySymbol}
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
@@ -1263,8 +1261,7 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {configuration.currencySymbol}
-                      {calculateTotal()}
+                      {calculateTotal()} {configuration.currencySymbol}
                     </TextDefault>
                   </View>
                 </View>

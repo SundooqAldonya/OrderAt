@@ -178,13 +178,12 @@ const ItemRow = ({
       </View>
       <TextDefault
         right
-        style={{ width: '10%' }}
+        style={{ width: '15%' }}
         bolder
         textColor={theme.gray900}
         H5
       >
-        {currency}
-        {formatNumber(price)}
+        {formatNumber(price)} {currency}
       </TextDefault>
     </View>
   )

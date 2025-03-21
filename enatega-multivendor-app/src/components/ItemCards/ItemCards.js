@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Image, Text, View, TouchableOpacity } from 'react-native'
 import { scale } from '../../utils/scaling'
 import styles from './styles'
@@ -56,19 +56,39 @@ const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
             ]}
           />
           <View style={styles().popularMenuPrice}>
-            <Text style={{ color: '#1C1C1E', fontSize: scale(12) }}>
-              {`${configuration.currencySymbol}${formatNumber(item?.variations[0].price)}`}
-            </Text>
-            {item?.variations[0]?.discounted > 0 && (
-              <Text
-                style={{
-                  color: '#9CA3AF',
-                  fontSize: scale(12),
-                  textDecorationLine: 'line-through'
-                }}
-              >
-                {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
+            {isArabic ? (
+              <Text style={{ color: '#1C1C1E', fontSize: scale(12) }}>
+                {`${formatNumber(item?.variations[0].price)} ${configuration.currencySymbol}`}
               </Text>
+            ) : (
+              <Text style={{ color: '#1C1C1E', fontSize: scale(12) }}>
+                {`${configuration.currencySymbol}${formatNumber(item?.variations[0].price)}`}
+              </Text>
+            )}
+            {item?.variations[0]?.discounted > 0 && (
+              <Fragment>
+                {isArabic ? (
+                  <Text
+                    style={{
+                      color: '#9CA3AF',
+                      fontSize: scale(12),
+                      textDecorationLine: 'line-through'
+                    }}
+                  >
+                    {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      color: '#9CA3AF',
+                      fontSize: scale(12),
+                      textDecorationLine: 'line-through'
+                    }}
+                  >
+                    {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
+                  </Text>
+                )}
+              </Fragment>
             )}
           </View>
         </View>
