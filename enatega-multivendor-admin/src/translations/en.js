@@ -396,7 +396,9 @@ const en = {
     time_preparation: 'Time of preparation',
     cost: 'Cost',
     submit_order: 'Submit Order',
-    customer_name: 'Customer Name'
+    customer_name: 'Customer Name',
+    address_free_text_placeholder: 'Ex: 2nd floor',
+    time: 'Time'
   }
 }
 

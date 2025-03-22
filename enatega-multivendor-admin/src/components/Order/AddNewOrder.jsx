@@ -202,7 +202,7 @@ const AddNewOrder = ({
           variant="outlined"
           fullWidth
           margin="normal"
-          placeholder={'ex: 2nd floor'}
+          placeholder={t('address_free_text_placeholder')}
           sx={{
             '& .MuiInputBase-input': { color: 'black' },
             '& .MuiOutlinedInput-root': {
@@ -230,12 +230,12 @@ const AddNewOrder = ({
           {t('time_preparation')}
         </Typography>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Time</InputLabel>
+          {/* <InputLabel id="demo-simple-select-label">Time</InputLabel> */}
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={selectedTime}
-            label="Time"
+            // label={t("time")}
             onChange={handleTimeChange}
             sx={{ color: '#000' }}>
             {times?.map((time, index) => {

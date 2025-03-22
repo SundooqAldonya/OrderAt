@@ -379,7 +379,9 @@ const ar = {
     time_preparation: 'وقت التجهيز',
     cost: 'المبلغ',
     submit_order: 'إتمام الطلب',
-    customer_name: 'اسم العميل'
+    customer_name: 'اسم العميل',
+    address_free_text_placeholder: 'مثال:الشارع - الدور الثاني شقة 2',
+    time: 'الوقت'
   }
 }
 
