@@ -18,6 +18,7 @@ import { useContext } from 'react'
 import { AreaContext } from '../../context/AreaContext'
 import useGlobalStyles from '../../utils/globalStyles'
 import useAcceptOrder from '../../context/useAcceptOrder'
+import { direction } from '../../utils/direction'
 
 const AddNewOrder = ({
   refetchOrders,
@@ -94,6 +95,7 @@ const AddNewOrder = ({
 
   return (
     <Box
+      dir={direction(i18n.language)}
       sx={{
         backgroundColor: 'white',
         padding: 2,
@@ -121,11 +123,11 @@ const AddNewOrder = ({
         </Alert>
       )}
 
-      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, textAlign: isArabic ? 'right' : 'left' }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, }}>
         {t('create_order')}
       </Typography>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'start' }}>
           {t('phone')} *
         </Typography>
         <TextField
@@ -142,7 +144,7 @@ const AddNewOrder = ({
         />
       </Box>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
         {t('Name')}
         </Typography>
         <TextField
@@ -162,7 +164,7 @@ const AddNewOrder = ({
       <Box sx={{ mb: 2 }}>
         <Typography
           variant="subtitle1"
-          sx={{ fontWeight: 'bold', color: 'black', textAlign: isArabic ? 'right' : 'left' }}>
+          sx={{ fontWeight: 'bold', color: 'black' }}>
           {t('select_area')} *
         </Typography>
         <Select
@@ -174,7 +176,7 @@ const AddNewOrder = ({
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
           className={[globalClasses.input]}
-          style={{ height: '70px', width: '100%' }}>
+          style={{ height: '70px', width: '100%', marginInline: 'auto' }}>
           {!selectedArea && (
             <MenuItem value="" style={{ color: 'black' }}>
               {t('select_area')}
@@ -193,7 +195,7 @@ const AddNewOrder = ({
       <Box>
         <Typography
           variant="subtitle1"
-          sx={{ fontWeight: 'bold', color: 'black', textAlign: isArabic ? 'right' : 'left' }}>
+          sx={{ fontWeight: 'bold', color: 'black' }}>
           {t('address_free_text')}
         </Typography>
         <TextField
@@ -224,7 +226,7 @@ const AddNewOrder = ({
         />
       </Box>
       <Box mb={2}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2, textAlign: isArabic ? 'right' : 'left' }}>
+        <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
           {t('time_preparation')}
         </Typography>
         <FormControl fullWidth>
@@ -247,7 +249,7 @@ const AddNewOrder = ({
         </FormControl>
       </Box>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
           {t('cost')}
         </Typography>
         <TextField
