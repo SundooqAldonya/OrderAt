@@ -170,15 +170,14 @@ const AddNewOrder = ({
         <Select
           id="input-area"
           name="input-area"
-          defaultValue={[selectedArea || '']}
+          defaultValue={1}
           value={selectedArea}
           onChange={e => setSelectedArea(e.target.value)}
-          displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
           className={[globalClasses.input]}
           style={{ height: '70px', width: '100%', marginInline: 'auto' }}>
           {!selectedArea && (
-            <MenuItem value="" style={{ color: 'black' }}>
+            <MenuItem value={1} style={{ color: 'black' }}>
               {t('select_area')}
             </MenuItem>
           )}
@@ -230,12 +229,10 @@ const AddNewOrder = ({
           {t('time_preparation')}
         </Typography>
         <FormControl fullWidth>
-          {/* <InputLabel id="demo-simple-select-label">Time</InputLabel> */}
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={selectedTime}
-            // label={t("time")}
             onChange={handleTimeChange}
             sx={{ color: '#000' }}>
             {times?.map((time, index) => {
