@@ -114,7 +114,7 @@ const OrdersData = props => {
     //   cell: row => <>{getItems(row.items)}</>
     // },
     {
-      name: t('name'),
+      name: t('customer_name'),
       cell: row => <>{row.user.name}</>
     },
     {

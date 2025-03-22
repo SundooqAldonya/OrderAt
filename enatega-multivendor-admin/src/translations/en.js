@@ -395,7 +395,8 @@ const en = {
     address_free_text: 'Address free text',
     time_preparation: 'Time of preparation',
     cost: 'Cost',
-    submit_order: 'Submit Order'
+    submit_order: 'Submit Order',
+    customer_name: 'Customer Name'
   }
 }
 

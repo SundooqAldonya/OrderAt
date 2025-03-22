@@ -378,7 +378,8 @@ const ar = {
     address_free_text: 'تفاصيل العنوان',
     time_preparation: 'وقت التجهيز',
     cost: 'المبلغ',
-    submit_order: 'إتمام الطلب'
+    submit_order: 'إتمام الطلب',
+    customer_name: 'اسم العميل'
   }
 }
 
