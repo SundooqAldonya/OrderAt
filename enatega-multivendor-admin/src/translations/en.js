@@ -389,7 +389,13 @@ const en = {
     DELIVERED: 'Delivered',
     CANCELLED: 'Cancelled',
     amount_details: 'Amount Details',
-    picked_up_image: 'Pick up receipt'
+    picked_up_image: 'Pick up receipt',
+    create_order: 'Create Order',
+    select_area: 'Select Area',
+    address_free_text: 'Address free text',
+    time_preparation: 'Time of preparation',
+    cost: 'Cost',
+    submit_order: 'Submit Order'
   }
 }
 

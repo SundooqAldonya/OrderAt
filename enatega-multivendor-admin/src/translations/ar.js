@@ -372,7 +372,13 @@ const ar = {
     CANCELLED: 'تم الإلغاء',
     PENDING: 'قيد الانتظار',
     amount_details: 'القيمة',
-    picked_up_image: 'الفاتورة'
+    picked_up_image: 'الفاتورة',
+    create_order: 'أضف طلب',
+    select_area: 'أختر منطقة',
+    address_free_text: 'تفاصيل العنوان',
+    time_preparation: 'وقت التجهيز',
+    cost: 'المبلغ',
+    submit_order: 'إتمام الطلب'
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { View, Image, TouchableOpacity, Dimensions } from 'react-native'
 import styles from './styles'
 import FdGoogleBtn from '../../ui/FdSocialBtn/FdGoogleBtn/FdGoogleBtn'
@@ -11,9 +11,17 @@ import { useTranslation } from 'react-i18next'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 import { colors } from '../../utils/colors'
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes
+} from '@react-native-google-signin/google-signin'
+import useEnvVars from '../../../environment'
 const { height } = Dimensions.get('window')
 
 const CreateAccount = (props) => {
+  const { t } = useTranslation()
+  const [googleUser, setGoogleUser] = useState(null)
   const {
     enableApple,
     loginButton,
@@ -24,10 +32,27 @@ const CreateAccount = (props) => {
     mutateLogin,
     navigateToLogin,
     navigation,
-    signIn,
-    //user
+    signIn
+    // user
   } = useCreateAccount()
-  const { t } = useTranslation()
+
+  const { ANDROID_CLIENT_ID_GOOGLE } = useEnvVars()
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: ANDROID_CLIENT_ID_GOOGLE, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
+      // scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+      offlineAccess: true // if you want to access Google API on behalf of the user FROM YOUR SERVER
+      // hostedDomain: '', // specifies a hosted domain restriction
+      // forceCodeForRefreshToken: false, // [Android] related to `serverAuthCode`, read the docs link below *.
+      // accountName: '', // [Android] specifies an account name on the device that should be used
+      // iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+      // googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. "GoogleService-Info-Staging"
+      // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+      // profileImageSize: 120 // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+    })
+  }, [])
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: null,
@@ -37,6 +62,7 @@ const CreateAccount = (props) => {
       headerTitleAlign: 'center'
     })
   }, [navigation])
+
   function renderAppleAction() {
     if (loading && loginButton === 'Apple') {
       return (
@@ -45,6 +71,7 @@ const CreateAccount = (props) => {
         </View>
       )
     }
+
     return (
       <AppleAuthentication.AppleAuthenticationButton
         buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
@@ -94,24 +121,24 @@ const CreateAccount = (props) => {
     )
   }
 
-  function renderGoogleAction() {
-    return (
-      <FdGoogleBtn
-        loadingIcon={loading && loginButton === 'Google'}
-        onPressIn={() => {
-          loginButtonSetter('Google')
-        }}
-        disabled={loading && loginButton === 'Google'}
-        onPress={async () => {
-          try {
-            await signIn()
-          } catch (error) {
-            console.error('Google sign-in error:', error)
-          }
-        }}
-      />
-    )
-  }
+  // function renderGoogleAction() {
+  //   return (
+  //     <FdGoogleBtn
+  //       loadingIcon={loading && loginButton === 'Google'}
+  //       onPressIn={() => {
+  //         loginButtonSetter('Google')
+  //       }}
+  //       disabled={loading && loginButton === 'Google'}
+  //       onPress={async () => {
+  //         try {
+  //           await signIn()
+  //         } catch (error) {
+  //           console.error('Google sign-in error:', error)
+  //         }
+  //       }}
+  //     />
+  //   )
+  // }
 
   function renderEmailAction() {
     return (
@@ -124,6 +151,37 @@ const CreateAccount = (props) => {
         }}
       />
     )
+  }
+
+  const googleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices()
+      const response = await GoogleSignin.signIn()
+      const currentUser = GoogleSignin.getCurrentUser()
+
+      console.log({ currentUser })
+      if (isSuccessResponse(response)) {
+        setGoogleUser({ userInfo: response.data })
+      } else {
+        // sign in was cancelled by user
+      }
+    } catch (error) {
+      // if (isErrorWithCode(error)) {
+      console.log({ error })
+      switch (error.code) {
+        case statusCodes.IN_PROGRESS:
+          // operation (eg. sign in) already in progress
+          break
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          // Android only, play services not available or outdated
+          break
+        default:
+        // some other error happened
+      }
+      // } else {
+      //   // an error that's not related to google sign in occurred
+      // }
+    }
   }
 
   return (
@@ -148,16 +206,31 @@ const CreateAccount = (props) => {
               H4
               bolder
               textColor={currentTheme.newFontcolor}
-              style={{ marginBottom: scale(7), color:colors?.dark, fontSize:20 }}
+              style={{
+                marginBottom: scale(7),
+                color: currentTheme?.secondaryText,
+                fontSize: 20
+              }}
             >
               {t('signUporSignIn')}
             </TextDefault>
-            <TextDefault textColor={colors?.dark}>
+            <TextDefault textColor={currentTheme?.secondaryText}>
               {t('signUpDiscount')}
             </TextDefault>
           </View>
 
-          <View style={{ marginBottom: scale(5) }}>{renderGoogleAction()}</View>
+          {/* <View style={{ marginBottom: scale(5) }}>{renderGoogleAction()}</View> */}
+          <View style={{ marginBottom: scale(5), marginHorizontal: 'auto' }}>
+            <GoogleSigninButton
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Dark}
+              onPress={() => {
+                // initiate sign in
+                googleLogin()
+              }}
+              // disabled={isInProgress}
+            />
+          </View>
           {enableApple && (
             <View style={{ marginBottom: scale(5) }}>
               {renderAppleAction()}
@@ -180,7 +253,10 @@ const CreateAccount = (props) => {
           </View>
           <TouchableOpacity
             activeOpacity={0.7}
-            style={[styles(currentTheme).guestButton,{backgroundColor:colors?.primary, borderColor:colors?.primary}]}
+            style={[
+              styles(currentTheme).guestButton,
+              { backgroundColor: colors?.primary, borderColor: colors?.primary }
+            ]}
             onPress={() => {
               navigation.navigate('Main')
             }}

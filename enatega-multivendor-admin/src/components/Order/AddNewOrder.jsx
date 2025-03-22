@@ -27,7 +27,8 @@ const AddNewOrder = ({
 }) => {
   const restaurantId = localStorage.getItem('restaurantId')
   const globalClasses = useGlobalStyles()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const [times, setTimes] = useState([10, 20, 30, 40, 50, 60, 70, 80, 90])
   const [selectedTime, setSelectedTime] = useState(times[1])
   const [cost, setCost] = useState(0)
@@ -120,12 +121,12 @@ const AddNewOrder = ({
         </Alert>
       )}
 
-      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-        {t('Create Order')}
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, textAlign: isArabic ? 'right' : 'left' }}>
+        {t('create_order')}
       </Typography>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Phone Number *
+        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+          {t('phone')} *
         </Typography>
         <TextField
           variant="outlined"
@@ -141,8 +142,8 @@ const AddNewOrder = ({
         />
       </Box>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Name
+        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+        {t('Name')}
         </Typography>
         <TextField
           variant="outlined"
@@ -161,8 +162,8 @@ const AddNewOrder = ({
       <Box sx={{ mb: 2 }}>
         <Typography
           variant="subtitle1"
-          sx={{ fontWeight: 'bold', color: 'black' }}>
-          {t('Select Area')} *
+          sx={{ fontWeight: 'bold', color: 'black', textAlign: isArabic ? 'right' : 'left' }}>
+          {t('select_area')} *
         </Typography>
         <Select
           id="input-area"
@@ -176,7 +177,7 @@ const AddNewOrder = ({
           style={{ height: '70px', width: '100%' }}>
           {!selectedArea && (
             <MenuItem value="" style={{ color: 'black' }}>
-              {t('Select Area')}
+              {t('select_area')}
             </MenuItem>
           )}
           {areas?.map(area => (
@@ -192,8 +193,8 @@ const AddNewOrder = ({
       <Box>
         <Typography
           variant="subtitle1"
-          sx={{ fontWeight: 'bold', color: 'black' }}>
-          Address Free Text
+          sx={{ fontWeight: 'bold', color: 'black', textAlign: isArabic ? 'right' : 'left' }}>
+          {t('address_free_text')}
         </Typography>
         <TextField
           variant="outlined"
@@ -223,8 +224,8 @@ const AddNewOrder = ({
         />
       </Box>
       <Box mb={2}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
-          Time of preparation
+        <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2, textAlign: isArabic ? 'right' : 'left' }}>
+          {t('time_preparation')}
         </Typography>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Time</InputLabel>
@@ -246,8 +247,8 @@ const AddNewOrder = ({
         </FormControl>
       </Box>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Cost
+        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: isArabic ? 'right' : 'left' }}>
+          {t('cost')}
         </Typography>
         <TextField
           type="number"
@@ -271,7 +272,7 @@ const AddNewOrder = ({
       {/* Submit and Cancel Buttons */}
       <Box sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" fullWidth type="submit">
-          Submit Order
+         {t('submit_order')}
         </Button>
         <Button
           variant="outlined"
@@ -281,7 +282,7 @@ const AddNewOrder = ({
           onClick={() => {
             setCost('')
           }}>
-          Cancel
+          {t('Cancel')}
         </Button>
       </Box>
       {/* Add new address component */}

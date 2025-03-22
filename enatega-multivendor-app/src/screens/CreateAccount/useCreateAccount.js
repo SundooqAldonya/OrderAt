@@ -51,8 +51,7 @@ export const useCreateAccount = () => {
   // }
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId:
-      '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',
+    androidClientId: ANDROID_CLIENT_ID_GOOGLE,
     iosClientId: IOS_CLIENT_ID_GOOGLE
   })
 
