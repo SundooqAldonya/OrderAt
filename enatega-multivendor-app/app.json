@@ -65,7 +65,12 @@
       ]
     },
     "plugins": [
-      "@react-native-google-signin/google-signin",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.808523856739-46u2pjdsfl0tjmplj580os4gntbb5410"
+        }
+      ],
       "expo-localization",
       "sentry-expo",
       [

@@ -14,6 +14,7 @@ import { colors } from '../../utils/colors'
 import {
   GoogleSignin,
   GoogleSigninButton,
+  isSuccessResponse,
   statusCodes
 } from '@react-native-google-signin/google-signin'
 import useEnvVars from '../../../environment'
@@ -41,8 +42,8 @@ const CreateAccount = (props) => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: ANDROID_CLIENT_ID_GOOGLE, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
-      // scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-      offlineAccess: true // if you want to access Google API on behalf of the user FROM YOUR SERVER
+      scopes: ['https://www.googleapis.com/auth/user.phonenumbers.read'], // what API you want to access on behalf of the user, default is email and profile
+      offlineAccess: true // Required for getting the refresh token
       // hostedDomain: '', // specifies a hosted domain restriction
       // forceCodeForRefreshToken: false, // [Android] related to `serverAuthCode`, read the docs link below *.
       // accountName: '', // [Android] specifies an account name on the device that should be used
@@ -155,32 +156,41 @@ const CreateAccount = (props) => {
 
   const googleLogin = async () => {
     try {
+      await GoogleSignin.signOut()
+      // await GoogleSignin.revokeAccess()
       await GoogleSignin.hasPlayServices()
+        .then(() => console.log('Google Play Services Available'))
+        .catch((error) => console.log('Google Play Services Error:', error))
       const response = await GoogleSignin.signIn()
       const currentUser = GoogleSignin.getCurrentUser()
-
       console.log({ currentUser })
+      // const token = currentUser?.idToken || currentUser?.accessToken
+      // Now, fetch the phone number
+      // const phoneNumbers = await fetchPhoneNumber(token)
+      // console.log({ phoneNumbers })
       if (isSuccessResponse(response)) {
         setGoogleUser({ userInfo: response.data })
       } else {
         // sign in was cancelled by user
       }
     } catch (error) {
-      // if (isErrorWithCode(error)) {
       console.log({ error })
-      switch (error.code) {
-        case statusCodes.IN_PROGRESS:
-          // operation (eg. sign in) already in progress
-          break
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          // Android only, play services not available or outdated
-          break
-        default:
-        // some other error happened
-      }
-      // } else {
-      //   // an error that's not related to google sign in occurred
-      // }
+    }
+  }
+
+  const fetchPhoneNumber = async (token) => {
+    try {
+      const response = await fetch(
+        'https://people.googleapis.com/v1/people/me?personFields=phoneNumbers',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
+      const data = await response.json()
+      console.log('User phone numbers:', data.phoneNumbers)
+      return data.phoneNumbers
+    } catch (error) {
+      console.error('Error fetching phone number:', error)
     }
   }
 

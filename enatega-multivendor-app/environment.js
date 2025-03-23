@@ -41,7 +41,7 @@ const useEnvVars = (env = Updates.channel) => {
       SERVER_URL: 'http://192.168.1.7:8001/',
       IOS_CLIENT_ID_GOOGLE: configuration.iOSClientID,
       ANDROID_CLIENT_ID_GOOGLE:
-        '133710632137-p9iabf8cgdg4rjsdmj1mcn305ppc33h2.apps.googleusercontent.com',
+        '808523856739-lcqe5kqkh1nvh61uuc4q94d3ghfdqft4.apps.googleusercontent.com',
       AMPLITUDE_API_KEY: configuration.appAmplitudeApiKey,
       GOOGLE_MAPS_KEY:
         configuration.googleApiKey ?? 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',

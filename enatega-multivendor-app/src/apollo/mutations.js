@@ -386,3 +386,15 @@ export const disableUserNotifications = gql`
     }
   }
 `
+export const googleAuth = gql`
+  mutation GoogleAuth($code: String!) {
+    googleAuth(code: $code) {
+      token
+      user {
+        _id
+        name
+        email
+      }
+    }
+  }
+`
