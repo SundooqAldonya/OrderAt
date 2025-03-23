@@ -220,7 +220,7 @@ module.exports = {
       }
     },
     editRider: async (_, args) => {
-      console.log('editRider')
+      console.log('editRider', args)
       try {
         const checkUsername = await Rider.find({
           username: args.riderInput.username
@@ -243,6 +243,7 @@ module.exports = {
         const rider = await Rider.findOne({ _id: args.riderInput._id })
 
         rider.name = args.riderInput.name
+        rider.password = args.riderInput.password
         rider.username = args.riderInput.username
         rider.phone = args.riderInput.phone
         rider.available = args.riderInput.available
