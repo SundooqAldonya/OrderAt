@@ -55,8 +55,9 @@ const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
 export default function AddNewAddressUser(props) {
-  const { t } = useTranslation()
-  const { longitude, latitude } = props.route.params || {}
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+  const { longitude, latitude, area } = props.route.params || {}
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const navigation = useNavigation()
@@ -97,6 +98,25 @@ export default function AddNewAddressUser(props) {
       getCurrentPositionNav()
     }
   }, [coordinates.latitude])
+
+  useEffect(() => {
+    if (area) {
+      getCurrentPosition({
+        longitude: area.location.location.coordinates[0],
+        latitude: area.location.location.coordinates[1]
+      })
+      const newCoordinates = {
+        latitude: area.location.location.coordinates[1],
+        longitude: area.location.location.coordinates[0],
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+      }
+
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+      }
+    }
+  }, [area])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
@@ -187,6 +207,7 @@ export default function AddNewAddressUser(props) {
       console.log({ err })
     }
   })
+
   const handleCurrentLocation = async () => {
     setLoading(true)
     const { status, canAskAgain } = await getLocationPermission()
@@ -272,6 +293,12 @@ export default function AddNewAddressUser(props) {
     })
   }
 
+  const handleNavArea = () => {
+    navigation.navigate('SelectLocation', {
+      isLoggedIn: true
+    })
+  }
+
   return (
     <>
       <View style={styles().flex}>
@@ -305,38 +332,72 @@ export default function AddNewAddressUser(props) {
         </View>
 
         <View style={styles(currentTheme).container}>
-          <TouchableOpacity
+          <View
             style={{
-              alignSelf: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomWidth: 1,
-              borderBottomColor: currentTheme.newFontcolor
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              justifyContent: 'space-around'
             }}
-            onPress={getCurrentPositionNav}
           >
-            <TextDefault
-              textColor={currentTheme.newFontcolor}
-              bolder
-              Left
-              style={{ ...styles().heading, paddingLeft: 0 }}
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderBottomWidth: 1,
+                borderBottomColor: currentTheme.newFontcolor
+                // marginTop: 20
+              }}
+              onPress={handleNavArea}
             >
-              {t('useCurrentLocation')}
-            </TextDefault>
-            <Entypo
-              name='location'
-              size={15}
-              color={currentTheme.newFontcolor}
-              style={{ marginTop: -20 }}
-            />
-          </TouchableOpacity>
+              <TextDefault
+                textColor={currentTheme.newFontcolor}
+                bolder
+                Left
+                style={{ ...styles().heading, paddingLeft: 0 }}
+              >
+                {t('choose_nearest_area')}
+              </TextDefault>
+              <Entypo
+                name='location'
+                size={15}
+                color={currentTheme.newFontcolor}
+                style={{ marginTop: -20 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderBottomWidth: 1,
+                borderBottomColor: currentTheme.newFontcolor
+              }}
+              onPress={getCurrentPositionNav}
+            >
+              <TextDefault
+                textColor={currentTheme.newFontcolor}
+                bolder
+                Left
+                style={{ ...styles().heading, paddingLeft: 0 }}
+              >
+                {t('useCurrentLocation')}
+              </TextDefault>
+              <Entypo
+                name='location'
+                size={15}
+                color={currentTheme.newFontcolor}
+                style={{ marginTop: -20 }}
+              />
+            </TouchableOpacity>
+          </View>
           <TextDefault
             textColor={currentTheme.newFontcolor}
             H3
             bolder
             Left
-            style={styles().heading}
+            style={{ ...styles().heading, marginBottom: 0, marginTop: 10 }}
           >
             {t('selectLocation')}
           </TextDefault>

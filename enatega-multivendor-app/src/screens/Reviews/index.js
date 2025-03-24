@@ -22,9 +22,11 @@ const Reviews = ({ navigation, route }) => {
   const { t } = useTranslation()
 
   const restaurant = route.params.restaurantObject
-  console.log({ restaurantHere: restaurant })
+
   const reviews = restaurant && restaurant.reviews ? restaurant.reviews : null
+
   let reviewGroups
+
   if (reviews) {
     reviewGroups = groupAndCount(reviews, 'rating')
   }
@@ -75,7 +77,9 @@ const Reviews = ({ navigation, route }) => {
       )
     })
   }, [navigation])
+
   let sorted
+
   if (reviews) {
     sorted = sortReviews([...reviews], sortBy)
   }
@@ -164,14 +168,14 @@ const Reviews = ({ navigation, route }) => {
           <TextDefault textColor={currentTheme.gray900} H3 bold>
             {t('titleReviews')}
           </TextDefault>
-          <View style={{ flexDirection: 'row', ...alignment.MTsmall }}>
+          <View style={{ flexDirection: 'row', ...alignment.MTsmall, gap: 20 }}>
             {Object.keys(sortingParams).map((key) => (
               <Button
                 key={key}
                 textProps={{ textColor: currentTheme.color4 }}
                 buttonProps={{ onPress: () => setSortBy(key) }}
                 text={sortingParams[key]}
-                textStyles={styles.text}
+                textStyles={{ color: currentTheme.newFontcolor }}
                 buttonStyles={{
                   backgroundColor:
                     sortBy === key

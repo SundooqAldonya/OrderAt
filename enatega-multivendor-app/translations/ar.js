@@ -254,7 +254,7 @@ export const ar = {
   DeleteConfirmation: 'هل أنت متأكد أنك تريد حذف الحساب؟',
   chatWithRider: 'الدردشة مع الكابتن',
   yourOrderIs: 'طلبك هو',
-  noItemsExists: 'لا توجد عناصر',
+  noItemsExists: 'لا توجد قائمة بعد',
   pickUpAddress: 'عنوان الاستلام',
   selectedLocation: 'الموقع المحدد',
   noReviewYet: 'لا توجد تقييمات بعد.',
@@ -342,7 +342,7 @@ export const ar = {
   statusAssigned: 'تم تحديد الكابتن',
   statusPicked: 'تم التسليم للكابتن',
   statusDelivered: 'تم التوصيل',
-  selectLocation: 'اختار الموقع',
+  selectLocation: 'اختار موقع التوصيل',
   languageSetting: 'إعدادات اللغة',
   receiveOfferByEmail: 'تلقي العرض عن طريق البريد الإلكتروني',
   receivePushNotification: 'تفعيل الاشعارات',
@@ -416,7 +416,7 @@ export const ar = {
   cancelAnyway:
     'لقد استلمنا طلبك وقد نجد لك كابتن في أي لحظة الآن. ألغِ على أي حال.',
   waitForOrder: 'سأنتظر طلبي',
-  exploreCities: 'استكشاف المدن',
+  exploreCities: 'مدن نخدمها',
   deliveryCharges: 'رسوم التوصيل',
   serviceFeeApply: 'تُطبق رسوم الخدمة',
   seeReviews: 'رؤية التقييمات',
@@ -451,7 +451,7 @@ export const ar = {
   ratingAndreviews: 'التقييم والمراجعات',
   allRatings: 'جميع التقييمات',
   useCurrentLocation: 'استخدم موقعي الحالي',
-  browseCities: 'تصفح جميع المدن',
+  browseCities: 'تصفح المدن التى نعمل بها',
   minimum: 'الحد الأدنى',
   faq1: 'كيف يمكنني تقديم طلب؟',
   faq1Description:
@@ -474,7 +474,7 @@ export const ar = {
   faq7: 'هل يمكنني طلب من عدة أماكن في نفس الوقت؟',
   faq7Description:
     'للأسف، لا يمكنك اختيار عدة مطاعم في نفس الطلب. ومع ذلك، يمكنك تقديم طلبات منفصلة من مطاعم مختلفة في نفس الوقت.',
-  away: 'بعيداً ',
+  away: 'على بعد',
   placeOrder: 'أرسل الطلب',
   titleFAQ: 'الأسئلة المتكررة',
   continueAsGuest: 'تابع كضيف',
@@ -553,8 +553,9 @@ export const ar = {
   select_area: 'اختر المنطقة',
   explore_areas: 'أختر منطقة',
   address_details: 'تفاصيل العنوان',
-  set_location: 'قم باختيار الموقع',
+  set_location: 'اختر الموقع الحالي',
   change_password: 'تغيير كلمة المرور',
   login_or_create: 'تسجيل الدخول / إنشاء حساب',
-  tax: 'الضريبة'
+  tax: 'الضريبة',
+  choose_nearest_area: 'اختر اقرب منطقة'
 }

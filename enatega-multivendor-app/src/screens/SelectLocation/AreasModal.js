@@ -11,15 +11,25 @@ import { Feather, Entypo } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { scale } from '../../utils/scaling'
+import UserContext from '../../context/User'
+import { useNavigation } from '@react-navigation/native'
 
 const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
   const { t } = useTranslation()
+  const { isLoggedIn } = useContext(UserContext)
+  const navigation = useNavigation()
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.item(theme)}
       onPress={() => {
-        onItemPress(item)
+        if (!isLoggedIn) {
+          onItemPress(item)
+        } else {
+          navigation.navigate('AddNewAddressUser', {
+            area: item
+          })
+        }
       }}
     >
       <TextDefault H5 bold textColor={theme.color7}>

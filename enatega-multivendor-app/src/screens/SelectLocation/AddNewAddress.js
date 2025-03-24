@@ -4,7 +4,8 @@ import React, {
   useCallback,
   useLayoutEffect,
   useRef,
-  useEffect
+  useEffect,
+  Fragment
 } from 'react'
 import { View, Text, TouchableOpacity, TextInput } from 'react-native'
 import { LocationContext } from '../../context/Location'
@@ -283,28 +284,30 @@ export default function AddNewAddress(props) {
           </View> */}
 
           {/* toggle address api button */}
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: 20,
-              marginBottom: 10
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                setIsClicked(!isClicked)
+          {!isLoggedIn ? (
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: 20,
+                marginBottom: 10
               }}
             >
-              <Text>
-                <Icon
-                  name={isClicked ? 'upcircle' : 'downcircle'}
-                  color={themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'}
-                  size={30}
-                />
-              </Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsClicked(!isClicked)
+                }}
+              >
+                <Text>
+                  <Icon
+                    name={isClicked ? 'upcircle' : 'downcircle'}
+                    color={themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'}
+                    size={30}
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
           {/* toggle address input */}
           {isClicked ? (
@@ -325,31 +328,34 @@ export default function AddNewAddress(props) {
 
           {/* saving address */}
           <View style={{ flex: 1 }} />
-          {city && selectedArea ? (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles(currentTheme).emptyButton}
-              onPress={onSelectLocation}
-              disabled={!city || !selectedArea}
-            >
-              <TextDefault textColor={currentTheme.buttonText} center H5>
-                {t('saveBtn')}
-              </TextDefault>
-            </TouchableOpacity>
+          {!isLoggedIn ? (
+            <Fragment>
+              {city && selectedArea ? (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles(currentTheme).emptyButton}
+                  onPress={onSelectLocation}
+                  disabled={!city || !selectedArea}
+                >
+                  <TextDefault textColor={currentTheme.buttonText} center H5>
+                    {t('saveBtn')}
+                  </TextDefault>
+                </TouchableOpacity>
+              ) : null}
+              {!city || !selectedArea ? (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles(currentTheme).disabledButton}
+                  // onPress={onSelectLocation}
+                  disabled={!city || !selectedArea}
+                >
+                  <TextDefault textColor={currentTheme.buttonText} center H5>
+                    {t('saveBtn')}
+                  </TextDefault>
+                </TouchableOpacity>
+              ) : null}
+            </Fragment>
           ) : null}
-          {!city || !selectedArea ? (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles(currentTheme).disabledButton}
-              onPress={onSelectLocation}
-              disabled={!city || !selectedArea}
-            >
-              <TextDefault textColor={currentTheme.buttonText} center H5>
-                {t('saveBtn')}
-              </TextDefault>
-            </TouchableOpacity>
-          ) : null}
-
           {/* search address google api */}
           <SearchModal
             visible={searchModalVisible}
@@ -382,53 +388,53 @@ export default function AddNewAddress(props) {
   )
 }
 
-const CityModal = React.memo(
-  function CityModal({
-    theme,
-    setCityModalVisible,
-    selectedValue,
-    city,
-    cityModalVisible,
-    onSelect,
-    t
-  }) {
-    return (
-      <View style={styles().dropdownContainer}>
-        <TouchableOpacity
-          style={styles().button1}
-          onPress={() => {
-            setCityModalVisible(true)
-            console.log(selectedValue)
-          }}
-        >
-          {selectedValue && (
-            <Text style={styles(theme).cityField}>{selectedValue}</Text>
-          )}
-          {!selectedValue && (
-            <Text style={styles(theme).cityField}>{t('selectCity')}</Text>
-          )}
-          <Feather
-            name='chevron-down'
-            size={18}
-            color={theme.newIconColor}
-            style={styles().icon1}
-          />
-        </TouchableOpacity>
-        <ModalDropdown
-          theme={theme}
-          visible={cityModalVisible}
-          onItemPress={onSelect}
-          onClose={() => {
-            setCityModalVisible(false)
-          }}
-        />
-      </View>
-    )
-  },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.cityModalVisible === nextProps.cityModalVisible &&
-      prevProps.selectedValue === nextProps.selectedValue
-    )
-  }
-)
+// const CityModal = React.memo(
+//   function CityModal({
+//     theme,
+//     setCityModalVisible,
+//     selectedValue,
+//     city,
+//     cityModalVisible,
+//     onSelect,
+//     t
+//   }) {
+//     return (
+//       <View style={styles().dropdownContainer}>
+//         <TouchableOpacity
+//           style={styles().button1}
+//           onPress={() => {
+//             setCityModalVisible(true)
+//             console.log(selectedValue)
+//           }}
+//         >
+//           {selectedValue && (
+//             <Text style={styles(theme).cityField}>{selectedValue}</Text>
+//           )}
+//           {!selectedValue && (
+//             <Text style={styles(theme).cityField}>{t('selectCity')}</Text>
+//           )}
+//           <Feather
+//             name='chevron-down'
+//             size={18}
+//             color={theme.newIconColor}
+//             style={styles().icon1}
+//           />
+//         </TouchableOpacity>
+//         <ModalDropdown
+//           theme={theme}
+//           visible={cityModalVisible}
+//           onItemPress={onSelect}
+//           onClose={() => {
+//             setCityModalVisible(false)
+//           }}
+//         />
+//       </View>
+//     )
+//   },
+//   (prevProps, nextProps) => {
+//     return (
+//       prevProps.cityModalVisible === nextProps.cityModalVisible &&
+//       prevProps.selectedValue === nextProps.selectedValue
+//     )
+//   }
+// )

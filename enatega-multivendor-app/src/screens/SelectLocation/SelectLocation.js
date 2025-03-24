@@ -14,7 +14,7 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import styles from './styles'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import screenOptions from './screenOptions'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { useLocation } from '../../ui/hooks'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
@@ -44,7 +44,6 @@ const LONGITUDE_DELTA = 0.01
 
 export default function SelectLocation(props) {
   const Analytics = analytics()
-
   const { t } = useTranslation()
   const { longitude, latitude } = props.route.params || {}
   const themeContext = useContext(ThemeContext)
@@ -258,25 +257,27 @@ export default function SelectLocation(props) {
             {t('selectLocation')}
           </TextDefault>
 
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles(currentTheme).button}
-            onPress={setCurrentLocation}
-          >
-            <View style={styles(currentTheme).icon}>
-              <EvilIcons name='location' size={18} color='black' />
-            </View>
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('set_location')}
-            </TextDefault>
-            {loading && (
-              <Spinner
-                size={'small'}
-                backColor={currentTheme.themeBackground}
-                spinnerColor={currentTheme.main}
-              />
-            )}
-          </TouchableOpacity>
+          {!isLoggedIn ? (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles(currentTheme).button}
+              onPress={setCurrentLocation}
+            >
+              <View style={styles(currentTheme).icon}>
+                <EvilIcons name='location' size={18} color='black' />
+              </View>
+              <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                {t('set_location')}
+              </TextDefault>
+              {loading && (
+                <Spinner
+                  size={'small'}
+                  backColor={currentTheme.themeBackground}
+                  spinnerColor={currentTheme.main}
+                />
+              )}
+            </TouchableOpacity>
+          ) : null}
           <View style={styles(currentTheme).line} />
 
           <TouchableOpacity
@@ -302,6 +303,7 @@ export default function SelectLocation(props) {
         visible={modalVisible}
         onItemPress={onItemPress}
         onClose={() => setModalVisible(false)}
+        isLoggedIn={isLoggedIn}
       />
     </>
   )

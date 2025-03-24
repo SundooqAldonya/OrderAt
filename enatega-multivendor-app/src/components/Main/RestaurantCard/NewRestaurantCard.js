@@ -39,6 +39,7 @@ function NewRestaurantCard(props) {
   const currentTheme = theme[themeContext.ThemeValue]
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props._id) : false
+
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
@@ -67,7 +68,6 @@ function NewRestaurantCard(props) {
           source={{ uri: props.image }}
           style={styles().restaurantImage}
         />
-
         <View style={styles().overlayContainer}>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -117,7 +117,11 @@ function NewRestaurantCard(props) {
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
-            <FontAwesome5 name='star' size={18} color={currentTheme.stars} />
+            <FontAwesome5
+              name='star'
+              size={18}
+              color={currentTheme.newFontcolor}
+            />
 
             <TextDefault
               textColor={currentTheme.fontThirdColor}
@@ -184,7 +188,7 @@ function NewRestaurantCard(props) {
               bold
               Normal
             >
-              ${props.tax}
+              {configuration.currency} {props.tax}
             </TextDefault>
           </View>
         </View>
