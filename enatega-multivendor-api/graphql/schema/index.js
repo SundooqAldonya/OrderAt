@@ -357,6 +357,7 @@ const typeDefs = gql`
     userType: String
     area: String
   }
+
   type Configuration {
     _id: String!
     pushToken: String
@@ -1508,6 +1509,11 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    googleAuthCustomerApp(
+      name: String!
+      email: String!
+      sub: String
+    ): GoogleUserLogin
     newCheckoutPlaceOrder(input: NewCheckoutOrderInput): Order!
     googleAuth(code: String!): GoogleUserLogin
     createShopCategory(shopCategoryInput: ShopCategoryInput!): Message

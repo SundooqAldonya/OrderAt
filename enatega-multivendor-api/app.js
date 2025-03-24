@@ -86,6 +86,7 @@ async function startApolloServer() {
       if (isAuthenticated(req).isAuth) {
         return new Promise((resolve, reject) => {
           passport.authenticate('jwt', { session: true }, (err, user) => {
+            console.log({ user, err })
             if (err) {
               console.log('Authentication error:', err)
               reject(err)

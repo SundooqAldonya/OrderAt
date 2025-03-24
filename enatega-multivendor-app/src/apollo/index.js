@@ -52,24 +52,29 @@ const setupApollo = () => {
       Restaurant: {
         fields: {
           distanceWithCurrentLocation: {
-            read(_existing, {variables, field, readField}) {
+            read(_existing, { variables, field, readField }) {
               const restaurantLocation = readField('location')
-              const distance = calculateDistance(restaurantLocation?.coordinates[0], restaurantLocation?.coordinates[1], variables.latitude, variables.longitude)
+              const distance = calculateDistance(
+                restaurantLocation?.coordinates[0],
+                restaurantLocation?.coordinates[1],
+                variables.latitude,
+                variables.longitude
+              )
               return distance
             }
           },
           freeDelivery: {
             read(_existing) {
-              const randomValue = Math.random() * 10;
+              const randomValue = Math.random() * 10
               return randomValue > 5
             }
           },
           acceptVouchers: {
             read(_existing) {
-              const randomValue = Math.random() * 10;
+              const randomValue = Math.random() * 10
               return randomValue < 5
             }
-          },
+          }
         }
       }
     }
@@ -86,7 +91,7 @@ const setupApollo = () => {
     }
   })
 
-  const request = async operation => {
+  const request = async (operation) => {
     const token = await AsyncStorage.getItem('token')
 
     operation.setContext({
@@ -98,10 +103,10 @@ const setupApollo = () => {
 
   const requestLink = new ApolloLink(
     (operation, forward) =>
-      new Observable(observer => {
+      new Observable((observer) => {
         let handle
         Promise.resolve(operation)
-          .then(oper => request(oper))
+          .then((oper) => request(oper))
           .then(() => {
             handle = forward(operation).subscribe({
               next: observer.next.bind(observer),
@@ -123,7 +128,7 @@ const setupApollo = () => {
   }, wsLink)
 
   const client = new ApolloClient({
-    link: concat(ApolloLink.from([terminatingLink, requestLink]), httpLink),
+    link: ApolloLink.from([terminatingLink, requestLink, httpLink]),
     cache,
     resolvers: {}
   })

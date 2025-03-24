@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { View, Image, TouchableOpacity, Dimensions } from 'react-native'
 import styles from './styles'
 import FdGoogleBtn from '../../ui/FdSocialBtn/FdGoogleBtn/FdGoogleBtn'
@@ -18,10 +18,17 @@ import {
   statusCodes
 } from '@react-native-google-signin/google-signin'
 import useEnvVars from '../../../environment'
+import { useMutation } from '@apollo/client'
+import { googleAuthCustomerApp } from '../../apollo/mutations'
+import AuthContext from '../../context/Auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 const { height } = Dimensions.get('window')
 
 const CreateAccount = (props) => {
   const { t } = useTranslation()
+  const { setTokenAsync } = useContext(AuthContext)
+
   const [googleUser, setGoogleUser] = useState(null)
   const {
     enableApple,
@@ -38,6 +45,33 @@ const CreateAccount = (props) => {
   } = useCreateAccount()
 
   const { ANDROID_CLIENT_ID_GOOGLE } = useEnvVars()
+
+  const navigateToPhone = () => {
+    navigation.navigate('PhoneNumber', { backScreen: 'Main' })
+  }
+
+  const navigateToMain = () => {
+    navigation.navigate({
+      name: 'Main',
+      merge: true
+    })
+  }
+
+  const addToken = async ({ token }) => {
+    await AsyncStorage.setItem('token', token)
+  }
+
+  const [mutateGoogleLogin] = useMutation(googleAuthCustomerApp, {
+    onCompleted: (data) => {
+      console.log({ token: data.googleAuthCustomerApp.token })
+      // addToken({ token: data.googleAuthCustomerApp.token })
+      setTokenAsync(data.googleAuthCustomerApp.token)
+      navigateToMain()
+    },
+    onError: (err) => {
+      console.log({ apiError: err })
+    }
+  })
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -157,17 +191,19 @@ const CreateAccount = (props) => {
   const googleLogin = async () => {
     try {
       await GoogleSignin.signOut()
-      // await GoogleSignin.revokeAccess()
       await GoogleSignin.hasPlayServices()
         .then(() => console.log('Google Play Services Available'))
         .catch((error) => console.log('Google Play Services Error:', error))
       const response = await GoogleSignin.signIn()
       const currentUser = GoogleSignin.getCurrentUser()
-      console.log({ currentUser })
-      // const token = currentUser?.idToken || currentUser?.accessToken
-      // Now, fetch the phone number
-      // const phoneNumbers = await fetchPhoneNumber(token)
-      // console.log({ phoneNumbers })
+
+      mutateGoogleLogin({
+        variables: {
+          name: currentUser.user.name,
+          email: currentUser.user.email,
+          sub: currentUser.user.id
+        }
+      })
       if (isSuccessResponse(response)) {
         setGoogleUser({ userInfo: response.data })
       } else {

@@ -78,6 +78,31 @@ module.exports = {
         token: token
       }
     },
+    async googleAuthCustomerApp(_, args) {
+      try {
+        const { name, email, sub } = args
+        let user = await User.findOne({ email })
+
+        if (!user) {
+          user = new User({
+            email,
+            name,
+            userType: 'google',
+            emailIsVerified: true
+          })
+          await user.save()
+        }
+
+        const token = jwt.sign(
+          { userId: user._id, name: user.name, email: user.email },
+          process.env.SECRETKEY
+        )
+
+        return { token, user }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
     googleAuth: async (_, { code }) => {
       try {
         // Exchange authorization code for access token and ID token
@@ -90,7 +115,7 @@ module.exports = {
             '41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com'
         })
 
-        const { sub, name, email, picture } = ticket.getPayload()
+        const { sub, name, email } = ticket.getPayload()
         console.log({ googleAccount: { name, email, sub } })
 
         let user = await User.findOne({ email })
