@@ -557,5 +557,8 @@ export const ar = {
   change_password: 'تغيير كلمة المرور',
   login_or_create: 'تسجيل الدخول / إنشاء حساب',
   tax: 'الضريبة',
-  choose_nearest_area: 'اختر اقرب منطقة'
+  choose_nearest_area: 'اختر اقرب منطقة',
+  home: 'الرئيسية',
+  profile: 'الملف الشخصي',
+  cart: 'السلة'
 }

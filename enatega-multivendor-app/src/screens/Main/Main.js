@@ -375,7 +375,13 @@ function Main(props) {
   return (
     <>
       <SafeAreaView edges={['bottom', 'left', 'right']} style={styles().flex}>
-        <View style={[styles().flex, styles(currentTheme).screenBackground]}>
+        <View
+          style={[
+            styles().flex,
+            styles(currentTheme).screenBackground,
+            { paddingBottom: 120 }
+          ]}
+        >
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
               <View style={[styles().flex, styles().subContainer]}>

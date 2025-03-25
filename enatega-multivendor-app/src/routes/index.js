@@ -61,6 +61,10 @@ import messaging from '@react-native-firebase/messaging'
 import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
 import { Alert } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { colors } from '../utils/colors'
+import { useTranslation } from 'react-i18next'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -163,7 +167,11 @@ function NoDrawer() {
         iconColor: currentTheme.iconColorPink
       })}
     >
-      <NavigationStack.Screen name='Main' component={Main} />
+      <NavigationStack.Screen
+        name='BottomTabs'
+        options={{ headerShown: false }}
+        component={BottomTabs}
+      />
       <NavigationStack.Screen name='Menu' component={Menu} />
       <NavigationStack.Screen
         name='Restaurant'
@@ -261,6 +269,75 @@ function LocationStack() {
       <Location.Screen name='AddNewAddress' component={AddNewAddress} />
       <Location.Screen name='Main' component={Main} />
     </Location.Navigator>
+  )
+}
+
+const BottomTabs = () => {
+  const { t } = useTranslation()
+  const Tab = createBottomTabNavigator()
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName
+          if (route.name === 'Main') {
+            iconName = 'home'
+          } else if (route.name === 'Profile') {
+            iconName = 'person'
+          } else if (route.name === 'Settings') {
+            iconName = 'settings'
+          } else if (route.name === 'MyOrders') {
+            iconName = 'lunch-dining'
+          }
+          return (
+            <Icon
+              name={iconName}
+              size={25}
+              color={color}
+              style={{ marginTop: 15 }}
+            />
+          )
+        },
+        tabBarActiveTintColor: '#fff',
+        tabBarStyle: {
+          backgroundColor: colors.primary,
+          height: 90,
+          paddingBottom: 10,
+          position: 'absolute',
+          bottom: 15,
+          left: 20,
+          right: 20,
+          borderRadius: 15,
+          paddingBottom: 10
+        },
+        tabBarLabelStyle: {
+          fontWeight: 'bold',
+          marginBottom: 15
+        },
+        tabBarInactiveTintColor: '#000'
+      })}
+    >
+      <Tab.Screen
+        name='Main'
+        options={{ tabBarLabel: t('home') }}
+        component={Main}
+      />
+      <Tab.Screen
+        name='MyOrders'
+        options={{ tabBarLabel: t('titleOrders') }}
+        component={MyOrders}
+      />
+      <Tab.Screen
+        name='Settings'
+        options={{ tabBarLabel: t('titleSettings') }}
+        component={Settings}
+      />
+      <Tab.Screen
+        name='Profile'
+        options={{ tabBarLabel: t('profile') }}
+        component={Profile}
+      />
+    </Tab.Navigator>
   )
 }
 

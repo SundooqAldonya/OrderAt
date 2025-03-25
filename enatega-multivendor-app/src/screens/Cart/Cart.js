@@ -473,7 +473,7 @@ function Cart(props) {
   return (
     <>
       <View style={styles(currentTheme).mainContainer}>
-        {cart?.length === 0 ? (
+        {!cart?.length ? (
           emptyCart()
         ) : (
           <>

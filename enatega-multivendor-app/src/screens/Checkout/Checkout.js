@@ -400,15 +400,16 @@ function Checkout(props) {
       orderDate: data.placeOrder.orderDate
     })
     if (paymentMode === 'COD') {
-      props.navigation.reset({
-        routes: [
-          { name: 'Main' },
-          {
-            name: 'OrderDetail',
-            params: { _id: data?.placeOrder?._id }
-          }
-        ]
-      })
+      // props.navigation.reset({
+      //   routes: [
+      //     { name: 'Main' },
+      //     {
+      //       name: 'OrderDetail',
+      //       params: { _id: data?.placeOrder?._id }
+      //     }
+      //   ]
+      // })
+      props.navigation.navigate('Main')
       clearCart()
     } else if (paymentMode === 'PAYPAL') {
       props.navigation.replace('Paypal', {
@@ -519,17 +520,17 @@ function Checkout(props) {
       })
       return false
     }
-    if (profile.phone.length < 1) {
-      props.navigation.navigate('PhoneNumber', { backScreen: 'Cart' })
-      return false
-    }
-    if (profile.phone.length > 0 && !profile.phoneIsVerified) {
-      FlashMessage({
-        message: t('numberVerificationAlert')
-      })
-      props.navigation.navigate('PhoneNumber')
-      return false
-    }
+    // if (profile.phone.length < 1) {
+    //   props.navigation.navigate('PhoneNumber', { backScreen: 'Cart' })
+    //   return false
+    // }
+    // if (profile.phone.length > 0 && !profile.phoneIsVerified) {
+    //   FlashMessage({
+    //     message: t('numberVerificationAlert')
+    //   })
+    //   props.navigation.navigate('PhoneNumber')
+    //   return false
+    // }
     return true
   }
 

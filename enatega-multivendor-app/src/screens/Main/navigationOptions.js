@@ -1,18 +1,21 @@
 /* eslint-disable react/display-name */
 import React, { useContext, useEffect } from 'react'
-import { LeftButton } from '../../components/Header/HeaderIcons/HeaderIcons'
+import {
+  LeftButton,
+  RightButton
+} from '../../components/Header/HeaderIcons/HeaderIcons'
 import SelectedLocation from '../../components/Main/Location/Location'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
 import { colors } from '../../utils/colors'
 import { scale } from '../../utils/scaling'
 
-const navigationOptions = props => ({
+const navigationOptions = (props) => ({
   headerStyle: {
-    height:scale(50),
-    backgroundColor:colors.primary,
+    height: scale(50),
+    backgroundColor: colors.primary,
     shadowColor: 'transparent',
-    shadowRadius: 0,
+    shadowRadius: 0
   },
   headerTitleStyle: {
     color: colors.background,
@@ -23,8 +26,13 @@ const navigationOptions = props => ({
     ...alignment.MLxSmall
   },
   headerTitleAlign: 'left',
-  headerLeft: () => <LeftButton icon={props.icon} iconColor={colors?.background}  />,
-  headerTitle: headerProp => (
+  headerLeft: () => (
+    <LeftButton icon={props.icon} iconColor={colors?.background} />
+  ),
+  headerRight: () => (
+    <RightButton icon={'cart'} iconColor={colors?.background} />
+  ),
+  headerTitle: (headerProp) => (
     <SelectedLocation
       {...headerProp}
       modalOn={() => props.open()}

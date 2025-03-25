@@ -43,7 +43,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       height: '100%',
       alignSelf: 'center'
     },
-    searchbar:{
+    searchbar: {
       backgroundColor: props != null ? props.main : 'black',
       ...alignment.PBmedium
     },
@@ -60,8 +60,8 @@ const styles = (props = null, hasActiveOrders = false) =>
       padding: scale(5),
       ...alignment.PLmedium,
       ...alignment.PRmedium,
-      borderWidth:scale(1),
-      borderColor:props != null ? props.color10 : '#FFF', 
+      borderWidth: scale(1),
+      borderColor: props != null ? props.color10 : '#FFF'
     },
     addNewAddressbtn: {
       padding: scale(5),
@@ -86,7 +86,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       width: '90%',
       alignSelf: 'center',
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     content: {
       ...alignment.PTlarge
@@ -98,9 +98,9 @@ const styles = (props = null, hasActiveOrders = false) =>
       borderTopStartRadius: scale(20),
       position: 'relative',
       zIndex: 999,
-      shadowOpacity: 0 ,
-      borderWidth:scale(1),
-      borderColor:props != null ? props.color10 : '#FFF', 
+      shadowOpacity: 0,
+      borderWidth: scale(1),
+      borderColor: props != null ? props.color10 : '#FFF'
     },
     addressTextContainer: {
       display: 'flex',
@@ -144,7 +144,7 @@ const styles = (props = null, hasActiveOrders = false) =>
     placeHolderFadeColor: {
       backgroundColor: props != null ? props.fontSecondColor : '#B8B8B8'
     },
-    emptyViewContainer:{
+    emptyViewContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center'
@@ -159,8 +159,8 @@ const styles = (props = null, hasActiveOrders = false) =>
       padding: scale(15),
       marginTop: scale(30),
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
-      borderWidth:scale(1),
-      borderRadius:scale(10)
+      borderWidth: scale(1),
+      borderRadius: scale(10)
     },
     searchList: {
       marginBottom: 70

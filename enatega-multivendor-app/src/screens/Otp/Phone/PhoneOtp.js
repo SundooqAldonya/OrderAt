@@ -34,11 +34,11 @@ function PhoneOtp(props) {
     themeContext
   } = usePhoneOtp()
   const [code, setCode] = useState('')
-  useEffect(() =>{
-    if(otp){
+  useEffect(() => {
+    if (otp) {
       setCode(otp)
     }
-  },[otp])
+  }, [otp])
   const { t } = useTranslation()
   useLayoutEffect(() => {
     props.navigation.setOptions(
@@ -53,15 +53,16 @@ function PhoneOtp(props) {
 
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar
-        backgroundColor={colors.primary}
-        barStyle={'light-content'}
-      />
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
 
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().logoContainer}>
-            <Ionicons name='phone-portrait-outline' size={30} color={currentTheme.newIconColor} />
+            <Ionicons
+              name='phone-portrait-outline'
+              size={30}
+              color={currentTheme.newIconColor}
+            />
           </View>
           <View>
             <TextDefault
@@ -89,7 +90,7 @@ function PhoneOtp(props) {
               {phone}
             </TextDefault>
           </View>
-          <View>
+          {/* <View>
             <OTPInputView
               pinCount={6}
               style={styles().otpInput}
@@ -117,20 +118,27 @@ function PhoneOtp(props) {
                 {t('wrongOtp')}
               </TextDefault>
             )}
-          </View>
+          </View> */}
         </View>
         <View>
-          {loading || updateUserLoading && (
-            <Spinner
-              backColor={currentTheme.themeBackground}
-              spinnerColor={currentTheme.main}
-              size='large'
-            />
-          )}
+          {loading ||
+            (updateUserLoading && (
+              <Spinner
+                backColor={currentTheme.themeBackground}
+                spinnerColor={currentTheme.main}
+                size='large'
+              />
+            ))}
         </View>
         <View style={styles().btnContainer}>
           <View style={alignment.MBxSmall}>
-            <TextDefault center H4 bold textColor={currentTheme.fontNewColor} style={alignment.MTsmall}>
+            <TextDefault
+              center
+              H4
+              bold
+              textColor={currentTheme.fontNewColor}
+              style={alignment.MTsmall}
+            >
               {seconds !== 0 ? `${t('retry')} ${seconds}s` : ''}
             </TextDefault>
           </View>

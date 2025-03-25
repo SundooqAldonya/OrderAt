@@ -128,7 +128,7 @@ function MyOrders(props) {
 
   return (
     <>
-      <View style={styles(currentTheme).container}>
+      <View style={{ ...styles(currentTheme).container, paddingBottom: 120 }}>
         <View style={styles(currentTheme).tabContainer}>
           <TabButton
             text={t('current')}

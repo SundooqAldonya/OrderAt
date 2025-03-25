@@ -562,5 +562,8 @@ export const en = {
   change_password: 'Change password',
   login_or_create: 'Login / Create Account',
   tax: 'Tax',
-  choose_nearest_area: 'Choose nearest area'
+  choose_nearest_area: 'Choose nearest area',
+  home: 'Home',
+  profile: 'Profile',
+  cart: 'Cart'
 }

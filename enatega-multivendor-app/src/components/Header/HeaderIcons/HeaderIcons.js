@@ -152,10 +152,12 @@ function RightButton(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { cartCount, isLoggedIn, profile } = useContext(UserContext)
+
   function showPasswordButton() {
     props.titlePosition((prev) => !prev)
     setPassword((prev) => !prev)
   }
+
   function clickPasswordButton() {
     props.titlePosition((prev) => !prev)
     setPassword((prev) => !prev)
