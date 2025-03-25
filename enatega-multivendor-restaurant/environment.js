@@ -24,15 +24,10 @@ const getEnvVars = (env = Updates.channel) => {
     }
   }
   return {
-    GRAPHQL_URL: 'http://192.168.1.5:8001/graphql',
-    WS_GRAPHQL_URL: 'ws://192.168.1.5:8001/graphql',
-    SERVER_URL: 'https://192.168.1.5:8001/',
-
-    // GRAPHQL_URL: 'https://enatega-multivendor.up.railway.app/graphql',
-    // WS_GRAPHQL_URL: 'wss://enatega-multivendor.up.railway.app/graphql',
+    GRAPHQL_URL: 'http://192.168.1.7:8001/graphql',
+    WS_GRAPHQL_URL: 'ws://192.168.1.7:8001/graphql',
+    SERVER_URL: 'https://192.168.1.7:8001/',
     SENTRY_DSN: configuration.restaurantAppSentryUrl
-    // SENTRY_DSN:
-    //   'https://91b55f514a2c4708845789d6e79abf10@o1103026.ingest.sentry.io/6131933'
   }
 }
 

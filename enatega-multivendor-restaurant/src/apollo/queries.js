@@ -111,6 +111,10 @@ export const restaurantInfo = `query Restaurant($id:String){
       endTime
     }
   }
+  owner {
+    _id
+    name
+  }
 }}
 `
 export const defaultRestaurantCreds = `query LastOrderCreds {

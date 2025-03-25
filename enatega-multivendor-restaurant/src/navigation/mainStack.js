@@ -30,6 +30,7 @@ import Toast from 'react-native-toast-message'
 import { testingNotifications } from '../utilities/setupNotificationChannel'
 import NewOrderScreenNotification from '../screens/NewOrderScreenNotification'
 import AddNewOrder from '../screens/AddNewOrder'
+import Profile from '../screens/Profile'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -145,6 +146,7 @@ function StackNavigator() {
         component={NewOrderScreenNotification}
       />
       <Stack.Screen name="AddNewOrder" component={AddNewOrder} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   )
 }

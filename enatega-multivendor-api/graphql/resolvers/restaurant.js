@@ -1239,6 +1239,16 @@ module.exports = {
         console.log('updateDeliveryBoundsAndLocation', error)
         throw new Error(error)
       }
+    },
+    async deactivateRestaurant(_, args) {
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        restaurant.isActive = false
+        await restaurant.save()
+        return { message: 'Deactivated business account successfully!' }
+      } catch (err) {
+        throw new Error(err)
+      }
     }
   }
 }

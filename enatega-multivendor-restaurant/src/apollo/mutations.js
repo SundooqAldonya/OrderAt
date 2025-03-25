@@ -174,3 +174,10 @@ export const newCheckoutPlaceOrder = gql`
     }
   }
 `
+export const deactivateRestaurant = gql`
+  mutation DeactivateRestaurant($id: String!) {
+    deactivateRestaurant(id: $id) {
+      message
+    }
+  }
+`

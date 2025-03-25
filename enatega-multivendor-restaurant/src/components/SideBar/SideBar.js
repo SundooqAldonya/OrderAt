@@ -139,7 +139,7 @@ export default function SideBar() {
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.topContainer}>
-          <View style={styles.profileContainer}>
+          <View style={{ ...styles.profileContainer, flexDirection: 'column' }}>
             <View style={styles.avatar}>
               <Image
                 source={{ uri: data && data.restaurant.image }}
@@ -155,8 +155,8 @@ export default function SideBar() {
                 center
                 textColor="white"
                 style={{
-                  MarginLeft: 10,
-                  textAlign: isRtl ? 'right' : 'left'
+                  marginTop: 20,
+                  textAlign: 'center'
                 }}>
                 {data && data.restaurant.name}
               </TextDefault>
@@ -263,7 +263,23 @@ export default function SideBar() {
               {t('language')}
             </TextDefault>
           </TouchableOpacity>
-          {/* <TouchableOpacity
+
+          <TouchableOpacity
+            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            activeOpacity={0.8}
+            onPress={() => navigator.navigate('Profile')}>
+            <View style={styles.icon}>
+              <Icon type="font-awesome" color="white" name="user" size={26} />
+            </View>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+              {t('settings')}
+            </TextDefault>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
             onPress={() =>
@@ -286,6 +302,7 @@ export default function SideBar() {
               {t('productPage')}
             </TextDefault>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
@@ -304,6 +321,7 @@ export default function SideBar() {
               {t('privacyPolicy')}
             </TextDefault>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
             activeOpacity={0.8}
@@ -326,7 +344,7 @@ export default function SideBar() {
               style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('aboutUs')}
             </TextDefault>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
 
         <View style={styles.lowerContainer}>

@@ -92,5 +92,12 @@ export const en = {
   select_area: 'Select Area',
   address_details: 'Address details ex: 2nd floor',
   new_order_title: 'New Order',
-  review_new_order: 'Review New Order'
+  review_new_order: 'Review New Order',
+  profile: 'Profile',
+  DeleteAccount: 'Delete Account',
+  DeleteConfirmation: 'Are you Sure you want to delete Account?',
+  permanentDeleteMessage:
+    'Are you sure you want to delete your account? This action cannot be undone. Deleting your account will permanently remove all of your data, including your orders and preferences. If you proceed, you will lose access to your account and its benefits.',
+  yesSure: 'Yes Sure',
+  cancel: 'Cancel'
 }

@@ -164,6 +164,7 @@ const typeDefs = gql`
     city: CityArea
     createdAt: String
   }
+
   type RestaurantCustomer {
     _id: ID!
     orderId: Int!
@@ -1509,6 +1510,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    deactivateRestaurant(id: String!): Message
     googleAuthCustomerApp(
       name: String!
       email: String!
