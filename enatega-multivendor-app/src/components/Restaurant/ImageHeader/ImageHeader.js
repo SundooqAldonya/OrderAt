@@ -571,40 +571,43 @@ function ImageTextCenterHeader(props, ref) {
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) => (
-                <View
-                  style={
-                    props.selectedLabel === index
-                      ? styles(currentTheme).activeHeader
-                      : null
-                  }
-                >
-                  <RectButton
-                    rippleColor={currentTheme.rippleColor}
-                    onPress={() => props.changeIndex(index)}
-                    style={styles(currentTheme).headerContainer}
+              renderItem={({ item, index }) => {
+                console.log('item', item)
+                return (
+                  <View
+                    style={
+                      props.selectedLabel === index
+                        ? styles(currentTheme).activeHeader
+                        : null
+                    }
                   >
-                    <View style={styles().navbarTextContainer}>
-                      <TextDefault
-                        style={
-                          props.selectedLabel === index
-                            ? textStyles.Bolder
-                            : textStyles.H5
-                        }
-                        textColor={
-                          props.selectedLabel === index
-                            ? currentTheme.fontFourthColor
-                            : currentTheme.gray500
-                        }
-                        center
-                        H5
-                      >
-                        {item.title}
-                      </TextDefault>
-                    </View>
-                  </RectButton>
-                </View>
-              )}
+                    <RectButton
+                      rippleColor={currentTheme.rippleColor}
+                      onPress={() => props.changeIndex(index)}
+                      style={styles(currentTheme).headerContainer}
+                    >
+                      <View style={styles().navbarTextContainer}>
+                        <TextDefault
+                          style={
+                            props.selectedLabel === index
+                              ? textStyles.Bolder
+                              : textStyles.H5
+                          }
+                          textColor={
+                            props.selectedLabel === index
+                              ? currentTheme.fontFourthColor
+                              : currentTheme.gray500
+                          }
+                          center
+                          H5
+                        >
+                          {item.title}
+                        </TextDefault>
+                      </View>
+                    </RectButton>
+                  </View>
+                )
+              }}
             />
           )}
         </>

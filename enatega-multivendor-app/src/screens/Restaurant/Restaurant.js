@@ -112,19 +112,12 @@ function Restaurant(props) {
     propsData._id
   )
   const restaurant = data?.restaurantCustomer
-  const client = useApolloClient()
   const { data: popularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId }
   })
 
   const dataList =
-    popularItems &&
-    popularItems?.popularItems?.map((item) => {
-      // const foodDetails = fetchFoodDetails(item.id)
-      // console.log({ foodDetails })
-      // return foodDetails
-      return item
-    })
+    popularItems && popularItems?.popularItems?.map((item) => item)
 
   const searchHandler = () => {
     setSearchOpen(!searchOpen)
@@ -358,6 +351,7 @@ function Restaurant(props) {
   function animate() {
     scaleValue.value = withRepeat(withTiming(1.5, { duration: 250 }), 2, true)
   }
+
   const config = (to) => ({
     duration: 250,
     toValue: to,
@@ -411,6 +405,7 @@ function Restaurant(props) {
     }
     buttonClickedSetter(false)
   }
+
   const scrollHandler = useAnimatedScrollHandler((event) => {
     translationY.value = event.contentOffset.y
   })
@@ -423,6 +418,7 @@ function Restaurant(props) {
       scrollToNavbar(index)
     }
   }
+
   function scrollToNavbar(value = 0) {
     if (flatListRef.current != null) {
       flatListRef.current.scrollToIndex({
@@ -543,27 +539,30 @@ function Restaurant(props) {
     )
   }
   if (error) return <TextError text={JSON.stringify(error)} />
-
+  // return <JSONTree data={popularItems} />
   console.log({ restaurant })
   const allDeals = restaurant?.categories?.filter((cat) => cat?.foods?.length)
   const deals = allDeals.map((c, index) => ({
     ...c,
     data: c.foods,
-    index: dataList?.length > 0 ? index + 1 : index
+    index: dataList?.length ? index + 1 : index
   }))
 
-  const updatedDeals =
-    dataList?.length > 0
-      ? [
-          {
-            title: 'Popular',
-            id: new Date().getTime(),
-            data: dataList?.slice(0, 4),
-            index: 0
-          },
-          ...deals
-        ]
-      : [...deals]
+  console.log({ dataList })
+
+  // return <JSONTree data={dataList} />
+
+  const updatedDeals = dataList?.length
+    ? [
+        {
+          title: t('popular'),
+          _id: String(new Date().getTime()),
+          data: dataList?.slice(0, 4),
+          index: 0
+        },
+        ...deals
+      ]
+    : [...deals]
 
   return (
     <>
@@ -721,8 +720,8 @@ function Restaurant(props) {
               contentContainerStyle={{
                 paddingBottom: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
               }}
-              // ref={scrollRef}
               sections={updatedDeals}
+              ref={scrollRef}
               scrollEventThrottle={1}
               stickySectionHeadersEnabled={false}
               showsVerticalScrollIndicator={false}
@@ -732,11 +731,9 @@ function Restaurant(props) {
               onMomentumScrollEnd={(event) => {
                 onScrollEndSnapToEdge(event)
               }}
-              // onScroll={scrollHandler}
-              keyExtractor={(item, index) => item + index}
-              // contentContainerStyle={{ paddingBottom: 150 }}
+              keyExtractor={(item, index) => index}
               renderSectionHeader={({ section: { title, data } }) => {
-                if (title === 'Popular') {
+                if (title === t('popular')) {
                   if (!dataList || dataList?.length === 0) {
                     return null // Don't render the section header if dataList is empty
                   }
@@ -807,7 +804,7 @@ function Restaurant(props) {
                   item?.image && item?.image?.trim() !== ''
                     ? item.image
                     : IMAGE_LINK
-                if (section.title === 'Popular') {
+                if (section.title === t('popular')) {
                   if (!dataList || dataList?.length === 0) {
                     return null
                   }
@@ -885,96 +882,6 @@ function Restaurant(props) {
                         />
                       </View>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity
-                      style={styles(currentTheme).dealSection}
-                      activeOpacity={0.7}
-                      onPress={() =>
-                        onPressItem({
-                          ...item,
-                          restaurant: restaurant?._id,
-                          restaurantName: restaurant.name
-                        })
-                      }
-                    >
-                      <View
-                        style={{
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          flexDirection: isArabic ? 'row-reverse' : 'row'
-                        }}
-                      >
-                        <View
-                          style={{
-                            ...styles(currentTheme).deal,
-                            flexDirection: isArabic ? 'row-reverse' : 'row'
-                          }}
-                        >
-                          <Image
-                            style={{
-                              height: scale(60),
-                              width: scale(60),
-                              borderRadius: 30
-                            }}
-                            source={{ uri: imageUrl }}
-                          />
-                          <View style={styles(currentTheme).flex}>
-                            <View style={styles(currentTheme).dealDescription}>
-                              <TextDefault
-                                textColor={currentTheme.fontMainColor}
-                                style={styles(currentTheme).headerText}
-                                numberOfLines={1}
-                                bolder
-                              >
-                                {item.title}
-                              </TextDefault>
-                              <TextDefault
-                                style={styles(currentTheme).priceText}
-                                small
-                              >
-                                {wrapContentAfterWords(item.description, 5)}
-                              </TextDefault>
-                              <View style={styles(currentTheme).dealPrice}>
-                                <TextDefault
-                                  numberOfLines={1}
-                                  textColor={currentTheme.fontMainColor}
-                                  style={styles(currentTheme).priceText}
-                                  bolder
-                                  small
-                                >
-                                  {configuration.currencySymbol}{' '}
-                                  {parseFloat(item.variations[0].price).toFixed(
-                                    2
-                                  )}
-                                </TextDefault>
-                                {item?.variations[0]?.discounted > 0 && (
-                                  <TextDefault
-                                    numberOfLines={1}
-                                    textColor={currentTheme.fontSecondColor}
-                                    style={styles().priceText}
-                                    small
-                                    lineOver
-                                  >
-                                    {configuration.currencySymbol}{' '}
-                                    {(
-                                      item.variations[0].price +
-                                      item.variations[0].discounted
-                                    ).toFixed(2)}
-                                  </TextDefault>
-                                )}
-                              </View>
-                            </View>
-                          </View>
-                        </View>
-                        <View style={styles(currentTheme).addToCart}>
-                          <MaterialIcons
-                            name='add'
-                            size={scale(20)}
-                            color={currentTheme.themeBackground}
-                          />
-                        </View>
-                      </View>
-                      {tagCart(item?._id)}
-                    </TouchableOpacity> */}
                   </Fragment>
                 )
               }}

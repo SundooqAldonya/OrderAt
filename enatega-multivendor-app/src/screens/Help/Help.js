@@ -1,5 +1,12 @@
 import React, { useContext, useEffect } from 'react'
-import { View, StatusBar, Platform, FlatList, Linking, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StatusBar,
+  Platform,
+  FlatList,
+  Linking,
+  TouchableOpacity
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from './styles'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -54,13 +61,13 @@ const FAQs = [
   }
 ]
 
-const Help = props => {
+const Help = (props) => {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
   const openWhatsAppChat = () => {
-    Linking.openURL('whatsapp://send?phone=15408006867')
+    Linking.openURL('whatsapp://send?phone=+201501662775')
   }
 
   useFocusEffect(() => {
@@ -70,16 +77,16 @@ const Help = props => {
     StatusBar.setBarStyle('light-content')
   })
 
-  useEffect(() => {
-    async function Track() {
-      try {
-        await Analytics.track('NAVIGATE_TO_FAQS')
-      } catch(err){
-        // console.log('ERORORORO =>', err)
-      }
-    }
-    Track()
-  }, [])
+  // useEffect(() => {
+  //   async function Track() {
+  //     try {
+  //       await Analytics.track('NAVIGATE_TO_FAQS')
+  //     } catch (err) {
+  //       console.log('ERORORORO =>', err)
+  //     }
+  //   }
+  //   Track()
+  // }, [])
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -103,10 +110,14 @@ const Help = props => {
       },
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View>
-              <MaterialIcons name="arrow-back" size={25} color={currentTheme.newIconColor} />
+              <MaterialIcons
+                name='arrow-back'
+                size={25}
+                color={currentTheme.newIconColor}
+              />
             </View>
           )}
           onPress={() => {
@@ -122,10 +133,7 @@ const Help = props => {
       edges={['bottom', 'right', 'left']}
       style={styles(currentTheme).flex}
     >
-           <StatusBar
-              backgroundColor={colors.primary}
-              barStyle={'light-content'}
-            />
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
       <View
         style={[styles(currentTheme).flex, styles(currentTheme).mainContainer]}
       >

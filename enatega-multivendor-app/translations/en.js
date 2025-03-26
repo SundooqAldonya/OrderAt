@@ -565,5 +565,6 @@ export const en = {
   choose_nearest_area: 'Choose nearest area',
   home: 'Home',
   profile: 'Profile',
-  cart: 'Cart'
+  cart: 'Cart',
+  popular: 'Popular'
 }

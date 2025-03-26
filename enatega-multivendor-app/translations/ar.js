@@ -560,5 +560,6 @@ export const ar = {
   choose_nearest_area: 'اختر اقرب منطقة',
   home: 'الرئيسية',
   profile: 'الملف الشخصي',
-  cart: 'السلة'
+  cart: 'السلة',
+  popular: 'الأكثر رواجا'
 }
