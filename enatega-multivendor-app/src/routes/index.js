@@ -65,6 +65,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
+import UserContext from '../context/User'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -275,6 +276,7 @@ function LocationStack() {
 const BottomTabs = () => {
   const { t } = useTranslation()
   const Tab = createBottomTabNavigator()
+  const { isLoggedIn } = useContext(UserContext)
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -289,6 +291,9 @@ const BottomTabs = () => {
           } else if (route.name === 'MyOrders') {
             iconName = 'lunch-dining'
           }
+          // else if (route.name === 'CreateAccount') {
+          //   iconName = 'login'
+          // }
           return (
             <Icon
               name={iconName}
@@ -332,11 +337,13 @@ const BottomTabs = () => {
         options={{ tabBarLabel: t('titleSettings') }}
         component={Settings}
       />
-      <Tab.Screen
-        name='Profile'
-        options={{ tabBarLabel: t('profile') }}
-        component={Profile}
-      />
+      {isLoggedIn ? (
+        <Tab.Screen
+          name='Profile'
+          options={{ tabBarLabel: t('profile') }}
+          component={Profile}
+        />
+      ) : null}
     </Tab.Navigator>
   )
 }

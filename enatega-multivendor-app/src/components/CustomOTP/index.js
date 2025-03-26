@@ -1,0 +1,68 @@
+import React, { useRef, useState } from 'react'
+import { View, TextInput, StyleSheet } from 'react-native'
+
+const CustomOtpInput = ({ pinCount = 6, onCodeFilled }) => {
+  const [otp, setOtp] = useState(new Array(pinCount).fill(''))
+  const inputsRef = useRef([])
+
+  const handleChange = (text, index) => {
+    if (isNaN(text)) return // Allow only numbers
+
+    const newOtp = [...otp]
+    newOtp[index] = text
+    setOtp(newOtp)
+
+    // Move focus to next input
+    if (text && index < pinCount - 1) {
+      inputsRef.current[index + 1]?.focus()
+    }
+
+    // Call callback when OTP is filled
+    if (newOtp.every((digit) => digit !== '')) {
+      onCodeFilled(newOtp.join(''))
+    }
+  }
+
+  const handleKeyPress = (e, index) => {
+    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus()
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      {otp.map((_, index) => (
+        <TextInput
+          key={index}
+          ref={(ref) => (inputsRef.current[index] = ref)}
+          style={styles.input}
+          keyboardType='number-pad'
+          maxLength={1}
+          value={otp[index]}
+          onChangeText={(text) => handleChange(text, index)}
+          onKeyPress={(e) => handleKeyPress(e, index)}
+          autoFocus={index === 0}
+        />
+      ))}
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  input: {
+    width: 40,
+    height: 50,
+    marginHorizontal: 5,
+    borderWidth: 2,
+    borderColor: '#000',
+    textAlign: 'center',
+    fontSize: 20,
+    borderRadius: 5
+  }
+})
+
+export default CustomOtpInput

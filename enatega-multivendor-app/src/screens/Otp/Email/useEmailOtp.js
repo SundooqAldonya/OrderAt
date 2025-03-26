@@ -33,7 +33,7 @@ const useEmailOtp = () => {
   const [otp, setOtp] = useState('000000')
   const [otpError, setOtpError] = useState(false)
   const otpFrom = useRef(null)
-  const [seconds, setSeconds] = useState(5)
+  const [seconds, setSeconds] = useState(60)
   const [user] = useState(route.params?.user)
   const { setTokenAsync } = useContext(AuthContext)
   const { profile } = useContext(UserContext)
@@ -88,7 +88,7 @@ const useEmailOtp = () => {
         type: 'email'
       })
       await setTokenAsync(data.createUser.token)
-      navigation.navigate('PhoneOtp')
+      // navigation.navigate('PhoneOtp')
     } catch (e) {
       console.log(e)
     }

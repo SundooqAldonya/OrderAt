@@ -2,7 +2,7 @@ const sgMail = require('@sendgrid/mail')
 const nodemailer = require('nodemailer')
 const Configuration = require('../models/configuration')
 
-const sendEmail = async(to, subject, text, template, attachment) => {
+const sendEmail = async (to, subject, text, template, attachment) => {
   const configuration = await Configuration.findOne()
   if (!configuration || !configuration.enableEmail) {
     console.log('Invalid email configuration')
@@ -35,8 +35,8 @@ const sendEmail = async(to, subject, text, template, attachment) => {
     const emailer = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: configuration.emailName,
-        pass: configuration.password
+        user: configuration.email,
+        pass: 'evzw tkqw weqa leoy'
       }
     })
 
@@ -58,7 +58,7 @@ const sendEmail = async(to, subject, text, template, attachment) => {
   }
 }
 
-const sendTextEmail = async(to, subject, template) => {
+const sendTextEmail = async (to, subject, template) => {
   const configuration = await Configuration.findOne()
   if (!configuration || !configuration.enableEmail) return false
 

@@ -207,14 +207,21 @@ module.exports = {
         },
         process.env.SECRETKEY
       )
+      console.log({ isNewUser })
+
       if (isNewUser) {
         const attachment = path.join(
           __dirname,
           '../../public/assets/tempImages/enatega.png'
         )
+        const generateVerificationCode = () => {
+          const code = Math.floor(1000 + Math.random() * 9000)
+          return String(code).split('').map(Number)
+        }
         const signupTemp = await signupTemplate({
           email: result.name,
-          password: ''
+          password: '',
+          code: generateVerificationCode()
         })
         sendEmail(result.email, 'Account Creation', '', signupTemp, attachment)
       }

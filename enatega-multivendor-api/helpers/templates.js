@@ -3,6 +3,7 @@ const path = require('path')
 /* eslint-disable quotes */
 module.exports = {
   async signupTemplate(params) {
+    console.log({ params })
     const template = await ejs.renderFile(
       path.join(__dirname, '../views/Emails/signup.ejs'),
       {

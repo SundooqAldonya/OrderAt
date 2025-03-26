@@ -419,6 +419,12 @@ module.exports = {
           }
         }
         const hashedPassword = await bcrypt.hash(args.userInput.password, 12)
+        const generateVerificationCode = () => {
+          const code = Math.floor(1000 + Math.random() * 9000)
+          return String(code).split('').map(Number)
+        }
+        const code = generateVerificationCode()
+        console.log({ code })
         const userDetails = {
           appleId: args.userInput.appleId,
           email: args.userInput.email,
@@ -429,10 +435,12 @@ module.exports = {
           isOrderNotification: !!args.userInput.notificationToken,
           isOfferNotification: !!args.userInput.notificationToken,
           userType: 'default',
-          emailIsVerified: true
+          emailIsVerified: true,
+          emailVerficationCode: code
         }
-        const user = new User(userDetails)
 
+        const user = new User(userDetails)
+        console.log({ emailVerficationCode: user.emailVerficationCode })
         sendUserInfoToZapier({
           email: args.userInput.email,
           phone: args.userInput.phone,
@@ -444,7 +452,11 @@ module.exports = {
           __dirname,
           '../../public/assets/tempImages/enatega.png'
         )
-        const signupTemp = await signupTemplate(args.userInput)
+
+        const signupTemp = await signupTemplate({
+          ...args.userInput,
+          code: user.emailVerficationCode
+        })
         sendEmail(
           result.email,
           'Account Creation',

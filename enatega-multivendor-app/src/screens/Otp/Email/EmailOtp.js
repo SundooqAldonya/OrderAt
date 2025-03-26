@@ -6,13 +6,14 @@ import Spinner from '../../../components/Spinner/Spinner'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { alignment } from '../../../utils/alignment'
 import screenOptions from '../screenOptions'
-import OTPInputView from '@twotalltotems/react-native-otp-input'
+// import OTPInputView from '@twotalltotems/react-native-otp-input'
 import useEmailOtp from './useEmailOtp'
 import { useTranslation } from 'react-i18next'
 import { SimpleLineIcons } from '@expo/vector-icons'
 import { useRoute } from '@react-navigation/native'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
+import CustomOtpInput from '../../../components/CustomOTP'
 
 function EmailOtp(props) {
   const {
@@ -29,15 +30,18 @@ function EmailOtp(props) {
   } = useEmailOtp()
   const [code, setCode] = useState('')
 
-  useEffect(() =>{
-    if(otp){
-      setCode(otp)
-    }
-  },[otp])
+  // useEffect(() => {
+  //   if (otp) {
+  //     setCode(otp)
+  //   }
+  // }, [otp])
   const route = useRoute()
   const userData = route.params?.user
 
   const { t } = useTranslation()
+  if (!t) {
+    console.error('useTranslation() returned null. Check i18n setup.')
+  }
   useLayoutEffect(() => {
     props.navigation.setOptions(
       screenOptions({
@@ -49,16 +53,29 @@ function EmailOtp(props) {
     )
   }, [props.navigation])
 
+  const onCodeFilledHandler = (code) => {
+    try {
+      if (onCodeFilled) {
+        onCodeFilled(code)
+      } else {
+        console.warn('onCodeFilled function is undefined')
+      }
+    } catch (error) {
+      console.error('Error in onCodeFilled:', error)
+    }
+  }
+
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar
-        backgroundColor={colors.primary}
-        barStyle={'light-content'}
-      />
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>
           <View style={styles().logoContainer}>
-            <SimpleLineIcons name='envelope' size={30} color={currentTheme.newIconColor} />
+            <SimpleLineIcons
+              name='envelope'
+              size={30}
+              color={currentTheme.newIconColor}
+            />
           </View>
           <View>
             <TextDefault
@@ -87,9 +104,12 @@ function EmailOtp(props) {
             </TextDefault>
           </View>
           <View>
-            <OTPInputView
-
-              pinCount={6}
+            <CustomOtpInput
+              pinCount={4}
+              onCodeFilled={(code) => console.log('OTP:', code)}
+            />
+            {/* <OTPInputView
+              pinCount={4}
               style={styles().otpInput}
               codeInputFieldStyle={[
                 styles(currentTheme).otpBox,
@@ -101,11 +121,9 @@ function EmailOtp(props) {
               autoFocusOnLoad
               code={code}
               onCodeChanged={(code) => setCode(code)}
-              onCodeFilled={(code) => {
-                onCodeFilled(code)
-              }}
+              onCodeFilled={onCodeFilledHandler}
               editable
-            />
+            /> */}
             {otpError && (
               <TextDefault
                 style={styles(currentTheme).error}
@@ -118,13 +136,14 @@ function EmailOtp(props) {
           </View>
         </View>
         <View>
-          {loading || updateUserLoading && (
-            <Spinner
-              backColor={currentTheme.themeBackground}
-              spinnerColor={currentTheme.main}
-              size='large'
-            />
-          )}
+          {loading ||
+            (updateUserLoading && (
+              <Spinner
+                backColor={currentTheme.themeBackground}
+                spinnerColor={currentTheme.main}
+                size='large'
+              />
+            ))}
         </View>
         <View
           style={{

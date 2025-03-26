@@ -75,7 +75,10 @@ const userSchema = new Schema(
         type: String,
         default: []
       }
-    ]
+    ],
+    emailVerficationCode: {
+      type: Array
+    }
   },
   { timestamps: true }
 )
