@@ -157,6 +157,7 @@ function DetailCard(props) {
               item
               xs={6}
               className={classes.ph1}
+              style={{ cursor: 'pointer' }}
               onClick={() =>
                 handleGoogleMaps({ long: coords.long, lat: coords.lat })
               }>
