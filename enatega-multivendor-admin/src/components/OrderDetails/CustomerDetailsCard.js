@@ -3,17 +3,12 @@ import clsx from 'clsx'
 import React from 'react'
 import useStyles from './styles'
 import { useTranslation } from 'react-i18next'
-import { handleGoogleMaps } from '../../helpers/maps'
 
-function DetailCard(props) {
+function CustomerDetailsCard(props) {
   const classes = useStyles()
   const theme = useTheme()
   const { t } = useTranslation()
-  const coords = {
-    long: props.deliveryAddress.location.coordinates[0],
-    lat: props.deliveryAddress.location.coordinates[1]
-  }
-  console.log({ props })
+
   return (
     <Grid container item xs={12}>
       <Grid item xs={1} />
@@ -22,7 +17,7 @@ function DetailCard(props) {
           className={`${classes.heading} ${classes.textBold}`}
           textAlign="center"
           color={theme.palette.primary.main}>
-          {t('orderDetail')}
+          {t('customer_details')}
         </Typography>
         <Divider
           orientation="horizontal"
@@ -43,27 +38,6 @@ function DetailCard(props) {
                 className={`${clsx(classes.disabledText)} ${clsx(
                   classes.smallText
                 )} ${clsx(classes.textBold)}`}>
-                {t('orderFrom')}:
-              </Typography>
-            </Grid>
-            <Grid item xs={6} className={classes.ph1}>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                className={`${clsx(classes.textBold)} ${clsx(
-                  classes.smallText
-                )}`}>
-                {props.restaurant?.name ?? '...'}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid container my={2}>
-            <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                className={`${clsx(classes.disabledText)} ${clsx(
-                  classes.smallText
-                )} ${clsx(classes.textBold)}`}>
                 {t('name')}:
               </Typography>
             </Grid>
@@ -78,7 +52,7 @@ function DetailCard(props) {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container>
+          <Grid container className={classes.mv2}>
             <Grid item xs={6}>
               <Typography
                 variant="body2"
@@ -99,49 +73,7 @@ function DetailCard(props) {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container className={classes.mv2}>
-            <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                className={`${clsx(classes.disabledText)} ${clsx(
-                  classes.smallText
-                )} ${clsx(classes.textBold)}`}>
-                {t('orderNo')}:
-              </Typography>
-            </Grid>
-            <Grid item xs={6} className={classes.ph1}>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                className={`${clsx(classes.textBold)} ${clsx(
-                  classes.smallText
-                )}`}>
-                {props.orderId ?? '...'}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid container className={classes.mv2}>
-            <Grid item xs={6}>
-              <Typography
-                variant="body2"
-                className={`${clsx(classes.disabledText)} ${clsx(
-                  classes.smallText
-                )} ${clsx(classes.textBold)}`}>
-                {t('label')}:
-              </Typography>
-            </Grid>
-            <Grid item xs={6} className={classes.ph1}>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                className={`${clsx(classes.textBold)} ${clsx(
-                  classes.smallText
-                )}`}>
-                {props.deliveryAddress ? props.deliveryAddress?.label : '...'}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid container>
+          {/* <Grid container>
             <Grid item xs={6}>
               <Typography
                 variant="body2"
@@ -153,13 +85,7 @@ function DetailCard(props) {
                   : t('deliveryAddress') + ':'}
               </Typography>
             </Grid>
-            <Grid
-              item
-              xs={6}
-              className={classes.ph1}
-              onClick={() =>
-                handleGoogleMaps({ long: coords.long, lat: coords.lat })
-              }>
+            <Grid item xs={6} className={classes.ph1}>
               {!!props.isPickedUp ? (
                 <Typography
                   variant="body2"
@@ -180,11 +106,11 @@ function DetailCard(props) {
                 </Typography>
               )}
             </Grid>
-          </Grid>
+          </Grid> */}
         </Paper>
       </Grid>
     </Grid>
   )
 }
 
-export default DetailCard
+export default CustomerDetailsCard

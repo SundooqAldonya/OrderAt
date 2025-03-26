@@ -19,11 +19,11 @@ export default function AmountCard(props) {
 
   useEffect(() => {
     ;(async () => {
-      const destinationObj = JSON.parse(localStorage.getItem('location'))
+      // const destinationObj = JSON.parse(localStorage.getItem('location'))
       const latOrigin = Number(props.restaurant.location.coordinates[1])
       const lonOrigin = Number(props.restaurant.location.coordinates[0])
-      const latDest = Number(destinationObj.latitude)
-      const longDest = Number(destinationObj.longitude)
+      const latDest = Number(props.deliveryAddress.location.coordinates[1])
+      const longDest = Number(props.deliveryAddress.location.coordinates[0])
 
       const distance = await calculateDistance(
         latOrigin,

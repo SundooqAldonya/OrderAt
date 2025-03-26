@@ -21,6 +21,7 @@ import DetailCard from '../components/OrderDetails/DetailCard'
 import AmountCard from '../components/OrderDetails/AmountCard'
 import RiderDetails from '../components/OrderDetails/RiderDetails'
 import PickedUpImage from '../components/OrderDetails/PickedUpImage'
+import CustomerDetailsCard from '../components/OrderDetails/CustomerDetailsCard'
 
 const OrderDetailsPage = () => {
   const { id: orderId } = useParams()
@@ -57,6 +58,9 @@ const OrderDetailsPage = () => {
         <Grid container style={{ marginTop: theme.spacing(5) }}>
           <DetailCard {...order} />
         </Grid>
+        {/* <Grid container style={{ marginTop: theme.spacing(5) }}>
+          <CustomerDetailsCard {...order} />
+        </Grid> */}
         {order.rider ? (
           <Grid container style={{ marginTop: theme.spacing(5) }}>
             <RiderDetails rider={order.rider} order={order} />

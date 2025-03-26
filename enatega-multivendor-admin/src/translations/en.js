@@ -398,7 +398,9 @@ const en = {
     submit_order: 'Submit Order',
     customer_name: 'Customer Name',
     address_free_text_placeholder: 'Ex: 2nd floor',
-    time: 'Time'
+    time: 'Time',
+    customer_details: 'Customer Details',
+    label: 'Label'
   }
 }
 

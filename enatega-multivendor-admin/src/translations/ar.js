@@ -381,7 +381,9 @@ const ar = {
     submit_order: 'إتمام الطلب',
     customer_name: 'اسم العميل',
     address_free_text_placeholder: 'مثال:الشارع - الدور الثاني شقة 2',
-    time: 'الوقت'
+    time: 'الوقت',
+    customer_details: 'تفاصيل العميل',
+    label: 'المنطقة'
   }
 }
 

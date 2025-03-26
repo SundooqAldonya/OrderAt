@@ -934,6 +934,7 @@ export const singleOrder = gql`
         location {
           coordinates
         }
+        label
         deliveryAddress
       }
       items {
