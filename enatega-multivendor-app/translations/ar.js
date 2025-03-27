@@ -561,5 +561,7 @@ export const ar = {
   home: 'الرئيسية',
   profile: 'الملف الشخصي',
   cart: 'السلة',
-  popular: 'الأكثر رواجا'
+  popular: 'الأكثر رواجا',
+  correct: 'موافقة',
+  otp_not_correct: 'الرقم الذي أدخلته غير صحيح!'
 }

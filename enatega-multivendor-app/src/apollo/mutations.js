@@ -403,3 +403,10 @@ export const googleAuthCustomerApp = gql`
     }
   }
 `
+export const submitEmailOTP = gql`
+  mutation SubmitEmailOTP($email: String!, $otp: String!) {
+    submitEmailOTP(email: $email, otp: $otp) {
+      message
+    }
+  }
+`

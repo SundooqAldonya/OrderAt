@@ -240,7 +240,7 @@ module.exports = {
           addresses: address || [],
           email: userInput.email || '',
           userType: 'default',
-          emailIsVerified: userInput.email ? true : false,
+          emailIsVerified: false,
           phoneIsVerified: false,
           isActive: true,
           area: userInput.area || null
@@ -435,7 +435,7 @@ module.exports = {
           isOrderNotification: !!args.userInput.notificationToken,
           isOfferNotification: !!args.userInput.notificationToken,
           userType: 'default',
-          emailIsVerified: true,
+          emailIsVerified: false,
           emailVerficationCode: code
         }
 
@@ -608,7 +608,24 @@ module.exports = {
         }
       } catch (err) {
         console.log(err)
-        throw err
+        throw new Error(err)
+      }
+    },
+    async submitEmailOTP(_, args) {
+      console.log({ args })
+      try {
+        const { email, otp } = args
+        const user = await User.findOne({ email })
+        const code = user.emailVerficationCode.join('')
+        if (otp === code) {
+          user.emailIsVerified = true
+          await user.save()
+        } else {
+          throw new Error('otp_not_correct')
+        }
+        return { message: 'Email is confirmed' }
+      } catch (err) {
+        throw new Error(err)
       }
     }
   }

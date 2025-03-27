@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { View, TouchableOpacity, StatusBar, Image } from 'react-native'
+import { View, TouchableOpacity, StatusBar, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from '../styles'
 import Spinner from '../../../components/Spinner/Spinner'
@@ -10,15 +10,19 @@ import screenOptions from '../screenOptions'
 import useEmailOtp from './useEmailOtp'
 import { useTranslation } from 'react-i18next'
 import { SimpleLineIcons } from '@expo/vector-icons'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import CustomOtpInput from '../../../components/CustomOTP'
+import { useMutation } from '@apollo/client'
+import { submitEmailOTP } from '../../../apollo/mutations'
+import Toast from 'react-native-toast-message'
 
 function EmailOtp(props) {
+  const navigation = useNavigation()
   const {
-    otp,
-    setOtp,
+    // otp,
+    // setOtp,
     otpError,
     seconds,
     loading,
@@ -28,16 +32,30 @@ function EmailOtp(props) {
     currentTheme,
     themeContext
   } = useEmailOtp()
-  const [code, setCode] = useState('')
 
-  // useEffect(() => {
-  //   if (otp) {
-  //     setCode(otp)
-  //   }
-  // }, [otp])
+  const [otp, setOtp] = useState(new Array(4).fill(''))
+
+  const [mutateOtp] = useMutation(submitEmailOTP, {
+    onCompleted: (data) => {
+      console.log({ data })
+      navigation.navigate('Main')
+    },
+    onError: (error) => {
+      console.log({ error })
+      const errorMessage = JSON.stringify(error).split(':').pop()
+      const cleanedMessage = errorMessage.replace(/[^a-zA-Z0-9_]/g, '')
+      console.log({ cleanedMessage })
+      Toast.show({
+        type: 'error',
+        text1: t(cleanedMessage),
+        visibilityTime: 10000
+      })
+    }
+  })
+
   const route = useRoute()
   const userData = route.params?.user
-
+  // console.log({ userData })
   const { t } = useTranslation()
   if (!t) {
     console.error('useTranslation() returned null. Check i18n setup.')
@@ -62,6 +80,19 @@ function EmailOtp(props) {
       }
     } catch (error) {
       console.error('Error in onCodeFilled:', error)
+    }
+  }
+
+  const handleOTPSubmit = () => {
+    if (!otp[0] || !otp[1] || !otp[2] || !otp[3]) {
+      Alert.alert('Error', 'Should fill the code')
+    } else {
+      mutateOtp({
+        variables: {
+          email: userData.email,
+          otp: otp.join('')
+        }
+      })
     }
   }
 
@@ -106,8 +137,21 @@ function EmailOtp(props) {
           <View>
             <CustomOtpInput
               pinCount={4}
+              otp={otp}
+              setOtp={setOtp}
               onCodeFilled={(code) => console.log('OTP:', code)}
             />
+            <TouchableOpacity
+              onPress={handleOTPSubmit}
+              style={[
+                styles(currentTheme).btn,
+                {
+                  marginTop: 50
+                }
+              ]}
+            >
+              <TextDefault>{t('correct')}</TextDefault>
+            </TouchableOpacity>
             {/* <OTPInputView
               pinCount={4}
               style={styles().otpInput}

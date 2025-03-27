@@ -1510,6 +1510,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message
     googleAuthCustomerApp(
       name: String!

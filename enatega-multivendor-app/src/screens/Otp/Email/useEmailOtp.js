@@ -40,6 +40,8 @@ const useEmailOtp = () => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
+  // console.log({ profile })
+
   function onError(error) {
     if (error.networkError) {
       FlashMessage({

@@ -566,5 +566,7 @@ export const en = {
   home: 'Home',
   profile: 'Profile',
   cart: 'Cart',
-  popular: 'Popular'
+  popular: 'Popular',
+  correct: 'Correct',
+  otp_not_correct: 'OTP not correct'
 }

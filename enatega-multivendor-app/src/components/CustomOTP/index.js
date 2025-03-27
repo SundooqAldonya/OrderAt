@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
 
-const CustomOtpInput = ({ pinCount = 6, onCodeFilled }) => {
-  const [otp, setOtp] = useState(new Array(pinCount).fill(''))
+const CustomOtpInput = ({ otp, setOtp, pinCount = 6, onCodeFilled }) => {
   const inputsRef = useRef([])
 
   const handleChange = (text, index) => {
@@ -51,17 +50,19 @@ const CustomOtpInput = ({ pinCount = 6, onCodeFilled }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 50
   },
   input: {
     width: 40,
     height: 50,
     marginHorizontal: 5,
     borderWidth: 2,
-    borderColor: '#000',
+    borderColor: 'grey',
     textAlign: 'center',
     fontSize: 20,
-    borderRadius: 5
+    borderRadius: 5,
+    color: '#fff'
   }
 })
 
