@@ -192,8 +192,8 @@ module.exports = {
         if (!user) throw new Error('User does not exist!')
       }
       if (type === 'default') {
-        const { error, user } = await User.authenticate()(email, password)
-        if (error || !user) throw new Error('Email and password do not match!')
+        const isValid = await user.authenticate(password)
+        if (!isValid.user) throw new Error('Email and password do not match!')
         // const isEqual = await bcrypt.compare(password, user.password)
         // if (!isEqual) {
         //   throw new Error('Invalid credentials!')
