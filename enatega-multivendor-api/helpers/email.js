@@ -33,15 +33,19 @@ const sendEmail = async (to, subject, text, template, attachment) => {
   } else {
     // Use nodemailer with hardcoded credentials
     const emailer = nodemailer.createTransport({
-      service: 'gmail',
+      // service: 'gmail',
+      host: 'mail.privateemail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: configuration.email,
-        pass: 'evzw tkqw weqa leoy'
-      }
+        pass: 'Info@Password@1'
+      },
+      debug: true
     })
 
     const mailOptions = {
-      from: { name: configuration.emailName, email: configuration.email },
+      from: `"Orderat" ${configuration.email}`,
       to,
       subject,
       html: template,
