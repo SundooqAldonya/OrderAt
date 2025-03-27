@@ -192,11 +192,13 @@ module.exports = {
         if (!user) throw new Error('User does not exist!')
       }
       if (type === 'default') {
-        const isEqual = await bcrypt.compare(password, user.password)
-        if (!isEqual) {
-          throw new Error('Invalid credentials!')
-          // throw new Error('Password is incorrect!');
-        }
+        const { error, user } = await User.authenticate()(email, password)
+        if (error || !user) throw new Error('Email and password do not match!')
+        // const isEqual = await bcrypt.compare(password, user.password)
+        // if (!isEqual) {
+        //   throw new Error('Invalid credentials!')
+        //   // throw new Error('Password is incorrect!');
+        // }
       }
       user.notificationToken = notificationToken
       const result = await user.save()
