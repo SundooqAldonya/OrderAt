@@ -58,3 +58,5 @@ buck-out/
 web-build/
 
 # @end expo-cli
+GoogleService-Info.plist
+google-services.json
