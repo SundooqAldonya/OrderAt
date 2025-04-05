@@ -1310,7 +1310,14 @@ const typeDefs = gql`
     nextPage: Float
   }
 
+  type DeliveryPrice {
+    originZone: String!
+    destinationZone: String!
+    cost: Float!
+  }
+
   type Query {
+    allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
     getRidersRegistered: [RiderRegister!]
@@ -1509,7 +1516,14 @@ const typeDefs = gql`
     preparationTime: Int
   }
 
+  input DeliveryPriceInput {
+    originZone: String!
+    destinationZone: String!
+    cost: Float!
+  }
+
   type Mutation {
+    createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput!): Message
     submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message
     googleAuthCustomerApp(

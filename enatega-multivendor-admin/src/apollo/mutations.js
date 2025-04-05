@@ -937,3 +937,10 @@ export const newCheckoutPlaceOrder = gql`
     }
   }
 `
+export const createDeliveryPrice = gql`
+  mutation CreateDeliveryPrice($deliveryPriceInput: DeliveryPriceInput!) {
+    createDeliveryPrice(deliveryPriceInput: $deliveryPriceInput) {
+      message
+    }
+  }
+`

@@ -1002,3 +1002,12 @@ export const singleOrder = gql`
     }
   }
 `
+export const allDeliveryPrices = gql`
+  query AllDeliveryPrices {
+    allDeliveryPrices {
+      originZone
+      destinationZone
+      cost
+    }
+  }
+`

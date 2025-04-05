@@ -400,7 +400,8 @@ const en = {
     address_free_text_placeholder: 'Ex: 2nd floor',
     time: 'Time',
     customer_details: 'Customer Details',
-    label: 'Label'
+    label: 'Label',
+    delivery_prices: 'Delivery Prices'
   }
 }
 

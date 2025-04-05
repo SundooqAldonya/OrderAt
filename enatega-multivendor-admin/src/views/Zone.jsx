@@ -47,11 +47,14 @@ const Zones = props => {
   const [mutate, { error, loading }] = useMutation(DELETE_ZONE, {
     refetchQueries: [{ query: GET_ZONES }]
   })
+
   const { data, loading: loadingQuery, refetch } = useQuery(GET_ZONES)
+
   const toggleModal = zone => {
     setEditModal(!editModal)
     setZone(zone)
   }
+
   const closeEditModal = () => {
     setEditModal(false)
   }

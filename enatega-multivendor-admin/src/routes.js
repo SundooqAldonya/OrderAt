@@ -64,6 +64,7 @@ import OrdersAdmin from './views/OrdersAdmin'
 import RidersRegistered from './views/RidersRegistered'
 import ElectricMopedIcon from '@mui/icons-material/ElectricMoped'
 import OrderDetailsPage from './views/OrderDetailsPage'
+import DeliveryPrices from './views/DeliveryPrices'
 
 var routes = [
   {
@@ -381,6 +382,15 @@ var routes = [
     layout: '/admin',
     appearInSidebar: true,
     admin: false
+  },
+  {
+    path: '/deliveryPrices',
+    name: 'Delivery Prices',
+    icon: LocationIcon,
+    component: DeliveryPrices,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
   },
 
   {

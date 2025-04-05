@@ -383,7 +383,8 @@ const ar = {
     address_free_text_placeholder: 'مثال:الشارع - الدور الثاني شقة 2',
     time: 'الوقت',
     customer_details: 'تفاصيل العميل',
-    label: 'المنطقة'
+    label: 'المنطقة',
+    delivery_prices: 'أسعار التوصيل'
   }
 }
 
