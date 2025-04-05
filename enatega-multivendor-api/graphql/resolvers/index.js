@@ -33,6 +33,7 @@ const areas = require('./areas')
 const businesses = require('./businesses')
 const ridersRegister = require('./ridersRegister')
 const shopCategories = require('./shopCategories')
+const DeliveryPricing = require('./DeliveryPricing')
 
 const rootResolver = {
   Query: {
@@ -66,7 +67,8 @@ const rootResolver = {
     ...areas.Query,
     ...businesses.Query,
     ...ridersRegister.Query,
-    ...shopCategories.Query
+    ...shopCategories.Query,
+    ...DeliveryPricing.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -101,7 +103,8 @@ const rootResolver = {
     ...areas.Mutation,
     ...businesses.Mutation,
     ...ridersRegister.Mutation,
-    ...shopCategories.Mutation
+    ...shopCategories.Mutation,
+    ...DeliveryPricing.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

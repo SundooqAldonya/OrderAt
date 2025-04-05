@@ -1005,8 +1005,14 @@ export const singleOrder = gql`
 export const allDeliveryPrices = gql`
   query AllDeliveryPrices {
     allDeliveryPrices {
-      originZone
-      destinationZone
+      originZone {
+        _id
+        title
+      }
+      destinationZone {
+        _id
+        title
+      }
       cost
     }
   }

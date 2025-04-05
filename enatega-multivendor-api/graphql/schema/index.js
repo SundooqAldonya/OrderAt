@@ -1311,8 +1311,8 @@ const typeDefs = gql`
   }
 
   type DeliveryPrice {
-    originZone: String!
-    destinationZone: String!
+    originZone: Zone
+    destinationZone: Zone
     cost: Float!
   }
 
@@ -1523,7 +1523,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput!): Message
+    createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
     submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message
     googleAuthCustomerApp(

@@ -384,7 +384,8 @@ const ar = {
     time: 'الوقت',
     customer_details: 'تفاصيل العميل',
     label: 'المنطقة',
-    delivery_prices: 'أسعار التوصيل'
+    delivery_prices: 'أسعار التوصيل',
+    create_delivery_price: 'إنشئ سعر توصيل'
   }
 }
 

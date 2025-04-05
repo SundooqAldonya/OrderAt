@@ -401,7 +401,8 @@ const en = {
     time: 'Time',
     customer_details: 'Customer Details',
     label: 'Label',
-    delivery_prices: 'Delivery Prices'
+    delivery_prices: 'Delivery Prices',
+    create_delivery_price: 'Create Delivery Price'
   }
 }
 

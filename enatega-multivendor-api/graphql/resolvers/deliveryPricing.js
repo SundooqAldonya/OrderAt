@@ -3,7 +3,12 @@ module.exports = {
   Query: {
     async allDeliveryPrices(_, args) {
       try {
-        const deliveryPrices = await DeliveryPrice.find()
+        const deliveryPrices = await DeliveryPrice.find().populate([
+          'originZone',
+          'destinationZone'
+        ])
+
+        console.log({ deliveryPrices })
         return deliveryPrices
       } catch (err) {
         throw new Error(err)
@@ -12,6 +17,7 @@ module.exports = {
   },
   Mutation: {
     async createDeliveryPrice(_, args) {
+      console.log({ args })
       try {
         const deliveryPrice = new DeliveryPrice()
         deliveryPrice.originZone = args.deliveryPriceInput.originZone

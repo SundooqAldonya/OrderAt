@@ -35,9 +35,9 @@ const Restaurant = require('./models/restaurant.js')
 const Rider = require('./models/rider.js')
 const EventEmitter = require('events')
 const emitter = new EventEmitter()
-console.log({ environment: process.env.NODE_ENV })
 
 emitter.setMaxListeners(50)
+
 async function startApolloServer() {
   const httpServer = http.createServer(app)
   mongoose
@@ -86,7 +86,6 @@ async function startApolloServer() {
       if (isAuthenticated(req).isAuth) {
         return new Promise((resolve, reject) => {
           passport.authenticate('jwt', { session: true }, (err, user) => {
-            console.log({ user, err })
             if (err) {
               console.log('Authentication error:', err)
               reject(err)

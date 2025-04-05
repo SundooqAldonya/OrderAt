@@ -22,6 +22,7 @@ import Header from '../components/Headers/Header'
 import useGlobalStyles from '../utils/globalStyles'
 import { customStyles } from '../utils/tableCustomStyles'
 import DeleteIcon from '@mui/icons-material/Delete'
+import DeliveryPriceCreate from '../components/DeliveryPriceCreate'
 
 const DeliveryPrices = () => {
   const { t } = useTranslation()
@@ -37,26 +38,30 @@ const DeliveryPrices = () => {
 
   const prices = data?.allDeliveryPrices || null
 
-  const [mutate] = useMutation(createDeliveryPrice, {
-    // refetchQueries: [{ query: allDeliveryPrices }],
-    onCompleted: res => {
-      console.log({ res })
-    },
-    onError: error => {
-      console.log({ error })
-    }
-  })
+  // const [mutate] = useMutation(createDeliveryPrice, {
+  //   refetchQueries: [{ query: allDeliveryPrices }],
+  //   onCompleted: res => {
+  //     console.log({ res })
+  //   },
+  //   onError: error => {
+  //     console.log({ error })
+  //   }
+  // })
 
   const columns = [
     {
       name: t('from'),
       sortable: true,
-      selector: 'originZone'
+      selector: 'title',
+      cell: row => <>{row.originZone?.title ? row.originZone?.title : 'N/A'}</>
     },
     {
       name: t('to'),
       sortable: true,
-      selector: 'destinationZone'
+      selector: 'title',
+      cell: row => (
+        <>{row.destinationZone?.title ? row.destinationZone?.title : 'N/A'}</>
+      )
     },
     {
       name: t('cost'),
@@ -65,7 +70,7 @@ const DeliveryPrices = () => {
     },
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, setIsOpen, t, mutate)}</>
+      cell: row => <>{ActionButtons(row, toggleModal, setIsOpen)}</>
     }
   ]
 
@@ -97,6 +102,7 @@ const DeliveryPrices = () => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
+        <DeliveryPriceCreate />
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
         {data?.allDeliveryPrices?.length ? (
@@ -120,20 +126,18 @@ const DeliveryPrices = () => {
             customStyles={customStyles}
             selectableRows
           />
-        ) : null}
+        ) : (
+          <Typography sx={{ textAlign: 'center' }}>
+            No delivery prices have been created yet
+          </Typography>
+        )}
       </Container>
     </Fragment>
   )
 }
 
-const ActionButtons = (
-  row,
-  PAID_VERSION,
-  toggleModal,
-  setIsOpen,
-  t,
-  mutate
-) => {
+const ActionButtons = (row, PAID_VERSION, toggleModal, setIsOpen) => {
+  const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = event => {
@@ -181,7 +185,7 @@ const ActionButtons = (
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-                mutate({ variables: { id: row._id } })
+                // mutate({ variables: { id: row._id } })
               }}
               style={{ height: 25 }}>
               <ListItemIcon>
