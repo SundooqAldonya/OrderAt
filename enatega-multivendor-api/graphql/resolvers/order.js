@@ -48,6 +48,8 @@ const {
   sendRestaurantNotifications
 } = require('../../helpers/restaurantNotifications')
 const Area = require('../../models/area')
+const DeliveryPrice = require('../../models/DeliveryPrice')
+const DeliveryZone = require('../../models/deliveryZone')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -467,11 +469,55 @@ module.exports = {
         let configuration = await Configuration.findOne()
         const costType = configuration.costType
 
-        let amount = calculateAmount(
-          costType,
-          configuration.deliveryRate,
-          distance
-        )
+        // get zone charges from delivery prices
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: restaurant.location.coordinates
+            }
+          }
+        })
+
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: address.location.coordinates
+              }
+            }
+          }
+        })
+
+        console.log({ originZone, destinationZone })
+        let deliveryPrice
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPrice.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
+
+        console.log({ deliveryPrice })
+
+        let amount
+        if (deliveryPrice) {
+          amount = deliveryPrice.cost
+        } else {
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          )
+        }
 
         let deliveryCharges = amount
 
@@ -654,6 +700,35 @@ module.exports = {
         //   ? area.location.location.coordinates[1]
         //   : null
 
+        // get zone charges from delivery prices
+        const originZone = await Zone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: restaurant.deliveryBounds
+            }
+          }
+        })
+
+        const destinationZone = await Zone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: address.location.coordinates
+              }
+            }
+          }
+        })
+
+        console.log({ originZone, destinationZone })
+
+        const deliveryPrice = await DeliveryPrice.findOne({
+          originZone: originZone._id, // comes from restaurant
+          destinationZone: destinationZone._id // comes from customer address or area,
+        })
+
+        console.log({ deliveryPrice })
+
         const distance = calculateDistance(
           latOrigin,
           lonOrigin,
@@ -665,7 +740,7 @@ module.exports = {
 
         const costType = configuration.costType
         console.log({ costType })
-        // let deliveryCharges= 0 ;
+        // let deliveryCharges= 0
 
         // if (costType === 'fixed') {
         //     // Calculate delivery charges (if it's not picked up, apply delivery charges)
@@ -674,7 +749,7 @@ module.exports = {
         //   deliveryCharges = Math.ceil(distance) * configuration.deliveryRate
         // }
 
-        //deliveryCharges = configuration.minimumDeliveryFee;
+        // deliveryCharges = configuration.minimumDeliveryFee
 
         let amount = calculateAmount(
           costType,

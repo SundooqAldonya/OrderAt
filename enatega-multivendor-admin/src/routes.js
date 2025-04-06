@@ -65,6 +65,7 @@ import RidersRegistered from './views/RidersRegistered'
 import ElectricMopedIcon from '@mui/icons-material/ElectricMoped'
 import OrderDetailsPage from './views/OrderDetailsPage'
 import DeliveryPrices from './views/DeliveryPrices'
+import DeliveryZone from './views/DeliveryZone'
 
 var routes = [
   {
@@ -177,6 +178,15 @@ var routes = [
   },
   {
     path: '/delivery-zones',
+    name: 'Delivery Zones',
+    icon: ZonesIcon,
+    component: DeliveryZone,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/areas',
     name: 'Areas',
     icon: ZonesIcon,
     component: Areas,

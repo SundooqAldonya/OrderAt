@@ -1,29 +1,48 @@
 import React, { useState, useRef, useCallback } from 'react'
-import { useMutation, gql } from '@apollo/client'
+import { useMutation, gql, useQuery } from '@apollo/client'
 import { validateFunc } from '../../constraints/constraints'
 import { withTranslation } from 'react-i18next'
 
 import { GoogleMap, Polygon } from '@react-google-maps/api'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
-import { Box, Typography, Input, Button, Alert, Grid } from '@mui/material'
+import {
+  Box,
+  Typography,
+  Input,
+  Button,
+  Alert,
+  Grid,
+  Select,
+  MenuItem
+} from '@mui/material'
 
 // core components
-import { createZone, editZone, getZones } from '../../apollo'
+import {
+  createDeliveryZone,
+  editZone,
+  getAllDeliveryZones,
+  getCities,
+  getZones
+} from '../../apollo'
 import { transformPath, transformPolygon } from '../../utils/coordinates'
 import ConfigurableValues from '../../config/constants'
 
 const CREATE_ZONE = gql`
-  ${createZone}
+  ${createDeliveryZone}
 `
 const EDIT_ZONE = gql`
   ${editZone}
 `
 const GET_ZONE = gql`
-  ${getZones}
+  ${getAllDeliveryZones}
 `
 
-const Zone = props => {
+const GET_CITIES = gql`
+  ${getCities}
+`
+
+const DeliveryZoneCreate = props => {
   const [path, setPath] = useState(
     props.zone ? transformPolygon(props.zone.location.coordinates[0]) : []
   )
@@ -38,6 +57,15 @@ const Zone = props => {
   const [success, setSuccess] = useState('')
   const [titleError, setTitleError] = useState(null)
   const [descriptionError, setDescriptionError] = useState(null)
+  const [selectedCity, setSelectedCity] = useState('')
+
+  const { data, loading: loadingCities, error: errorCities } = useQuery(
+    GET_CITIES
+  )
+
+  const cities = data?.cities || null
+
+  console.log({ cities: data })
 
   const onCompleted = data => {
     if (!props.zone) clearFields()
@@ -55,7 +83,7 @@ const Zone = props => {
     setTimeout(hideAlert, 3000)
   }
 
-  const [mutate /*{ loading }*/] = useMutation(mutation, {
+  const [mutate] = useMutation(mutation, {
     refetchQueries: [{ query: GET_ZONE }],
     onError,
     onCompleted
@@ -64,7 +92,7 @@ const Zone = props => {
   const [center] = useState(
     props.zone
       ? setCenter(props.zone.location.coordinates[0])
-      : { lat: 33.684422, lng: 73.047882 }
+      : { lat: 31.1107, lng: 30.9388 }
   )
 
   const polygonRef = useRef()
@@ -153,8 +181,9 @@ const Zone = props => {
           className={props.zone ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
-            className={props.zone ? classes.textWhite : classes.text}>
-            {props.zone ? t('EditZone') : t('AddZone')}
+            className={props.zone ? classes.textWhite : classes.text}
+            sx={{ textTransform: 'capitalize' }}>
+            {props.zone ? t('EditDeliveryZone') : t('AddDeliveryZone')}
           </Typography>
         </Box>
       </Box>
@@ -214,6 +243,33 @@ const Zone = props => {
                 />
               </Box>
             </Grid>
+            <Box
+              sx={{ width: '100%', flexDirection: 'column' }}
+              className={globalClasses.flexRow}>
+              <Select
+                id="input-city"
+                name="input-city"
+                defaultValue={selectedCity || ''}
+                value={selectedCity}
+                onChange={e => setSelectedCity(e.target.value)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                className={[globalClasses.input]}>
+                {!selectedCity && (
+                  <MenuItem value="" style={{ color: 'black' }}>
+                    {t('Select City')}
+                  </MenuItem>
+                )}
+                {cities?.map(city => (
+                  <MenuItem
+                    value={city._id}
+                    key={city._id}
+                    style={{ color: 'black' }}>
+                    {city.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
           </Grid>
           <Box mt={2} className={globalClasses.flexRow}>
             <GoogleMap
@@ -248,11 +304,12 @@ const Zone = props => {
                 if (onSubmitValidation()) {
                   mutate({
                     variables: {
-                      zone: {
+                      deliveryZoneInput: {
                         _id: props.zone ? props.zone._id : '',
                         title,
                         description,
-                        coordinates: transformPath(path)
+                        coordinates: transformPath(path),
+                        city: selectedCity
                       }
                     }
                   })
@@ -289,4 +346,4 @@ const Zone = props => {
   )
 }
 
-export default withTranslation()(Zone)
+export default withTranslation()(DeliveryZoneCreate)

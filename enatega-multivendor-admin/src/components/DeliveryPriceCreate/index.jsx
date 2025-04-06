@@ -12,10 +12,14 @@ import { useTranslation } from 'react-i18next'
 import useStyles from '../styles'
 import useGlobalStyles from '../../utils/globalStyles'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { allDeliveryPrices, createDeliveryPrice, getZones } from '../../apollo'
+import {
+  allDeliveryPrices,
+  createDeliveryPrice,
+  getAllDeliveryZones
+} from '../../apollo'
 
 const GET_ZONES = gql`
-  ${getZones}
+  ${getAllDeliveryZones}
 `
 
 const DeliveryPriceCreate = () => {
@@ -23,8 +27,8 @@ const DeliveryPriceCreate = () => {
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
 
-  const [success, setSuccess] = useState(false)
-  const [mainError, setMainError] = useState(false)
+  const [success, setSuccess] = useState(null)
+  const [mainError, setMainError] = useState(null)
 
   const [cost, setCost] = useState(15)
 
@@ -37,13 +41,15 @@ const DeliveryPriceCreate = () => {
     refetchQueries: [{ query: allDeliveryPrices }],
     onCompleted: res => {
       console.log({ res })
+      setSuccess(t(res.createDeliveryPrice.message))
     },
     onError: error => {
       console.log({ error })
+      setMainError(JSON.stringify(error))
     }
   })
 
-  const zones = data?.zones || null
+  const zones = data?.getAllDeliveryZones || null
 
   console.log({ originZone, destinationZone })
 
@@ -72,7 +78,7 @@ const DeliveryPriceCreate = () => {
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
           {loading ? 'Loading zones...' : null}
-          {data?.zones?.length ? (
+          {data?.getAllDeliveryZones?.length ? (
             <Box
               sx={{
                 display: 'flex',

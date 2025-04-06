@@ -1316,7 +1316,18 @@ const typeDefs = gql`
     cost: Float!
   }
 
+  type DeliveryZone {
+    _id: String!
+    title: String!
+    tax: Float
+    description: String!
+    location: Polygon
+    isActive: Boolean!
+    city: String!
+  }
+
   type Query {
+    getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
@@ -1522,7 +1533,16 @@ const typeDefs = gql`
     cost: Float!
   }
 
+  input DeliveryZoneInput {
+    _id: String
+    title: String!
+    description: String!
+    coordinates: [[[Float!]]]
+    city: String!
+  }
+
   type Mutation {
+    createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
     submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message

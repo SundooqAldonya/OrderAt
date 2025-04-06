@@ -402,7 +402,10 @@ const en = {
     customer_details: 'Customer Details',
     label: 'Label',
     delivery_prices: 'Delivery Prices',
-    create_delivery_price: 'Create Delivery Price'
+    create_delivery_price: 'Create Delivery Price',
+    delivery_price_created: 'Delivery price created!',
+    AddDeliveryZone: 'Add delivery zone',
+    EditDeliveryZone: 'Edit delivery zone'
   }
 }
 

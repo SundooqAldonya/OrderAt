@@ -4,12 +4,12 @@ const { Schema } = mongoose
 const DeliveryPriceSchema = new Schema({
   originZone: {
     type: Schema.Types.ObjectId,
-    ref: 'Zone',
+    ref: 'DeliveryZone',
     required: true
   },
   destinationZone: {
     type: Schema.Types.ObjectId,
-    ref: 'Zone',
+    ref: 'DeliveryZone',
     required: true
   },
   cost: {

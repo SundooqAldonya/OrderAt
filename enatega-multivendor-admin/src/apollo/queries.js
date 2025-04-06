@@ -479,7 +479,17 @@ export const getZones = `query Zones{
     description
     location{coordinates}
     isActive
-    }
+  }
+}`
+
+export const getAllDeliveryZones = `query GetAllDeliveryZones{
+    getAllDeliveryZones{
+    _id
+    title
+    description
+    location{coordinates}
+    isActive
+  }
 }`
 
 export const getVendors = `query Vendors{

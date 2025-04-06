@@ -623,6 +623,11 @@ export const createZone = `mutation CreateZone($zone:ZoneInput!){
     isActive
   }
 }`
+export const createDeliveryZone = `mutation CreateDeliveryZone($deliveryZoneInput:DeliveryZoneInput){
+  createDeliveryZone(deliveryZoneInput:$deliveryZoneInput){
+    message
+  }
+}`
 
 export const editZone = `mutation EditZone($zone:ZoneInput!){
   editZone(zone:$zone){

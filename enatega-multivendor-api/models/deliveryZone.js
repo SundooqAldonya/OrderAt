@@ -39,4 +39,5 @@ const deliveryZoneSchema = new Schema(
   { timestamps: true }
 )
 
-module.exports = model('DeliveryZone', deliveryZoneSchema)
+const DeliveryZone = model('DeliveryZone', deliveryZoneSchema)
+module.exports = DeliveryZone
