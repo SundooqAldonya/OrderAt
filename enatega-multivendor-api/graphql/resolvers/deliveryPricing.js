@@ -7,8 +7,6 @@ module.exports = {
           'originZone',
           'destinationZone'
         ])
-
-        console.log({ deliveryPrices })
         return deliveryPrices
       } catch (err) {
         throw new Error(err)
@@ -17,7 +15,6 @@ module.exports = {
   },
   Mutation: {
     async createDeliveryPrice(_, args) {
-      console.log({ args })
       try {
         const deliveryPrice = new DeliveryPrice()
         deliveryPrice.originZone = args.deliveryPriceInput.originZone
@@ -25,6 +22,16 @@ module.exports = {
         deliveryPrice.cost = args.deliveryPriceInput.cost
         await deliveryPrice.save()
         return { message: 'delivery_price_created' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async removeDeliveryPrice(_, args) {
+      try {
+        const price = await DeliveryPrice.findById(args.id)
+        await price.deleteOne()
+        return { message: 'removed_delivery_price' }
       } catch (err) {
         throw new Error(err)
       }

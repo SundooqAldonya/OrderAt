@@ -1311,6 +1311,7 @@ const typeDefs = gql`
   }
 
   type DeliveryPrice {
+    _id: String
     originZone: Zone
     destinationZone: Zone
     cost: Float!
@@ -1542,6 +1543,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    removeDeliveryPrice(id: String!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
     submitEmailOTP(email: String!, otp: String!): Message

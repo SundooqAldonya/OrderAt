@@ -11,7 +11,11 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import EditIcon from '@mui/icons-material/Edit'
 import { useMutation, useQuery } from '@apollo/client'
-import { allDeliveryPrices, createDeliveryPrice } from '../apollo'
+import {
+  allDeliveryPrices,
+  createDeliveryPrice,
+  removeDeliveryPrice
+} from '../apollo'
 import DataTable from 'react-data-table-component'
 import CustomLoader from '../components/Loader/CustomLoader'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -139,6 +143,15 @@ const DeliveryPrices = () => {
 const ActionButtons = (row, PAID_VERSION, toggleModal, setIsOpen) => {
   const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = useState(null)
+  const [deletePrice] = useMutation(removeDeliveryPrice, {
+    refetchQueries: [{ query: allDeliveryPrices }],
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: error => {
+      console.log({ error })
+    }
+  })
   const open = Boolean(anchorEl)
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -185,7 +198,8 @@ const ActionButtons = (row, PAID_VERSION, toggleModal, setIsOpen) => {
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-                // mutate({ variables: { id: row._id } })
+                console.log({ row })
+                deletePrice({ variables: { id: row._id } })
               }}
               style={{ height: 25 }}>
               <ListItemIcon>

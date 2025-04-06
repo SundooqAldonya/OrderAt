@@ -949,3 +949,10 @@ export const createDeliveryPrice = gql`
     }
   }
 `
+export const removeDeliveryPrice = gql`
+  mutation RemoveDeliveryPrice($id: String!) {
+    removeDeliveryPrice(id: $id) {
+      message
+    }
+  }
+`
