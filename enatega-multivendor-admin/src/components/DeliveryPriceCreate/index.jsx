@@ -15,14 +15,15 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import {
   allDeliveryPrices,
   createDeliveryPrice,
-  getAllDeliveryZones
+  getAllDeliveryZones,
+  updateDeliveryPrice
 } from '../../apollo'
 
 const GET_ZONES = gql`
   ${getAllDeliveryZones}
 `
 
-const DeliveryPriceCreate = () => {
+const DeliveryPriceCreate = ({ onClose, edit, item }) => {
   const { t } = useTranslation()
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -30,7 +31,7 @@ const DeliveryPriceCreate = () => {
   const [success, setSuccess] = useState(null)
   const [mainError, setMainError] = useState(null)
 
-  const [cost, setCost] = useState(15)
+  const [cost, setCost] = useState(edit && item ? item.cost : 15)
 
   const [originZone, setOriginZone] = useState('')
   const [destinationZone, setDestinationZone] = useState('')
@@ -49,21 +50,37 @@ const DeliveryPriceCreate = () => {
     }
   })
 
+  const [mutateUpdate] = useMutation(updateDeliveryPrice, {
+    refetchQueries: [{ query: allDeliveryPrices }],
+    onCompleted: res => {
+      console.log({ res })
+      setSuccess(t(res.updateDeliveryPrice.message))
+    },
+    onError: error => {
+      console.log({ error })
+      setMainError(JSON.stringify(error))
+    }
+  })
+
   const zones = data?.getAllDeliveryZones || null
 
   console.log({ originZone, destinationZone })
 
   const handleSubmit = e => {
     e.preventDefault()
-    mutate({
-      variables: {
-        deliveryPriceInput: {
-          originZone,
-          destinationZone,
-          cost
+    if (!edit) {
+      mutate({
+        variables: {
+          deliveryPriceInput: {
+            originZone,
+            destinationZone,
+            cost
+          }
         }
-      }
-    })
+      })
+    } else {
+      mutateUpdate({ variables: { id: item._id, cost } })
+    }
   }
 
   return (
@@ -78,7 +95,7 @@ const DeliveryPriceCreate = () => {
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
           {loading ? 'Loading zones...' : null}
-          {data?.getAllDeliveryZones?.length ? (
+          {data?.getAllDeliveryZones?.length && !edit ? (
             <Box
               sx={{
                 display: 'flex',

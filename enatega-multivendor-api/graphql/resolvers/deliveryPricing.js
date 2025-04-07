@@ -27,6 +27,19 @@ module.exports = {
       }
     },
 
+    async updateDeliveryPrice(_, args) {
+      try {
+        const deliveryPrice = await DeliveryPrice.findById(args.id)
+        // deliveryPrice.originZone = args.deliveryPriceInput.originZone
+        // deliveryPrice.destinationZone = args.deliveryPriceInput.destinationZone
+        deliveryPrice.cost = args.cost
+        await deliveryPrice.save()
+        return { message: 'delivery_price_updated' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     async removeDeliveryPrice(_, args) {
       try {
         const price = await DeliveryPrice.findById(args.id)

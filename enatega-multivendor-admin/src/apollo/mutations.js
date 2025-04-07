@@ -949,6 +949,13 @@ export const createDeliveryPrice = gql`
     }
   }
 `
+export const updateDeliveryPrice = gql`
+  mutation UpdateDeliveryPrice($id: String!, $cost: Float!) {
+    updateDeliveryPrice(id: $id, cost: $cost) {
+      message
+    }
+  }
+`
 export const removeDeliveryPrice = gql`
   mutation RemoveDeliveryPrice($id: String!) {
     removeDeliveryPrice(id: $id) {

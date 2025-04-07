@@ -386,7 +386,8 @@ const ar = {
     label: 'المنطقة',
     delivery_prices: 'أسعار التوصيل',
     create_delivery_price: 'إنشئ سعر توصيل',
-    delivery_price_created: 'تم انشاء سعر التوصيل'
+    delivery_price_created: 'تم انشاء سعر التوصيل',
+    delivery_price_updated: 'تم تعديل سعر التوصيل'
   }
 }
 

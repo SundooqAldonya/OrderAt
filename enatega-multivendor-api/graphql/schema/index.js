@@ -1543,9 +1543,10 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    removeDeliveryPrice(id: String!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
+    updateDeliveryPrice(id: String!, cost: Float!): Message
+    removeDeliveryPrice(id: String!): Message
     submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message
     googleAuthCustomerApp(

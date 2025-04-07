@@ -404,6 +404,7 @@ const en = {
     delivery_prices: 'Delivery Prices',
     create_delivery_price: 'Create Delivery Price',
     delivery_price_created: 'Delivery price created!',
+    delivery_price_updated: 'Delivery price updated!',
     AddDeliveryZone: 'Add delivery zone',
     EditDeliveryZone: 'Edit delivery zone'
   }

@@ -5,6 +5,7 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Modal,
   Paper,
   Typography
 } from '@mui/material'
@@ -35,22 +36,13 @@ const DeliveryPrices = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedItem, setSelectedItem] = useState(null)
 
   const { data, loading, error, refetch } = useQuery(allDeliveryPrices)
 
   console.log({ data })
 
   const prices = data?.allDeliveryPrices || null
-
-  // const [mutate] = useMutation(createDeliveryPrice, {
-  //   refetchQueries: [{ query: allDeliveryPrices }],
-  //   onCompleted: res => {
-  //     console.log({ res })
-  //   },
-  //   onError: error => {
-  //     console.log({ error })
-  //   }
-  // })
 
   const columns = [
     {
@@ -74,13 +66,18 @@ const DeliveryPrices = () => {
     },
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, setIsOpen)}</>
+      cell: row => <>{ActionButtons(row, toggleModal)}</>
     }
   ]
 
-  const toggleModal = zone => {
+  console.log({ editModal })
+
+  const toggleModal = item => {
+    console.log({ item })
     setEditModal(!editModal)
-    // setZone(zone)
+    if (item) {
+      setSelectedItem(item)
+    }
   }
 
   const closeEditModal = () => {
@@ -106,7 +103,7 @@ const DeliveryPrices = () => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <DeliveryPriceCreate />
+        <DeliveryPriceCreate edit={false} />
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
         {data?.allDeliveryPrices?.length ? (
@@ -135,12 +132,28 @@ const DeliveryPrices = () => {
             No delivery prices have been created yet
           </Typography>
         )}
+        <Modal
+          style={{
+            width: '70%',
+            marginLeft: '15%',
+            overflowY: 'auto'
+          }}
+          open={editModal}
+          onClose={() => {
+            closeEditModal()
+          }}>
+          <DeliveryPriceCreate
+            edit={true}
+            item={selectedItem}
+            onClose={closeEditModal}
+          />
+        </Modal>
       </Container>
     </Fragment>
   )
 }
 
-const ActionButtons = (row, PAID_VERSION, toggleModal, setIsOpen) => {
+const ActionButtons = (row, toggleModal) => {
   const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = useState(null)
   const [deletePrice] = useMutation(removeDeliveryPrice, {
@@ -181,13 +194,8 @@ const ActionButtons = (row, PAID_VERSION, toggleModal, setIsOpen) => {
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-                if (PAID_VERSION) toggleModal(row)
-                else {
-                  setIsOpen(true)
-                  setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
-                }
+                console.log('clicked')
+                toggleModal(row)
               }}
               style={{ height: 25 }}>
               <ListItemIcon>
