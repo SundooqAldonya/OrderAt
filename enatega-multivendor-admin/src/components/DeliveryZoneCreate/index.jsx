@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import { validateFunc } from '../../constraints/constraints'
-import { withTranslation } from 'react-i18next'
+import { useTranslation, withTranslation } from 'react-i18next'
 
 import { GoogleMap, Polygon } from '@react-google-maps/api'
 import useStyles from './styles'
@@ -23,7 +23,8 @@ import {
   editZone,
   getAllDeliveryZones,
   getCities,
-  getZones
+  getZones,
+  updateDeliveryZone
 } from '../../apollo'
 import { transformPath, transformPolygon } from '../../utils/coordinates'
 import ConfigurableValues from '../../config/constants'
@@ -42,22 +43,24 @@ const GET_CITIES = gql`
   ${getCities}
 `
 
-const DeliveryZoneCreate = props => {
+const DeliveryZoneCreate = ({ zone, edit }) => {
+  console.log({ zone })
   const [path, setPath] = useState(
-    props.zone ? transformPolygon(props.zone.location.coordinates[0]) : []
+    zone ? transformPolygon(zone.location.coordinates[0]) : []
   )
   const { PAID_VERSION } = ConfigurableValues()
-  const [mutation] = useState(props.zone ? EDIT_ZONE : CREATE_ZONE)
-  const [title, setTitle] = useState(props.zone ? props.zone.title : '')
-  const [description, setDescription] = useState(
-    props.zone ? props.zone.description : ''
-  )
+  const [title, setTitle] = useState(zone ? zone.title : '')
+  const [description, setDescription] = useState(zone ? zone.description : '')
   const listenersRef = useRef([])
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
   const [titleError, setTitleError] = useState(null)
   const [descriptionError, setDescriptionError] = useState(null)
-  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedCity, setSelectedCity] = useState(
+    edit && zone ? zone.city : ''
+  )
+
+  console.log({ title })
 
   const { data, loading: loadingCities, error: errorCities } = useQuery(
     GET_CITIES
@@ -68,8 +71,8 @@ const DeliveryZoneCreate = props => {
   console.log({ cities: data })
 
   const onCompleted = data => {
-    if (!props.zone) clearFields()
-    const message = props.zone
+    if (!zone) clearFields()
+    const message = zone
       ? t('ZoneUpdatedSuccessfully')
       : t('ZoneAddedSuccessfully')
     setErrors('')
@@ -83,15 +86,21 @@ const DeliveryZoneCreate = props => {
     setTimeout(hideAlert, 3000)
   }
 
-  const [mutate] = useMutation(mutation, {
+  const [mutate] = useMutation(CREATE_ZONE, {
+    refetchQueries: [{ query: GET_ZONE }],
+    onError,
+    onCompleted
+  })
+
+  const [mutateUpdate] = useMutation(updateDeliveryZone, {
     refetchQueries: [{ query: GET_ZONE }],
     onError,
     onCompleted
   })
 
   const [center] = useState(
-    props.zone
-      ? setCenter(props.zone.location.coordinates[0])
+    zone
+      ? setCenter(zone.location.coordinates[0])
       : { lat: 31.1107, lng: 30.9388 }
   )
 
@@ -168,7 +177,7 @@ const DeliveryZoneCreate = props => {
     setSuccess('')
   }
 
-  const { t } = props
+  const { t } = useTranslation()
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -176,14 +185,12 @@ const DeliveryZoneCreate = props => {
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.zone ? classes.headingBlack : classes.heading}>
+        <Box item className={zone ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
-            className={props.zone ? classes.textWhite : classes.text}
+            className={zone ? classes.textWhite : classes.text}
             sx={{ textTransform: 'capitalize' }}>
-            {props.zone ? t('EditDeliveryZone') : t('AddDeliveryZone')}
+            {zone ? t('EditDeliveryZone') : t('AddDeliveryZone')}
           </Typography>
         </Box>
       </Box>
@@ -302,24 +309,34 @@ const DeliveryZoneCreate = props => {
               onClick={async e => {
                 e.preventDefault()
                 if (onSubmitValidation()) {
-                  mutate({
-                    variables: {
-                      deliveryZoneInput: {
-                        _id: props.zone ? props.zone._id : '',
-                        title,
-                        description,
-                        coordinates: transformPath(path),
-                        city: selectedCity
+                  if (!edit) {
+                    mutate({
+                      variables: {
+                        deliveryZoneInput: {
+                          _id: '',
+                          title,
+                          description,
+                          coordinates: transformPath(path),
+                          city: selectedCity
+                        }
                       }
-                    }
-                  })
-                  // Close the modal after 3 seconds by calling the parent's onClose callback
-                  setTimeout(() => {
-                    props.onClose() // Close the modal
-                  }, 4000)
+                    })
+                  } else {
+                    mutateUpdate({
+                      variables: {
+                        deliveryZoneInput: {
+                          _id: zone ? zone._id : '',
+                          title,
+                          description,
+                          coordinates: transformPath(path),
+                          city: selectedCity
+                        }
+                      }
+                    })
+                  }
                 }
               }}>
-              {props.zone ? t('Update') : t('Save')}
+              {edit ? t('Update') : t('Save')}
             </Button>
           </Box>
         </form>

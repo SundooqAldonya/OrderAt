@@ -489,6 +489,7 @@ export const getAllDeliveryZones = `query GetAllDeliveryZones{
     description
     location{coordinates}
     isActive
+    city 
   }
 }`
 
@@ -1025,6 +1026,20 @@ export const allDeliveryPrices = gql`
         title
       }
       cost
+    }
+  }
+`
+export const removeDeliveryZone = gql`
+  mutation RemoveDeliveryZone($id: String!) {
+    removeDeliveryZone(id: $id) {
+      message
+    }
+  }
+`
+export const updateDeliveryZone = gql`
+  mutation UpdateDeliveryZone($deliveryZoneInput: DeliveryZoneInput) {
+    updateDeliveryZone(deliveryZoneInput: $deliveryZoneInput) {
+      message
     }
   }
 `

@@ -1324,7 +1324,7 @@ const typeDefs = gql`
     description: String!
     location: Polygon
     isActive: Boolean!
-    city: String!
+    city: String
   }
 
   type Query {
@@ -1544,6 +1544,8 @@ const typeDefs = gql`
 
   type Mutation {
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
+    updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
+    removeDeliveryZone(id: String!): Message
     createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
     updateDeliveryPrice(id: String!, cost: Float!): Message
     removeDeliveryPrice(id: String!): Message

@@ -14,7 +14,7 @@ import {
 import { gql, useQuery, useMutation } from '@apollo/client'
 import Header from '../components/Headers/Header'
 import CustomLoader from '../components/Loader/CustomLoader'
-import { deleteZone, getAllDeliveryZones } from '../apollo'
+import { deleteZone, getAllDeliveryZones, removeDeliveryZone } from '../apollo'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -32,14 +32,14 @@ const GET_ZONES = gql`
   ${getAllDeliveryZones}
 `
 const DELETE_ZONE = gql`
-  ${deleteZone}
+  ${removeDeliveryZone}
 `
 
 const Zones = props => {
   const { t } = props
   const { PAID_VERSION } = ConfigurableValues()
   const [editModal, setEditModal] = useState(false)
-  const [zones, setZone] = useState(null)
+  const [zone, setZone] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const onChangeSearch = e => setSearchQuery(e.target.value)
@@ -119,7 +119,7 @@ const Zones = props => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <DeliveryZoneCreate onClose={closeEditModal} />
+        <DeliveryZoneCreate edit={false} />
         {/* Table */}
         {isOpen && (
           <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
@@ -156,7 +156,7 @@ const Zones = props => {
           onClose={() => {
             toggleModal()
           }}>
-          <DeliveryZoneCreate zone={zones} onClose={closeEditModal} />
+          <DeliveryZoneCreate edit={true} zone={zone} />
         </Modal>
       </Container>
     </>
