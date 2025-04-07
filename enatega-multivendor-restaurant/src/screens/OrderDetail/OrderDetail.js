@@ -70,6 +70,7 @@ export default function OrderDetail({ navigation, route }) {
     setPrint(true)
     setOverlayVisible(!overlayVisible)
   }
+
   const cancelOrderFunc = () => {
     cancelOrder(order._id, 'not available')
     muteRing(order.orderId)
@@ -79,6 +80,7 @@ export default function OrderDetail({ navigation, route }) {
       navigation.navigate('Orders')
     }
   }
+
   const pickUpOrderFunc = () => {
     pickedUp(order._id)
     if (loadingPicked) {

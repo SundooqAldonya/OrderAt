@@ -701,33 +701,33 @@ module.exports = {
         //   : null
 
         // get zone charges from delivery prices
-        const originZone = await Zone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: restaurant.deliveryBounds
-            }
-          }
-        })
+        // const originZone = await Zone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: restaurant.deliveryBounds
+        //     }
+        //   }
+        // })
 
-        const destinationZone = await Zone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: {
-                type: 'Point',
-                coordinates: address.location.coordinates
-              }
-            }
-          }
-        })
+        // const destinationZone = await Zone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: {
+        //         type: 'Point',
+        //         coordinates: address.location.coordinates
+        //       }
+        //     }
+        //   }
+        // })
 
-        console.log({ originZone, destinationZone })
+        // console.log({ originZone, destinationZone })
 
-        const deliveryPrice = await DeliveryPrice.findOne({
-          originZone: originZone._id, // comes from restaurant
-          destinationZone: destinationZone._id // comes from customer address or area,
-        })
+        // const deliveryPrice = await DeliveryPrice.findOne({
+        //   originZone: originZone._id, // comes from restaurant
+        //   destinationZone: destinationZone._id // comes from customer address or area,
+        // })
 
-        console.log({ deliveryPrice })
+        // console.log({ deliveryPrice })
 
         const distance = calculateDistance(
           latOrigin,

@@ -1,9 +1,13 @@
 import * as Print from 'expo-print'
 import { formatReceipt } from './formatReceipt'
-export const printAsync = async (order, printerUrl) => {
+
+const mmToPoints = mm => (mm / 25.4) * 72
+
+export const printAsync = async (order, printerUrl, paperWidthMM = 80) => {
   try {
+    const width = mmToPoints(paperWidthMM)
     return await Print.printAsync({
-      width: 576, // 80mm=302px,
+      width, // 80mm=302px,
       orientation: Print.Orientation.portrait,
       html: formatReceipt(order),
       printerUrl
@@ -13,10 +17,11 @@ export const printAsync = async (order, printerUrl) => {
   }
   return null
 }
-export const printToFileAsync = async order => {
+export const printToFileAsync = async (order, paperWidthMM = 80) => {
   try {
+    const width = mmToPoints(paperWidthMM)
     return await Print.printToFileAsync({
-      width: 576, // 80mm=302px,
+      width, // 80mm=302px,
       html: formatReceipt(order)
     })
   } catch (error) {
