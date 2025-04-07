@@ -1328,6 +1328,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getDeliveryCalculation: Message
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]

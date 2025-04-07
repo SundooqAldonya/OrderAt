@@ -8,56 +8,55 @@ import { calculateDistance, calculateAmount } from '../../utils/customFunction'
 import ConfigurationContext from '../../context/Configuration'
 
 export default function AmountCard(props) {
-  console.log(props, 'PROPS@1222')
   const { t } = useTranslation()
   const classes = useStyles()
   const configuration = useContext(ConfigurationContext)
-
-  const [deliveryChargesdata, setDeliveryChargesdata] = useState(0)
-  const [isBelowMinimumDistance, setIsBelowMinimumDistance] = useState(false)
   const theme = useTheme()
 
-  useEffect(() => {
-    ;(async () => {
-      // const destinationObj = JSON.parse(localStorage.getItem('location'))
-      const latOrigin = Number(props.restaurant.location.coordinates[1])
-      const lonOrigin = Number(props.restaurant.location.coordinates[0])
-      const latDest = Number(props.deliveryAddress.location.coordinates[1])
-      const longDest = Number(props.deliveryAddress.location.coordinates[0])
+  // const [deliveryChargesdata, setDeliveryChargesdata] = useState(0)
+  // const [isBelowMinimumDistance, setIsBelowMinimumDistance] = useState(false)
 
-      const distance = await calculateDistance(
-        latOrigin,
-        lonOrigin,
-        latDest,
-        longDest
-      )
-      console.log(distance, 'DISTANCE------------')
+  // useEffect(() => {
+  //   ;(async () => {
+  //     // const destinationObj = JSON.parse(localStorage.getItem('location'))
+  //     const latOrigin = Number(props.restaurant.location.coordinates[1])
+  //     const lonOrigin = Number(props.restaurant.location.coordinates[0])
+  //     const latDest = Number(props.deliveryAddress.location.coordinates[1])
+  //     const longDest = Number(props.deliveryAddress.location.coordinates[0])
 
-      let costType = configuration.costType
+  //     const distance = await calculateDistance(
+  //       latOrigin,
+  //       lonOrigin,
+  //       latDest,
+  //       longDest
+  //     )
+  //     console.log(distance, 'DISTANCE------------')
 
-      let calculatedDeliveryFee
+  //     let costType = configuration.costType
 
-      if (distance < 2) {
-        // If the distance is less than 2km, set delivery fee to minimum
-        calculatedDeliveryFee = configuration.minimumDeliveryFee
-        setIsBelowMinimumDistance(true)
-      } else {
-        // Otherwise, calculate the delivery fee
-        let amount = calculateAmount(
-          costType,
-          configuration.deliveryRate,
-          distance
-        )
-        calculatedDeliveryFee = amount > 0 ? amount : configuration.deliveryRate
-        setIsBelowMinimumDistance(false)
-      }
+  //     let calculatedDeliveryFee
 
-      // Ensure the calculated delivery fee is not lower than the minimum
-      setDeliveryChargesdata(
-        Math.max(calculatedDeliveryFee, configuration.minimumDeliveryFee)
-      )
-    })()
-  }, [props, configuration])
+  //     if (distance < 2) {
+  //       // If the distance is less than 2km, set delivery fee to minimum
+  //       calculatedDeliveryFee = configuration.minimumDeliveryFee
+  //       setIsBelowMinimumDistance(true)
+  //     } else {
+  //       // Otherwise, calculate the delivery fee
+  //       let amount = calculateAmount(
+  //         costType,
+  //         configuration.deliveryRate,
+  //         distance
+  //       )
+  //       calculatedDeliveryFee = amount > 0 ? amount : configuration.deliveryRate
+  //       setIsBelowMinimumDistance(false)
+  //     }
+
+  //     // Ensure the calculated delivery fee is not lower than the minimum
+  //     setDeliveryChargesdata(
+  //       Math.max(calculatedDeliveryFee, configuration.minimumDeliveryFee)
+  //     )
+  //   })()
+  // }, [props, configuration])
 
   return (
     <>
