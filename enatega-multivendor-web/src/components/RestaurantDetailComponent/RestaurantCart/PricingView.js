@@ -33,15 +33,15 @@ function PricingView(props) {
     variables: {
       destLong: Number(location.longitude),
       destLat: Number(location.latitude),
-      originLong: Number(restaurantData.location.coordinates[0]),
-      originLat: Number(restaurantData.location.coordinates[1]),
+      originLong: Number(restaurantData?.location.coordinates[0]),
+      originLat: Number(restaurantData?.location.coordinates[1]),
     },
   });
 
   console.log({
     calcData,
-    originLong: restaurantData.location.coordinates[0],
-    originLat: restaurantData.location.coordinates[1],
+    originLong: restaurantData?.location.coordinates[0],
+    originLat: restaurantData?.location.coordinates[1],
   });
 
   useEffect(() => {
