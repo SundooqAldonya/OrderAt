@@ -5,7 +5,12 @@ import ConfigurationContext from "../../../context/Configuration";
 import UserContext from "../../../context/User";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
-import { calculateDistance, calculateAmount } from "../../../utils/customFunction";
+import {
+  calculateDistance,
+  calculateAmount,
+} from "../../../utils/customFunction";
+import { getDeliveryCalculation } from "../../../apollo/server";
+import { useQuery } from "@apollo/client";
 
 function PricingView(props) {
   const { t } = useTranslation();
@@ -17,37 +22,72 @@ function PricingView(props) {
 
   const [deliveryCharges, setDeliveryCharges] = useState(0);
   // const [isBelowMinimumDistance, setIsBelowMinimumDistance] = useState(false);
+  const location = JSON.parse(localStorage.getItem("location"));
+
+  const {
+    data: calcData,
+    loading: calcLoading,
+    error: errorCalc,
+  } = useQuery(getDeliveryCalculation, {
+    skip: !restaurantData,
+    variables: {
+      destLong: Number(location.longitude),
+      destLat: Number(location.latitude),
+      originLong: Number(restaurantData.location.coordinates[0]),
+      originLat: Number(restaurantData.location.coordinates[1]),
+    },
+  });
+
+  console.log({
+    calcData,
+    originLong: restaurantData.location.coordinates[0],
+    originLat: restaurantData.location.coordinates[1],
+  });
 
   useEffect(() => {
-    (async () => {
-      const destinationObj = JSON.parse(localStorage.getItem("location"));
-  
-      const latOrigin = Number(restaurantData.location.coordinates[1]);
-      const lonOrigin = Number(restaurantData.location.coordinates[0]);
-      const latDest = Number(destinationObj.latitude);
-      const longDest = Number(destinationObj.longitude);
-      const distance = await calculateDistance(
-        latOrigin,
-        lonOrigin,
-        latDest,
-        longDest
+    if (calcData) {
+      const amount = calcData.getDeliveryCalculation.amount;
+      setDeliveryCharges(
+        amount >= configuration.minimumDeliveryFee
+          ? amount
+          : configuration.minimumDeliveryFee
       );
-      console.log(distance, 'distance@123234342424--------------------------')
-  
-      let costType = configuration.costType;
-      let amount = calculateAmount(costType, configuration.deliveryRate, distance);
-      let d_charges = amount
-      if(parseFloat(amount) <= configuration.minimumDeliveryFee){
-        d_charges = configuration.minimumDeliveryFee
-      }
-      setDeliveryCharges(d_charges); 
+    }
+  }, [calcData]);
 
-    })();
-  }, [restaurantData, configuration]);
-  
+  // useEffect(() => {
+  //   (async () => {
+  //     const destinationObj = JSON.parse(localStorage.getItem("location"));
+
+  //     const latOrigin = Number(restaurantData.location.coordinates[1]);
+  //     const lonOrigin = Number(restaurantData.location.coordinates[0]);
+  //     const latDest = Number(destinationObj.latitude);
+  //     const longDest = Number(destinationObj.longitude);
+  //     const distance = await calculateDistance(
+  //       latOrigin,
+  //       lonOrigin,
+  //       latDest,
+  //       longDest
+  //     );
+  //     console.log(distance, "distance@123234342424--------------------------");
+
+  //     let costType = configuration.costType;
+  //     let amount = calculateAmount(
+  //       costType,
+  //       configuration.deliveryRate,
+  //       distance
+  //     );
+  //     let d_charges = amount;
+  //     if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+  //       d_charges = configuration.minimumDeliveryFee;
+  //     }
+  //     setDeliveryCharges(d_charges);
+  //   })();
+  // }, [restaurantData, configuration]);
 
   const calculatePrice = useMemo(
-    () =>      (amount = 0) => {
+    () =>
+      (amount = 0) => {
         let itemTotal = 0;
         cart.forEach((cartItem) => {
           itemTotal += cartItem.price * cartItem.quantity;
@@ -97,7 +137,9 @@ function PricingView(props) {
         }}
         className={classes.border}
       >
-        <Typography className={classes.subtotalText}>{t("subTotal")}</Typography>
+        <Typography className={classes.subtotalText}>
+          {t("subTotal")}
+        </Typography>
         <Typography className={classes.subtotalText}>
           {`${configuration.currencySymbol} ${calculatePrice(0)}`}
         </Typography>
@@ -111,7 +153,9 @@ function PricingView(props) {
           }}
           className={classes.border}
         >
-          <Typography className={classes.subtotalText}>{t("deliveryFee")}</Typography>
+          <Typography className={classes.subtotalText}>
+            {t("deliveryFee")}
+          </Typography>
           <Typography className={classes.subtotalText}>
             {`${configuration.currencySymbol} ${deliveryCharges.toFixed(2)}`}
           </Typography>
@@ -126,7 +170,9 @@ function PricingView(props) {
           }}
           className={classes.border}
         >
-          <Typography className={classes.subtotalText}>{t("taxFee")}</Typography>
+          <Typography className={classes.subtotalText}>
+            {t("taxFee")}
+          </Typography>
           <Typography className={classes.subtotalText}>
             {`${configuration.currencySymbol} ${taxCalculation()}`}
           </Typography>

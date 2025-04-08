@@ -23,7 +23,11 @@ import React, {
   useRef,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { myOrders, placeOrder } from "../../apollo/server";
+import {
+  getDeliveryCalculation,
+  myOrders,
+  placeOrder,
+} from "../../apollo/server";
 import CodIcon from "../../assets/icons/CodIcon";
 import RiderImage from "../../assets/images/rider.png";
 import MarkerImage from "../../assets/images/marker.png";
@@ -35,7 +39,6 @@ import {
   OrderOption,
 } from "../../components/Checkout";
 import CloseIcon from "@mui/icons-material/Close";
-
 import FlashMessage from "../../components/FlashMessage";
 import Footer from "../../components/Footer/Footer";
 import { Header } from "../../components/Header";
@@ -48,19 +51,17 @@ import { DAYS } from "../../utils/constantValues";
 import { paypalCurrencies, stripeCurrencies } from "../../utils/currencies";
 import { calculateDistance, calculateAmount } from "../../utils/customFunction";
 import useStyle from "./styles";
-
 // import Analytics from "../../utils/analytics";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { mapStyles } from "../OrderDetail/mapStyles";
 import RestMarker from "../../assets/images/rest-map-2.png";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import clsx from "clsx";
-
 import { useLocation } from "../../hooks";
 import { useTranslation } from "react-i18next";
-
 import moment from "moment";
 import { direction } from "../../utils/helper";
+import { useQuery } from "@apollo/client";
 
 const PLACEORDER = gql`
   ${placeOrder}
@@ -129,6 +130,26 @@ function Checkout() {
     }
   );
 
+  const {
+    data: calcData,
+    loading: calcLoading,
+    error: errorCalc,
+  } = useQuery(getDeliveryCalculation, {
+    skip: !data,
+    variables: {
+      destLong: Number(location.longitude),
+      destLat: Number(location.latitude),
+      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+      originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
+    },
+  });
+
+  console.log({
+    calcData,
+    originLong: data?.restaurantCustomer.location.coordinates[0],
+    originLat: data?.restaurantCustomer.location.coordinates[1],
+  });
+
   useEffect(() => {
     if (!location) {
       let localStorageLocation = localStorage.getItem("location");
@@ -140,51 +161,62 @@ function Checkout() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (data && data?.restaurantCustomer) {
-        const latOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[1]
-        );
-        const lonOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[0]
-        );
-        const latDest = Number(location.latitude);
-        const longDest = Number(location.longitude);
+    if (calcData) {
+      const amount = calcData.getDeliveryCalculation.amount;
+      setDeliveryCharges(
+        amount >= configuration.minimumDeliveryFee
+          ? amount
+          : configuration.minimumDeliveryFee
+      );
+    }
+  }, [calcData]);
 
-        // Calculate distance between origin and destination
-        const distance = await calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        );
+  // useEffect(() => {
+  //   (async () => {
+  //     if (data && data?.restaurantCustomer) {
+  //       const latOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[1]
+  //       );
+  //       const lonOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[0]
+  //       );
+  //       const latDest = Number(location.latitude);
+  //       const longDest = Number(location.longitude);
 
-        let deliveryCharges;
+  //       // Calculate distance between origin and destination
+  //       const distance = await calculateDistance(
+  //         latOrigin,
+  //         lonOrigin,
+  //         latDest,
+  //         longDest
+  //       );
 
-        if (distance < 1) {
-          // For distances less than 1 km, set deliveryCharges to minimumDeliveryFee
-          deliveryCharges = configuration.minimumDeliveryFee;
-        } else {
-          // For distances greater than or equal to 1 km, calculate delivery charges
-          const costType = configuration.costType;
-          const calculatedAmount = calculateAmount(
-            costType,
-            configuration.deliveryRate,
-            distance
-          );
+  //       let deliveryCharges;
 
-          // Ensure that the calculated fee is not less than the minimum fee
-          deliveryCharges = Math.max(
-            calculatedAmount,
-            configuration.minimumDeliveryFee
-          );
-        }
+  //       if (distance < 1) {
+  //         // For distances less than 1 km, set deliveryCharges to minimumDeliveryFee
+  //         deliveryCharges = configuration.minimumDeliveryFee;
+  //       } else {
+  //         // For distances greater than or equal to 1 km, calculate delivery charges
+  //         const costType = configuration.costType;
+  //         const calculatedAmount = calculateAmount(
+  //           costType,
+  //           configuration.deliveryRate,
+  //           distance
+  //         );
 
-        // Set the delivery charges state
-        setDeliveryCharges(deliveryCharges);
-      }
-    })();
-  }, [data, location, configuration]); // Re-run effect when data, location, or configuration changes
+  //         // Ensure that the calculated fee is not less than the minimum fee
+  //         deliveryCharges = Math.max(
+  //           calculatedAmount,
+  //           configuration.minimumDeliveryFee
+  //         );
+  //       }
+
+  //       // Set the delivery charges state
+  //       setDeliveryCharges(deliveryCharges);
+  //     }
+  //   })();
+  // }, [data, location, configuration]); // Re-run effect when data, location, or configuration changes
 
   const onLoad = useCallback(
     (map) => {
