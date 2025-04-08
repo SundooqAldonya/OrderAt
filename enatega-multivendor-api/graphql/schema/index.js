@@ -1327,8 +1327,17 @@ const typeDefs = gql`
     city: String
   }
 
+  type Amount {
+    amount: Float
+  }
+
   type Query {
-    getDeliveryCalculation: Message
+    getDeliveryCalculation(
+      originLong: Float!
+      originLat: Float!
+      destLong: Float!
+      destLat: Float!
+    ): Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]

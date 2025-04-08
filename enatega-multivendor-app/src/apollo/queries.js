@@ -1189,3 +1189,21 @@ export const popularItems = `query PopularItems($restaurantId: String!) {
 //   }
 // }
 // `
+
+export const getDeliveryCalculation = gql`
+  query GetDeliveryCalculation(
+    $originLong: Float!
+    $originLat: Float!
+    $destLong: Float!
+    $destLat: Float!
+  ) {
+    getDeliveryCalculation(
+      originLong: $originLong
+      originLat: $originLat
+      destLong: $destLong
+      destLat: $destLat
+    ) {
+      amount
+    }
+  }
+`

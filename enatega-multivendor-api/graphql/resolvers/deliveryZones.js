@@ -1,4 +1,7 @@
-const { calculateAmount } = require('../../helpers/utilities')
+const {
+  calculateAmount,
+  calculateDistance
+} = require('../../helpers/utilities')
 const Configuration = require('../../models/configuration')
 const DeliveryPrice = require('../../models/DeliveryPrice')
 const DeliveryZone = require('../../models/deliveryZone')
@@ -16,20 +19,16 @@ module.exports = {
     },
 
     async getDeliveryCalculation(_, args) {
+      console.log({ deliveryCalcArgs: args })
       try {
+        const { originLong, originLat, destLong, destLat } = args
         // get zone charges from delivery prices
 
-        const latOrigin = args.originZone.location.coordinates[1]
-        const lonOrigin = args.originZone.location.coordinates[0]
-
-        const latDest = args.destinationZone.location.coordinates[1]
-        const longDest = args.destinationZone.location.coordinates[0]
-
         const distance = calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
+          originLat,
+          originLong,
+          destLat,
+          destLong
         )
 
         const configuration = await Configuration.findOne()
@@ -38,7 +37,7 @@ module.exports = {
         const originZone = await DeliveryZone.findOne({
           location: {
             $geoIntersects: {
-              $geometry: args.originZone.location.coordinates
+              $geometry: [originLong, originLat]
             }
           }
         })
@@ -48,7 +47,7 @@ module.exports = {
             $geoIntersects: {
               $geometry: {
                 type: 'Point',
-                coordinates: args.destinationZone.location.coordinates
+                coordinates: [destLong, destLat]
               }
             }
           }
@@ -82,6 +81,7 @@ module.exports = {
             distance
           )
         }
+        return { amount }
       } catch (err) {
         throw new Error(err)
       }

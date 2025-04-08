@@ -25,7 +25,11 @@ import {
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
-import { getTipping, orderFragment } from '../../apollo/queries'
+import {
+  getDeliveryCalculation,
+  getTipping,
+  orderFragment
+} from '../../apollo/queries'
 import { getCoupon, placeOrder } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
@@ -124,7 +128,38 @@ function Checkout(props) {
     longitudeDelta: 0.5
   }
 
+  const {
+    data: calcData,
+    loading: calcLoading,
+    error: errorCalc
+  } = useQuery(getDeliveryCalculation, {
+    skip: !data,
+    variables: {
+      destLong: Number(location.longitude),
+      destLat: Number(location.latitude),
+      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+      originLat: Number(data?.restaurantCustomer.location.coordinates[1])
+    }
+  })
+
+  console.log({
+    calcData,
+    originLong: data?.restaurantCustomer.location.coordinates[0],
+    originLat: data?.restaurantCustomer.location.coordinates[1]
+  })
+
   const restaurant = data?.restaurantCustomer
+
+  useEffect(() => {
+    if (calcData) {
+      const amount = calcData.getDeliveryCalculation.amount
+      setDeliveryCharges(
+        amount >= configuration.minimumDeliveryFee
+          ? amount
+          : configuration.minimumDeliveryFee
+      )
+    }
+  }, [calcData])
 
   const onModalOpen = (modalRef) => {
     const modal = modalRef.current
@@ -211,37 +246,37 @@ function Checkout(props) {
     }
   }, [tip, data])
 
-  useEffect(() => {
-    let isSubscribed = true
-    ;(async () => {
-      if (data && !!data?.restaurantCustomer) {
-        const latOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[1]
-        )
-        const lonOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[0]
-        )
-        const latDest = Number(location.latitude)
-        const longDest = Number(location.longitude)
-        const distance = await calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        )
-        const amount = Math.ceil(distance) * configuration.deliveryRate
-        isSubscribed &&
-          setDeliveryCharges(
-            amount >= configuration.minimumDeliveryFee
-              ? amount
-              : configuration.minimumDeliveryFee
-          )
-      }
-    })()
-    return () => {
-      isSubscribed = false
-    }
-  }, [data, location])
+  // useEffect(() => {
+  //   let isSubscribed = true
+  //   ;(async () => {
+  //     if (data && !!data?.restaurantCustomer) {
+  //       const latOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[1]
+  //       )
+  //       const lonOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[0]
+  //       )
+  //       const latDest = Number(location.latitude)
+  //       const longDest = Number(location.longitude)
+  //       const distance = await calculateDistance(
+  //         latOrigin,
+  //         lonOrigin,
+  //         latDest,
+  //         longDest
+  //       )
+  //       const amount = Math.ceil(distance) * configuration.deliveryRate
+  //       isSubscribed &&
+  //         setDeliveryCharges(
+  //           amount >= configuration.minimumDeliveryFee
+  //             ? amount
+  //             : configuration.minimumDeliveryFee
+  //         )
+  //     }
+  //   })()
+  //   return () => {
+  //     isSubscribed = false
+  //   }
+  // }, [data, location])
 
   console.log({ deliveryCharges })
   console.log({ minimumDeliveryFee: configuration.minimumDeliveryFee })

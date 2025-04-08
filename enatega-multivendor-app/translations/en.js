@@ -568,5 +568,6 @@ export const en = {
   cart: 'Cart',
   popular: 'Popular',
   correct: 'Correct',
-  otp_not_correct: 'OTP not correct'
+  otp_not_correct: 'OTP not correct',
+  calculating: 'Calculating...'
 }

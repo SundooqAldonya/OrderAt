@@ -19,7 +19,7 @@ import gql from 'graphql-tag'
 import { AntDesign } from '@expo/vector-icons'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import CartItem from '../../components/CartItem/CartItem'
-import { getTipping } from '../../apollo/queries'
+import { getDeliveryCalculation, getTipping } from '../../apollo/queries'
 import { scale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import { alignment } from '../../utils/alignment'
@@ -87,6 +87,26 @@ function Cart(props) {
     fetchPolicy: 'network-only'
   })
 
+  const {
+    data: calcData,
+    loading: calcLoading,
+    error: errorCalc
+  } = useQuery(getDeliveryCalculation, {
+    skip: !data,
+    variables: {
+      destLong: Number(location.longitude),
+      destLat: Number(location.latitude),
+      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+      originLat: Number(data?.restaurantCustomer.location.coordinates[1])
+    }
+  })
+
+  console.log({
+    calcData,
+    originLong: data?.restaurantCustomer.location.coordinates[0],
+    originLat: data?.restaurantCustomer.location.coordinates[1]
+  })
+
   const coupon =
     props.route.params && props.route.params.coupon
       ? props.route.params.coupon
@@ -101,6 +121,17 @@ function Cart(props) {
   const modalRef = useRef(null)
 
   useEffect(() => {
+    if (calcData) {
+      const amount = calcData.getDeliveryCalculation.amount
+      setDeliveryCharges(
+        amount >= configuration.minimumDeliveryFee
+          ? amount
+          : configuration.minimumDeliveryFee
+      )
+    }
+  }, [calcData])
+
+  useEffect(() => {
     if (tip) {
       setSelectedTip(null)
     } else if (dataTip && !selectedTip) {
@@ -108,37 +139,37 @@ function Cart(props) {
     }
   }, [tip, data])
 
-  useEffect(() => {
-    let isSubscribed = true
-    ;(async () => {
-      if (data && data?.restaurantCustomer) {
-        const latOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[1]
-        )
-        const lonOrigin = Number(
-          data?.restaurantCustomer.location.coordinates[0]
-        )
-        const latDest = Number(location.latitude)
-        const longDest = Number(location.longitude)
-        const distance = await calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        )
-        const amount = Math.ceil(distance) * configuration.deliveryRate
-        isSubscribed &&
-          setDeliveryCharges(
-            amount >= configuration.minimumDeliveryFee
-              ? amount
-              : configuration.minimumDeliveryFee
-          )
-      }
-    })()
-    return () => {
-      isSubscribed = false
-    }
-  }, [data, location])
+  // useEffect(() => {
+  //   let isSubscribed = true
+  //   ;(async () => {
+  //     if (data && data?.restaurantCustomer) {
+  //       const latOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[1]
+  //       )
+  //       const lonOrigin = Number(
+  //         data?.restaurantCustomer.location.coordinates[0]
+  //       )
+  //       const latDest = Number(location.latitude)
+  //       const longDest = Number(location.longitude)
+  //       const distance = await calculateDistance(
+  //         latOrigin,
+  //         lonOrigin,
+  //         latDest,
+  //         longDest
+  //       )
+  //       const amount = Math.ceil(distance) * configuration.deliveryRate
+  //       isSubscribed &&
+  //         setDeliveryCharges(
+  //           amount >= configuration.minimumDeliveryFee
+  //             ? amount
+  //             : configuration.minimumDeliveryFee
+  //         )
+  //     }
+  //   })()
+  //   return () => {
+  //     isSubscribed = false
+  //   }
+  // }, [data, location])
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
@@ -567,7 +598,7 @@ function Cart(props) {
                     H2
                   >
                     {configuration.currencySymbol}
-                    {calculateTotal()}
+                    {calcLoading ? t('calculating') : calculateTotal()}
                   </TextDefault>
                   <TextDefault
                     textColor={currentTheme.black}

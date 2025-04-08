@@ -563,5 +563,6 @@ export const ar = {
   cart: 'السلة',
   popular: 'الأكثر رواجا',
   correct: 'موافقة',
-  otp_not_correct: 'الرقم الذي أدخلته غير صحيح!'
+  otp_not_correct: 'الرقم الذي أدخلته غير صحيح!',
+  calculating: 'جاري حساب المبلغ...'
 }
