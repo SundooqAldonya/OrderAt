@@ -25,7 +25,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import orderBy from 'lodash/orderBy'
 import TableHeader from '../components/TableHeader'
 import { customStyles } from '../utils/tableCustomStyles'
-import { Switch } from '@material-ui/core'
+import { Switch } from '@mui/material'
 
 const GET_CITIES = gql`
   ${getCities}
