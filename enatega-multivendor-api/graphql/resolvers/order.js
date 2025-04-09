@@ -700,35 +700,6 @@ module.exports = {
         //   ? area.location.location.coordinates[1]
         //   : null
 
-        // get zone charges from delivery prices
-        // const originZone = await Zone.findOne({
-        //   location: {
-        //     $geoIntersects: {
-        //       $geometry: restaurant.deliveryBounds
-        //     }
-        //   }
-        // })
-
-        // const destinationZone = await Zone.findOne({
-        //   location: {
-        //     $geoIntersects: {
-        //       $geometry: {
-        //         type: 'Point',
-        //         coordinates: address.location.coordinates
-        //       }
-        //     }
-        //   }
-        // })
-
-        // console.log({ originZone, destinationZone })
-
-        // const deliveryPrice = await DeliveryPrice.findOne({
-        //   originZone: originZone._id, // comes from restaurant
-        //   destinationZone: destinationZone._id // comes from customer address or area,
-        // })
-
-        // console.log({ deliveryPrice })
-
         const distance = calculateDistance(
           latOrigin,
           lonOrigin,
@@ -1013,6 +984,56 @@ module.exports = {
 
         const costType = configuration.costType
 
+        // get zone charges from delivery prices
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: restaurant.location.coordinates
+            }
+          }
+        })
+
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [longDest, latDest]
+              }
+            }
+          }
+        })
+
+        console.log({ originZone, destinationZone })
+        let deliveryPrice
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPrice.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
+
+        console.log({ deliveryPrice })
+
+        let amount
+        if (deliveryPrice) {
+          amount = deliveryPrice.cost
+        } else {
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          )
+        }
+
         // Calculate delivery charges based on distance
         // let DELIVERY_CHARGES = 0;
         // if (distance > 2) {
@@ -1025,11 +1046,11 @@ module.exports = {
         //   DELIVERY_CHARGES = configuration.minimumDeliveryFee;
         // }
 
-        let amount = calculateAmount(
-          costType,
-          configuration.deliveryRate,
-          distance
-        )
+        // let amount = calculateAmount(
+        //   costType,
+        //   configuration.deliveryRate,
+        //   distance
+        // )
         let DELIVERY_CHARGES = amount
         if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
           DELIVERY_CHARGES = configuration.minimumDeliveryFee
