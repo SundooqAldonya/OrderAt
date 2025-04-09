@@ -33,7 +33,7 @@ const areas = require('./areas')
 const businesses = require('./businesses')
 const ridersRegister = require('./ridersRegister')
 const shopCategories = require('./shopCategories')
-const DeliveryPricing = require('./DeliveryPricing')
+const DeliveryPricing = require('./deliveryPricing')
 const deliveryZones = require('./deliveryZones')
 
 const rootResolver = {
