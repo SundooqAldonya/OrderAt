@@ -1,21 +1,41 @@
-import React from 'react'
-import { Box, CircularProgress } from '@mui/material'
+import React, { useEffect } from 'react'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import { useJsApiLoader } from '@react-google-maps/api'
 
+const LIBRARIES = [
+  'drawing',
+  'places',
+  'geometry',
+  // 'localContext',
+  'visualization'
+]
+
 const GoogleMapsLoader = ({ children, GOOGLE_MAPS_KEY }) => {
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: GOOGLE_MAPS_KEY,
     language: 'ar',
     region: 'EG',
-    libraries: [
-      'drawing',
-      'places',
-      'geometry',
-      'localContext',
-      'visualization'
-    ]
+    libraries: LIBRARIES
   })
+
+  useEffect(() => {
+    if (window.google) {
+      console.log('Google Maps API is loaded')
+    } else {
+      console.log('Error loading Google Maps API')
+    }
+  }, [])
+
+  console.log({ loadError })
+
+  if (loadError) {
+    return (
+      <Box>
+        <Typography variant="h1">Error loading google maps</Typography>
+      </Box>
+    )
+  }
 
   if (!isLoaded) {
     return (
