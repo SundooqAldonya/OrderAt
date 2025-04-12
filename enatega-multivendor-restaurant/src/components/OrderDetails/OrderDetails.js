@@ -19,7 +19,7 @@ export default function OrderDetails({ orderData }) {
     : orderData?.rider?.phone
   return (
     <View style={{ flex: 1 }}>
-      {orderData.orderStatus === 'ASSIGNED' && orderData.rider ? (
+      {orderData.rider ? (
         <View style={styles.cardContainer}>
           <Text style={[styles.heading, textAlignStyle]}>
             {t('rider_details')}

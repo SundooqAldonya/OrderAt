@@ -11,7 +11,7 @@ export const ar = {
   aboutUs: 'من نحن',
   productPage: 'صفحة المنتج',
   privacyPolicy: 'سياسة الخصوصية',
-  unReadOrders: 'لا توجد طلبات لا توجد طلبات جديدة حتى الآن!',
+  unReadOrders: 'لا توجد طلبات جديدة حتى الآن!',
   deliveredOrders: 'تم التوصيل',
   processing: 'قيد التجهيز',
   newOrders: 'طلبات جديدة',
