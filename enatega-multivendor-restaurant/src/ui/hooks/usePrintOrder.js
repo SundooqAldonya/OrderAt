@@ -20,6 +20,7 @@ export default function usePrintOrder() {
       console.log('result', result)
     }
   }
+
   const selectPrinter = async () => {
     const result = await selectPrinterAsync()
     if (result) {
