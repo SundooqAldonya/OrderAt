@@ -77,7 +77,7 @@ function Drawer() {
     <SideDrawer.Navigator
       screenOptions={{
         drawerStyle: {
-          width: '80%'
+          width: '70%'
         }
       }}
       drawerContent={(props) => <SideBar {...props} />}
@@ -220,7 +220,9 @@ function NoDrawer() {
       />
 
       {/* Authentication Login */}
-      <NavigationStack.Screen name='CreateAccount' component={CreateAccount} />
+      <NavigationStack.Screen
+        options={{ headerShown: true }}
+      name='CreateAccount' component={CreateAccount} />
       <NavigationStack.Screen name='Login' component={Login} />
       <NavigationStack.Screen name='Register' component={Register} />
       <NavigationStack.Screen name='PhoneNumber' component={PhoneNumber} />

@@ -384,6 +384,7 @@ function Main(props) {
         >
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
+        
               <View style={[styles().flex, styles().subContainer]}>
                 <View
                   style={[
@@ -560,6 +561,7 @@ function Main(props) {
                   </ScrollView>
                 )}
               </View>
+              
             </View>
           </View>
           <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />

@@ -249,6 +249,7 @@ export const ar = {
   PastOrder: 'الطلبات السابقة',
   ContinueWithGoogle: 'المتابعة مع جوجل',
   ContinueWithEmail: 'المتابعة مع البريد الإلكتروني',
+  ContinuePhoneNumber: 'المتابعة مع رقم الهاتف',
   Cancel: 'إلغاء',
   DeleteAccount: 'حذف الحساب',
   DeleteConfirmation: 'هل أنت متأكد أنك تريد حذف الحساب؟',

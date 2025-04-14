@@ -22,6 +22,8 @@ import { useMutation } from '@apollo/client'
 import { googleAuthCustomerApp } from '../../apollo/mutations'
 import AuthContext from '../../context/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import FdGoogleBtn2 from '../../ui/FdSocialBtn/FdGoogleBtn/FdGoogleBtn2'
+import FdPhonBtn from '../../ui/FdSocialBtn/FdEmailBtn/FdPhonBtn'
 
 const { height } = Dimensions.get('window')
 
@@ -109,12 +111,12 @@ const CreateAccount = (props) => {
 
     return (
       <AppleAuthentication.AppleAuthenticationButton
-        buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
-        buttonStyle={
-          themeContext.ThemeValue === 'Dark'
-            ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-            : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-        }
+        // buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+        // buttonStyle={
+        //   themeContext.ThemeValue === 'Dark'
+        //     ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+        //     : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+        // }
         cornerRadius={scale(20)}
         style={styles().appleBtn}
         onPress={async () => {
@@ -186,7 +188,31 @@ const CreateAccount = (props) => {
         }}
       />
     )
+  } 
+  
+  function rendergoogleLogin() {
+    return (
+      <FdGoogleBtn2
+        loadingIcon={loading}
+        onPress={() => {
+          googleLogin()
+         }}
+      />
+    )
   }
+
+  function renderPhoneNumber() {
+    return (
+      <FdPhonBtn
+        loadingIcon={loading}
+        onPress={() => {
+          }}
+  title={ t('ContinuePhoneNumber')}
+  disabled={true}
+      />
+    )
+  }
+   
 
   const googleLogin = async () => {
     try {
@@ -213,6 +239,9 @@ const CreateAccount = (props) => {
       console.log({ error })
     }
   }
+
+
+
 
   const fetchPhoneNumber = async (token) => {
     try {
@@ -266,7 +295,7 @@ const CreateAccount = (props) => {
           </View>
 
           {/* <View style={{ marginBottom: scale(5) }}>{renderGoogleAction()}</View> */}
-          <View style={{ marginBottom: scale(5), marginHorizontal: 'auto' }}>
+          {/* <View style={{ marginBottom: scale(5), marginHorizontal: 'auto' }}>
             <GoogleSigninButton
               size={GoogleSigninButton.Size.Wide}
               color={GoogleSigninButton.Color.Dark}
@@ -276,16 +305,20 @@ const CreateAccount = (props) => {
               }}
               // disabled={isInProgress}
             />
-          </View>
+          </View> */}
+          <View style={{ marginBottom: scale(2) }}>{rendergoogleLogin()}</View>
+ 
           {enableApple && (
-            <View style={{ marginBottom: scale(5) }}>
+            <View style={{ marginBottom: scale(2) }}>
               {renderAppleAction()}
             </View>
           )}
-          <View style={{ marginBottom: scale(5) }}>{renderEmailAction()}</View>
+          <View style={{ marginBottom: scale(2) }}>{renderEmailAction()}</View>
+          <View style={{ marginBottom: scale(2) }}>{renderPhoneNumber()}</View>
+         {/* or */}
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles(currentTheme).line} />
-            <View style={{ marginBottom: scale(5) }}>
+            <View style={{ marginBottom: scale(2) }}>
               <TextDefault
                 H4
                 bolder
@@ -297,11 +330,12 @@ const CreateAccount = (props) => {
             </View>
             <View style={styles(currentTheme).line} />
           </View>
+          {/* guestButton */}
           <TouchableOpacity
             activeOpacity={0.7}
             style={[
               styles(currentTheme).guestButton,
-              { backgroundColor: colors?.primary, borderColor: colors?.primary }
+              // { backgroundColor: colors?.primary, borderColor: colors?.primary }
             ]}
             onPress={() => {
               navigation.navigate('Main')

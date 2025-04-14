@@ -255,6 +255,7 @@ export const en = {
   PastOrder: 'Past Orders',
   ContinueWithGoogle: 'Continue with Google',
   ContinueWithEmail: 'Continue with Email or Phone',
+  ContinuePhoneNumber:'Continue with Phone',
   Cancel: 'Cancel',
   DeleteAccount: 'Delete my Account',
   DeleteConfirmation: 'Are you Sure you want to delete Account?',
