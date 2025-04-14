@@ -60,6 +60,9 @@ const ModalDropdown = ({
       onRequestClose={onClose}
       backdropOpacity={1}
       transparent={true}
+      style={{
+        height:'100px'
+      }}
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
@@ -90,7 +93,7 @@ const ModalDropdown = ({
 
 const styles = StyleSheet.create({
   overlay: {
-    height: '20%',
+    height: '50%',
     backgroundColor: 'rgba(0, 0, 0, 0.8)'
   },
   modalContainer: (theme) => ({

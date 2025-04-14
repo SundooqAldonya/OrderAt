@@ -263,7 +263,13 @@ export default function AddNewAddress(props) {
             style={[styles(currentTheme).textInput]}
             onPress={handleAreasModal}
           >
-            <TextDefault>
+            <TextDefault
+            style={
+              {
+                color:'red'
+              }
+            }
+            >
               {selectedArea ? selectedArea.title : t('select_area')}
             </TextDefault>
           </TouchableOpacity>

@@ -1,26 +1,25 @@
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
-const { StyleSheet } = require('react-native')
-
-const styles = (props = null) =>
+ const { StyleSheet, I18nManager } = require('react-native')
+  const styles = (props = null) =>
   StyleSheet.create({
     flex: {
       flex: 1
     },
     mapView: {
-      height: '50%',
-      marginBottom: scale(-20)
+      height: '70%'
+      // marginBottom: scale(-20)
     },
     container: {
       flex: 1,
       backgroundColor: 'red',
-      height: '90%',
+      height: '30%',
       overflow: 'visible',
       justifyContent: 'space-around',
       borderTopLeftRadius: scale(30),
       borderTopRightRadius: scale(30),
-      backgroundColor: props !== null ? props.themeBackground : '#f5f5f5',
-      borderWidth: scale(1),
+       backgroundColor: props !== null ? props.themeBackground : '#f5f5f5',
+       borderWidth: scale(1),
       borderColor: '#DAD6D6',
       paddingTop: scale(20),
       paddingBottom: scale(20)
@@ -40,7 +39,8 @@ const styles = (props = null) =>
     heading: {
       paddingLeft: scale(20),
       ...alignment.MBlarge,
-      ...alignment.MRmedium
+      ...alignment.MRmedium,
+      textAlign: 'center'
     },
     addressHeading: {
       marginBottom: scale(30)
@@ -50,9 +50,11 @@ const styles = (props = null) =>
       height: 20,
       alignItems: 'center',
       display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
+        flexDirection: 'row',
+       justifyContent: 'flex-start',
+      textAlign: 'auto',
       paddingLeft: scale(20),
+      paddingRight: scale(20),
       marginTop: scale(10),
       marginBottom: scale(10)
     },
@@ -75,11 +77,13 @@ const styles = (props = null) =>
       color: props != null ? props.newFontcolor : '#E5E7EB'
     },
     icon1: {
-      marginLeft: 10
+      // marginLeft: 10,
+      marginHorizontal: 10
+      // marginHorizontal: I18nManager.isRTL ? 10 : 'row-reverse',
     },
     textInput: {
       width: '100%',
-      height: 80,
+      height: 60,
       justifyContent: 'center',
       paddingHorizontal: scale(10),
       marginTop: scale(15),
@@ -96,12 +100,14 @@ const styles = (props = null) =>
     },
     icon: {
       backgroundColor: props != null ? props.iconBackground : '#E5E7EB',
-      height: scale(36),
-      width: scale(36),
+      height: scale(30),
+      width: scale(30),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: scale(18),
+      borderRadius: scale(15),
       marginRight: scale(16)
+      //  marginHorizontal: scale(16)
+      // marginRight: I18nManager.isRTL ? scale(16) : 'row-reverse',
     },
     line: {
       borderBottomWidth: scale(1),
@@ -112,19 +118,19 @@ const styles = (props = null) =>
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 80,
+      height: 50,
       backgroundColor: props !== null ? props.main : 'transparent',
       justifyContent: 'space-evenly',
       alignItems: 'center',
       alignSelf: 'center',
       borderRadius: scale(28)
       // marginTop: scale(50)
-    },
+     },
     disabledButton: {
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 80,
+      height: 50,
       backgroundColor: 'gray',
       justifyContent: 'space-evenly',
       alignItems: 'center',

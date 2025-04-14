@@ -6,7 +6,13 @@ import React, {
   useRef,
   Fragment
 } from 'react'
-import { View, TouchableOpacity, StatusBar, Linking } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Linking,
+  I18nManager
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import { theme } from '../../utils/themeColors'
@@ -32,6 +38,7 @@ import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
 import { createAddress } from '../../apollo/mutations'
+import { scale } from '../../utils/scaling'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -44,7 +51,10 @@ const LONGITUDE_DELTA = 0.01
 
 export default function SelectLocation(props) {
   const Analytics = analytics()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+
+  const isArabic = i18n.language === 'ar'
+
   const { longitude, latitude } = props.route.params || {}
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -256,14 +266,24 @@ export default function SelectLocation(props) {
           >
             {t('selectLocation')}
           </TextDefault>
+          <View style={styles(currentTheme).line} />
 
           {!isLoggedIn ? (
             <TouchableOpacity
               activeOpacity={0.7}
-              style={styles(currentTheme).button}
+              style={[
+                styles(currentTheme).button,
+                { flexDirection: isArabic ? 'row-reverse' : 'row' }
+              ]}
               onPress={setCurrentLocation}
             >
-              <View style={styles(currentTheme).icon}>
+              <View
+                style={[
+                  styles(currentTheme).icon,
+
+                  { marginLeft: isArabic ? scale(16) : scale(16) }
+                ]}
+              >
                 <EvilIcons name='location' size={18} color='black' />
               </View>
               <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
@@ -282,10 +302,19 @@ export default function SelectLocation(props) {
 
           <TouchableOpacity
             activeOpacity={0.7}
-            style={styles(currentTheme).button}
+            style={[
+              styles(currentTheme).button,
+              { flexDirection: isArabic ? 'row-reverse' : 'row' }
+            ]}
             onPress={() => setModalVisible(true)}
           >
-            <View style={styles(currentTheme).icon}>
+            <View
+              style={[
+                styles(currentTheme).icon,
+
+                { marginLeft: isArabic ? scale(16) : scale(16) }
+              ]}
+            >
               <Feather name='list' size={18} color='black' />
             </View>
 
@@ -294,6 +323,7 @@ export default function SelectLocation(props) {
             </TextDefault>
           </TouchableOpacity>
           <View style={styles(currentTheme).line} />
+
         </View>
         <View style={{ paddingBottom: inset.bottom }} />
       </View>

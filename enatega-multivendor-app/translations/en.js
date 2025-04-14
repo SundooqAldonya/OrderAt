@@ -262,7 +262,7 @@ export const en = {
   yourOrderIs: 'Your order is',
   noItemsExists: 'No items exists',
   pickUpAddress: 'PickUp Address',
-  selectedLocation: 'Selected Location',
+  selectedLocation: 'Selected Location dd',
   noReviewYet: 'There are no reviews yet.',
   Openingtimes: 'Opening times',
   ClosedAllDay: 'Closed all day',
