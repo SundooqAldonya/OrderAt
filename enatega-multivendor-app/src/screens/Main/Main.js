@@ -379,7 +379,7 @@ function Main(props) {
           style={[
             styles().flex,
             styles(currentTheme).screenBackground,
-            { paddingBottom: 120 }
+            // { paddingBottom: 120 }
           ]}
         >
           <View style={styles().flex}>

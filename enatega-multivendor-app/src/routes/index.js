@@ -222,7 +222,9 @@ function NoDrawer() {
       {/* Authentication Login */}
       <NavigationStack.Screen
         options={{ headerShown: true }}
-      name='CreateAccount' component={CreateAccount} />
+        name='CreateAccount'
+        component={CreateAccount}
+      />
       <NavigationStack.Screen name='Login' component={Login} />
       <NavigationStack.Screen name='Register' component={Register} />
       <NavigationStack.Screen name='PhoneNumber' component={PhoneNumber} />
@@ -299,29 +301,30 @@ const BottomTabs = () => {
           return (
             <Icon
               name={iconName}
-              size={25}
+              size={24}
               color={color}
-              style={{ marginTop: 15 }}
+              style={{ marginTop: 10 }}
             />
           )
         },
-        tabBarActiveTintColor: '#fff',
         tabBarStyle: {
-          backgroundColor: colors.primary,
-          height: 90,
-          paddingBottom: 10,
-          position: 'absolute',
-          bottom: 15,
-          left: 20,
-          right: 20,
-          borderRadius: 15,
-          paddingBottom: 10
+          backgroundColor: colors.background,
+          height: 70,
+          //   paddingBottom: 10,
+          //  position: 'absolute',
+          // bottom: 15,
+          // left: 20,
+          // right: 20,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16
+          // paddingBottom: 10
         },
         tabBarLabelStyle: {
           fontWeight: 'bold',
-          marginBottom: 15
+          marginBottom: 10
         },
-        tabBarInactiveTintColor: '#000'
+        tabBarInactiveTintColor: 'grey',
+        tabBarActiveTintColor: '#000'
       })}
     >
       <Tab.Screen

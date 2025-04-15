@@ -11,15 +11,15 @@ const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
 const styles = (props = null, hasActiveOrders = false) =>
   StyleSheet.create({
     flex: {
-      flex: 1
-    },
+      flex: 1,
+      },
     mainItemsContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       gap: scale(20),
       marginTop: scale(16),
-      marginBottom: scale(30)
-    },
+      marginBottom: scale(30),
+     },
     mainItem: {
       padding: 12,
       borderWidth: 1,
@@ -160,8 +160,8 @@ const styles = (props = null, hasActiveOrders = false) =>
       marginTop: scale(30),
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
       borderWidth: scale(1),
-      borderRadius: scale(10)
-    },
+      borderRadius: scale(10),
+     },
     searchList: {
       marginBottom: 70
     },
