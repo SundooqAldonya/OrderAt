@@ -24,8 +24,8 @@ const styles = (props = null) =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       ...alignment.MBlarge,
-      marginBottom: 0
-    },
+      marginBottom: 0,
+     },
     formSubContainer: {
       borderRadius: scale(8),
       flexDirection: 'row',

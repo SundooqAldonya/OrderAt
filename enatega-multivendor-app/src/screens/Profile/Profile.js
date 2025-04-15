@@ -524,30 +524,48 @@ function Profile(props) {
                 <View style={{ flex: 1 }} />
               </View> */}
 
+              <TextDefault
+                H5
+                B700
+                bolder
+                left
+                textColor={currentTheme.darkBgFont}
+                style={[
+                  styles(currentTheme).textAlignLeft,
+                  {
+                    textAlign: !isArabic ? 'left' : 'right',
+                    width: '92%',
+                    marginTop: 10,
+                    marginTop: 10,
+                  }
+                ]}
+              >
+                {t('email')}
+              </TextDefault>
               <View
                 style={{
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: 'transparent',
+                  backgroundColor: colors.grey,
                   alignSelf: 'center',
-                  elevation: 1,
+                  // elevation: 1,
                   borderWidth: 1,
                   borderColor: '#E5E7EB',
                   marginBottom: 0,
                   marginVertical: 10,
                   paddingHorizontal: 10,
-                  paddingVertical: 20,
+                  paddingVertical: 15,
                   justifyContent: 'space-between',
                   alignItems: 'center'
                 }}
               >
                 <View>
-                  <TextDefault
+                  {/* <TextDefault
                     style={{ textAlign: isArabic ? 'right' : 'left' }}
                   >
                     {t('email')}
-                  </TextDefault>
+                  </TextDefault> */}
                   <TextDefault>
                     {profile?.email ? profile?.email : 'N/A'}
                   </TextDefault>
@@ -573,20 +591,37 @@ function Profile(props) {
               </View>
 
               {/* password */}
+              <TextDefault
+                H5
+                B700
+                bolder
+                left
+                textColor={currentTheme.darkBgFont}
+                style={[
+                  styles(currentTheme).textAlignLeft,
+                  {
+                    textAlign: !isArabic ? 'left' : 'right',
+                    width: '92%',
+                    marginTop: 10
+                  }
+                ]}
+              >
+                {t('password')}
+              </TextDefault>
               <TouchableOpacity
                 style={{
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: 'transparent',
+                  backgroundColor: colors.grey,
                   alignSelf: 'center',
-                  elevation: 1,
+                  // elevation: 1,
                   borderWidth: 1,
                   borderColor: '#E5E7EB',
                   marginBottom: 0,
                   marginVertical: 10,
                   paddingHorizontal: 10,
-                  paddingVertical: 20,
+                  paddingVertical: 15,
                   justifyContent: 'flex-start',
                   alignItems: 'center'
                 }}
@@ -604,36 +639,44 @@ function Profile(props) {
               </TouchableOpacity>
 
               {/* phone */}
-
+              <TextDefault
+                H5
+                B700
+                bolder
+                left
+                textColor={currentTheme.darkBgFont}
+                style={[
+                  styles(currentTheme).textAlignLeft,
+                  {
+                    textAlign: !isArabic ? 'left' : 'right',
+                    width: '92%',
+                    marginTop: 10
+                  }
+                ]}
+              >
+                {t('mobileNumber')}
+              </TextDefault>
               <View
                 style={{
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: 'transparent',
+                  // backgroundColor: 'transparent',
+                  backgroundColor: colors.grey,
+
                   alignSelf: 'center',
-                  elevation: 1,
+                  // elevation: 1,
                   borderWidth: 1,
                   borderColor: '#E5E7EB',
                   marginBottom: 0,
                   marginVertical: 10,
                   paddingHorizontal: 10,
-                  paddingVertical: 20,
+                  paddingVertical: 15,
                   justifyContent: 'space-between',
                   alignItems: 'center'
                 }}
               >
                 <View>
-                  <TextDefault
-                    H5
-                    B700
-                    bolder
-                    left
-                    textColor={currentTheme.darkBgFont}
-                    style={styles(currentTheme).textAlignLeft}
-                  >
-                    {t('mobileNumber')}
-                  </TextDefault>
                   <TextDefault
                     H5
                     B700
@@ -775,19 +818,37 @@ function Profile(props) {
                   </TouchableOpacity>
                 </View>
               </View> */}
-            </View>
-            <View style={{ alignItems: 'center', padding: 10 }}>
-              <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
-                <TextDefault
-                  bolder
-                  H4
-                  textColor={currentTheme.deleteAccountBtn}
-                >
-                  {t('DeleteAccount')}
-                </TextDefault>
-              </TouchableOpacity>
+              <View
+                // style={{ alignItems: 'center', padding: 10 }}
+
+                style={{
+                  borderRadius: scale(8),
+                  width: '92%',
+                  backgroundColor: colors.background,
+                  alignSelf: 'center',
+                  borderWidth: 1,
+                  borderColor: currentTheme.deleteAccountBtn,
+                  marginVertical: scale(50),
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  display: 'flex',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
+                  <TextDefault
+                    bolder
+                    H4
+                    textColor={currentTheme.deleteAccountBtn}
+                  >
+                    {t('DeleteAccount')}
+                  </TextDefault>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
+
           <Modal
             onBackdropPress={() => setDeleteModalVisible(false)}
             onBackButtonPress={() => setDeleteModalVisible(false)}
