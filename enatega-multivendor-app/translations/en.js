@@ -570,5 +570,7 @@ export const en = {
   popular: 'Popular',
   correct: 'Correct',
   otp_not_correct: 'OTP not correct',
-  calculating: 'Calculating...'
+  calculating: 'Calculating...',
+  Confirm_exit:"Confirm exit",
+  Do_you_want_to_quit_the_app:"Do you want to quit the app?"
 }

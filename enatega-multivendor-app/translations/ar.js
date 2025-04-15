@@ -565,5 +565,7 @@ export const ar = {
   popular: 'الأكثر رواجا',
   correct: 'موافقة',
   otp_not_correct: 'الرقم الذي أدخلته غير صحيح!',
-  calculating: 'جاري حساب المبلغ...'
+  calculating: 'جاري حساب المبلغ...',
+  Confirm_exit: 'تأكيد الخروج',
+  Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟'
 }
