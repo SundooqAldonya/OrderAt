@@ -26,17 +26,18 @@ function DrawerProfile(props) {
     >
       <View style={styles().loggedInContainer}>
         <View style={styles().subContainer}>
+          <View style={{ flex: 1 }}>
+            <TextDefault textColor={colors.dark} bolder H3>
+              {profile?.name ? profile?.name : 'Guest'}
+             </TextDefault>
+            <TextDefault textColor={colors.dark}>
+              {profile?.email ? profile?.email : null}
+            </TextDefault>
+          </View>
+
           <View style={styles(currentTheme).imgContainer}>
             <TextDefault textColor={currentTheme.tagColor} bold H1>
               {profile?.name?.substr(0, 1)?.toUpperCase() ?? 'G'}
-            </TextDefault>
-          </View>
-          <View style={{ flex: 1 }}>
-            <TextDefault textColor={colors.dark} bolder H2>
-              {profile?.name ? profile?.name : 'Guest'}
-            </TextDefault>
-            <TextDefault textColor={colors.dark} H5>
-              {profile?.email ? profile?.email : null}
             </TextDefault>
           </View>
         </View>

@@ -22,7 +22,7 @@ const styles = (props = null) =>
       alignItems: 'center',
       backgroundColor: props !== null ? props.gray100 : 'transparent',
       borderRadius: 25,
-      marginHorizontal:20,
+      // marginHorizontal:20,
     },
     img: {
       width: '100%',

@@ -37,14 +37,15 @@ const styles = (props = null) =>
     containerButton: {
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
       width: '90%',
-      height: scale(55),
+      height: scale(60),
       bottom: verticalScale(0),
       justifyContent: 'center',
       alignItems: 'center',
-      alignSelf: 'center'
-    },
+      alignSelf: 'center',
+      display: 'flex',
+     },
     addButton: {
-      backgroundColor: colors.primary,
+      backgroundColor: colors.grey,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

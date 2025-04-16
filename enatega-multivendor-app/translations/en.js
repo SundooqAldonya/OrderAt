@@ -255,7 +255,7 @@ export const en = {
   PastOrder: 'Past Orders',
   ContinueWithGoogle: 'Continue with Google',
   ContinueWithEmail: 'Continue with Email or Phone',
-  ContinuePhoneNumber:'Continue with Phone',
+  ContinuePhoneNumber: 'Continue with Phone',
   Cancel: 'Cancel',
   DeleteAccount: 'Delete my Account',
   DeleteConfirmation: 'Are you Sure you want to delete Account?',
@@ -571,6 +571,10 @@ export const en = {
   correct: 'Correct',
   otp_not_correct: 'OTP not correct',
   calculating: 'Calculating...',
-  Confirm_exit:"Confirm exit",
-  Do_you_want_to_quit_the_app:"Do you want to quit the app?"
+  Confirm_exit: 'Confirm exit',
+  Do_you_want_to_quit_the_app: 'Do you want to quit the app?',
+  Request_delivery: 'Request Delivery',
+  your_location: 'your location',
+  your_order_will_send_here: 'Your order will be delivered to this location'
+
 }

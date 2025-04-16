@@ -567,5 +567,8 @@ export const ar = {
   otp_not_correct: 'الرقم الذي أدخلته غير صحيح!',
   calculating: 'جاري حساب المبلغ...',
   Confirm_exit: 'تأكيد الخروج',
-  Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟'
+  Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟',
+  Request_delivery: 'طلب مندوب',
+  your_location: 'موقعك',
+  your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان'
 }

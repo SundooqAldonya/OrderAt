@@ -77,7 +77,7 @@ function Drawer() {
     <SideDrawer.Navigator
       screenOptions={{
         drawerStyle: {
-          width: '70%'
+          width: '80%'
         }
       }}
       drawerContent={(props) => <SideBar {...props} />}
@@ -248,6 +248,7 @@ function NoDrawer() {
       />
       <NavigationStack.Screen name='AddNewAddress' component={AddNewAddress} />
       <NavigationStack.Screen
+        options={{ headerShown: true }}
         name='AddNewAddressUser'
         component={AddNewAddressUser}
       />
@@ -294,6 +295,8 @@ const BottomTabs = () => {
             iconName = 'settings'
           } else if (route.name === 'MyOrders') {
             iconName = 'lunch-dining'
+          } else if (route.name === 'RequestDelivery') {
+            iconName = 'delivery-dining'
           }
           // else if (route.name === 'CreateAccount') {
           //   iconName = 'login'
@@ -342,6 +345,11 @@ const BottomTabs = () => {
         options={{ tabBarLabel: t('titleSettings') }}
         component={Settings}
       />
+      {/* <Tab.Screen
+        name='RequestDelivery'
+        options={{ tabBarLabel: t('Request_delivery') }}
+        component={Settings}
+      /> */}
       {isLoggedIn ? (
         <Tab.Screen
           name='Profile'

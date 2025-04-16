@@ -244,7 +244,8 @@ function Addresses() {
                     <EvilIcons
                       name='trash'
                       size={scale(33)}
-                      color={currentTheme.darkBgFont}
+                      // color={currentTheme.darkBgFont}
+                      color={'red'}
                     />
                   </TouchableOpacity>
                 </View>

@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
   StatusBar,
   Linking,
-  I18nManager
+  I18nManager,
+  SafeAreaView,
+  ScrollView
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
@@ -26,7 +28,7 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
 import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import analytics from '../../utils/analytics'
-import { Feather, EvilIcons } from '@expo/vector-icons'
+import { Feather, EvilIcons, MaterialIcons } from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
@@ -39,6 +41,8 @@ import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
 import { createAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
+import navigationService from '../../routes/navigationService'
+import { HeaderBackButton } from '@react-navigation/elements'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -75,18 +79,60 @@ export default function SelectLocation(props) {
   })
   const [modalVisible, setModalVisible] = useState(false)
 
+  // useLayoutEffect(() => {
+  //   navigation.setOptions(
+  //     screenOptions({
+  //       title: t('setLocation'),
+  //       fontColor: currentTheme.newFontcolor,
+  //       backColor: currentTheme.newheaderBG,
+  //       iconColor: currentTheme.newIconColor,
+  //       lineColor: currentTheme.newIconColor,
+  //       setCurrentLocation: getCurrentPosition
+
+  //     })
+  //   )
+  // })
   useLayoutEffect(() => {
-    navigation.setOptions(
-      screenOptions({
-        title: t('setLocation'),
-        fontColor: currentTheme.newFontcolor,
-        backColor: currentTheme.newheaderBG,
-        iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor,
-        setCurrentLocation: getCurrentPosition
-      })
-    )
-  })
+    navigation.setOptions({
+      title: t('setLocation'),
+      setCurrentLocation: getCurrentPosition,
+
+      headerRight: null,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        fontWeight: 'bold'
+      },
+      headerTitleContainerStyle: {
+        marginTop: '2%',
+        paddingLeft: scale(25),
+        paddingRight: scale(25),
+        height: '75%',
+        marginLeft: 0
+      },
+      headerStyle: {
+        backgroundColor: currentTheme.newheaderBG,
+        elevation: 0
+      },
+      headerLeft: () => (
+        <HeaderBackButton
+          truncatedLabel=''
+          backImage={() => (
+            <View>
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={currentTheme.newIconColor}
+              />
+            </View>
+          )}
+          onPress={() => {
+            navigationService.goBack()
+          }}
+        />
+      )
+    })
+  }, [])
 
   useEffect(() => {
     if (!coordinates.latitude) {
@@ -232,7 +278,14 @@ export default function SelectLocation(props) {
   return (
     <>
       <View style={styles().flex}>
-        <View style={styles().mapView}>
+        <View
+          style={[
+            styles().mapView,
+            {
+              height: '80%'
+            }
+          ]}
+        >
           {coordinates.latitude ? (
             <Fragment>
               <MapView
@@ -256,76 +309,79 @@ export default function SelectLocation(props) {
             </Fragment>
           ) : null}
         </View>
-        <View style={styles(currentTheme).container}>
-          <TextDefault
-            textColor={currentTheme.newFontcolor}
-            H3
-            bolder
-            Left
-            style={styles().heading}
-          >
-            {t('selectLocation')}
-          </TextDefault>
-          <View style={styles(currentTheme).line} />
-
-          {!isLoggedIn ? (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={[
-                styles(currentTheme).button,
-                { flexDirection: isArabic ? 'row-reverse' : 'row' }
-              ]}
-              onPress={setCurrentLocation}
-            >
-              <View
-                style={[
-                  styles(currentTheme).icon,
-
-                  { marginLeft: isArabic ? scale(16) : scale(16) }
-                ]}
+        <SafeAreaView>
+          <ScrollView>
+            <View style={styles(currentTheme).container}>
+              <TextDefault
+                textColor={currentTheme.newFontcolor}
+                H3
+                bolder
+                Left
+                style={styles().heading}
               >
-                <EvilIcons name='location' size={18} color='black' />
-              </View>
-              <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-                {t('set_location')}
+                {t('selectLocation')}
               </TextDefault>
-              {loading && (
-                <Spinner
-                  size={'small'}
-                  backColor={currentTheme.themeBackground}
-                  spinnerColor={currentTheme.main}
-                />
-              )}
-            </TouchableOpacity>
-          ) : null}
-          <View style={styles(currentTheme).line} />
+              <View style={styles(currentTheme).line} />
 
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[
-              styles(currentTheme).button,
-              { flexDirection: isArabic ? 'row-reverse' : 'row' }
-            ]}
-            onPress={() => setModalVisible(true)}
-          >
-            <View
-              style={[
-                styles(currentTheme).icon,
+              {!isLoggedIn ? (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={[
+                    styles(currentTheme).button,
+                    { flexDirection: isArabic ? 'row-reverse' : 'row' }
+                  ]}
+                  onPress={setCurrentLocation}
+                >
+                  <View
+                    style={[
+                      styles(currentTheme).icon,
 
-                { marginLeft: isArabic ? scale(16) : scale(16) }
-              ]}
-            >
-              <Feather name='list' size={18} color='black' />
+                      { marginLeft: isArabic ? scale(16) : scale(16) }
+                    ]}
+                  >
+                    <EvilIcons name='location' size={18} color='black' />
+                  </View>
+                  <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                    {t('set_location')}
+                  </TextDefault>
+                  {loading && (
+                    <Spinner
+                      size={'small'}
+                      backColor={currentTheme.themeBackground}
+                      spinnerColor={currentTheme.main}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : null}
+              <View style={styles(currentTheme).line} />
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[
+                  styles(currentTheme).button,
+                  { flexDirection: isArabic ? 'row-reverse' : 'row' }
+                ]}
+                onPress={() => setModalVisible(true)}
+              >
+                <View
+                  style={[
+                    styles(currentTheme).icon,
+
+                    { marginLeft: isArabic ? scale(16) : scale(16) }
+                  ]}
+                >
+                  <Feather name='list' size={18} color='black' />
+                </View>
+
+                <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                  {t('browseCities')}
+                </TextDefault>
+              </TouchableOpacity>
+              <View style={styles(currentTheme).line} />
             </View>
-
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('browseCities')}
-            </TextDefault>
-          </TouchableOpacity>
-          <View style={styles(currentTheme).line} />
-
-        </View>
-        <View style={{ paddingBottom: inset.bottom }} />
+            <View style={{ paddingBottom: inset.bottom }} />
+          </ScrollView>
+        </SafeAreaView>
       </View>
 
       <ModalDropdown

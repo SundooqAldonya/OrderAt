@@ -19,7 +19,7 @@ import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import SearchModal from '../../components/Address/SearchModal'
-import { Feather } from '@expo/vector-icons'
+import { Feather, MaterialIcons } from '@expo/vector-icons'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
 import { useNavigation } from '@react-navigation/native'
 import MapView from './MapView'
@@ -33,6 +33,8 @@ import { getCityAreas } from '../../apollo/queries'
 import { useQuery } from '@apollo/client'
 import AreasModal from './AreasModal'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { HeaderBackButton } from '@react-navigation/elements'
+import navigationService from '../../routes/navigationService'
 
 const LATITUDE = 33.699265
 const LONGITUDE = 72.974575
@@ -97,17 +99,59 @@ export default function AddNewAddress(props) {
     }
   }
 
+  // useLayoutEffect(() => {
+  //   navigation.setOptions(
+  //     screenOptions({
+  //       title: t('addAddress'),
+  //       fontColor: currentTheme.newFontcolor,
+  //       backColor: currentTheme.newheaderBG,
+  //       iconColor: currentTheme.newIconColor,
+  //       lineColor: currentTheme.newIconColor,
+  //       setCurrentLocation
+  //     })
+  //   )
+  // }, [])
+
   useLayoutEffect(() => {
-    navigation.setOptions(
-      screenOptions({
-        title: t('addAddress'),
-        fontColor: currentTheme.newFontcolor,
-        backColor: currentTheme.newheaderBG,
-        iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor,
-        setCurrentLocation
-      })
-    )
+    navigation.setOptions({
+      title: t('addAddress'),
+      setCurrentLocation,
+
+      headerRight: null,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        fontWeight: 'bold'
+      },
+      headerTitleContainerStyle: {
+        marginTop: '2%',
+        paddingLeft: scale(25),
+        paddingRight: scale(25),
+        height: '75%',
+        marginLeft: 0
+      },
+      headerStyle: {
+        backgroundColor: currentTheme.newheaderBG,
+        elevation: 0
+      },
+      headerLeft: () => (
+        <HeaderBackButton
+          truncatedLabel=''
+          backImage={() => (
+            <View>
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={currentTheme.newIconColor}
+              />
+            </View>
+          )}
+          onPress={() => {
+            navigationService.goBack()
+          }}
+        />
+      )
+    })
   }, [])
 
   const onSelectCity = (item) => {
@@ -254,21 +298,43 @@ export default function AddNewAddress(props) {
           /> */}
 
           {/* selected city */}
-          <View style={[styles(currentTheme).textInput]}>
+          <View
+            style={[
+              styles(currentTheme).textInput,
+
+              {
+                height: 50 // Fixed height
+              }
+            ]}
+          >
             <TextDefault>{city?.title}</TextDefault>
           </View>
 
+          <View
+            style={{
+              width: '95%',
+              alignSelf: 'center',
+              justifyContent: 'center',
+
+              marginTop: scale(5)
+            }}
+          >
+            <Text>{t('select_area')}</Text>
+          </View>
           {/* select area */}
           <TouchableOpacity
-            style={[styles(currentTheme).textInput]}
+            style={[
+              styles(currentTheme).textInput,
+              {
+                height: 50
+              }
+            ]}
             onPress={handleAreasModal}
           >
             <TextDefault
-            style={
-              {
-                color:'red'
-              }
-            }
+              style={{
+                color: 'red'
+              }}
             >
               {selectedArea ? selectedArea.title : t('select_area')}
             </TextDefault>
