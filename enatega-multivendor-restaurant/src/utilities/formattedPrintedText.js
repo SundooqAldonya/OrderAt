@@ -35,22 +35,21 @@ export const formattedPrintedText = (order, currency) => {
     .join('\n\n')
 
   return `
-  Orderat Business
+  اوردرات
   ------------------------------
-  Contact Info
-  Address: ${address}
-  Email: ${email}
-  Phone: ${phone}
+  معلومات التوصيل
+  العنوان: ${address}
+  الايميل: ${email}
+  التليفون: ${phone}
   ------------------------------
-  Items:
+  المنتج:
   ${itemsText}
   ------------------------------
-  Tax: ${currency}${tax.toFixed(2)}
-  Tip: ${currency}${tip.toFixed(2)}
-  Delivery: ${currency}${deliveryCharges.toFixed(2)}
-  Total: ${currency}${orderAmount.toFixed(2)}
-  Paid: ${currency}${paidAmount.toFixed(2)}
+  الضريبة: ${currency}${tax.toFixed(2)}
+  قيمة التوصيل: ${currency}${deliveryCharges.toFixed(2)}
+  القيمة: ${currency}${orderAmount.toFixed(2)}
+  دفع: ${currency}${paidAmount.toFixed(2)}
   ------------------------------
-  Thank you for your business!
+  شكرا للتعاون مع أوردارات
   `
 }

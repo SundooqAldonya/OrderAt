@@ -15,7 +15,7 @@ import RNPrint from 'react-native-print'
 
 export default function OverlayComponent(props) {
   const dispatch = useDispatch()
-  const printerIP = '192.168.1.3'
+  const printerIP = '192.168.1.7'
   const { t } = useTranslation()
   const { visible, toggle, order, print, navigation } = props
   const [selectedTime, setSelectedTime] = useState(TIMES[0])
@@ -39,19 +39,19 @@ export default function OverlayComponent(props) {
       })
   }, [])
 
-  const btnPress = () => {
+  const btnPress = async () => {
     if (print) {
       // acceptOrder(order._id, selectedTime.toString())
       // muteRing(order.orderId)
       // printOrder(order._id)
       // dispatch(showPrintersFn())
-      startPrinting()
+      await startPrinting()
     } else {
       acceptOrder(order._id, selectedTime.toString())
       muteRing(order.orderId)
     }
-    toggle()
-    loading ? <Spinner /> : navigation.navigate('Orders')
+    // toggle()
+    // loading ? <Spinner /> : navigation.navigate('Orders')
   }
 
   const startPrinting = () => {
