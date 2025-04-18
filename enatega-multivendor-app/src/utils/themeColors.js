@@ -111,6 +111,7 @@ export const theme = {
     color11: '#4B5563',
     color12: '#94A3B8'
   },
+ 
   Dark: {
     black: '#000',
     CustomLoadingBG: '#000',

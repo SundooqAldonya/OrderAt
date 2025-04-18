@@ -119,26 +119,21 @@ export default function App() {
   })
 
   useEffect(() => {
-     
     if (I18nManager.isRTL) {
       I18nManager.allowRTL(false)
       I18nManager.forceRTL(false)
       RNRestart.Restart()
     }
-  }, [I18nManager.isRTL]) 
-  
+  }, [I18nManager.isRTL])
+
   // useEffect(() => {
-     
+
   //   if (!I18nManager.isRTL) {
   //     I18nManager.allowRTL(true)
   //     I18nManager.forceRTL(true)
   //     RNRestart.Restart()
   //   }
   // }, [I18nManager.isRTL])
-
-
- 
-  
 
   useWatchLocation()
   useEffect(() => {

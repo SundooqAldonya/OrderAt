@@ -383,7 +383,7 @@ export default function EditUserAddress(props) {
             </Marker>
           </MapView>
 
-          <MapView
+          {/* <MapView
             ref={mapRef}
             initialRegion={coordinates}
             style={{ flex: 1 }}
@@ -422,7 +422,7 @@ export default function EditUserAddress(props) {
                 </View>
               </View>
             </Marker>
-          </MapView>
+          </MapView> */}
         </View>
         <View style={styles(currentTheme).container}>
           <TouchableOpacity
