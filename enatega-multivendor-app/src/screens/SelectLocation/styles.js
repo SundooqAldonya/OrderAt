@@ -12,8 +12,7 @@ const styles = (props = null) =>
     },
     container: {
       flex: 1,
-      backgroundColor: 'red',
-      height: '30%',
+       height: '30%',
       overflow: 'visible',
       justifyContent: 'space-around',
       borderTopLeftRadius: scale(30),

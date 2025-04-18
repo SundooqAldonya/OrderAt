@@ -7,5 +7,7 @@ export const colors = {
     border2:'#4A4A4A',
     blue:'#4285F4',
     grey:'#e2e2e2',
+    darkLight:'#00000080',
+
  
 }
