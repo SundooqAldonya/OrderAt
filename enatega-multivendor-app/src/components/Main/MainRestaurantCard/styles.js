@@ -2,6 +2,7 @@ import { verticalScale, scale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
+import { colors } from '../../../utils/colors'
 const { height } = Dimensions.get('window')
 const styles = (props = null) =>
   StyleSheet.create({
@@ -50,6 +51,16 @@ const styles = (props = null) =>
     },
     height200: {
       height: scale(200)
+    },
+    image: {
+      backgroundColor: colors.grey,
+      borderRadius: 10,
+      marginHorizontal: 5,
+      paddingHorizontal: 5
+    },
+    image1: {
+      width: 30,
+      height: 30
     }
   })
 
