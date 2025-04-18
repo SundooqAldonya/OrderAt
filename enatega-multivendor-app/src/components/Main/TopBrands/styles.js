@@ -9,28 +9,30 @@ const styles = (props = null) =>
     topbrandsSec: {
       ...alignment.PLmedium
     },
-    topbrandsHeading:{
+    topbrandsHeading: {
       ...alignment.PRmedium
-
     },
     brandImg: {
       width: '100%',
       // aspectRatio: 18/8,
       height: scale(70),
+      borderRadius: 8,
       objectFit: 'cover'
     },
     topbrandsContainer: {
       flexGrow: 1,
-      width: scale(90),
+      width: scale(120),
       marginTop: scale(7),
-      ...alignment.MRmedium
+      marginBottom: scale(10),
+      ...alignment.MRmedium,
+     //  padding: 8
     },
     brandImgContainer: {
       backgroundColor: '#F3F4F6',
       borderWidth: 1,
       borderColor: '#E5E7EB',
-      borderRadius: 8
-      // padding:scale(8),
+      borderRadius: 8,
+       // padding:scale(8),
     },
     brandName: {
       marginTop: scale(5),

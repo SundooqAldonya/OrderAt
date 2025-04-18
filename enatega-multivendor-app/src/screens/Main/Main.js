@@ -82,7 +82,7 @@ function Main(props) {
   const { getAddress } = useGeocoding()
 
   const locationData = location
-   const [hasActiveOrders, setHasActiveOrders] = useState(false)
+  const [hasActiveOrders, setHasActiveOrders] = useState(false)
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
     {
@@ -289,17 +289,18 @@ function Main(props) {
         >
           <View style={styles().addressSubContainer}>
             {busy ? (
-              <Spinner size='small'   />
+              <Spinner size='small' />
             ) : (
               <>
                 <SimpleLineIcons
                   name='target'
                   size={scale(18)}
-                   color={currentTheme.white}
-
+                  color={currentTheme.white}
                 />
                 <View style={styles().mL5p} />
-                <TextDefault bold H4>{t('currentLocation')}</TextDefault>
+                <TextDefault bold H4>
+                  {t('currentLocation')}
+                </TextDefault>
               </>
             )}
           </View>
@@ -351,12 +352,10 @@ function Main(props) {
               color={currentTheme.white}
             />
             <View style={styles().mL5p} />
-            <TextDefault bold H4>{t('addAddress')}</TextDefault>
+            <TextDefault bold H4>
+              {t('addAddress')}
+            </TextDefault>
           </View>
-
-
-
-          
         </TouchableOpacity>
       </View>
       <View style={styles().addressTick}></View>
@@ -382,13 +381,12 @@ function Main(props) {
         <View
           style={[
             styles().flex,
-            styles(currentTheme).screenBackground,
+            styles(currentTheme).screenBackground
             // { paddingBottom: 120 }
           ]}
         >
           <View style={styles().flex}>
             <View style={styles().mainContentContainer}>
-        
               <View style={[styles().flex, styles().subContainer]}>
                 <View
                   style={[
@@ -445,10 +443,12 @@ function Main(props) {
                     />
                   </View>
                 ) : (
+                  // the Menu
                   <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                   >
+                    {/* the first section */}
                     <View style={styles().mainItemsContainer}>
                       <TouchableOpacity
                         style={styles().mainItem}
@@ -523,6 +523,9 @@ function Main(props) {
                         />
                       </TouchableOpacity>
                     </View>
+
+                    {/* the second section */}
+
                     <View>
                       <View>
                         {isLoggedIn &&
@@ -555,6 +558,8 @@ function Main(props) {
                         )}
                       </View>
                     </View>
+
+                    {/* the therd section */}
                     <View
                       style={
                         styles(currentTheme, hasActiveOrders).topBrandsMargin
@@ -565,7 +570,6 @@ function Main(props) {
                   </ScrollView>
                 )}
               </View>
-              
             </View>
           </View>
           <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />

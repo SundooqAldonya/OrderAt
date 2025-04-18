@@ -18,16 +18,16 @@ const styles = (props = null, hasActiveOrders = false) =>
       justifyContent: 'center',
       gap: scale(20),
       marginTop: scale(16),
-      marginBottom: scale(30)
-    },
+      marginBottom: scale(15),
+     },
     mainItem: {
       padding: 12,
       borderWidth: 1,
       borderColor: '#E5E7EB',
       width: windowWidth / 2 - 30,
-      borderRadius: 8,
-      justifyContent: 'space-between'
-    },
+      borderRadius: 16,
+      justifyContent: 'space-between',
+     },
     popularMenuImg: {
       width: '100%',
       // aspectRatio: 15 / 8

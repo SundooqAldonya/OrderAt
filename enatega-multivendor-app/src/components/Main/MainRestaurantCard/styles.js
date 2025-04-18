@@ -23,6 +23,8 @@ const styles = (props = null) =>
     },
     orderAgainSec: {
       marginBottom: scale(30),
+      flex: 1,
+      height: 270,
       ...alignment.MLmedium
     },
     topPicksSec: {

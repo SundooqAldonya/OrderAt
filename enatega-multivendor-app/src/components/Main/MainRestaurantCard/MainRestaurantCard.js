@@ -37,7 +37,7 @@ function MainRestaurantCard(props) {
         </TextDefault>
         <TextDefault
           Normal
-          textColor={currentTheme.secondaryText}
+          textColor={currentTheme.fontSecondColor}
           style={{
             ...styles().ItemDescription,
             textAlign: isArabic ? 'right' : 'left'
@@ -49,8 +49,12 @@ function MainRestaurantCard(props) {
           style={styles().offerScroll}
           inverted={isArabic}
           contentContainerStyle={{
-            flexGrow: 1,
-            ...alignment.PRlarge
+            // flexGrow: 1,
+            // ...alignment.PRlarge,
+            // alignSelf: 'center',
+            // alignItems: 'center',
+            // justifyContent: 'center',
+            // backgroundColor: 'red'
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}

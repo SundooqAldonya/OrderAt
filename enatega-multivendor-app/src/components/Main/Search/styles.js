@@ -10,7 +10,8 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
       fontFamily: 'Montserrat_500Medium',
       fontSize: scale(12),
       color: '#000',
-      flex: 1
+      flex: 1,
+      marginStart: 5
     },
     mainContainerHolder: {
       zIndex: 333,

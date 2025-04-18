@@ -12,6 +12,7 @@ import { topRatedVendorsInfo } from '../../../apollo/queries'
 import { useQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import TopBrandsLoadingUI from '../LoadingUI/TopBrandsLoadingUI'
+import truncate from '../../../utils/helperFun'
 
 function TopBrands(props) {
   const { i18n, t } = useTranslation()
@@ -54,7 +55,7 @@ function TopBrands(props) {
           H5
           bolder
         >
-          {item?.name}
+          {truncate(item?.name, 13)}
         </TextDefault>
         <TextDefault textColor={currentTheme.fontFifthColor} normal>
           {item?.deliveryTime} + {t('mins')}
@@ -73,10 +74,15 @@ function TopBrands(props) {
         textColor={currentTheme.fontFourthColor}
         bolder
         H4
-        style={{ textAlign: isArabic ? 'right' : 'left' }}
+        style={{
+          textAlign: isArabic ? 'right' : 'left',
+          paddingHorizontal: 16,
+          marginBottom: 10
+        }}
       >
         {t('topBrands')}
       </TextDefault>
+
       <View style={{ ...alignment.PRsmall }}>
         <FlatList
           data={data?.topRatedVendorsPreview}
