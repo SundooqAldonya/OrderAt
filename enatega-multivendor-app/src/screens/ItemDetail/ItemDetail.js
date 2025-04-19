@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Keyboard,
-  TouchableOpacity
+  TouchableOpacity,
+  Text
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './styles'
@@ -25,7 +26,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native'
 //import { TextField } from 'react-native-material-textfield'
 import analytics from '../../utils/analytics'
 import { HeaderBackButton } from '@react-navigation/elements'
-import { MaterialIcons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import navigationService from '../../routes/navigationService'
 import { useTranslation } from 'react-i18next'
 import FrequentlyBoughtTogether from '../../components/ItemDetail/Section'
@@ -393,11 +394,43 @@ function ItemDetail(props) {
         <Animated.View
           style={[styles(currentTheme).headerContainer, animatedHeaderStyle]}
         >
+          {/* top bar */}
+          <View style={[styles().fixedViewNavigation]}>
+            <View style={styles().backgroundIcon}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[styles().touchArea]}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons
+                  name='arrow-back'
+                  color={colors.background}
+                  size={scale(22)}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                marginHorizontal: 'auto'
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: '#000000'
+                }}
+              >
+                {food.restaurantName}
+              </Text>
+            </View>
+          </View>
+
           <ImageHeader image={imageUrl} />
           {/* <HeadingComponent title={food.title} price={calculatePrice()} /> */}
         </Animated.View>
-        <Animated.ScrollView
-          onScroll={scrollHandler}
+        <ScrollView
+          // onScroll={scrollHandler}
           style={[
             styles().scrollViewStyle,
             { backgroundColor: currentTheme.themeBackground }
@@ -418,7 +451,11 @@ function ItemDetail(props) {
             <View>
               {food?.variations?.length && (
                 <View
-                // style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}
+                  style={
+                    {
+                      //  flexDirection: isArabic ? 'row-reverse' : 'row',
+                    }
+                  }
                 >
                   <TitleComponent
                     title={t('SelectVariation')}
@@ -476,7 +513,7 @@ function ItemDetail(props) {
               restaurantId={restaurant}
             />
           </View>
-        </Animated.ScrollView>
+        </ScrollView>
 
         <Animated.View
           style={[styles(currentTheme).titleContainer, animatedTitleStyle]}

@@ -201,8 +201,9 @@ function ImageTextCenterHeader(props, ref) {
   }
 
   return (
-    <Animated.View style={[styles(currentTheme).mainContainer, headerHeight]}>
-      <Animated.View style={[headerHeightWithoutTopbar]}>
+    // <Animated.View style={[styles(currentTheme).mainContainer, headerHeight]}>
+    <Animated.View style={[styles(currentTheme).mainContainer]}>
+      <Animated.View style={[headerHeightWithoutTopbar, {}]}>
         <Animated.View style={[styles().overlayContainer]}>
           {/* top bar */}
           <View style={[styles().fixedViewNavigation]}>
@@ -222,7 +223,7 @@ function ImageTextCenterHeader(props, ref) {
                 >
                   <Entypo
                     name='cross'
-                    color={currentTheme.newIconColor}
+                    color={colors.background}
                     size={scale(22)}
                   />
                 </AnimatedBorderless>
@@ -266,7 +267,7 @@ function ImageTextCenterHeader(props, ref) {
             </View>
             <View style={styles().fixedIcons}>
               {props.searchOpen ? (
-                <View style={styles().backgroundIcon}>
+                <View>
                   <Search
                     setSearch={props.setSearch}
                     search={props.search}
@@ -349,34 +350,26 @@ function ImageTextCenterHeader(props, ref) {
                     flexDirection: isArabic ? 'row-reverse' : 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    // justifyContent: isArabic ? 'flex-start' : 'flex-end',
                     gap: scale(15),
-                    marginBottom: scale(20)
+                    marginBottom: scale(10)
                   }
                 ]}
               >
                 <View style={[styles().restImageContainer]}>
                   <Image
-                    resizeMode='contain'
+                    resizeMode='cover'
                     source={{ uri: aboutObject.restaurantImage }}
                     style={[styles().restaurantImg]}
                   />
                 </View>
-
-                {/* <View style={styles().restaurantTitle}>
-                  <TextDefault
-                    H4
-                    bolder
-                    Center
-                    textColor={currentTheme.fontMainColor}
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                  >
-                    {aboutObject.restaurantName}
-                  </TextDefault>
-                </View> */}
               </Animated.View>
-              <View style={styles().restaurantTitle}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <View style={styles().restaurantTitle}>
                   <TextDefault
                     H2
                     bolder
@@ -388,173 +381,172 @@ function ImageTextCenterHeader(props, ref) {
                     {aboutObject.restaurantName}
                   </TextDefault>
                 </View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 7
-                }}
-              >
-           
-
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  {distance.toFixed(2)}km {t('away')}
-                </TextDefault>
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  |
-                </TextDefault>
-                {isArabic ? (
-                  <TextDefault
-                    style={styles().restaurantAbout}
-                    textColor={currentTheme.fontMainColor}
-                  >
-                    {t('tax')} {aboutObject.restaurantTax}{' '}
-                    {configuration.currencySymbol}
-                  </TextDefault>
-                ) : (
-                  <TextDefault
-                    style={styles().restaurantAbout}
-                    textColor={currentTheme.fontMainColor}
-                  >
-                    {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
-                    {t('tax')}
-                  </TextDefault>
-                )}
-              </View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 7,
-                  marginTop: scale(5)
-                }}
-              >
-                {isArabic ? (
-                  <TextDefault
-                    style={styles().restaurantAbout}
-                    textColor={currentTheme.fontMainColor}
-                  >
-                    {' '}
-                    {aboutObject.restaurantMinOrder}{' '}
-                    {configuration.currencySymbol} {t('minimum')}
-                  </TextDefault>
-                ) : (
-                  <TextDefault
-                    style={styles().restaurantAbout}
-                    textColor={currentTheme.fontMainColor}
-                  >
-                    {configuration.currencySymbol}{' '}
-                    {aboutObject.restaurantMinOrder} {t('minimum')}
-                  </TextDefault>
-                )}
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  |
-                </TextDefault>
-                <TextDefault
-                  style={styles().restaurantAbout}
-                  textColor={currentTheme.fontMainColor}
-                >
-                  {t('serviceFeeApply')}
-                </TextDefault>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: scale(15)
-                }}
-              >
-                <AnimatedTouchable
-                  activeOpacity={0.7}
-                  style={styles().ratingBox}
-                  onPress={() => {
-                    navigation.navigate('Reviews', {
-                      restaurantObject: { ...aboutObject, isOpen: null },
-                      tab: false
-                    })
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    gap: 7
                   }}
                 >
-                  <MaterialIcons
-                    name='star-border'
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {distance.toFixed(2)}km {t('away')}
+                  </TextDefault>
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    |
+                  </TextDefault>
+                  {isArabic ? (
+                    <TextDefault
+                      style={styles().restaurantAbout}
+                      textColor={currentTheme.fontMainColor}
+                    >
+                      {t('tax')} {aboutObject.restaurantTax}{' '}
+                      {configuration.currencySymbol}
+                    </TextDefault>
+                  ) : (
+                    <TextDefault
+                      style={styles().restaurantAbout}
+                      textColor={currentTheme.fontMainColor}
+                    >
+                      {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
+                      {t('tax')}
+                    </TextDefault>
+                  )}
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    gap: 7,
+                    marginTop: scale(5)
+                  }}
+                >
+                  {isArabic ? (
+                    <TextDefault
+                      style={styles().restaurantAbout}
+                      textColor={currentTheme.fontMainColor}
+                    >
+                      {' '}
+                      {aboutObject.restaurantMinOrder}{' '}
+                      {configuration.currencySymbol} {t('minimum')}
+                    </TextDefault>
+                  ) : (
+                    <TextDefault
+                      style={styles().restaurantAbout}
+                      textColor={currentTheme.fontMainColor}
+                    >
+                      {configuration.currencySymbol}{' '}
+                      {aboutObject.restaurantMinOrder} {t('minimum')}
+                    </TextDefault>
+                  )}
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    |
+                  </TextDefault>
+                  <TextDefault
+                    style={styles().restaurantAbout}
+                    textColor={currentTheme.fontMainColor}
+                  >
+                    {t('serviceFeeApply')}
+                  </TextDefault>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginTop: scale(15)
+                  }}
+                >
+                  <AnimatedTouchable
+                    activeOpacity={0.7}
+                    style={styles().ratingBox}
+                    onPress={() => {
+                      navigation.navigate('Reviews', {
+                        restaurantObject: { ...aboutObject, isOpen: null },
+                        tab: false
+                      })
+                    }}
+                  >
+                    <MaterialIcons
+                      name='star-border'
+                      size={scale(20)}
+                      color={currentTheme.newIconColor}
+                    />
+
+                    <TextDefault
+                      textColor={currentTheme.fontNewColor}
+                      style={{
+                        fontWeight: '700',
+                        fontSize: scale(16)
+                      }}
+                    >
+                      {aboutObject.average}
+                    </TextDefault>
+                    <TextDefault
+                      textColor={currentTheme.fontNewColor}
+                      style={{
+                        fontWeight: '400',
+                        fontSize: scale(14),
+                        marginLeft: scale(5)
+                      }}
+                    >
+                      ({aboutObject.total})
+                    </TextDefault>
+                  </AnimatedTouchable>
+                  <AnimatedTouchable
+                    activeOpacity={0.7}
+                    style={styles().ratingBox}
+                    disabled={props.loading}
+                    onPress={() => {
+                      navigation.navigate('Reviews', {
+                        restaurantObject: { ...aboutObject, isOpen: null },
+                        tab: false
+                      })
+                    }}
+                  >
+                    <TextDefault
+                      textColor={currentTheme.editProfileButton}
+                      style={{
+                        fontSize: scale(14),
+                        fontWeight: '600'
+                      }}
+                    >
+                      {t('seeReviews')}
+                    </TextDefault>
+                  </AnimatedTouchable>
+                </View>
+
+                <View
+                  style={[
+                    styles().ratingBox,
+                    {
+                      marginTop: scale(9),
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name='timer-outline'
                     size={scale(20)}
                     color={currentTheme.newIconColor}
                   />
-
-                  <TextDefault
-                    textColor={currentTheme.fontNewColor}
-                    style={{
-                      fontWeight: '700',
-                      fontSize: scale(16)
-                    }}
-                  >
-                    {aboutObject.average}
-                  </TextDefault>
                   <TextDefault
                     textColor={currentTheme.fontNewColor}
                     style={{
                       fontWeight: '400',
-                      fontSize: scale(14),
-                      marginLeft: scale(5)
+                      fontSize: scale(14)
                     }}
                   >
-                    ({aboutObject.total})
+                    {aboutObject.deliveryTime} {t('Min')}
                   </TextDefault>
-                </AnimatedTouchable>
-                <AnimatedTouchable
-                  activeOpacity={0.7}
-                  style={styles().ratingBox}
-                  disabled={props.loading}
-                  onPress={() => {
-                    navigation.navigate('Reviews', {
-                      restaurantObject: { ...aboutObject, isOpen: null },
-                      tab: false
-                    })
-                  }}
-                >
-                  <TextDefault
-                    textColor={currentTheme.editProfileButton}
-                    style={{
-                      fontSize: scale(14),
-                      fontWeight: '600'
-                    }}
-                  >
-                    {t('seeReviews')}
-                  </TextDefault>
-                </AnimatedTouchable>
-              </View>
-
-              <View
-                style={[
-                  styles().ratingBox,
-                  {
-                    marginTop: scale(9),
-                    flexDirection: isArabic ? 'row-reverse' : 'row'
-                  }
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name='timer-outline'
-                  size={scale(20)}
-                  color={currentTheme.newIconColor}
-                />
-                <TextDefault
-                  textColor={currentTheme.fontNewColor}
-                  style={{
-                    fontWeight: '400',
-                    fontSize: scale(14)
-                  }}
-                >
-                  {aboutObject.deliveryTime} {t('Min')}
-                </TextDefault>
+                </View>
               </View>
             </Animated.View>
           )}
@@ -578,7 +570,6 @@ function ImageTextCenterHeader(props, ref) {
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) => {
-                console.log('item', item)
                 return (
                   <View
                     style={

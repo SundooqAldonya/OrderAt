@@ -179,7 +179,11 @@ function NoDrawer() {
         component={Restaurant}
         options={{ header: () => null }}
       />
-      <NavigationStack.Screen name='ItemDetail' component={ItemDetail} />
+      <NavigationStack.Screen
+        options={{ headerShown: false }}
+        name='ItemDetail'
+        component={ItemDetail}
+      />
       <NavigationStack.Screen name='Cart' component={Cart} />
       <NavigationStack.Screen name='Checkout' component={Checkout} />
       <NavigationStack.Screen name='Profile' component={Profile} />

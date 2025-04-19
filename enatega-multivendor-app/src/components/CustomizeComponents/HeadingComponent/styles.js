@@ -2,25 +2,28 @@ import { StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 const styles = StyleSheet.create({
   topContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    paddingHorizontal: 10,
     ...alignment.MTsmall
   },
   titleContainer: {
-    width: '80%',
-    ...alignment.MTsmall,
-    ...alignment.MBsmall
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   priceContainer: {
-    width: '20%',
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+
     ...alignment.MTsmall,
     ...alignment.MBsmall
   },
   descContainer: {
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     ...alignment.MBsmall
   }
 })
