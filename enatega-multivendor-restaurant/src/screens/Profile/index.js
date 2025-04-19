@@ -4,6 +4,7 @@ import {
   Modal,
   SafeAreaView,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
@@ -15,12 +16,18 @@ import { useMutation } from '@apollo/client'
 import { deactivateRestaurant } from '../../apollo'
 import { AntDesign, EvilIcons, Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import styles from '../Login/styles'
+import { useDispatch, useSelector } from 'react-redux'
+import { setPrinter } from '../../../store/printersSlice'
 
 const Profile = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const { data, loading } = useAccount()
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+  const printer = useSelector(state => state.printers.printerIP)
+  const [printerIP, setPrinterIP] = useState(printer ? printer : '')
+  const dispatch = useDispatch()
 
   const restaurant = data?.restaurant || null
 
@@ -44,6 +51,11 @@ const Profile = () => {
     } catch (error) {
       console.error('Error during deactivation mutation:', error)
     }
+  }
+
+  const handleSave = () => {
+    dispatch(setPrinter({ printerIP }))
+    navigation.navigate('Orders')
   }
 
   return (
@@ -77,7 +89,32 @@ const Profile = () => {
               </View>
             </View>
           ) : null}
-
+          <View>
+            <TextDefault bolder style={{ marginBottom: -10 }}>
+              Printer IP
+            </TextDefault>
+            <TextInput
+              style={[styles.textInput]}
+              placeholder={'192.168.1.1'}
+              value={printerIP}
+              onChangeText={e => setPrinterIP(e)}
+              autoCapitalize={'none'}
+            />
+          </View>
+          <TouchableOpacity
+            style={{
+              marginHorizontal: 'auto',
+              marginTop: 20,
+              backgroundColor: 'purple',
+              width: 70,
+              height: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 4
+            }}
+            onPress={handleSave}>
+            <TextDefault style={{ color: '#fff' }}>{t('save')}</TextDefault>
+          </TouchableOpacity>
           <TouchableOpacity
             style={style.deleteAccountBtn}
             onPress={() => setDeleteModalVisible(true)}>

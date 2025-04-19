@@ -7,15 +7,15 @@ import { Overlay } from 'react-native-elements'
 import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { showPrintersFn } from '../../../store/printersSlice'
+import { setPrinter, showPrintersFn } from '../../../store/printersSlice'
 import { NetPrinter } from 'react-native-thermal-receipt-printer'
 import { formattedPrintedText } from '../../utilities/formattedPrintedText'
 import { Configuration } from '../../ui/context'
 import RNPrint from 'react-native-print'
+import Toast from 'react-native-toast-message'
 
 export default function OverlayComponent(props) {
   const dispatch = useDispatch()
-  const printerIP = '192.168.1.7'
   const { t } = useTranslation()
   const { visible, toggle, order, print, navigation } = props
   const [selectedTime, setSelectedTime] = useState(TIMES[0])
@@ -23,12 +23,14 @@ export default function OverlayComponent(props) {
   const { muteRing } = useOrderRing()
   const { printOrder } = usePrintOrder()
   const showPrinters = useSelector(state => state.printers)
+  const printerIP = useSelector(state => state.printers.printerIP)
   const configuration = useContext(Configuration.Context)
   const currency = configuration?.currency || null
 
   console.log({ showPrinters })
 
-  console.log({ print })
+  console.log({ printerIP })
+
   useEffect(() => {
     NetPrinter.init()
       .then(() => {
@@ -63,14 +65,30 @@ export default function OverlayComponent(props) {
     //   .catch(error => {
     //     console.log('Printer is not reachable', error)
     //   })
-    NetPrinter.connectPrinter(printerIP, 9100)
-      .then(() => {
-        NetPrinter.printText(formattedPrintedText(order, currency))
-        console.log('Printing...')
+    // dispatch(setPrinter({ printerIP: '' }))
+    if (printerIP) {
+      NetPrinter.connectPrinter(printerIP, 9100)
+        .then(() => {
+          NetPrinter.printText(formattedPrintedText(order, currency))
+          console.log('Printing...')
+        })
+        .catch(error => {
+          console.log('Failed to connect to printer', error)
+          toggle()
+          Toast.show({
+            type: 'error', // or 'error' | 'info'
+            text1: 'No printer',
+            text2: 'Failed to connect to printer with that IP'
+          })
+        })
+    } else {
+      toggle()
+      Toast.show({
+        type: 'error', // or 'error' | 'info'
+        text1: 'No IP',
+        text2: 'Please fill the printer IP from settings'
       })
-      .catch(error => {
-        console.log('Failed to connect to printer', error)
-      })
+    }
   }
 
   return (

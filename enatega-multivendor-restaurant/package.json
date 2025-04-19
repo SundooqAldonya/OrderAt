@@ -100,7 +100,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-tab-view": "^2.16.0",
-    "react-native-thermal-receipt-printer": "^1.1.3",
+    "react-native-thermal-receipt-printer": "^1.2.0-rc.2",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
