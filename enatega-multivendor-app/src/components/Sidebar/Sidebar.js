@@ -108,7 +108,7 @@ function SidebBar(props) {
       ]}
     >
       <View style={{ flexGrow: 1 }}>
-        <View style={{ height: 200 }}>
+        <View style={{ height: 100, paddingTop: 30 }}>
           <SideDrawerProfile navigation={props.navigation} />
         </View>
         <View style={styles(currentTheme).botContainer}>
@@ -121,7 +121,7 @@ function SidebBar(props) {
                 key={ind}
                 style={[
                   styles().item,
-                  { borderBottomWidth: 0, marginVertical: 5 }
+                  { borderBottomWidth: 0, marginVertical: 0 }
                 ]}
               >
                 <SideDrawerItems

@@ -38,7 +38,9 @@
             ]
           }
         ]
-      }
+      },
+      "newArchEnabled": true
+
     },
     "notification": {
       "iosDisplayInForeground": true,
@@ -62,7 +64,9 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.RECORD_AUDIO",
         "android.permission.FOREGROUND_SERVICE"
-      ]
+      ],
+      "newArchEnabled": true
+
     },
     "plugins": [
       [

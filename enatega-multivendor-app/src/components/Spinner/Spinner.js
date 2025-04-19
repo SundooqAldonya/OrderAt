@@ -10,12 +10,12 @@ function Spinner(props) {
   return (
     <ActivityIndicator
       animating={true}
-      style={{
-        flex: 1,
-        backgroundColor: props.backColor
-          ? props.backColor
-          : currentTheme.newheaderColor
-      }}
+      // style={{
+      //   flex: 1,
+      //   backgroundColor: props.backColor
+      //     ? props.backColor
+      //     : currentTheme.newheaderColor
+      // }}
       size={props.size || 'large'}
       color={props.spinnerColor ? props.spinnerColor : currentTheme.white}
     />

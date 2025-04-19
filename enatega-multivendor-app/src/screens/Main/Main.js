@@ -82,7 +82,6 @@ function Main(props) {
   const { getAddress } = useGeocoding()
 
   const locationData = location
-  console.log({ location })
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
@@ -112,7 +111,7 @@ function Main(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(colors.primary)
+      StatusBar.setBackgroundColor(colors.grey)
     }
     StatusBar.setBarStyle('light-content')
   })
@@ -296,10 +295,12 @@ function Main(props) {
                 <SimpleLineIcons
                   name='target'
                   size={scale(18)}
-                  color={currentTheme.black}
+                  color={currentTheme.white}
                 />
                 <View style={styles().mL5p} />
-                <TextDefault bold>{t('currentLocation')}</TextDefault>
+                <TextDefault bold H4>
+                  {t('currentLocation')}
+                </TextDefault>
               </>
             )}
           </View>
@@ -348,10 +349,12 @@ function Main(props) {
             <AntDesign
               name='pluscircleo'
               size={scale(20)}
-              color={currentTheme.black}
+              color={currentTheme.white}
             />
             <View style={styles().mL5p} />
-            <TextDefault bold>{t('addAddress')}</TextDefault>
+            <TextDefault bold H4>
+              {t('addAddress')}
+            </TextDefault>
           </View>
         </TouchableOpacity>
       </View>
@@ -378,8 +381,8 @@ function Main(props) {
         <View
           style={[
             styles().flex,
-            styles(currentTheme).screenBackground,
-            { paddingBottom: 120 }
+            styles(currentTheme).screenBackground
+            // { paddingBottom: 120 }
           ]}
         >
           <View style={styles().flex}>
@@ -440,10 +443,12 @@ function Main(props) {
                     />
                   </View>
                 ) : (
+                  // the Menu
                   <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                   >
+                    {/* the first section */}
                     <View style={styles().mainItemsContainer}>
                       <TouchableOpacity
                         style={styles().mainItem}
@@ -518,6 +523,9 @@ function Main(props) {
                         />
                       </TouchableOpacity>
                     </View>
+
+                    {/* the second section */}
+
                     <View>
                       <View>
                         {isLoggedIn &&
@@ -550,6 +558,8 @@ function Main(props) {
                         )}
                       </View>
                     </View>
+
+                    {/* the therd section */}
                     <View
                       style={
                         styles(currentTheme, hasActiveOrders).topBrandsMargin

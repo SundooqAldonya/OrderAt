@@ -12,10 +12,13 @@ import {
   StatusBar,
   Linking,
   TextInput,
-  Alert
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  Text
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import styles from './styles'
@@ -31,7 +34,8 @@ import {
   Feather,
   EvilIcons,
   createIconSetFromFontello,
-  Entypo
+  Entypo,
+  MaterialIcons
 } from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
@@ -44,6 +48,9 @@ import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
 import { createAddress } from '../../apollo/mutations'
+import { HeaderBackButton } from '@react-navigation/elements'
+import navigationService from '../../routes/navigationService'
+import { scale } from '../../utils/scaling'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -81,18 +88,44 @@ export default function AddNewAddressUser(props) {
   const [modalVisible, setModalVisible] = useState(false)
 
   useLayoutEffect(() => {
-    navigation.setOptions(
-      screenOptions({
-        title: t('setLocation'),
-        fontColor: currentTheme.newFontcolor,
-        backColor: currentTheme.newheaderBG,
-        iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor,
-        setCurrentLocation: getCurrentPositionNav
-      })
-    )
-  })
-
+    navigation.setOptions({
+      title: t('setLocation'),
+      headerRight: null,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        fontWeight: 'bold'
+      },
+      headerTitleContainerStyle: {
+        marginTop: '2%',
+        paddingLeft: scale(25),
+        paddingRight: scale(25),
+        height: '75%',
+        marginLeft: 0
+      },
+      headerStyle: {
+        backgroundColor: currentTheme.newheaderBG,
+        elevation: 0
+      },
+      headerLeft: () => (
+        <HeaderBackButton
+          truncatedLabel=''
+          backImage={() => (
+            <View>
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={currentTheme.newIconColor}
+              />
+            </View>
+          )}
+          onPress={() => {
+            navigationService.goBack()
+          }}
+        />
+      )
+    })
+  }, [])
   useEffect(() => {
     if (!coordinates.latitude) {
       getCurrentPositionNav()
@@ -302,150 +335,212 @@ export default function AddNewAddressUser(props) {
   return (
     <>
       <View style={styles().flex}>
-        <View style={styles().mapView}>
+        <View
+          style={[
+            styles().mapView,
+            {
+              height: '60%'
+            }
+          ]}
+        >
           {coordinates.latitude ? (
             <Fragment>
-              <MapView
+              {/* <MapView
                 ref={mapRef}
                 initialRegion={coordinates}
                 // region={coordinates}
                 style={{ flex: 1 }}
                 provider={PROVIDER_GOOGLE}
                 showsTraffic={false}
-                maxZoomLevel={15}
+                zoomEnabled
+                maxZoomLevel={50}
                 // customMapStyle={
                 //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
                 // }
                 onRegionChangeComplete={onRegionChangeComplete}
                 bounce
-              />
-              <View style={styles().mainContainer}>
+              /> */}
+              <MapView
+                ref={mapRef}
+                initialRegion={coordinates}
+                style={{ flex: 1 }}
+                provider={PROVIDER_GOOGLE}
+                showsTraffic={false}
+                zoomEnabled
+                maxZoomLevel={50}
+                onRegionChangeComplete={onRegionChangeComplete}
+              >
+                {/* Marker مع رسالة مخصصة */}
+                <Marker
+                  style={{
+                    borderRadius: 16,
+                    backgroundColor: ''
+                  }}
+                  coordinate={coordinates}
+                  title={t('your_order_will_send_here')}
+                  // description={t('your_order_will_send_here')}
+                >
+                  <View style={styles().deliveryMarker}>
+                    <View
+                      style={[
+                        styles().markerBubble,
+                        { backgroundColor: '#06C167' }
+                      ]}
+                    >
+                      <Text style={styles().markerText}>
+                        {t('your_location')}
+                      </Text>
+                    </View>
+
+                    <View style={styles().markerPin}>
+                      <View
+                        style={[
+                          styles().pinInner,
+                          { backgroundColor: '#06C167' }
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </Marker>
+              </MapView>
+              {/* <View style={styles().mainContainer}>
                 <CustomMarker
                   width={40}
                   height={40}
                   transform={[{ translateY: -20 }]}
                   translateY={-20}
                 />
-              </View>
+              </View> */}
             </Fragment>
           ) : null}
         </View>
-
         <View style={styles(currentTheme).container}>
-          <View
-            style={{
-              flexDirection: isArabic ? 'row-reverse' : 'row',
-              justifyContent: 'space-around'
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                alignSelf: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderBottomWidth: 1,
-                borderBottomColor: currentTheme.newFontcolor
-                // marginTop: 20
-              }}
-              onPress={handleNavArea}
-            >
+          <SafeAreaView>
+            <ScrollView>
+              <View
+                style={[
+                  styles().locationContainer,
+                  {
+                    flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }
+                ]}
+              >
+                <TouchableOpacity
+                  style={[
+                    styles().locationButton,
+                    { borderBottomColor: currentTheme.newFontcolor }
+                  ]}
+                  onPress={handleNavArea}
+                >
+                  <TextDefault
+                    textColor={currentTheme.newFontcolor}
+                    bolder
+                    Left
+                    style={styles().buttonText}
+                  >
+                    {t('choose_nearest_area')}
+                  </TextDefault>
+                  <Entypo
+                    name='location-pin'
+                    size={22}
+                    // color={currentTheme.newFontcolor}
+                    color={'green'}
+                    style={styles().icon}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles().locationButton,
+                    { borderBottomColor: currentTheme.newFontcolor }
+                  ]}
+                  onPress={getCurrentPositionNav}
+                >
+                  <TextDefault
+                    textColor={currentTheme.newFontcolor}
+                    bolder
+                    Left
+                    style={styles().buttonText}
+                  >
+                    {t('useCurrentLocation')}
+                  </TextDefault>
+                  <Entypo
+                    name='location'
+                    size={22}
+                    // color={currentTheme.newFontcolor}
+                    color={'green'}
+                    style={styles().icon}
+                  />
+                </TouchableOpacity>
+              </View>
+              {/* 
               <TextDefault
                 textColor={currentTheme.newFontcolor}
+                H3
                 bolder
                 Left
-                style={{ ...styles().heading, paddingLeft: 0 }}
+                style={{ ...styles().heading, marginBottom: 0, marginTop: 10 }}
               >
-                {t('choose_nearest_area')}
-              </TextDefault>
-              <Entypo
-                name='location'
-                size={15}
-                color={currentTheme.newFontcolor}
-                style={{ marginTop: -20 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignSelf: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderBottomWidth: 1,
-                borderBottomColor: currentTheme.newFontcolor
-              }}
-              onPress={getCurrentPositionNav}
-            >
-              <TextDefault
-                textColor={currentTheme.newFontcolor}
-                bolder
-                Left
-                style={{ ...styles().heading, paddingLeft: 0 }}
+                {t('selectLocation')}
+              </TextDefault> */}
+              {/* <View
+                style={{ ...styles(currentTheme).button, height: 50 }}
+                // onPress={() => setModalVisible(true)}
               >
-                {t('useCurrentLocation')}
-              </TextDefault>
-              <Entypo
-                name='location'
-                size={15}
-                color={currentTheme.newFontcolor}
-                style={{ marginTop: -20 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <TextDefault
-            textColor={currentTheme.newFontcolor}
-            H3
-            bolder
-            Left
-            style={{ ...styles().heading, marginBottom: 0, marginTop: 10 }}
-          >
-            {t('selectLocation')}
-          </TextDefault>
-          <View
-            style={{ ...styles(currentTheme).button, height: 50 }}
-            // onPress={() => setModalVisible(true)}
-          >
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {selectedAddress?.deliveryAddress
-                ? selectedAddress.deliveryAddress
-                : null}
-            </TextDefault>
-          </View>
-          <View style={[styles(currentTheme).textInput]}>
-            <TextInput
-              value={addressDetails}
-              onChangeText={(text) => setAddressDetails(text)}
-              placeholder={t('address_details')}
-              placeholderTextColor={
-                themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
-              }
-              style={{
-                color: themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
-              }}
-            />
-          </View>
-          <View style={styles(currentTheme).line} />
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={{
-              ...styles(currentTheme).button,
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onPress={handleCurrentLocation}
-          >
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('save')}
-            </TextDefault>
-            {loading && (
-              <Spinner
-                size={'small'}
-                backColor={currentTheme.themeBackground}
-                spinnerColor={currentTheme.main}
-              />
-            )}
-          </TouchableOpacity>
-          <View style={styles(currentTheme).line} />
+                <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                  {selectedAddress?.deliveryAddress
+                    ? selectedAddress.deliveryAddress
+                    : null}
+                </TextDefault>
+              </View> */}
+              <View style={[styles(currentTheme).textInput]}>
+                <TextInput
+                  value={addressDetails}
+                  onChangeText={(text) => setAddressDetails(text)}
+                  placeholder={t('address_details')}
+                  placeholderTextColor={
+                    themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
+                  }
+                  style={[
+                    {
+                      color:
+                        themeContext.ThemeValue === 'Dark' ? '#fff' : '#000',
+                      textAlignVertical: 'top' // Aligns text to the top (important for Android)
+                    }
+                  ]}
+                  multiline={true} // Enables multiple lines
+                  numberOfLines={4} // Sets initial height (works on Android)
+                  blurOnSubmit={true} // Keyboard will dismiss when submit is pressed
+                  returnKeyType='done' // Changes return key to "done" on iOS
+                />
+              </View>
+              <View style={styles(currentTheme).line} />
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{
+                  ...styles(currentTheme).button,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: colors.grey
+                }}
+                onPress={handleCurrentLocation}
+              >
+                {!loading && (
+                  <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                    {t('save')}
+                  </TextDefault>
+                )}
+                {loading && (
+                  <Spinner
+                    size={'small'}
+                    backColor={currentTheme.themeBackground}
+                    spinnerColor={currentTheme.main}
+                  />
+                )}
+              </TouchableOpacity>
+              <View style={styles(currentTheme).line} />
+            </ScrollView>
+          </SafeAreaView>
         </View>
         <View style={{ paddingBottom: inset.bottom }} />
       </View>

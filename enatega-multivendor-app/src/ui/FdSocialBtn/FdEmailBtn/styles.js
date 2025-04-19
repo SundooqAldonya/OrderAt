@@ -8,15 +8,16 @@ const styles = (props = null) =>
     mainContainer: {
       width: '90%',
       alignSelf: 'center',
-      height: height * 0.08,
+      height: height * 0.06,
       flexDirection: 'row',
       alignItems: 'center',
       ...alignment.PRlarge,
       backgroundColor: 'transparent',
-      justifyContent: 'flex-start',
-      borderRadius: scale(28),
-      borderWidth: scale(1),
+      justifyContent: 'center',
+      borderRadius: scale(16),
+      // borderWidth: scale(1),
       borderColor: props !== null ? props.newIconColor : '#9B9A9A',
+      backgroundColor:"#e2e2e2",
       ...alignment.PLlarge
     },
     marginLeft5: {

@@ -60,8 +60,9 @@ const styles = (props = null, hasActiveOrders = false) =>
       ...alignment.PLmedium,
       ...alignment.PRmedium,
       borderWidth:scale(1),
+      borderRadius:scale(20),
       borderColor:props != null ? props.color10 : '#FFF', 
-    },
+     },
     addNewAddressbtn: {
       padding: scale(5),
       ...alignment.PLmedium,

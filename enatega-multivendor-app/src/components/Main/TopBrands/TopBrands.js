@@ -12,6 +12,10 @@ import { topRatedVendorsInfo } from '../../../apollo/queries'
 import { useQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import TopBrandsLoadingUI from '../LoadingUI/TopBrandsLoadingUI'
+import truncate from '../../../utils/helperFun'
+import { Ionicons } from '@expo/vector-icons'
+import { scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 function TopBrands(props) {
   const { i18n, t } = useTranslation()
@@ -54,7 +58,7 @@ function TopBrands(props) {
           H5
           bolder
         >
-          {item?.name}
+          {truncate(item?.name, 13)}
         </TextDefault>
         <TextDefault textColor={currentTheme.fontFifthColor} normal>
           {item?.deliveryTime} + {t('mins')}
@@ -68,15 +72,35 @@ function TopBrands(props) {
 
   return (
     <View style={styles().topbrandsSec}>
-      <TextDefault
-        numberOfLines={1}
-        textColor={currentTheme.fontFourthColor}
-        bolder
-        H4
-        style={{ textAlign: isArabic ? 'right' : 'left' }}
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
       >
-        {t('topBrands')}
-      </TextDefault>
+        <TextDefault
+          numberOfLines={1}
+          textColor={currentTheme.fontFourthColor}
+          bolder
+          H4
+          style={{
+            textAlign: isArabic ? 'right' : 'left',
+            paddingHorizontal: 16,
+            marginBottom: 10
+          }}
+        >
+          {t('topBrands')}
+        </TextDefault>
+        <TouchableOpacity style={styles().image}>
+          <Ionicons
+            name='arrow-back'
+            size={scale(24)}
+            style={styles().image1}
+            color={colors.dark}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={{ ...alignment.PRsmall }}>
         <FlatList
           data={data?.topRatedVendorsPreview}

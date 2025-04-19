@@ -50,6 +50,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle
 } from 'react-native-reanimated'
+import { colors } from '../../../utils/colors'
 
 const AnimatedText = Animated.createAnimatedComponent(Text)
 const AnimatedBorderless = Animated.createAnimatedComponent(BorderlessButton)
@@ -203,8 +204,9 @@ function ImageTextCenterHeader(props, ref) {
     <Animated.View style={[styles(currentTheme).mainContainer, headerHeight]}>
       <Animated.View style={[headerHeightWithoutTopbar]}>
         <Animated.View style={[styles().overlayContainer]}>
-          <View style={styles().fixedViewNavigation}>
-            <View style={styles().backIcon}>
+          {/* top bar */}
+          <View style={[styles().fixedViewNavigation]}>
+            <View style={styles().backgroundIcon}>
               {props.searchOpen ? (
                 <AnimatedBorderless
                   activeOpacity={0.7}
@@ -246,7 +248,7 @@ function ImageTextCenterHeader(props, ref) {
                   /> */}
                   <Ionicons
                     name='arrow-back'
-                    color={currentTheme.newIconColor}
+                    color={colors.background}
                     size={scale(22)}
                   />
                 </AnimatedBorderless>
@@ -264,7 +266,7 @@ function ImageTextCenterHeader(props, ref) {
             </View>
             <View style={styles().fixedIcons}>
               {props.searchOpen ? (
-                <>
+                <View style={styles().backgroundIcon}>
                   <Search
                     setSearch={props.setSearch}
                     search={props.search}
@@ -272,19 +274,19 @@ function ImageTextCenterHeader(props, ref) {
                     cartContainer={cartContainer}
                     placeHolder={t('searchItems')}
                   />
-                </>
+                </View>
               ) : (
                 <>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     disabled={loadingMutation}
                     style={[
-                      styles().touchArea,
-                      {
-                        backgroundColor: props.themeBackground,
-                        borderRadius: props.iconRadius,
-                        height: props.iconTouchHeight
-                      }
+                      styles().backgroundIcon
+                      // {
+                      //   backgroundColor: props.themeBackground,
+                      //   borderRadius: props.iconRadius,
+                      //   height: props.iconTouchHeight
+                      // }
                     ]}
                     onPress={handleAddToFavorites}
                   >
@@ -299,21 +301,14 @@ function ImageTextCenterHeader(props, ref) {
                         <AntDesign
                           name={heart ? 'heart' : 'hearto'}
                           size={scale(15)}
-                          color={currentTheme.newIconColor}
+                          color={heart ? 'red' : colors.background}
                         />
                       )}
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    style={[
-                      styles().touchArea,
-                      {
-                        backgroundColor: props.themeBackground,
-                        borderRadius: props.iconRadius,
-                        height: props.iconTouchHeight
-                      }
-                    ]}
+                    style={[styles().backgroundIcon]}
                     onPress={() => {
                       navigation.navigate('About', {
                         restaurantObject: { ...aboutObject, isOpen: null },
@@ -324,19 +319,12 @@ function ImageTextCenterHeader(props, ref) {
                     <SimpleLineIcons
                       name='info'
                       size={scale(17)}
-                      color={currentTheme.newIconColor}
+                      color={colors.background}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    style={[
-                      styles(currentTheme).touchArea,
-                      {
-                        backgroundColor: props.themeBackground,
-                        borderRadius: props.iconRadius,
-                        height: props.iconTouchHeight
-                      }
-                    ]}
+                    style={[styles().backgroundIcon]}
                     onPress={props.searchHandler}
                   >
                     <Ionicons
@@ -344,13 +332,14 @@ function ImageTextCenterHeader(props, ref) {
                       style={{
                         fontSize: props.iconSize
                       }}
-                      color={currentTheme.newIconColor}
+                      color={colors.background}
                     />
                   </TouchableOpacity>
                 </>
               )}
             </View>
           </View>
+
           {!props.search && !props.loading && (
             <Animated.View style={[styles().restaurantDetails, opacity]}>
               <Animated.View
@@ -359,7 +348,8 @@ function ImageTextCenterHeader(props, ref) {
                     display: 'flex',
                     flexDirection: isArabic ? 'row-reverse' : 'row',
                     alignItems: 'center',
-                    justifyContent: isArabic ? 'flex-start' : 'flex-end',
+                    justifyContent: 'center',
+                    // justifyContent: isArabic ? 'flex-start' : 'flex-end',
                     gap: scale(15),
                     marginBottom: scale(20)
                   }
@@ -367,12 +357,13 @@ function ImageTextCenterHeader(props, ref) {
               >
                 <View style={[styles().restImageContainer]}>
                   <Image
-                    resizeMode='cover'
+                    resizeMode='contain'
                     source={{ uri: aboutObject.restaurantImage }}
                     style={[styles().restaurantImg]}
                   />
                 </View>
-                <View style={styles().restaurantTitle}>
+
+                {/* <View style={styles().restaurantTitle}>
                   <TextDefault
                     H4
                     bolder
@@ -383,8 +374,20 @@ function ImageTextCenterHeader(props, ref) {
                   >
                     {aboutObject.restaurantName}
                   </TextDefault>
-                </View>
+                </View> */}
               </Animated.View>
+              <View style={styles().restaurantTitle}>
+                  <TextDefault
+                    H2
+                    bolder
+                    Center
+                    textColor={currentTheme.fontMainColor}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
+                  >
+                    {aboutObject.restaurantName}
+                  </TextDefault>
+                </View>
               <View
                 style={{
                   display: 'flex',
@@ -392,6 +395,8 @@ function ImageTextCenterHeader(props, ref) {
                   gap: 7
                 }}
               >
+           
+
                 <TextDefault
                   style={styles().restaurantAbout}
                   textColor={currentTheme.fontMainColor}
@@ -526,6 +531,7 @@ function ImageTextCenterHeader(props, ref) {
                   </TextDefault>
                 </AnimatedTouchable>
               </View>
+
               <View
                 style={[
                   styles().ratingBox,

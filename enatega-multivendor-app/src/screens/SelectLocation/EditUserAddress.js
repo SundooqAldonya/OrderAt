@@ -10,10 +10,11 @@ import {
   TouchableOpacity,
   StatusBar,
   Linking,
-  TextInput
+  TextInput,
+  Text
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import styles from './styles'
@@ -25,7 +26,7 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
 import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import analytics from '../../utils/analytics'
-import { Feather, EvilIcons, Entypo } from '@expo/vector-icons'
+import { Feather, EvilIcons, Entypo, MaterialIcons } from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
@@ -37,6 +38,9 @@ import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useMutation } from '@apollo/client'
 import { editAddress } from '../../apollo/mutations'
+import navigationService from '../../routes/navigationService'
+import { HeaderBackButton } from '@react-navigation/elements'
+import { scale } from '../../utils/scaling'
 
 const EDIT_ADDRESS = gql`
   ${editAddress}
@@ -128,18 +132,57 @@ export default function EditUserAddress(props) {
     }
   }
 
+  // useLayoutEffect(() => {
+  //   navigation.setOptions(
+  //     screenOptions({
+  //       title: t('setLocation'),
+  //       fontColor: currentTheme.newFontcolor,
+  //       backColor: currentTheme.newheaderBG,
+  //       iconColor: currentTheme.newIconColor,
+  //       lineColor: currentTheme.newIconColor
+  //       // setCurrentLocation: getCurrentPositionNav
+  //     })
+  //   )
+  // })
   useLayoutEffect(() => {
-    navigation.setOptions(
-      screenOptions({
-        title: t('setLocation'),
-        fontColor: currentTheme.newFontcolor,
-        backColor: currentTheme.newheaderBG,
-        iconColor: currentTheme.newIconColor,
-        lineColor: currentTheme.newIconColor
-        // setCurrentLocation: getCurrentPositionNav
-      })
-    )
-  })
+    navigation.setOptions({
+      title: t('setLocation'),
+      headerRight: null,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        fontWeight: 'bold'
+      },
+      headerTitleContainerStyle: {
+        marginTop: '2%',
+        paddingLeft: scale(25),
+        paddingRight: scale(25),
+        height: '75%',
+        marginLeft: 0
+      },
+      headerStyle: {
+        backgroundColor: currentTheme.newheaderBG,
+        elevation: 0
+      },
+      headerLeft: () => (
+        <HeaderBackButton
+          truncatedLabel=''
+          backImage={() => (
+            <View>
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={currentTheme.newIconColor}
+              />
+            </View>
+          )}
+          onPress={() => {
+            navigationService.goBack()
+          }}
+        />
+      )
+    })
+  }, [])
 
   StatusBar.setBackgroundColor(colors.primary)
   StatusBar.setBarStyle('light-content')
@@ -283,36 +326,103 @@ export default function EditUserAddress(props) {
         : null
     })
   }
-
+  // Assuming coordinates comes from somewhere as strings
+  const fixedCoordinates = {
+    latitude:
+      typeof coordinates.latitude === 'string'
+        ? parseFloat(coordinates.latitude)
+        : coordinates.latitude,
+    longitude:
+      typeof coordinates.longitude === 'string'
+        ? parseFloat(coordinates.longitude)
+        : coordinates.longitude,
+    latitudeDelta: coordinates.latitudeDelta,
+    longitudeDelta: coordinates.longitudeDelta
+  }
   return (
     <>
       <View style={styles().flex}>
-        <View style={styles().mapView}>
+        <View
+          style={[
+            styles().mapView,
+            {
+              height: '60%'
+            }
+          ]}
+        >
           <MapView
             ref={mapRef}
+            initialRegion={fixedCoordinates}
+            style={{ flex: 1 }}
+            provider={PROVIDER_GOOGLE}
+            onMapReady={zoomIn}
+            onRegionChangeComplete={onRegionChangeComplete}
+            zoomEnabled
+            maxZoomLevel={50}
+            bounce
+          >
+            <Marker
+              coordinate={fixedCoordinates}
+              title={t('your_order_will_send_here')}
+            >
+              <View style={styles().deliveryMarker}>
+                <View
+                  style={[
+                    styles().markerBubble,
+                    { backgroundColor: '#06C167' }
+                  ]}
+                >
+                  <Text style={styles().markerText}>{t('your_location')}</Text>
+                </View>
+                <View style={styles().markerPin}>
+                  <View
+                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                  />
+                </View>
+              </View>
+            </Marker>
+          </MapView>
+
+          {/* <MapView
+            ref={mapRef}
             initialRegion={coordinates}
-            // region={coordinates}
             style={{ flex: 1 }}
             provider={PROVIDER_GOOGLE}
             showsTraffic={false}
+            zoomEnabled
             onMapReady={() => {
               zoomIn()
             }}
-            // maxZoomLevel={5}
-            // customMapStyle={
-            //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
-            // }
+            maxZoomLevel={50}
             onRegionChangeComplete={onRegionChangeComplete}
             bounce
-          />
-          <View style={styles().mainContainer}>
-            <CustomMarker
-              width={40}
-              height={40}
-              transform={[{ translateY: -20 }]}
-              translateY={-20}
-            />
-          </View>
+          >
+            <Marker
+              style={{
+                borderRadius: 16,
+                backgroundColor: ''
+              }}
+              coordinate={coordinates}
+              title={t('your_order_will_send_here')}
+            >
+              <View style={styles().deliveryMarker}>
+                <View
+                  style={[
+                    styles().markerBubble,
+                    { backgroundColor: '#06C167' }
+                  ]}
+                >
+                  <Text style={styles().markerText}>{t('your_location')}</Text>
+                </View>
+
+                <View style={styles().markerPin}>
+                  <View
+                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                  />
+                </View>
+              </View>
+            </Marker>
+          </MapView> */}
         </View>
         <View style={styles(currentTheme).container}>
           <TouchableOpacity
@@ -341,7 +451,8 @@ export default function EditUserAddress(props) {
               style={{ marginTop: -20 }}
             />
           </TouchableOpacity>
-          <TextDefault
+
+          {/* <TextDefault
             textColor={currentTheme.newFontcolor}
             H3
             bolder
@@ -360,6 +471,7 @@ export default function EditUserAddress(props) {
                 : null}
             </TextDefault>
           </View>
+           */}
           <View style={[styles(currentTheme).textInput]}>
             <TextInput
               value={addressDetails}
@@ -379,13 +491,16 @@ export default function EditUserAddress(props) {
             style={{
               ...styles(currentTheme).button,
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              backgroundColor: colors.grey
             }}
             onPress={handleCurrentLocation}
           >
-            <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-              {t('save')}
-            </TextDefault>
+            {!loading && (
+              <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
+                {t('save')}
+              </TextDefault>
+            )}
             {loading && (
               <Spinner
                 size={'small'}

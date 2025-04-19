@@ -24,6 +24,7 @@ import { theme } from '../../../utils/themeColors'
 import { HeaderBackButton } from '@react-navigation/elements'
 import UserContext from '../../../context/User'
 import { colors } from '../../../utils/colors'
+import { useTranslation } from 'react-i18next'
 const rippleColor = '#6FCF97'
 function BackButton(props) {
   if (props.icon === 'leftArrow') {
@@ -49,7 +50,7 @@ function BackButton(props) {
       <MaterialCommunityIcons
         name='dots-vertical'
         size={scale(25)}
-        color={colors?.background}
+        color={colors?.dark}
       />
     )
   } else if (props.icon === 'target') {
@@ -62,7 +63,7 @@ function BackButton(props) {
     )
   } else if (props.icon === 'fav') {
     return (
-      <AntDesign name='hearto' size={scale(20)} color={colors?.background} />
+      <AntDesign name='hearto' size={scale(20)} color={colors?.dark} />
     )
   } else {
     return (
@@ -145,7 +146,9 @@ function LeftButton(props) {
 }
 
 function RightButton(props) {
-  const { t } = props
+  // const { t } = props
+    const { t } = useTranslation()
+  
   const [password, setPassword] = useState(false)
   const navigation = useNavigation()
   const route = useRoute()
@@ -170,7 +173,7 @@ function RightButton(props) {
         <SimpleLineIcons
           name='handbag'
           size={scale(20)}
-          color={colors.background}
+          color={colors.dark}
         />
         <View
           style={[
@@ -213,7 +216,7 @@ function RightButton(props) {
             <View style={styles(currentTheme.cartContainer).titlePasswordText}>
               <TextDefault
                 style={{ fontSize: scale(11) }}
-                textColor={colors.background}
+                textColor={colors.dark}
                 bold
               >
                 {t('changePassword')}
@@ -226,7 +229,7 @@ function RightButton(props) {
             labelVisible={false}
             backImage={() => (
               <View style={styles().rightContainer}>
-                {BackButton({ iconColor: colors.background, icon: 'dots' })}
+                {BackButton({ iconColor: colors.dark, icon: 'dots' })}
               </View>
             )}
             onPress={showPasswordButton}
@@ -243,7 +246,7 @@ function RightButton(props) {
           labelVisible={false}
           backImage={() => (
             <View style={styles().favContainer}>
-              {BackButton({ iconColor: colors.background, icon: 'fav' })}
+              {BackButton({ iconColor: colors.dark, icon: 'fav' })}
             </View>
           )}
           bolder

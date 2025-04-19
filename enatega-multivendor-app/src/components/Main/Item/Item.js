@@ -83,77 +83,21 @@ function Item(props) {
     >
       <View key={item._id} style={styles().mainContainer}>
         <View style={[styles(currentTheme).restaurantContainer]}>
+     
           <View style={styles().imageContainer}>
             <Image
               resizeMode='cover'
               source={{ uri: item.image }}
               style={styles().img}
             />
-            <View style={styles().overlayRestaurantContainer}>
-              <TouchableOpacity
-                activeOpacity={0}
-                disabled={loadingMutation}
-                style={styles(currentTheme).favOverlay}
-                onPress={() =>
-                  profile ? mutate({ variables: { id: item._id } }) : null
-                }
-              >
-                {loadingMutation ? (
-                  <Spinner
-                    size={'small'}
-                    backColor={'transparent'}
-                    spinnerColor={currentTheme.iconColorDark}
-                  />
-                ) : (
-                  <AntDesign
-                    name={heart ? 'heart' : 'hearto'}
-                    size={scale(15)}
-                    color='black'
-                  />
-                )}
-              </TouchableOpacity>
-              {(!isAvailable || !isOpen()) && (
-                <View style={{ ...styles().featureOverlay, top: 40 }}>
-                  <TextDefault
-                    style={[
-                      styles(currentTheme).featureText,
-                      {
-                        ...alignment.MTxSmall,
-                        ...alignment.PLsmall,
-                        ...alignment.PRsmall,
-                        ...alignment.PTxSmall,
-                        ...alignment.PBxSmall
-                      }
-                    ]}
-                    textColor={currentTheme.fontWhite}
-                    numberOfLines={1}
-                    small
-                    bold
-                    uppercase
-                  >
-                    {t('Closed')}
-                  </TextDefault>
-                </View>
-              )}
-              {/* <View style={styles(currentTheme).deliveryRestaurantOverlay}>
-                <TextDefault
-                  textColor={currentTheme.fontMainColor}
-                  numberOfLines={1}
-                  small
-                  bolder
-                  center>
-                  {item.deliveryTime + ' '}
-                  {t('min')}
-                </TextDefault>
-              </View> */}
-            </View>
           </View>
+
           <View style={{ ...styles().descriptionContainer }}>
             <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
                 justifyContent: 'space-between',
-                width: '100%'
+                  width: '100%'
               }}
             >
               <TextDefault
@@ -254,6 +198,55 @@ function Item(props) {
               </View>
             </View>
           </View>
+
+          <View style={styles().overlayRestaurantContainer}>
+            <TouchableOpacity
+              activeOpacity={0}
+              disabled={loadingMutation}
+              style={styles(currentTheme).favOverlay}
+              onPress={() =>
+                profile ? mutate({ variables: { id: item._id } }) : null
+              }
+            >
+              {loadingMutation ? (
+                <Spinner
+                  size={'small'}
+                  backColor={'transparent'}
+                  spinnerColor={currentTheme.iconColorDark}
+                />
+              ) : (
+                <AntDesign
+                  name={heart ? 'heart' : 'hearto'}
+                  size={scale(15)}
+                  color={heart ? 'red' : 'black'}
+                />
+              )}
+            </TouchableOpacity>
+            {(!isAvailable || !isOpen()) && (
+              <View style={{ ...styles().featureOverlay, top: 40 }}>
+                <TextDefault
+                  style={[
+                    styles(currentTheme).featureText,
+                    {
+                      ...alignment.MTxSmall,
+                      ...alignment.PLsmall,
+                      ...alignment.PRsmall,
+                      ...alignment.PTxSmall,
+                      ...alignment.PBxSmall
+                    }
+                  ]}
+                  textColor={currentTheme.fontWhite}
+                  numberOfLines={1}
+                  small
+                  bold
+                  uppercase
+                >
+                  {t('Closed')}
+                </TextDefault>
+              </View>
+            )}
+          </View>
+
         </View>
       </View>
     </TouchableOpacity>

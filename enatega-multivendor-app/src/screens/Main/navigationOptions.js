@@ -13,7 +13,7 @@ import { scale } from '../../utils/scaling'
 const navigationOptions = (props) => ({
   headerStyle: {
     height: scale(50),
-    backgroundColor: colors.primary,
+    backgroundColor: colors.grey,
     shadowColor: 'transparent',
     shadowRadius: 0
   },

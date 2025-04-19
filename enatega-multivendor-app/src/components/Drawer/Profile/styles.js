@@ -21,20 +21,20 @@ const styles = (props = null) =>
     },
     loggedInContainer: {
       flex: 1,
-      justifyContent: 'flex-end',
-      alignItems: 'center'
-    },
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      },
     subContainer: {
-      width: '85%',
-      height: '70%',
-      flexDirection:'row',
-      alignItems:"center",
-      gap:20,
-      ...alignment.MBlarge
-    },
+      width: '90%',
+      height: '50%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 20,
+      ...alignment.MBlarge,
+     },
     imgContainer: {
-      width: scale(70),
-      height: scale(70),
+      width: scale(50),
+      height: scale(50),
       borderRadius: scale(35),
       justifyContent: 'center',
       alignItems: 'center',
