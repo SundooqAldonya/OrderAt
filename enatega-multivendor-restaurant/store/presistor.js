@@ -12,13 +12,14 @@ const persistConfig = {
 }
 
 // Wrap the city reducer with persistReducer
-const persistedReducer = persistReducer(persistConfig, cityReducer)
+const cityPersistedReducer = persistReducer(persistConfig, cityReducer)
+const printerPersistedReducer = persistReducer(persistConfig, printerReducer)
 
 // Configure the Redux store
 export const store = configureStore({
   reducer: {
-    city: persistedReducer,
-    printers: printerReducer
+    city: cityPersistedReducer,
+    printers: printerPersistedReducer
   }
 })
 

@@ -1,5 +1,11 @@
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
-import { View, Pressable, TouchableOpacity, Text } from 'react-native'
+import {
+  View,
+  Pressable,
+  TouchableOpacity,
+  Text,
+  NativeModules
+} from 'react-native'
 import { Spinner, TextDefault } from '..'
 import styles from './styles'
 import { colors, formatReceipt, TIMES } from '../../utilities'
@@ -8,16 +14,27 @@ import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPrinter, showPrintersFn } from '../../../store/printersSlice'
-import { NetPrinter } from 'react-native-thermal-receipt-printer'
+import ThermalPrinterModule, {
+  NetPrinter
+} from 'react-native-thermal-receipt-printer'
 import { formattedPrintedText } from '../../utilities/formattedPrintedText'
 import { Configuration } from '../../ui/context'
-import RNPrint from 'react-native-print'
 import Toast from 'react-native-toast-message'
 import { captureRef } from 'react-native-view-shot'
 import {
+  convertTo1BitBitmap,
   convertToBWBitmap,
+  downloadLogo,
+  generateEscPosBitmap,
   imageToBase64
 } from '../../utilities/printerHelpers'
+import { Buffer } from 'buffer'
+import iconv from 'iconv-lite'
+import RNFS from 'react-native-fs'
+import { Asset } from 'expo-asset'
+import * as FileSystem from 'expo-file-system'
+
+const { RNNetPrinter } = NativeModules
 
 export default function OverlayComponent(props) {
   const viewRef = useRef()
@@ -59,6 +76,32 @@ export default function OverlayComponent(props) {
     }
     // toggle()
     // loading ? <Spinner /> : navigation.navigate('Orders')
+  }
+
+  const printArabic = async () => {
+    try {
+      // Connect to the network printer (replace IP/port)
+      await ThermalPrinterModule.connectNet('192.168.1.100', 9100)
+
+      // Encode Arabic text to Windows-1256 (common for ESC/POS printers)
+      const arabicText = 'مرحبا بالعالم'
+      const encodedText = iconv.encode(arabicText, 'win1256')
+
+      // Create ESC/POS commands
+      const commands = [
+        { command: 'ESC', value: '@' }, // Initialize printer
+        { command: 'ESC', value: 't', args: [16] }, // Set code page to Windows-1256
+        { command: 'TEXT', text: encodedText.toString('hex'), hex: true }, // Send hex data
+        { command: 'CUT' } // Cut paper
+      ]
+
+      // Print
+      await ThermalPrinterModule.print(commands)
+    } catch (err) {
+      console.error('Print error:', err)
+    } finally {
+      await ThermalPrinterModule.disconnect() // Disconnect after printing
+    }
   }
 
   const startPrinting = () => {
@@ -106,27 +149,50 @@ export default function OverlayComponent(props) {
 
       console.log('Captured URI:', uri)
 
-      const imageBase64 = await imageToBase64(uri)
-      const payload = convertToBWBitmap(imageBase64)
-      NetPrinter.connectPrinter(printerIP, 9100)
-        .then(() => {
-          NetPrinter.printText(payload)
-          console.log('Printing...')
-        })
-        .catch(error => {
-          console.log('Failed to connect to printer', error)
-          toggle()
-          Toast.show({
-            type: 'error', // or 'error' | 'info'
-            text1: 'No printer',
-            text2: 'Failed to connect to printer with that IP'
+      const asset = Asset.fromModule(require('../../assets/JsLogo.bmp'))
+      await asset.downloadAsync() // ensure it's on device
+      // 2) Read the BMP file as Base64
+      const base64Bmp = await FileSystem.readAsStringAsync(asset.localUri, {
+        encoding: FileSystem.EncodingType.Base64
+      })
+      RNNetPrinter.connectPrinter(
+        printerIP,
+        9100,
+        () => {
+          console.log('✅ Connected to printer')
+          // now you can send the data
+
+          RNNetPrinter.printRawData(base64Bmp, err => {
+            if (err) console.warn('Print error', err)
+            else console.log('Printed OK!')
+            RNNetPrinter.closeConn()
           })
-        })
+        },
+        error => {
+          console.warn('❌ Failed to connect to printer:', error)
+        }
+      )
+      // NetPrinter.connectPrinter(printerIP, 9100)
+      //   .then(() => {
+      //     NetPrinter.printText(imageBase64)
+      //     console.log('Printing...')
+      //   })
+      //   .catch(error => {
+      //     console.log('Failed to connect to printer', error)
+      //     toggle()
+      //     Toast.show({
+      //       type: 'error', // or 'error' | 'info'
+      //       text1: 'No printer',
+      //       text2: 'Failed to connect to printer with that IP'
+      //     })
+      //   })
       // Now you can convert it to base64, or send it to the printer
     } catch (err) {
       console.error('Capture failed', err)
     }
   }
+
+  console.log({ viewRef })
 
   return (
     <Fragment>
@@ -182,7 +248,14 @@ export default function OverlayComponent(props) {
             </View>
           </View>
           <TouchableOpacity
-            activeOpacity={0.8}
+            style={styles.btn}
+            // onPress={btnPress}
+            onPress={() => downloadLogo(viewRef.current, printerIP)}>
+            <TextDefault bold style={{ color: colors.darkgreen }}>
+              {t('donwload')}
+            </TextDefault>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.btn}
             // onPress={btnPress}
             onPress={captureReceipt}>
