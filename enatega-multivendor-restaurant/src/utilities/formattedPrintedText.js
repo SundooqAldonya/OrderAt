@@ -1,5 +1,5 @@
 export const formattedPrintedText = (order, currency) => {
-  console.log({ currency: order.currencySymbol })
+  // console.log({ currency: order.currencySymbol })
   const address =
     order.shippingMethod === 'PICKUP'
       ? 'PICKUP'

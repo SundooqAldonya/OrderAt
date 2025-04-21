@@ -1,12 +1,13 @@
 import * as Print from 'expo-print'
 import { formatReceipt } from './formatReceipt'
+import { formattedPrintedText } from './formattedPrintedText'
 
-export const printAsync = async (order, printerUrl) => {
+export const printAsync = async (order, printerUrl, currency) => {
   try {
     return await Print.printAsync({
       width: 576, // 80mm=302px,
       orientation: Print.Orientation.portrait,
-      html: formatReceipt(order),
+      html: formatReceipt(order, currency),
       printerUrl
     })
   } catch (error) {
@@ -15,11 +16,11 @@ export const printAsync = async (order, printerUrl) => {
   return null
 }
 
-export const printToFileAsync = async order => {
+export const printToFileAsync = async (order, currency) => {
   try {
     return await Print.printToFileAsync({
       width: 576, // 80mm=302px,
-      html: formatReceipt(order)
+      html: formatReceipt(order, currency)
     })
   } catch (error) {
     console.log('error', error)

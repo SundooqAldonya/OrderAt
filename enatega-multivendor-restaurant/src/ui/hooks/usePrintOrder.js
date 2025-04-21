@@ -6,7 +6,7 @@ import { Platform } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function usePrintOrder() {
-  const { currencySymbol } = useContext(Configuration.Context)
+  const { currency } = useContext(Configuration.Context)
   const { printer, setPrinter } = useContext(Restaurant.Context)
   const { loading, error, data } = useOrders()
 
@@ -14,8 +14,9 @@ export default function usePrintOrder() {
     if (!loading && !error) {
       const order = data?.restaurantOrders.find(order => order._id === id)
       const result = await printAsync(
-        { ...order, currencySymbol },
-        Platform.OS === 'ios' ? (printer ? printer.url : null) : null
+        { ...order },
+        Platform.OS === 'ios' ? (printer ? printer.url : null) : null,
+        currency
       )
       console.log('result', result)
     }
