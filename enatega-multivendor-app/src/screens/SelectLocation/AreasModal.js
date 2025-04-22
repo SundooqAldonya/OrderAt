@@ -15,13 +15,17 @@ import UserContext from '../../context/User'
 import { useNavigation } from '@react-navigation/native'
 
 const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
-  const { t } = useTranslation()
-  const { isLoggedIn } = useContext(UserContext)
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+    const { isLoggedIn } = useContext(UserContext)
   const navigation = useNavigation()
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.item(theme)}
+       style={{
+        ...styles.item(theme),
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
       onPress={() => {
         if (!isLoggedIn) {
           onItemPress(item)
@@ -35,7 +39,12 @@ const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
       <TextDefault H5 bold textColor={theme.color7}>
         {item.title}
       </TextDefault>
-      <Entypo name='chevron-right' size={24} color={theme.newIconColor} />
+      {isArabic ? (
+        <Entypo name='chevron-left' size={24} color={theme.newIconColor} />
+      ) : (
+        <Entypo name='chevron-right' size={24} color={theme.newIconColor} />
+      )}
+
     </TouchableOpacity>
   )
 
@@ -51,7 +60,14 @@ const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
       <View style={styles.modalContainer(theme)}>
-        <View style={styles.header}>
+        <View
+        
+        style={{
+          ...styles.header,
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}        
+        
+        >
           <TextDefault textColor={theme.gray900} H3 bolder>
             {t('explore_areas')}
           </TextDefault>
@@ -79,7 +95,7 @@ const AreasModal = ({ areas, theme, visible, onItemPress, onClose }) => {
 
 const styles = StyleSheet.create({
   overlay: {
-    height: '20%',
+    height: '40%',
     backgroundColor: 'rgba(0, 0, 0, 0.8)'
   },
   modalContainer: (theme) => ({

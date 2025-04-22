@@ -9,21 +9,32 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     restaurantContainer: {
-      backgroundColor: props != null ? props.newheaderBG : 'white',
-      borderColor: props != null ? props.borderColor : 'grey',
+      // backgroundColor: props != null ? props.newheaderBG : 'white',
+      // borderColor: props != null ? props.borderColor : 'grey',
+      // borderWidth: scale(1),
+      // borderRadius: scale(8),
+      // height: scale(290),
+      // width: '99%',
+      // ...alignment.MBsmall
+
+      // backgroundColor: 'red',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 10,
       borderWidth: scale(1),
       borderRadius: scale(8),
-      height: scale(290),
-      width: '99%',
-
-      ...alignment.MBsmall
+      backgroundColor: props != null ? props.newheaderBG : 'white',
+      borderColor: 'grey',
+      width: '100%'
     },
     imageContainer: {
-      position: 'relative',
-      zIndex: 1,
+      // position: 'relative',
+      // zIndex: 1,
       alignItems: 'center',
-      width: '100%',
-      height: '68%'
+      width: '30%'
+      // height: '60%'
     },
     img: {
       width: '100%',
@@ -38,16 +49,18 @@ const styles = (props = null) =>
       top: 0,
       height: '100%',
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      width: '100%'
+      width: '100%',
+  
     },
     favOverlay: {
       position: 'absolute',
       top: 10,
-      right: 12,
+      left: 12,
       width: scale(30),
       height: scale(30),
       borderRadius: scale(15),
       backgroundColor: props != null ? props.white : 'white',
+      // backgroundColor: 'red',
       zIndex: 1,
       justifyContent: 'center',
       alignItems: 'center'
@@ -70,9 +83,10 @@ const styles = (props = null) =>
       // justifyContent: 'flex-start'
     },
     descriptionContainer: {
-      width: '100%',
-      padding: scale(12)
-    },
+      // width: '100%',
+      width: '60%',
+      // padding: scale(12)
+     },
     offerCategoty: {
       ...alignment.MTxSmall,
       ...alignment.MBxSmall

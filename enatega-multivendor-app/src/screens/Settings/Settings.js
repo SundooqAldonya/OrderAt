@@ -76,7 +76,7 @@ function Settings(props) {
   const isArabic = i18n.language === 'ar'
 
   const [languageName, languageNameSetter] = useState('English')
-  const [orderNotification, setOrderNotification] = useState(false)
+   const [orderNotification, setOrderNotification] = useState(false)
   const [offerNotification, offerNotificationSetter] = useState(false)
   const [modalVisible, modalVisibleSetter] = useState(false)
   const [loadinglang, setLoadingLang] = useState(false)

@@ -126,6 +126,15 @@ export default function App() {
     }
   }, [I18nManager.isRTL])
 
+  // useEffect(() => {
+
+  //   if (!I18nManager.isRTL) {
+  //     I18nManager.allowRTL(true)
+  //     I18nManager.forceRTL(true)
+  //     RNRestart.Restart()
+  //   }
+  // }, [I18nManager.isRTL])
+
   useWatchLocation()
   useEffect(() => {
     const loadAppData = async () => {

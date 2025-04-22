@@ -2,8 +2,9 @@ import { StyleSheet, Dimensions } from 'react-native'
 import { scale } from '../../../utils/scaling'
 import { alignment } from '../../../utils/alignment'
 import { textStyles } from '../../../utils/textStyles'
+import { colors } from '../../../utils/colors'
 
-const { height } = Dimensions.get('window')
+const { height, width } = Dimensions.get('window')
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -43,16 +44,17 @@ const styles = (props = null) =>
       borderColor: props != null ? props.newBorderColor : '#F3F4F6'
     },
     fixedViewNavigation: {
-      // height: scale(40),
+      height: scale(40),
       // backgroundColor: 'red',
       width: '100%',
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      // ...alignment.PTsmall,
-      height: height * 0.05,
-      zIndex: 1
+      // height: height * 0.05,
+      zIndex: 1,
+      position: 'absolute',
+      top: scale(50) // Adjust this to position the image correctly
     },
 
     fixedIcons: {
@@ -64,11 +66,27 @@ const styles = (props = null) =>
     restaurantDetails: {
       marginTop: scale(8)
     },
-
+    restImageContainer: {
+      width: width - 10,
+      height: width - 10,
+      borderRadius: scale(12),
+      backgroundColor: 'white',
+      shadowColor: 'black',
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: scale(5)
+    },
     restaurantImg: {
-      width: scale(80),
-      height: scale(80),
-      borderRadius: 12
+      width: '100%',
+      height: '100%',
+      borderRadius: scale(8)
     },
     restaurantAbout: {
       fontSize: scale(14),
@@ -92,7 +110,7 @@ const styles = (props = null) =>
     ratingBox: {
       flexDirection: 'row',
       gap: scale(3),
-      alignItems: 'center',
+      alignItems: 'center'
     },
 
     flatListStyle: {
@@ -140,6 +158,19 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center'
+    },
+    backgroundIcon: {
+      backgroundColor: colors.darkLight,
+      height: 30,
+      width: 30,
+      borderRadius: 30 / 2,
+      // marginHorizontal: 5,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    restaurantTitle: {
+      ...alignment.PLxSmall,
+       alignItems: 'center'
     }
   })
 export default styles

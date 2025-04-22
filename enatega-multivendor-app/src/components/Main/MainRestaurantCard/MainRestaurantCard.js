@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, FlatList, Text } from 'react-native'
+import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native'
 import UserContext from '../../../context/User'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -9,6 +9,9 @@ import { theme } from '../../../utils/themeColors'
 import { useTranslation } from 'react-i18next'
 import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
 import MainLoadingUI from '../LoadingUI/MainLoadingUI'
+import { Ionicons } from '@expo/vector-icons'
+import { scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
@@ -23,21 +26,38 @@ function MainRestaurantCard(props) {
   return (
     <View style={styles().orderAgainSec}>
       <View>
-        <TextDefault
-          numberOfLines={1}
-          textColor={currentTheme.fontFourthColor}
-          bolder
-          H4
+        <View
           style={{
-            ...styles().ItemTitle,
-            textAlign: isArabic ? 'right' : 'left'
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
         >
-          {t(props?.title)}
-        </TextDefault>
+          <TextDefault
+            numberOfLines={1}
+            textColor={currentTheme.fontFourthColor}
+            bolder
+            H4
+            style={{
+              ...styles().ItemTitle,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {t(props?.title)}
+          </TextDefault>
+          <TouchableOpacity style={styles().image}>
+            <Ionicons
+              name='arrow-back'
+              size={scale(24)}
+              style={styles().image1}
+              color={colors.dark}
+            />
+          </TouchableOpacity>
+        </View>
+
         <TextDefault
           Normal
-          textColor={currentTheme.secondaryText}
+          textColor={currentTheme.fontSecondColor}
           style={{
             ...styles().ItemDescription,
             textAlign: isArabic ? 'right' : 'left'
@@ -45,13 +65,20 @@ function MainRestaurantCard(props) {
         >
           {t('mostOrderedNow')}
         </TextDefault>
+        
         <FlatList
           style={styles().offerScroll}
           inverted={isArabic}
-          contentContainerStyle={{
-            flexGrow: 1,
-            ...alignment.PRlarge
-          }}
+          contentContainerStyle={
+            {
+              // flexGrow: 1,
+              // ...alignment.PRlarge,
+              // alignSelf: 'center',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              // backgroundColor: 'red'
+            }
+          }
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           horizontal={true}

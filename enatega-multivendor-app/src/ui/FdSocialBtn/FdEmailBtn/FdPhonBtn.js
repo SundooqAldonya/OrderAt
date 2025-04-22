@@ -11,7 +11,7 @@ import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../../utils/colors'
 
-const FdEmailBtn = props => {
+const FdPhonBtn = props => {
   const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -20,16 +20,21 @@ const FdEmailBtn = props => {
       activeOpacity={0.7}
       style={[styles(currentTheme).mainContainer,
         // {backgroundColor:colors?.primary, borderColor:colors?.primary}
-      
+        props.disabled && {
+          backgroundColor: '#ccc',  
+          borderColor: '#aaa',
+          opacity: 0.3
+        }
       ]}
+      disabled={props.disabled}
       onPress={props.onPress}>
       {props.loadingIcon ? (
         <Spinner backColor="rgba(0,0,0,0.1)" spinnerColor={currentTheme.main} />
       ) : (
         <>
           <MaterialIcons
-            name="mail-outline"
-            size={scale(18)}
+  name="smartphone"
+  size={scale(18)}
             color={colors?.dark}
           />
           <TextDefault
@@ -37,7 +42,7 @@ const FdEmailBtn = props => {
             textColor={colors?.dark}
             style={alignment.MLlarge}
             bold>
-        {  props.title||  t('ContinueWithEmail')}
+        {  props.title }
           </TextDefault>
         </>
       )}
@@ -45,4 +50,4 @@ const FdEmailBtn = props => {
   )
 }
 
-export default FdEmailBtn
+export default FdPhonBtn

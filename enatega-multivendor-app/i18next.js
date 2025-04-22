@@ -24,7 +24,7 @@ const getStoredLanguage = async () => {
   i18next.use(initReactI18next).init({
     compatibilityJSON: 'v3',
     lng: lng,
-    fallbackLng: 'en',
+    fallbackLng: 'ar',
     resources: languageResources
   })
 }
@@ -36,7 +36,7 @@ if (Platform.OS === 'ios') {
   i18next.use(initReactI18next).init({
     compatibilityJSON: 'v3',
     lng: i18next.locale,
-    fallbackLng: 'en',
+    fallbackLng: 'ar',
     resources: languageResources
   })
 

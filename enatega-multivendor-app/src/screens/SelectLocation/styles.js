@@ -1,20 +1,18 @@
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
-const { StyleSheet } = require('react-native')
-
+const { StyleSheet, I18nManager } = require('react-native')
 const styles = (props = null) =>
   StyleSheet.create({
     flex: {
       flex: 1
     },
     mapView: {
-      height: '50%',
-      marginBottom: scale(-20)
+      height: '50%'
+      // marginBottom: scale(-20)
     },
     container: {
       flex: 1,
-      backgroundColor: 'red',
-      height: '90%',
+       height: '30%',
       overflow: 'visible',
       justifyContent: 'space-around',
       borderTopLeftRadius: scale(30),
@@ -40,21 +38,26 @@ const styles = (props = null) =>
     heading: {
       paddingLeft: scale(20),
       ...alignment.MBlarge,
-      ...alignment.MRmedium
+      ...alignment.MRmedium,
+      textAlign: 'center'
     },
     addressHeading: {
-      marginBottom: scale(30)
+      // marginBottom: scale(30)
     },
     button: {
-      width: '100%',
-      height: 20,
+      width: '95%',
+      height: 40,
       alignItems: 'center',
+      alignSelf: 'center',
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
+      textAlign: 'auto',
       paddingLeft: scale(20),
+      paddingRight: scale(20),
       marginTop: scale(10),
-      marginBottom: scale(10)
+      marginBottom: scale(10),
+      borderRadius: 20
     },
     dropdownContainer: {
       borderWidth: 1,
@@ -75,17 +78,23 @@ const styles = (props = null) =>
       color: props != null ? props.newFontcolor : '#E5E7EB'
     },
     icon1: {
-      marginLeft: 10
+      // marginLeft: 10,
+      marginHorizontal: 10
+      // marginHorizontal: I18nManager.isRTL ? 10 : 'row-reverse',
     },
     textInput: {
-      width: '100%',
-      height: 80,
+      width: '95%',
+      height: 90, // Fixed height
+      alignSelf: 'center',
       justifyContent: 'center',
       paddingHorizontal: scale(10),
       marginTop: scale(15),
+      marginBottom: scale(15),
       borderWidth: 1,
       borderColor: props != null ? props.borderBottomColor : '#E5E7EB',
-      borderRadius: scale(8)
+      borderRadius: scale(8),
+      padding: 10,
+      marginVertical: 10
     },
     overlay: {
       position: 'absolute',
@@ -96,12 +105,14 @@ const styles = (props = null) =>
     },
     icon: {
       backgroundColor: props != null ? props.iconBackground : '#E5E7EB',
-      height: scale(36),
-      width: scale(36),
+      height: scale(30),
+      width: scale(30),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: scale(18),
+      borderRadius: scale(15),
       marginRight: scale(16)
+      //  marginHorizontal: scale(16)
+      // marginRight: I18nManager.isRTL ? scale(16) : 'row-reverse',
     },
     line: {
       borderBottomWidth: scale(1),
@@ -112,7 +123,7 @@ const styles = (props = null) =>
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 80,
+      height: 50,
       backgroundColor: props !== null ? props.main : 'transparent',
       justifyContent: 'space-evenly',
       alignItems: 'center',
@@ -124,7 +135,7 @@ const styles = (props = null) =>
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 80,
+      height: 50,
       backgroundColor: 'gray',
       justifyContent: 'space-evenly',
       alignItems: 'center',
@@ -144,6 +155,101 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       transform: [{ translateX: scale(-25) }, { translateY: scale(-25) }]
-    }
-  })
+    },
+
+
+    locationContainer: {
+       justifyContent: 'space-around',
+      paddingVertical: 15,
+      marginHorizontal: 10,
+    },
+    locationButton: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderBottomWidth: 1.5,
+      borderRadius: 4,
+    },
+    buttonText: {
+      paddingHorizontal: 5,
+      fontSize: 15,
+    },
+    icon: {
+      // marginLeft: isArabic ? 0 : 5,
+      // marginRight: isArabic ? 5 : 0,
+    },
+       markerContainer: {
+        flexDirection: 'column',
+        alignSelf: 'flex-start',
+      },
+      markerBubble: {
+        flexDirection: 'row',
+        alignSelf: 'flex-start',
+        backgroundColor: '#06C167', // لون أخضر مشابه لأوبر
+        padding: 8,
+        borderRadius: 8,
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+      markerText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+      markerArrow: {
+        backgroundColor: 'transparent',
+        borderWidth: 8,
+        borderColor: 'transparent',
+        borderTopColor: '#06C167',
+        alignSelf: 'center',
+        marginTop: -1,
+      },
+
+         deliveryMarker: {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        markerBubble: {
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 20,
+          borderWidth: 1.5,
+          borderColor: '#fff',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3,
+          elevation: 5,
+        },
+        markerText: {
+          color: '#fff',
+          fontSize: 12,
+          fontWeight: 'bold',
+          textAlign: 'center',
+        },
+        markerPin: {
+          width: 24,
+          height: 24,
+          backgroundColor: '#fff',
+          borderRadius: 12,
+          borderWidth: 1.5,
+          borderColor: '#fff',
+          transform: [{ translateY: -8 }],
+          alignItems: 'center',
+          justifyContent: 'center',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3,
+          elevation: 5,
+        },
+        pinInner: {
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+        },
+       
+   })
 export default styles

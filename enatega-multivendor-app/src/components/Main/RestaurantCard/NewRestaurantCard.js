@@ -21,6 +21,7 @@ import gql from 'graphql-tag'
 import { profile } from '../../../apollo/queries'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../Spinner/Spinner'
+import truncate from '../../../utils/helperFun'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -63,35 +64,44 @@ function NewRestaurantCard(props) {
       onPress={() => navigation.navigate('Restaurant', { ...props })}
     >
       <View style={styles().imageContainer}>
-        <Image
-          resizeMode='cover'
-          source={{ uri: props.image }}
-          style={styles().restaurantImage}
-        />
-        <View style={styles().overlayContainer}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            disabled={loadingMutation}
-            onPress={handleAddToFavorites}
-          >
-            <View style={styles(currentTheme).favouriteOverlay}>
-              {loadingMutation ? (
-                <Spinner
-                  size={'small'}
-                  backColor={'transparent'}
-                  spinnerColor={currentTheme.iconColorDark}
-                />
-              ) : (
-                <AntDesign
-                  name={heart ? 'heart' : 'hearto'}
-                  size={scale(15)}
-                  color={currentTheme.iconColor}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
+        <View
+          style={{
+            width: '100%',
+            height: '100%'
+          }}
+        >
+          <Image
+            resizeMode='cover'
+            source={{ uri: props.image }}
+            style={styles().restaurantImage}
+          />
+          {/* AddToFavorites */}
+          <View style={styles().overlayContainer}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              disabled={loadingMutation}
+              onPress={handleAddToFavorites}
+            >
+              <View style={styles(currentTheme).favouriteOverlay}>
+                {loadingMutation ? (
+                  <Spinner
+                    size={'small'}
+                    backColor={'transparent'}
+                    spinnerColor={currentTheme.iconColorDark}
+                  />
+                ) : (
+                  <AntDesign
+                    name={heart ? 'heart' : 'hearto'}
+                    size={scale(15)}
+                    color={heart ? 'red' : currentTheme.iconColor}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+
       <View
         style={{
           ...styles().descriptionContainer
@@ -109,7 +119,8 @@ function NewRestaurantCard(props) {
             textColor={currentTheme.fontThirdColor}
             bolder
           >
-            {props.name}
+            {/* {props.name} */}
+            {truncate(props.name, 15)}
           </TextDefault>
           <View
             style={{

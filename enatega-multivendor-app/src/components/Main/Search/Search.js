@@ -40,7 +40,7 @@ function Search(props) {
               <TextInput
                 style={{
                   ...styles(currentTheme).bodyStyleOne,
-                  color: currentTheme.secondaryText,
+                  color: currentTheme.fontMainColor,
                   paddingRight: 25
                 }}
                 placeholder={t(props.placeHolder)}

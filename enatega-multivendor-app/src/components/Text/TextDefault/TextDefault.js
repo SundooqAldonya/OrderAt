@@ -6,7 +6,8 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 
 function TextDefault(props) {
   const themeContext = useContext(ThemeContext)
-  const textColor = props.textColor ? props.textColor : themeContext.ThemeValue === 'Dark' ? 'white' : 'black'
+  // const textColor = props.textColor ? props.textColor : themeContext.ThemeValue === 'Dark' ? 'white' : 'black'
+  const textColor = props.textColor ? props.textColor : 'white'
   const defaultStyle = StyleSheet.flatten([
     color(textColor).color,
     textStyles.Regular,
@@ -36,7 +37,8 @@ function TextDefault(props) {
   return (
     <Text
       numberOfLines={props.numberOfLines ? props.numberOfLines : 0}
-      style={customStyles}>
+      style={customStyles}
+    >
       {props.children}
     </Text>
   )

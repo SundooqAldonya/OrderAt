@@ -10,13 +10,15 @@ const styles = (props = null) =>
     //   ...alignment.MLlarge
     // },
     // offerScroll: {
-    //   height: scale(270),
+    //   height: scale(220),
     //   width: '100%',
     //   ...alignment.MLlarge,
     // },
     offerContainer: {
-      borderRadius: 25,
-      width: scale(270),
+      borderRadius: 16,
+      width: scale(220),
+      height: '70%',
+      // height: '100%',
       ...alignment.MRsmall
     },
 
@@ -25,18 +27,18 @@ const styles = (props = null) =>
       top: 0,
       height: '100%',
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      width: scale(270)
+      width: scale(220)
     },
     favouriteOverlay: {
       position: 'absolute',
       top: 10,
       right: 10,
-      width: scale(38),
-      height: scale(28),
+      width: scale(40),
+      height: scale(30),
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 1,
-      borderRadius: scale(16),
+      borderRadius: scale(12),
       backgroundColor: props != null ? props.menuBar : 'white',
       borderWidth: 1,
       borderColor: props != null ? props.newBorderColor : '#F3F4F6'
@@ -67,9 +69,9 @@ const styles = (props = null) =>
       width: '100%',
       borderColor: props != null ? props.iconBackground : '#E5E7EB',
       borderWidth: 1,
-      borderBottomLeftRadius: 8,
-      borderBottomRightRadius: 8,
-      height: '35%',
+      borderBottomLeftRadius: 16,
+      borderBottomRightRadius: 16,
+      height: '40%',
       justifyContent: 'center'
     },
     aboutRestaurant: {
@@ -92,15 +94,21 @@ const styles = (props = null) =>
       borderTopWidth: scale(3)
     },
     restaurantImage: {
-      width: scale(270),
+      // width: scale(200),
+      width: '100%',
       height: '100%',
-      borderTopLeftRadius: scale(8),
-      borderTopRightRadius: scale(8)
+      borderTopLeftRadius: scale(16),
+      borderTopRightRadius: scale(16)
     },
     imageContainer: {
       position: 'relative',
       alignItems: 'center',
-      height: '65%'
+      height: '60%',
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderTopLeftRadius: scale(16),
+      borderTopRightRadius: scale(16),
+      borderColor: props != null ? props.iconBackground : '#E5E7EB'
     },
     restaurantTotalRating: {
       paddingLeft: scale(5)
@@ -112,7 +120,7 @@ const styles = (props = null) =>
     deliveryInfo: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: scale(18)
+      gap: scale(20)
     },
     deliveryTime: {
       flexDirection: 'row',

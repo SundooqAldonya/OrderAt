@@ -84,7 +84,7 @@ const styles = (props = null) =>
     appleBtn: {
       width: '90%',
       alignSelf: 'center',
-      height: height * 0.08
+      height: height * 0.06
     },
     orText: {
       flexDirection: 'row',
@@ -97,17 +97,17 @@ const styles = (props = null) =>
     },
     guestButton: {
       width: '90%',
-
-      alignSelf: 'center',
-      height: height * 0.08,
+       alignSelf: 'center',
+      height: height * 0.06,
       flexDirection: 'row',
       alignItems: 'center',
       ...alignment.PRlarge,
       backgroundColor: 'transparent',
       justifyContent: 'space-evenly',
-      borderRadius: scale(28),
-      borderWidth: scale(1),
-      borderColor: props !== null ? props.newIconColor : '#9B9A9A'
+      borderRadius: scale(16),
+      // borderWidth: scale(1),
+      borderColor: props !== null ? props.newIconColor : '#9B9A9A',
+      backgroundColor:'#e2e2e2'
     }
   })
 export default styles
