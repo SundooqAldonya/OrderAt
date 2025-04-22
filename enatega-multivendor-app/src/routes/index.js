@@ -66,6 +66,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
 import UserContext from '../context/User'
+import RequestDelivery from '../screens/RequestDelivery'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -91,6 +92,7 @@ function Drawer() {
   )
 }
 function NoDrawer() {
+  const { t } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const navigation = useNavigation()
@@ -259,6 +261,13 @@ function NoDrawer() {
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Favourite' component={Favourite} />
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
+      <NavigationStack.Screen
+        name='RequestDelivery'
+        options={{
+          headerTitle: t('RequestDelivery')
+        }}
+        component={RequestDelivery}
+      />
     </NavigationStack.Navigator>
   )
 }
@@ -408,7 +417,8 @@ function AppContainer() {
         environment: 'development',
         enableInExpoDevelopment: true,
         debug: true,
-        tracesSampleRate: 1.0 // to be changed to 0.2 in production
+        tracesSampleRate: 1.0,
+        enableNative: false
       })
     }
   }, [SENTRY_DSN])

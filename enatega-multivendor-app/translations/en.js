@@ -575,6 +575,14 @@ export const en = {
   Do_you_want_to_quit_the_app: 'Do you want to quit the app?',
   Request_delivery: 'Request Delivery',
   your_location: 'your location',
-  your_order_will_send_here: 'Your order will be delivered to this location'
-
+  your_order_will_send_here: 'Your order will be delivered to this location',
+  requestDeliveryTitle: 'Request Delivery',
+  RequestDelivery: 'Request Delivery',
+  pick_up_location: 'Pick up location',
+  drop_off_location: 'Drop off location',
+  item_description: 'Item description',
+  notes_for_mandoob: 'Notes for mandoob',
+  vehicle_type: 'Vehicle type',
+  priority: 'Priority',
+  'is_urgent?': 'Is Urgent?'
 }

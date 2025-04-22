@@ -570,5 +570,14 @@ export const ar = {
   Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟',
   Request_delivery: 'طلب مندوب',
   your_location: 'موقعك',
-  your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان'
+  your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان',
+  requestDeliveryTitle: 'أطلب مندوب',
+  RequestDelivery: 'أطلب مندوب',
+  pick_up_location: 'موقع الاستلام',
+  drop_off_location: 'موقع التوصيل',
+  item_description: 'وصف المنتج',
+  notes_for_mandoob: 'ملاحظات للمندوب',
+  vehicle_type: 'نوع المركبة',
+  priority: 'الأولوية',
+  is_urgent: 'مستعجل'
 }

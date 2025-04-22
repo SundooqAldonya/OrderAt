@@ -1552,7 +1552,110 @@ const typeDefs = gql`
     city: String!
   }
 
+  enum RequestStatus {
+    pending
+    accepted
+    on_the_way
+    picked_up
+    delivered
+    cancelled
+    failed
+  }
+
+  enum RequestChannel {
+    customer_app
+    business_app
+    web_portal
+    api
+    whatsapp_bot
+    manual_entry
+  }
+
+  enum PaymentMethod {
+    cash
+    card
+    wallet
+  }
+
+  enum PaymentStatus {
+    pending
+    paid
+    failed
+  }
+
+  enum PriorityLevel {
+    standard
+    express
+    bulk
+  }
+
+  enum CancellationReason {
+    customer_cancelled
+    mandoob_cancelled
+    timeout
+    admin_cancelled
+    other
+  }
+
+  enum CancelledBy {
+    customer
+    mandoob
+    admin
+  }
+
+  type DeliveryRequest {
+    id: ID!
+    customerId: ID!
+    pickupLat: Float!
+    pickupLng: Float!
+    pickupAddressText: String!
+    dropoffLat: Float!
+    dropoffLng: Float!
+    dropoffAddressText: String!
+    itemDescription: String
+    notes: String
+    mandoobId: ID
+    fare: Float!
+    estimatedTime: Int!
+    distanceKm: Float!
+    status: RequestStatus!
+    requestChannel: RequestChannel!
+    scheduledAt: String
+    paymentMethod: PaymentMethod!
+    paymentStatus: PaymentStatus!
+    transactionId: String
+    proofPhotoUrlPick: String
+    proofPhotoUrlDeliver: String
+    recipientSignature: String
+    recipientName: String
+    recipientPhone: String
+    priorityLevel: PriorityLevel!
+    isUrgent: Boolean!
+    attemptCount: Int!
+    cancellationReason: CancellationReason
+    cancelledBy: CancelledBy
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  input CreateDeliveryRequestInput {
+    pickupLat: Float!
+    pickupLng: Float!
+    pickupAddressText: String!
+    dropoffLat: Float!
+    dropoffLng: Float!
+    dropoffAddressText: String!
+    itemDescription: String
+    notes: String
+    requestChannel: RequestChannel!
+    paymentMethod: PaymentMethod!
+    priorityLevel: PriorityLevel
+    isUrgent: Boolean
+    scheduledAt: String
+  }
+
   type Mutation {
+    createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     removeDeliveryZone(id: String!): Message

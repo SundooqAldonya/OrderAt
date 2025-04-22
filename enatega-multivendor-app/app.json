@@ -7,7 +7,7 @@
     "slug": "enatega-customer-app-latest",
     "owner": "mahmoudattia",
     "androidStatusBar": {
-      "backgroundColor": "#000"
+      "backgroundColor": "#000000"
     },
     "platforms": ["ios", "android"],
     "orientation": "portrait",
@@ -15,7 +15,7 @@
     "splash": {
       "image": "./assets/logo.jpg",
       "resizeMode": "cover",
-      "backgroundColor": "#fff"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
@@ -40,7 +40,6 @@
         ]
       },
       "newArchEnabled": true
-
     },
     "notification": {
       "iosDisplayInForeground": true,
@@ -66,7 +65,6 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "newArchEnabled": true
-
     },
     "plugins": [
       [

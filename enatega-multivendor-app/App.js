@@ -29,7 +29,7 @@ import { LocationProvider } from './src/context/Location'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import 'expo-dev-client'
 import useEnvVars, { isProduction } from './environment'
-import { requestTrackingPermissions } from './src/utils/useAppTrackingTrasparency'
+// import { requestTrackingPermissions } from './src/utils/useAppTrackingTrasparency'
 import { OrdersProvider } from './src/context/Orders'
 import { MessageComponent } from './src/components/FlashMessage/MessageComponent'
 import * as Updates from 'expo-updates'
@@ -204,9 +204,11 @@ export default function App() {
     saveLocation()
   }, [location])
 
-  useEffect(() => {
-    requestTrackingPermissions()
-  }, [])
+  // useEffect(() => {
+  //   if (Platform.OS === 'ios') {
+  //     requestTrackingPermissions()
+  //   }
+  // }, [])
 
   const client = setupApolloClient()
   const shouldBeRTL = false
