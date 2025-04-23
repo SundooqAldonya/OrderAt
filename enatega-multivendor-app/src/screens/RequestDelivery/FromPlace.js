@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useMemo, useRef, useState } from 'react'
 import {
   View,
   Button,
@@ -23,7 +23,7 @@ const mapHeight = 400
 export default function FromPlace() {
   const { location } = useContext(LocationContext)
   const { i18n, t } = useTranslation()
-  const mapRef = useRef()
+  // const mapRef = useRef()
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const [place, setPlace] = useState({ lat: 0, lng: 0 })
@@ -63,12 +63,15 @@ export default function FromPlace() {
     }
   }
 
-  const handleRegionChangeComplete = debounce(updateRegion, 800)
+  const handleRegionChangeComplete = useMemo(
+    () => debounce(updateRegion, 800),
+    [updateRegion]
+  )
 
   return (
     <View style={styles.container}>
       <MapView
-        ref={mapRef}
+        // ref={mapRef}
         style={styles.map}
         region={region}
         onRegionChangeComplete={handleRegionChangeComplete}
@@ -106,11 +109,16 @@ export default function FromPlace() {
               container: { flex: 0 },
               textInput: { height: 44, fontSize: 16 }
             }}
+            // textInputProps={{
+            //   value: address
+            //   // onChangeText: (text) => {
+            //   //   setAddress(text)
+            //   // }
+            // }}
             textInputProps={{
-              value: address,
-              onChangeText: (text) => {
-                setAddress(text)
-              }
+              defaultValue: address, // uncontrolled but initialised
+              value: address
+              // onChangeText: (text) => setAddress(text)
             }}
           />
         </View>
