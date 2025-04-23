@@ -313,7 +313,15 @@ export default function AddNewAddressUser(props) {
       longitude: coords.longitude
     }))
   }
-
+  // when press map
+  const handleMapPress = (e) => {
+    const newCoords = e.nativeEvent.coordinate
+    setCoordinates({
+      ...coordinates,
+      latitude: newCoords.latitude,
+      longitude: newCoords.longitude
+    })
+  }
   const onItemPress = (city) => {
     setModalVisible(false)
     navigation.navigate('AddNewAddress', {
@@ -345,32 +353,18 @@ export default function AddNewAddressUser(props) {
         >
           {coordinates.latitude ? (
             <Fragment>
-              {/* <MapView
-                ref={mapRef}
-                initialRegion={coordinates}
-                // region={coordinates}
-                style={{ flex: 1 }}
-                provider={PROVIDER_GOOGLE}
-                showsTraffic={false}
-                zoomEnabled
-                maxZoomLevel={50}
-                // customMapStyle={
-                //   themeContext.ThemeValue === 'Dark' ? mapStyle : customMapStyle
-                // }
-                onRegionChangeComplete={onRegionChangeComplete}
-                bounce
-              /> */}
               <MapView
                 ref={mapRef}
                 initialRegion={coordinates}
                 style={{ flex: 1 }}
                 provider={PROVIDER_GOOGLE}
                 showsTraffic={false}
-                zoomEnabled
+                zoomEnabled={true}
+                scrollEnabled={true}
+                onPress={handleMapPress}
+                // onRegionChangeComplete={onRegionChangeComplete}
                 maxZoomLevel={50}
-                onRegionChangeComplete={onRegionChangeComplete}
               >
-                {/* Marker مع رسالة مخصصة */}
                 <Marker
                   style={{
                     borderRadius: 16,
@@ -378,7 +372,6 @@ export default function AddNewAddressUser(props) {
                   }}
                   coordinate={coordinates}
                   title={t('your_order_will_send_here')}
-                  // description={t('your_order_will_send_here')}
                 >
                   <View style={styles().deliveryMarker}>
                     <View
@@ -403,14 +396,6 @@ export default function AddNewAddressUser(props) {
                   </View>
                 </Marker>
               </MapView>
-              {/* <View style={styles().mainContainer}>
-                <CustomMarker
-                  width={40}
-                  height={40}
-                  transform={[{ translateY: -20 }]}
-                  translateY={-20}
-                />
-              </View> */}
             </Fragment>
           ) : null}
         </View>
@@ -522,7 +507,6 @@ export default function AddNewAddressUser(props) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: colors.secondaryGreen
-
                 }}
                 onPress={handleCurrentLocation}
               >
