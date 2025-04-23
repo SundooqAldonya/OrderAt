@@ -125,7 +125,7 @@ function Profile(props) {
       headerRight: null,
       headerTitleAlign: 'center',
       headerTitleStyle: {
-        color: colors.background,
+        color: colors.white,
         fontWeight: 'bold'
       },
       headerTitleContainerStyle: {
@@ -547,7 +547,7 @@ function Profile(props) {
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: colors.grey,
+                  backgroundColor: colors.lightGray,
                   alignSelf: 'center',
                   // elevation: 1,
                   borderWidth: 1,
@@ -613,7 +613,7 @@ function Profile(props) {
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: colors.grey,
+                  backgroundColor: colors.secondaryGreen,
                   alignSelf: 'center',
                   // elevation: 1,
                   borderWidth: 1,
@@ -662,8 +662,7 @@ function Profile(props) {
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
                   // backgroundColor: 'transparent',
-                  backgroundColor: colors.grey,
-
+                  backgroundColor: colors.lightGray,
                   alignSelf: 'center',
                   // elevation: 1,
                   borderWidth: 1,
@@ -824,7 +823,7 @@ function Profile(props) {
                 style={{
                   borderRadius: scale(8),
                   width: '92%',
-                  backgroundColor: colors.background,
+                  backgroundColor: colors.white,
                   alignSelf: 'center',
                   borderWidth: 1,
                   borderColor: currentTheme.deleteAccountBtn,

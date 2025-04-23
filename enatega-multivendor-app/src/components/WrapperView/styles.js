@@ -14,7 +14,7 @@ const useStyle = () => {
       flex: 1,
     },
     wrapperView: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.white,
       paddingTop: headerHeight,
       paddingBottom: inset.bottom,
     },

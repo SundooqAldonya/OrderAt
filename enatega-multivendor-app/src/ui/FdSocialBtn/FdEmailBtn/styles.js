@@ -17,7 +17,7 @@ const styles = (props = null) =>
       borderRadius: scale(16),
       // borderWidth: scale(1),
       borderColor: props !== null ? props.newIconColor : '#9B9A9A',
-      backgroundColor:"#e2e2e2",
+      backgroundColor:"red",
       ...alignment.PLlarge
     },
     marginLeft5: {

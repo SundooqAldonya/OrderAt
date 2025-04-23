@@ -21,7 +21,8 @@ const styles = (props = null) =>
     // borderWidth: scale(1),
     borderColor: props !== null ? props.newIconColor : '#9B9A9A',
     ...alignment.PLlarge,
-    backgroundColor:colors.grey
+    backgroundColor:colors.lightGray,
+
   },
 
   marginLeft10: {

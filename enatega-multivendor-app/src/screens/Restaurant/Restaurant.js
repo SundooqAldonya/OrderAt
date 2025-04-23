@@ -635,8 +635,8 @@ function Restaurant(props) {
                           alignItems: 'center',
                           padding: 10,
                           marginBottom: 10,
-                          borderColor: colors.grey,
-                          backgroundColor: colors.grey,
+                          borderColor: colors.secondaryGreen,
+                          backgroundColor: colors.secondaryGreen,
                           marginHorizontal: 10,
                           borderWidth: 1,
                           borderRadius: 8
@@ -683,7 +683,7 @@ function Restaurant(props) {
                           style={[
                             styles(currentTheme).flex,
                             {
-                              backgroundColor: colors.grey
+                              backgroundColor: colors.lightGray
                             }
                           ]}
                         >
@@ -894,8 +894,8 @@ function Restaurant(props) {
                             alignItems: 'center',
                             padding: 10,
                             marginBottom: 10,
-                            borderColor: colors.grey,
-                            backgroundColor: colors.grey,
+                            borderColor: colors.secondaryGreen,
+                            backgroundColor: colors.secondaryGreen,
                             marginHorizontal: 10,
                             borderWidth: 1,
                             borderRadius: 8

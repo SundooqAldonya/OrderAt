@@ -53,7 +53,7 @@ const styles = (props = null) =>
       height: scale(200)
     },
     image: {
-      backgroundColor: colors.grey,
+      backgroundColor: colors.lightGray,
       borderRadius: 10,
       marginHorizontal: 5,
       paddingHorizontal: 5

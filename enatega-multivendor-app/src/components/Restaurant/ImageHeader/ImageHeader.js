@@ -223,7 +223,7 @@ function ImageTextCenterHeader(props, ref) {
                 >
                   <Entypo
                     name='cross'
-                    color={colors.background}
+                    color={colors.white}
                     size={scale(22)}
                   />
                 </AnimatedBorderless>
@@ -249,7 +249,7 @@ function ImageTextCenterHeader(props, ref) {
                   /> */}
                   <Ionicons
                     name='arrow-back'
-                    color={colors.background}
+                    color={colors.white}
                     size={scale(22)}
                   />
                 </AnimatedBorderless>
@@ -302,7 +302,7 @@ function ImageTextCenterHeader(props, ref) {
                         <AntDesign
                           name={heart ? 'heart' : 'hearto'}
                           size={scale(15)}
-                          color={heart ? 'red' : colors.background}
+                          color={heart ? 'red' : colors.white}
                         />
                       )}
                     </View>
@@ -320,7 +320,7 @@ function ImageTextCenterHeader(props, ref) {
                     <SimpleLineIcons
                       name='info'
                       size={scale(17)}
-                      color={colors.background}
+                      color={colors.white}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -333,7 +333,7 @@ function ImageTextCenterHeader(props, ref) {
                       style={{
                         fontSize: props.iconSize
                       }}
-                      color={colors.background}
+                      color={colors.white}
                     />
                   </TouchableOpacity>
                 </>

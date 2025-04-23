@@ -521,7 +521,8 @@ export default function AddNewAddressUser(props) {
                   ...styles(currentTheme).button,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: colors.grey
+                  backgroundColor: colors.secondaryGreen
+
                 }}
                 onPress={handleCurrentLocation}
               >

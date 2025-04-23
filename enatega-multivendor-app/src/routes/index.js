@@ -315,7 +315,7 @@ const BottomTabs = () => {
           )
         },
         tabBarStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: colors.white,
           height: 70,
           //   paddingBottom: 10,
           //  position: 'absolute',

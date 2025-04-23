@@ -21,7 +21,7 @@ function DrawerProfile(props) {
     <View
       style={[
         styles(currentTheme).mainContainer,
-        { backgroundColor: colors.background, borderWidth: 0 }
+        { backgroundColor: colors.white, borderWidth: 0 }
       ]}
     >
       <View style={styles().loggedInContainer}>

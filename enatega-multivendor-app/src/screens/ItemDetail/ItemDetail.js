@@ -404,7 +404,7 @@ function ItemDetail(props) {
               >
                 <Ionicons
                   name='arrow-back'
-                  color={colors.background}
+                  color={colors.white}
                   size={scale(22)}
                 />
               </TouchableOpacity>

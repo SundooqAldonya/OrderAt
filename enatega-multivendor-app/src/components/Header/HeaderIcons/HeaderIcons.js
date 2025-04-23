@@ -33,7 +33,7 @@ function BackButton(props) {
         name='arrow-back'
         size={scale(18)}
         style={styles().leftIconPadding}
-        color={colors.background}
+        color={colors.white}
       />
     )
   } else if (props.icon === 'menu') {
@@ -41,7 +41,7 @@ function BackButton(props) {
       <SimpleLineIcons
         name='menu'
         size={scale(20)}
-        color={colors.background}
+        color={colors.white}
         style={styles().leftIconPadding}
       />
     )
@@ -58,12 +58,12 @@ function BackButton(props) {
       <MaterialIcons
         name='my-location'
         size={scale(16)}
-        color={colors?.background}
+        color={colors?.white}
       />
     )
   } else if (props.icon === 'fav') {
     return (
-      <AntDesign name='hearto' size={scale(20)} color={colors?.dark} />
+      <AntDesign name='hearto' size={scale(20)} color={colors?.white} />
     )
   } else {
     return (
@@ -71,7 +71,7 @@ function BackButton(props) {
         name='close'
         size={scale(16)}
         style={styles().leftIconPadding}
-        color={colors?.background}
+        color={colors?.white}
       />
     )
   }
@@ -173,7 +173,7 @@ function RightButton(props) {
         <SimpleLineIcons
           name='handbag'
           size={scale(20)}
-          color={colors.dark}
+          color={colors.white}
         />
         <View
           style={[
@@ -183,7 +183,7 @@ function RightButton(props) {
           ]}
         >
           <TextDefault
-            textColor={colors.background}
+            textColor={colors.white}
             style={{ fontSize: scale(10) }}
             center
             bolder
@@ -276,7 +276,7 @@ function RightButton(props) {
   //       labelVisible={false}
   //       backImage={() => (
   //         <View style={[styles().rightContainer]}>
-  //           {BackButton({ iconColor: colors.background, icon: 'target' })}
+  //           {BackButton({ iconColor: colors.white, icon: 'target' })}
   //         </View>
   //       )}
   //       onPress={props.onPressRight}
@@ -301,7 +301,7 @@ function DarkBackButton(props) {
         name='close-circle-outline'
         size={20}
         style={{ ...styles().darkBackArrow, color: '#000' }}
-        color={colors.background}
+        color={colors.white}
       />
     </View>
   )
@@ -315,7 +315,7 @@ function HelpButton(props) {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: colors.background,
+        backgroundColor: colors.white,
         borderRadius: scale(10),
         margin: scale(5)
       }}
