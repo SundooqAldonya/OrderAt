@@ -97,6 +97,8 @@ function Main(props) {
   )
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
   const [selectedType, setSelectedType] = useState('restaurant')
+console.log('orderData',orderData);
+console.log('orderError',orderError);
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError

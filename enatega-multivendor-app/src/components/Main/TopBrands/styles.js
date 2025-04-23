@@ -25,15 +25,15 @@ const styles = (props = null) =>
       width: scale(120),
       marginTop: scale(7),
       marginBottom: scale(10),
-      ...alignment.MRmedium,
-     //  padding: 8
+      ...alignment.MRmedium
+      //  padding: 8
     },
     brandImgContainer: {
       backgroundColor: '#F3F4F6',
       borderWidth: 1,
       borderColor: '#E5E7EB',
-      borderRadius: 8,
-       // padding:scale(8),
+      borderRadius: 8
+      // padding:scale(8),
     },
     brandName: {
       marginTop: scale(5),
@@ -58,16 +58,26 @@ const styles = (props = null) =>
     height80: {
       height: scale(80)
     },
-        image: {
-          backgroundColor: colors.lightGray,
-          borderRadius: 10,
-          marginHorizontal: 5,
-          paddingHorizontal: 5
-        },
-        image1: {
-          width: 30,
-          height: 30
-        }
+    image: {
+      backgroundColor: colors.lightGray,
+      borderRadius: 10,
+      marginHorizontal: 5,
+      paddingHorizontal: 5
+    },
+    image1: {
+      width: 30,
+      height: 30
+    },
+    noDataTextWrapper: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    noDataText: {
+      fontSize: 18,
+      color: colors.dark,
+      marginTop: 10
+    }
   })
 
 export default styles

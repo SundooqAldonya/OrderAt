@@ -12,7 +12,7 @@ import MainLoadingUI from '../LoadingUI/MainLoadingUI'
 import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
-
+import Icon from 'react-native-vector-icons/MaterialIcons'
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
@@ -25,70 +25,87 @@ function MainRestaurantCard(props) {
 
   return (
     <View style={styles().orderAgainSec}>
-      <View>
-        <View
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <TextDefault
-            numberOfLines={1}
-            textColor={currentTheme.fontFourthColor}
-            bolder
-            H4
-            style={{
-              ...styles().ItemTitle,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            {t(props?.title)}
-          </TextDefault>
-          <TouchableOpacity style={styles().image}>
-            <Ionicons
-              name='arrow-back'
-              size={scale(24)}
-              style={styles().image1}
-              color={colors.dark}
-            />
-          </TouchableOpacity>
-        </View>
+      {props.orders && props.orders.length > 0 ? (
+        <>
+          <View>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.fontFourthColor}
+                bolder
+                H4
+                style={{
+                  ...styles().ItemTitle,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t(props?.title)}
+              </TextDefault>
+              <TouchableOpacity style={styles().image}>
+                <Ionicons
+                  name='arrow-back'
+                  size={scale(24)}
+                  style={styles().image1}
+                  color={colors.dark}
+                />
+              </TouchableOpacity>
+            </View>
 
-        <TextDefault
-          Normal
-          textColor={currentTheme.fontSecondColor}
-          style={{
-            ...styles().ItemDescription,
-            textAlign: isArabic ? 'right' : 'left'
-          }}
-        >
-          {t('mostOrderedNow')}
-        </TextDefault>
-        
-        <FlatList
-          style={styles().offerScroll}
-          inverted={isArabic}
-          contentContainerStyle={
-            {
-              // flexGrow: 1,
-              // ...alignment.PRlarge,
-              // alignSelf: 'center',
-              // alignItems: 'center',
-              // justifyContent: 'center',
-              // backgroundColor: 'red'
-            }
-          }
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          horizontal={true}
-          data={props?.orders}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => {
-            return <NewRestaurantCard {...item} />
-          }}
-        />
-      </View>
+            <TextDefault
+              Normal
+              textColor={currentTheme.fontSecondColor}
+              style={{
+                ...styles().ItemDescription,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {t('mostOrderedNow')}
+            </TextDefault>
+
+            <FlatList
+              style={styles().offerScroll}
+              inverted={isArabic}
+              contentContainerStyle={
+                {
+                  // flexGrow: 1,
+                  // ...alignment.PRlarge,
+                  // alignSelf: 'center',
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                  // backgroundColor: 'red'
+                }
+              }
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              data={props?.orders}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => {
+                return <NewRestaurantCard {...item} />
+              }}
+            />
+          </View>
+        </>
+      ) : (
+        <View style={styles().noDataTextWrapper}>
+          <Icon name='warning' size={30} color={colors.secondaryOrange} />
+          <Text style={styles().noDataText}>{t('no_data')}</Text>
+          <Text
+            style={[
+              styles().noDataText,
+              { fontSize: 14, color: colors.secondaryOrange }
+            ]}
+          >
+            {t('try_change_location')}
+          </Text>
+        </View>
+      )}
     </View>
   )
 }

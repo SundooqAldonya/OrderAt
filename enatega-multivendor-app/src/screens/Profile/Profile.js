@@ -535,8 +535,7 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10,
-                    marginTop: 10,
+                    marginTop: 10
                   }
                 ]}
               >
@@ -566,7 +565,11 @@ function Profile(props) {
                   >
                     {t('email')}
                   </TextDefault> */}
-                  <TextDefault>
+                  <TextDefault
+                    style={{
+                      color: colors.dark
+                    }}
+                  >
                     {profile?.email ? profile?.email : 'N/A'}
                   </TextDefault>
                 </View>
@@ -613,7 +616,8 @@ function Profile(props) {
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
-                  backgroundColor: colors.secondaryGreen,
+                  // backgroundColor: colors.secondaryOrange,
+                  backgroundColor: colors.lightGray,
                   alignSelf: 'center',
                   // elevation: 1,
                   borderWidth: 1,
