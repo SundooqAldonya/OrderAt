@@ -585,5 +585,9 @@ export const en = {
   vehicle_type: 'Vehicle type',
   priority: 'Priority',
   'is_urgent?': 'Is Urgent?',
-  item_description_notes: 'Items description and notes to the mandoob'
+  item_description_notes: 'Items description and notes to the mandoob',
+  FromPlace: 'From place',
+  next_drop_off: 'Next: Drop-off location',
+  ToPlace: 'To place',
+  clear_search: 'Clear search'
 }

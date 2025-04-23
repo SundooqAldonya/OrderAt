@@ -67,6 +67,8 @@ import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
 import UserContext from '../context/User'
 import RequestDelivery from '../screens/RequestDelivery'
+import FromPlace from '../screens/RequestDelivery/FromPlace'
+import ToPlace from '../screens/RequestDelivery/ToPlace'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -267,6 +269,20 @@ function NoDrawer() {
           headerTitle: t('RequestDelivery')
         }}
         component={RequestDelivery}
+      />
+      <NavigationStack.Screen
+        name='FromPlace'
+        options={{
+          headerTitle: t('FromPlace')
+        }}
+        component={FromPlace}
+      />
+      <NavigationStack.Screen
+        name='ToPlace'
+        options={{
+          headerTitle: t('ToPlace')
+        }}
+        component={ToPlace}
       />
     </NavigationStack.Navigator>
   )

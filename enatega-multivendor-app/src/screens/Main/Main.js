@@ -449,7 +449,10 @@ function Main(props) {
                     showsHorizontalScrollIndicator={false}
                   >
                     {/* the first section */}
-                    <View style={styles().mainItemsContainer}>
+                    <ScrollView
+                      contentContainerStyle={styles().mainItemsContainer}
+                      horizontal
+                    >
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() =>
@@ -469,6 +472,38 @@ function Main(props) {
                             }}
                           >
                             {t('foodDelivery')}
+                          </TextDefault>
+                          <TextDefault
+                            Normal
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemDescription,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('OrderfoodLove')}
+                          </TextDefault>
+                        </View>
+                        <Image
+                          source={require('../../assets/images/ItemsList/menu-new.png')}
+                          style={styles().popularMenuImg}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles().mainItem}
+                        onPress={() => navigation.navigate('FromPlace')}
+                      >
+                        <View>
+                          <TextDefault
+                            H4
+                            bolder
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemName,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('RequestDelivery')}
                           </TextDefault>
                           <TextDefault
                             Normal
@@ -522,7 +557,7 @@ function Main(props) {
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>
-                    </View>
+                    </ScrollView>
 
                     {/* the second section */}
 

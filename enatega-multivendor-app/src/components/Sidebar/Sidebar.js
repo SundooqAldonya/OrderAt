@@ -46,7 +46,7 @@ const datas = [
   {
     title: 'requestDeliveryTitle',
     icon: 'location-pin',
-    navigateTo: 'RequestDelivery',
+    navigateTo: 'FromPlace',
     isAuth: true
   },
   {

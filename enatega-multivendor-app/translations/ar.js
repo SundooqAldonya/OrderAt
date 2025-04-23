@@ -580,5 +580,9 @@ export const ar = {
   vehicle_type: 'نوع المركبة',
   priority: 'الأولوية',
   is_urgent: 'مستعجل',
-  item_description_notes: 'وصف المنتجات والملاحظات للمندوب'
+  item_description_notes: 'وصف المنتجات والملاحظات للمندوب',
+  FromPlace: 'أختر المكان من',
+  next_drop_off: 'التالي: موقع التسليم',
+  ToPlace: 'المكان المراد التوجه إليه',
+  clear_search: 'مسح البحث'
 }

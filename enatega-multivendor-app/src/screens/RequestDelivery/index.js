@@ -16,15 +16,18 @@ import MapView, { Marker } from 'react-native-maps'
 import { LocationContext } from '../../context/Location'
 import { Controller, useForm } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker'
+import useGeocoding from '../../ui/hooks/useGeocoding'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const { GOOGLE_MAPS_KEY } = useEnvVars()
+  const [pickupValue, setPickupValue] = useState('')
   const [pickupCoords, setPickupCoords] = useState(null)
   const [dropOffCoords, setDropOffCoords] = useState(null)
   const { location } = useContext(LocationContext)
   const { control, handleSubmit, setValue, watch } = useForm()
+  const { getAddress } = useGeocoding()
 
   console.log({ pickupCoords, dropOffCoords, location })
 
@@ -153,7 +156,7 @@ const RequestDelivery = () => {
         /> */}
 
         {/* Vehicle Type */}
-        <Text style={styles.label}>{t('vehicle_type')}</Text>
+        {/* <Text style={styles.label}>{t('vehicle_type')}</Text>
         <Controller
           control={control}
           name='vehicle_type'
@@ -169,10 +172,10 @@ const RequestDelivery = () => {
               <Picker.Item label='Van' value='van' />
             </Picker>
           )}
-        />
+        /> */}
 
         {/* Priority */}
-        <Text style={styles.label}>{t('priority')}</Text>
+        {/* <Text style={styles.label}>{t('priority')}</Text>
         <Controller
           control={control}
           name='priority_level'
@@ -188,7 +191,7 @@ const RequestDelivery = () => {
               <Picker.Item label='Bulk' value='bulk' />
             </Picker>
           )}
-        />
+        /> */}
 
         {/* Urgency */}
         <View style={styles.switchRow}>
