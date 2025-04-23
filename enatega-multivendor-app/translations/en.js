@@ -584,5 +584,6 @@ export const en = {
   notes_for_mandoob: 'Notes for mandoob',
   vehicle_type: 'Vehicle type',
   priority: 'Priority',
-  'is_urgent?': 'Is Urgent?'
+  'is_urgent?': 'Is Urgent?',
+  item_description_notes: 'Items description and notes to the mandoob'
 }

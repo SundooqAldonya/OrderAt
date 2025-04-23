@@ -49,10 +49,10 @@ const RequestDelivery = () => {
   }
 
   return (
-    <ScrollView style={styles.container} keyboardShouldPersistTaps='handled'>
+    <ScrollView keyboardShouldPersistTaps='handled'>
       <View>
         <MapView
-          style={{ height: 200 }}
+          style={{ height: 300 }}
           region={{
             latitude: pickupCoords?.latitude || location.latitude,
             longitude: pickupCoords?.longitude || location.longitude,
@@ -66,139 +66,153 @@ const RequestDelivery = () => {
           )}
         </MapView>
       </View>
-      <View style={styles.inputContainer}>
-        {/* <TextDefault
+      <View style={styles.wrapper}>
+        <View style={styles.inputContainer}>
+          <TextDefault
+            bolder
+            style={{
+              ...styles.title,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {t('pick_up_location')}
+          </TextDefault>
+          <GooglePlacesAutocomplete
+            placeholder={t('pick_up_location')}
+            onPress={(data, details) => {
+              const { lat, lng } = details.geometry.location
+              setPickupCoords({ latitude: lat, longitude: lng })
+            }}
+            fetchDetails
+            query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
+            styles={{
+              container: {
+                flex: 0,
+                marginTop: 10,
+                width: '100%',
+                marginHorizontal: 'auto'
+              }, // IMPORTANT: prevents it from taking full screen height
+              listView: { backgroundColor: 'white' }
+            }}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextDefault
+            bolder
+            style={{
+              ...styles.title,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {t('drop_off_location')}
+          </TextDefault>
+          <GooglePlacesAutocomplete
+            placeholder={t('drop_off_location')}
+            onPress={(data, details) => {
+              const { lat, lng } = details.geometry.location
+              setDropOffCoords({ latitude: lat, longitude: lng })
+            }}
+            fetchDetails
+            query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
+            styles={{
+              container: {
+                flex: 0,
+                marginTop: 10,
+                width: '100%',
+                marginHorizontal: 'auto'
+              }, // IMPORTANT: prevents it from taking full screen height
+              listView: { backgroundColor: 'white' }
+            }}
+          />
+        </View>
+
+        {/* Item Description */}
+        <TextDefault
           bolder
           style={{
             ...styles.title,
             textAlign: isArabic ? 'right' : 'left'
           }}
         >
-          {t('pick_up_location')}
-        </TextDefault> */}
-        <GooglePlacesAutocomplete
-          placeholder={t('pick_up_location')}
-          onPress={(data, details) => {
-            const { lat, lng } = details.geometry.location
-            setPickupCoords({ latitude: lat, longitude: lng })
-          }}
-          fetchDetails
-          query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
-          styles={{
-            container: {
-              flex: 0,
-              marginTop: 10,
-              width: '100%',
-              marginHorizontal: 'auto'
-            }, // IMPORTANT: prevents it from taking full screen height
-            listView: { backgroundColor: 'white' }
-          }}
+          {t('item_description')}
+        </TextDefault>
+        <TextInput
+          placeholder={t('item_description_notes')}
+          style={styles.textArea}
+          onChangeText={(text) => setValue('item_description', text)}
+          multiline
+          numberOfLines={4}
+          textAlignVertical='top'
         />
-      </View>
-      <View style={styles.inputContainer}>
-        {/* <TextDefault
-          bolder
-          style={{
-            ...styles.title,
-            textAlign: isArabic ? 'right' : 'left'
-          }}
-        >
-          {t('drop_off_location')}
-        </TextDefault> */}
-        <GooglePlacesAutocomplete
-          placeholder={t('drop_off_location')}
-          onPress={(data, details) => {
-            const { lat, lng } = details.geometry.location
-            setDropOffCoords({ latitude: lat, longitude: lng })
-          }}
-          fetchDetails
-          query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
-          styles={{
-            container: {
-              flex: 0,
-              marginTop: 10,
-              width: '100%',
-              marginHorizontal: 'auto'
-            }, // IMPORTANT: prevents it from taking full screen height
-            listView: { backgroundColor: 'white' }
-          }}
-        />
-      </View>
 
-      {/* Item Description */}
-      <TextInput
-        placeholder={t('item_description')}
-        style={styles.input}
-        onChangeText={(text) => setValue('item_description', text)}
-      />
+        {/* Notes */}
+        {/* <TextInput
+          placeholder={t('notes_for_mandoob')}
+          style={styles.input}
+          onChangeText={(text) => setValue('notes', text)}
+        /> */}
 
-      {/* Notes */}
-      <TextInput
-        placeholder={t('notes_for_mandoob')}
-        style={styles.input}
-        onChangeText={(text) => setValue('notes', text)}
-      />
-
-      {/* Vehicle Type */}
-      <Text style={styles.label}>{t('vehicle_type')}</Text>
-      <Controller
-        control={control}
-        name='vehicle_type'
-        defaultValue='motorcycle'
-        render={({ field: { onChange, value } }) => (
-          <Picker
-            selectedValue={value}
-            onValueChange={onChange}
-            style={styles.picker}
-          >
-            <Picker.Item label='Motorcycle' value='motorcycle' />
-            <Picker.Item label='Car' value='car' />
-            <Picker.Item label='Van' value='van' />
-          </Picker>
-        )}
-      />
-
-      {/* Priority */}
-      <Text style={styles.label}>{t('priority')}</Text>
-      <Controller
-        control={control}
-        name='priority_level'
-        defaultValue='standard'
-        render={({ field: { onChange, value } }) => (
-          <Picker
-            selectedValue={value}
-            onValueChange={onChange}
-            style={styles.picker}
-          >
-            <Picker.Item label='Standard' value='standard' />
-            <Picker.Item label='Express' value='express' />
-            <Picker.Item label='Bulk' value='bulk' />
-          </Picker>
-        )}
-      />
-
-      {/* Urgency */}
-      <View style={styles.switchRow}>
-        <Text style={styles.label}>{t('is_urgent')}</Text>
+        {/* Vehicle Type */}
+        <Text style={styles.label}>{t('vehicle_type')}</Text>
         <Controller
           control={control}
-          name='is_urgent'
-          defaultValue={false}
+          name='vehicle_type'
+          defaultValue='motorcycle'
           render={({ field: { onChange, value } }) => (
-            <Switch value={value} onValueChange={onChange} />
+            <Picker
+              selectedValue={value}
+              onValueChange={onChange}
+              style={styles.picker}
+            >
+              <Picker.Item label='Motorcycle' value='motorcycle' />
+              <Picker.Item label='Car' value='car' />
+              <Picker.Item label='Van' value='van' />
+            </Picker>
           )}
         />
-      </View>
 
-      {/* Fare Preview */}
-      <View style={styles.fareBox}>
-        <Text>Estimated Fare: 15.00 EGP</Text>
-        <Text>ETA: 25 mins</Text>
-      </View>
+        {/* Priority */}
+        <Text style={styles.label}>{t('priority')}</Text>
+        <Controller
+          control={control}
+          name='priority_level'
+          defaultValue='standard'
+          render={({ field: { onChange, value } }) => (
+            <Picker
+              selectedValue={value}
+              onValueChange={onChange}
+              style={styles.picker}
+            >
+              <Picker.Item label='Standard' value='standard' />
+              <Picker.Item label='Express' value='express' />
+              <Picker.Item label='Bulk' value='bulk' />
+            </Picker>
+          )}
+        />
 
-      <TouchableOpacity>
-        <TextDefault style={{ color: '#000' }}>{t('submit')}</TextDefault>
-      </TouchableOpacity>
+        {/* Urgency */}
+        <View style={styles.switchRow}>
+          <Text style={styles.label}>{t('is_urgent')}</Text>
+          <Controller
+            control={control}
+            name='is_urgent'
+            defaultValue={false}
+            render={({ field: { onChange, value } }) => (
+              <Switch value={value} onValueChange={onChange} />
+            )}
+          />
+        </View>
+
+        {/* Fare Preview */}
+        <View style={styles.fareBox}>
+          <Text>Estimated Fare: 15.00 EGP</Text>
+          <Text>ETA: 25 mins</Text>
+        </View>
+
+        <TouchableOpacity>
+          <TextDefault style={{ color: '#000' }}>{t('submit')}</TextDefault>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   )
 }
@@ -213,11 +227,10 @@ const styles = StyleSheet.create({
   title: {
     color: '#000',
     fontSize: 18,
-    marginInline: 20,
     fontWeight: 'bold',
     marginBottom: 16
   },
-  container: { padding: 16 },
+  wrapper: { padding: 16 },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -225,6 +238,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
     backgroundColor: '#fff'
+  },
+  textArea: {
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    height: 120, // adjust height as needed
+    textAlignVertical: 'top',
+    backgroundColor: '#fff`'
   },
   label: { fontWeight: '600', marginTop: 10 },
   picker: { backgroundColor: '#f0f0f0', borderRadius: 8, marginBottom: 10 },

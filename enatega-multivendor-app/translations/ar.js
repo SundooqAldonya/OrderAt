@@ -579,5 +579,6 @@ export const ar = {
   notes_for_mandoob: 'ملاحظات للمندوب',
   vehicle_type: 'نوع المركبة',
   priority: 'الأولوية',
-  is_urgent: 'مستعجل'
+  is_urgent: 'مستعجل',
+  item_description_notes: 'وصف المنتجات والملاحظات للمندوب'
 }
