@@ -570,5 +570,8 @@ export const ar = {
   Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟',
   Request_delivery: 'طلب مندوب',
   your_location: 'موقعك',
-  your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان'
+  your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان',
+
+  no_data: 'لا توجد بيانات',
+  try_change_location: 'جرب تغير الموقع'
 }

@@ -188,15 +188,15 @@ const CreateAccount = (props) => {
         }}
       />
     )
-  } 
-  
+  }
+
   function rendergoogleLogin() {
     return (
       <FdGoogleBtn2
         loadingIcon={loading}
         onPress={() => {
           googleLogin()
-         }}
+        }}
       />
     )
   }
@@ -205,14 +205,12 @@ const CreateAccount = (props) => {
     return (
       <FdPhonBtn
         loadingIcon={loading}
-        onPress={() => {
-          }}
-  title={ t('ContinuePhoneNumber')}
-  disabled={true}
+        onPress={() => {}}
+        title={t('ContinuePhoneNumber')}
+        disabled={true}
       />
     )
   }
-   
 
   const googleLogin = async () => {
     try {
@@ -239,9 +237,6 @@ const CreateAccount = (props) => {
       console.log({ error })
     }
   }
-
-
-
 
   const fetchPhoneNumber = async (token) => {
     try {
@@ -307,15 +302,15 @@ const CreateAccount = (props) => {
             />
           </View> */}
           <View style={{ marginBottom: scale(2) }}>{rendergoogleLogin()}</View>
- 
+
           {enableApple && (
             <View style={{ marginBottom: scale(2) }}>
               {renderAppleAction()}
             </View>
           )}
           <View style={{ marginBottom: scale(2) }}>{renderEmailAction()}</View>
-          <View style={{ marginBottom: scale(2) }}>{renderPhoneNumber()}</View>
-         {/* or */}
+          {/* <View style={{ marginBottom: scale(2) }}>{renderPhoneNumber()}</View> */}
+          {/* or */}
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles(currentTheme).line} />
             <View style={{ marginBottom: scale(2) }}>
@@ -334,7 +329,7 @@ const CreateAccount = (props) => {
           <TouchableOpacity
             activeOpacity={0.7}
             style={[
-              styles(currentTheme).guestButton,
+              styles(currentTheme).guestButton
               // { backgroundColor: colors?.primary, borderColor: colors?.primary }
             ]}
             onPress={() => {

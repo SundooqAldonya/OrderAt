@@ -34,7 +34,7 @@ const FdGoogleBtn = props => {
             {/* <FontAwesome name="google" size={scale(18)} color={currentTheme.newIconColor} /> */}
            <Image source={require('../../../assets/images/googleicon.png')}  style={{height:30, width:30}} />
           </View>
-          <TextDefault H4 textColor={colors.background} style={alignment.MLlarge} bold>
+          <TextDefault H4 textColor={colors.white} style={alignment.MLlarge} bold>
             {t('ContinueWithGoogle')}
           </TextDefault>
         </>

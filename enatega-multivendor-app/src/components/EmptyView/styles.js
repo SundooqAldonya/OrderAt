@@ -7,7 +7,8 @@ const styles = (props = null) =>
   StyleSheet.create({
     mainContainerEmpty: {
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
-      paddingTop: scale(100)
+      paddingTop: scale(100),
+      
     },
     subContainerImage: {
       flex: 1,

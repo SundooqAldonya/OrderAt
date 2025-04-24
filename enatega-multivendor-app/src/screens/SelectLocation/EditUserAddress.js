@@ -314,6 +314,15 @@ export default function EditUserAddress(props) {
       })
     })
   }
+    // when press map
+    const handleMapPress = (e) => {
+      const newCoords = e.nativeEvent.coordinate
+      setCoordinates({
+        ...coordinates,
+        latitude: newCoords.latitude,
+        longitude: newCoords.longitude
+      })
+    }
 
   const onItemPress = (city) => {
     setModalVisible(false)
@@ -356,7 +365,8 @@ export default function EditUserAddress(props) {
             style={{ flex: 1 }}
             provider={PROVIDER_GOOGLE}
             onMapReady={zoomIn}
-            onRegionChangeComplete={onRegionChangeComplete}
+            // onRegionChangeComplete={onRegionChangeComplete}
+            onPress={handleMapPress}  
             zoomEnabled
             maxZoomLevel={50}
             bounce
@@ -492,7 +502,7 @@ export default function EditUserAddress(props) {
               ...styles(currentTheme).button,
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: colors.grey
+              backgroundColor: colors.secondaryGreen
             }}
             onPress={handleCurrentLocation}
           >

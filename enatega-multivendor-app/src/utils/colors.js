@@ -1,13 +1,14 @@
 export const colors = {
-    // primary:'#06C167',
-    primary:'#e2e2e2',
-    dark:'#000000',
-    background:'#FFFFFF',
-    border1:'F6F6F6',
-    border2:'#4A4A4A',
-    blue:'#4285F4',
-    grey:'#e2e2e2',
-    darkLight:'#00000080',
-
- 
+  primary: '#229F48',
+  secondaryGreen: '#32CD32',
+  darkLight: '#00000080',
+  secondaryOrange: '#B17600',
+  darkText: '#C1C1C1',
+  lightGray: '#DADADA',
+  exterLightGray: '#FAFAFA',
+  dark: '#000000',
+  white: '#FFFFFF',
+  border1: 'F6F6F6',
+  border2: '#4A4A4A',
+  blue: '#4285F4'
 }

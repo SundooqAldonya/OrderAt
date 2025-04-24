@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
 import { Dimensions } from 'react-native'
+import { colors } from '../../utils/colors'
 const { height } = Dimensions.get('screen')
 
 const styles = (props = null) =>
@@ -17,7 +18,7 @@ const styles = (props = null) =>
     },
     containerInfo: {
       width: '100%',
-      ...alignment.MTmedium
+      ...alignment.MTmedium,
     },
     mainContainer: {
       flex: 1,
@@ -30,7 +31,9 @@ const styles = (props = null) =>
       borderRadius: scale(8),
       flexDirection: 'row',
       width: '92%',
-      backgroundColor: props !== null ? props.color5 : 'transparent',
+      // backgroundColor: props !== null ? props.color5 : 'transparent',
+      backgroundColor:colors.lightGray,
+
       alignSelf: 'center',
       elevation: 1,
       borderWidth: props !== null && props.gray200 !== '#E5E7EB' ? 0 : 1,
@@ -46,7 +49,8 @@ const styles = (props = null) =>
     containerHeading: {
       width: '100%',
       flexDirection: 'row',
-      alignItems: 'flex-start'
+      alignItems: 'flex-start',
+
     },
     headingTitle: {
       width: '50%'

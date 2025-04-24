@@ -16,6 +16,7 @@ import truncate from '../../../utils/helperFun'
 import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 function TopBrands(props) {
   const { i18n, t } = useTranslation()
@@ -102,18 +103,36 @@ function TopBrands(props) {
         </TouchableOpacity>
       </View>
       <View style={{ ...alignment.PRsmall }}>
-        <FlatList
-          data={data?.topRatedVendorsPreview}
-          inverted={isArabic}
-          renderItem={renderItem}
-          keyExtractor={(item) => item?._id}
-          contentContainerStyle={{
-            flexGrow: 1
-          }}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          horizontal={true}
-        />
+        {data.topRatedVendorsPreview &&
+        data.topRatedVendorsPreview.length > 0 ? (
+          <>
+            <FlatList
+              data={data?.topRatedVendorsPreview}
+              inverted={isArabic}
+              renderItem={renderItem}
+              keyExtractor={(item) => item?._id}
+              contentContainerStyle={{
+                flexGrow: 1
+              }}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+            />
+          </>
+        ) : (
+          <View style={styles().noDataTextWrapper}>
+            <Icon name='warning' size={30} color={colors.secondaryOrange} />
+            <Text style={styles().noDataText}>{t('no_data')}</Text>
+            <Text
+              style={[
+                styles().noDataText,
+                { fontSize: 14, color: colors.secondaryOrange }
+              ]}
+            >
+              {t('try_change_location')}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   )

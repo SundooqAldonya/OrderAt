@@ -87,7 +87,7 @@ function Location({
           <View style={styles(currentTheme).headerContainer}>
             <View style={styles.textContainer}>
               <TextDefault
-                textColor={colors?.background}
+                textColor={colors?.white}
                 small
                 numberOfLines={1}
                 H5
@@ -97,13 +97,13 @@ function Location({
                 {translatedAddress}
               </TextDefault>
             </View>
-            <TextDefault textColor={colors?.background} left>
+            <TextDefault textColor={colors?.white} left>
               {''}
               {t(translatedLabel)}
             </TextDefault>
           </View>
           {forwardIcon && (
-            <Feather name='chevron-right' size={20} color={colors.background} />
+            <Feather name='chevron-right' size={20} color={colors.white} />
           )}
         </View>
       </View>

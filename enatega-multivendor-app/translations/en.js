@@ -575,6 +575,7 @@ export const en = {
   Do_you_want_to_quit_the_app: 'Do you want to quit the app?',
   Request_delivery: 'Request Delivery',
   your_location: 'your location',
-  your_order_will_send_here: 'Your order will be delivered to this location'
-
+  your_order_will_send_here: 'Your order will be delivered to this location',
+  no_data: 'No data found',
+  try_change_location: 'Try changing the location'
 }

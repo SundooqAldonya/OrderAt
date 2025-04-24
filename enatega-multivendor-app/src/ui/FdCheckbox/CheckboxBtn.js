@@ -18,13 +18,13 @@ function CheckboxBtn(props) {
         styles(currentTheme).mainContainer,
         props.checked
           ? { backgroundColor: colors.primary, borderColor: 'transparent' }
-          : { backgroundColor: colors.background }
+          : { backgroundColor: colors.white }
       ]}>
       {props.checked ? (
         <FontAwesome
           name="check"
           size={scale(13)}
-          color={colors.background}
+          color={colors.white}
         />
       ) : null}
     </TouchableOpacity>

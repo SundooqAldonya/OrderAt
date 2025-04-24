@@ -19,8 +19,8 @@ const styles = (props = null) =>
       position: 'absolute',
       top: 0,
       left: 0,
-      right: 0
-      // height: height * 0.3,
+      right: 0,
+      height: height * 0.3
     },
 
     touchArea: {
@@ -61,14 +61,14 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'flex-end',
       alignItems: 'center',
-      gap: 12
-    },
+      gap: 12,
+     },
     restaurantDetails: {
       marginTop: scale(8)
     },
     restImageContainer: {
       width: width - 10,
-      height: width - 10,
+      height: 250,
       borderRadius: scale(12),
       backgroundColor: 'white',
       shadowColor: 'black',
@@ -119,7 +119,8 @@ const styles = (props = null) =>
       backgroundColor: props != null ? props.themeBackground : 'white',
       // borderBottomLeftRadius: 25,
       // borderBottomRightRadius: 25,
-      zIndex: 2
+      zIndex: 2,
+      backgroundColor: 'green'
     },
     headerContainer: {
       height: '100%',
@@ -170,7 +171,7 @@ const styles = (props = null) =>
     },
     restaurantTitle: {
       ...alignment.PLxSmall,
-       alignItems: 'center'
+      alignItems: 'center'
     }
   })
 export default styles

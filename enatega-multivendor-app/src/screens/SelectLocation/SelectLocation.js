@@ -13,10 +13,11 @@ import {
   Linking,
   I18nManager,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Text
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import styles from './styles'
@@ -262,7 +263,15 @@ export default function SelectLocation(props) {
       latitude: coords.latitude
     })
   }
-
+  // when press map
+  const handleMapPress = (e) => {
+    const newCoords = e.nativeEvent.coordinate
+    setCoordinates({
+      ...coordinates,
+      latitude: newCoords.latitude,
+      longitude: newCoords.longitude
+    })
+  }
   const onItemPress = (city) => {
     setModalVisible(false)
     navigation.navigate('AddNewAddress', {
@@ -291,21 +300,48 @@ export default function SelectLocation(props) {
               <MapView
                 ref={mapRef}
                 initialRegion={coordinates}
-                region={coordinates}
                 style={{ flex: 1 }}
                 provider={PROVIDER_GOOGLE}
-                showsTraffic={false}
-                maxZoomLevel={15}
-                onRegionChangeComplete={onRegionChangeComplete}
-              />
-              <View style={styles().mainContainer}>
+                // onRegionChangeComplete={onRegionChangeComplete}
+                onPress={handleMapPress}
+                zoomEnabled
+                maxZoomLevel={50}
+                bounce
+              >
+                <Marker
+                  coordinate={coordinates}
+                  title={t('your_order_will_send_here')}
+                >
+                  <View style={styles().deliveryMarker}>
+                    <View
+                      style={[
+                        styles().markerBubble,
+                        { backgroundColor: '#06C167' }
+                      ]}
+                    >
+                      <Text style={styles().markerText}>
+                        {t('your_location')}
+                      </Text>
+                    </View>
+                    <View style={styles().markerPin}>
+                      <View
+                        style={[
+                          styles().pinInner,
+                          { backgroundColor: '#06C167' }
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </Marker>
+              </MapView>
+              {/* <View style={styles().mainContainer}>
                 <CustomMarker
                   width={40}
                   height={40}
                   transform={[{ translateY: -20 }]}
                   translateY={-20}
                 />
-              </View>
+              </View> */}
             </Fragment>
           ) : null}
         </View>

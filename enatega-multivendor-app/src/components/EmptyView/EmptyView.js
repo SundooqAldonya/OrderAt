@@ -18,9 +18,9 @@ const EmptyView = ({ title, description, buttonText }) => {
   return (
     <View style={styles().mainContainerEmpty}>
       <View style={styles().subContainerImage}>
-        <View style={styles().imageContainer}>
+        {/* <View style={styles().imageContainer}>
           <EmptyCart width={scale(200)} height={scale(200)} />
-        </View>
+        </View> */}
         <View style={styles().descriptionEmpty}>
           <TextDefault bolder center B700 textColor={currentTheme.newFontcolor}>
             {t(title)}

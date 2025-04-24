@@ -11,23 +11,23 @@ const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
 const styles = (props = null, hasActiveOrders = false) =>
   StyleSheet.create({
     flex: {
-      flex: 1
+      flex: 1,
     },
     mainItemsContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       gap: scale(20),
       marginTop: scale(16),
-      marginBottom: scale(15),
-     },
+      marginBottom: scale(15)
+    },
     mainItem: {
       padding: 12,
       borderWidth: 1,
       borderColor: '#E5E7EB',
       width: windowWidth / 2 - 30,
       borderRadius: 16,
-      justifyContent: 'space-between',
-     },
+      justifyContent: 'space-between'
+    },
     popularMenuImg: {
       width: '100%',
       // aspectRatio: 15 / 8
@@ -36,7 +36,8 @@ const styles = (props = null, hasActiveOrders = false) =>
 
     screenBackground: {
       backgroundColor: props != null ? props.themeBackground : '#FFF',
-      ...alignment.PBlarge
+       // backgroundColor:colors.blue
+
     },
     mainContentContainer: {
       width: '100%',
@@ -197,6 +198,17 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     topBrandsMargin: {
       marginBottom: hasActiveOrders ? MODAL_HEIGHT : 0
+    },
+
+    noDataTextWrapper: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    noDataText: {
+      fontSize: 18,
+      color: colors.dark,
+      marginTop: 10
     }
   })
 export default styles

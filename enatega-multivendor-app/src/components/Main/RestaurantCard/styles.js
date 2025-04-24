@@ -2,6 +2,7 @@ import { verticalScale, scale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
+import { colors } from '../../../utils/colors'
 const { height } = Dimensions.get('window')
 
 const styles = (props = null) =>
@@ -19,7 +20,7 @@ const styles = (props = null) =>
       width: scale(220),
       height: '70%',
       // height: '100%',
-      ...alignment.MRsmall
+      ...alignment.MRsmall,
     },
 
     overlayContainer: {
