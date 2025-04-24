@@ -62,6 +62,9 @@ import {
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
 import { colors } from './src/utils/colors'
+import { persistor, store } from './src/store/presistor'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -309,37 +312,41 @@ export default function App() {
 
   if (appIsReady) {
     return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <ApolloProvider client={client}>
-          <ThemeContext.Provider
-            value={{ ThemeValue: theme, dispatch: themeSetter }}
-          >
-            <StatusBar
-              backgroundColor={colors.primary}
-              barStyle={'light-content'}
-            />
-            <LocationProvider>
-              <ConfigurationProvider>
-                <AuthProvider>
-                  <UserProvider>
-                    <OrdersProvider>
-                      <AppContainer />
-                      <ReviewModal
-                        ref={reviewModalRef}
-                        onOverlayPress={onOverlayPress}
-                        theme={Theme[theme]}
-                        orderId={orderId}
-                      />
-                    </OrdersProvider>
-                  </UserProvider>
-                </AuthProvider>
-              </ConfigurationProvider>
-            </LocationProvider>
-            <FlashMessage MessageComponent={MessageComponent} />
-          </ThemeContext.Provider>
-        </ApolloProvider>
-        <Toast />
-      </GestureHandlerRootView>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ApolloProvider client={client}>
+              <ThemeContext.Provider
+                value={{ ThemeValue: theme, dispatch: themeSetter }}
+              >
+                <StatusBar
+                  backgroundColor={colors.primary}
+                  barStyle={'light-content'}
+                />
+                <LocationProvider>
+                  <ConfigurationProvider>
+                    <AuthProvider>
+                      <UserProvider>
+                        <OrdersProvider>
+                          <AppContainer />
+                          <ReviewModal
+                            ref={reviewModalRef}
+                            onOverlayPress={onOverlayPress}
+                            theme={Theme[theme]}
+                            orderId={orderId}
+                          />
+                        </OrdersProvider>
+                      </UserProvider>
+                    </AuthProvider>
+                  </ConfigurationProvider>
+                </LocationProvider>
+                <FlashMessage MessageComponent={MessageComponent} />
+              </ThemeContext.Provider>
+            </ApolloProvider>
+            <Toast />
+          </GestureHandlerRootView>
+        </PersistGate>
+      </Provider>
     )
   } else {
     return null

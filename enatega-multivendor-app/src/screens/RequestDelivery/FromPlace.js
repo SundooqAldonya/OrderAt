@@ -17,13 +17,15 @@ import { Ionicons } from '@expo/vector-icons'
 import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
 
 const mapHeight = 400
 
 export default function FromPlace() {
   const { location } = useContext(LocationContext)
   const { i18n, t } = useTranslation()
-  // const mapRef = useRef()
+  const dispatch = useDispatch()
+  const searchRef = useRef()
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const [place, setPlace] = useState({ lat: 0, lng: 0 })
@@ -33,10 +35,12 @@ export default function FromPlace() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   })
-  const [address, setAddress] = useState('')
+
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const { getAddress } = useGeocoding()
+
+  const { addressFrom } = useSelector((state) => state.requestDelivery)
 
   console.log({ region })
 
@@ -54,7 +58,7 @@ export default function FromPlace() {
         .then((res) => {
           console.log({ res })
           if (res.formattedAddress) {
-            setAddress(res.formattedAddress) // updates the GooglePlacesAutocomplete box
+            searchRef.current?.setAddressText(res.formattedAddress) // updates the GooglePlacesAutocomplete box
           }
         })
         .catch((err) => {
@@ -91,6 +95,7 @@ export default function FromPlace() {
             {t('FromPlace')}
           </TextDefault>
           <GooglePlacesAutocomplete
+            ref={searchRef}
             placeholder={t('search')}
             fetchDetails
             onPress={(data, details = null) => {
@@ -98,7 +103,7 @@ export default function FromPlace() {
               const lng = details?.geometry?.location.lng || 0
               setPlace({ lat, lng })
               setRegion({ ...region, latitude: lat, longitude: lng })
-              setAddress(data.description)
+              // setAddress(data.description)
             }}
             query={{
               key: GOOGLE_MAPS_KEY,
@@ -110,21 +115,16 @@ export default function FromPlace() {
               textInput: { height: 44, fontSize: 16 }
             }}
             // textInputProps={{
-            //   value: address
-            //   // onChangeText: (text) => {
-            //   //   setAddress(text)
-            //   // }
+            //   value: address,
+            //   onChangeText: (text) => {
+            //     setAddress(text)
+            //   }
             // }}
-            textInputProps={{
-              defaultValue: address, // uncontrolled but initialised
-              value: address
-              // onChangeText: (text) => setAddress(text)
-            }}
           />
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => setAddress('')}
+        onPress={() => searchRef?.current.setAddressText('')}
         style={{
           backgroundColor: '#000',
           height: 40,
