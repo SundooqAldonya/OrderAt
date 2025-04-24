@@ -66,6 +66,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
 import UserContext from '../context/User'
+import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -174,11 +175,19 @@ function NoDrawer() {
         component={BottomTabs}
       />
       <NavigationStack.Screen name='Menu' component={Menu} />
+
+      <NavigationStack.Screen
+        options={{ headerShown: false }}
+        name='MainRestaurantScreen'
+        component={MainRestaurantScreen}
+      />
+
       <NavigationStack.Screen
         name='Restaurant'
         component={Restaurant}
         options={{ header: () => null }}
       />
+
       <NavigationStack.Screen
         options={{ headerShown: false }}
         name='ItemDetail'
@@ -263,6 +272,7 @@ function NoDrawer() {
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Favourite' component={Favourite} />
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
+      
     </NavigationStack.Navigator>
   )
 }
@@ -315,8 +325,8 @@ const BottomTabs = () => {
           )
         },
         tabBarStyle: {
-           backgroundColor: colors.white,
-           height: 70,
+          backgroundColor: colors.white,
+          height: 70,
           //   paddingBottom: 10,
           //  position: 'absolute',
           // bottom: 15,

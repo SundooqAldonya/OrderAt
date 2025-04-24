@@ -13,8 +13,11 @@ import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useNavigation } from '@react-navigation/native'
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
+  const navigation = useNavigation()
+
   const { language } = i18n
   const isArabic = language === 'ar'
   const themeContext = useContext(ThemeContext)
@@ -47,7 +50,14 @@ function MainRestaurantCard(props) {
               >
                 {t(props?.title)}
               </TextDefault>
-              <TouchableOpacity style={styles().image}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('MainRestaurantScreen', {
+                    restaurantData: props?.orders
+                  })
+                }
+                style={styles().image}
+              >
                 <Ionicons
                   name='arrow-back'
                   size={scale(24)}
