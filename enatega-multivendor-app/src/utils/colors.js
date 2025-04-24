@@ -1,8 +1,8 @@
 export const colors = {
-  primary: '#32cd32',
+  primary: '#229F48',
+  secondaryGreen: '#32CD32',
   darkLight: '#00000080',
-  secondaryGreen: '#229f48',
-  secondaryOrange: '#b17600',
+  secondaryOrange: '#B17600',
   darkText: '#C1C1C1',
   lightGray: '#DADADA',
   exterLightGray: '#FAFAFA',

@@ -97,8 +97,8 @@ function Main(props) {
   )
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
   const [selectedType, setSelectedType] = useState('restaurant')
-console.log('orderData',orderData);
-console.log('orderError',orderError);
+  console.log('orderData', orderData)
+  console.log('orderError', orderError)
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError
@@ -451,6 +451,7 @@ console.log('orderError',orderError);
                     showsHorizontalScrollIndicator={false}
                   >
                     {/* the first section */}
+                    {/* البقالة و توصيل الطعام */}
                     <View style={styles().mainItemsContainer}>
                       <TouchableOpacity
                         style={styles().mainItem}
@@ -528,7 +529,7 @@ console.log('orderError',orderError);
 
                     {/* the second section */}
 
-                    <View>
+                    <View style={{ marginTop: 20 }}>
                       <View>
                         {isLoggedIn &&
                           recentOrderRestaurantsVar &&
