@@ -260,7 +260,6 @@ function Restaurant(props) {
       return
     }
     if (!restaurantCart || food.restaurant === restaurantCart) {
-      console.log('AddToCart')
       await addToCart(food, food.restaurant !== restaurantCart)
     } else if (food.restaurant !== restaurantCart) {
       Alert.alert(
@@ -307,8 +306,7 @@ function Restaurant(props) {
       animate()
     } else {
       if (clearFlag) await clearCart()
-      console.log('beforeNavigation')
-      navigation.navigate('ItemDetail', {
+       navigation.navigate('ItemDetail', {
         food,
         addons: restaurant.addons,
         options: restaurant.options,
@@ -548,8 +546,6 @@ function Restaurant(props) {
     index: dataList?.length ? index + 1 : index
   }))
 
-  console.log({ dataList })
-
   // return <JSONTree data={dataList} />
 
   const updatedDeals = dataList?.length
@@ -613,17 +609,14 @@ function Restaurant(props) {
           >
             {showSearchResults || searchOpen ? (
               <ScrollView
-                style={
-                  {
-                    // flexGrow: 1,
-                    // marginTop: TOP_BAR_HEIGHT,
-                     marginBottom: 150
+                style={{
+                  // flexGrow: 1,
+                  // marginTop: TOP_BAR_HEIGHT,
+                  marginBottom: 150
 
-                    // backgroundColor: currentTheme.themeBackground
-                  }
-                }
+                  // backgroundColor: currentTheme.themeBackground
+                }}
               >
-
                 {filterData.map((item, index) => (
                   <View key={index}>
                     <TouchableOpacity
@@ -635,8 +628,8 @@ function Restaurant(props) {
                           alignItems: 'center',
                           padding: 10,
                           marginBottom: 10,
-                          borderColor: colors.secondaryGreen,
-                          backgroundColor: colors.secondaryGreen,
+                          borderColor: colors.lightGray,
+                          backgroundColor: colors.white,
                           marginHorizontal: 10,
                           borderWidth: 1,
                           borderRadius: 8
@@ -682,22 +675,17 @@ function Restaurant(props) {
                         <View
                           style={[
                             styles(currentTheme).flex,
-                            {
-                              backgroundColor: colors.lightGray
-                            }
+                         
                           ]}
                         >
                           <TextDefault
                             bolder
                             textColor={currentTheme.fontMainColor}
                             H4
-                            style={
-                              {
-                                // ...styles(currentTheme).headerText
-                                textAlign: isArabic ? 'right' : 'left'
-
-                              }
-                            }
+                            style={{
+                              // ...styles(currentTheme).headerText
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
                           >
                             {item.title}
                           </TextDefault>
@@ -711,7 +699,7 @@ function Restaurant(props) {
                             ]}
                             small
                           >
-                             {wrapContentAfterWords(item.description, 5)}
+                            {wrapContentAfterWords(item.description, 5)}
                           </TextDefault>
                           <View
 
@@ -730,7 +718,7 @@ function Restaurant(props) {
                               bolder
                               small
                             >
-                               {configuration.currencySymbol}
+                              {configuration.currencySymbol}
                               {/* {item.variations[0].price} */}
                               {parseFloat(item.variations[0].price).toFixed(2)}
                             </TextDefault>
@@ -781,7 +769,7 @@ function Restaurant(props) {
                       // flexGrow: 1,
                       // paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
                       // marginTop: HEADER_MIN_HEIGHT,
-                      // backgroundColor: 'blue'
+                      //backgroundColor: 'blue'
                     }
                     // zIndexAnimation
                   ]}
@@ -894,8 +882,8 @@ function Restaurant(props) {
                             alignItems: 'center',
                             padding: 10,
                             marginBottom: 10,
-                            borderColor: colors.secondaryGreen,
-                            backgroundColor: colors.secondaryGreen,
+                            borderColor: colors.lightGray,
+                            backgroundColor: colors.white,
                             marginHorizontal: 10,
                             borderWidth: 1,
                             borderRadius: 8

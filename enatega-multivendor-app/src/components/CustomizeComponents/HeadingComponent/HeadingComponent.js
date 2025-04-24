@@ -30,7 +30,9 @@ function HeadingComponent(props) {
             textColor={currentTheme.fontMainColor}
             H4
             bolder
-          >{`${configuration.currencySymbol}${formatNumber(props.price)}`}</TextDefault>
+          >{`${formatNumber(props.price)} ${configuration.currencySymbol}`}
+          
+           </TextDefault>
         </View>
       </View>
       <View style={styles.descContainer}>

@@ -17,7 +17,7 @@ function Search(props) {
     <View
       style={[
         styles(currentTheme, props.newheaderColor).mainContainerHolder,
-        { backgroundColor: colors.primary }
+        { backgroundColor: props?.backgroundColor || colors.primary }
       ]}
     >
       <View style={styles(currentTheme, props.cartContainer).mainContainer}>

@@ -452,7 +452,7 @@ function Main(props) {
                   >
                     {/* the first section */}
                     {/* البقالة و توصيل الطعام */}
-                    <View style={styles().mainItemsContainer}>
+                    {/* <View style={styles().mainItemsContainer}>
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() =>
@@ -525,7 +525,7 @@ function Main(props) {
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>
-                    </View>
+                    </View> */}
 
                     {/* the second section */}
 

@@ -274,6 +274,7 @@ function ImageTextCenterHeader(props, ref) {
                     newheaderColor={newheaderColor}
                     cartContainer={cartContainer}
                     placeHolder={t('searchItems')}
+                    backgroundColor= {'transparent'}
                   />
                 </View>
               ) : (
