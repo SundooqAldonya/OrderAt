@@ -206,7 +206,8 @@ function Item(props) {
                   bold
                   Normal
                 >
-                  {configuration.currencySymbol + '' + item.minimumOrder}{' '}
+                  {/* {configuration.currencySymbol + '' + item.minimumOrder} */}
+                  {item.minimumOrder + ' ' + configuration.currencySymbol}
                 </TextDefault>
               </View>
             </View>
