@@ -22,6 +22,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import Spinner from '../../Spinner/Spinner'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import { useTranslation } from 'react-i18next'
+import truncate from '../../../utils/helperFun'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -82,8 +83,14 @@ function Item(props) {
       onPress={() => navigation.navigate('Restaurant', { ...item })}
     >
       <View key={item._id} style={styles().mainContainer}>
-        <View style={[styles(currentTheme).restaurantContainer]}>
-     
+        <View
+          style={[
+            styles(currentTheme).restaurantContainer,
+            {
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }
+          ]}
+        >
           <View style={styles().imageContainer}>
             <Image
               resizeMode='cover'
@@ -91,13 +98,13 @@ function Item(props) {
               style={styles().img}
             />
           </View>
-
           <View style={{ ...styles().descriptionContainer }}>
             <View
               style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                justifyContent: 'space-between',
-                  width: '100%'
+                //    flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: isArabic ? 'flex-end' : 'flex-start',
+                alignItems: isArabic ? 'flex-end' : 'flex-start'
+                // width: '100%'
               }}
             >
               <TextDefault
@@ -106,9 +113,17 @@ function Item(props) {
                 textColor={currentTheme.fontThirdColor}
                 bolder
               >
-                {item.name}
+                {truncate(item.name, 20)}
               </TextDefault>
-              <View style={[styles().aboutRestaurant]}>
+
+              <View
+                style={[
+                  styles().aboutRestaurant,
+                  {
+                    flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }
+                ]}
+              >
                 <Feather
                   name='star'
                   size={18}
@@ -143,18 +158,16 @@ function Item(props) {
             <View
               style={{
                 ...styles().priceRestaurant,
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                justifyContent: 'space-between',
-                marginBottom: 10
+                flexDirection: isArabic ? 'row-reverse' : 'row'
               }}
             >
               <View
                 style={{
-                  flexDirection: 'row',
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
                   alignItems: 'center',
                   gap: 5,
                   justifyContent: 'center',
-                  marginInlineStart: 18
+                  marginStart: 18
                 }}
               >
                 <AntDesign
@@ -174,7 +187,7 @@ function Item(props) {
               </View>
               <View
                 style={{
-                  flexDirection: 'row',
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
                   alignItems: 'center',
                   gap: 4,
                   justifyContent: 'center',
@@ -246,7 +259,6 @@ function Item(props) {
               </View>
             )}
           </View>
-
         </View>
       </View>
     </TouchableOpacity>
