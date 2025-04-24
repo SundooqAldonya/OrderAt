@@ -20,7 +20,8 @@ function HeadingComponent(props) {
             numberOfLines={2}
             textColor={currentTheme.fontMainColor}
             H4
-            bolder>
+            bolder
+          >
             {props.title}
           </TextDefault>
         </View>
@@ -28,7 +29,10 @@ function HeadingComponent(props) {
           <TextDefault
             textColor={currentTheme.fontMainColor}
             H4
-            bolder>{`${configuration.currencySymbol}${formatNumber(props.price)}`}</TextDefault>
+            bolder
+          >{`${formatNumber(props.price)} ${configuration.currencySymbol}`}
+          
+           </TextDefault>
         </View>
       </View>
       <View style={styles.descContainer}>
@@ -36,7 +40,8 @@ function HeadingComponent(props) {
           numberOfLines={1}
           textColor={currentTheme.fontSecondColor}
           H4
-          bold>
+          bold
+        >
           {props.desc}
         </TextDefault>
       </View>

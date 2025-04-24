@@ -1,4 +1,6 @@
 import { verticalScale, scale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
+
 import { alignment } from '../../../utils/alignment'
 import { StyleSheet } from 'react-native'
 
@@ -9,24 +11,14 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     restaurantContainer: {
-      // backgroundColor: props != null ? props.newheaderBG : 'white',
-      // borderColor: props != null ? props.borderColor : 'grey',
-      // borderWidth: scale(1),
-      // borderRadius: scale(8),
-      // height: scale(290),
-      // width: '99%',
-      // ...alignment.MBsmall
-
-      // backgroundColor: 'red',
       flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: 'flex-end',
       padding: 10,
       borderWidth: scale(1),
       borderRadius: scale(8),
-      backgroundColor: props != null ? props.newheaderBG : 'white',
-      borderColor: 'grey',
+      backgroundColor: colors.white,
+      marginHorizontal: 5,
+      borderColor: colors.lightGray,
       width: '100%'
     },
     imageContainer: {
@@ -43,28 +35,38 @@ const styles = (props = null) =>
       borderTopLeftRadius: scale(8),
       borderTopRightRadius: scale(8)
     },
+    // overlayRestaurantContainer: {
+    //   position: 'absolute',
+    //   // justifyContent: 'space-between',
+    //   top: 0,
+    //   left: 0,
+    //   height: '100%'
+    //   // width: '100%'
+    // },
     overlayRestaurantContainer: {
       position: 'absolute',
-      justifyContent: 'space-between',
       top: 0,
-      height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      width: '100%',
-  
+      left: 0,
+      width: '100%', // خليها لو عايز يغطي العرض
+      height: '100%', // أو غيرها حسب اللي انت محتاجه
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start'
     },
+
     favOverlay: {
       position: 'absolute',
       top: 10,
-      left: 12,
+      left: 10,
       width: scale(30),
       height: scale(30),
       borderRadius: scale(15),
-      backgroundColor: props != null ? props.white : 'white',
-      // backgroundColor: 'red',
-      zIndex: 1,
+      backgroundColor: colors.lightGray,
+      zIndex: 10,
       justifyContent: 'center',
       alignItems: 'center'
     },
+
     deliveryRestaurantOverlay: {
       position: 'absolute',
       bottom: 15,
@@ -78,15 +80,15 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     aboutRestaurant: {
-      alignItems: 'center',
-      flexDirection: 'row'
+      alignItems: 'center'
       // justifyContent: 'flex-start'
     },
     descriptionContainer: {
       // width: '100%',
       width: '60%',
+      marginHorizontal: 5
       // padding: scale(12)
-     },
+    },
     offerCategoty: {
       ...alignment.MTxSmall,
       ...alignment.MBxSmall

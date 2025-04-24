@@ -592,5 +592,7 @@ export const en = {
   clear_search: 'Clear search',
   next_rest_information: 'Next: Rest of Information',
   helpful_information: 'Helpful information',
-  better_place_description: 'Better place description'
+  better_place_description: 'Better place description',
+  no_data: 'No data found',
+  try_change_location: 'Try changing the location'
 }

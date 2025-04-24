@@ -53,7 +53,7 @@ const styles = (props = null) =>
       height: scale(200)
     },
     image: {
-      backgroundColor: colors.grey,
+      backgroundColor: colors.lightGray,
       borderRadius: 10,
       marginHorizontal: 5,
       paddingHorizontal: 5
@@ -61,6 +61,16 @@ const styles = (props = null) =>
     image1: {
       width: 30,
       height: 30
+    },
+    noDataTextWrapper: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noDataText: {
+      fontSize: 18,
+      color: colors.dark,
+      marginTop: 10
     }
   })
 

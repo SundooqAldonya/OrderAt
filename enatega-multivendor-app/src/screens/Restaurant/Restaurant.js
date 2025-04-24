@@ -260,7 +260,6 @@ function Restaurant(props) {
       return
     }
     if (!restaurantCart || food.restaurant === restaurantCart) {
-      console.log('AddToCart')
       await addToCart(food, food.restaurant !== restaurantCart)
     } else if (food.restaurant !== restaurantCart) {
       Alert.alert(
@@ -307,8 +306,7 @@ function Restaurant(props) {
       animate()
     } else {
       if (clearFlag) await clearCart()
-      console.log('beforeNavigation')
-      navigation.navigate('ItemDetail', {
+       navigation.navigate('ItemDetail', {
         food,
         addons: restaurant.addons,
         options: restaurant.options,
@@ -548,8 +546,6 @@ function Restaurant(props) {
     index: dataList?.length ? index + 1 : index
   }))
 
-  console.log({ dataList })
-
   // return <JSONTree data={dataList} />
 
   const updatedDeals = dataList?.length
@@ -568,367 +564,449 @@ function Restaurant(props) {
     <>
       <SafeAreaView style={styles(currentTheme).flex}>
         <Animated.View style={styles(currentTheme).flex}>
-          <ImageHeader
-            ref={flatListRef}
-            iconColor={iconColor}
-            iconSize={iconSize}
-            iconBackColor={iconBackColor}
-            iconRadius={iconRadius}
-            iconTouchWidth={iconTouchWidth}
-            iconTouchHeight={iconTouchHeight}
-            restaurantName={propsData?.name ?? data?.restaurantCustomer?.name}
-            restaurantId={propsData?._id}
-            restaurantImage={
-              propsData?.image ?? data?.restaurantCustomer?.image
-            }
-            restaurant={data?.restaurantCustomer}
-            topaBarData={updatedDeals}
-            changeIndex={changeIndex}
-            selectedLabel={selectedLabel}
-            minimumOrder={
-              propsData?.minimumOrder ?? data?.restaurantCustomer?.minimumOrder
-            }
-            tax={propsData?.tax ?? data?.restaurantCustomer?.tax}
-            updatedDeals={updatedDeals}
-            searchOpen={searchOpen}
-            showSearchResults={showSearchResults}
-            setSearch={setSearch}
-            search={search}
-            searchHandler={searchHandler}
-            searchPopupHandler={searchPopupHandler}
-            translationY={translationY}
-            isArabic={isArabic}
-          />
+          <View
+            style={{
+              height: height * 0.5
+            }}
+          >
+            <ImageHeader
+              ref={flatListRef}
+              iconColor={iconColor}
+              iconSize={iconSize}
+              iconBackColor={iconBackColor}
+              iconRadius={iconRadius}
+              iconTouchWidth={iconTouchWidth}
+              iconTouchHeight={iconTouchHeight}
+              restaurantName={propsData?.name ?? data?.restaurantCustomer?.name}
+              restaurantId={propsData?._id}
+              restaurantImage={
+                propsData?.image ?? data?.restaurantCustomer?.image
+              }
+              restaurant={data?.restaurantCustomer}
+              topaBarData={updatedDeals}
+              changeIndex={changeIndex}
+              selectedLabel={selectedLabel}
+              minimumOrder={
+                propsData?.minimumOrder ??
+                data?.restaurantCustomer?.minimumOrder
+              }
+              tax={propsData?.tax ?? data?.restaurantCustomer?.tax}
+              updatedDeals={updatedDeals}
+              searchOpen={searchOpen}
+              showSearchResults={showSearchResults}
+              setSearch={setSearch}
+              search={search}
+              searchHandler={searchHandler}
+              searchPopupHandler={searchPopupHandler}
+              translationY={translationY}
+              isArabic={isArabic}
+            />
+          </View>
+          <View
+            style={{
+              height: height * 0.5
+            }}
+          >
+            {showSearchResults || searchOpen ? (
+              <ScrollView
+                style={{
+                  // flexGrow: 1,
+                  // marginTop: TOP_BAR_HEIGHT,
+                  marginBottom: 150
 
-          {showSearchResults || searchOpen ? (
-            <ScrollView
-              style={{
-                flexGrow: 1,
-                marginTop: TOP_BAR_HEIGHT,
-                backgroundColor: currentTheme.themeBackground
-              }}
-            >
-              {filterData.map((item, index) => (
-                <View key={index}>
-                  <TouchableOpacity
-                    style={styles(currentTheme).searchDealSection}
-                    activeOpacity={0.7}
-                    onPress={() =>
-                      onPressItem({
-                        ...item,
-                        restaurant: restaurant?._id,
-                        restaurantName: restaurant?.name
-                      })
-                    }
-                  >
-                    <View
-                      style={{
-                        flexDirection: isArabic ? 'row-reverse' : 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
+                  // backgroundColor: currentTheme.themeBackground
+                }}
+              >
+                {filterData.map((item, index) => (
+                  <View key={index}>
+                    <TouchableOpacity
+                      style={[
+                        // styles(currentTheme).searchDealSection,
+                        {
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: 10,
+                          marginBottom: 10,
+                          borderColor: colors.lightGray,
+                          backgroundColor: colors.white,
+                          marginHorizontal: 10,
+                          borderWidth: 1,
+                          borderRadius: 8
+                        }
+                      ]}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        onPressItem({
+                          ...item,
+                          restaurant: restaurant?._id,
+                          restaurantName: restaurant?.name
+                        })
+                      }
                     >
-                      <View style={styles(currentTheme).deal}>
-                        {item?.image ? (
-                          <Image
-                            style={{
-                              height: scale(60),
-                              width: scale(60),
-                              borderRadius: 30
-                            }}
-                            source={{ uri: item?.image }}
-                          />
-                        ) : null}
-                        <View style={styles(currentTheme).flex}>
-                          <View
-                            style={{ ...styles(currentTheme).dealDescription }}
-                          >
-                            <TextDefault
-                              textColor={currentTheme.fontMainColor}
-                              style={{
-                                ...styles(currentTheme).headerText,
-                                textAlign: isArabic ? 'right' : 'left'
-                              }}
-                              numberOfLines={1}
-                              bolder
-                            >
-                              {item.title}
-                            </TextDefault>
-                            <TextDefault
-                              style={styles(currentTheme).priceText}
-                              small
-                            >
-                              {wrapContentAfterWords(item.description, 5)}
-                            </TextDefault>
-                            <View style={styles(currentTheme).dealPrice}>
-                              <TextDefault
-                                numberOfLines={1}
-                                textColor={currentTheme.fontMainColor}
-                                style={styles(currentTheme).priceText}
-                                bolder
-                                small
-                              >
-                                {configuration.currencySymbol}{' '}
-                                {/* {item.variations[0].price} */}
-                                {parseFloat(item.variations[0].price).toFixed(
-                                  2
-                                )}
-                              </TextDefault>
-                              {item?.variations[0]?.discounted > 0 && (
-                                <TextDefault
-                                  numberOfLines={1}
-                                  textColor={currentTheme.fontSecondColor}
-                                  style={styles().priceText}
-                                  small
-                                  lineOver
-                                >
-                                  {configuration.currencySymbol}{' '}
-                                  {(
-                                    item.variations[0].price +
-                                    item.variations[0].discounted
-                                  ).toFixed(2)}
-                                </TextDefault>
-                              )}
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <View style={styles().addToCart}>
-                        <MaterialIcons
-                          name='add'
-                          size={scale(20)}
-                          color={currentTheme.black}
-                        />
-                      </View>
-                    </View>
-                    {/* )} */}
-                    {tagCart(item?._id)}
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          ) : (
-            <SectionList
-              style={[
-                {
-                  flexGrow: 1,
-                  paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
-                  marginTop: HEADER_MIN_HEIGHT
-                },
-                zIndexAnimation
-              ]}
-              contentContainerStyle={{
-                paddingBottom: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
-              }}
-              sections={updatedDeals}
-              ref={scrollRef}
-              scrollEventThrottle={1}
-              stickySectionHeadersEnabled={false}
-              showsVerticalScrollIndicator={false}
-              refreshing={networkStatus === 4}
-              onRefresh={() => networkStatus === 7 && refetch()}
-              onViewableItemsChanged={onViewableItemsChanged}
-              onMomentumScrollEnd={(event) => {
-                onScrollEndSnapToEdge(event)
-              }}
-              keyExtractor={(item, index) => index}
-              renderSectionHeader={({ section: { title, data } }) => {
-                if (title === t('popular')) {
-                  if (!dataList || dataList?.length === 0) {
-                    return null // Don't render the section header if dataList is empty
-                  }
-                  return (
-                    <View style={styles(currentTheme).restaurantItems}>
                       <View
                         style={{
-                          ...styles().popularHeading,
-                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          gap: 20,
+                          alignItems: 'center',
+                          justifyContent: 'center'
                         }}
                       >
-                        <PopularIcon color={currentTheme.iconColorDark} />
+                        <View
+                          style={{
+                            height: scale(60),
+                            width: scale(60)
+                          }}
+                        >
+                          {item?.image ? (
+                            <Image
+                              style={{
+                                height: scale(60),
+                                width: scale(60),
+                                borderRadius: 30
+                              }}
+                              source={{ uri: item?.image }}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </View>
+
+                        <View
+                          style={[
+                            styles(currentTheme).flex,
+                         
+                          ]}
+                        >
+                          <TextDefault
+                            bolder
+                            textColor={currentTheme.fontMainColor}
+                            H4
+                            style={{
+                              // ...styles(currentTheme).headerText
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {item.title}
+                          </TextDefault>
+
+                          <TextDefault
+                            style={[
+                              styles(currentTheme).priceText,
+                              {
+                                textAlign: isArabic ? 'right' : 'left'
+                              }
+                            ]}
+                            small
+                          >
+                            {wrapContentAfterWords(item.description, 5)}
+                          </TextDefault>
+                          <View
+
+                          // style={styles(currentTheme).dealPrice}
+                          >
+                            <TextDefault
+                              numberOfLines={1}
+                              textColor={currentTheme.fontMainColor}
+                              style={
+                                // [styles(currentTheme).priceText],
+                                {
+                                  textAlign: isArabic ? 'right' : 'left',
+                                  margin: 5
+                                }
+                              }
+                              bolder
+                              small
+                            >
+                              {configuration.currencySymbol}
+                              {/* {item.variations[0].price} */}
+                              {parseFloat(item.variations[0].price).toFixed(2)}
+                            </TextDefault>
+                            {item?.variations[0]?.discounted > 0 && (
+                              <TextDefault
+                                numberOfLines={1}
+                                textColor={currentTheme.fontSecondColor}
+                                // style={styles().priceText}
+                                style={
+                                  ([styles(currentTheme).priceText],
+                                  {
+                                    textAlign: isArabic ? 'right' : 'left'
+                                  })
+                                }
+                                small
+                                lineOver
+                              >
+                                {configuration.currencySymbol}
+                                {' fffff'}
+                                {(
+                                  item.variations[0].price +
+                                  item.variations[0].discounted
+                                ).toFixed(2)}
+                              </TextDefault>
+                            )}
+                          </View>
+                        </View>
+
+                        {/* add */}
+                        <View style={styles(currentTheme).addToCart}>
+                          <MaterialIcons
+                            name='add'
+                            size={scale(20)}
+                            color={currentTheme.themeBackground}
+                          />
+                        </View>
+                      </View>
+                      {tagCart(item?._id)}
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+            ) : (
+              <ScrollView>
+                <SectionList
+                  style={[
+                    {
+                      // flexGrow: 1,
+                      // paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
+                      // marginTop: HEADER_MIN_HEIGHT,
+                      //backgroundColor: 'blue'
+                    }
+                    // zIndexAnimation
+                  ]}
+                  contentContainerStyle={{
+                    paddingBottom: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
+                  }}
+                  sections={updatedDeals}
+                  ref={scrollRef}
+                  scrollEventThrottle={1}
+                  stickySectionHeadersEnabled={false}
+                  showsVerticalScrollIndicator={false}
+                  refreshing={networkStatus === 4}
+                  onRefresh={() => networkStatus === 7 && refetch()}
+                  onViewableItemsChanged={onViewableItemsChanged}
+                  onMomentumScrollEnd={(event) => {
+                    onScrollEndSnapToEdge(event)
+                  }}
+                  keyExtractor={(item, index) => index}
+                  renderSectionHeader={({ section: { title, data } }) => {
+                    if (title === t('popular')) {
+                      if (!dataList || dataList?.length === 0) {
+                        return null // Don't render the section header if dataList is empty
+                      }
+                      return (
+                        <View style={styles(currentTheme).restaurantItems}>
+                          <View
+                            style={{
+                              ...styles().popularHeading,
+                              flexDirection: isArabic ? 'row-reverse' : 'row'
+                            }}
+                          >
+                            <PopularIcon color={currentTheme.iconColorDark} />
+                            <TextDefault
+                              style={styles(currentTheme).popularText}
+                              textColor={currentTheme.fontFourthColor}
+                              bolder
+                            >
+                              {title}
+                            </TextDefault>
+                          </View>
+                          <TextDefault
+                            textColor={currentTheme.fontFourthColor}
+                            style={{
+                              ...alignment.PLmedium,
+                              ...alignment.PRmedium,
+                              fontSize: scale(12),
+                              fontWeight: '400',
+                              marginTop: scale(3),
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('mostOrderedNow')}
+                          </TextDefault>
+                          <View style={styles().popularItemCards}>
+                            {data?.map((item) => (
+                              <ItemCard
+                                key={item?._id}
+                                item={item}
+                                onPressItem={onPressItem}
+                                restaurant={restaurant}
+                                tagCart={tagCart}
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      )
+                    }
+                    // Render other section headers as usual
+                    return (
+                      <View style={styles(currentTheme).sectionHeader}>
                         <TextDefault
-                          style={styles(currentTheme).popularText}
+                          H3
+                          style={{
+                            textAlign: isArabic ? 'right' : 'left',
+                            marginInlineEnd: isArabic ? 20 : 0,
+                            margin: 20
+                          }}
                           textColor={currentTheme.fontFourthColor}
                           bolder
                         >
                           {title}
                         </TextDefault>
                       </View>
-                      <TextDefault
-                        textColor={currentTheme.fontFourthColor}
-                        style={{
-                          ...alignment.PLmedium,
-                          ...alignment.PRmedium,
-                          fontSize: scale(12),
-                          fontWeight: '400',
-                          marginTop: scale(3),
-                          textAlign: isArabic ? 'right' : 'left'
-                        }}
-                      >
-                        {t('mostOrderedNow')}
-                      </TextDefault>
-                      <View style={styles().popularItemCards}>
-                        {data?.map((item) => (
-                          <ItemCard
-                            key={item?._id}
-                            item={item}
-                            onPressItem={onPressItem}
-                            restaurant={restaurant}
-                            tagCart={tagCart}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  )
-                }
-                // Render other section headers as usual
-                return (
-                  <View style={styles(currentTheme).sectionHeader}>
-                    <TextDefault
-                      style={{
-                        ...styles(currentTheme).sectionHeaderText,
-                        textAlign: isArabic ? 'right' : 'left',
-                        marginInlineEnd: isArabic ? 20 : 0,
-                        marginBottom: 20
-                      }}
-                      textColor={currentTheme.fontFourthColor}
-                      bolder
-                    >
-                      {title}
-                    </TextDefault>
-                  </View>
-                )
-              }}
-              renderItem={({ item, section }) => {
-                const imageUrl =
-                  item?.image && item?.image?.trim() !== ''
-                    ? item.image
-                    : IMAGE_LINK
-                if (section.title === t('popular')) {
-                  if (!dataList || dataList?.length === 0) {
-                    return null
-                  }
-                  return null
-                }
-                return (
-                  <Fragment>
-                    <TouchableOpacity
-                      onPress={() =>
-                        onPressItem({
-                          ...item,
-                          restaurant: restaurant?._id,
-                          restaurantName: restaurant.name
-                        })
+                    )
+                  }}
+                  renderItem={({ item, section }) => {
+                    const imageUrl =
+                      item?.image && item?.image?.trim() !== ''
+                        ? item.image
+                        : IMAGE_LINK
+                    if (section.title === t('popular')) {
+                      if (!dataList || dataList?.length === 0) {
+                        return null
                       }
-                      style={{
-                        flexDirection: isArabic ? 'row-reverse' : 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        paddingHorizontal: 10,
-                        marginBottom: 10
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: isArabic ? 'row-reverse' : 'row',
-                          gap: 20
-                        }}
-                      >
-                        <View>
-                          <Image
+                      return null
+                    }
+                    return (
+                      <Fragment>
+                        <TouchableOpacity
+                          onPress={() =>
+                            onPressItem({
+                              ...item,
+                              restaurant: restaurant?._id,
+                              restaurantName: restaurant.name
+                            })
+                          }
+                          style={{
+                            flexDirection: isArabic ? 'row-reverse' : 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: 10,
+                            marginBottom: 10,
+                            borderColor: colors.lightGray,
+                            backgroundColor: colors.white,
+                            marginHorizontal: 10,
+                            borderWidth: 1,
+                            borderRadius: 8
+                          }}
+                        >
+                          <View
                             style={{
-                              height: scale(60),
-                              width: scale(60),
-                              borderRadius: 30
-                            }}
-                            source={{ uri: imageUrl }}
-                          />
-                        </View>
-                        <View>
-                          <TextDefault
-                            bolder
-                            textColor={currentTheme.fontMainColor}
-                            style={{
-                              ...styles(currentTheme).headerText
+                              flexDirection: isArabic ? 'row-reverse' : 'row',
+                              gap: 20
                             }}
                           >
-                            {item.title}
-                          </TextDefault>
-                          {isArabic ? (
-                            <TextDefault
-                              style={{ textAlign: isArabic ? 'right' : 'left' }}
-                            >
-                              {' '}
-                              {parseFloat(item.variations[0].price).toFixed(
-                                2
-                              )}{' '}
-                              {configuration.currencySymbol}
-                            </TextDefault>
-                          ) : (
-                            <TextDefault
-                              style={{ textAlign: isArabic ? 'right' : 'left' }}
-                            >
-                              {configuration.currencySymbol}{' '}
-                              {parseFloat(item.variations[0].price).toFixed(2)}
-                            </TextDefault>
-                          )}
-                        </View>
-                      </View>
-                      <View style={styles(currentTheme).addToCart}>
-                        <MaterialIcons
-                          name='add'
-                          size={scale(20)}
-                          color={currentTheme.themeBackground}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </Fragment>
-                )
-              }}
-            />
-          )}
-          {/* </View> */}
+                            {/* Image */}
+                            <View>
+                              <Image
+                                style={{
+                                  height: scale(60),
+                                  width: scale(60),
+                                  borderRadius: 30
+                                }}
+                                source={{ uri: imageUrl }}
+                              />
+                            </View>
 
-          {cartCount > 0 && (
-            <View style={styles(currentTheme).buttonContainer}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles(currentTheme).button}
-                onPress={() => navigation.navigate('Cart')}
-              >
-                <View style={styles().buttontLeft}>
-                  <Animated.View
-                    style={[
-                      styles(currentTheme).buttonLeftCircle,
-                      {
-                        width: circleSize,
-                        height: circleSize,
-                        borderRadius: radiusSize
-                      },
-                      scaleStyles
-                    ]}
-                  >
-                    <Animated.Text
-                      style={[styles(currentTheme).buttonTextLeft, fontStyles]}
-                    >
-                      {cartCount}
-                    </Animated.Text>
-                  </Animated.View>
-                </View>
-                <TextDefault
-                  style={styles().buttonText}
-                  textColor={currentTheme.buttonTextPink}
-                  uppercase
-                  center
-                  bolder
-                  small
+                            <View>
+                              <TextDefault
+                                bolder
+                                textColor={currentTheme.fontMainColor}
+                                H4
+                                style={
+                                  {
+                                    // ...styles(currentTheme).headerText
+                                  }
+                                }
+                              >
+                                {item.title}
+                              </TextDefault>
+                              {isArabic ? (
+                                <TextDefault
+                                  textColor={currentTheme.fontMainColor}
+                                  style={{
+                                    textAlign: isArabic ? 'right' : 'left',
+                                    margin: 5
+                                  }}
+                                >
+                                  {parseFloat(item.variations[0].price).toFixed(
+                                    2
+                                  )}
+                                  {configuration.currencySymbol}
+                                </TextDefault>
+                              ) : (
+                                <TextDefault
+                                  style={{
+                                    textAlign: isArabic ? 'right' : 'left'
+                                  }}
+                                >
+                                  {configuration.currencySymbol}{' '}
+                                  {parseFloat(item.variations[0].price).toFixed(
+                                    2
+                                  )}
+                                </TextDefault>
+                              )}
+                            </View>
+                          </View>
+                          {/* add */}
+                          <View style={styles(currentTheme).addToCart}>
+                            <MaterialIcons
+                              name='add'
+                              size={scale(20)}
+                              color={currentTheme.themeBackground}
+                            />
+                          </View>
+                        </TouchableOpacity>
+                      </Fragment>
+                    )
+                  }}
+                />
+              </ScrollView>
+            )}
+            {/* </View> */}
+            {cartCount > 0 && (
+              <View style={styles(currentTheme).buttonContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles(currentTheme).button}
+                  onPress={() => navigation.navigate('Cart')}
                 >
-                  {t('viewCart')}
-                </TextDefault>
-                <View style={styles().buttonTextRight} />
-              </TouchableOpacity>
-            </View>
-          )}
+                  <View style={styles().buttontLeft}>
+                    <Animated.View
+                      style={[
+                        styles(currentTheme).buttonLeftCircle,
+                        {
+                          width: circleSize,
+                          height: circleSize,
+                          borderRadius: radiusSize
+                        },
+                        scaleStyles
+                      ]}
+                    >
+                      <Animated.Text
+                        style={[
+                          styles(currentTheme).buttonTextLeft,
+                          fontStyles
+                        ]}
+                      >
+                        {cartCount}
+                      </Animated.Text>
+                    </Animated.View>
+                  </View>
+                  <TextDefault
+                    style={styles().buttonText}
+                    textColor={currentTheme.buttonTextPink}
+                    uppercase
+                    center
+                    bolder
+                    small
+                  >
+                    {t('viewCart')}
+                  </TextDefault>
+                  <View style={styles().buttonTextRight} />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </Animated.View>
       </SafeAreaView>
     </>

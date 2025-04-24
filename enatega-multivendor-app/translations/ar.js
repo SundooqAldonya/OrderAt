@@ -587,5 +587,7 @@ export const ar = {
   clear_search: 'مسح البحث',
   next_rest_information: 'التالي: بقية المعلومات',
   helpful_information: 'معلومات المكان',
-  better_place_description: 'وصف أدق للمكان'
+  better_place_description: 'وصف أدق للمكان',
+  no_data: 'لا توجد بيانات',
+  try_change_location: 'جرب تغير الموقع'
 }

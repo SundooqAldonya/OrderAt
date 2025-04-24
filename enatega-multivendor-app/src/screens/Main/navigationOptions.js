@@ -13,12 +13,12 @@ import { scale } from '../../utils/scaling'
 const navigationOptions = (props) => ({
   headerStyle: {
     height: scale(50),
-    backgroundColor: colors.grey,
+    backgroundColor: colors.primary,
     shadowColor: 'transparent',
     shadowRadius: 0
   },
   headerTitleStyle: {
-    color: colors.background,
+    color: colors.white,
     ...alignment.PTlarge
   },
   headerTitleContainerStyle: {
@@ -27,16 +27,16 @@ const navigationOptions = (props) => ({
   },
   headerTitleAlign: 'left',
   headerLeft: () => (
-    <LeftButton icon={props.icon} iconColor={colors?.background} />
+    <LeftButton icon={props.icon} iconColor={colors?.white} />
   ),
   headerRight: () => (
-    <RightButton icon={'cart'} iconColor={colors?.background} />
+    <RightButton icon={'cart'} iconColor={colors?.white} />
   ),
   headerTitle: (headerProp) => (
     <SelectedLocation
       {...headerProp}
       modalOn={() => props.open()}
-      linkColor={colors.background}
+      linkColor={colors.white}
       navigation={props.navigation}
     />
   )

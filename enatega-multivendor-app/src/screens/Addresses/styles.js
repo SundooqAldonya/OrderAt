@@ -42,10 +42,10 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center',
-      display: 'flex',
-     },
+      display: 'flex'
+    },
     addButton: {
-      backgroundColor: colors.grey,
+      backgroundColor: colors.secondaryOrange,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

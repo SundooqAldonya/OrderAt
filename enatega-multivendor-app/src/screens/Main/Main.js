@@ -97,6 +97,8 @@ function Main(props) {
   )
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
   const [selectedType, setSelectedType] = useState('restaurant')
+  console.log('orderData', orderData)
+  console.log('orderError', orderError)
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError
@@ -111,7 +113,7 @@ function Main(props) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(colors.grey)
+      StatusBar.setBackgroundColor(colors.primary)
     }
     StatusBar.setBarStyle('light-content')
   })
@@ -449,10 +451,15 @@ function Main(props) {
                     showsHorizontalScrollIndicator={false}
                   >
                     {/* the first section */}
+<<<<<<< HEAD
                     <ScrollView
                       contentContainerStyle={styles().mainItemsContainer}
                       horizontal
                     >
+=======
+                    {/* البقالة و توصيل الطعام */}
+                    {/* <View style={styles().mainItemsContainer}>
+>>>>>>> ui-enhancement
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() =>
@@ -557,11 +564,15 @@ function Main(props) {
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>
+<<<<<<< HEAD
                     </ScrollView>
+=======
+                    </View> */}
+>>>>>>> ui-enhancement
 
                     {/* the second section */}
 
-                    <View>
+                    <View style={{ marginTop: 20 }}>
                       <View>
                         {isLoggedIn &&
                           recentOrderRestaurantsVar &&
