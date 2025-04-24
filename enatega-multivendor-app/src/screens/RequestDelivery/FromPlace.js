@@ -4,7 +4,11 @@ import {
   Button,
   StyleSheet,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MapView, { Marker } from 'react-native-maps'
@@ -40,6 +44,8 @@ export default function FromPlace() {
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const { getAddress } = useGeocoding()
+  const [addressFreeText, setAddressFreeText] = useState('')
+  const [formattedAddress, setFormattedAddress] = useState('')
 
   const { addressFrom, regionFrom } = useSelector(
     (state) => state.requestDelivery
@@ -62,12 +68,7 @@ export default function FromPlace() {
           console.log({ res })
           if (res.formattedAddress) {
             searchRef.current?.setAddressText(res.formattedAddress)
-            dispatch(
-              setAddressFrom({
-                addressFrom: res.formattedAddress,
-                regionFrom: newRegion
-              })
-            )
+            setFormattedAddress(res.formattedAddress)
           }
         })
         .catch((err) => {
@@ -82,81 +83,109 @@ export default function FromPlace() {
   )
 
   const handleNavigation = () => {
+    dispatch(
+      setAddressFrom({
+        addressFrom: formattedAddress,
+        regionFrom: region,
+        addressFreeTextFrom: addressFreeText
+      })
+    )
     navigation.navigate('ToPlace')
   }
 
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        region={region}
-        onRegionChangeComplete={handleRegionChangeComplete}
-      />
-      <View style={styles.markerFixed}>
-        <Ionicons name='location-sharp' size={40} color='#d00' />
-      </View>
-      <View style={styles.wrapper}>
-        <View style={styles.inputContainer}>
-          <TextDefault
-            bolder
-            style={{
-              ...styles.title,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            {t('FromPlace')}
-          </TextDefault>
-          <GooglePlacesAutocomplete
-            ref={searchRef}
-            placeholder={t('search')}
-            fetchDetails
-            onPress={(data, details = null) => {
-              const lat = details?.geometry?.location.lat || 0
-              const lng = details?.geometry?.location.lng || 0
-              setPlace({ lat, lng })
-              setRegion({ ...region, latitude: lat, longitude: lng })
-              // setAddress(data.description)
-            }}
-            query={{
-              key: GOOGLE_MAPS_KEY,
-              language: 'ar',
-              sessiontoken: sessionToken
-            }}
-            styles={{
-              container: { flex: 0 },
-              textInput: { height: 44, fontSize: 16 }
-            }}
-            // textInputProps={{
-            //   value: address,
-            //   onChangeText: (text) => {
-            //     setAddress(text)
-            //   }
-            // }}
-          />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.container}>
+        <MapView
+          style={styles.map}
+          region={region}
+          onRegionChangeComplete={handleRegionChangeComplete}
+        />
+        <View style={styles.markerFixed}>
+          <Ionicons name='location-sharp' size={40} color='#d00' />
         </View>
-      </View>
-      <TouchableOpacity
-        onPress={() => searchRef?.current.setAddressText('')}
-        style={{
-          backgroundColor: '#000',
-          height: 40,
-          width: '100%',
-          justifyContent: 'center',
-          marginBottom: 20
-        }}
-      >
-        <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
-          {t('clear_search')}
-        </TextDefault>
-      </TouchableOpacity>
-      <Button title={t('next_drop_off')} onPress={handleNavigation} />
-    </View>
+        <View style={styles.wrapper}>
+          <View style={styles.inputContainer}>
+            <TextDefault
+              bolder
+              style={{
+                ...styles.title,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {t('FromPlace')}
+            </TextDefault>
+            <GooglePlacesAutocomplete
+              ref={searchRef}
+              placeholder={t('search')}
+              fetchDetails
+              onPress={(data, details = null) => {
+                const lat = details?.geometry?.location.lat || 0
+                const lng = details?.geometry?.location.lng || 0
+                setPlace({ lat, lng })
+                setRegion({ ...region, latitude: lat, longitude: lng })
+                // setAddress(data.description)
+              }}
+              query={{
+                key: GOOGLE_MAPS_KEY,
+                language: 'ar',
+                sessiontoken: sessionToken
+              }}
+              styles={{
+                container: { flex: 0 },
+                textInput: { height: 44, fontSize: 16 }
+              }}
+            />
+            <View style={styles.inputContainer}>
+              <TextDefault
+                style={{
+                  ...styles.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('helpful_information')}
+              </TextDefault>
+              <TextInput
+                placeholder={t('better_place_description')}
+                value={addressFreeText}
+                onChangeText={(text) => {
+                  setAddressFreeText(text)
+                }}
+                style={styles.input}
+                multiline
+                numberOfLines={4}
+                textAlignVertical='top'
+              />
+            </View>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() => searchRef?.current.setAddressText('')}
+          style={{
+            backgroundColor: '#000',
+            height: 40,
+            width: '100%',
+            justifyContent: 'center',
+            marginBottom: 20
+          }}
+        >
+          <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
+            {t('clear_search')}
+          </TextDefault>
+        </TouchableOpacity>
+        <Button title={t('next_drop_off')} onPress={handleNavigation} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingBottom: 25
   },
   map: {
     height: mapHeight,
@@ -167,6 +196,10 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginTop: 20
+  },
+  input: {
+    backgroundColor: '#fff',
+    height: 70
   },
   markerFixed: {
     position: 'absolute',

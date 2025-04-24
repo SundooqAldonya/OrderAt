@@ -4,8 +4,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 const initialState = {
   addressFrom: null,
   regionFrom: null,
+  addressFreeTextFrom: null,
   addressTo: null,
-  regionTo: null
+  regionTo: null,
+  addressFreeTextTo: null
 }
 
 const requestDeliverySlice = createSlice({
@@ -16,11 +18,13 @@ const requestDeliverySlice = createSlice({
       console.log({ action })
       state.addressFrom = action.payload.addressFrom
       state.regionFrom = action.payload.regionFrom
+      state.addressFreeTextFrom = action.payload.addressFreeTextFrom
     },
     setAddressTo: (state, action) => {
       console.log({ action })
       state.addressTo = action.payload.addressTo
       state.regionTo = action.payload.regionTo
+      state.addressFreeTextTo = action.payload.addressFreeTextTo
     }
   }
 })

@@ -57,7 +57,7 @@ const RequestDelivery = () => {
       pickup_lng: pickupCoords?.longitude,
       dropoff_lat: dropOffCoords?.latitude,
       dropoff_lng: dropOffCoords?.longitude,
-      fare: 15.0, // mock
+      fare: deliveryFee, // mock
       estimated_time: 25, // mock in minutes
       distance_km: 8.2, // mock
       request_channel: 'customer_app',
@@ -84,13 +84,13 @@ const RequestDelivery = () => {
         >
           {pickupCoords && (
             <Marker coordinate={pickupCoords} title='Pickup'>
-              <Entypo name='location-pin' size={36} color={'red'} />
+              <Entypo name='location-pin' size={36} color={'green'} />
             </Marker>
           )}
           {dropOffCoords && (
             <Fragment>
               <Marker coordinate={dropOffCoords} title='Dropoff'>
-                <Entypo name='location' size={36} color={'red'} />
+                <Entypo name='location' size={36} color={'green'} />
               </Marker>
             </Fragment>
           )}
@@ -111,28 +111,26 @@ const RequestDelivery = () => {
             onPress={() => navigation.navigate('FromPlace')}
             style={styles.address}
           >
-            <TextDefault style={{ color: '#000' }}>
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
               {addressInfo.addressFrom}
             </TextDefault>
-          </TouchableOpacity>
-          {/* <GooglePlacesAutocomplete
-            placeholder={t('pick_up_location')}
-            onPress={(data, details) => {
-              const { lat, lng } = details.geometry.location
-              setPickupCoords({ latitude: lat, longitude: lng })
-            }}
-            fetchDetails
-            query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
-            styles={{
-              container: {
-                flex: 0,
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: '#000',
+                borderStyle: 'dashed',
                 marginTop: 10,
-                width: '100%',
-                marginHorizontal: 'auto'
-              }, // IMPORTANT: prevents it from taking full screen height
-              listView: { backgroundColor: 'white' }
-            }}
-          /> */}
+                marginBottom: 7
+              }}
+            />
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {addressInfo.addressFreeTextFrom}
+            </TextDefault>
+          </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
           <TextDefault
@@ -150,6 +148,20 @@ const RequestDelivery = () => {
           >
             <TextDefault style={{ color: '#000' }}>
               {addressInfo.addressTo}
+            </TextDefault>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: '#000',
+                borderStyle: 'dashed',
+                marginTop: 10,
+                marginBottom: 7
+              }}
+            />
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {addressInfo.addressFreeTextTo}
             </TextDefault>
           </TouchableOpacity>
         </View>

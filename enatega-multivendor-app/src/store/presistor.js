@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root', // Root key for AsyncStorage
   storage: AsyncStorage, // Use AsyncStorage
-  whitelist: ['city'] // Reducers to persist
+  whitelist: ['requestDelivery'] // Reducers to persist
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

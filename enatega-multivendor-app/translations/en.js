@@ -590,5 +590,7 @@ export const en = {
   next_drop_off: 'Next: Drop-off location',
   ToPlace: 'To place',
   clear_search: 'Clear search',
-  next_rest_information: 'Next: Rest of Information'
+  next_rest_information: 'Next: Rest of Information',
+  helpful_information: 'Helpful information',
+  better_place_description: 'Better place description'
 }

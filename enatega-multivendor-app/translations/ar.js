@@ -585,5 +585,7 @@ export const ar = {
   next_drop_off: 'التالي: موقع التسليم',
   ToPlace: 'المكان المراد التوجه إليه',
   clear_search: 'مسح البحث',
-  next_rest_information: 'التالي: بقية المعلومات'
+  next_rest_information: 'التالي: بقية المعلومات',
+  helpful_information: 'معلومات المكان',
+  better_place_description: 'وصف أدق للمكان'
 }
