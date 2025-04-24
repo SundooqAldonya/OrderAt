@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -19,6 +19,9 @@ import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
+import { useQuery } from '@apollo/client'
+import { getDeliveryCalculation } from '../../apollo/queries'
+import { Entypo } from '@expo/vector-icons'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
@@ -31,7 +34,19 @@ const RequestDelivery = () => {
   const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
   const { location } = useContext(LocationContext)
   const { control, handleSubmit, setValue, watch } = useForm()
-  const { getAddress } = useGeocoding()
+
+  const { data, loading, error } = useQuery(getDeliveryCalculation, {
+    variables: {
+      destLong: Number(addressInfo.regionTo.longitude),
+      destLat: Number(addressInfo.regionTo.latitude),
+      originLong: Number(addressInfo.regionFrom.longitude),
+      originLat: Number(addressInfo.regionFrom.latitude)
+    }
+  })
+
+  const deliveryFee = data?.getDeliveryCalculation?.amount || null
+
+  console.log({ data, loading, error })
 
   console.log({ addressInfo })
 
@@ -67,9 +82,17 @@ const RequestDelivery = () => {
             longitudeDelta: 0.02
           }}
         >
-          {pickupCoords && <Marker coordinate={pickupCoords} title='Pickup' />}
+          {pickupCoords && (
+            <Marker coordinate={pickupCoords} title='Pickup'>
+              <Entypo name='location-pin' size={36} color={'red'} />
+            </Marker>
+          )}
           {dropOffCoords && (
-            <Marker coordinate={dropOffCoords} title='Dropoff' />
+            <Fragment>
+              <Marker coordinate={dropOffCoords} title='Dropoff'>
+                <Entypo name='location' size={36} color={'red'} />
+              </Marker>
+            </Fragment>
           )}
         </MapView>
       </View>
@@ -196,7 +219,12 @@ const RequestDelivery = () => {
         /> */}
 
         {/* Urgency */}
-        <View style={styles.switchRow}>
+        <View
+          style={{
+            ...styles.switchRow,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }}
+        >
           <Text style={styles.label}>{t('is_urgent')}</Text>
           <Controller
             control={control}
@@ -210,12 +238,19 @@ const RequestDelivery = () => {
 
         {/* Fare Preview */}
         <View style={styles.fareBox}>
-          <Text>Estimated Fare: 15.00 EGP</Text>
-          <Text>ETA: 25 mins</Text>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
+              {t('deliveryFee')}: {deliveryFee} EGP
+            </Text>
+          )}
+
+          {/* <Text>ETA: 25 mins</Text> */}
         </View>
 
-        <TouchableOpacity>
-          <TextDefault style={{ color: '#000' }}>{t('submit')}</TextDefault>
+        <TouchableOpacity style={styles.submitButton}>
+          <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -278,5 +313,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 }
+  },
+  submitButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+    height: 40
   }
 })
