@@ -51,11 +51,11 @@ function MainRestaurantCard(props) {
                 {t(props?.title)}
               </TextDefault>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('MainRestaurantScreen', {
-                    restaurantData: props?.orders
-                  })
-                }
+                // onPress={() =>
+                //   navigation.navigate('MainRestaurantScreen', {
+                //     restaurantData: props?.orders
+                //   })
+                // }
                 style={styles().image}
               >
                 <Ionicons
