@@ -66,13 +66,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
 import UserContext from '../context/User'
-<<<<<<< HEAD
 import RequestDelivery from '../screens/RequestDelivery'
 import FromPlace from '../screens/RequestDelivery/FromPlace'
 import ToPlace from '../screens/RequestDelivery/ToPlace'
-=======
 import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
->>>>>>> ui-enhancement
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -279,7 +276,6 @@ function NoDrawer() {
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Favourite' component={Favourite} />
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
-<<<<<<< HEAD
       <NavigationStack.Screen
         name='RequestDelivery'
         options={{
@@ -301,9 +297,6 @@ function NoDrawer() {
         }}
         component={ToPlace}
       />
-=======
-      
->>>>>>> ui-enhancement
     </NavigationStack.Navigator>
   )
 }
