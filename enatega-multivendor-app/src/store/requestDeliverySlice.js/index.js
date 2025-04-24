@@ -2,7 +2,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialState = {
-  addressFrom: null
+  addressFrom: null,
+  regionFrom: null,
+  addressTo: null,
+  regionTo: null
 }
 
 const requestDeliverySlice = createSlice({
@@ -12,10 +15,16 @@ const requestDeliverySlice = createSlice({
     setAddressFrom: (state, action) => {
       console.log({ action })
       state.addressFrom = action.payload.addressFrom
+      state.regionFrom = action.payload.regionFrom
+    },
+    setAddressTo: (state, action) => {
+      console.log({ action })
+      state.addressTo = action.payload.addressTo
+      state.regionTo = action.payload.regionTo
     }
   }
 })
 
-export const { setAddressFrom } = requestDeliverySlice.actions
+export const { setAddressFrom, setAddressTo } = requestDeliverySlice.actions
 const requestDeliveryReducer = requestDeliverySlice.reducer
 export default requestDeliveryReducer

@@ -584,5 +584,6 @@ export const ar = {
   FromPlace: 'أختر المكان من',
   next_drop_off: 'التالي: موقع التسليم',
   ToPlace: 'المكان المراد التوجه إليه',
-  clear_search: 'مسح البحث'
+  clear_search: 'مسح البحث',
+  next_rest_information: 'التالي: بقية المعلومات'
 }

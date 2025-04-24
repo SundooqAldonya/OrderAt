@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
+import { setAddressFrom } from '../../store/requestDeliverySlice.js'
 
 const mapHeight = 400
 
@@ -40,9 +41,11 @@ export default function FromPlace() {
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const { getAddress } = useGeocoding()
 
-  const { addressFrom } = useSelector((state) => state.requestDelivery)
+  const { addressFrom, regionFrom } = useSelector(
+    (state) => state.requestDelivery
+  )
 
-  console.log({ region })
+  console.log({ addressFrom, regionFrom })
 
   const updateRegion = (newRegion) => {
     const isSameRegion =
@@ -58,7 +61,13 @@ export default function FromPlace() {
         .then((res) => {
           console.log({ res })
           if (res.formattedAddress) {
-            searchRef.current?.setAddressText(res.formattedAddress) // updates the GooglePlacesAutocomplete box
+            searchRef.current?.setAddressText(res.formattedAddress)
+            dispatch(
+              setAddressFrom({
+                addressFrom: res.formattedAddress,
+                regionFrom: newRegion
+              })
+            )
           }
         })
         .catch((err) => {
@@ -72,10 +81,13 @@ export default function FromPlace() {
     [updateRegion]
   )
 
+  const handleNavigation = () => {
+    navigation.navigate('ToPlace')
+  }
+
   return (
     <View style={styles.container}>
       <MapView
-        // ref={mapRef}
         style={styles.map}
         region={region}
         onRegionChangeComplete={handleRegionChangeComplete}
@@ -137,15 +149,7 @@ export default function FromPlace() {
           {t('clear_search')}
         </TextDefault>
       </TouchableOpacity>
-      <Button
-        title={t('next_drop_off')}
-        onPress={() =>
-          navigation.navigate('ToLocationScreen', {
-            pickupLat: place.lat,
-            pickupLng: place.lng
-          })
-        }
-      />
+      <Button title={t('next_drop_off')} onPress={handleNavigation} />
     </View>
   )
 }

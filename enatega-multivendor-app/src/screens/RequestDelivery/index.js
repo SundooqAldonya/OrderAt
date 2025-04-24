@@ -17,19 +17,23 @@ import { LocationContext } from '../../context/Location'
 import { Controller, useForm } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
+import { useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
+  const navigation = useNavigation()
+  const addressInfo = useSelector((state) => state.requestDelivery)
   const isArabic = i18n.language === 'ar'
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const [pickupValue, setPickupValue] = useState('')
-  const [pickupCoords, setPickupCoords] = useState(null)
-  const [dropOffCoords, setDropOffCoords] = useState(null)
+  const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
+  const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
   const { location } = useContext(LocationContext)
   const { control, handleSubmit, setValue, watch } = useForm()
   const { getAddress } = useGeocoding()
 
-  console.log({ pickupCoords, dropOffCoords, location })
+  console.log({ addressInfo })
 
   const onSubmit = (data) => {
     const payload = {
@@ -59,8 +63,8 @@ const RequestDelivery = () => {
           region={{
             latitude: pickupCoords?.latitude || location.latitude,
             longitude: pickupCoords?.longitude || location.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02
           }}
         >
           {pickupCoords && <Marker coordinate={pickupCoords} title='Pickup' />}
@@ -80,7 +84,15 @@ const RequestDelivery = () => {
           >
             {t('pick_up_location')}
           </TextDefault>
-          <GooglePlacesAutocomplete
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FromPlace')}
+            style={styles.address}
+          >
+            <TextDefault style={{ color: '#000' }}>
+              {addressInfo.addressFrom}
+            </TextDefault>
+          </TouchableOpacity>
+          {/* <GooglePlacesAutocomplete
             placeholder={t('pick_up_location')}
             onPress={(data, details) => {
               const { lat, lng } = details.geometry.location
@@ -97,7 +109,7 @@ const RequestDelivery = () => {
               }, // IMPORTANT: prevents it from taking full screen height
               listView: { backgroundColor: 'white' }
             }}
-          />
+          /> */}
         </View>
         <View style={styles.inputContainer}>
           <TextDefault
@@ -109,24 +121,14 @@ const RequestDelivery = () => {
           >
             {t('drop_off_location')}
           </TextDefault>
-          <GooglePlacesAutocomplete
-            placeholder={t('drop_off_location')}
-            onPress={(data, details) => {
-              const { lat, lng } = details.geometry.location
-              setDropOffCoords({ latitude: lat, longitude: lng })
-            }}
-            fetchDetails
-            query={{ key: GOOGLE_MAPS_KEY, language: 'ar' }}
-            styles={{
-              container: {
-                flex: 0,
-                marginTop: 10,
-                width: '100%',
-                marginHorizontal: 'auto'
-              }, // IMPORTANT: prevents it from taking full screen height
-              listView: { backgroundColor: 'white' }
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ToPlace')}
+            style={styles.address}
+          >
+            <TextDefault style={{ color: '#000' }}>
+              {addressInfo.addressTo}
+            </TextDefault>
+          </TouchableOpacity>
         </View>
 
         {/* Item Description */}
@@ -265,5 +267,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     borderRadius: 8,
     marginBottom: 20
+  },
+  address: {
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 }
   }
 })
