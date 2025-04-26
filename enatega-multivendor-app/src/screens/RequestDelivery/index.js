@@ -22,6 +22,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@apollo/client'
 import { getDeliveryCalculation } from '../../apollo/queries'
 import { Entypo } from '@expo/vector-icons'
+import FromIcon from '../../assets/from_request_delivery.jpeg'
+import ToIcon from '../../assets/to_request_delivery.jpeg'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()

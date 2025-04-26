@@ -451,15 +451,14 @@ function Main(props) {
                     showsHorizontalScrollIndicator={false}
                   >
                     {/* the first section */}
-<<<<<<< HEAD
-                    <ScrollView
+
+                    {/* <ScrollView
                       contentContainerStyle={styles().mainItemsContainer}
                       horizontal
-                    >
-=======
+                    > */}
+
                     {/* البقالة و توصيل الطعام */}
                     {/* <View style={styles().mainItemsContainer}>
->>>>>>> ui-enhancement
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() =>
@@ -496,38 +495,7 @@ function Main(props) {
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles().mainItem}
-                        onPress={() => navigation.navigate('FromPlace')}
-                      >
-                        <View>
-                          <TextDefault
-                            H4
-                            bolder
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemName,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('RequestDelivery')}
-                          </TextDefault>
-                          <TextDefault
-                            Normal
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemDescription,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('OrderfoodLove')}
-                          </TextDefault>
-                        </View>
-                        <Image
-                          source={require('../../assets/images/ItemsList/menu-new.png')}
-                          style={styles().popularMenuImg}
-                        />
-                      </TouchableOpacity>
+                      
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() =>
@@ -564,12 +532,44 @@ function Main(props) {
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>
-<<<<<<< HEAD
-                    </ScrollView>
-=======
-                    </View> */}
->>>>>>> ui-enhancement
 
+                    </ScrollView>
+
+                    </View> */}
+                    <View style={{ marginVertical: 20 }}>
+                      <TouchableOpacity
+                        style={styles().mainItem}
+                        onPress={() => navigation.navigate('FromPlace')}
+                      >
+                        <View>
+                          <TextDefault
+                            H4
+                            bolder
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemName,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('RequestDelivery')}
+                          </TextDefault>
+                          <TextDefault
+                            Normal
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemDescription,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('OrderfoodLove')}
+                          </TextDefault>
+                        </View>
+                        <Image
+                          source={require('../../assets/images/ItemsList/menu-new.png')}
+                          style={styles().popularMenuImg}
+                        />
+                      </TouchableOpacity>
+                    </View>
                     {/* the second section */}
 
                     <View style={{ marginTop: 20 }}>
