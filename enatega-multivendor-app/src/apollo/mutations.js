@@ -410,3 +410,10 @@ export const submitEmailOTP = gql`
     }
   }
 `
+export const createDeliveryRequest = gql`
+  mutation CreateDeliveryRequest($input: CreateDeliveryRequestInput!) {
+    createDeliveryRequest(input: $input) {
+      message
+    }
+  }
+`

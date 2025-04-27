@@ -19,11 +19,13 @@ import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { getDeliveryCalculation } from '../../apollo/queries'
 import { Entypo } from '@expo/vector-icons'
 import FromIcon from '../../assets/from_request_delivery.jpeg'
 import ToIcon from '../../assets/to_request_delivery.jpeg'
+import { createDeliveryRequest } from '../../apollo/mutations'
+import Toast from 'react-native-toast-message'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
@@ -35,7 +37,40 @@ const RequestDelivery = () => {
   const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
   const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
   const { location } = useContext(LocationContext)
-  const { control, handleSubmit, setValue, watch } = useForm()
+  const [isUrgent, setIsUrgent] = useState(false)
+  const [notes, setNotes] = useState('')
+
+  const [mutate] = useMutation(createDeliveryRequest, {
+    onCompleted: (data) => {
+      console.log({ data })
+      Toast.show({
+        type: 'success',
+        text1: t('success'),
+        text2: t(data.createDeliveryRequest.message),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      navigation.navigate('Main')
+    },
+    onError: (err) => {
+      console.log({ err })
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: t('somethingWentWrong'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+    }
+  })
 
   const { data, loading, error } = useQuery(getDeliveryCalculation, {
     variables: {
@@ -52,24 +87,52 @@ const RequestDelivery = () => {
 
   console.log({ addressInfo })
 
-  const onSubmit = (data) => {
-    const payload = {
-      ...data,
-      pickup_lat: pickupCoords?.latitude,
-      pickup_lng: pickupCoords?.longitude,
-      dropoff_lat: dropOffCoords?.latitude,
-      dropoff_lng: dropOffCoords?.longitude,
-      fare: deliveryFee, // mock
-      estimated_time: 25, // mock in minutes
-      distance_km: 8.2, // mock
-      request_channel: 'customer_app',
-      payment_method: 'cash',
-      payment_status: 'pending',
-      status: 'pending',
-      is_urgent: data.is_urgent || false,
-      priority_level: data.priority_level || 'standard'
+  const validate = () => {
+    if (!notes) {
+      Toast.show({
+        type: 'error',
+        text1: t('important_field'),
+        text2: t('notes_required'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      return false
     }
-    console.log('Submitting payload:', payload)
+    return true
+  }
+
+  const handleSubmit = () => {
+    if (validate()) {
+      const payload = {
+        pickupLat: +pickupCoords?.latitude,
+        pickupLng: +pickupCoords?.longitude,
+        pickupAddressText: addressInfo.addressFreeTextFrom,
+        dropoffLat: +dropOffCoords?.latitude,
+        dropoffLng: +dropOffCoords?.longitude,
+        dropoffAddressText: addressInfo.addressFreeTextTo,
+        deliveryFee,
+        requestChannel: 'customer_app',
+        is_urgent: isUrgent,
+        notes
+      }
+      console.log('Submitting payload:', payload)
+
+      mutate({
+        variables: {
+          input: {
+            ...payload
+          }
+        }
+      })
+    }
+  }
+
+  const toggleSwitch = () => {
+    setIsUrgent(!isUrgent)
   }
 
   return (
@@ -181,56 +244,11 @@ const RequestDelivery = () => {
         <TextInput
           placeholder={t('item_description_notes')}
           style={styles.textArea}
-          onChangeText={(text) => setValue('item_description', text)}
+          onChangeText={(text) => setNotes(text)}
           multiline
           numberOfLines={4}
           textAlignVertical='top'
         />
-
-        {/* Notes */}
-        {/* <TextInput
-          placeholder={t('notes_for_mandoob')}
-          style={styles.input}
-          onChangeText={(text) => setValue('notes', text)}
-        /> */}
-
-        {/* Vehicle Type */}
-        {/* <Text style={styles.label}>{t('vehicle_type')}</Text>
-        <Controller
-          control={control}
-          name='vehicle_type'
-          defaultValue='motorcycle'
-          render={({ field: { onChange, value } }) => (
-            <Picker
-              selectedValue={value}
-              onValueChange={onChange}
-              style={styles.picker}
-            >
-              <Picker.Item label='Motorcycle' value='motorcycle' />
-              <Picker.Item label='Car' value='car' />
-              <Picker.Item label='Van' value='van' />
-            </Picker>
-          )}
-        /> */}
-
-        {/* Priority */}
-        {/* <Text style={styles.label}>{t('priority')}</Text>
-        <Controller
-          control={control}
-          name='priority_level'
-          defaultValue='standard'
-          render={({ field: { onChange, value } }) => (
-            <Picker
-              selectedValue={value}
-              onValueChange={onChange}
-              style={styles.picker}
-            >
-              <Picker.Item label='Standard' value='standard' />
-              <Picker.Item label='Express' value='express' />
-              <Picker.Item label='Bulk' value='bulk' />
-            </Picker>
-          )}
-        /> */}
 
         {/* Urgency */}
         <View
@@ -240,14 +258,8 @@ const RequestDelivery = () => {
           }}
         >
           <Text style={styles.label}>{t('is_urgent')}</Text>
-          <Controller
-            control={control}
-            name='is_urgent'
-            defaultValue={false}
-            render={({ field: { onChange, value } }) => (
-              <Switch value={value} onValueChange={onChange} />
-            )}
-          />
+
+          <Switch value={isUrgent} onValueChange={toggleSwitch} />
         </View>
 
         {/* Fare Preview */}
@@ -263,7 +275,7 @@ const RequestDelivery = () => {
           {/* <Text>ETA: 25 mins</Text> */}
         </View>
 
-        <TouchableOpacity style={styles.submitButton}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
         </TouchableOpacity>
       </View>

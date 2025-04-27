@@ -286,14 +286,16 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='FromPlace'
         options={{
-          headerTitle: t('FromPlace')
+          headerTitle: t('FromPlace'),
+          headerRight: false
         }}
         component={FromPlace}
       />
       <NavigationStack.Screen
         name='ToPlace'
         options={{
-          headerTitle: t('ToPlace')
+          headerTitle: t('ToPlace'),
+          headerRight: false
         }}
         component={ToPlace}
       />

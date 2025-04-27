@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 const DeliveryRequestSchema = new mongoose.Schema({
-  request_id: { type: String, required: true, unique: true },
   customer_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -21,16 +20,8 @@ const DeliveryRequestSchema = new mongoose.Schema({
   distance_km: Number,
   status: {
     type: String,
-    enum: [
-      'pending',
-      'accepted',
-      'on_the_way',
-      'picked_up',
-      'delivered',
-      'cancelled',
-      'failed'
-    ],
-    default: 'pending'
+    enum: ['PENDING', 'ACCEPTED', 'PICKED', 'DELIVERED', 'CANCELLED'],
+    default: 'PENDING'
   },
   request_channel: {
     type: String,

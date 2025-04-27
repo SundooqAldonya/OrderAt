@@ -1645,13 +1645,10 @@ const typeDefs = gql`
     dropoffLat: Float!
     dropoffLng: Float!
     dropoffAddressText: String!
-    itemDescription: String
-    notes: String
+    deliveryFee: Float!
     requestChannel: RequestChannel!
-    paymentMethod: PaymentMethod!
-    priorityLevel: PriorityLevel
-    isUrgent: Boolean
-    scheduledAt: String
+    is_urgent: Boolean
+    notes: String
   }
 
   type Mutation {

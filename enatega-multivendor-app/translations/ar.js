@@ -589,5 +589,9 @@ export const ar = {
   helpful_information: 'معلومات المكان',
   better_place_description: 'وصف أدق للمكان',
   no_data: 'لا توجد بيانات',
-  try_change_location: 'جرب تغير الموقع'
+  try_change_location: 'جرب تغير الموقع',
+  success: 'العملية ناجحة',
+  created_request_delivery_successfully: 'تم الإنشاء بنجاح',
+  important_field: 'هام',
+  notes_required: 'وصف المنتج مطلوب'
 }

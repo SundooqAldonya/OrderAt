@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import {
   View,
   Button,
@@ -27,7 +27,7 @@ import {
   setAddressTo
 } from '../../store/requestDeliverySlice.js'
 
-const mapHeight = 400
+const mapHeight = 346
 
 export default function ToPlace() {
   const { location } = useContext(LocationContext)
@@ -49,6 +49,7 @@ export default function ToPlace() {
   const { getAddress } = useGeocoding()
   const [addressFreeText, setAddressFreeText] = useState('')
   const [formattedAddress, setFormattedAddress] = useState('')
+  const [initiated, setInitiated] = useState(false)
 
   const { addressTo, regionTo, addressFreeTextTo } = useSelector(
     (state) => state.requestDelivery
@@ -56,6 +57,23 @@ export default function ToPlace() {
   const state = useSelector((state) => state.requestDelivery)
 
   console.log({ state })
+
+  useEffect(() => {
+    if (!initiated) {
+      getAddress(region.latitude, region.longitude)
+        .then((res) => {
+          console.log({ res })
+          if (res.formattedAddress) {
+            searchRef.current?.setAddressText(res.formattedAddress)
+            setFormattedAddress(res.formattedAddress)
+            setInitiated(true)
+          }
+        })
+        .catch((err) => {
+          console.log({ err })
+        })
+    }
+  }, [initiated])
 
   const updateRegion = (newRegion) => {
     const isSameRegion =
@@ -154,7 +172,7 @@ export default function ToPlace() {
               </TextDefault>
               <TextInput
                 placeholder={t('better_place_description')}
-                value={addressFreeTextTo}
+                value={addressFreeText}
                 onChangeText={(text) => {
                   setAddressFreeText(text)
                 }}

@@ -594,5 +594,10 @@ export const en = {
   helpful_information: 'Helpful information',
   better_place_description: 'Better place description',
   no_data: 'No data found',
-  try_change_location: 'Try changing the location'
+  try_change_location: 'Try changing the location',
+  success: 'Success',
+  created_request_delivery_successfully:
+    'Request delivery created successfully!',
+  important_field: 'Important field',
+  notes_required: 'Notes is required'
 }
