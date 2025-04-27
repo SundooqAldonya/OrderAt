@@ -3,62 +3,66 @@ import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
 import { colors } from '../../../utils/colors'
-const { height } = Dimensions.get('window')
+const { height, width } = Dimensions.get('window')
+
 const styles = (props = null) =>
   StyleSheet.create({
-    // ML20: {
-    //   ...alignment.MLlarge
-    // },
-    offerScroll: {
-       height: height * 0.376,
-      width: '100%'
+    topbrandsSec: {
+      ...alignment.PLmedium
     },
-    ItemTitle: {
-      ...alignment.MRmedium
+    topbrandsHeading: {
+      ...alignment.PRmedium
     },
-    ItemDescription: {
-      fontWeight: '400',
-      marginTop: scale(5),
-      marginBottom: scale(7),
-      ...alignment.MRmedium
-    },
-    orderAgainSec: {
-      marginBottom: scale(30),
+    brandImg: {
+      width: '100%',
+      height: scale(200),
+      height: '100%',
+      borderRadius: 8,
+     },
+    topbrandsContainer: {
       flex: 1,
-      height: 270,
-      ...alignment.MLmedium
+      width: width - 30,
+      marginTop: scale(7),
+      marginBottom: scale(15)
     },
-    topPicksSec: {
-      ...alignment.MLmedium,
-      marginBottom: scale(30)
+    brandImgContainer: {
+      borderWidth: 1,
+      borderColor: '#E5E7EB',
+      borderRadius: 8,
+      height: scale(200),
+
+      // padding:scale(8),
+    },
+    brandName: {
+      marginTop: scale(5),
+      marginBottom: scale(2)
     },
     margin: {
       ...alignment.MLmedium,
       ...alignment.MBmedium
     },
     screenBackground: {
-      backgroundColor: props != null ? props.themeBackground : '#FFF'
+      backgroundColor: props != null ? props.themeBackground : '#FFF',
+      ...alignment.PBlarge
     },
     placeHolderFadeColor: {
       backgroundColor: props != null ? props.fontSecondColor : '#B8B8B8'
     },
-    placeHolderContainer: {
+    brandsPlaceHolderContainer: {
       backgroundColor: props != null ? props.cartContainer : '#B8B8B8',
       borderRadius: scale(3),
-      elevation: scale(3),
-      marginBottom: scale(12),
-      padding: scale(12)
+      paddingHorizontal: scale(20)
     },
-    height200: {
-      height: scale(200)
+    height80: {
+      height: scale(80)
     },
     image: {
       backgroundColor: colors.lightGray,
-       borderRadius: 10,
+      borderRadius: 10,
       marginHorizontal: 5,
       paddingHorizontal: 5,
-      alignItems:'center',
-      justifyContent:'center',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     image1: {
       // width: 30,
@@ -67,7 +71,7 @@ const styles = (props = null) =>
     noDataTextWrapper: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     noDataText: {
       fontSize: 18,

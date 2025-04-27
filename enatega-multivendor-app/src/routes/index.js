@@ -67,7 +67,8 @@ import { colors } from '../utils/colors'
 import { useTranslation } from 'react-i18next'
 import UserContext from '../context/User'
 import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
-
+import { TopBrandsScreen } from '../components/Main/TopBrandsScreen'
+ 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
 const SideDrawer = createDrawerNavigator()
@@ -177,9 +178,14 @@ function NoDrawer() {
       <NavigationStack.Screen name='Menu' component={Menu} />
 
       <NavigationStack.Screen
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
         name='MainRestaurantScreen'
         component={MainRestaurantScreen}
+      />
+      <NavigationStack.Screen
+        // options={{ headerShown: false }}
+        name='TopBrandsScreen'
+        component={TopBrandsScreen}
       />
 
       <NavigationStack.Screen
@@ -272,7 +278,6 @@ function NoDrawer() {
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Favourite' component={Favourite} />
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
-      
     </NavigationStack.Navigator>
   )
 }

@@ -62,11 +62,13 @@ const styles = (props = null) =>
       backgroundColor: colors.lightGray,
       borderRadius: 10,
       marginHorizontal: 5,
-      paddingHorizontal: 5
+      paddingHorizontal: 5,
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     image1: {
-      width: 30,
-      height: 30
+      // width: 30,
+      // height: 30
     },
     noDataTextWrapper: {
       flex: 1,
