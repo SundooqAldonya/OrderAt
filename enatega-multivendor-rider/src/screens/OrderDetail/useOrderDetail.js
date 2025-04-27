@@ -17,6 +17,8 @@ const useOrderDetail = () => {
   const [distance, setDistance] = useState(null)
   const [duration, setDuration] = useState(null)
 
+  console.log({ orderAddress: order.restaurant })
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: null,
@@ -37,18 +39,19 @@ const useOrderDetail = () => {
       setOrder(assignedOrders.find(o => o._id === orderID))
     }
   }, [loadingAssigned, assignedOrders])
+
   const deliveryAddressPin = {
     label: 'Delivery Address',
     location: {
-      latitude: +order?.deliveryAddress.location.coordinates[1] || 0,
-      longitude: +order?.deliveryAddress.location.coordinates[0] || 0
+      latitude: +order?.deliveryAddress?.location?.coordinates[1] || 0,
+      longitude: +order?.deliveryAddress?.location?.coordinates[0] || 0
     }
   }
   const restaurantAddressPin = {
     label: 'Restaurant Address',
     location: {
-      latitude: +order?.restaurant.location.coordinates[1] || 0,
-      longitude: +order?.restaurant.location.coordinates[0] || 0
+      latitude: +order?.restaurant?.location?.coordinates[1] || 0,
+      longitude: +order?.restaurant?.location?.coordinates[0] || 0
     }
   }
   const locationPin = {

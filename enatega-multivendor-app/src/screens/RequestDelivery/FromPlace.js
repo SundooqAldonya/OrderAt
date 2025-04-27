@@ -210,7 +210,7 @@ export default function FromPlace() {
                 textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              {t('FromPlace')}
+              {t('search_place')}
             </TextDefault>
             <GooglePlacesAutocomplete
               ref={searchRef}
@@ -221,7 +221,7 @@ export default function FromPlace() {
                 const lng = details?.geometry?.location.lng || 0
                 setPlace({ lat, lng })
                 setRegion({ ...region, latitude: lat, longitude: lng })
-                // setAddress(data.description)
+                setFormattedAddress(data.description)
               }}
               query={{
                 key: GOOGLE_MAPS_KEY,

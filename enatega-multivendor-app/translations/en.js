@@ -587,6 +587,7 @@ export const en = {
   'is_urgent?': 'Is Urgent?',
   item_description_notes: 'Items description and notes to the mandoob',
   FromPlace: 'From place',
+  search_place: 'Search place',
   next_drop_off: 'Next: Drop-off location',
   ToPlace: 'To place',
   clear_search: 'Clear search',

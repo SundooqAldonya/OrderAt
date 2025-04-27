@@ -582,6 +582,7 @@ export const ar = {
   is_urgent: 'مستعجل',
   item_description_notes: 'وصف المنتجات والملاحظات للمندوب',
   FromPlace: 'أختر المكان من',
+  search_place: 'البحث عن المكان',
   next_drop_off: 'التالي: موقع التسليم',
   ToPlace: 'المكان المراد التوجه إليه',
   clear_search: 'مسح البحث',

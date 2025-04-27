@@ -98,8 +98,12 @@ export const riderOrders = `query RiderOrders{
         name
         username
       }
+      pickupLocation {
+        coordinates
+      }
+      pickupAddress
     }
-    }`
+  }`
 
 export const riderEarnings = `
   query RiderEarnings($riderEarningsId: String, $offset:Int) {

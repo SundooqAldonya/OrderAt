@@ -153,6 +153,18 @@ const orderSchema = new Schema(
     pickedImage: {
       url: String,
       publicId: String
+    },
+    pickupLocation: {
+      type: pointSchema,
+      default: { type: 'Point', coordinates: [0, 0] }
+    },
+    pickupAddress: {
+      type: String
+    },
+    type: {
+      type: String,
+      enum: ['restaurant', 'delivery_request'],
+      default: 'restaurant'
     }
   },
   { timestamps: true }

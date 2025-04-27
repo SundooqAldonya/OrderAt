@@ -269,8 +269,12 @@ const OrderDetails = ({ order }) => {
       <TouchableOpacity
         onPress={() =>
           openGoogleMaps({
-            latitude: order.restaurant.location.coordinates[1],
-            longitude: order.restaurant.location.coordinates[0]
+            latitude: order?.restaurant?.location?.coordinates
+              ? order?.restaurant?.location?.coordinates[1]
+              : null,
+            longitude: order?.restaurant?.location?.coordinates
+              ? order?.restaurant?.location?.coordinates[0]
+              : null
           })
         }>
         <View
@@ -369,8 +373,12 @@ const OrderDetails = ({ order }) => {
         <TouchableOpacity
           onPress={() =>
             openGoogleMaps({
-              latitude: order.deliveryAddress.location.coordinates[1],
-              longitude: order.deliveryAddress.location.coordinates[0]
+              latitude: order?.restaurant?.location?.coordinates
+                ? order?.restaurant?.location?.coordinates[1]
+                : null,
+              longitude: order?.restaurant?.location?.coordinates
+                ? order?.restaurant?.location?.coordinates[0]
+                : null
             })
           }>
           <TextDefault

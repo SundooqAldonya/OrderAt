@@ -100,8 +100,16 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 0}
           status={STATUS_ORDER[0]}
           order={order}
-          address={order.restaurant.address}
-          location={order.restaurant.location}
+          address={
+            order?.restaurant._id
+              ? order?.restaurant?.address
+              : order?.pickupAddress
+          }
+          location={
+            order?.restaurant._id
+              ? order?.restaurant?.location
+              : order?.pickupLocation?.location
+          }
           time={order.assignedAt ? formatTime(order.assignedAt) : null}
         />
         <View
@@ -168,7 +176,7 @@ const StatusRow = ({
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
 
-  console.log({ location })
+  console.log({ location, address })
 
   return (
     <View
@@ -195,8 +203,12 @@ const StatusRow = ({
             <TouchableOpacity
               onPress={() =>
                 openGoogleMaps({
-                  latitude: location.coordinates[1],
-                  longitude: location.coordinates[0]
+                  latitude: location?.coordinates
+                    ? location?.coordinates[1]
+                    : null,
+                  longitude: location?.coordinates
+                    ? location?.coordinates[0]
+                    : null
                 })
               }>
               <View

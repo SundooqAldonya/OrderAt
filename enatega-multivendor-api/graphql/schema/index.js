@@ -467,6 +467,9 @@ const typeDefs = gql`
     isRiderRinged: Boolean!
     instructions: String
     pickedImage: PickedImage
+    pickupLocation: Point
+    pickupAddress: String
+    type: String
   }
 
   type PickedImage {
@@ -485,10 +488,10 @@ const typeDefs = gql`
   }
 
   type RestaurantDetail {
-    _id: ID!
-    name: String!
-    image: String!
-    address: String!
+    _id: ID
+    name: String
+    image: String
+    address: String
     location: Point
     slug: String
     keywords: [String]
@@ -1642,9 +1645,11 @@ const typeDefs = gql`
     pickupLat: Float!
     pickupLng: Float!
     pickupAddressText: String!
+    pickupAddressFreeText: String
     dropoffLat: Float!
     dropoffLng: Float!
     dropoffAddressText: String!
+    dropoffAddressFreeText: String
     deliveryFee: Float!
     requestChannel: RequestChannel!
     is_urgent: Boolean

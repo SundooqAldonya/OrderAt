@@ -28,6 +28,8 @@ const OrderDetail = () => {
     orderID
   } = useOrderDetail()
 
+  console.log({ order })
+
   return (
     <SafeAreaView>
       <ScrollView

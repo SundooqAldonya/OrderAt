@@ -169,7 +169,7 @@ module.exports = {
           orderStatus: 'ACCEPTED',
           rider: null
         }).sort({ preparationTime: -1 })
-
+        console.log({ ordersRider: orders })
         // await sendPushNotification(rider.notificationToken, orders[0])
         // const orders = await findOrdersWithinRadius(rider, 1)
 

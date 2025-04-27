@@ -17,7 +17,7 @@ import useEnvVars from '../../../environment'
 import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { Ionicons } from '@expo/vector-icons'
+import { Entypo, Ionicons } from '@expo/vector-icons'
 import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
@@ -26,14 +26,16 @@ import {
   setAddressFrom,
   setAddressTo
 } from '../../store/requestDeliverySlice.js'
+import * as Location from 'expo-location'
 
-const mapHeight = 346
+const mapHeight = 300
 
 export default function ToPlace() {
   const { location } = useContext(LocationContext)
   const { i18n, t } = useTranslation()
   const dispatch = useDispatch()
   const searchRef = useRef()
+  const mapRef = useRef()
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const [place, setPlace] = useState({ lat: 0, lng: 0 })
@@ -115,6 +117,49 @@ export default function ToPlace() {
     navigation.navigate('RequestDelivery')
   }
 
+  const getCurrentPositionNav = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
+        })
+        return
+      }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 1000,
+        timeout: 1000
+      })
+      console.log('Current Position:', position.coords)
+
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+          if (mapRef.current) {
+            mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+          }
+          if (res.formattedAddress) {
+            searchRef.current?.setAddressText(res.formattedAddress)
+            setFormattedAddress(res.formattedAddress)
+          }
+        }
+      )
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -122,6 +167,7 @@ export default function ToPlace() {
     >
       <ScrollView style={styles.container}>
         <MapView
+          ref={mapRef}
           style={styles.map}
           region={region}
           onRegionChangeComplete={handleRegionChangeComplete}
@@ -129,6 +175,33 @@ export default function ToPlace() {
         <View style={styles.markerFixed}>
           <Ionicons name='location-sharp' size={40} color='#d00' />
         </View>
+        <TouchableOpacity
+          style={styles.currentLocationWrapper}
+          onPress={getCurrentPositionNav}
+        >
+          <View
+            style={{
+              alignSelf: 'center',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 10
+            }}
+          >
+            <TextDefault bolder Left style={{ color: '#000' }}>
+              {t('useCurrentLocation')}
+            </TextDefault>
+            <Entypo name='location' size={15} color={'green'} />
+          </View>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: 'green',
+              width: 150,
+              marginTop: 10
+            }}
+          />
+        </TouchableOpacity>
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
             <TextDefault
@@ -149,7 +222,7 @@ export default function ToPlace() {
                 const lng = details?.geometry?.location.lng || 0
                 setPlace({ lat, lng })
                 setRegion({ ...region, latitude: lat, longitude: lng })
-                // setAddress(data.description)
+                setFormattedAddress(data.description)
               }}
               query={{
                 key: GOOGLE_MAPS_KEY,
@@ -233,5 +306,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16
+  },
+  currentLocationWrapper: {
+    flexDirection: 'column',
+    marginTop: 20,
+    alignItems: 'center'
   }
 })
