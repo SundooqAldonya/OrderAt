@@ -436,8 +436,8 @@ export const ar = {
   voucherDiscount: 'خصم القسيمة',
   addVoucher: 'إضافة كود القسيمة',
   signUpDiscount: 'اشتراك للحصول على الخصم',
-  foodDelivery: 'توصيل الطعام',
-  OrderfoodLove: 'طلب الطعام الذي تحب',
+  foodDelivery: 'أطلب طعام',
+  OrderfoodLove: 'وجبتك المفضله من مطعمك المفضل',
   grocery: 'البقالة',
   essentialsDeliveredFast: 'توصيل سريع للضروريات',
   cartClearWarning:
@@ -594,5 +594,6 @@ export const ar = {
   success: 'العملية ناجحة',
   created_request_delivery_successfully: 'تم الإنشاء بنجاح',
   important_field: 'هام',
-  notes_required: 'وصف المنتج مطلوب'
+  notes_required: 'وصف المنتج مطلوب',
+  order_from_anywhere: 'لتوصيل احتياجاتك بسرعه'
 }

@@ -17,61 +17,112 @@ import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import { colors } from '../../utils/colors'
 import TextDefault from '../Text/TextDefault/TextDefault'
-
-const datas = [
-  {
-    title: 'titleProfile',
-    icon: 'user',
-    navigateTo: 'Profile',
-    isAuth: true
-  },
-  {
-    title: 'myAddresses',
-    icon: 'location-pin',
-    navigateTo: 'Addresses',
-    isAuth: true
-  },
-  {
-    title: 'Favourite',
-    icon: 'heart',
-    navigateTo: 'Favourite',
-    isAuth: true
-  },
-  {
-    title: 'titleOrders',
-    icon: 'layers',
-    navigateTo: 'MyOrders',
-    isAuth: true
-  },
-  {
-    title: 'requestDeliveryTitle',
-    icon: 'location-pin',
-    navigateTo: 'FromPlace',
-    isAuth: true
-  },
-  {
-    title: 'titleSettings',
-    icon: 'settings',
-    navigateTo: 'Settings',
-    isAuth: true
-  },
-  {
-    title: 'titleHelp',
-    icon: 'question',
-    navigateTo: 'Help',
-    isAuth: true
-  }
-]
+import { SimpleLineIcons } from '@expo/vector-icons'
+import { verticalScale } from '../../utils/scaling'
+import MandoobImg from '../../assets/delivery_dark.png'
+import { Image } from 'react-native'
 
 function SidebBar(props) {
   const Analytics = analytics()
 
   const { t } = useTranslation()
-
-  const inset = useSafeAreaInsets()
-  const { isLoggedIn, logout } = useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
+  const datas = [
+    {
+      title: 'titleProfile',
+      // icon: 'user',
+      icon: (
+        <SimpleLineIcons
+          name={'user'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'Profile',
+      isAuth: true
+    },
+    {
+      title: 'myAddresses',
+      // icon: 'location-pin',
+      icon: (
+        <SimpleLineIcons
+          name={'location-pin'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'Addresses',
+      isAuth: true
+    },
+    {
+      title: 'Favourite',
+      // icon: 'heart',
+      icon: (
+        <SimpleLineIcons
+          name={'heart'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'Favourite',
+      isAuth: true
+    },
+    {
+      title: 'titleOrders',
+      // icon: 'layers',
+      icon: (
+        <SimpleLineIcons
+          name={'layers'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'MyOrders',
+      isAuth: true
+    },
+    {
+      title: 'requestDeliveryTitle',
+      // icon: 'location-pin',
+      icon: (
+        <View>
+          <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
+        </View>
+      ),
+      navigateTo: 'FromPlace',
+      isAuth: true
+    },
+    {
+      title: 'titleSettings',
+      // icon: 'settings',
+      icon: (
+        <SimpleLineIcons
+          name={'settings'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'Settings',
+      isAuth: true
+    },
+    {
+      title: 'titleHelp',
+      // icon: 'question',
+      icon: (
+        <SimpleLineIcons
+          name={'question'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'Help',
+      isAuth: true
+    }
+  ]
+  const inset = useSafeAreaInsets()
+  const { isLoggedIn, logout } = useContext(UserContext)
+
   const [modalVisible, setModalVisible] = useState(false)
 
   const handleCancel = () => {
@@ -147,7 +198,14 @@ function SidebBar(props) {
             >
               <SideDrawerItems
                 onPress={logoutClick}
-                icon={'logout'}
+                // icon={'logout'}
+                icon={
+                  <SimpleLineIcons
+                    name={'logout'}
+                    size={verticalScale(18)}
+                    color={currentTheme.darkBgFont}
+                  />
+                }
                 title={t('titleLogout')}
               />
             </View>
@@ -165,7 +223,14 @@ function SidebBar(props) {
               >
                 <SideDrawerItems
                   onPress={() => props.navigation.navigate(datas[4].navigateTo)}
-                  icon={datas[4].icon}
+                  // icon={datas[4].icon}
+                  icon={
+                    <SimpleLineIcons
+                      name={datas[4].icon}
+                      size={verticalScale(18)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  }
                   title={t(datas[4].title)}
                 />
               </View>
@@ -181,7 +246,14 @@ function SidebBar(props) {
               >
                 <SideDrawerItems
                   onPress={() => props.navigation.navigate('CreateAccount')}
-                  icon={'login'}
+                  // icon={'login'}
+                  icon={
+                    <SimpleLineIcons
+                      name={'login'}
+                      size={verticalScale(18)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  }
                   title={t('login_or_create')}
                 />
               </View>

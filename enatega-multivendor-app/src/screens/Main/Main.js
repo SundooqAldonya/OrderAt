@@ -52,11 +52,11 @@ import TopBrandsLoadingUI from '../../components/Main/LoadingUI/TopBrandsLoading
 import Spinner from '../../components/Spinner/Spinner'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import MainModalize from '../../components/Main/Modalize/MainModalize'
-
 import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import DeliveryIcon from '../../assets/delivery_home.png'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -459,42 +459,7 @@ function Main(props) {
 
                     {/* البقالة و توصيل الطعام */}
                     {/* <View style={styles().mainItemsContainer}>
-                      <TouchableOpacity
-                        style={styles().mainItem}
-                        onPress={() =>
-                          navigation.navigate('Menu', {
-                            selectedType: 'restaurant'
-                          })
-                        }
-                      >
-                        <View>
-                          <TextDefault
-                            H4
-                            bolder
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemName,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('foodDelivery')}
-                          </TextDefault>
-                          <TextDefault
-                            Normal
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemDescription,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('OrderfoodLove')}
-                          </TextDefault>
-                        </View>
-                        <Image
-                          source={require('../../assets/images/ItemsList/menu-new.png')}
-                          style={styles().popularMenuImg}
-                        />
-                      </TouchableOpacity>
+                      
                       
                       <TouchableOpacity
                         style={styles().mainItem}
@@ -536,7 +501,50 @@ function Main(props) {
                     </ScrollView>
 
                     </View> */}
-                    <View style={{ marginVertical: 20 }}>
+                    <View
+                      style={{
+                        marginVertical: 20,
+                        marginHorizontal: 20,
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        gap: 20
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={styles().mainItem}
+                        onPress={() =>
+                          navigation.navigate('Menu', {
+                            selectedType: 'restaurant'
+                          })
+                        }
+                      >
+                        <View>
+                          <TextDefault
+                            H4
+                            bolder
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemName,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('foodDelivery')}
+                          </TextDefault>
+                          <TextDefault
+                            Normal
+                            textColor={currentTheme.fontThirdColor}
+                            style={{
+                              ...styles().ItemDescription,
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {t('OrderfoodLove')}
+                          </TextDefault>
+                        </View>
+                        <Image
+                          source={require('../../assets/images/ItemsList/menu-new.png')}
+                          style={styles().popularMenuImg}
+                        />
+                      </TouchableOpacity>
                       <TouchableOpacity
                         style={styles().mainItem}
                         onPress={() => navigation.navigate('FromPlace')}
@@ -561,12 +569,17 @@ function Main(props) {
                               textAlign: isArabic ? 'right' : 'left'
                             }}
                           >
-                            {t('OrderfoodLove')}
+                            {t('order_from_anywhere')}
                           </TextDefault>
                         </View>
                         <Image
-                          source={require('../../assets/images/ItemsList/menu-new.png')}
-                          style={styles().popularMenuImg}
+                          source={DeliveryIcon}
+                          style={{
+                            ...styles().popularMenuImg,
+                            width: 100,
+                            height: 100,
+                            marginInline: 'auto'
+                          }}
                         />
                       </TouchableOpacity>
                     </View>

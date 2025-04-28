@@ -600,5 +600,6 @@ export const en = {
   created_request_delivery_successfully:
     'Request delivery created successfully!',
   important_field: 'Important field',
-  notes_required: 'Notes is required'
+  notes_required: 'Notes is required',
+  order_from_anywhere: 'Order from anywhere'
 }

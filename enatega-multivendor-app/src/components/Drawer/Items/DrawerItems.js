@@ -19,11 +19,12 @@ function DrawerItems(props) {
         onPress={props.onPress}
       >
         <View style={styles(currentTheme).leftContainer}>
-          <SimpleLineIcons
+          {/* <SimpleLineIcons
             name={props.icon}
             size={verticalScale(18)}
             color={currentTheme.darkBgFont}
-          />
+          /> */}
+          {props.icon}
         </View>
         <View style={styles().rightContainer}>
           <TextDefault

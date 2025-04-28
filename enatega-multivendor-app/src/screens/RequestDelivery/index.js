@@ -22,10 +22,11 @@ import { useNavigation } from '@react-navigation/native'
 import { useMutation, useQuery } from '@apollo/client'
 import { getDeliveryCalculation } from '../../apollo/queries'
 import { Entypo } from '@expo/vector-icons'
-import FromIcon from '../../assets/from_request_delivery.jpeg'
-import ToIcon from '../../assets/to_request_delivery.jpeg'
+import FromIcon from '../../assets/delivery_from.png'
+import ToIcon from '../../assets/delivery_to.png'
 import { createDeliveryRequest } from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
+import { Image } from 'react-native'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
@@ -151,13 +152,19 @@ const RequestDelivery = () => {
         >
           {pickupCoords && (
             <Marker coordinate={pickupCoords} title='Pickup'>
-              <Entypo name='location-pin' size={36} color={'green'} />
+              <Image
+                source={FromIcon}
+                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+              />
             </Marker>
           )}
           {dropOffCoords && (
             <Fragment>
               <Marker coordinate={dropOffCoords} title='Dropoff'>
-                <Entypo name='location' size={36} color={'green'} />
+                <Image
+                  source={ToIcon}
+                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                />
               </Marker>
             </Fragment>
           )}
