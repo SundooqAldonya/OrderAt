@@ -93,7 +93,8 @@ export default function App() {
   // Theme Reducer
   const [theme, themeSetter] = useReducer(
     ThemeReducer,
-    systemTheme === 'dark' ? 'Dark' : 'Pink'
+    // systemTheme === 'dark' ? 'Dark' : 'Pink'
+    systemTheme === 'Pink'
   )
   const [isUpdating, setIsUpdating] = useState(false)
 
@@ -177,7 +178,8 @@ export default function App() {
 
   useEffect(() => {
     try {
-      themeSetter({ type: systemTheme === 'dark' ? 'Dark' : 'Pink' })
+      // themeSetter({ type: systemTheme === 'dark' ? 'Dark' : 'Pink' })
+      themeSetter({ type: systemTheme === 'Pink' })
     } catch (error) {
       // Error retrieving data
       console.log('Theme Error : ', error.message)
