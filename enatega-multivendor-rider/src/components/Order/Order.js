@@ -52,7 +52,7 @@ const Order = ({ order, orderAmount }) => {
           flexDirection: isArabic ? 'row-reverse' : 'row'
         }}>
         {order?.orderStatus === 'ACCEPTED' ||
-          order?.orderStatus === 'PICKED' ? (
+        order?.orderStatus === 'PICKED' ? (
           <View
             style={[
               styles.badge,
@@ -85,14 +85,16 @@ const Order = ({ order, orderAmount }) => {
                   ...styles.row
                 }}>
                 <TextDefault bolder H5>
-                  {order.restaurant.name}
+                  {order?.type && order.type === 'delivery_request'
+                    ? order?.user?.name
+                    : order?.restaurant?.name}
                 </TextDefault>
                 <TextDefault
                   style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
                   textColor={colors.fontSecondColor}>
-                  {t('businessName')}:
+                  {t('yourOrderFrom')}:
                 </TextDefault>
               </View>
               <View style={styles.row}>

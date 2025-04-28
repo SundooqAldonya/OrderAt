@@ -220,5 +220,6 @@ export const ar = {
   inactive_screen_message: 'قم بالتواصل مع اوردرات',
   capture_receipt_title: 'قم بإتخاذ صورة من الفاتورة',
   without_capture_receipt_title: 'لا تلتقط الإيصال',
-  okay: 'نعم'
+  okay: 'نعم',
+  customer_notes: 'ملاحظات العميل'
 }

@@ -470,6 +470,7 @@ const typeDefs = gql`
     pickupLocation: Point
     pickupAddress: String
     type: String
+    mandoobSpecialInstructions: String
   }
 
   type PickedImage {

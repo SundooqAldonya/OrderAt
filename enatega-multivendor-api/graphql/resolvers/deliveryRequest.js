@@ -20,6 +20,14 @@ module.exports = {
         )
         const estimatedTime = Math.ceil(distanceKm * 5) // simple logic
 
+        const deliveries = await DeliveryRequest.find()
+          .limit(1)
+          .sort({ _id: -1 })
+
+        const lastRequestId = deliveries[0].requestId
+          ? parseInt(deliveries[0].requestId.split('-')[1]) + 1
+          : 1
+
         const delivery = await DeliveryRequest.create({
           customer_id: req.user._id,
           pickup_lat: input.pickupLat,
@@ -36,7 +44,8 @@ module.exports = {
           distance_km: distanceKm,
           request_channel: input.requestChannel,
           priority_level: input.priorityLevel || 'standard',
-          is_urgent: input.isUrgent || false
+          is_urgent: input.isUrgent || false,
+          requestId: `mandoob-${lastRequestId}`
         })
 
         console.log({ delivery })
@@ -68,9 +77,8 @@ module.exports = {
         console.log({ zone })
 
         const order = new Order({
-          // orderId: newOrderId,
+          orderId: delivery.requestId,
           user: req.user._id,
-          // resId: null,
           orderStatus: 'ACCEPTED',
           orderAmount: input.deliveryFee,
           deliveryAddress: { ...address },
@@ -88,7 +96,8 @@ module.exports = {
           pickupAddress: delivery.pickup_address_text
             ? delivery.pickup_address_text
             : delivery.pickup_address_free_text,
-          type: 'delivery_request'
+          type: 'delivery_request',
+          mandoobSpecialInstructions: delivery.notes
         })
         await order.save()
         console.log({ order })

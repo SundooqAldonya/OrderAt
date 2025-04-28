@@ -102,6 +102,8 @@ export const riderOrders = `query RiderOrders{
         coordinates
       }
       pickupAddress
+      type
+      mandoobSpecialInstructions
     }
   }`
 

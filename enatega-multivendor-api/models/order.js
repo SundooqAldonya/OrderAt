@@ -165,6 +165,9 @@ const orderSchema = new Schema(
       type: String,
       enum: ['restaurant', 'delivery_request'],
       default: 'restaurant'
+    },
+    mandoobSpecialInstructions: {
+      type: String
     }
   },
   { timestamps: true }

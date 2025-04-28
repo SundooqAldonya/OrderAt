@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, Alert, Modal } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import styles from './style'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import colors from '../../../utilities/colors'
@@ -54,6 +54,8 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
       variables: { id: itemId, status: 'PICKED', file: null }
     })
   }
+
+  console.log({ type: order.type })
 
   return (
     <View style={styles.container}>
@@ -290,7 +292,9 @@ const OrderDetails = ({ order }) => {
             {t('yourOrderFrom')}
           </TextDefault>
           <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
-            {order.restaurant.name}
+            {order?.type && order.type === 'delivery_request'
+              ? order?.user?.name
+              : order?.restaurant?.name}
           </TextDefault>
         </View>
       </TouchableOpacity>
@@ -413,6 +417,34 @@ const OrderDetails = ({ order }) => {
           })`}
         </TextDefault>
       </View>
+      {order?.type && order?.type === 'delivery_request' ? (
+        <Fragment>
+          <View style={[styles.rowDisplay, { flexDirection: 'column' }]}>
+            <TextDefault
+              textColor={colors.fontSecondColor}
+              bold
+              H5
+              style={{
+                ...styles.col1,
+                textAlign: isArabic ? 'right' : 'left'
+              }}>
+              {t('customer_notes')}
+            </TextDefault>
+            <TextDefault
+              bolder
+              H5
+              textColor={colors.black}
+              style={{
+                ...styles.col2,
+                textAlign: isArabic ? 'right' : 'left'
+              }}>
+              {order?.mandoobSpecialInstructions
+                ? `${order?.mandoobSpecialInstructions}`
+                : 'N/A'}
+            </TextDefault>
+          </View>
+        </Fragment>
+      ) : null}
     </View>
   )
 }
