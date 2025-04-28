@@ -64,7 +64,12 @@ const Order = ({ order, orderAmount }) => {
           activeOpacity={0.8}
           style={[
             styles.container,
-            active === 'NewOrders' ? styles.bgPrimary : styles.bgWhite
+            // active === 'NewOrders' ? styles.bgPrimary : styles.bgWhite
+            order?.type && order.type === 'delivery_request'
+              ? { backgroundColor: '#187bcd' }
+              : active === 'NewOrders'
+              ? styles.bgPrimary
+              : styles.bgWhite
           ]}
           onPress={() => handlePress(order._id)}>
           {isArabic ? (
@@ -90,10 +95,13 @@ const Order = ({ order, orderAmount }) => {
                     : order?.restaurant?.name}
                 </TextDefault>
                 <TextDefault
-                  style={{ ...styles.rowItem1, textAlign: 'right' }}
+                  style={{
+                    ...styles.rowItem1,
+                    textAlign: 'right'
+                  }}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('yourOrderFrom')}:
                 </TextDefault>
               </View>
@@ -105,7 +113,7 @@ const Order = ({ order, orderAmount }) => {
                   style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('orderAmount')}:
                 </TextDefault>
               </View>
@@ -117,7 +125,7 @@ const Order = ({ order, orderAmount }) => {
                   style={{ ...styles.rowItem1, textAlign: 'right' }}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('paymentMethod')}:
                 </TextDefault>
               </View>
@@ -131,7 +139,7 @@ const Order = ({ order, orderAmount }) => {
                     style={{ ...styles.rowItem1, textAlign: 'right' }}
                     bolder
                     H5
-                    textColor={colors.fontSecondColor}>
+                    textColor={'#000'}>
                     {t('deliveryTime')}:
                   </TextDefault>
                 </View>
@@ -159,7 +167,7 @@ const Order = ({ order, orderAmount }) => {
                   style={styles.rowItem1}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('businessName')}:
                 </TextDefault>
               </View>
@@ -168,7 +176,7 @@ const Order = ({ order, orderAmount }) => {
                   style={styles.rowItem1}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('orderAmount')}:
                 </TextDefault>
                 <TextDefault
@@ -183,7 +191,7 @@ const Order = ({ order, orderAmount }) => {
                   style={styles.rowItem1}
                   bolder
                   H5
-                  textColor={colors.fontSecondColor}>
+                  textColor={'#000'}>
                   {t('paymentMethod')}:
                 </TextDefault>
                 <TextDefault style={styles.rowItem2} bolder H5>
@@ -196,7 +204,7 @@ const Order = ({ order, orderAmount }) => {
                     style={styles.rowItem1}
                     bolder
                     H5
-                    textColor={colors.fontSecondColor}>
+                    textColor={'#000'}>
                     {t('deliveryTime')}:
                   </TextDefault>
                   <TextDefault style={styles.rowItem2} bolder H5>
@@ -212,7 +220,7 @@ const Order = ({ order, orderAmount }) => {
           <View style={styles.row}>
             {active === 'NewOrders' && (
               <View style={[styles.row, styles.rowItem1, styles.timeLeft]}>
-                <TextDefault bold H6 textColor={colors.fontSecondColor}>
+                <TextDefault bold H6 textColor={'#000'}>
                   {t('timeLeft')}
                 </TextDefault>
                 <TextDefault bolder H2 style={styles.time}>

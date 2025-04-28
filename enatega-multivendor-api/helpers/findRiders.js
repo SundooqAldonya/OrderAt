@@ -111,7 +111,11 @@ const findRiders = {
           token: rider.notificationToken,
           notification: {
             title: `طلب جديد`,
-            body: `طلب جديد من ${order.restaurant.name}`
+            body: `طلب جديد من ${
+              order.type && order.type === 'delivery_request'
+                ? order.user.name
+                : order.restaurant.name
+            }`
           },
           data: {
             channelId: 'default',

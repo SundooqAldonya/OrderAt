@@ -1,6 +1,17 @@
-const { calculateDistance } = require('../../helpers/findRiders')
+const {
+  sendCustomerNotifications
+} = require('../../helpers/customerNotifications')
+const {
+  calculateDistance,
+  sendPushNotification
+} = require('../../helpers/findRiders')
+const {
+  publishToDispatcher,
+  publishToZoneRiders
+} = require('../../helpers/pubsub')
 const DeliveryRequest = require('../../models/deliveryRequest')
 const Order = require('../../models/order')
+const User = require('../../models/user')
 const Zone = require('../../models/zone')
 
 module.exports = {
@@ -100,7 +111,23 @@ module.exports = {
           mandoobSpecialInstructions: delivery.notes
         })
         await order.save()
-        console.log({ order })
+        const user = await User.findById(req.user._id)
+        const populatedOrder = await order.populate('user')
+        if (!order.isPickedUp) {
+          publishToZoneRiders(
+            populatedOrder.zone.toString(),
+            populatedOrder,
+            'new'
+          )
+          await sendPushNotification(
+            populatedOrder.zone.toString(),
+            populatedOrder
+          )
+        }
+        if (user && user.isOrderNotification) {
+          sendCustomerNotifications(populatedOrder.user, populatedOrder)
+        }
+        console.log({ populatedOrder })
         return { message: 'created_request_delivery_successfully' }
       } catch (err) {
         throw new Error(err)
