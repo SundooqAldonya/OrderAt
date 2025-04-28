@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { scale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -33,7 +34,7 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: props !== null ? props.newBorderColor : '#F3F4F6',
+      backgroundColor: colors.darkText,
       borderRadius:40,
       borderWidth:1,
       borderColor:props !== null ? props.iconBackground: '#fcfcfc',

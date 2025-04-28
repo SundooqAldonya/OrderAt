@@ -382,7 +382,7 @@ function ImageTextCenterHeader(props, ref) {
                     {aboutObject.restaurantName}
                   </TextDefault>
                 </View>
-                <View
+                {/* <View
                   style={{
                     display: 'flex',
                     flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -414,11 +414,12 @@ function ImageTextCenterHeader(props, ref) {
                       style={styles().restaurantAbout}
                       textColor={currentTheme.fontMainColor}
                     >
-                      {configuration.currencySymbol} {aboutObject.restaurantTax}{' '}
+                      {configuration.currencySymbol} {aboutObject.restaurantTax}
                       {t('tax')}
                     </TextDefault>
                   )}
-                </View>
+                </View> */}
+                {/* minimum */}
                 <View
                   style={{
                     display: 'flex',
@@ -427,13 +428,13 @@ function ImageTextCenterHeader(props, ref) {
                     marginTop: scale(5)
                   }}
                 >
+                  {/* minimum */}
                   {isArabic ? (
                     <TextDefault
                       style={styles().restaurantAbout}
                       textColor={currentTheme.fontMainColor}
                     >
-                      {' '}
-                      {aboutObject.restaurantMinOrder}{' '}
+                       {aboutObject.restaurantMinOrder}{' '}
                       {configuration.currencySymbol} {t('minimum')}
                     </TextDefault>
                   ) : (
@@ -445,7 +446,7 @@ function ImageTextCenterHeader(props, ref) {
                       {aboutObject.restaurantMinOrder} {t('minimum')}
                     </TextDefault>
                   )}
-                  <TextDefault
+                  {/* <TextDefault
                     style={styles().restaurantAbout}
                     textColor={currentTheme.fontMainColor}
                   >
@@ -456,8 +457,9 @@ function ImageTextCenterHeader(props, ref) {
                     textColor={currentTheme.fontMainColor}
                   >
                     {t('serviceFeeApply')}
-                  </TextDefault>
+                  </TextDefault> */}
                 </View>
+                {/* Review */}
                 <View
                   style={{
                     flexDirection: 'row',
@@ -488,7 +490,7 @@ function ImageTextCenterHeader(props, ref) {
                         fontSize: scale(16)
                       }}
                     >
-                      {aboutObject.average}
+                       {aboutObject.average}
                     </TextDefault>
                     <TextDefault
                       textColor={currentTheme.fontNewColor}
