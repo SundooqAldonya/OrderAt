@@ -769,7 +769,7 @@ function Restaurant(props) {
                       // flexGrow: 1,
                       // paddingTop: HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
                       // marginTop: HEADER_MIN_HEIGHT,
-                      //backgroundColor: 'blue'
+                       //backgroundColor: 'blue'
                     }
                     // zIndexAnimation
                   ]}
@@ -843,9 +843,9 @@ function Restaurant(props) {
                         <TextDefault
                           H3
                           style={{
-                            textAlign: isArabic ? 'right' : 'left',
-                            marginInlineEnd: isArabic ? 20 : 0,
-                            margin: 20
+                            // textAlign: isArabic ? 'right' : 'left',
+                            // marginInlineEnd: isArabic ? 20 : 0,
+                              margin: 5,
                           }}
                           textColor={currentTheme.fontFourthColor}
                           bolder

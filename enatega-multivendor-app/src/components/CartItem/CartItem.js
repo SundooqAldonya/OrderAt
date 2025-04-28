@@ -11,6 +11,7 @@ import { alignment } from '../../utils/alignment'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { IMAGE_LINK } from '../../utils/constants'
+import { colors } from '../../utils/colors'
 
 const CartItem = (props) => {
   const cartRestaurant = props.cartRestaurant
@@ -92,7 +93,7 @@ const CartItem = (props) => {
                     {props?.optionsTitle?.slice(0, 3)?.map((item, index) => (
                       <TextDefault
                         key={index}
-                        textColor={currentTheme.secondaryText}
+                        textColor={colors.darkLight}
                         Normal
                       >
                         {item}

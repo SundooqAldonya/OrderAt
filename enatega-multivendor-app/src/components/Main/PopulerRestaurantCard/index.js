@@ -30,7 +30,7 @@ const PROFILE = gql`
   ${profile}
 `
 
-function NewRestaurantCard(props) {
+function PopulerRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -75,7 +75,29 @@ function NewRestaurantCard(props) {
             source={{ uri: props.image }}
             style={styles().restaurantImage}
           />
-          {/* AddToFavorites */}
+        </View>
+      </View>
+
+      <View
+        style={{
+          ...styles().descriptionContainer
+        }}
+      >
+        <View
+          style={{
+            ...styles().aboutRestaurant,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }}
+        >
+          <TextDefault
+            H4
+            numberOfLines={1}
+            textColor={currentTheme.fontThirdColor}
+            bolder
+          >
+            {truncate(props.name, 15)}
+          </TextDefault>
+
           <View style={styles().overlayContainer}>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -100,79 +122,60 @@ function NewRestaurantCard(props) {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
 
-      <View
-        style={{
-          ...styles().descriptionContainer
-        }}
-      >
         <View
           style={{
-            ...styles().aboutRestaurant,
-            flexDirection: isArabic ? 'row-reverse' : 'row'
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
         >
           <TextDefault
-            H4
+            textColor={currentTheme.fontNewColor}
             numberOfLines={1}
-            textColor={currentTheme.fontThirdColor}
-            bolder
+            bold
+            Normal
+            // style={styles().offerCategoty}
           >
-            {/* {props.name} */}
-            {truncate(props.name, 15)}
+            {props?.tags?.join(',')}
           </TextDefault>
 
-          {props.reviewAverage > 0 ? (
-            <View
-              style={{
-                ...styles().aboutRestaurant,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
-              }}
-            >
-              <FontAwesome5
-                name='star'
-                size={18}
-                color={currentTheme.newFontcolor}
-              />
+          <View
+            style={{
+              ...styles().aboutRestaurant,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
+            <FontAwesome5
+              name='star'
+              size={18}
+              color={currentTheme.newFontcolor}
+            />
 
-              <TextDefault
-                textColor={currentTheme.fontThirdColor}
-                style={styles().restaurantRatingContainer}
-                bolder
-                H4
-              >
-                {props.reviewAverage}
-              </TextDefault>
-              <TextDefault
-                textColor={currentTheme.fontNewColor}
-                style={[
-                  styles().restaurantRatingContainer,
-                  styles().restaurantTotalRating
-                ]}
-                H5
-              >
-                ({props.reviewCount})
-              </TextDefault>
-            </View>
-          ) : (
-            <></>
-          )}
+            <TextDefault
+              textColor={currentTheme.fontThirdColor}
+              style={styles().restaurantRatingContainer}
+              bolder
+              H4
+            >
+              {props.reviewAverage}
+            </TextDefault>
+            <TextDefault
+              textColor={currentTheme.fontNewColor}
+              style={[
+                styles().restaurantRatingContainer,
+                styles().restaurantTotalRating
+              ]}
+              H5
+            >
+              ({props.reviewCount})
+            </TextDefault>
+          </View>
         </View>
-        <TextDefault
-          textColor={currentTheme.fontNewColor}
-          numberOfLines={1}
-          bold
-          Normal
-          style={styles().offerCategoty}
-        >
-          {props?.tags?.join(',')}
-        </TextDefault>
         <View
           style={{
             ...styles().deliveryInfo,
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            justifyContent: 'space-between'
+            flexDirection: isArabic ? 'row-reverse' : 'row'
           }}
         >
           <View style={styles().deliveryTime}>
@@ -192,32 +195,26 @@ function NewRestaurantCard(props) {
               {t('min')}
             </TextDefault>
           </View>
+          <View style={styles().deliveryTime}>
+            <MaterialCommunityIcons
+              name='bike'
+              size={16}
+              color={currentTheme.fontNewColor}
+            />
 
-          {props.tax > 0 ? (
-            <View style={styles().deliveryTime}>
-              <MaterialCommunityIcons
-                name='bike'
-                size={16}
-                color={currentTheme.fontNewColor}
-              />
-
-              <TextDefault
-                textColor={currentTheme.fontNewColor}
-                numberOfLines={1}
-                bold
-                Normal
-              >
-                {configuration.currency} {props.tax}
-              </TextDefault>
-            </View>
-          ) : (
-            <></>
-          )}
-          
+            <TextDefault
+              textColor={currentTheme.fontNewColor}
+              numberOfLines={1}
+              bold
+              Normal
+            >
+              {configuration.currency} {props.tax}
+            </TextDefault>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
   )
 }
 
-export default React.memo(NewRestaurantCard)
+export default React.memo(PopulerRestaurantCard)

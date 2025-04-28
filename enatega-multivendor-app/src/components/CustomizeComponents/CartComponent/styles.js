@@ -1,3 +1,4 @@
+import { colors } from '../../../utils/colors'
 import { verticalScale, scale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const { height } = Dimensions.get('window')
@@ -62,7 +63,7 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: props !== null ? props.newBorderColor : '#F3F4F6',
+      backgroundColor : colors.darkText,
       borderRadius:40,
       borderWidth:1,
       borderColor:props !== null ? props.iconBackground: '#fcfcfc',
@@ -83,6 +84,6 @@ const styles = (props = null) =>
     actionContainerView: {    
       justifyContent: 'center',
       alignItems: 'center',
-    },
+     },
   })
 export default styles

@@ -35,7 +35,8 @@ function MainRestaurantCard(props) {
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                marginBottom: 10
               }}
             >
               <TextDefault
@@ -48,14 +49,15 @@ function MainRestaurantCard(props) {
                   textAlign: isArabic ? 'right' : 'left'
                 }}
               >
-                {t(props?.title)}
+                {/* {t(props?.title)} */}
+                {t('mostOrderedNow')}
               </TextDefault>
               <TouchableOpacity
-                // onPress={() =>
-                //   navigation.navigate('MainRestaurantScreen', {
-                //     restaurantData: props?.orders
-                //   })
-                // }
+                onPress={() =>
+                  navigation.navigate('MainRestaurantScreen', {
+                    restaurantData: props?.orders
+                  })
+                }
                 style={styles().image}
               >
                 <Ionicons
@@ -67,7 +69,7 @@ function MainRestaurantCard(props) {
               </TouchableOpacity>
             </View>
 
-            <TextDefault
+            {/* <TextDefault
               Normal
               textColor={currentTheme.fontSecondColor}
               style={{
@@ -76,7 +78,7 @@ function MainRestaurantCard(props) {
               }}
             >
               {t('mostOrderedNow')}
-            </TextDefault>
+            </TextDefault> */}
 
             <FlatList
               style={styles().offerScroll}
@@ -88,7 +90,7 @@ function MainRestaurantCard(props) {
                   // alignSelf: 'center',
                   // alignItems: 'center',
                   // justifyContent: 'center',
-                  // backgroundColor: 'red'
+                  // backgroundColor: 'red',
                 }
               }
               showsVerticalScrollIndicator={false}

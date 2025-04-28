@@ -136,7 +136,7 @@ const styles = (props = null) =>
     },
     totalBillContainer: {
       width: '100%',
-      height: '20%',
+      height: '15%',
       backgroundColor: props !== null ? props.newheaderColor : '#90E36D',
       ...alignment.PLlarge,
       ...alignment.PRlarge

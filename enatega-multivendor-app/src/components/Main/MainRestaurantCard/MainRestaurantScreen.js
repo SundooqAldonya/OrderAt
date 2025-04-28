@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native'
+import React, { useLayoutEffect } from 'react'
+import { View, FlatList, Text } from 'react-native'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
@@ -7,82 +7,78 @@ import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
+import { scale } from '../../../utils/scaling'
+import { HeaderBackButton } from '@react-navigation/elements'
+import { MaterialIcons } from '@expo/vector-icons'
+import navigationService from '../../../routes/navigationService'
+import PopulerRestaurantCard from '../PopulerRestaurantCard'
+
 const MainRestaurantScreen = () => {
   const route = useRoute()
+  const navigation = useNavigation()
+
   const { restaurantData } = route.params || {}
-  console.log('---------restaurantData------', restaurantData?.length)
 
   const { i18n, t } = useTranslation()
   const { language } = i18n
-  const isArabic = language === 'ar'
-  return (
-    <View>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-
-          alignItems: 'center',
-          backgroundColor: 'red'
-        }}
-      >
-        <Text>jjjjjjjjjjjjjjjjjjjjjjjj</Text>
-      </View>
-
-      {/* <View style={styles().orderAgainSec}>
-        {restaurantData && restaurantData.length > 0 ? (
-          <>
+   useLayoutEffect(() => {
+    navigation.setOptions({
+      title: t('mostOrderedNow'),
+      headerRight: null,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        color: colors.dark,
+        fontWeight: 'bold'
+      },
+      headerTitleContainerStyle: {
+        marginTop: '2%',
+        paddingLeft: scale(25),
+        paddingRight: scale(25),
+        height: '75%',
+        marginLeft: 0
+      },
+      headerStyle: {
+        color: colors.white,
+        elevation: 0
+      },
+      headerLeft: () => (
+        <HeaderBackButton
+          truncatedLabel=''
+          backImage={() => (
             <View>
-              <TextDefault
-                Normal
-                textColor={colors.dark}
-                style={{
-                  ...styles().ItemDescription,
-                  textAlign: isArabic ? 'right' : 'left'
-                }}
-              >
-                {t('mostOrderedNow')}
-              </TextDefault>
-
-              <FlatList
-                style={styles().offerScroll}
-                inverted={isArabic}
-                contentContainerStyle={
-                  {
-                    flexGrow: 1,
-                    ...alignment.PRlarge,
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  backgroundColor: 'red'
-                  }
-                }
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                data={restaurantData}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => {
-                  return <NewRestaurantCard {...item} />
-                }}
-              />
+              <MaterialIcons name='arrow-back' size={30} color={colors.dark} />
             </View>
-          </>
-        ) : (
-          <View style={styles().noDataTextWrapper}>
-            <Icon name='warning' size={30} color={colors.secondaryOrange} />
-            <Text style={styles().noDataText}>{t('no_data')}</Text>
-            <Text
-              style={[
-                styles().noDataText,
-                { fontSize: 14, color: colors.secondaryOrange }
-              ]}
-            >
-              {t('try_change_location')}
-            </Text>
-          </View>
-        )}
-      </View> */}
+          )}
+          onPress={() => {
+            navigationService.goBack()
+          }}
+        />
+      )
+    })
+  }, [])
+  return (
+     <View
+      style={{
+        flex: 1
+      }}
+    >
+      <FlatList
+        // style={{ width: '100%' }}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        horizontal={false}
+        data={restaurantData}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{
+          // paddingBottom: 20,
+          // paddingTop: 10,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        renderItem={({ item }) => {
+          return <PopulerRestaurantCard {...item} />
+        }}
+      />
     </View>
   )
 }

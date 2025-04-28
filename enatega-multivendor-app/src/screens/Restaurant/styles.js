@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { textStyles } from '../../utils/textStyles'
 import { theme } from '../../utils/themeColors'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -24,7 +25,15 @@ const styles = (props = null) =>
       zIndex: 1
     },
     sectionHeader: {
-      backgroundColor: props != null ? props.themeBackground : '#fff'
+      backgroundColor: colors.lightGray,
+      elevation: 1,
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+      marginBottom: 5,
+      width: '95%',
+      borderRadius: 8
     },
     sectionHeaderText: {
       textTransform: 'capitalize',

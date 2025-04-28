@@ -93,7 +93,14 @@ function TopBrands(props) {
         >
           {t('topBrands')}
         </TextDefault>
-        <TouchableOpacity style={styles().image}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('TopBrandsScreen', {
+              topRatedVendorsPreview: data?.topRatedVendorsPreview
+            })
+          }
+          style={styles().image}
+        >
           <Ionicons
             name='arrow-back'
             size={scale(24)}

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Alert } from 'react-native'
 import styles from './styles'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
@@ -7,6 +7,8 @@ import TextDefault from '../../Text/TextDefault/TextDefault'
 import { AntDesign } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { useTranslation } from 'react-i18next'
+import Toast from 'react-native-toast-message';
+import { colors } from '../../../utils/colors'
 
 function CartComponent(props) {
   const { t } = useTranslation()
@@ -40,7 +42,7 @@ function CartComponent(props) {
         </TouchableOpacity>
 
         <View style={styles(currentTheme).actionContainerView}>
-          <TextDefault H5 bold textColor={currentTheme.black}>
+          <TextDefault H5 bold textColor={colors.dark}>
           {quantity}
           </TextDefault>
         </View>
@@ -56,7 +58,19 @@ function CartComponent(props) {
       </View>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={props.onPress.bind(this, quantity)}
+          // onPress={props.onPress.bind(this, quantity)}
+          onPress={() => {
+            props.onPress(quantity);
+            Toast.show({
+              type: 'success',
+              text1: 'تمت الإضافة بنجاح',
+              text2: 'المنتج أضيف إلى السلة 👌',
+              position: 'bottom',
+              visibilityTime: 3000, // 2 ثواني
+            });
+          }}
+       
+
           style={
             !props.disabled
               ? styles(currentTheme).btnContainer

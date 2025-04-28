@@ -70,6 +70,7 @@ import RequestDelivery from '../screens/RequestDelivery'
 import FromPlace from '../screens/RequestDelivery/FromPlace'
 import ToPlace from '../screens/RequestDelivery/ToPlace'
 import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
+import { TopBrandsScreen } from '../components/Main/TopBrandsScreen'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -181,9 +182,14 @@ function NoDrawer() {
       <NavigationStack.Screen name='Menu' component={Menu} />
 
       <NavigationStack.Screen
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
         name='MainRestaurantScreen'
         component={MainRestaurantScreen}
+      />
+      <NavigationStack.Screen
+        // options={{ headerShown: false }}
+        name='TopBrandsScreen'
+        component={TopBrandsScreen}
       />
 
       <NavigationStack.Screen
