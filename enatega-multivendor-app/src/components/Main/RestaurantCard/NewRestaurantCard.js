@@ -40,12 +40,12 @@ function NewRestaurantCard(props) {
   const currentTheme = theme[themeContext.ThemeValue]
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props._id) : false
-
+ 
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
   })
-
+ 
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
     // alert("favv list updated")
@@ -159,6 +159,7 @@ function NewRestaurantCard(props) {
             <></>
           )}
         </View>
+        {/* tags */}
         <TextDefault
           textColor={currentTheme.fontNewColor}
           numberOfLines={1}
@@ -175,6 +176,7 @@ function NewRestaurantCard(props) {
             justifyContent: 'space-between'
           }}
         >
+          {/* deliveryTime */}
           <View style={styles().deliveryTime}>
             <AntDesign
               name='clockcircleo'

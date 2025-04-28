@@ -32,7 +32,10 @@ const styles = (props = null) =>
       backgroundColor: '#F3F4F6',
       borderWidth: 1,
       borderColor: '#E5E7EB',
-      borderRadius: 8
+      borderRadius: 8,
+      borderBottomWidth: 0,
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0
       // padding:scale(8),
     },
     brandName: {

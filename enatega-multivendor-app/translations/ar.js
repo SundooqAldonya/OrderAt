@@ -322,7 +322,9 @@ export const ar = {
   message: 'رسالة',
   aptFloor: 'شقة | طابق',
   confirmPassword: 'تأكيد كلمة المرور',
-  specialInstructions: 'تعليمات خاصة',
+  specialInstructions: 'أضف أي طلبات خاصة هنا...',
+  specialInstructionsoptional: 'تعليمات خاصة (اختياري)',
+  Instructions: 'تعليمات',
   anySpecificPreferences: 'هل هناك تفضيلات محددة؟',
   optional: 'اختياري',
   noMayo: 'على سبيل المثال، بدون مايونيز',
@@ -573,5 +575,11 @@ export const ar = {
   your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان',
 
   no_data: 'لا توجد بيانات',
-  try_change_location: 'جرب تغير الموقع'
+  try_change_location: 'جرب تغير الموقع',
+  Add_a_message_for_the_restaurant: 'أضف رسالة للمطعم',
+  instructions: 'يرجى إعلامنا بأي طلبات خاصة، حساسيات، أو قيود غذائية.',
+  Add_message: 'اكتب رسالة',
+  Type_here: 'اكتب هنا',
+  courier_visibility_notice:
+    'نود إعلامك بأنه قد يتم مشاركة رسالتك مع عامل التوصيل الذي سيقوم بتسليم طلبك.'
 }
