@@ -1004,27 +1004,28 @@ module.exports = {
           Date.now() + restaurant.deliveryTime * 60 * 1000
         )
         order.acceptedAt = new Date()
-        const result = await order.save()
-        const user = await User.findById(result.user)
-        const transformedOrder = await transformOrder(result)
+        // const result = await order.save()
+        // const user = await User.findById(result.user)
+        // const transformedOrder = await transformOrder(result)
+        const transformedOrder = await transformOrder(order)
 
         console.log({ transformedOrder })
-        if (!transformedOrder.isPickedUp) {
-          publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-          // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-          await sendPushNotification(order.zone.toString(), order)
-        }
-        if (user && user.isOrderNotification) {
-          sendCustomerNotifications(transformedOrder.user, transformedOrder)
-        }
-        console.log('restaurant accepted order')
-        publishToUser(result.user.toString(), transformedOrder, 'update')
-        sendNotificationToCustomerWeb(
-          user.notificationTokenWeb,
-          `Order status: ${result.orderStatus}`,
-          `Order ID ${result.orderId}`
-        )
-        publishOrder(transformedOrder)
+        // if (!transformedOrder.isPickedUp) {
+        //   publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
+        //   // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+        //   await sendPushNotification(order.zone.toString(), order)
+        // }
+        // if (user && user.isOrderNotification) {
+        //   sendCustomerNotifications(transformedOrder.user, transformedOrder)
+        // }
+        // console.log('restaurant accepted order')
+        // publishToUser(result.user.toString(), transformedOrder, 'update')
+        // sendNotificationToCustomerWeb(
+        //   user.notificationTokenWeb,
+        //   `Order status: ${result.orderStatus}`,
+        //   `Order ID ${result.orderId}`
+        // )
+        // publishOrder(transformedOrder)
         // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {
@@ -1049,26 +1050,27 @@ module.exports = {
           Date.now() + restaurant.deliveryTime * 60 * 1000
         )
         order.acceptedAt = new Date()
-        const result = await order.save()
-        const user = await User.findById(result.user)
-        const transformedOrder = await transformOrder(result)
-        const populatedOrder = await order.populate('user')
-        console.log({ transformedOrder })
-        if (!transformedOrder.isPickedUp) {
-          publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-          // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-          await sendPushNotification(order.zone.toString(), order)
-        }
-        console.log('Starting to send notification')
-        sendCustomerNotifications(populatedOrder.user, order)
-        console.log('Finished sending notification to customer')
-        publishToUser(result.user.toString(), transformedOrder, 'update')
-        // sendNotificationToCustomerWeb(
-        //   user.notificationTokenWeb,
-        //   `Order status: ${result.orderStatus}`,
-        //   `Order ID ${result.orderId}`
-        // )
-        publishOrder(transformedOrder)
+        // const result = await order.save()
+        // const user = await User.findById(result.user)
+        // const transformedOrder = await transformOrder(result)
+        const transformedOrder = await transformOrder(order)
+        // const populatedOrder = await order.populate('user')
+        // console.log({ transformedOrder })
+        // if (!transformedOrder.isPickedUp) {
+        //   publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
+        //   // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+        //   await sendPushNotification(order.zone.toString(), order)
+        // }
+        // console.log('Starting to send notification')
+        // sendCustomerNotifications(populatedOrder.user, order)
+        // console.log('Finished sending notification to customer')
+        // publishToUser(result.user.toString(), transformedOrder, 'update')
+        // // sendNotificationToCustomerWeb(
+        // //   user.notificationTokenWeb,
+        // //   `Order status: ${result.orderStatus}`,
+        // //   `Order ID ${result.orderId}`
+        // // )
+        // publishOrder(transformedOrder)
         // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {

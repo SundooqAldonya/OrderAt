@@ -49,11 +49,11 @@ const AddNewOrder = ({
       console.log({ data })
       setSuccess('Order Created Successfully!')
       refetchOrders()
-      acceptOrder(
-        data.newCheckoutPlaceOrder._id,
-        restaurantId,
-        selectedTime.toString()
-      )
+      // acceptOrder(
+      //   data.newCheckoutPlaceOrder._id,
+      //   restaurantId,
+      //   selectedTime.toString()
+      // )
       setNewFormVisible(false)
     }
   })
@@ -123,11 +123,13 @@ const AddNewOrder = ({
         </Alert>
       )}
 
-      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
         {t('create_order')}
       </Typography>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'start' }}>
+        <Typography
+          variant="body2"
+          sx={{ fontWeight: 'bold', textAlign: 'start' }}>
           {t('phone')} *
         </Typography>
         <TextField
@@ -145,7 +147,7 @@ const AddNewOrder = ({
       </Box>
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-        {t('Name')}
+          {t('Name')}
         </Typography>
         <TextField
           variant="outlined"
@@ -271,7 +273,7 @@ const AddNewOrder = ({
       {/* Submit and Cancel Buttons */}
       <Box sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" fullWidth type="submit">
-         {t('submit_order')}
+          {t('submit_order')}
         </Button>
         <Button
           variant="outlined"

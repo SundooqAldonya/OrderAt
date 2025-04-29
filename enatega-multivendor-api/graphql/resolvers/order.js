@@ -50,6 +50,7 @@ const {
 const Area = require('../../models/area')
 const DeliveryPrice = require('../../models/DeliveryPrice')
 const DeliveryZone = require('../../models/deliveryZone')
+const { acceptOrder } = require('../../helpers/restaurantHelpers')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -563,6 +564,11 @@ module.exports = {
         })
 
         const savedOrder = await order.save()
+        await acceptOrder({
+          orderId: savedOrder._id,
+          restaurantId: savedOrder.resId,
+          time: preparationTime
+        })
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,
