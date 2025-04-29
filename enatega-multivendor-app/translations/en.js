@@ -601,5 +601,7 @@ export const en = {
     'Request delivery created successfully!',
   important_field: 'Important field',
   notes_required: 'Notes is required',
-  order_from_anywhere: 'Order from anywhere'
+  order_from_anywhere: 'Order from anywhere',
+  pickup: 'Pickup',
+  dropoff: 'Drop-off'
 }

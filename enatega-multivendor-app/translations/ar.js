@@ -595,5 +595,7 @@ export const ar = {
   created_request_delivery_successfully: 'تم الإنشاء بنجاح',
   important_field: 'هام',
   notes_required: 'وصف المنتج مطلوب',
-  order_from_anywhere: 'لتوصيل احتياجاتك بسرعه'
+  order_from_anywhere: 'لتوصيل احتياجاتك بسرعه',
+  pickup: 'مكان الاستلام',
+  dropoff: 'مكان التسليم'
 }

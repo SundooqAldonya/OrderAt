@@ -419,21 +419,21 @@ function Checkout(props) {
   }
 
   async function onCompleted(data) {
-    await Analytics.track(Analytics.events.ORDER_PLACED, {
-      userId: data.placeOrder.user._id,
-      orderId: data.placeOrder.orderId,
-      name: data.placeOrder.user.name,
-      email: data.placeOrder.user.email,
-      restaurantName: data.placeOrder.restaurant.name,
-      restaurantAddress: data.placeOrder.restaurant.address,
-      orderPaymentMethod: data.placeOrder.paymentMethod,
-      orderItems: data.placeOrder.items,
-      orderAmount: data.placeOrder.orderAmount,
-      orderPaidAmount: data.placeOrder.paidAmount,
-      tipping: data.placeOrder.tipping,
-      orderStatus: data.placeOrder.orderStatus,
-      orderDate: data.placeOrder.orderDate
-    })
+    // await Analytics.track(Analytics.events.ORDER_PLACED, {
+    //   userId: data.placeOrder.user._id,
+    //   orderId: data.placeOrder.orderId,
+    //   name: data.placeOrder.user.name,
+    //   email: data.placeOrder.user.email,
+    //   restaurantName: data.placeOrder.restaurant.name,
+    //   restaurantAddress: data.placeOrder.restaurant.address,
+    //   orderPaymentMethod: data.placeOrder.paymentMethod,
+    //   orderItems: data.placeOrder.items,
+    //   orderAmount: data.placeOrder.orderAmount,
+    //   orderPaidAmount: data.placeOrder.paidAmount,
+    //   tipping: data.placeOrder.tipping,
+    //   orderStatus: data.placeOrder.orderStatus,
+    //   orderDate: data.placeOrder.orderDate
+    // })
     if (paymentMode === 'COD') {
       // props.navigation.reset({
       //   routes: [

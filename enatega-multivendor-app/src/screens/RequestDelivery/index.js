@@ -27,6 +27,7 @@ import ToIcon from '../../assets/delivery_to.png'
 import { createDeliveryRequest } from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
+import Feather from '@expo/vector-icons/Feather'
 
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
@@ -84,8 +85,6 @@ const RequestDelivery = () => {
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || null
 
-  console.log({ data, loading, error })
-
   console.log({ addressInfo })
 
   const validate = () => {
@@ -122,7 +121,6 @@ const RequestDelivery = () => {
         is_urgent: isUrgent,
         notes
       }
-      console.log('Submitting payload:', payload)
 
       mutate({
         variables: {
@@ -185,6 +183,9 @@ const RequestDelivery = () => {
             onPress={() => navigation.navigate('FromPlace')}
             style={styles.address}
           >
+            <View style={styles.editContainer}>
+              <Feather name='edit' size={24} color='black' />
+            </View>
             <TextDefault
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
@@ -220,6 +221,9 @@ const RequestDelivery = () => {
             onPress={() => navigation.navigate('ToPlace')}
             style={styles.address}
           >
+            <View style={styles.editContainer}>
+              <Feather name='edit' size={24} color='black' />
+            </View>
             <TextDefault style={{ color: '#000' }}>
               {addressInfo.addressTo}
             </TextDefault>
@@ -347,12 +351,18 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 }
+    shadowOffset: { width: 0, height: 2 },
+    paddingTop: 40
   },
   submitButton: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
     height: 40
+  },
+  editContainer: {
+    position: 'absolute',
+    top: 5,
+    right: 5
   }
 })
