@@ -57,9 +57,7 @@ const AddNewOrder = ({ navigation }) => {
   const [mutateCreateOrder] = useMutation(newCheckoutPlaceOrder, {
     onCompleted: data => {
       console.log({ data })
-      // setTimeout(() => {
       acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
-      // }, 1000)
       muteRing(data.newCheckoutPlaceOrder.orderId)
       navigation.navigate('Orders')
       Alert.alert(

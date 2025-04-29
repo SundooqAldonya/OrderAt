@@ -17,8 +17,8 @@ export default function OverlayComponent(props) {
 
   const btnPress = async () => {
     if (print) {
-      // acceptOrder(order._id, selectedTime.toString())
-      // muteRing(order.orderId)
+      acceptOrder(order._id, selectedTime.toString())
+      muteRing(order.orderId)
       printOrder(order._id)
       // dispatch(showPrintersFn())
       // await startPrinting()
@@ -26,8 +26,8 @@ export default function OverlayComponent(props) {
       acceptOrder(order._id, selectedTime.toString())
       muteRing(order.orderId)
     }
-    // toggle()
-    // loading ? <Spinner /> : navigation.navigate('Orders')
+    toggle()
+    loading ? <Spinner /> : navigation.navigate('Orders')
   }
 
   return (

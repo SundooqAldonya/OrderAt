@@ -989,43 +989,48 @@ module.exports = {
       }
     },
     acceptOrder: async (_, args, { req }) => {
-      var newDateObj = new Date(Date.now() + (parseInt(args.time) || 0) * 60000)
-      console.log('preparation', newDateObj)
+      console.log('acceptOrder', { args })
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')
       }
       try {
-        const order = await Order.findById(args._id).populate('restaurant')
-        const status = order_status[1] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
-        order.orderStatus = status
         const restaurant = await Restaurant.findById(req.restaurantId)
-        order.preparationTime = newDateObj
-        order.completionTime = new Date(
-          Date.now() + restaurant.deliveryTime * 60 * 1000
+        var newDateObj = new Date(
+          Date.now() + (parseInt(args.time) || 0) * 60000
         )
-        order.acceptedAt = new Date()
-        // const result = await order.save()
-        // const user = await User.findById(result.user)
-        // const transformedOrder = await transformOrder(result)
-        const transformedOrder = await transformOrder(order)
+        console.log('preparation', newDateObj)
+        const status = order_status[1]
+
+        const update = {
+          orderStatus: status,
+          preparationTime: newDateObj,
+          completionTime: new Date(
+            Date.now() + restaurant.deliveryTime * 60 * 1000
+          ),
+          acceptedAt: new Date()
+        }
+        const result = await Order.findByIdAndUpdate(args._id, update, {
+          new: true
+        }).populate('restaurant')
+        const user = await User.findById(result.user)
+        const transformedOrder = await transformOrder(result)
 
         console.log({ transformedOrder })
-        // if (!transformedOrder.isPickedUp) {
-        //   publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-        //   // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-        //   await sendPushNotification(order.zone.toString(), order)
-        // }
-        // if (user && user.isOrderNotification) {
-        //   sendCustomerNotifications(transformedOrder.user, transformedOrder)
-        // }
-        // console.log('restaurant accepted order')
-        // publishToUser(result.user.toString(), transformedOrder, 'update')
-        // sendNotificationToCustomerWeb(
-        //   user.notificationTokenWeb,
-        //   `Order status: ${result.orderStatus}`,
-        //   `Order ID ${result.orderId}`
-        // )
-        // publishOrder(transformedOrder)
+        if (!transformedOrder.isPickedUp) {
+          publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
+          await sendPushNotification(result.zone.toString(), result)
+        }
+        if (user && user.isOrderNotification) {
+          sendCustomerNotifications(transformedOrder.user, transformedOrder)
+        }
+        console.log('restaurant accepted order')
+        publishToUser(result.user.toString(), transformedOrder, 'update')
+        sendNotificationToCustomerWeb(
+          user.notificationTokenWeb,
+          `Order status: ${result.orderStatus}`,
+          `Order ID ${result.orderId}`
+        )
+        publishOrder(transformedOrder)
         // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {
@@ -1050,27 +1055,26 @@ module.exports = {
           Date.now() + restaurant.deliveryTime * 60 * 1000
         )
         order.acceptedAt = new Date()
-        // const result = await order.save()
-        // const user = await User.findById(result.user)
-        // const transformedOrder = await transformOrder(result)
-        const transformedOrder = await transformOrder(order)
-        // const populatedOrder = await order.populate('user')
-        // console.log({ transformedOrder })
-        // if (!transformedOrder.isPickedUp) {
-        //   publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
-        //   // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-        //   await sendPushNotification(order.zone.toString(), order)
-        // }
-        // console.log('Starting to send notification')
-        // sendCustomerNotifications(populatedOrder.user, order)
-        // console.log('Finished sending notification to customer')
-        // publishToUser(result.user.toString(), transformedOrder, 'update')
-        // // sendNotificationToCustomerWeb(
-        // //   user.notificationTokenWeb,
-        // //   `Order status: ${result.orderStatus}`,
-        // //   `Order ID ${result.orderId}`
-        // // )
-        // publishOrder(transformedOrder)
+        const result = await order.save()
+        const user = await User.findById(result.user)
+        const transformedOrder = await transformOrder(result)
+        const populatedOrder = await order.populate('user')
+        console.log({ transformedOrder })
+        if (!transformedOrder.isPickedUp) {
+          publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
+          // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
+          await sendPushNotification(order.zone.toString(), order)
+        }
+        console.log('Starting to send notification')
+        sendCustomerNotifications(populatedOrder.user, order)
+        console.log('Finished sending notification to customer')
+        publishToUser(result.user.toString(), transformedOrder, 'update')
+        // sendNotificationToCustomerWeb(
+        //   user.notificationTokenWeb,
+        //   `Order status: ${result.orderStatus}`,
+        //   `Order ID ${result.orderId}`
+        // )
+        publishOrder(transformedOrder)
         // sendNotificationToUser(result.user.toString(), transformedOrder)
         return transformedOrder
       } catch (err) {

@@ -564,11 +564,11 @@ module.exports = {
         })
 
         const savedOrder = await order.save()
-        await acceptOrder({
-          orderId: savedOrder._id,
-          restaurantId: savedOrder.resId,
-          time: preparationTime
-        })
+        // await acceptOrder({
+        //   orderId: savedOrder._id,
+        //   restaurantId: savedOrder.resId,
+        //   time: preparationTime
+        // })
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,

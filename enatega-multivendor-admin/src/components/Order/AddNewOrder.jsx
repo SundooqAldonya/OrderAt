@@ -49,11 +49,11 @@ const AddNewOrder = ({
       console.log({ data })
       setSuccess('Order Created Successfully!')
       refetchOrders()
-      // acceptOrder(
-      //   data.newCheckoutPlaceOrder._id,
-      //   restaurantId,
-      //   selectedTime.toString()
-      // )
+      acceptOrder(
+        data.newCheckoutPlaceOrder._id,
+        restaurantId,
+        selectedTime.toString()
+      )
       setNewFormVisible(false)
     }
   })
