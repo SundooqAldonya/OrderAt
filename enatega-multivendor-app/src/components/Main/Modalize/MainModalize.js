@@ -42,8 +42,8 @@ const MainModalize = ({
       }}
       flatListProps={{
         data: isLoggedIn && profile ? profile.addresses : '',
-        ListHeaderComponent: modalHeader(),
-        ListFooterComponent: modalFooter(),
+        ListHeaderComponent: modalHeader ? modalHeader() : null,
+        ListFooterComponent: modalFooter ? modalFooter() : null,
         showsVerticalScrollIndicator: false,
         keyExtractor: (item, index) => index,
         renderItem: ({ item: address }) => (

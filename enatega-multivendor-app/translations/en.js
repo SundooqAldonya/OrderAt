@@ -603,5 +603,9 @@ export const en = {
   notes_required: 'Notes is required',
   order_from_anywhere: 'Order from anywhere',
   pickup: 'Pickup',
-  dropoff: 'Drop-off'
+  dropoff: 'Drop-off',
+  save_address: 'Save address',
+  address_label: 'Address Label',
+  address_label_placeholder: 'How do you want to call this address?',
+  choose_address: 'Choose address'
 }

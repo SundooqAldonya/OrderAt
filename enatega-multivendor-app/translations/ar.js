@@ -597,5 +597,9 @@ export const ar = {
   notes_required: 'وصف المنتج مطلوب',
   order_from_anywhere: 'لتوصيل احتياجاتك بسرعه',
   pickup: 'مكان الاستلام',
-  dropoff: 'مكان التسليم'
+  dropoff: 'مكان التسليم',
+  save_address: 'حفظ المكان',
+  address_label: 'اسم الموقع',
+  address_label_placeholder: 'بماذا ترغب أن تسمي هذا العنوان؟',
+  choose_address: 'أختر عنوان قديم'
 }

@@ -8,7 +8,9 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
-  TextInput
+  TextInput,
+  Switch,
+  Text
 } from 'react-native'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MapView, { Marker } from 'react-native-maps'
@@ -27,8 +29,16 @@ import {
   setAddressTo
 } from '../../store/requestDeliverySlice.js'
 import * as Location from 'expo-location'
+import { Checkbox } from 'react-native-paper'
+import { createAddress } from '../../apollo/mutations.js'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/client'
 
-const mapHeight = 300
+const mapHeight = 250
+
+const CREATE_ADDRESS = gql`
+  ${createAddress}
+`
 
 export default function ToPlace() {
   const { location } = useContext(LocationContext)
@@ -52,13 +62,17 @@ export default function ToPlace() {
   const [addressFreeText, setAddressFreeText] = useState('')
   const [formattedAddress, setFormattedAddress] = useState('')
   const [initiated, setInitiated] = useState(false)
+  const [saveAddress, setSaveAddress] = useState(false)
+  const [label, setLabel] = useState('')
 
-  const { addressTo, regionTo, addressFreeTextTo } = useSelector(
-    (state) => state.requestDelivery
-  )
-  const state = useSelector((state) => state.requestDelivery)
-
-  console.log({ state })
+  const [mutateSaveAddress] = useMutation(CREATE_ADDRESS, {
+    onCompleted: (data) => {
+      console.log({ data })
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
 
   useEffect(() => {
     if (!initiated) {
@@ -114,6 +128,17 @@ export default function ToPlace() {
         addressFreeTextTo: addressFreeText
       })
     )
+    if (saveAddress) {
+      const addressInput = {
+        _id: '',
+        label: label || 'Home',
+        latitude: String(region.latitude),
+        longitude: String(region.longitude),
+        deliveryAddress: formattedAddress,
+        details: addressFreeText
+      }
+      mutateSaveAddress({ variables: { addressInput } })
+    }
     navigation.navigate('RequestDelivery')
   }
 
@@ -227,13 +252,42 @@ export default function ToPlace() {
               query={{
                 key: GOOGLE_MAPS_KEY,
                 language: 'ar',
-                sessiontoken: sessionToken
+                sessiontoken: sessionToken,
+                region: 'EG'
               }}
               styles={{
                 container: { flex: 0 },
                 textInput: { height: 44, fontSize: 16 }
               }}
             />
+            <View style={styles.checkboxContainer}>
+              <Text style={styles.label}>{t('save_address')}</Text>
+              <Checkbox
+                status={saveAddress ? 'checked' : 'unchecked'}
+                onPress={() => setSaveAddress(!saveAddress)}
+                style={styles.checkbox}
+              />
+            </View>
+            {saveAddress ? (
+              <View style={styles.inputContainer}>
+                <TextDefault
+                  style={{
+                    ...styles.title,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
+                  {t('address_label')}
+                </TextDefault>
+                <TextInput
+                  placeholder={t('address_label_placeholder')}
+                  value={label}
+                  onChangeText={(text) => {
+                    setLabel(text)
+                  }}
+                  style={styles.inputLabel}
+                />
+              </View>
+            ) : null}
             <View style={styles.inputContainer}>
               <TextDefault
                 style={{
@@ -311,5 +365,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 20,
     alignItems: 'center'
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 20
+  },
+  checkbox: {
+    backgroundColor: 'red'
+  },
+  inputLabel: {
+    backgroundColor: '#fff',
+    height: 44,
+    paddingHorizontal: 10
   }
 })

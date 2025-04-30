@@ -8,7 +8,9 @@ import {
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Switch,
+  Text
 } from 'react-native'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MapView, { Marker } from 'react-native-maps'
@@ -25,8 +27,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setAddressFrom } from '../../store/requestDeliverySlice.js'
 import FlashMessage from 'react-native-flash-message'
 import * as Location from 'expo-location'
+import { Checkbox } from 'react-native-paper'
+import { createAddress } from '../../apollo/mutations.js'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/client'
+import MainModalize from '../../components/Main/Modalize/MainModalize.js'
+import ThemeContext from '../../ui/ThemeContext/ThemeContext.js'
+import { theme } from '../../utils/themeColors.js'
+import UserContext from '../../context/User.js'
+import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon.js'
+import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
+import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
+import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
 
-const mapHeight = 300
+const mapHeight = 250
+
+const CREATE_ADDRESS = gql`
+  ${createAddress}
+`
 
 export default function FromPlace() {
   const { location } = useContext(LocationContext)
@@ -34,6 +52,9 @@ export default function FromPlace() {
   const dispatch = useDispatch()
   const searchRef = useRef()
   const mapRef = useRef()
+  const modalRef = useRef(null)
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = theme[themeContext.ThemeValue]
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const [place, setPlace] = useState({ lat: 0, lng: 0 })
@@ -43,6 +64,14 @@ export default function FromPlace() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   })
+  const { isLoggedIn, profile } = useContext(UserContext)
+
+  const addressIcons = {
+    House: CustomHomeIcon,
+    Office: CustomWorkIcon,
+    Apartment: CustomApartmentIcon,
+    Other: CustomOtherIcon
+  }
 
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const [sessionToken, setSessionToken] = useState(uuidv4())
@@ -50,10 +79,20 @@ export default function FromPlace() {
   const [addressFreeText, setAddressFreeText] = useState('')
   const [formattedAddress, setFormattedAddress] = useState('')
   const [initiated, setInitiated] = useState(false)
-
+  const [saveAddress, setSaveAddress] = useState(false)
+  const [label, setLabel] = useState('')
   const { addressFrom, regionFrom } = useSelector(
     (state) => state.requestDelivery
   )
+
+  const [mutateSaveAddress] = useMutation(CREATE_ADDRESS, {
+    onCompleted: (data) => {
+      console.log({ data })
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
 
   useEffect(() => {
     if (!initiated) {
@@ -113,6 +152,17 @@ export default function FromPlace() {
         addressFreeTextFrom: addressFreeText
       })
     )
+    if (saveAddress) {
+      const addressInput = {
+        _id: '',
+        label: label || 'Home',
+        latitude: String(region.latitude),
+        longitude: String(region.longitude),
+        deliveryAddress: formattedAddress,
+        details: addressFreeText
+      }
+      mutateSaveAddress({ variables: { addressInput } })
+    }
     navigation.navigate('ToPlace')
   }
 
@@ -159,6 +209,34 @@ export default function FromPlace() {
     }
   }
 
+  const setAddressLocation = async (address) => {
+    // setLocation({
+    //   _id: address._id,
+    //   label: address.label,
+    //   latitude: Number(address.location.coordinates[1]),
+    //   longitude: Number(address.location.coordinates[0]),
+    //   deliveryAddress: address.deliveryAddress,
+    //   details: address.details
+    // })
+    // mutate({ variables: { id: address._id } })
+    setFormattedAddress(address.details)
+    setRegion({
+      ...region,
+      latitude: Number(address.location.coordinates[1]),
+      longitude: Number(address.location.coordinates[0])
+    })
+    setLabel(address.label)
+    searchRef.current?.setAddressText(address.deliveryAddress)
+    modalRef.current.close()
+  }
+
+  const onOpen = () => {
+    const modal = modalRef.current
+    if (modal) {
+      modal.open()
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -174,33 +252,62 @@ export default function FromPlace() {
         <View style={styles.markerFixed}>
           <Ionicons name='location-sharp' size={40} color='#d00' />
         </View>
-        <TouchableOpacity
-          style={styles.currentLocationWrapper}
-          onPress={getCurrentPositionNav}
-        >
-          <View
-            style={{
-              alignSelf: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 10
-            }}
+        <View style={styles.topWrapper}>
+          <TouchableOpacity
+            style={styles.currentLocationWrapper}
+            onPress={getCurrentPositionNav}
           >
-            <TextDefault bolder Left style={{ color: '#000' }}>
-              {t('useCurrentLocation')}
-            </TextDefault>
-            <Entypo name='location' size={15} color={'green'} />
-          </View>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: 'green',
-              width: 150,
-              marginTop: 10
-            }}
-          />
-        </TouchableOpacity>
+            <View
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10
+              }}
+            >
+              <TextDefault bolder Left style={{ color: '#000' }}>
+                {t('useCurrentLocation')}
+              </TextDefault>
+              <Entypo name='location' size={15} color={'green'} />
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: 'green',
+                width: 150,
+                marginTop: 10
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.currentLocationWrapper}
+            onPress={onOpen}
+          >
+            <View
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10
+              }}
+            >
+              <TextDefault bolder Left style={{ color: '#000' }}>
+                {t('choose_address')}
+              </TextDefault>
+              <Entypo name='location' size={15} color={'green'} />
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: 'green',
+                width: 150,
+                marginTop: 10
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
             <TextDefault
@@ -226,13 +333,42 @@ export default function FromPlace() {
               query={{
                 key: GOOGLE_MAPS_KEY,
                 language: 'ar',
-                sessiontoken: sessionToken
+                sessiontoken: sessionToken,
+                region: 'EG'
               }}
               styles={{
                 container: { flex: 0 },
                 textInput: { height: 44, fontSize: 16 }
               }}
             />
+            <View style={styles.checkboxContainer}>
+              <Text style={styles.label}>{t('save_address')}</Text>
+              <Checkbox
+                status={saveAddress ? 'checked' : 'unchecked'}
+                onPress={() => setSaveAddress(!saveAddress)}
+                style={styles.checkbox}
+              />
+            </View>
+            {/* {saveAddress ? ( */}
+            <View style={styles.inputContainer}>
+              <TextDefault
+                style={{
+                  ...styles.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('address_label')}
+              </TextDefault>
+              <TextInput
+                placeholder={t('address_label_placeholder')}
+                value={label}
+                onChangeText={(text) => {
+                  setLabel(text)
+                }}
+                style={styles.inputLabel}
+              />
+            </View>
+            {/* ) : null} */}
             <View style={styles.inputContainer}>
               <TextDefault
                 style={{
@@ -272,6 +408,15 @@ export default function FromPlace() {
         </TouchableOpacity>
         <Button title={t('next_drop_off')} onPress={handleNavigation} />
       </ScrollView>
+      <MainModalize
+        modalRef={modalRef}
+        currentTheme={currentTheme}
+        isLoggedIn={isLoggedIn}
+        addressIcons={addressIcons}
+        setAddressLocation={setAddressLocation}
+        profile={profile}
+        location={location}
+      />
     </KeyboardAvoidingView>
   )
 }
@@ -310,6 +455,25 @@ const styles = StyleSheet.create({
   currentLocationWrapper: {
     flexDirection: 'column',
     marginTop: 20,
+    alignItems: 'center'
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 20
+  },
+  checkbox: {
+    backgroundColor: 'red'
+  },
+  inputLabel: {
+    backgroundColor: '#fff',
+    height: 44,
+    paddingHorizontal: 10
+  },
+  topWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center'
   }
 })
