@@ -24,6 +24,9 @@ const {
 const { sendPushNotification } = require('../../helpers/findRiders')
 const { uploadReceiptImage } = require('../../helpers/cloudinary')
 const { GraphQLUpload } = require('graphql-upload')
+const {
+  sendCustomerNotifications
+} = require('../../helpers/customerNotifications')
 
 module.exports = {
   Upload: GraphQLUpload,
@@ -363,10 +366,15 @@ module.exports = {
           order.deliveredAt = new Date()
         }
         const result = await order.save()
+        const populatedOrder = await order.populate('restaurant')
         const user = await User.findById(order.user)
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
-        sendNotificationToUser(result.user, result)
+        // sendNotificationToUser(result.user, result)
+        if (user && user.isOrderNotification) {
+          console.log('through condition')
+          sendCustomerNotifications(user, populatedOrder)
+        }
         sendNotificationToCustomerWeb(
           user.notificationTokenWeb,
           `Order status: ${result.orderStatus}`,
@@ -391,7 +399,14 @@ module.exports = {
         order.isRiderRinged = false
         const result = await order.save()
         const transformedOrder = await transformOrder(result)
-        sendNotificationToUser(order.user.toString(), transformedOrder)
+        const populatedOrder = await order.populate('restaurant')
+        // sendNotificationToUser(order.user.toString(), transformedOrder)
+        const user = await User.findById(result.user)
+        console.log({ user })
+        if (user && user.isOrderNotification) {
+          console.log('through condition')
+          sendCustomerNotifications(user, populatedOrder)
+        }
         publishOrder(transformedOrder)
         return transformedOrder
       } catch (error) {

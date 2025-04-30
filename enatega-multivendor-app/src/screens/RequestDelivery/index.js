@@ -19,8 +19,8 @@ import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { useMutation, useQuery } from '@apollo/client'
-import { getDeliveryCalculation } from '../../apollo/queries'
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { getDeliveryCalculation, myOrders } from '../../apollo/queries'
 import { Entypo } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
 import ToIcon from '../../assets/delivery_to.png'
@@ -29,13 +29,14 @@ import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
 import Feather from '@expo/vector-icons/Feather'
 
+const ORDERS = gql`
+  ${myOrders}
+`
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
   const isArabic = i18n.language === 'ar'
-  const { GOOGLE_MAPS_KEY } = useEnvVars()
-  const [pickupValue, setPickupValue] = useState('')
   const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
   const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
   const { location } = useContext(LocationContext)
@@ -45,6 +46,8 @@ const RequestDelivery = () => {
   console.log({ addressInfo })
 
   const [mutate] = useMutation(createDeliveryRequest, {
+    refetchQueries: [{ query: ORDERS }],
+
     onCompleted: (data) => {
       console.log({ data })
       Toast.show({

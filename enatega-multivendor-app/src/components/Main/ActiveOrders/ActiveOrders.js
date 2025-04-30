@@ -26,6 +26,10 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
   const { language } = i18n
   const isArabic = language === 'ar'
   const { loadingOrders, errorOrders, orders } = useContext(OrdersContext)
+  const foundAcceptedOrder = orders?.find(
+    (order) => order.status === 'ACCEPTED'
+  )
+  console.log({ foundAcceptedOrder })
   const configuration = useContext(ConfigurationContext)
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)

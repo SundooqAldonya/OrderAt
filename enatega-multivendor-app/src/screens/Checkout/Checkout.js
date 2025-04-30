@@ -28,6 +28,7 @@ import moment from 'moment'
 import {
   getDeliveryCalculation,
   getTipping,
+  myOrders,
   orderFragment
 } from '../../apollo/queries'
 import { getCoupon, placeOrder } from '../../apollo/mutations'

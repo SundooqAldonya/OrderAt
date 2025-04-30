@@ -50,15 +50,31 @@ const notifications = {
     const accessToken = await getAccessToken()
     const newChannelId = 'default_sound4'
     console.log({ customer })
+    let body
+
+    if (order.orderStatus === 'ACCEPTED') {
+      body = `تم الموافقة على طلبك`
+    } else if (order.orderStatus === 'ASSIGNED') {
+      if (order.type && order.type == 'delivery_request') {
+        body = 'السائق في طريقه إليك'
+      } else {
+        body = `طلبك من ${order.restaurant.name} في طريقه إليك`
+      }
+    } else if (order.orderStatus === 'PICKED') {
+      body = 'طلبك تم استلامه'
+    } else if (order.orderStatus === 'DELIVERED') {
+      body = 'طلبك تم تسليمه'
+    }
+
     const messageBody = {
       message: {
         token: customer?.notificationToken,
         notification: {
-          title: `طلبك إلى ${order.restaurant.name}`,
-          body:
-            order.orderStatus === 'ACCEPTED'
-              ? `تم الموافقة على طلبك`
-              : `طلبك من ${order.restaurant.name} في طريقه إليك`
+          title:
+            order.type && order.type !== 'delivery_request'
+              ? `طلبك إلى ${order.restaurant.name}`
+              : 'طلبك',
+          body
         },
         data: {
           channelId: newChannelId,

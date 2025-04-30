@@ -71,6 +71,7 @@ import FromPlace from '../screens/RequestDelivery/FromPlace'
 import ToPlace from '../screens/RequestDelivery/ToPlace'
 import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
 import { TopBrandsScreen } from '../components/Main/TopBrandsScreen'
+import NotificationMandoob from '../screens/RequestDelivery/NotificationMandoob'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -304,6 +305,10 @@ function NoDrawer() {
           headerRight: false
         }}
         component={ToPlace}
+      />
+      <NavigationStack.Screen
+        name='NotificationMandoob'
+        component={NotificationMandoob}
       />
     </NavigationStack.Navigator>
   )

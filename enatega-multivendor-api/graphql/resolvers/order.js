@@ -173,8 +173,8 @@ module.exports = {
           .skip(args.offset || 0)
           .limit(50)
         const filterOrders = orders.filter(order => order.restaurant)
-        console.log({ filterOrders: filterOrders[0] })
-        return filterOrders.map(order => {
+        console.log({ filterOrders: orders[0] })
+        return orders.map(order => {
           return transformOrder(order)
         })
       } catch (err) {

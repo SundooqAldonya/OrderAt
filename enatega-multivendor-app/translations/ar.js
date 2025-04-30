@@ -587,8 +587,8 @@ export const ar = {
   ToPlace: 'المكان المراد التوجه إليه',
   clear_search: 'مسح البحث',
   next_rest_information: 'التالي: بقية المعلومات',
-  helpful_information: 'معلومات المكان',
-  better_place_description: 'وصف أدق للمكان',
+  helpful_information: 'تفاصيل إضافية للعنوان',
+  better_place_description: 'مثال: عمارة 5 بجوار بنك مصر',
   no_data: 'لا توجد بيانات',
   try_change_location: 'جرب تغير الموقع',
   success: 'العملية ناجحة',
@@ -598,8 +598,8 @@ export const ar = {
   order_from_anywhere: 'لتوصيل احتياجاتك بسرعه',
   pickup: 'مكان الاستلام',
   dropoff: 'مكان التسليم',
-  save_address: 'حفظ المكان',
-  address_label: 'اسم الموقع',
-  address_label_placeholder: 'بماذا ترغب أن تسمي هذا العنوان؟',
-  choose_address: 'أختر عنوان قديم'
+  save_address: 'أحفظ هذا العنوان للاستخدام لاحقا',
+  address_label: 'اسم المكان',
+  address_label_placeholder: 'مثال: البيت ، العمل ، السوبر ماركت',
+  choose_address: 'أختر من دفتر عناويني'
 }
