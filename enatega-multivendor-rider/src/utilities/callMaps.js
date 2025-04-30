@@ -4,7 +4,7 @@ export const openGoogleMaps = ({ latitude, longitude }) => {
   const url =
     Platform.OS === 'ios'
       ? `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
-      : `geo:${latitude},${longitude}`
+      : `geo:${latitude},${longitude}(here)`
 
   Linking.canOpenURL(url)
     .then(supported => {
