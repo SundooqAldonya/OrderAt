@@ -195,7 +195,7 @@ export default function FromPlace() {
             longitudeDelta: 0.01
           }
           if (mapRef.current) {
-            mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
+            mapRef.current.animateToRegion(newCoordinates, 1000)
           }
           if (res.formattedAddress) {
             searchRef.current?.setAddressText(res.formattedAddress)
@@ -210,22 +210,23 @@ export default function FromPlace() {
   }
 
   const setAddressLocation = async (address) => {
-    // setLocation({
-    //   _id: address._id,
-    //   label: address.label,
-    //   latitude: Number(address.location.coordinates[1]),
-    //   longitude: Number(address.location.coordinates[0]),
-    //   deliveryAddress: address.deliveryAddress,
-    //   details: address.details
-    // })
-    // mutate({ variables: { id: address._id } })
-    setFormattedAddress(address.details)
+    const newCoordinates = {
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+    setFormattedAddress(address.deliveryAddress)
     setRegion({
       ...region,
       latitude: Number(address.location.coordinates[1]),
       longitude: Number(address.location.coordinates[0])
     })
+    setAddressFreeText(address.details)
     setLabel(address.label)
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(newCoordinates, 1000)
+    }
     searchRef.current?.setAddressText(address.deliveryAddress)
     modalRef.current.close()
   }

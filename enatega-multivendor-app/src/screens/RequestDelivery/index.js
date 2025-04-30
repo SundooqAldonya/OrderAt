@@ -42,6 +42,8 @@ const RequestDelivery = () => {
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
 
+  console.log({ addressInfo })
+
   const [mutate] = useMutation(createDeliveryRequest, {
     onCompleted: (data) => {
       console.log({ data })

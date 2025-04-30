@@ -33,6 +33,14 @@ import { Checkbox } from 'react-native-paper'
 import { createAddress } from '../../apollo/mutations.js'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
+import MainModalize from '../../components/Main/Modalize/MainModalize.js'
+import ThemeContext from '../../ui/ThemeContext/ThemeContext.js'
+import { theme } from '../../utils/themeColors.js'
+import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon.js'
+import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
+import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
+import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
+import UserContext from '../../context/User.js'
 
 const mapHeight = 250
 
@@ -46,6 +54,9 @@ export default function ToPlace() {
   const dispatch = useDispatch()
   const searchRef = useRef()
   const mapRef = useRef()
+  const modalRef = useRef(null)
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = theme[themeContext.ThemeValue]
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const [place, setPlace] = useState({ lat: 0, lng: 0 })
@@ -64,6 +75,14 @@ export default function ToPlace() {
   const [initiated, setInitiated] = useState(false)
   const [saveAddress, setSaveAddress] = useState(false)
   const [label, setLabel] = useState('')
+  const { isLoggedIn, profile } = useContext(UserContext)
+
+  const addressIcons = {
+    House: CustomHomeIcon,
+    Office: CustomWorkIcon,
+    Apartment: CustomApartmentIcon,
+    Other: CustomOtherIcon
+  }
 
   const [mutateSaveAddress] = useMutation(CREATE_ADDRESS, {
     onCompleted: (data) => {
@@ -185,6 +204,35 @@ export default function ToPlace() {
     }
   }
 
+  const setAddressLocation = async (address) => {
+    const newCoordinates = {
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+    setFormattedAddress(address.deliveryAddress)
+    setRegion({
+      ...region,
+      latitude: Number(address.location.coordinates[1]),
+      longitude: Number(address.location.coordinates[0])
+    })
+    setLabel(address.label)
+    setAddressFreeText(address.details)
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(newCoordinates, 1000)
+    }
+    searchRef.current?.setAddressText(address.deliveryAddress)
+    modalRef.current.close()
+  }
+
+  const onOpen = () => {
+    const modal = modalRef.current
+    if (modal) {
+      modal.open()
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -200,33 +248,62 @@ export default function ToPlace() {
         <View style={styles.markerFixed}>
           <Ionicons name='location-sharp' size={40} color='#d00' />
         </View>
-        <TouchableOpacity
-          style={styles.currentLocationWrapper}
-          onPress={getCurrentPositionNav}
-        >
-          <View
-            style={{
-              alignSelf: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 10
-            }}
+        <View style={styles.topWrapper}>
+          <TouchableOpacity
+            style={styles.currentLocationWrapper}
+            onPress={getCurrentPositionNav}
           >
-            <TextDefault bolder Left style={{ color: '#000' }}>
-              {t('useCurrentLocation')}
-            </TextDefault>
-            <Entypo name='location' size={15} color={'green'} />
-          </View>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: 'green',
-              width: 150,
-              marginTop: 10
-            }}
-          />
-        </TouchableOpacity>
+            <View
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10
+              }}
+            >
+              <TextDefault bolder Left style={{ color: '#000' }}>
+                {t('useCurrentLocation')}
+              </TextDefault>
+              <Entypo name='location' size={15} color={'green'} />
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: 'green',
+                width: 150,
+                marginTop: 10
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.currentLocationWrapper}
+            onPress={onOpen}
+          >
+            <View
+              style={{
+                alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10
+              }}
+            >
+              <TextDefault bolder Left style={{ color: '#000' }}>
+                {t('choose_address')}
+              </TextDefault>
+              <Entypo name='location' size={15} color={'green'} />
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: 'green',
+                width: 150,
+                marginTop: 10
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
             <TextDefault
@@ -268,26 +345,26 @@ export default function ToPlace() {
                 style={styles.checkbox}
               />
             </View>
-            {saveAddress ? (
-              <View style={styles.inputContainer}>
-                <TextDefault
-                  style={{
-                    ...styles.title,
-                    textAlign: isArabic ? 'right' : 'left'
-                  }}
-                >
-                  {t('address_label')}
-                </TextDefault>
-                <TextInput
-                  placeholder={t('address_label_placeholder')}
-                  value={label}
-                  onChangeText={(text) => {
-                    setLabel(text)
-                  }}
-                  style={styles.inputLabel}
-                />
-              </View>
-            ) : null}
+            {/* {saveAddress ? ( */}
+            <View style={styles.inputContainer}>
+              <TextDefault
+                style={{
+                  ...styles.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('address_label')}
+              </TextDefault>
+              <TextInput
+                placeholder={t('address_label_placeholder')}
+                value={label}
+                onChangeText={(text) => {
+                  setLabel(text)
+                }}
+                style={styles.inputLabel}
+              />
+            </View>
+            {/* ) : null} */}
             <View style={styles.inputContainer}>
               <TextDefault
                 style={{
@@ -327,6 +404,15 @@ export default function ToPlace() {
         </TouchableOpacity>
         <Button title={t('next_rest_information')} onPress={handleNavigation} />
       </ScrollView>
+      <MainModalize
+        modalRef={modalRef}
+        currentTheme={currentTheme}
+        isLoggedIn={isLoggedIn}
+        addressIcons={addressIcons}
+        setAddressLocation={setAddressLocation}
+        profile={profile}
+        location={location}
+      />
     </KeyboardAvoidingView>
   )
 }
@@ -379,5 +465,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: 44,
     paddingHorizontal: 10
+  },
+  topWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   }
 })
