@@ -1097,6 +1097,11 @@ export const singleOrder = `query SingleOrder($id: String!){
     acceptedAt
     pickedAt
     preparationTime
+    pickupLocation {
+      coordinates
+    }
+    pickupAddress
+    type
   }
 }
 `

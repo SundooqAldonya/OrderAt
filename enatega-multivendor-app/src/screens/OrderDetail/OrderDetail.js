@@ -139,8 +139,13 @@ function OrderDetail(props) {
     tipping: tip,
     taxationAmount: tax,
     orderAmount: total,
-    deliveryCharges
+    deliveryCharges,
+    pickupLocation
   } = order
+
+  console.log({ pickupLocation: pickupLocation?.coordinates })
+  console.log({ restaurantCoords: restaurant?.location?.coordinates })
+
   const subTotal = total - tip - tax - deliveryCharges
   return (
     <View style={{ flex: 1 }}>
@@ -153,72 +158,94 @@ function OrderDetail(props) {
         showsVerticalScrollIndicator={false}
         overScrollMode='never'
       >
-        {order.rider && order.orderStatus === ORDER_STATUS_ENUM.PICKED && (
-          <MapView
-            ref={(c) => (mapView.current = c)}
-            style={{ flex: 1, height: HEIGHT * 0.6 }}
-            showsUserLocation={false}
-            initialRegion={{
-              latitude: +deliveryAddress.location.coordinates[1],
-              longitude: +deliveryAddress.location.coordinates[0],
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-            }}
-            zoomEnabled={true}
-            zoomControlEnabled={true}
-            rotateEnabled={false}
-            customMapStyle={mapStyle}
-            provider={PROVIDER_GOOGLE}
-          >
-            <Marker
-              coordinate={{
-                longitude: +restaurant.location.coordinates[0],
-                latitude: +restaurant.location.coordinates[1]
+        {order &&
+          order.rider &&
+          order.orderStatus === ORDER_STATUS_ENUM.PICKED && (
+            <MapView
+              ref={(c) => (mapView.current = c)}
+              style={{ flex: 1, height: HEIGHT * 0.6 }}
+              showsUserLocation={false}
+              initialRegion={{
+                latitude: +deliveryAddress?.location?.coordinates[1],
+                longitude: +deliveryAddress?.location?.coordinates[0],
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421
               }}
+              zoomEnabled={true}
+              zoomControlEnabled={true}
+              rotateEnabled={false}
+              // customMapStyle={mapStyle}
+              provider={PROVIDER_GOOGLE}
             >
-              <RestaurantMarker />
-            </Marker>
-            <Marker
-              coordinate={{
-                latitude: +deliveryAddress.location.coordinates[1],
-                longitude: +deliveryAddress.location.coordinates[0]
-              }}
-            >
-              <CustomerMarker />
-            </Marker>
-            <MapViewDirections
-              origin={{
-                longitude: +restaurant.location.coordinates[0],
-                latitude: +restaurant.location.coordinates[1]
-              }}
-              destination={{
-                latitude: +deliveryAddress.location.coordinates[1],
-                longitude: +deliveryAddress.location.coordinates[0]
-              }}
-              apikey={GOOGLE_MAPS_KEY}
-              strokeWidth={6}
-              strokeColor={currentTheme.main}
-              optimizeWaypoints={true}
-              onReady={(result) => {
-                // result.distance} km
-                // Duration: ${result.duration} min.
-
-                mapView?.current?.fitToCoordinates(result.coordinates, {
-                  edgePadding: {
-                    right: WIDTH / 20,
-                    bottom: HEIGHT / 20,
-                    left: WIDTH / 20,
-                    top: HEIGHT / 20
-                  }
-                })
-              }}
-              onError={(error) => {
-                console.log('onerror', error)
-              }}
-            />
-            {order.rider && <TrackingRider id={order.rider._id} />}
-          </MapView>
-        )}
+              {restaurant && restaurant.location ? (
+                <Marker
+                  coordinate={{
+                    longitude: restaurant
+                      ? +restaurant?.location?.coordinates[0]
+                      : null,
+                    latitude: restaurant
+                      ? +restaurant?.location?.coordinates[1]
+                      : null
+                  }}
+                >
+                  <RestaurantMarker />
+                </Marker>
+              ) : (
+                <Marker
+                  coordinate={{
+                    longitude: +pickupLocation?.coordinates[0],
+                    latitude: +pickupLocation?.coordinates[1]
+                  }}
+                >
+                  <RestaurantMarker />
+                </Marker>
+              )}
+              <Marker
+                coordinate={{
+                  latitude: +deliveryAddress?.location?.coordinates[1],
+                  longitude: +deliveryAddress?.location?.coordinates[0]
+                }}
+              >
+                <CustomerMarker />
+              </Marker>
+              <MapViewDirections
+                origin={{
+                  longitude: restaurant
+                    ? +restaurant?.location?.coordinates[0]
+                    : +pickupLocation?.coordinates[0],
+                  latitude: restaurant
+                    ? +restaurant?.location?.coordinates[1]
+                    : +pickupLocation?.coordinates[1]
+                }}
+                destination={{
+                  latitude: +deliveryAddress?.location?.coordinates[1],
+                  longitude: +deliveryAddress?.location?.coordinates[0]
+                }}
+                apikey={GOOGLE_MAPS_KEY}
+                strokeWidth={6}
+                strokeColor={currentTheme.main}
+                optimizeWaypoints={true}
+                onReady={(result) => {
+                  // result.distance} km
+                  // Duration: ${result.duration} min.
+                  // if (result.coordinates) {
+                  //   mapView?.current?.fitToCoordinates(result.coordinates, {
+                  //     edgePadding: {
+                  //       right: WIDTH / 20,
+                  //       bottom: HEIGHT / 20,
+                  //       left: WIDTH / 20,
+                  //       top: HEIGHT / 20
+                  //     }
+                  //   })
+                  // }
+                }}
+                onError={(error) => {
+                  console.log('onerror', error)
+                }}
+              />
+              {order.rider && <TrackingRider id={order.rider._id} />}
+            </MapView>
+          )}
         <View
           style={{
             justifyContent: 'center',

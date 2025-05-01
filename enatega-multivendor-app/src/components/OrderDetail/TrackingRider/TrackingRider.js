@@ -37,12 +37,15 @@ const TrackingRider = ({ id }) => {
   if (loading) return null
   if (error) return null
 
+  console.log({ riderLocation: data?.rider?.location?.coordinates })
+
   return (
     <Marker
       coordinate={{
         latitude: parseFloat(data.rider.location.coordinates[1]),
         longitude: parseFloat(data.rider.location.coordinates[0])
-      }}>
+      }}
+    >
       <RiderMarker />
     </Marker>
   )
