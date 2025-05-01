@@ -50,7 +50,7 @@ export const OrdersProvider = ({ children }) => {
           if (!subscriptionData.data) return prev
           const { _id } = subscriptionData.data.orderStatusChanged.order
           if (subscriptionData.data.orderStatusChanged.origin === 'new') {
-            if (prev.orders.findIndex(o => o._id === _id) > -1) return prev
+            if (prev.orders.findIndex((o) => o._id === _id) > -1) return prev
             return {
               orders: [
                 subscriptionData.data.orderStatusChanged.order,
@@ -84,7 +84,8 @@ export const OrdersProvider = ({ children }) => {
         reFetchOrders,
         fetchMoreOrdersFunc,
         networkStatusOrders
-      }}>
+      }}
+    >
       {children}
     </OrdersContext.Provider>
   )

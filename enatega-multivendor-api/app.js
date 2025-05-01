@@ -34,6 +34,7 @@ const Owner = require('./models/owner.js')
 const Restaurant = require('./models/restaurant.js')
 const Rider = require('./models/rider.js')
 const EventEmitter = require('events')
+const { pubsub } = require('./helpers/pubsub.js')
 const emitter = new EventEmitter()
 
 emitter.setMaxListeners(50)
@@ -133,6 +134,7 @@ async function startApolloServer() {
         subscribe: graphql.subscribe,
         onConnect() {
           console.log('Connected to subscription server.')
+          // return { pubsub }
         }
       },
       {

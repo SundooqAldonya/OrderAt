@@ -74,32 +74,32 @@ function OrderDetail(props) {
 
   const {
     data,
-    called: calledOrders,
+    // called: calledOrders,
     loading: loadingOrders,
-    error: errorOrders,
-    data: dataOrders,
-    networkStatus: networkStatusOrders,
-    fetchMore: fetchMoreOrders,
-    subscribeToMore: subscribeToMoreOrders
+    error: errorOrders
+    // networkStatus: networkStatusOrders,
+    // fetchMore: fetchMoreOrders,
+    // subscribeToMore: subscribeToMoreOrders
   } = useQuery(
     ORDER,
     { variables: { id } },
     {
       fetchPolicy: 'network-only',
       onError
+      // pollInterval: 10000
     }
   )
 
   const order = data?.singleOrder
 
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {
-        orderId: id
-      })
-    }
-    Track()
-  }, [])
+  // useEffect(() => {
+  //   async function Track() {
+  //     await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {
+  //       orderId: id
+  //     })
+  //   }
+  //   Track()
+  // }, [])
 
   const cancelModalToggle = () => {
     setCancelModalVisible(!cancelModalVisible)
@@ -113,7 +113,11 @@ function OrderDetail(props) {
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () =>
-        HelpButton({ iconBackground: currentTheme.main, navigation, t }),
+        HelpButton({
+          iconBackground: currentTheme.main,
+          navigation,
+          t
+        }),
       headerTitle: `${order ? order?.deliveryAddress?.deliveryAddress?.substr(0, 15) : ''}...`,
       headerTitleStyle: { color: currentTheme.newFontcolor },
       headerStyle: { backgroundColor: currentTheme.newheaderBG }
@@ -139,11 +143,12 @@ function OrderDetail(props) {
     tipping: tip,
     taxationAmount: tax,
     orderAmount: total,
-    deliveryCharges,
-    pickupLocation
+    deliveryCharges
+    // pickupLocation
   } = order
 
-  console.log({ pickupLocation: pickupLocation?.coordinates })
+  const pickupLocation = order?.pickupLocation || null
+
   console.log({ restaurantCoords: restaurant?.location?.coordinates })
 
   const subTotal = total - tip - tax - deliveryCharges
@@ -228,16 +233,16 @@ function OrderDetail(props) {
                 onReady={(result) => {
                   // result.distance} km
                   // Duration: ${result.duration} min.
-                  // if (result.coordinates) {
-                  //   mapView?.current?.fitToCoordinates(result.coordinates, {
-                  //     edgePadding: {
-                  //       right: WIDTH / 20,
-                  //       bottom: HEIGHT / 20,
-                  //       left: WIDTH / 20,
-                  //       top: HEIGHT / 20
-                  //     }
-                  //   })
-                  // }
+                  if (result.coordinates) {
+                    mapView?.current?.fitToCoordinates(result.coordinates, {
+                      edgePadding: {
+                        right: WIDTH / 20,
+                        bottom: HEIGHT / 20,
+                        left: WIDTH / 20,
+                        top: HEIGHT / 20
+                      }
+                    })
+                  }
                 }}
                 onError={(error) => {
                   console.log('onerror', error)

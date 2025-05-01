@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { scale } from '../../../utils/scaling'
 import { useSubscription } from '@apollo/client'
@@ -57,12 +57,30 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
   const { language } = i18n
   const isArabic = language === 'ar'
   if (item.orderStatus === ORDER_STATUS_ENUM.CANCELLED) return null
-  useSubscription(
+  const skipSubscription = item.orderStatus === ORDER_STATUS_ENUM.CANCELLED
+
+  const { data: subscriptionData, error: subscriptionError } = useSubscription(
     gql`
       ${subscriptionOrder}
     `,
-    { variables: { id: item._id } }
+    { variables: { id: item._id }, skip: skipSubscription }
   )
+
+  console.log({ subscriptionData })
+
+  useEffect(() => {
+    if (subscriptionError) {
+      console.error('Subscription error:', subscriptionError.message)
+      return
+    }
+
+    if (subscriptionData?.orderStatusChanged) {
+      // handle new order status
+      console.log('Order status updated:', subscriptionData.orderStatusChanged)
+
+      // optionally: trigger UI update, refetch, state change, etc.
+    }
+  }, [subscriptionData, subscriptionError])
 
   const defaultWidth = scale(50)
   const width = customWidth !== undefined ? customWidth : defaultWidth
@@ -83,7 +101,7 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
               }}
             />
           ))}
-        {Array(4 - checkStatus(item.orderStatus).status)
+        {Array(5 - checkStatus(item.orderStatus).status)
           .fill(0)
           .map((item, index) => (
             <View

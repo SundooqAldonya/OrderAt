@@ -158,7 +158,9 @@ const transformOrder = async order => {
       : '',
     assignedAt: order?._doc?.assignedAt
       ? dateToString(order._doc.assignedAt)
-      : ''
+      : '',
+    pickupLocation: order?.pickupLocation ? order.pickupLocation : null,
+    type: order?.type ? order.type : null
   }
 }
 

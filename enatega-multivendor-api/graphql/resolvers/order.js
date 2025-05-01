@@ -59,7 +59,7 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(PLACE_ORDER),
         (payload, args, context) => {
-          const restaurantId = payload.subscribePlaceOrder.restaurantId
+          const restaurantId = payload?.subscribePlaceOrder?.restaurantId
           console.log('restaurantId', restaurantId)
           return restaurantId === args.restaurant
         }
@@ -69,16 +69,46 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(ORDER_STATUS_CHANGED),
         (payload, args, context) => {
-          const userId = payload.orderStatusChanged.userId.toString()
+          const userId = payload?.orderStatusChanged?.userId?.toString()
           return userId === args.userId
         }
       )
     },
+    // subscriptionAssignRider: {
+    //   subscribe: withFilter(
+    //     () => pubsub.asyncIterator(ASSIGN_RIDER),
+    //     (payload, args) => {
+    //       const riderId = payload?.subscriptionAssignRider?.userId?.toString()
+    //       return riderId === args.riderId
+    //     }
+    //   )
+    // },
     subscriptionAssignRider: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(ASSIGN_RIDER),
+        (_, args, { pubsub }) => {
+          const asyncIterator = pubsub.asyncIterator(ASSIGN_RIDER)
+          const originalReturn = asyncIterator.return?.bind(asyncIterator)
+
+          asyncIterator.return = async () => {
+            try {
+              console.log(
+                `Cleaning up subscription for RIDER ID: ${args.riderId}`
+              )
+              if (originalReturn) {
+                const result = await originalReturn.call(asyncIterator)
+                return result || { value: undefined, done: true }
+              }
+              return { value: undefined, done: true }
+            } catch (err) {
+              console.error('Error cleaning up asyncIterator:', err)
+              return { value: undefined, done: true }
+            }
+          }
+
+          return asyncIterator
+        },
         (payload, args) => {
-          const riderId = payload.subscriptionAssignRider.userId.toString()
+          const riderId = payload.subscriptionAssignRider?.userId?.toString()
           return riderId === args.riderId
         }
       )
@@ -90,8 +120,12 @@ module.exports = {
           // Override return() to remove listener when unsubscribed
           const originalReturn = asyncIterator.return
           asyncIterator.return = async () => {
-            console.log(`Cleaning up subscription for ORDER ID: ${args.id}`)
-            if (originalReturn) await originalReturn.call(asyncIterator)
+            try {
+              console.log(`Cleaning up subscription for ORDER ID: ${args.id}`)
+              if (originalReturn) await originalReturn.call(asyncIterator)
+            } catch (err) {
+              console.error('Error cleaning up asyncIterator:', err)
+            }
           }
 
           return asyncIterator
@@ -121,7 +155,7 @@ module.exports = {
     },
     singleOrder: async (_, args, { req }) => {
       try {
-        console.log('orderPaypal')
+        console.log('singleOrder')
         if (!req.isAuth) {
           throw new Error('Unauthenticated!')
         }

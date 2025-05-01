@@ -127,6 +127,18 @@ const setupApollo = () => {
     return kind === 'OperationDefinition' && operation === 'subscription'
   }, wsLink)
 
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      )
+    },
+    wsLink,
+    ApolloLink.from([requestLink, httpLink]) // queries & mutations
+  )
+
   const client = new ApolloClient({
     link: ApolloLink.from([terminatingLink, requestLink, httpLink]),
     cache,

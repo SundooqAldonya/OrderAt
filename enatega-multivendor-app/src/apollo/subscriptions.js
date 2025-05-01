@@ -3,7 +3,7 @@ export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
         _id
         orderStatus
         rider{
-            _id
+          _id
         }
         completionTime
         preparationTime
