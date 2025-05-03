@@ -450,13 +450,7 @@ function ItemDetail(props) {
           >
             <View>
               {food?.variations?.length && (
-                <View
-                  style={
-                    {
-                      //  flexDirection: isArabic ? 'row-reverse' : 'row',
-                    }
-                  }
-                >
+                <View>
                   <TitleComponent
                     title={t('SelectVariation')}
                     subTitle={t('SelectOne')}

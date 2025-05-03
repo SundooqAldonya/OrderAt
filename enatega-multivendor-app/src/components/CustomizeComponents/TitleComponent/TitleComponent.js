@@ -15,8 +15,8 @@ function TitleComponent(props) {
   return (
     <View
       style={{
-        ...styles.mainContainer
-        // flexDirection: isArabic ? 'row-reverse' : 'row'
+        ...styles.mainContainer,
+          flexDirection: isArabic ? 'row-reverse' : 'row',
       }}
     >
       <View

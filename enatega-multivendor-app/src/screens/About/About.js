@@ -24,9 +24,12 @@ import { colors } from '../../utils/colors'
 
 function About(props) {
   const Analytics = analytics()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
+
   const { restaurantObject } = props.route.params
-  console.log('restaurant info', restaurantObject)
+
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const configuration = useContext(ConfigurationContext)
@@ -82,13 +85,21 @@ function About(props) {
           <MapView
             style={styles().flex}
             scrollEnabled={false}
-            zoomEnabled={false}
-            zoomControlEnabled={false}
+            zoomEnabled={true}
+            zoomControlEnabled={true}
             rotateEnabled={false}
             cacheEnabled={false}
             initialRegion={RestAbout?.map}
             customMapStyle={aboutMapStyle}
             provider={PROVIDER_GOOGLE}
+            maxZoomLevel={20}
+            camera={{
+              center: RestAbout?.map,
+              zoom: 20, // Direct zoom level (0-20)
+              heading: 0, // Rotation
+              pitch: 0, // Tilt
+              altitude: 1000 // Altitude in meters
+            }}
           ></MapView>
           <View style={styles().marker}>
             <CustomMarker
@@ -103,7 +114,7 @@ function About(props) {
         <View style={[styles().flex, styles(currentTheme).mainContainer]}>
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               alignItems: 'center',
               gap: 4
             }}
@@ -113,7 +124,7 @@ function About(props) {
             </TextDefault>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
                 gap: 4
               }}
@@ -131,7 +142,11 @@ function About(props) {
           <View style={{ marginTop: scale(10) }}>
             {!props.loading && (
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  gap: 4
+                }}
               >
                 <AntDesign
                   name='isv'
@@ -146,7 +161,7 @@ function About(props) {
             )}
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
                 gap: 4,
                 marginTop: scale(8)
@@ -163,7 +178,7 @@ function About(props) {
             </View>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
                 gap: 4,
                 marginTop: scale(8)
@@ -179,7 +194,14 @@ function About(props) {
                 {restaurantObject?.restaurantTax}
               </TextDefault>
             </View>
-            <View style={styles().ratingContainer}>
+            <View
+              style={[
+                styles().ratingContainer,
+                {
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }
+              ]}
+            >
               <MaterialCommunityIcons
                 name='star-outline'
                 size={24}
@@ -203,7 +225,7 @@ function About(props) {
           <View>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
                 marginTop: scale(8),
                 gap: 4
@@ -221,7 +243,15 @@ function About(props) {
 
             <View style={styles().timingContainer}>
               {restaurantObject?.openingTimes?.map((v, index) => (
-                <View key={index} style={styles(currentTheme).timingRow}>
+                <View
+                  key={index}
+                  style={[
+                    styles(currentTheme).timingRow,
+                    {
+                      flexDirection: isArabic ? 'row-reverse' : 'row'
+                    }
+                  ]}
+                >
                   <TextDefault
                     style={styles().timingText}
                     textColor={currentTheme.black}

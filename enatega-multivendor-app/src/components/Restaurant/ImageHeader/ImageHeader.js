@@ -221,11 +221,7 @@ function ImageTextCenterHeader(props, ref) {
                   ]}
                   onPress={props.searchPopupHandler}
                 >
-                  <Entypo
-                    name='cross'
-                    color={colors.white}
-                    size={scale(22)}
-                  />
+                  <Entypo name='cross' color={colors.white} size={scale(22)} />
                 </AnimatedBorderless>
               ) : (
                 <AnimatedBorderless
@@ -274,7 +270,7 @@ function ImageTextCenterHeader(props, ref) {
                     newheaderColor={newheaderColor}
                     cartContainer={cartContainer}
                     placeHolder={t('searchItems')}
-                    backgroundColor= {'transparent'}
+                    backgroundColor={'transparent'}
                   />
                 </View>
               ) : (
@@ -424,8 +420,8 @@ function ImageTextCenterHeader(props, ref) {
                   style={{
                     display: 'flex',
                     flexDirection: isArabic ? 'row-reverse' : 'row',
-                    gap: 7,
-                    marginTop: scale(5)
+                    gap: 7
+                    // marginTop: scale(2)
                   }}
                 >
                   {/* minimum */}
@@ -434,7 +430,7 @@ function ImageTextCenterHeader(props, ref) {
                       style={styles().restaurantAbout}
                       textColor={currentTheme.fontMainColor}
                     >
-                       {aboutObject.restaurantMinOrder}{' '}
+                      {aboutObject.restaurantMinOrder}{' '}
                       {configuration.currencySymbol} {t('minimum')}
                     </TextDefault>
                   ) : (
@@ -464,7 +460,7 @@ function ImageTextCenterHeader(props, ref) {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    marginTop: scale(15)
+                    marginTop: scale(3)
                   }}
                 >
                   <AnimatedTouchable
@@ -490,7 +486,7 @@ function ImageTextCenterHeader(props, ref) {
                         fontSize: scale(16)
                       }}
                     >
-                       {aboutObject.average}
+                      {aboutObject.average}
                     </TextDefault>
                     <TextDefault
                       textColor={currentTheme.fontNewColor}
@@ -530,7 +526,7 @@ function ImageTextCenterHeader(props, ref) {
                   style={[
                     styles().ratingBox,
                     {
-                      marginTop: scale(9),
+                      marginTop: scale(3),
                       flexDirection: isArabic ? 'row-reverse' : 'row'
                     }
                   ]}

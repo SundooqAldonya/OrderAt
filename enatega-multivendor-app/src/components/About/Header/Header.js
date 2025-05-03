@@ -19,40 +19,37 @@ function ImageHeader(props) {
   const navigation = useNavigation()
   return (
     <>
-           <StatusBar
-              backgroundColor={colors.primary}
-              barStyle={'light-content'}
-            />
-    <View style={styles(currentTheme).mainContainer}>
-      <View style={styles().topBar}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={{
-            backgroundColor: props.iconBackColor,
-            color: props.iconColor,
-            width: '20%'
-          }}
-          onPress={() => navigation.goBack()}
-        >
-          <AnimatedIon color={props.iconColor} name='arrow-back' size={25} />
-        </TouchableOpacity>
-        <View>
-          <TextDefault
-            H4
-            bolder
-            Center
-            textColor={currentTheme.fontThirdColor}
-            numberOfLines={1}
-            ellipsizeMode='tail'
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
+      <View style={styles(currentTheme).mainContainer}>
+        <View style={styles().topBar}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{
+              backgroundColor: props.iconBackColor,
+              color: props.iconColor,
+              width: '20%',
+             }}
+            onPress={() => navigation.goBack()}
           >
-            {props.restaurantName.length > 20
-              ? `${props.restaurantName.slice(0, 15)}...`
-              : props.restaurantName}
-          </TextDefault>
+            <AnimatedIon color={props.iconColor} name='arrow-back' size={25} />
+          </TouchableOpacity>
+          <View>
+            <TextDefault
+              H4
+              bolder
+              Center
+              textColor={currentTheme.fontThirdColor}
+              numberOfLines={1}
+              ellipsizeMode='tail'
+            >
+              {props.restaurantName.length > 20
+                ? `${props.restaurantName.slice(0, 15)}...`
+                : props.restaurantName}
+            </TextDefault>
+          </View>
+          <View style={{ width: '20%' }}></View>
         </View>
-        <View style={{ width: '20%' }}></View>
       </View>
-    </View>
     </>
   )
 }

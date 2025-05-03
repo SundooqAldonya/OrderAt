@@ -587,5 +587,6 @@ export const en = {
   Add_message: 'Add message',
   Type_here: 'Type here',
   courier_visibility_notice:
-    'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue'
+    'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue',
+  menu_preparation_message: "We're preparing the food menu. Stay tuned!"
 }
