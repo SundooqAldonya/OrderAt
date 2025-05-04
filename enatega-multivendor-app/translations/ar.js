@@ -609,5 +609,6 @@ export const ar = {
     'نود إعلامك بأنه قد يتم مشاركة رسالتك مع عامل التوصيل الذي سيقوم بتسليم طلبك.',
   menu_preparation_message: 'نعمل على تجهيز قائمة الطعام. تابعنا قريبًا!',
   success: 'تم بنجاح',
-  created_request_delivery_successfully: 'تم طلب المندوب بنجاح'
+  created_request_delivery_successfully: 'تم طلب المندوب بنجاح',
+  rider_phone: 'تليفون الكابتن'
 }

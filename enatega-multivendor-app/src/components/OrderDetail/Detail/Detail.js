@@ -8,6 +8,9 @@ import { scale } from '../../../utils/scaling'
 import { ChatButton } from './ChatButton'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'
 import { formatNumber } from '../../../utils/formatNumber'
+import Feather from '@expo/vector-icons/Feather'
+import { TouchableOpacity } from 'react-native'
+import { callNumber } from '../../../utils/callNumber'
 
 export default function Detail({
   theme,
@@ -29,9 +32,10 @@ export default function Detail({
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
+  console.log({ riderPhone: rider })
   return (
     <View style={styles.container(theme)}>
-      {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
+      {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
           onPress={() =>
             navigation.navigate('ChatWithRider', { id, orderNo, total })
@@ -40,6 +44,28 @@ export default function Detail({
           description={t('askContactlessDelivery')}
           theme={theme}
         />
+      )} */}
+      {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
+        <TouchableOpacity
+          style={{
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            gap: 10
+          }}
+          onPress={() => callNumber(rider.phone)}
+        >
+          <TextDefault
+            bolder
+            style={{
+              color: '#000',
+              textAlign: isArabic ? 'right' : 'left',
+              marginBottom: 20,
+              fontSize: 20
+            }}
+          >
+            {t('rider_phone')}: {rider.phone}
+          </TextDefault>
+          <Feather name='external-link' size={24} color='black' />
+        </TouchableOpacity>
       )}
       <TextDefault
         textColor={theme.gray500}

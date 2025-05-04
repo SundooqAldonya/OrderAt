@@ -1075,6 +1075,7 @@ export const singleOrder = `query SingleOrder($id: String!){
     rider{
       _id
       name
+      phone
     }
     review{
       _id
