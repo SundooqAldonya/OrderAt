@@ -80,17 +80,16 @@ function OrderDetail(props) {
     // networkStatus: networkStatusOrders,
     // fetchMore: fetchMoreOrders,
     // subscribeToMore: subscribeToMoreOrders
-  } = useQuery(
-    ORDER,
-    { variables: { id } },
-    {
-      fetchPolicy: 'network-only',
-      onError
-      // pollInterval: 10000
-    }
-  )
+  } = useQuery(ORDER, {
+    variables: { id },
+    fetchPolicy: 'network-only',
+    onError,
+    pollInterval: 10000
+  })
 
   const order = data?.singleOrder
+
+  console.log({ orderStatus: order?.orderStatus })
 
   // useEffect(() => {
   //   async function Track() {
