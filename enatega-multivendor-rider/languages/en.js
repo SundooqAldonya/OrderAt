@@ -224,5 +224,7 @@ export const en = {
   capture_receipt_title: 'Capture the receipt',
   without_capture_receipt_title: "Don't capture receipt",
   okay: 'Okay',
-  customer_notes: 'Customer Notes'
+  customer_notes: 'Customer Notes',
+  click_here_location: 'Click here to reveal the location',
+  loading: 'Loading...'
 }

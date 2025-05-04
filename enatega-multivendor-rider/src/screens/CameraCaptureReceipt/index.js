@@ -33,7 +33,7 @@ const CameraCaptureReceipt = () => {
     orderID
   } = useOrderDetail()
 
-  const [mutateOrderStatus] = useMutation(UPDATE_ORDER_STATUS, {
+  const [mutateOrderStatus, { loading }] = useMutation(UPDATE_ORDER_STATUS, {
     onCompleted: data => {
       console.log({ data })
       navigation.goBack()
@@ -138,8 +138,16 @@ const CameraCaptureReceipt = () => {
             <AntDesign name="close" size={30} color="#fff" />
           </TouchableOpacity>
           <Image source={{ uri: photo }} style={cameraStyle.camera} />
-          <TouchableOpacity onPress={handleSubmit} style={cameraStyle.sendBtn}>
-            <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={{
+              ...cameraStyle.sendBtn,
+              backgroundColor: loading ? 'grey' : 'green'
+            }}
+            disabled={loading}>
+            <TextDefault style={{ color: '#fff' }}>
+              {loading ? t('loading') : t('submit')}
+            </TextDefault>
           </TouchableOpacity>
         </View>
       )}

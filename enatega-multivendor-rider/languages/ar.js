@@ -221,5 +221,7 @@ export const ar = {
   capture_receipt_title: 'قم بإتخاذ صورة من الفاتورة',
   without_capture_receipt_title: 'لا تلتقط الإيصال',
   okay: 'نعم',
-  customer_notes: 'ملاحظات العميل'
+  customer_notes: 'ملاحظات العميل',
+  click_here_location: 'أضغط لرؤية المكان',
+  loading: 'جاري التحميل...'
 }

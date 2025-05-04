@@ -20,6 +20,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native'
 import { openGoogleMaps } from '../../../utilities/callMaps'
+import StatusRow from './StatusRow'
 
 const formatTime = date =>
   new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
@@ -71,6 +72,15 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
       </View>
     )
   }
+
+  console.log({ restaurant: order?.restaurant })
+
+  console.log({
+    pickupLocation:
+      order?.restaurant && order?.restaurant?._id
+        ? order?.restaurant?.location
+        : order?.pickupLocation?.coordinates
+  })
   return (
     <View style={styles.container}>
       <View
@@ -100,15 +110,16 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
           fillColor={STATUS_ORDER.indexOf(t(order.orderStatus)) >= 0}
           status={STATUS_ORDER[0]}
           order={order}
-          address={
-            order?.restaurant._id
-              ? order?.restaurant?.address
-              : order?.pickupAddress
-          }
+          // address={
+          //   order?.restaurant._id
+          //     ? order?.restaurant?.address
+          //     : order?.pickupAddress
+          // }
+          address={true}
           location={
             order?.restaurant._id
               ? order?.restaurant?.location
-              : order?.pickupLocation?.location
+              : order?.pickupLocation
           }
           time={order.assignedAt ? formatTime(order.assignedAt) : null}
         />
@@ -165,82 +176,82 @@ const Status = ({ orderData, itemId, pickedAt, deliveredAt, assignedAt }) => {
   )
 }
 
-const StatusRow = ({
-  status,
-  time,
-  address = null,
-  location = null,
-  order,
-  fillColor = styles.bgSecondary
-}) => {
-  const { t, i18n } = useTranslation()
-  const isArabic = i18n.language === 'ar'
+// const StatusRow = ({
+//   status,
+//   time,
+//   address = null,
+//   location = null,
+//   order,
+//   fillColor = styles.bgSecondary
+// }) => {
+//   const { t, i18n } = useTranslation()
+//   const isArabic = i18n.language === 'ar'
 
-  console.log({ location, address })
+//   console.log({ location, address })
 
-  return (
-    <View
-      style={[
-        styles.statusRow,
-        { flexDirection: isArabic ? 'row-reverse' : 'row' }
-      ]}>
-      <View
-        style={[
-          styles.circle,
-          fillColor ? styles.bgPrimary : styles.bgSecondary,
-          isArabic ? { marginInlineStart: 10 } : {}
-        ]}
-      />
-      <View style={styles.statusOrder}>
-        <TextDefault
-          bolder
-          H3
-          textColor={fillColor ? colors.primary : colors.white}>
-          {status}
-        </TextDefault>
-        {address ? (
-          <View>
-            <TouchableOpacity
-              onPress={() =>
-                openGoogleMaps({
-                  latitude: location?.coordinates
-                    ? location?.coordinates[1]
-                    : null,
-                  longitude: location?.coordinates
-                    ? location?.coordinates[0]
-                    : null
-                })
-              }>
-              <View
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <TextDefault
-                  bold
-                  textColor={colors.white}
-                  style={{ textAlign: isArabic ? 'right' : 'left' }}>
-                  {address}
-                </TextDefault>
-                <EvilIcons
-                  size={24}
-                  name="external-link"
-                  style={{ color: '#fff', backgroundColor: 'gray' }}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-      </View>
-      <View style={styles.time}>
-        <TextDefault bolder H5 textColor={colors.fontSecondColor}>
-          {time}
-        </TextDefault>
-      </View>
-    </View>
-  )
-}
+//   return (
+//     <View
+//       style={[
+//         styles.statusRow,
+//         { flexDirection: isArabic ? 'row-reverse' : 'row' }
+//       ]}>
+//       <View
+//         style={[
+//           styles.circle,
+//           fillColor ? styles.bgPrimary : styles.bgSecondary,
+//           isArabic ? { marginInlineStart: 10 } : {}
+//         ]}
+//       />
+//       <View style={styles.statusOrder}>
+//         <TextDefault
+//           bolder
+//           H3
+//           textColor={fillColor ? colors.primary : colors.white}>
+//           {status}
+//         </TextDefault>
+//         {address ? (
+//           <View>
+//             <TouchableOpacity
+//               onPress={() =>
+//                 openGoogleMaps({
+//                   latitude: location?.coordinates
+//                     ? location?.coordinates[1]
+//                     : null,
+//                   longitude: location?.coordinates
+//                     ? location?.coordinates[0]
+//                     : null
+//                 })
+//               }>
+//               <View
+//                 style={{
+//                   display: 'flex',
+//                   justifyContent: 'center',
+//                   alignItems: 'center'
+//                 }}>
+//                 <TextDefault
+//                   bold
+//                   textColor={colors.white}
+//                   style={{ textAlign: isArabic ? 'right' : 'left' }}>
+//                   {address}
+//                 </TextDefault>
+//                 <EvilIcons
+//                   size={24}
+//                   name="external-link"
+//                   style={{ color: '#fff', backgroundColor: 'gray' }}
+//                 />
+//               </View>
+//             </TouchableOpacity>
+//           </View>
+//         ) : null}
+//       </View>
+//       <View style={styles.time}>
+//         <TextDefault bolder H5 textColor={colors.fontSecondColor}>
+//           {time}
+//         </TextDefault>
+//       </View>
+//     </View>
+//   )
+// }
 
 const StatusMessage = ({ message, subText }) => {
   return (

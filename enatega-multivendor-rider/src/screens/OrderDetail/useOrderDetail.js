@@ -17,7 +17,7 @@ const useOrderDetail = () => {
   const [distance, setDistance] = useState(null)
   const [duration, setDuration] = useState(null)
 
-  console.log({ orderAddress: order.restaurant })
+  // console.log({ orderAddress: order?.restaurant })
 
   useLayoutEffect(() => {
     navigation.setOptions({
