@@ -50,7 +50,13 @@ function TopBrands(props) {
       <View
         style={{
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          borderColor: '#E5E7EB',
+          borderRadius: 8,
+          borderWidth: 1,
+          borderTopWidth: 0,
+          borderTopRightRadius: 0,
+          borderTopLeftRadius: 0
         }}
       >
         <TextDefault

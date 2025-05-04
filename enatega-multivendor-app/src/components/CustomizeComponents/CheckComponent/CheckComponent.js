@@ -7,14 +7,16 @@ import { theme } from '../../../utils/themeColors'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { alignment } from '../../../utils/alignment'
+import { useTranslation } from 'react-i18next'
 
 function CheckComponent(props) {
   const [options, setOptions] = useState(null)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  console.log({ options })
-
+  const { i18n, t } = useTranslation()
+  const { language } = i18n
+  const isArabic = language === 'ar'
   useEffect(() => {
     setOptions(props.options.map((option) => ({ ...option, checked: false })))
   }, [props.options])
@@ -34,9 +36,21 @@ function CheckComponent(props) {
           activeOpacity={0.7}
           onPress={() => onPress(option)}
           key={option._id}
-          style={styles.mainContainer}
+          style={[
+            styles.mainContainer,
+            {
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }
+          ]}
         >
-          <View style={styles.leftContainer}>
+          <View
+            style={[
+              styles.leftContainer,
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }
+            ]}
+          >
             <CheckboxBtn
               onPress={() => onPress(option)}
               checked={option.checked}
@@ -44,14 +58,22 @@ function CheckComponent(props) {
             <TextDefault
               numberOfLines={1}
               textColor={currentTheme.gray900}
-              style={[alignment.MLsmall, alignment.PRsmall, alignment.MRlarge]}
+              style={[alignment.MLsmall, alignment.PRsmall]}
               H6
               bolder
             >
               {option.title}
             </TextDefault>
           </View>
-          <View style={styles.rightContainer}>
+          <View
+            style={[
+              styles.rightContainer,
+
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }
+            ]}
+          >
             <TextDefault
               textColor={currentTheme.gray900}
               H6

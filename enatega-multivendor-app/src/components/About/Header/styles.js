@@ -6,7 +6,9 @@ const styles = (props = null) =>
   StyleSheet.create({
     mainContainer: {
       width: '100%',
-      backgroundColor: props != null ? props.themeBackground : 'transparent',
+      height: height * 0.07,
+      justifyContent: 'center',
+       backgroundColor: props != null ? props.themeBackground : 'transparent',
       ...alignment.PLmedium,
       ...alignment.PRmedium,
       ...alignment.PTsmall

@@ -20,8 +20,7 @@ const styles = (props = null) =>
       width: scale(220),
       height: '70%',
       // height: '100%',
-      ...alignment.MRsmall,
-
+      ...alignment.MRsmall
     },
 
     overlayContainer: {
@@ -71,7 +70,7 @@ const styles = (props = null) =>
       paddingRight: scale(10),
       width: '100%',
       borderColor: props != null ? props.iconBackground : '#E5E7EB',
-      // borderWidth: 1,
+      borderWidth: 1,
       borderBottomLeftRadius: 16,
       borderBottomRightRadius: 16,
       height: '40%',
@@ -102,18 +101,20 @@ const styles = (props = null) =>
       height: '100%',
       borderTopLeftRadius: scale(16),
       borderTopRightRadius: scale(16),
-      borderRadius: scale(16)
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      // borderRadius: scale(16)
     },
     imageContainer: {
       position: 'relative',
       alignItems: 'center',
       height: '60%',
-      // borderWidth: 1,
-      // borderBottomWidth: 0,
+      borderWidth: 1,
+      borderBottomWidth: 0,
       borderTopLeftRadius: scale(16),
       borderTopRightRadius: scale(16),
-      borderRadius: scale(16),
-      borderColor:colors.lightGray
+      // borderRadius: scale(16),
+      borderColor: colors.lightGray
     },
     restaurantTotalRating: {
       paddingLeft: scale(5)

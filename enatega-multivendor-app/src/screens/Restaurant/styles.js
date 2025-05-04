@@ -117,8 +117,11 @@ const styles = (props = null) =>
 
     buttonContainer: {
       width: '100%',
-      height: '10%',
-      backgroundColor: props !== null ? props.themeBackground : 'black',
+      // height: '10%',
+      height: 50,
+      // backgroundColor: props !== null ? props.themeBackground : 'black',
+      borderRadius: scale(40),
+
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 12,
@@ -142,7 +145,8 @@ const styles = (props = null) =>
       ...alignment.PRsmall
     },
     buttonText: {
-      width: '30%',
+      // width: '30%',
+      textAlign: 'center',
       color: 'black'
     },
     buttonTextRight: {
@@ -197,6 +201,13 @@ const styles = (props = null) =>
       textTransform: 'capitalize',
       fontSize: scale(18),
       fontWeight: '600'
+    },
+    noDataContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+      marginTop: 100
     }
   })
 export default styles

@@ -68,7 +68,7 @@ const styles = (props = null) =>
     },
     restImageContainer: {
       width: width - 10,
-      height: 250,
+      height: 200,
       borderRadius: scale(12),
       backgroundColor: 'white',
       shadowColor: 'black',
