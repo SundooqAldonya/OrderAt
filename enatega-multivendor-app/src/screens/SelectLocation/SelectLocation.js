@@ -291,7 +291,7 @@ export default function SelectLocation(props) {
           style={[
             styles().mapView,
             {
-              height: '80%'
+              height: '70%'
             }
           ]}
         >

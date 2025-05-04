@@ -159,6 +159,7 @@ function NewRestaurantCard(props) {
             <></>
           )}
         </View>
+        {/* tags */}
         <TextDefault
           textColor={currentTheme.fontNewColor}
           numberOfLines={1}
@@ -175,7 +176,15 @@ function NewRestaurantCard(props) {
             justifyContent: 'space-between'
           }}
         >
-          <View style={styles().deliveryTime}>
+          {/* deliveryTime */}
+          <View
+            style={[
+              styles().deliveryTime,
+              {
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }
+            ]}
+          >
             <AntDesign
               name='clockcircleo'
               size={16}
@@ -188,7 +197,7 @@ function NewRestaurantCard(props) {
               bold
               Normal
             >
-              {props.deliveryTime + ' '}
+              {props.deliveryTime + ' + '}
               {t('min')}
             </TextDefault>
           </View>
@@ -213,7 +222,6 @@ function NewRestaurantCard(props) {
           ) : (
             <></>
           )}
-          
         </View>
       </View>
     </TouchableOpacity>

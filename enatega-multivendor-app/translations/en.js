@@ -327,7 +327,11 @@ export const en = {
   message: 'Message',
   aptFloor: 'Apt | Floor',
   confirmPassword: 'Confirm Password',
-  specialInstructions: 'Special instructions',
+  specialInstructions: 'Add any special requests here...',
+  specialInstructionsoptional: 'Special instructions (optional)',
+
+  Instructions: 'Instructions',
+
   anySpecificPreferences: 'Any specific preferences?',
   optional: 'Optional',
   noMayo: 'E .g No mayo',
@@ -607,5 +611,12 @@ export const en = {
   save_address: 'Save address',
   address_label: 'Address Label',
   address_label_placeholder: 'How do you want to call this address?',
-  choose_address: 'Choose address'
+  choose_address: 'Choose address',
+  Add_a_message_for_the_restaurant: 'Add a message for the restaurant',
+  instructions: 'Special requests, allergies, dietary restriction.',
+  Add_message: 'Add message',
+  Type_here: 'Type here',
+  courier_visibility_notice:
+    'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue',
+  menu_preparation_message: "We're preparing the food menu. Stay tuned!"
 }

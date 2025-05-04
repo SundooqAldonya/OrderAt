@@ -18,6 +18,7 @@ import StarIcon from '../../../src/assets/SVG/imageComponents/starIcon'
 import { scale } from '../../utils/scaling'
 import EmptyView from '../EmptyView/EmptyView'
 import { ORDER_STATUS_ENUM } from '../../utils/enums'
+import { colors } from '../../utils/colors'
 
 function emptyViewPastOrders() {
   const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
@@ -220,7 +221,7 @@ const Item = ({
             <View style={{ marginTop: 20 }}>
               <TextDefault
                 numberOfLines={1}
-                textColor={currentTheme.secondaryText}
+                textColor={colors.dark}
                 style={{
                   textAlign: isArabic ? 'right' : 'left',
                   marginInlineEnd: isArabic ? 10 : 0,

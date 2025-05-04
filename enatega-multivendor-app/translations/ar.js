@@ -322,7 +322,9 @@ export const ar = {
   message: 'رسالة',
   aptFloor: 'شقة | طابق',
   confirmPassword: 'تأكيد كلمة المرور',
-  specialInstructions: 'تعليمات خاصة',
+  specialInstructions: 'أضف أي طلبات خاصة هنا...',
+  specialInstructionsoptional: 'تعليمات خاصة (اختياري)',
+  Instructions: 'تعليمات',
   anySpecificPreferences: 'هل هناك تفضيلات محددة؟',
   optional: 'اختياري',
   noMayo: 'على سبيل المثال، بدون مايونيز',
@@ -590,16 +592,5 @@ export const ar = {
   helpful_information: 'تفاصيل إضافية للعنوان',
   better_place_description: 'مثال: عمارة 5 بجوار بنك مصر',
   no_data: 'لا توجد بيانات',
-  try_change_location: 'جرب تغير الموقع',
-  success: 'العملية ناجحة',
-  created_request_delivery_successfully: 'تم الإنشاء بنجاح',
-  important_field: 'هام',
-  notes_required: 'وصف المنتج مطلوب',
-  order_from_anywhere: 'لتوصيل احتياجاتك بسرعه',
-  pickup: 'مكان الاستلام',
-  dropoff: 'مكان التسليم',
-  save_address: 'أحفظ هذا العنوان للاستخدام لاحقا',
-  address_label: 'اسم المكان',
-  address_label_placeholder: 'مثال: البيت ، العمل ، السوبر ماركت',
-  choose_address: 'أختر من دفتر عناويني'
+  try_change_location: 'جرب تغير الموقع'
 }

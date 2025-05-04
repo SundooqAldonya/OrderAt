@@ -6,6 +6,8 @@ import { useStyles } from './styles'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { scale } from '../../utils/scaling'
 import { InstructionsModal } from './InstructionsModal'
+import { useTranslation } from 'react-i18next'
+ import { colors } from '../../utils/colors'
 
 export const SpecialInstructions = ({
   theme,
@@ -14,6 +16,7 @@ export const SpecialInstructions = ({
 }) => {
   const [value, setValue] = useState(instructions)
   const [isVisible, setIsVisible] = useState(false)
+  const { i18n, t } = useTranslation()
 
   const hideModal = (_) => {
     setIsVisible(false)
@@ -32,21 +35,30 @@ export const SpecialInstructions = ({
   return (
     <TouchableOpacity
       onPress={showModal}
-      style={{ height: 100, flex: 1, flexDirection: 'row' }}
+      style={{
+        height: 100,
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: colors.lightGray,
+        borderRadius: 8
+      }}
     >
       <View left style={styles.iconContainer}>
         <InstructionMessageIcon stroke={theme.iconStroke} />
       </View>
-      <View middle style={{ flex: 6, justifyContent: 'center' }}>
-        <TextDefault H5 bolder>
-          Add a message for the restaurant
+      <View
+        middle
+        style={{ flex: 6, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <TextDefault H5 bolder textColor={colors.dark}>
+          {t('Add_a_message_for_the_restaurant')}
         </TextDefault>
         <TextDefault
           numberOfLines={3}
           textColor={theme.fontNewColor}
           style={{ lineHeight: scale(18) }}
         >
-          {instructions || 'Special requests, allergies, dietary restriction'}
+          {instructions || t('instructions')}
         </TextDefault>
       </View>
       <TouchableOpacity right style={styles.iconContainer} onPress={showModal}>

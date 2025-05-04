@@ -12,7 +12,7 @@ const styles = (props = null) =>
     },
     container: {
       flex: 1,
-       height: '30%',
+      height: '50%',
       overflow: 'visible',
       justifyContent: 'space-around',
       borderTopLeftRadius: scale(30),
@@ -157,11 +157,10 @@ const styles = (props = null) =>
       transform: [{ translateX: scale(-25) }, { translateY: scale(-25) }]
     },
 
-
     locationContainer: {
-       justifyContent: 'space-around',
+      justifyContent: 'space-around',
       paddingVertical: 15,
-      marginHorizontal: 10,
+      marginHorizontal: 10
     },
     locationButton: {
       flexDirection: 'row',
@@ -170,86 +169,85 @@ const styles = (props = null) =>
       paddingVertical: 8,
       paddingHorizontal: 12,
       borderBottomWidth: 1.5,
-      borderRadius: 4,
+      borderRadius: 4
     },
     buttonText: {
       paddingHorizontal: 5,
-      fontSize: 15,
+      fontSize: 15
     },
     icon: {
       // marginLeft: isArabic ? 0 : 5,
       // marginRight: isArabic ? 5 : 0,
     },
-       markerContainer: {
-        flexDirection: 'column',
-        alignSelf: 'flex-start',
-      },
-      markerBubble: {
-        flexDirection: 'row',
-        alignSelf: 'flex-start',
-        backgroundColor: '#06C167', // لون أخضر مشابه لأوبر
-        padding: 8,
-        borderRadius: 8,
-        borderColor: '#fff',
-        borderWidth: 1,
-      },
-      markerText: {
-        color: '#fff',
-        fontSize: 14,
-        fontWeight: 'bold',
-      },
-      markerArrow: {
-        backgroundColor: 'transparent',
-        borderWidth: 8,
-        borderColor: 'transparent',
-        borderTopColor: '#06C167',
-        alignSelf: 'center',
-        marginTop: -1,
-      },
+    markerContainer: {
+      flexDirection: 'column',
+      alignSelf: 'flex-start'
+    },
+    markerBubble: {
+      flexDirection: 'row',
+      alignSelf: 'flex-start',
+      backgroundColor: '#06C167', // لون أخضر مشابه لأوبر
+      padding: 8,
+      borderRadius: 8,
+      borderColor: '#fff',
+      borderWidth: 1
+    },
+    markerText: {
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: 'bold'
+    },
+    markerArrow: {
+      backgroundColor: 'transparent',
+      borderWidth: 8,
+      borderColor: 'transparent',
+      borderTopColor: '#06C167',
+      alignSelf: 'center',
+      marginTop: -1
+    },
 
-         deliveryMarker: {
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        markerBubble: {
-          paddingHorizontal: 12,
-          paddingVertical: 8,
-          borderRadius: 20,
-          borderWidth: 1.5,
-          borderColor: '#fff',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-          elevation: 5,
-        },
-        markerText: {
-          color: '#fff',
-          fontSize: 12,
-          fontWeight: 'bold',
-          textAlign: 'center',
-        },
-        markerPin: {
-          width: 24,
-          height: 24,
-          backgroundColor: '#fff',
-          borderRadius: 12,
-          borderWidth: 1.5,
-          borderColor: '#fff',
-          transform: [{ translateY: -8 }],
-          alignItems: 'center',
-          justifyContent: 'center',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-          elevation: 5,
-        },
-        pinInner: {
-          width: 12,
-          height: 12,
-          borderRadius: 6,
-        },
-       
-   })
+    deliveryMarker: {
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    markerBubble: {
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1.5,
+      borderColor: '#fff',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      elevation: 5
+    },
+    markerText: {
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: 'bold',
+      textAlign: 'center'
+    },
+    markerPin: {
+      width: 24,
+      height: 24,
+      backgroundColor: '#fff',
+      borderRadius: 12,
+      borderWidth: 1.5,
+      borderColor: '#fff',
+      transform: [{ translateY: -8 }],
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      elevation: 5
+    },
+    pinInner: {
+      width: 12,
+      height: 12,
+      borderRadius: 6
+    }
+  })
 export default styles

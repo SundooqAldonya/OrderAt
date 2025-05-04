@@ -10,7 +10,8 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     width: '75%',
-    alignItems: 'flex-start'
+    // alignItems: 'flex-end'
+    // backgroundColor:'red'
   },
   rightContainer: {
     justifyContent: 'center',
