@@ -584,7 +584,7 @@ export const ar = {
   is_urgent: 'مستعجل',
   item_description_notes: 'وصف المنتجات والملاحظات للمندوب',
   FromPlace: 'أختر المكان من',
-  search_place: 'البحث عن المكان',
+  search_place: 'ابحث عن العنوان أو حدد على الخريطه',
   next_drop_off: 'التالي: موقع التسليم',
   ToPlace: 'المكان المراد التوجه إليه',
   clear_search: 'مسح البحث',
@@ -592,5 +592,19 @@ export const ar = {
   helpful_information: 'تفاصيل إضافية للعنوان',
   better_place_description: 'مثال: عمارة 5 بجوار بنك مصر',
   no_data: 'لا توجد بيانات',
-  try_change_location: 'جرب تغير الموقع'
+  try_change_location: 'جرب تغير الموقع',
+  order_from_anywhere: 'أطلب من أي مكان',
+  pickup: 'مكان الاستلام',
+  dropoff: 'مكان التسليم',
+  save_address: 'حفظ العنوان للاستخدام لاحقًا',
+  address_label: 'تفاصيل إضافيه للعنوان',
+  address_label_placeholder: 'مثال: عماره ٥ بجوار بنك مصر',
+  choose_address: 'اختر من دفتر عناويني',
+  Add_a_message_for_the_restaurant: 'Add a message for the restaurant',
+  instructions: 'Special requests, allergies, dietary restriction.',
+  Add_message: 'Add message',
+  Type_here: 'Type here',
+  courier_visibility_notice:
+    'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue',
+  menu_preparation_message: "We're preparing the food menu. Stay tuned!"
 }
