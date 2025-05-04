@@ -607,5 +607,7 @@ export const ar = {
   Type_here: 'اكتب هنا',
   courier_visibility_notice:
     'نود إعلامك بأنه قد يتم مشاركة رسالتك مع عامل التوصيل الذي سيقوم بتسليم طلبك.',
-  menu_preparation_message: 'نعمل على تجهيز قائمة الطعام. تابعنا قريبًا!'
+  menu_preparation_message: 'نعمل على تجهيز قائمة الطعام. تابعنا قريبًا!',
+  success: 'تم بنجاح',
+  created_request_delivery_successfully: 'تم طلب المندوب بنجاح'
 }
