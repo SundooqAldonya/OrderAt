@@ -74,45 +74,45 @@ module.exports = {
         }
       )
     },
-    // subscriptionAssignRider: {
-    //   subscribe: withFilter(
-    //     () => pubsub.asyncIterator(ASSIGN_RIDER),
-    //     (payload, args) => {
-    //       const riderId = payload?.subscriptionAssignRider?.userId?.toString()
-    //       return riderId === args.riderId
-    //     }
-    //   )
-    // },
     subscriptionAssignRider: {
       subscribe: withFilter(
-        (_, args, { pubsub }) => {
-          const asyncIterator = pubsub.asyncIterator(ASSIGN_RIDER)
-          const originalReturn = asyncIterator.return?.bind(asyncIterator)
-
-          asyncIterator.return = async () => {
-            try {
-              console.log(
-                `Cleaning up subscription for RIDER ID: ${args.riderId}`
-              )
-              if (originalReturn) {
-                const result = await originalReturn.call(asyncIterator)
-                return result || { value: undefined, done: true }
-              }
-              return { value: undefined, done: true }
-            } catch (err) {
-              console.error('Error cleaning up asyncIterator:', err)
-              return { value: undefined, done: true }
-            }
-          }
-
-          return asyncIterator
-        },
+        () => pubsub.asyncIterator(ASSIGN_RIDER),
         (payload, args) => {
-          const riderId = payload.subscriptionAssignRider?.userId?.toString()
+          const riderId = payload?.subscriptionAssignRider?.userId?.toString()
           return riderId === args.riderId
         }
       )
     },
+    // subscriptionAssignRider: {
+    //   subscribe: withFilter(
+    //     (_, args, { pubsub }) => {
+    //       const asyncIterator = pubsub.asyncIterator(ASSIGN_RIDER)
+    //       const originalReturn = asyncIterator.return?.bind(asyncIterator)
+
+    //       asyncIterator.return = async () => {
+    //         try {
+    //           console.log(
+    //             `Cleaning up subscription for RIDER ID: ${args.riderId}`
+    //           )
+    //           if (originalReturn) {
+    //             const result = await originalReturn.call(asyncIterator)
+    //             return result || { value: undefined, done: true }
+    //           }
+    //           return { value: undefined, done: true }
+    //         } catch (err) {
+    //           console.error('Error cleaning up asyncIterator:', err)
+    //           return { value: undefined, done: true }
+    //         }
+    //       }
+
+    //       return asyncIterator
+    //     },
+    //     (payload, args) => {
+    //       const riderId = payload.subscriptionAssignRider?.userId?.toString()
+    //       return riderId === args.riderId
+    //     }
+    //   )
+    // },
     subscriptionOrder: {
       subscribe: withFilter(
         (_, args, { pubsub }) => {
