@@ -600,11 +600,12 @@ export const ar = {
   address_label: 'تفاصيل إضافيه للعنوان',
   address_label_placeholder: 'مثال: عماره ٥ بجوار بنك مصر',
   choose_address: 'اختر من دفتر عناويني',
-  Add_a_message_for_the_restaurant: 'Add a message for the restaurant',
-  instructions: 'Special requests, allergies, dietary restriction.',
-  Add_message: 'Add message',
-  Type_here: 'Type here',
+  try_change_location: 'جرب تغير الموقع',
+  Add_a_message_for_the_restaurant: 'أضف رسالة للمطعم',
+  instructions: 'يرجى إعلامنا بأي طلبات خاصة، حساسيات، أو قيود غذائية.',
+  Add_message: 'اكتب رسالة',
+  Type_here: 'اكتب هنا',
   courier_visibility_notice:
-    'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue',
-  menu_preparation_message: "We're preparing the food menu. Stay tuned!"
+    'نود إعلامك بأنه قد يتم مشاركة رسالتك مع عامل التوصيل الذي سيقوم بتسليم طلبك.',
+  menu_preparation_message: 'نعمل على تجهيز قائمة الطعام. تابعنا قريبًا!'
 }
