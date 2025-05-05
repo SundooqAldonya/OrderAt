@@ -597,8 +597,8 @@ export const ar = {
   pickup: 'مكان الاستلام',
   dropoff: 'مكان التسليم',
   save_address: 'حفظ العنوان للاستخدام لاحقًا',
-  address_label: 'تفاصيل إضافيه للعنوان',
-  address_label_placeholder: 'مثال: عماره ٥ بجوار بنك مصر',
+  address_label: 'اسم المكان',
+  address_label_placeholder: 'مثال: البيت ، العمل ، السوبرماركت',
   choose_address: 'اختر من دفتر عناويني',
   try_change_location: 'جرب تغير الموقع',
   Add_a_message_for_the_restaurant: 'أضف رسالة للمطعم',
@@ -610,5 +610,10 @@ export const ar = {
   menu_preparation_message: 'نعمل على تجهيز قائمة الطعام. تابعنا قريبًا!',
   success: 'تم بنجاح',
   created_request_delivery_successfully: 'تم طلب المندوب بنجاح',
-  rider_phone: 'تليفون الكابتن'
+  rider_phone: 'تليفون الكابتن',
+  rider_name: 'اسم الكابتن',
+  delivery_fee: 'رسوم التوصيل',
+  from: 'من',
+  to: 'إلى',
+  mandoob_instructions: 'معلومات للمندوب'
 }

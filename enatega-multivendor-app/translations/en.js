@@ -619,5 +619,10 @@ export const en = {
   courier_visibility_notice:
     'Kindly be advised that your message could also be visible to the courier partner responsible for delivering your order to the venue',
   menu_preparation_message: "We're preparing the food menu. Stay tuned!",
-  rider_phone: 'Rider phone'
+  rider_phone: 'Rider phone',
+  rider_name: 'Rider name',
+  delivery_fee: 'Delivery charges',
+  from: 'From',
+  to: 'To',
+  mandoob_instructions: 'Instructions for mandoob'
 }

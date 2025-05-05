@@ -1032,6 +1032,7 @@ export const singleOrder = `query SingleOrder($id: String!){
       name
       image
       slug
+      tax
       address
       location {
         coordinates
@@ -1103,6 +1104,7 @@ export const singleOrder = `query SingleOrder($id: String!){
     }
     pickupAddress
     type
+    mandoobSpecialInstructions
   }
 }
 `

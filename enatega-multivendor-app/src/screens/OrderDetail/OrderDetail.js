@@ -148,7 +148,41 @@ function OrderDetail(props) {
 
   const pickupLocation = order?.pickupLocation || null
 
-  console.log({ restaurantCoords: restaurant?.location?.coordinates })
+  function taxCalculation() {
+    const tax = order?.restaurant ? order?.restaurant?.tax : 0
+    console.log({ tax })
+    if (tax === 0) {
+      return tax.toFixed(2)
+    }
+    const delivery = order.isPickedUp ? 0 : deliveryCharges
+    const amount = +calculatePrice(delivery, true)
+    console.log({ amount })
+    const taxAmount = ((amount / 100) * tax).toFixed(2)
+    return taxAmount
+  }
+
+  function calculatePrice(delivery = 0, withDiscount) {
+    let itemTotal = 0
+    order.items.forEach((item) => {
+      let total = item.variation.price
+      console.log({ total })
+      item.addons.forEach((addon) => {
+        addon.options.forEach((option) => {
+          if (option.selected) {
+            total += option.price
+          }
+        })
+      })
+      itemTotal += total
+    })
+    if (withDiscount && order.coupon?.discount) {
+      itemTotal -= (order.coupon.discount / 100) * itemTotal
+    }
+    const deliveryAmount = delivery > 0 ? deliveryCharges : 0
+    return (itemTotal + deliveryAmount).toFixed(2)
+  }
+
+  // console.log({ order })
 
   const subTotal = total - tip - tax - deliveryCharges
   return (
@@ -316,7 +350,14 @@ function OrderDetail(props) {
           navigation={props.navigation}
           currencySymbol={configuration.currencySymbol}
           items={items}
-          from={restaurant.name}
+          from={restaurant?.name}
+          to={restaurant?.name}
+          type={order?.type ? order.type : null}
+          mandoobSpecialInstructions={
+            order?.mandoobSpecialInstructions
+              ? order.mandoobSpecialInstructions
+              : null
+          }
           orderNo={order.orderId}
           deliveryAddress={deliveryAddress.deliveryAddress}
           subTotal={subTotal}
@@ -331,6 +372,80 @@ function OrderDetail(props) {
         />
       </ScrollView>
       <View style={styles().bottomContainer(currentTheme)}>
+        <View style={[styles(currentTheme).priceContainer]}>
+          <TextDefault
+            numberOfLines={1}
+            H5
+            bolder
+            textColor={currentTheme.fontNewColor}
+            style={{
+              ...alignment.MBmedium,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {t('paymentSummary')}
+          </TextDefault>
+
+          <View style={styles(currentTheme).horizontalLine2} />
+          <View style={{ marginBottom: 20 }}>
+            {!order.isPickedUp && (
+              <>
+                <View
+                  style={{
+                    ...styles().billsec,
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 10
+                  }}
+                >
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={currentTheme.fontFourthColor}
+                    normal
+                    bold
+                  >
+                    {t('deliveryFee')}
+                  </TextDefault>
+                  <TextDefault
+                    numberOfLines={1}
+                    textColor={currentTheme.fontFourthColor}
+                    normal
+                    bold
+                  >
+                    {deliveryCharges.toFixed(2)} {configuration.currencySymbol}
+                  </TextDefault>
+                </View>
+                <View style={styles(currentTheme).horizontalLine2} />
+              </>
+            )}
+
+            <View
+              style={{
+                ...styles().billsec,
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between'
+              }}
+            >
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.fontFourthColor}
+                normal
+                bold
+              >
+                {t('taxFee')}
+              </TextDefault>
+              <TextDefault
+                numberOfLines={1}
+                textColor={currentTheme.fontFourthColor}
+                normal
+                bold
+              >
+                {taxCalculation()} {configuration.currencySymbol}
+              </TextDefault>
+            </View>
+          </View>
+          <View style={styles(currentTheme).horizontalLine2} />
+        </View>
         <PriceRow
           isArabic={isArabic}
           theme={currentTheme}

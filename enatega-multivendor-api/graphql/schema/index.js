@@ -499,6 +499,7 @@ const typeDefs = gql`
     tags: [String]
     reviewCount: Int
     reviewAverage: Float
+    tax: Float
   }
 
   type AuthData {

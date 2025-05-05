@@ -42,6 +42,7 @@ const RequestDelivery = () => {
   const { location } = useContext(LocationContext)
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
+  const [disabled, setDisabled] = useState(false)
 
   console.log({ addressInfo })
 
@@ -65,6 +66,7 @@ const RequestDelivery = () => {
     },
     onError: (err) => {
       console.log({ err })
+      setDisabled(false)
       Toast.show({
         type: 'error',
         text1: t('error'),
@@ -112,6 +114,7 @@ const RequestDelivery = () => {
 
   const handleSubmit = () => {
     if (validate()) {
+      setDisabled(true)
       const payload = {
         pickupLat: +pickupCoords?.latitude,
         pickupLng: +pickupCoords?.longitude,
@@ -293,7 +296,14 @@ const RequestDelivery = () => {
           {/* <Text>ETA: 25 mins</Text> */}
         </View>
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <TouchableOpacity
+          disabled={disabled}
+          style={{
+            ...styles.submitButton,
+            backgroundColor: disabled ? 'grey' : '#000'
+          }}
+          onPress={handleSubmit}
+        >
           <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
         </TouchableOpacity>
       </View>

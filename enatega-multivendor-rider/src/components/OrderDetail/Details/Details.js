@@ -55,8 +55,6 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
     })
   }
 
-  console.log({ type: order.type })
-
   return (
     <View style={styles.container}>
       <Modal

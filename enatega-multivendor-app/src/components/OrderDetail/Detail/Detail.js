@@ -15,6 +15,7 @@ import { callNumber } from '../../../utils/callNumber'
 export default function Detail({
   theme,
   from,
+  to,
   orderNo,
   deliveryAddress,
   items,
@@ -27,12 +28,14 @@ export default function Detail({
   navigation,
   id,
   rider,
-  orderStatus
+  orderStatus,
+  type,
+  mandoobSpecialInstructions
 }) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
-  console.log({ riderPhone: rider })
+  console.log({ mandoobSpecialInstructions })
   return (
     <View style={styles.container(theme)}>
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
@@ -45,36 +48,98 @@ export default function Detail({
           theme={theme}
         />
       )} */}
-      {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
-        <TouchableOpacity
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            gap: 10
-          }}
-          onPress={() => callNumber(rider.phone)}
-        >
+      {rider && (
+        <View>
+          <View
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              gap: 10
+            }}
+          >
+            <TextDefault
+              bolder
+              style={{
+                color: '#000',
+                textAlign: isArabic ? 'right' : 'left',
+                marginBottom: 20,
+                fontSize: 20
+              }}
+            >
+              {t('rider_name')}: {rider.name}
+            </TextDefault>
+          </View>
+          <TouchableOpacity
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              gap: 10
+            }}
+            onPress={() => callNumber(rider.phone)}
+          >
+            <TextDefault
+              bolder
+              style={{
+                color: '#000',
+                textAlign: isArabic ? 'right' : 'left',
+                marginBottom: 20,
+                fontSize: 20
+              }}
+            >
+              {t('rider_phone')}: {rider.phone}
+            </TextDefault>
+            <Feather name='external-link' size={24} color='black' />
+          </TouchableOpacity>
+        </View>
+      )}
+      {type && type === 'delivery_request' ? (
+        <View style={{ marginBottom: 20 }}>
           <TextDefault
             bolder
             style={{
               color: '#000',
               textAlign: isArabic ? 'right' : 'left',
-              marginBottom: 20,
               fontSize: 20
             }}
           >
-            {t('rider_phone')}: {rider.phone}
+            {t('mandoob_instructions')}:
           </TextDefault>
-          <Feather name='external-link' size={24} color='black' />
-        </TouchableOpacity>
-      )}
-      <TextDefault
-        textColor={theme.gray500}
-        bolder
-        H4
-        style={{ ...alignment.MBsmall, textAlign: isArabic ? 'right' : 'left' }}
-      >
-        {from}
-      </TextDefault>
+          <TextDefault
+            bolder
+            style={{
+              color: '#000',
+              textAlign: isArabic ? 'right' : 'left',
+              fontSize: 20
+            }}
+          >
+            {mandoobSpecialInstructions}
+          </TextDefault>
+        </View>
+      ) : null}
+      {/* <View>
+        <TextDefault
+          textColor={theme.gray500}
+          bolder
+          H4
+          style={{
+            ...alignment.MBsmall,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
+        >
+          {t('from')}: {from}
+        </TextDefault>
+      </View>
+      <View>
+        <TextDefault
+          textColor={theme.gray500}
+          bolder
+          H4
+          style={{
+            ...alignment.MBsmall,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
+        >
+          {t('to')}: {to}
+        </TextDefault>
+      </View> */}
       <View
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -159,7 +224,7 @@ const ItemRow = ({
               ? { uri: image }
               : require('../../../assets/images/food_placeholder.png')
           }
-        ></Image>
+        />
       </View>
       <View style={{ width: '60%', justifyContent: 'center' }}>
         <TextDefault
