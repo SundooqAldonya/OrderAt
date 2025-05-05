@@ -286,7 +286,11 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='RequestDelivery'
         options={{
-          headerTitle: t('RequestDelivery')
+          headerTitle: t('RequestDelivery'),
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
         }}
         component={RequestDelivery}
       />
@@ -294,7 +298,10 @@ function NoDrawer() {
         name='FromPlace'
         options={{
           headerTitle: t('pickup'),
-          headerRight: false
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
         }}
         component={FromPlace}
       />
@@ -302,7 +309,10 @@ function NoDrawer() {
         name='ToPlace'
         options={{
           headerTitle: t('dropoff'),
-          headerRight: false
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
         }}
         component={ToPlace}
       />

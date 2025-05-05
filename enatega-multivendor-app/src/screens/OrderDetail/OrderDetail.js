@@ -190,8 +190,8 @@ function OrderDetail(props) {
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          backgroundColor: currentTheme.themeBackground,
-          paddingBottom: scale(150)
+          backgroundColor: currentTheme.themeBackground
+          // paddingBottom: scale(150)
         }}
         showsVerticalScrollIndicator={false}
         overScrollMode='never'
@@ -201,7 +201,7 @@ function OrderDetail(props) {
           order.orderStatus === ORDER_STATUS_ENUM.PICKED && (
             <MapView
               ref={(c) => (mapView.current = c)}
-              style={{ flex: 1, height: HEIGHT * 0.6 }}
+              style={{ flex: 1, height: HEIGHT * 0.3 }}
               showsUserLocation={false}
               initialRegion={{
                 latitude: +deliveryAddress?.location?.coordinates[1],
@@ -351,7 +351,6 @@ function OrderDetail(props) {
           currencySymbol={configuration.currencySymbol}
           items={items}
           from={restaurant?.name}
-          to={restaurant?.name}
           type={order?.type ? order.type : null}
           mandoobSpecialInstructions={
             order?.mandoobSpecialInstructions
@@ -359,7 +358,7 @@ function OrderDetail(props) {
               : null
           }
           orderNo={order.orderId}
-          deliveryAddress={deliveryAddress.deliveryAddress}
+          deliveryAddress={deliveryAddress}
           subTotal={subTotal}
           tip={tip}
           tax={tax}
@@ -369,91 +368,100 @@ function OrderDetail(props) {
           id={_id}
           rider={order.rider}
           orderStatus={order.orderStatus}
+          restaurant={order?.restaurant ? order.restaurant : null}
+          pickupAddress={order?.pickupAddress ? order.pickupAddress : null}
+          pickupLocation={
+            order?.restaurant?._id
+              ? order.restaurant.location
+              : order?.pickupLocation
+                ? order.pickupLocation
+                : null
+          }
         />
-      </ScrollView>
-      <View style={styles().bottomContainer(currentTheme)}>
-        <View style={[styles(currentTheme).priceContainer]}>
-          <TextDefault
-            numberOfLines={1}
-            H5
-            bolder
-            textColor={currentTheme.fontNewColor}
-            style={{
-              ...alignment.MBmedium,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            {t('paymentSummary')}
-          </TextDefault>
-
-          <View style={styles(currentTheme).horizontalLine2} />
-          <View style={{ marginBottom: 20 }}>
-            {!order.isPickedUp && (
-              <>
-                <View
-                  style={{
-                    ...styles().billsec,
-                    flexDirection: isArabic ? 'row-reverse' : 'row',
-                    justifyContent: 'space-between',
-                    marginBottom: 10
-                  }}
-                >
-                  <TextDefault
-                    numberOfLines={1}
-                    textColor={currentTheme.fontFourthColor}
-                    normal
-                    bold
-                  >
-                    {t('deliveryFee')}
-                  </TextDefault>
-                  <TextDefault
-                    numberOfLines={1}
-                    textColor={currentTheme.fontFourthColor}
-                    normal
-                    bold
-                  >
-                    {deliveryCharges.toFixed(2)} {configuration.currencySymbol}
-                  </TextDefault>
-                </View>
-                <View style={styles(currentTheme).horizontalLine2} />
-              </>
-            )}
-
-            <View
+        <View style={styles().bottomContainer(currentTheme)}>
+          <View style={[styles(currentTheme).priceContainer]}>
+            <TextDefault
+              numberOfLines={1}
+              H5
+              bolder
+              textColor={currentTheme.fontNewColor}
               style={{
-                ...styles().billsec,
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                justifyContent: 'space-between'
+                ...alignment.MBmedium,
+                textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              <TextDefault
-                numberOfLines={1}
-                textColor={currentTheme.fontFourthColor}
-                normal
-                bold
+              {t('paymentSummary')}
+            </TextDefault>
+
+            {/* <View style={styles(currentTheme).horizontalLine2} /> */}
+            <View style={{ marginBottom: 20 }}>
+              {!order.isPickedUp && (
+                <>
+                  <View
+                    style={{
+                      ...styles().billsec,
+                      flexDirection: isArabic ? 'row-reverse' : 'row',
+                      justifyContent: 'space-between',
+                      marginBottom: 10
+                    }}
+                  >
+                    <TextDefault
+                      numberOfLines={1}
+                      textColor={currentTheme.fontFourthColor}
+                      normal
+                      bold
+                    >
+                      {t('deliveryFee')}
+                    </TextDefault>
+                    <TextDefault
+                      numberOfLines={1}
+                      textColor={currentTheme.fontFourthColor}
+                      normal
+                      bold
+                    >
+                      {deliveryCharges.toFixed(2)}{' '}
+                      {configuration.currencySymbol}
+                    </TextDefault>
+                  </View>
+                  <View style={styles(currentTheme).horizontalLine2} />
+                </>
+              )}
+
+              <View
+                style={{
+                  ...styles().billsec,
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  justifyContent: 'space-between'
+                }}
               >
-                {t('taxFee')}
-              </TextDefault>
-              <TextDefault
-                numberOfLines={1}
-                textColor={currentTheme.fontFourthColor}
-                normal
-                bold
-              >
-                {taxCalculation()} {configuration.currencySymbol}
-              </TextDefault>
+                <TextDefault
+                  numberOfLines={1}
+                  textColor={currentTheme.fontFourthColor}
+                  normal
+                  bold
+                >
+                  {t('taxFee')}
+                </TextDefault>
+                <TextDefault
+                  numberOfLines={1}
+                  textColor={currentTheme.fontFourthColor}
+                  normal
+                  bold
+                >
+                  {taxCalculation()} {configuration.currencySymbol}
+                </TextDefault>
+              </View>
             </View>
+            {/* <View style={styles(currentTheme).horizontalLine2} /> */}
           </View>
-          <View style={styles(currentTheme).horizontalLine2} />
-        </View>
-        <PriceRow
-          isArabic={isArabic}
-          theme={currentTheme}
-          title={t('total')}
-          currency={configuration.currencySymbol}
-          price={total.toFixed(2)}
-        />
-        {/* {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
+          <PriceRow
+            isArabic={isArabic}
+            theme={currentTheme}
+            title={t('total')}
+            currency={configuration.currencySymbol}
+            price={total.toFixed(2)}
+          />
+          {/* {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
           <View style={{ margin: scale(20) }}>
             <Button
               text={t('cancelOrder')}
@@ -469,7 +477,9 @@ function OrderDetail(props) {
             />
           </View>
         )} */}
-      </View>
+        </View>
+      </ScrollView>
+
       <CancelModal
         theme={currentTheme}
         modalVisible={cancelModalVisible}

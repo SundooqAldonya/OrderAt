@@ -11,6 +11,8 @@ import { formatNumber } from '../../../utils/formatNumber'
 import Feather from '@expo/vector-icons/Feather'
 import { TouchableOpacity } from 'react-native'
 import { callNumber } from '../../../utils/callNumber'
+import { colors } from '../../../utils/colors'
+import { openGoogleMaps } from '../../../utils/callMaps'
 
 export default function Detail({
   theme,
@@ -30,12 +32,15 @@ export default function Detail({
   rider,
   orderStatus,
   type,
-  mandoobSpecialInstructions
+  mandoobSpecialInstructions,
+  pickupAddress,
+  pickupLocation,
+  restaurant
 }) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
-  console.log({ mandoobSpecialInstructions })
+  console.log({ pickupLocation })
   return (
     <View style={styles.container(theme)}>
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
@@ -48,6 +53,30 @@ export default function Detail({
           theme={theme}
         />
       )} */}
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          gap: 4
+        }}
+      >
+        <TextDefault
+          textColor={theme.gray500}
+          bolder
+          H5
+          style={{ ...alignment.MBmedium }}
+        >
+          {t('yourOrder')}
+        </TextDefault>
+        <TextDefault
+          textColor={theme.lightBlue}
+          bolder
+          H4
+          style={{ ...alignment.MBmedium }}
+        >
+          #{orderNo.toLowerCase()}
+        </TextDefault>
+      </View>
       {rider && (
         <View>
           <View
@@ -62,7 +91,7 @@ export default function Detail({
                 color: '#000',
                 textAlign: isArabic ? 'right' : 'left',
                 marginBottom: 20,
-                fontSize: 20
+                fontSize: 16
               }}
             >
               {t('rider_name')}: {rider.name}
@@ -81,12 +110,12 @@ export default function Detail({
                 color: '#000',
                 textAlign: isArabic ? 'right' : 'left',
                 marginBottom: 20,
-                fontSize: 20
+                fontSize: 16
               }}
             >
               {t('rider_phone')}: {rider.phone}
             </TextDefault>
-            <Feather name='external-link' size={24} color='black' />
+            <Feather name='external-link' size={18} color='black' />
           </TouchableOpacity>
         </View>
       )}
@@ -97,7 +126,7 @@ export default function Detail({
             style={{
               color: '#000',
               textAlign: isArabic ? 'right' : 'left',
-              fontSize: 20
+              fontSize: 16
             }}
           >
             {t('mandoob_instructions')}:
@@ -107,13 +136,96 @@ export default function Detail({
             style={{
               color: '#000',
               textAlign: isArabic ? 'right' : 'left',
-              fontSize: 20
+              fontSize: 16
             }}
           >
             {mandoobSpecialInstructions}
           </TextDefault>
         </View>
       ) : null}
+
+      <TouchableOpacity
+        style={{
+          marginBottom: 10,
+          backgroundColor: '#f5f5f5',
+          gap: 10,
+          padding: 10,
+          borderRadius: 8
+        }}
+        onPress={() =>
+          openGoogleMaps({
+            latitude: pickupLocation.coordinates[1],
+            longitude: pickupLocation.coordinates[0]
+          })
+        }
+      >
+        <View>
+          <TextDefault
+            bolder
+            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+          >
+            {t('pickup')}
+          </TextDefault>
+          <TextDefault
+            bolder
+            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+          >
+            {restaurant?._id ? restaurant.address : pickupAddress}
+          </TextDefault>
+        </View>
+        <Feather
+          name='external-link'
+          size={24}
+          color='black'
+          style={{
+            position: 'absolute',
+            top: 20,
+            left: isArabic ? 8 : 0,
+            right: isArabic ? 0 : 8
+          }}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginBottom: 10,
+          backgroundColor: '#f5f5f5',
+          gap: 10,
+          padding: 10,
+          borderRadius: 8
+        }}
+        onPress={() =>
+          openGoogleMaps({
+            latitude: deliveryAddress.location.coordinates[1],
+            longitude: deliveryAddress.location.coordinates[0]
+          })
+        }
+      >
+        <View>
+          <TextDefault
+            bolder
+            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+          >
+            {t('dropoff')}
+          </TextDefault>
+          <TextDefault
+            bolder
+            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+          >
+            {deliveryAddress.deliveryAddress}
+          </TextDefault>
+        </View>
+        <Feather
+          name='external-link'
+          size={24}
+          color='black'
+          style={{
+            position: 'absolute',
+            top: 20,
+            left: isArabic ? 8 : 0,
+            right: isArabic ? 0 : 5
+          }}
+        />
+      </TouchableOpacity>
       {/* <View>
         <TextDefault
           textColor={theme.gray500}
@@ -140,30 +252,6 @@ export default function Detail({
           {t('to')}: {to}
         </TextDefault>
       </View> */}
-      <View
-        style={{
-          flexDirection: isArabic ? 'row-reverse' : 'row',
-          alignItems: 'center',
-          gap: 4
-        }}
-      >
-        <TextDefault
-          textColor={theme.gray500}
-          bolder
-          H5
-          style={{ ...alignment.MBmedium }}
-        >
-          {t('yourOrder')}
-        </TextDefault>
-        <TextDefault
-          textColor={theme.lightBlue}
-          bolder
-          H4
-          style={{ ...alignment.MBmedium }}
-        >
-          #{orderNo.toLowerCase()}
-        </TextDefault>
-      </View>
 
       <View
         style={{

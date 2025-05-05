@@ -161,6 +161,12 @@ const orderSchema = new Schema(
     pickupAddress: {
       type: String
     },
+    pickupAddressFreeText: {
+      type: String
+    },
+    pickupLabel: {
+      type: String
+    },
     type: {
       type: String,
       enum: ['restaurant', 'delivery_request'],

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native'
 import UserContext from '../../../context/User'
 import styles from './styles'
@@ -14,9 +14,11 @@ import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
+import { TopBrands } from '../TopBrands'
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const navigation = useNavigation()
+  const [hasActiveOrders, setHasActiveOrders] = useState(false)
 
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -27,7 +29,7 @@ function MainRestaurantCard(props) {
   if (props?.error) return <Text>Error: {props?.error?.message}</Text>
 
   return (
-    <View style={styles().orderAgainSec}>
+    <View style={{ ...styles().orderAgainSec, marginBottom: 200 }}>
       {props.orders && props.orders.length > 0 ? (
         <>
           <View>
@@ -102,6 +104,13 @@ function MainRestaurantCard(props) {
                 return <NewRestaurantCard {...item} />
               }}
             />
+          </View>
+          <View
+            style={{
+              ...styles(currentTheme, hasActiveOrders).topBrandsMargin
+            }}
+          >
+            <TopBrands />
           </View>
         </>
       ) : (

@@ -20,7 +20,7 @@ const styles = (props = null) =>
       ...alignment.MBsmall
     },
 
-    orderReceipt: theme => ({
+    orderReceipt: (theme) => ({
       elevation: 1,
       shadowColor: theme.shadow,
       shadowOffset: {
@@ -51,9 +51,9 @@ const styles = (props = null) =>
       margin: 15
     },
     bottomContainer: (theme) => ({
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
+      // position: 'absolute',
+      // bottom: 0,
+      // left: 0,
       width: '100%',
       // height: scale(80),
       backgroundColor: theme.themeBackground,
@@ -62,14 +62,14 @@ const styles = (props = null) =>
       borderColor: theme.borderLight,
       borderTopWidth: StyleSheet.hairlineWidth
     }),
-    cancelButtonContainer: theme => ({
+    cancelButtonContainer: (theme) => ({
       alignItems: 'center',
       justifyContent: 'center',
       borderColor: theme.red600,
       borderWidth: 1,
       borderRadius: scale(25)
     }),
-    dismissButtonContainer: theme => ({
+    dismissButtonContainer: (theme) => ({
       alignItems: 'center',
       justifyContent: 'center',
       borderColor: theme.red600,

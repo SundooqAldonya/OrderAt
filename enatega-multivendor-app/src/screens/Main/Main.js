@@ -605,7 +605,7 @@ function Main(props) {
                           )}
                       </View>
                       <View>
-                        {orderLoading ? (
+                        {/* {orderLoading ? (
                           <MainLoadingUI />
                         ) : (
                           <MainRestaurantCard
@@ -614,7 +614,7 @@ function Main(props) {
                             error={orderError}
                             title={'Top Picks for you'}
                           />
-                        )}
+                        )} */}
                       </View>
                     </View>
 
@@ -624,7 +624,7 @@ function Main(props) {
                         styles(currentTheme, hasActiveOrders).topBrandsMargin
                       }
                     >
-                      {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />}
+                      {/* {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />} */}
                     </View>
                   </ScrollView>
                 )}
