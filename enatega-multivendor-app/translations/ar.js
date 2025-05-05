@@ -615,5 +615,6 @@ export const ar = {
   delivery_fee: 'رسوم التوصيل',
   from: 'من',
   to: 'إلى',
-  mandoob_instructions: 'معلومات للمندوب'
+  mandoob_instructions: 'معلومات للمندوب',
+  no_zone: 'حاليا لا يوجد لنا عمال توصيل من هذه المنطقة'
 }

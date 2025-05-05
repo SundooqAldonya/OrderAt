@@ -85,6 +85,10 @@ module.exports = {
           }
         })
 
+        if (!zone) {
+          throw new Error('no_zone')
+        }
+
         console.log({ zone })
 
         const order = new Order({

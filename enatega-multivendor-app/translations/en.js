@@ -624,5 +624,6 @@ export const en = {
   delivery_fee: 'Delivery charges',
   from: 'From',
   to: 'To',
-  mandoob_instructions: 'Instructions for mandoob'
+  mandoob_instructions: 'Instructions for mandoob',
+  no_zone: 'Currently we are not working in this zone!'
 }

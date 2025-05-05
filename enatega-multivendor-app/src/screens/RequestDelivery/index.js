@@ -67,6 +67,23 @@ const RequestDelivery = () => {
     onError: (err) => {
       console.log({ err })
       setDisabled(false)
+      const error = String(err)
+      let errMessage
+      if (error && error.includes('no_zone')) {
+        errMessage = error.split(':').pop().trim()
+        Toast.show({
+          type: 'error',
+          text1: t('error'),
+          text2: t(errMessage),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+        return
+      }
       Toast.show({
         type: 'error',
         text1: t('error'),
