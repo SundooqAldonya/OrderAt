@@ -7,6 +7,12 @@
         "simulator": true
       }
     },
+    "preview": {
+      "channel": "production",
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "staging": {
       "developmentClient": false,
       "channel": "staging",
@@ -19,9 +25,8 @@
       "channel": "production",
       "android": {
         "buildType": "apk"
-     }
+      }
     }
-    
   },
   "submit": {
     "production": {
