@@ -619,13 +619,13 @@ function Main(props) {
                     </View>
 
                     {/* the therd section */}
-                    <View
+                    {/* <View
                       style={
                         styles(currentTheme, hasActiveOrders).topBrandsMargin
                       }
-                    >
-                      {/* {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />} */}
-                    </View>
+                    > */}
+                    {/* {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />} */}
+                    {/* </View> */}
                   </ScrollView>
                 )}
               </View>
