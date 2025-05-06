@@ -143,89 +143,90 @@ export default function Detail({
           </TextDefault>
         </View>
       ) : null}
-
-      <TouchableOpacity
-        style={{
-          marginBottom: 10,
-          backgroundColor: '#f5f5f5',
-          gap: 10,
-          padding: 10,
-          borderRadius: 8
-        }}
-        onPress={() =>
-          openGoogleMaps({
-            latitude: pickupLocation.coordinates[1],
-            longitude: pickupLocation.coordinates[0]
-          })
-        }
-      >
-        <View>
-          <TextDefault
-            bolder
-            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-          >
-            {t('pickup')}
-          </TextDefault>
-          <TextDefault
-            bolder
-            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-          >
-            {restaurant?._id ? restaurant.address : pickupAddress}
-          </TextDefault>
-        </View>
-        <Feather
-          name='external-link'
-          size={24}
-          color='black'
+      <View style={{ marginVertical: 20 }}>
+        <TouchableOpacity
           style={{
-            position: 'absolute',
-            top: 20,
-            left: isArabic ? 8 : 0,
-            right: isArabic ? 0 : 8
+            marginBottom: 10,
+            backgroundColor: '#f5f5f5',
+            gap: 10,
+            padding: 10,
+            borderRadius: 8
           }}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          marginBottom: 10,
-          backgroundColor: '#f5f5f5',
-          gap: 10,
-          padding: 10,
-          borderRadius: 8
-        }}
-        onPress={() =>
-          openGoogleMaps({
-            latitude: deliveryAddress.location.coordinates[1],
-            longitude: deliveryAddress.location.coordinates[0]
-          })
-        }
-      >
-        <View>
-          <TextDefault
-            bolder
-            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-          >
-            {t('dropoff')}
-          </TextDefault>
-          <TextDefault
-            bolder
-            style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-          >
-            {deliveryAddress.deliveryAddress}
-          </TextDefault>
-        </View>
-        <Feather
-          name='external-link'
-          size={24}
-          color='black'
+          onPress={() =>
+            openGoogleMaps({
+              latitude: pickupLocation.coordinates[1],
+              longitude: pickupLocation.coordinates[0]
+            })
+          }
+        >
+          <View>
+            <TextDefault
+              bolder
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {t('pickup')}
+            </TextDefault>
+            <TextDefault
+              bolder
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {restaurant?._id ? restaurant.address : pickupAddress}
+            </TextDefault>
+          </View>
+          <Feather
+            name='external-link'
+            size={24}
+            color='black'
+            style={{
+              position: 'absolute',
+              top: 20,
+              left: isArabic ? 8 : 0,
+              right: isArabic ? 0 : 8
+            }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={{
-            position: 'absolute',
-            top: 20,
-            left: isArabic ? 8 : 0,
-            right: isArabic ? 0 : 5
+            marginBottom: 10,
+            backgroundColor: '#f5f5f5',
+            gap: 10,
+            padding: 10,
+            borderRadius: 8
           }}
-        />
-      </TouchableOpacity>
+          onPress={() =>
+            openGoogleMaps({
+              latitude: deliveryAddress.location.coordinates[1],
+              longitude: deliveryAddress.location.coordinates[0]
+            })
+          }
+        >
+          <View>
+            <TextDefault
+              bolder
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {t('dropoff')}
+            </TextDefault>
+            <TextDefault
+              bolder
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {deliveryAddress.deliveryAddress}
+            </TextDefault>
+          </View>
+          <Feather
+            name='external-link'
+            size={24}
+            color='black'
+            style={{
+              position: 'absolute',
+              top: 20,
+              left: isArabic ? 8 : 0,
+              right: isArabic ? 0 : 5
+            }}
+          />
+        </TouchableOpacity>
+      </View>
       {/* <View>
         <TextDefault
           textColor={theme.gray500}
