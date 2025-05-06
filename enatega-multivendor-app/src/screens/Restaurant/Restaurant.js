@@ -567,7 +567,7 @@ function Restaurant(props) {
           <Animated.View style={styles(currentTheme).flex}>
             <View
               style={{
-                height: height * 0.37,
+                height: height * 0.39,
                 borderBottomWidth: 1,
                 borderBlockColor: colors.lightGray,
                 borderRadius: 16

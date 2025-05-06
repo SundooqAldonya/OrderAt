@@ -30,7 +30,7 @@ export const configuration = `query Configuration{
 
 export const riderOrders = `query RiderOrders{
   riderOrders{
-        _id
+      _id
       orderId
       createdAt
       acceptedAt

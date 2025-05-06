@@ -33,13 +33,18 @@ function MainRestaurantCard(props) {
       {props.orders && props.orders.length > 0 ? (
         <>
           <View>
-            <View
+            <TouchableOpacity
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginBottom: 10
               }}
+              onPress={() =>
+                navigation.navigate('MainRestaurantScreen', {
+                  restaurantData: props?.orders
+                })
+              }
             >
               <TextDefault
                 numberOfLines={1}
@@ -54,22 +59,15 @@ function MainRestaurantCard(props) {
                 {/* {t(props?.title)} */}
                 {t('mostOrderedNow')}
               </TextDefault>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('MainRestaurantScreen', {
-                    restaurantData: props?.orders
-                  })
-                }
-                style={styles().image}
-              >
+              <View style={styles().image}>
                 <Ionicons
-                  name='arrow-back'
+                  name={isArabic ? 'arrow-back' : 'arrow-forward'}
                   size={scale(24)}
                   style={styles().image1}
                   color={colors.dark}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
 
             {/* <TextDefault
               Normal

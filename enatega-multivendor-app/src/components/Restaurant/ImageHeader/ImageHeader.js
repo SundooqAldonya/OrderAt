@@ -58,7 +58,7 @@ const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
 
 const { height } = Dimensions.get('screen')
 const TOP_BAR_HEIGHT = height * 0.05
-const HEADER_MAX_HEIGHT = height * 0.4
+const HEADER_MAX_HEIGHT = height * 0.8
 const HEADER_MIN_HEIGHT = height * 0.07 + TOP_BAR_HEIGHT
 const SCROLL_RANGE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
@@ -203,7 +203,12 @@ function ImageTextCenterHeader(props, ref) {
   return (
     // <Animated.View style={[styles(currentTheme).mainContainer, headerHeight]}>
     <Animated.View style={[styles(currentTheme).mainContainer]}>
-      <Animated.View style={[headerHeightWithoutTopbar, {}]}>
+      <Animated.View
+        style={[
+          headerHeightWithoutTopbar
+          // { backgroundColor: 'red', paddingBottom: 121 }
+        ]}
+      >
         <Animated.View style={[styles().overlayContainer]}>
           {/* top bar */}
           <View style={[styles().fixedViewNavigation]}>

@@ -61,8 +61,8 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'flex-end',
       alignItems: 'center',
-      gap: 12,
-     },
+      gap: 12
+    },
     restaurantDetails: {
       marginTop: scale(8)
     },

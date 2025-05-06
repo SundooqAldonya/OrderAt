@@ -79,12 +79,17 @@ function TopBrands(props) {
 
   return (
     <View style={styles().topbrandsSec}>
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}
+        onPress={() =>
+          navigation.navigate('TopBrandsScreen', {
+            topRatedVendorsPreview: data?.topRatedVendorsPreview
+          })
+        }
       >
         <TextDefault
           numberOfLines={1}
@@ -99,22 +104,15 @@ function TopBrands(props) {
         >
           {t('topBrands')}
         </TextDefault>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('TopBrandsScreen', {
-              topRatedVendorsPreview: data?.topRatedVendorsPreview
-            })
-          }
-          style={styles().image}
-        >
+        <View style={styles().image}>
           <Ionicons
-            name='arrow-back'
+            name={isArabic ? 'arrow-back' : 'arrow-forward'}
             size={scale(24)}
             style={styles().image1}
             color={colors.dark}
           />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <View style={{ ...alignment.PRsmall }}>
         {data.topRatedVendorsPreview &&
         data.topRatedVendorsPreview.length > 0 ? (
