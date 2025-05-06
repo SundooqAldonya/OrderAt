@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import { View, TouchableOpacity, Image, FlatList } from 'react-native'
 import { useSubscription } from '@apollo/client'
 import gql from 'graphql-tag'
@@ -16,6 +16,7 @@ import { ProgressBar } from '../Main/ActiveOrders/ProgressBar'
 import { calulateRemainingTime } from '../../utils/customFunctions'
 import Spinner from '../Spinner/Spinner'
 import EmptyView from '../EmptyView/EmptyView'
+import OrderCard from './OrderCard'
 
 const ActiveOrders = ({ navigation, loading, error, activeOrders }) => {
   const { i18n } = useTranslation()
@@ -35,14 +36,19 @@ const ActiveOrders = ({ navigation, loading, error, activeOrders }) => {
     )
   }
 
-  const renderItem = ({ item }) => (
-    <Item
-      item={item}
-      navigation={navigation}
-      currentTheme={currentTheme}
-      configuration={configuration}
-    />
-  )
+  const renderItem = ({ item }) => {
+    return (
+      <Fragment>
+        <OrderCard item={item} activeOrders={true} />
+        {/* <Item
+        item={item}
+        navigation={navigation}
+        currentTheme={currentTheme}
+        configuration={configuration}
+      /> */}
+      </Fragment>
+    )
+  }
 
   if (loading) {
     return (

@@ -625,5 +625,11 @@ export const en = {
   from: 'From',
   to: 'To',
   mandoob_instructions: 'Instructions for mandoob',
-  no_zone: 'Currently we are not working in this zone!'
+  no_zone: 'Currently we are not working in this zone!',
+  restaurantDeliver:
+    'We are asking the restaurant how long it will take to deliver your food',
+  riderDeliver:
+    'We are asking the rider how long it will take to deliver your food',
+  orderPending: 'Your order is still pending',
+  mandoob: 'Mandoob'
 }

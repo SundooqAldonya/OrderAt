@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { View, TouchableOpacity, Image, FlatList } from 'react-native'
 import { useSubscription } from '@apollo/client'
 import gql from 'graphql-tag'
@@ -19,6 +19,7 @@ import { scale } from '../../utils/scaling'
 import EmptyView from '../EmptyView/EmptyView'
 import { ORDER_STATUS_ENUM } from '../../utils/enums'
 import { colors } from '../../utils/colors'
+import OrderCard from './OrderCard'
 
 function emptyViewPastOrders() {
   const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
@@ -65,15 +66,20 @@ const PastOrders = ({
   const { reFetchOrders, fetchMoreOrdersFunc, networkStatusOrders } =
     useContext(OrdersContext)
 
-  const renderItem = ({ item }) => (
-    <Item
-      item={item}
-      navigation={navigation}
-      currentTheme={currentTheme}
-      configuration={configuration}
-      onPressReview={onPressReview}
-    />
-  )
+  const renderItem = ({ item }) => {
+    return (
+      <Fragment>
+        <OrderCard item={item} />
+        {/* <Item
+        item={item}
+        navigation={navigation}
+        currentTheme={currentTheme}
+        configuration={configuration}
+        onPressReview={onPressReview}
+      /> */}
+      </Fragment>
+    )
+  }
 
   if (loading) {
     return <></>
