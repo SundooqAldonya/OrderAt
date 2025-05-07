@@ -4,10 +4,11 @@ const { transformReview, transformOrder } = require('./merge')
 const Restaurant = require('../../models/restaurant')
 module.exports = {
   Query: {
-    reviews: async(_, args, context) => {
+    reviews: async (_, args, context) => {
       console.log('reviews')
       try {
         const reviews = await Review.find({ restaurant: args.restaurant })
+        console.log({ reviews })
         return reviews.map(review => {
           return transformReview(review)
         })
@@ -17,7 +18,7 @@ module.exports = {
     }
   },
   Mutation: {
-    reviewOrder: async(_, args, { req, res }) => {
+    reviewOrder: async (_, args, { req, res }) => {
       console.log('reviewOrder')
       if (!req.isAuth) {
         throw new Error('Unauthenticated')

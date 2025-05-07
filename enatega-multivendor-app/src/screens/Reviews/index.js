@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { styles } from './styles'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
@@ -17,13 +17,29 @@ import {
   groupAndCount,
   sortReviews
 } from '../../utils/customFunctions'
+import { useQuery } from '@apollo/client'
+import { getReviews } from '../../apollo/queries'
 
 const Reviews = ({ navigation, route }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const restaurant = route.params.restaurantObject
+  console.log({ restaurant })
 
-  const reviews = restaurant && restaurant.reviews ? restaurant.reviews : null
+  const { data, loading, error } = useQuery(getReviews, {
+    variables: {
+      restaurant: restaurant?._id
+    },
+    skip: !restaurant,
+    pollInterval: 10000
+  })
+
+  console.log({ data })
+  console.log('here in the reviews screen')
+
+  // const reviews = restaurant && restaurant.reviews ? restaurant.reviews : null
+  const reviews = data?.reviews || null
 
   let reviewGroups
 
@@ -38,6 +54,7 @@ const Reviews = ({ navigation, route }) => {
   }
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
@@ -83,13 +100,14 @@ const Reviews = ({ navigation, route }) => {
   if (reviews) {
     sorted = sortReviews([...reviews], sortBy)
   }
+
   return (
     <View style={{ flex: 1, backgroundColor: currentTheme.themeBackground }}>
       <ScrollView style={[styles.container]}>
         <View>
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               justifyContent: 'space-between',
               ...alignment.MTsmall,
               ...alignment.MBsmall
@@ -116,7 +134,7 @@ const Reviews = ({ navigation, route }) => {
                       <View
                         key={`${index}-rate`}
                         style={{
-                          flexDirection: 'row',
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
                           justifyContent: 'space-evenly',
                           alignItems: 'center',
                           marginVertical: scale(5)
@@ -165,33 +183,46 @@ const Reviews = ({ navigation, route }) => {
           </View>
         </View>
         <View style={{ ...alignment.MTsmall }}>
-          <TextDefault textColor={currentTheme.gray900} H3 bold>
+          <TextDefault
+            textColor={currentTheme.gray900}
+            H3
+            bold
+            style={{ textAlign: isArabic ? 'right' : 'left' }}
+          >
             {t('titleReviews')}
           </TextDefault>
-          <View style={{ flexDirection: 'row', ...alignment.MTsmall, gap: 20 }}>
+          <View
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              ...alignment.MTsmall,
+              gap: 20
+            }}
+          >
             {Object.keys(sortingParams).map((key) => (
-              <Button
-                key={key}
-                textProps={{ textColor: currentTheme.color4 }}
-                buttonProps={{ onPress: () => setSortBy(key) }}
-                text={sortingParams[key]}
-                textStyles={{ color: currentTheme.newFontcolor }}
-                buttonStyles={{
-                  backgroundColor:
-                    sortBy === key
-                      ? currentTheme.primary
-                      : currentTheme.gray200,
-                  margin: scale(10),
-                  borderRadius: scale(10)
-                }}
-              />
+              <TouchableOpacity onPress={() => setSortBy(key)}>
+                <Button
+                  key={key}
+                  textProps={{ textColor: currentTheme.color4 }}
+                  buttonProps={{ onPress: () => setSortBy(key) }}
+                  text={sortingParams[key]}
+                  textStyles={{ color: currentTheme.newFontcolor }}
+                  buttonStyles={{
+                    backgroundColor:
+                      sortBy === key
+                        ? currentTheme.primary
+                        : currentTheme.gray200,
+                    margin: scale(10),
+                    borderRadius: scale(10)
+                  }}
+                />
+              </TouchableOpacity>
             ))}
           </View>
           <View style={{ ...alignment.MBlarge }}>
             {sorted?.map((review) => (
               <ReviewCard
                 key={review._id}
-                name={review.order.user.name}
+                name={review.order?.user?.name}
                 description={review.description}
                 rating={review.rating}
                 date={calculateDaysAgo(review.createdAt)}

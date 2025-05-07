@@ -631,5 +631,6 @@ export const en = {
   riderDeliver:
     'We are asking the rider how long it will take to deliver your food',
   orderPending: 'Your order is still pending',
-  mandoob: 'Mandoob'
+  mandoob: 'Mandoob',
+  login: 'Login'
 }

@@ -76,7 +76,7 @@ function Settings(props) {
   const isArabic = i18n.language === 'ar'
 
   const [languageName, languageNameSetter] = useState('English')
-   const [orderNotification, setOrderNotification] = useState(false)
+  const [orderNotification, setOrderNotification] = useState(false)
   const [offerNotification, offerNotificationSetter] = useState(false)
   const [modalVisible, modalVisibleSetter] = useState(false)
   const [loadinglang, setLoadingLang] = useState(false)
@@ -480,18 +480,7 @@ function Settings(props) {
               </TouchableOpacity>
             </View>
           </View>
-        ) : (
-          <View
-            style={{
-              marginHorizontal: 'auto',
-              marginTop: 50
-            }}
-          >
-            <TextDefault textColor={darkTheme ? '#fff' : colors.dark}>
-              Please login to check other features
-            </TextDefault>
-          </View>
-        )}
+        ) : null}
         <View style={styles().versionContainer}>
           <TextDefault textColor={currentTheme.statusSecondColor}>
             Version: {appVersion}

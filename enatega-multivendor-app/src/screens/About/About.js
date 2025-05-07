@@ -140,7 +140,7 @@ function About(props) {
             </View>
           </View>
           <View style={{ marginTop: scale(10) }}>
-            {!props.loading && (
+            {/* {!props.loading && (
               <View
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -158,7 +158,7 @@ function About(props) {
                   {restaurantObject?.restaurantMinOrder}
                 </TextDefault>
               </View>
-            )}
+            )} */}
             <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -176,7 +176,7 @@ function About(props) {
                 {t('delivery')} {restaurantObject?.deliveryTime} {t('Min')}
               </TextDefault>
             </View>
-            <View
+            {/* <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
@@ -193,7 +193,7 @@ function About(props) {
                 {t('salesTax')} {configuration.currencySymbol}
                 {restaurantObject?.restaurantTax}
               </TextDefault>
-            </View>
+            </View> */}
             <View
               style={[
                 styles().ratingContainer,

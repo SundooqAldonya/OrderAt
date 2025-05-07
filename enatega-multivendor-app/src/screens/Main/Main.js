@@ -547,7 +547,13 @@ function Main(props) {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles().mainItem}
-                        onPress={() => navigation.navigate('FromPlace')}
+                        onPress={() => {
+                          if (!isLoggedIn) {
+                            navigation.navigate('Login')
+                          } else {
+                            navigation.navigate('FromPlace')
+                          }
+                        }}
                       >
                         <View>
                           <TextDefault
@@ -587,8 +593,7 @@ function Main(props) {
 
                     <View style={{ marginTop: 20 }}>
                       <View>
-                        {isLoggedIn &&
-                          recentOrderRestaurantsVar &&
+                        {recentOrderRestaurantsVar &&
                           recentOrderRestaurantsVar.length > 0 && (
                             <>
                               {orderLoading ? (
@@ -619,19 +624,21 @@ function Main(props) {
                     </View>
 
                     {/* the therd section */}
-                    {/* <View
+                    <View
                       style={
                         styles(currentTheme, hasActiveOrders).topBrandsMargin
                       }
-                    > */}
-                    {/* {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />} */}
-                    {/* </View> */}
+                    >
+                      {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />}
+                    </View>
                   </ScrollView>
                 )}
               </View>
             </View>
           </View>
-          <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+          {isLoggedIn && (
+            <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+          )}
 
           <MainModalize
             modalRef={modalRef}

@@ -538,14 +538,14 @@ const typeDefs = gql`
   }
 
   type Review {
-    _id: ID!
-    order: Order!
-    restaurant: Restaurant!
-    rating: Int!
+    _id: ID
+    order: Order
+    restaurant: Restaurant
+    rating: Int
     description: String
-    isActive: Boolean!
-    createdAt: String!
-    updatedAt: String!
+    isActive: Boolean
+    createdAt: String
+    updatedAt: String
   }
 
   type ReviewOutput {
@@ -1369,7 +1369,7 @@ const typeDefs = gql`
       restaurant: String!
     ): DashboardData!
     likedFood: [Food!]!
-    reviews(offset: Int, restaurant: String!): [Review!]!
+    reviews(offset: Int, restaurant: String!): [Review!]
     foodByCategory(
       category: String!
       onSale: Boolean

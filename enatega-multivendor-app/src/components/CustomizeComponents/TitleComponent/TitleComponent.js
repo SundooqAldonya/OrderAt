@@ -16,7 +16,10 @@ function TitleComponent(props) {
     <View
       style={{
         ...styles.mainContainer,
-          flexDirection: isArabic ? 'row-reverse' : 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+        // backgroundColor: 'red'
       }}
     >
       <View
@@ -28,6 +31,7 @@ function TitleComponent(props) {
         <TextDefault
           numberOfLines={1}
           textColor={currentTheme.fontMainColor}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}
           H6
           bolder
         >
@@ -36,6 +40,7 @@ function TitleComponent(props) {
         <TextDefault
           numberOfLines={1}
           textColor={currentTheme.fontSecondColor}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}
           small
         >
           {props.subTitle}

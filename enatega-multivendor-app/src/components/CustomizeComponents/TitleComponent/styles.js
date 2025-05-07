@@ -5,11 +5,11 @@ import { theme } from '../../../utils/themeColors'
 const styles = StyleSheet.create({
   mainContainer: {
     width: '100%',
-    flexDirection: 'row',
+    // flexDirection: 'row',
     marginVertical: scale(10)
   },
   leftContainer: {
-    width: '75%',
+    width: '75%'
     // alignItems: 'flex-end'
     // backgroundColor:'red'
   },
@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     width: '25%',
     backgroundColor: '#F3F4F6',
     borderRadius: scale(20),
-    borderWidth:scale(1),
-    borderColor:'#E5E7EB'
+    borderWidth: scale(1),
+    borderColor: '#E5E7EB'
   }
 })
 export default styles

@@ -195,7 +195,7 @@ function PopulerRestaurantCard(props) {
               {t('min')}
             </TextDefault>
           </View>
-          <View style={styles().deliveryTime}>
+          {/* <View style={styles().deliveryTime}>
             <MaterialCommunityIcons
               name='bike'
               size={16}
@@ -210,7 +210,7 @@ function PopulerRestaurantCard(props) {
             >
               {configuration.currency} {props.tax}
             </TextDefault>
-          </View>
+          </View> */}
         </View>
       </View>
     </TouchableOpacity>

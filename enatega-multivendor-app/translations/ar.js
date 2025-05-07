@@ -620,5 +620,6 @@ export const ar = {
   restaurantDeliver: 'نحن نتواصل مع المطعم لمعرفة وقت التوصيل المتوقع',
   riderDeliver: 'نحن نتواصل مع السائق لمعرفة وقت التوصيل المتوقع',
   orderPending: 'طلبك ما زال قيد الانتظار',
-  mandoob: 'مندوب'
+  mandoob: 'مندوب',
+  login: 'تسجيل الدخول'
 }

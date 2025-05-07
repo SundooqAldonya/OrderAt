@@ -98,6 +98,7 @@ function ImageTextCenterHeader(props, ref) {
   }
 
   const aboutObject = {
+    _id: props.restaurant ? props.restaurant._id : null,
     latitude: props.restaurant ? props.restaurant.location.coordinates[1] : '',
     longitude: props.restaurant ? props.restaurant.location.coordinates[0] : '',
     address: props.restaurant ? props.restaurant.address : '',

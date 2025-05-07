@@ -32,7 +32,6 @@ function SidebBar(props) {
   const datas = [
     {
       title: 'titleProfile',
-      // icon: 'user',
       icon: (
         <SimpleLineIcons
           name={'user'}
@@ -44,8 +43,19 @@ function SidebBar(props) {
       isAuth: true
     },
     {
+      title: 'titleOrders',
+      icon: (
+        <SimpleLineIcons
+          name={'layers'}
+          size={verticalScale(18)}
+          color={currentTheme.darkBgFont}
+        />
+      ),
+      navigateTo: 'MyOrders',
+      isAuth: true
+    },
+    {
       title: 'myAddresses',
-      // icon: 'location-pin',
       icon: (
         <SimpleLineIcons
           name={'location-pin'}
@@ -58,7 +68,6 @@ function SidebBar(props) {
     },
     {
       title: 'Favourite',
-      // icon: 'heart',
       icon: (
         <SimpleLineIcons
           name={'heart'}
@@ -69,22 +78,9 @@ function SidebBar(props) {
       navigateTo: 'Favourite',
       isAuth: true
     },
-    {
-      title: 'titleOrders',
-      // icon: 'layers',
-      icon: (
-        <SimpleLineIcons
-          name={'layers'}
-          size={verticalScale(18)}
-          color={currentTheme.darkBgFont}
-        />
-      ),
-      navigateTo: 'MyOrders',
-      isAuth: true
-    },
+
     {
       title: 'requestDeliveryTitle',
-      // icon: 'location-pin',
       icon: (
         <View>
           <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
@@ -95,7 +91,6 @@ function SidebBar(props) {
     },
     {
       title: 'titleSettings',
-      // icon: 'settings',
       icon: (
         <SimpleLineIcons
           name={'settings'}
@@ -108,7 +103,6 @@ function SidebBar(props) {
     },
     {
       title: 'titleHelp',
-      // icon: 'question',
       icon: (
         <SimpleLineIcons
           name={'question'}
@@ -190,27 +184,26 @@ function SidebBar(props) {
               </View>
             ))}
           {isLoggedIn ? (
-            <View
-              style={[
-                styles().item,
-                { borderBottomWidth: 0, marginVertical: 5 }
-              ]}
-            >
-              <SideDrawerItems
-                onPress={logoutClick}
-                // icon={'logout'}
-                icon={
-                  <SimpleLineIcons
-                    name={'logout'}
-                    size={verticalScale(18)}
-                    color={currentTheme.darkBgFont}
-                  />
-                }
-                title={t('titleLogout')}
-              />
-            </View>
-          ) : (
             <Fragment>
+              <View
+                style={[
+                  styles().item,
+                  { borderBottomWidth: 0, marginVertical: 5 }
+                ]}
+              >
+                <SideDrawerItems
+                  onPress={logoutClick}
+                  // icon={'logout'}
+                  icon={
+                    <SimpleLineIcons
+                      name={'logout'}
+                      size={verticalScale(18)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  }
+                  title={t('titleLogout')}
+                />
+              </View>
               <View
                 style={[
                   styles().item,
@@ -234,6 +227,9 @@ function SidebBar(props) {
                   title={t(datas[4].title)}
                 />
               </View>
+            </Fragment>
+          ) : (
+            <Fragment>
               <View
                 style={[
                   styles().item,

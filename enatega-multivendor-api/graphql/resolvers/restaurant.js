@@ -21,7 +21,8 @@ const {
   transformRestaurants,
   transformOrder,
   transformMinimalRestaurantData,
-  transformMinimalRestaurants
+  transformMinimalRestaurants,
+  transformReview
 } = require('./merge')
 const {
   order_status,
@@ -47,6 +48,7 @@ const { sendPushNotification } = require('../../helpers/findRiders')
 const {
   sendCustomerNotifications
 } = require('../../helpers/customerNotifications')
+const Review = require('../../models/review')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -312,6 +314,7 @@ module.exports = {
         const addons = await Addon.find({ restaurant })
         const categories = await Category.find({ restaurant })
         const options = await Option.find({ restaurant })
+        const reviews = await Review.find({ restaurant })
 
         const modifiedCategories = await Promise.all(
           categories.map(async category => {
@@ -322,6 +325,10 @@ module.exports = {
             return category
           })
         )
+
+        const reviewData = reviews.map(review => transformReview(review))
+
+        // console.log({ reviewData })
         // console.log({
         //   modifiedCategoriesFoodVariations:
         //     modifiedCategories[0].foods[0].variations
@@ -331,6 +338,7 @@ module.exports = {
           categories: modifiedCategories,
           addons,
           options
+          // reviewData
         }
       } catch (e) {
         console.error(e)

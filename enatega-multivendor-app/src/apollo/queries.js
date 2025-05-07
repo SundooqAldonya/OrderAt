@@ -1215,3 +1215,21 @@ export const getDeliveryCalculation = gql`
     }
   }
 `
+export const getReviews = gql`
+  query Reviews($offset: Int, $restaurant: String!) {
+    reviews(offset: $offset, restaurant: $restaurant) {
+      _id
+      rating
+      order {
+        user {
+          _id
+          name
+        }
+      }
+      description
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`

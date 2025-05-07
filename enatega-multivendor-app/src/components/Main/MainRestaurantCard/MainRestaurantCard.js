@@ -15,6 +15,7 @@ import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
 import { TopBrands } from '../TopBrands'
+
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const navigation = useNavigation()
@@ -29,7 +30,7 @@ function MainRestaurantCard(props) {
   if (props?.error) return <Text>Error: {props?.error?.message}</Text>
 
   return (
-    <View style={{ ...styles().orderAgainSec, marginBottom: 250 }}>
+    <View style={{ ...styles().orderAgainSec, marginBottom: 50 }}>
       {props.orders && props.orders.length > 0 ? (
         <>
           <View>
@@ -103,13 +104,13 @@ function MainRestaurantCard(props) {
               }}
             />
           </View>
-          <View
+          {/* <View
             style={{
               ...styles(currentTheme, hasActiveOrders).topBrandsMargin
             }}
           >
             <TopBrands />
-          </View>
+          </View> */}
         </>
       ) : (
         <View style={styles().noDataTextWrapper}>

@@ -343,6 +343,7 @@ const BottomTabs = () => {
   const { t } = useTranslation()
   const Tab = createBottomTabNavigator()
   const { isLoggedIn } = useContext(UserContext)
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -358,10 +359,9 @@ const BottomTabs = () => {
             iconName = 'lunch-dining'
           } else if (route.name === 'RequestDelivery') {
             iconName = 'delivery-dining'
+          } else if (route.name === 'CreateAccount') {
+            iconName = 'login'
           }
-          // else if (route.name === 'CreateAccount') {
-          //   iconName = 'login'
-          // }
           return (
             <Icon
               name={iconName}
@@ -396,16 +396,29 @@ const BottomTabs = () => {
         options={{ tabBarLabel: t('home') }}
         component={Main}
       />
-      <Tab.Screen
-        name='MyOrders'
-        options={{ tabBarLabel: t('titleOrders') }}
-        component={MyOrders}
-      />
-      <Tab.Screen
-        name='Settings'
-        options={{ tabBarLabel: t('titleSettings') }}
-        component={Settings}
-      />
+      {isLoggedIn && (
+        <Tab.Screen
+          name='MyOrders'
+          options={{ tabBarLabel: t('titleOrders') }}
+          component={MyOrders}
+        />
+      )}
+      {isLoggedIn ? (
+        <Tab.Screen
+          name='Settings'
+          options={{ tabBarLabel: t('titleSettings') }}
+          component={Settings}
+        />
+      ) : (
+        <Tab.Screen
+          name='CreateAccount'
+          options={{
+            tabBarLabel: t('login'),
+            tabBarStyle: { display: 'none' }
+          }}
+          component={CreateAccount}
+        />
+      )}
       {/* <Tab.Screen
         name='RequestDelivery'
         options={{ tabBarLabel: t('Request_delivery') }}
