@@ -1233,3 +1233,8 @@ export const getReviews = gql`
     }
   }
 `
+export const userHasOrderReview = gql`
+  query UserHasOrderReview($orderId: String!, $restaurantId: String!) {
+    userHasOrderReview(orderId: $orderId, restaurantId: $restaurantId)
+  }
+`

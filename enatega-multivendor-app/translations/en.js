@@ -637,5 +637,6 @@ export const en = {
   write_review: 'Write your review...',
   leave_review: 'Leave a Review',
   added_review: 'Added review',
-  added_review_successfully: 'Added review successfully!'
+  added_review_successfully: 'Added review successfully!',
+  review_added: 'Review is added'
 }

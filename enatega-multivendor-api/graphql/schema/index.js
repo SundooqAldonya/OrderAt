@@ -1370,6 +1370,7 @@ const typeDefs = gql`
     ): DashboardData!
     likedFood: [Food!]!
     reviews(offset: Int, restaurant: String!): [Review!]
+    userHasOrderReview(orderId: String!, restaurantId: String!): Boolean
     foodByCategory(
       category: String!
       onSale: Boolean

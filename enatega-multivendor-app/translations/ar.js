@@ -626,5 +626,6 @@ export const ar = {
   write_review: 'أكتب تقييمك...',
   leave_review: 'أترك تقييم',
   added_review: 'التقييم',
-  added_review_successfully: 'تم حفظ التقييم'
+  added_review_successfully: 'تم حفظ التقييم',
+  review_added: 'تم التقييم'
 }

@@ -12,6 +12,10 @@ const reviewSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Restaurant'
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
     rating: {
       type: Number,
       required: true

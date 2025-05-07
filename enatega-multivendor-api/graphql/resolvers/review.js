@@ -15,6 +15,20 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+    async userHasOrderReview(_, args) {
+      try {
+        const order = await Order.findById(args.orderId)
+        const review = await Review.findOne({
+          order: args.orderId,
+          restaurant: args.restaurantId,
+          user: order.user
+        })
+        console.log({ review: review })
+        return review ? true : false
+      } catch (err) {
+        throw new Error(err)
+      }
     }
   },
   Mutation: {
@@ -29,8 +43,9 @@ module.exports = {
         const review = new Review({
           order: args.reviewInput.order,
           rating: args.reviewInput.rating,
-          restaurant: restaurant.id,
-          description: args.reviewInput.description
+          restaurant: restaurant?.id,
+          description: args.reviewInput.description,
+          user: order.user
         })
         const result = await review.save()
         await Order.findOneAndUpdate(

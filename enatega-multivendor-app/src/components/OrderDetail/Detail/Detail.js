@@ -15,6 +15,8 @@ import { colors } from '../../../utils/colors'
 import { openGoogleMaps } from '../../../utils/callMaps'
 import ReviewModal from './ReviewModal'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
+import { useQuery } from '@apollo/client'
+import { userHasOrderReview } from '../../../apollo/queries'
 
 export default function Detail({
   _id,
@@ -45,6 +47,20 @@ export default function Detail({
   const isArabic = language === 'ar'
   const [reviewVisible, setReviewVisible] = useState(false)
 
+  console.log({ restaurantId: restaurant })
+
+  const { data, loading, error } = useQuery(userHasOrderReview, {
+    variables: {
+      orderId: _id,
+      restaurantId: restaurant?._id
+    },
+    pollInterval: 10000
+  })
+
+  console.log({ data })
+
+  const userHasReview = data?.userHasOrderReview || null
+
   const handleModalClose = () => {
     setReviewVisible(false)
   }
@@ -55,11 +71,13 @@ export default function Detail({
 
   return (
     <View style={styles.container(theme)}>
-      <ReviewModal
-        visible={reviewVisible}
-        order={_id}
-        onClose={handleModalClose}
-      />
+      {type && type !== 'delivery_request' && (
+        <ReviewModal
+          visible={reviewVisible}
+          order={_id}
+          onClose={handleModalClose}
+        />
+      )}
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
           onPress={() =>
@@ -101,20 +119,29 @@ export default function Detail({
             #{orderNo.toLowerCase()}
           </TextDefault>
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#f9f9f9',
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            alignItems: 'center',
-            gap: 5
-          }}
-          onPress={handleShowReviewModal}
-        >
-          <FontAwesome name='star' size={18} color='orange' />
-          <TextDefault style={{ color: '#000' }}>{t('add_review')}</TextDefault>
-        </TouchableOpacity>
+        {type && type !== 'delivery_request' && (
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#f9f9f9',
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              gap: 5
+            }}
+            onPress={handleShowReviewModal}
+            disabled={userHasReview}
+          >
+            <FontAwesome
+              name={userHasReview ? 'star' : 'star-o'}
+              size={18}
+              color='orange'
+            />
+            <TextDefault style={{ color: '#000' }}>
+              {userHasReview ? t('review_added') : t('add_review')}
+            </TextDefault>
+          </TouchableOpacity>
+        )}
       </View>
       {rider && (
         <View>
