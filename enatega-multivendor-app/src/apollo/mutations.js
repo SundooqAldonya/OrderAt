@@ -181,45 +181,44 @@ export const selectAddress = `mutation SelectAddress($id:String!){
     }
   }`
 
-export const reviewOrder = `mutation ReviewOrder(
-    $order:String!,
-    $rating:Int!,
-    $description:String,
-  ){
-    reviewOrder(reviewInput:{
-      order:$order,
-      rating:$rating,
-      description:$description,
-    }){
+export const reviewOrder = gql`
+  mutation ReviewOrder($order: String!, $rating: Int!, $description: String) {
+    reviewOrder(
+      reviewInput: { order: $order, rating: $rating, description: $description }
+    ) {
       _id
       orderId
-      restaurant{
+      restaurant {
         _id
         name
         image
         address
-        location{coordinates}
+        location {
+          coordinates
+        }
       }
-      deliveryAddress{
-        location{coordinates}
+      deliveryAddress {
+        location {
+          coordinates
+        }
         deliveryAddress
         id
       }
-      items{
+      items {
         _id
         title
         food
         description
         quantity
-        variation{
+        variation {
           _id
           title
           price
           discounted
         }
-        addons{
+        addons {
           _id
-          options{
+          options {
             _id
             title
             description
@@ -231,16 +230,16 @@ export const reviewOrder = `mutation ReviewOrder(
           quantityMaximum
         }
       }
-      user{
+      user {
         _id
         name
         phone
       }
-      rider{
+      rider {
         _id
         name
       }
-      review{
+      review {
         _id
       }
       paymentMethod
@@ -262,7 +261,8 @@ export const reviewOrder = `mutation ReviewOrder(
       cancelledAt
       assignedAt
     }
-  }`
+  }
+`
 
 export const addFavouriteRestaurant = `mutation AddFavourite($id:String!){
     addFavourite(id:$id){

@@ -621,5 +621,10 @@ export const ar = {
   riderDeliver: 'نحن نتواصل مع السائق لمعرفة وقت التوصيل المتوقع',
   orderPending: 'طلبك ما زال قيد الانتظار',
   mandoob: 'مندوب',
-  login: 'تسجيل الدخول'
+  login: 'تسجيل الدخول',
+  add_review: 'أضف تقييم',
+  write_review: 'أكتب تقييمك...',
+  leave_review: 'أترك تقييم',
+  added_review: 'التقييم',
+  added_review_successfully: 'تم حفظ التقييم'
 }

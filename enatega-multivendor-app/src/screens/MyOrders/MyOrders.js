@@ -57,6 +57,7 @@ function MyOrders(props) {
     }
     StatusBar.setBarStyle('light-content')
   })
+
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: null,

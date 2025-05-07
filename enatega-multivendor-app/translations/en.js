@@ -632,5 +632,10 @@ export const en = {
     'We are asking the rider how long it will take to deliver your food',
   orderPending: 'Your order is still pending',
   mandoob: 'Mandoob',
-  login: 'Login'
+  login: 'Login',
+  add_review: 'Add review',
+  write_review: 'Write your review...',
+  leave_review: 'Leave a Review',
+  added_review: 'Added review',
+  added_review_successfully: 'Added review successfully!'
 }

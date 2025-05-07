@@ -1,5 +1,5 @@
 import { View, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import styles from './styles'
 import { useTranslation } from 'react-i18next'
@@ -13,8 +13,11 @@ import { TouchableOpacity } from 'react-native'
 import { callNumber } from '../../../utils/callNumber'
 import { colors } from '../../../utils/colors'
 import { openGoogleMaps } from '../../../utils/callMaps'
+import ReviewModal from './ReviewModal'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
 
 export default function Detail({
+  _id,
   theme,
   from,
   to,
@@ -40,9 +43,23 @@ export default function Detail({
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
-  console.log({ pickupLocation })
+  const [reviewVisible, setReviewVisible] = useState(false)
+
+  const handleModalClose = () => {
+    setReviewVisible(false)
+  }
+
+  const handleShowReviewModal = () => {
+    setReviewVisible(true)
+  }
+
   return (
     <View style={styles.container(theme)}>
+      <ReviewModal
+        visible={reviewVisible}
+        order={_id}
+        onClose={handleModalClose}
+      />
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
           onPress={() =>
@@ -56,26 +73,48 @@ export default function Detail({
       <View
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
-          alignItems: 'center',
-          gap: 4
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <TextDefault
-          textColor={theme.gray500}
-          bolder
-          H5
-          style={{ ...alignment.MBmedium }}
+        <View
+          style={{
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            gap: 4
+          }}
         >
-          {t('yourOrder')}
-        </TextDefault>
-        <TextDefault
-          textColor={theme.lightBlue}
-          bolder
-          H4
-          style={{ ...alignment.MBmedium }}
+          <TextDefault
+            textColor={theme.gray500}
+            bolder
+            H5
+            style={{ ...alignment.MBmedium }}
+          >
+            {t('yourOrder')}
+          </TextDefault>
+          <TextDefault
+            textColor={theme.lightBlue}
+            bolder
+            H4
+            style={{ ...alignment.MBmedium }}
+          >
+            #{orderNo.toLowerCase()}
+          </TextDefault>
+        </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#f9f9f9',
+            paddingVertical: 5,
+            paddingHorizontal: 10,
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            gap: 5
+          }}
+          onPress={handleShowReviewModal}
         >
-          #{orderNo.toLowerCase()}
-        </TextDefault>
+          <FontAwesome name='star' size={18} color='orange' />
+          <TextDefault style={{ color: '#000' }}>{t('add_review')}</TextDefault>
+        </TouchableOpacity>
       </View>
       {rider && (
         <View>

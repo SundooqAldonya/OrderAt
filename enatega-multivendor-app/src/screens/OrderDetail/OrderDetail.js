@@ -347,6 +347,7 @@ function OrderDetail(props) {
           message={order.instructions}
         />
         <Detail
+          _id={order?._id}
           navigation={props.navigation}
           currencySymbol={configuration.currencySymbol}
           items={items}
