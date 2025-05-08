@@ -1336,7 +1336,16 @@ const typeDefs = gql`
     amount: Float
   }
 
+  type BusinessCategory {
+    _id: String
+    name: String
+    description: String
+    image: String
+    isActive: Boolean
+  }
+
   type Query {
+    getBusinessCategories: [BusinessCategory!]
     getDeliveryCalculation(
       originLong: Float!
       originLat: Float!
@@ -1659,7 +1668,16 @@ const typeDefs = gql`
     notes: String
   }
 
+  input BusinessCategoryInput {
+    title: String!
+    description: String
+    file: Upload
+  }
+
   type Mutation {
+    createBusinessCategory(input: BusinessCategoryInput!): Message
+    editBusinessCategory(input: BusinessCategoryInput!): Message
+    removeBusinessCategory(input: BusinessCategoryInput!): Message
     createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message

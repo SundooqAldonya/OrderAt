@@ -1,5 +1,6 @@
 const Food = require('../models/food')
 const Order = require('../models/order')
+const BusinessCategory = require('../models/BusinessCategory')
 
 const cloudinary = require('cloudinary').v2
 
@@ -86,6 +87,40 @@ module.exports = {
 
       stream.pipe(image)
       // console.log({ image: image })
+      return { message: 'image uploaded' }
+    } catch (err) {
+      console.log(err)
+      throw new Error(err)
+    }
+  },
+
+  async uploadBusinessCategoryImage({ id, file }) {
+    console.log({ file })
+    try {
+      const { createReadStream, filename, mimetype, encoding } = await file.file
+      const stream = createReadStream()
+      let result_url
+      const image = await cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto'
+        },
+        async (error, result) => {
+          if (error) {
+            throw new Error('Upload failed')
+          }
+          console.log({ image: result.secure_url })
+          const businessCategory = await BusinessCategory.findById(id)
+          businessCategory.image.url = result.secure_url
+          businessCategory.image.publicId = result.public_id
+          console.log({ businessCategory })
+          result_url = result.secure_url
+          await businessCategory.save()
+          return result.secure_url
+        }
+      )
+
+      stream.pipe(image)
+
       return { message: 'image uploaded' }
     } catch (err) {
       console.log(err)
