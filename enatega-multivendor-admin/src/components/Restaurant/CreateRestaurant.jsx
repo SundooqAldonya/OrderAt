@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import {
   createRestaurant,
+  getBusinessCategories,
   getCities,
   getCuisines,
   getShopCategories,
@@ -105,6 +106,7 @@ const CreateRestaurant = props => {
   const [success, setSuccess] = useState('')
   const [category, setCategory] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
+  const [restaurantCategories, setRestaurantCategories] = useState([])
 
   const {
     data: dataCategories,
@@ -117,6 +119,13 @@ const CreateRestaurant = props => {
     error: errorCities,
     loading: loadingCities
   } = useQuery(GET_CITIES)
+
+  const { data: businessCategoriesData } = useQuery(getBusinessCategories)
+
+  console.log({ businessCategoriesData })
+
+  const businessCategories =
+    businessCategoriesData?.getBusinessCategories || null
 
   const cities = dataCities?.cities || null
   const shopCategories = dataCategories?.getShopCategories || null
@@ -339,6 +348,11 @@ const CreateRestaurant = props => {
       target: { value }
     } = event
     setRestaurantCuisines(typeof value === 'string' ? value.split(',') : value)
+  }
+
+  const handleBusinessCategoryChange = e => {
+    console.log({ values: e.target.value })
+    setRestaurantCategories(e.target.value)
   }
 
   const classes = useStyles()
@@ -626,6 +640,44 @@ const CreateRestaurant = props => {
                 </Select>
               </Box>
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Typography className={classes.labelText}>
+                  {t('business_categories')}
+                </Typography>
+                <Select
+                  multiple
+                  value={restaurantCategories}
+                  onChange={handleBusinessCategoryChange}
+                  input={<OutlinedInput />}
+                  renderValue={selected =>
+                    selected.map(item => item.name).join(', ')
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option._id === value._id
+                  }
+                  MenuProps={MenuProps}
+                  className={[globalClasses.input]}
+                  style={{ margin: '0 0 0 -20px', padding: '0px 0px' }}>
+                  {businessCategories?.map(item => (
+                    <MenuItem
+                      key={item._id}
+                      value={item}
+                      style={{
+                        color: '#000000',
+                        textTransform: 'capitalize'
+                      }}>
+                      <Checkbox
+                        checked={restaurantCategories.some(
+                          cat => cat._id === item._id
+                        )}
+                      />
+                      <ListItemText primary={item.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+            </Grid>
           </Grid>
 
           <Grid container spacing={2}>
@@ -722,7 +774,10 @@ const CreateRestaurant = props => {
                         shopType,
                         cuisines: restaurantCuisines,
                         salesTax: parseInt(form.salesTax.value),
-                        city: selectedCity
+                        city: selectedCity,
+                        businessCategories: restaurantCategories.map(
+                          item => item._id
+                        )
                       }
                     }
                   })

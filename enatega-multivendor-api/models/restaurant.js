@@ -133,35 +133,17 @@ const restaurantSchema = new Schema(
     shopCategory: {
       type: Schema.Types.ObjectId,
       ref: 'ShopCategory'
-    }
+    },
+    businessCategories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'BusinessCategory'
+      }
+    ]
   },
 
   { timestamps: true }
 )
-// restaurantSchema.post('save', async doc => {
-//   const keywords = []
-//   const tags = []
-//   keywords.push(doc.name)
-
-//   doc.categories.map(category => {
-//     keywords.push(category.title)
-//     tags.push(category.title)
-//     category.foods.map(food => {
-//       keywords.push(food.title)
-//     })
-//   })
-//   doc.options.map(option => {
-//     keywords.push(option.title)
-//   })
-//   doc.addons.map(addon => {
-//     keywords.push(addon.title)
-//   })
-//   const RestaurantModel = mongoose.model('Restaurant', restaurantSchema)
-//   await RestaurantModel.findByIdAndUpdate(doc.id, {
-//     keywords,
-//     tags
-//   })
-// })
 
 restaurantSchema.index({ deliveryBounds: '2dsphere' })
 module.exports = mongoose.model('Restaurant', restaurantSchema)

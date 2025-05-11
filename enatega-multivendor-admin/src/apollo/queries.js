@@ -690,6 +690,15 @@ export const getRestaurantProfile = `query Restaurant($id:String){
         _id
         title
       }
+      businessCategories{
+        _id
+        name
+        description
+        image {
+          url
+          publicId
+        }
+      }
     }
 }`
 

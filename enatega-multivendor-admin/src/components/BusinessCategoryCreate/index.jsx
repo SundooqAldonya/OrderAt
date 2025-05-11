@@ -236,7 +236,7 @@ const BusinessCategoryCreate = props => {
             </Grid>
           </Box>
 
-          {loading ? t('Loading') : null}
+          {loading || loadingUpdate ? t('Loading') : null}
           <Box>
             <Button
               className={globalClasses.button}

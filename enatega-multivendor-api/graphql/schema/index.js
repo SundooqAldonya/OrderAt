@@ -163,6 +163,7 @@ const typeDefs = gql`
     phone: String
     city: CityArea
     createdAt: String
+    businessCategories: [BusinessCategory!]
   }
 
   type RestaurantCustomer {
@@ -986,6 +987,7 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     city: String
+    businessCategories: [String!]
   }
 
   input RestaurantProfileInput {
@@ -1005,6 +1007,7 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     city: String
+    businessCategories: [String!]
   }
 
   input OptionInput {

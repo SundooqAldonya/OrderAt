@@ -8,7 +8,8 @@ import {
   editRestaurant,
   getCuisines,
   getCities,
-  getShopCategories
+  getShopCategories,
+  getBusinessCategories
 } from '../apollo'
 import ConfigurableValues from '../config/constants'
 import useStyles from '../components/Restaurant/styles'
@@ -100,6 +101,7 @@ const VendorProfile = () => {
   const [errors, setErrors] = useState('')
   const [success, setSuccess] = useState('')
   const [restaurantCuisines, setRestaurantCuisines] = useState([])
+  const [restaurantCategories, setRestaurantCategories] = useState([])
   const [image, setImage] = useState(null)
   const [logo, setLogo] = useState(null)
   const [selectedCity, setSelectedCity] = useState('')
@@ -179,8 +181,6 @@ const VendorProfile = () => {
       setCategory(data?.restaurant.shopCategory._id)
     }
   }, [data?.restaurant])
-
-  console.log({ category })
 
   const formRef = useRef(null)
 
@@ -296,6 +296,32 @@ const VendorProfile = () => {
   }
 
   const { data: cuisines } = useQuery(CUISINES)
+  const { data: businessCategoriesData } = useQuery(getBusinessCategories)
+
+  console.log({ businessCategoriesData })
+
+  const businessCategories =
+    businessCategoriesData?.getBusinessCategories || null
+
+  useEffect(() => {
+    if (
+      businessCategories?.length &&
+      data?.restaurant?.businessCategories?.length
+    ) {
+      const initialObjects = data.restaurant.businessCategories
+        // for each saved ID, find the matching full object
+        .map(item => businessCategories.find(cat => cat._id === item._id))
+        // drop any IDs that didn’t match
+        .filter(Boolean)
+
+      console.log({ initialObjects })
+
+      setRestaurantCategories(initialObjects)
+    }
+  }, [businessCategories, data?.restaurant?.businessCategories])
+
+  console.log({ restaurantCategories })
+
   const cuisinesInDropdown = useMemo(
     () => cuisines?.cuisines?.map(item => item.name),
     [cuisines]
@@ -307,9 +333,15 @@ const VendorProfile = () => {
     setRestaurantCuisines(typeof value === 'string' ? value.split(',') : value)
   }
 
+  const handleBusinessCategoryChange = e => {
+    console.log({ values: e.target.value })
+    setRestaurantCategories(e.target.value)
+  }
+
   useEffect(() => {
     setRestaurantCuisines(data?.restaurant?.cuisines)
   }, [data?.restaurant?.cuisines])
+
   useEffect(() => {
     setSelectedCity(data?.restaurant?.city?._id)
   }, [data])
@@ -349,6 +381,7 @@ const VendorProfile = () => {
             salesTax: +salesTax,
             shopType,
             cuisines: restaurantCuisines,
+            businessCategories: restaurantCategories.map(item => item._id),
             city
           }
         }
@@ -374,8 +407,19 @@ const VendorProfile = () => {
     setCategory(e.target.value)
   }
 
+  const foundBusinessCategory = singleItem => {
+    const foundItem = restaurantCategories?.find(
+      item => item._id === singleItem
+    )
+    if (foundItem) {
+      return true
+    }
+    return false
+  }
+
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
+
   return (
     <>
       <Header />
@@ -706,6 +750,46 @@ const VendorProfile = () => {
                               }
                             />
                             <ListItemText primary={cuisine} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('business_categories')}
+                      </Typography>
+                      <Select
+                        multiple
+                        value={restaurantCategories}
+                        defaultChecked={data?.restaurant?.businessCategories}
+                        defaultValue={data?.restaurant?.businessCategories}
+                        onChange={handleBusinessCategoryChange}
+                        input={<OutlinedInput />}
+                        renderValue={selected =>
+                          selected.map(item => item.name).join(', ')
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option._id === value._id
+                        }
+                        MenuProps={MenuProps}
+                        className={[globalClasses.input]}
+                        style={{ margin: '0 0 0 -20px', padding: '0px 0px' }}>
+                        {businessCategories?.map(item => (
+                          <MenuItem
+                            key={item._id}
+                            value={item}
+                            style={{
+                              color: '#000000',
+                              textTransform: 'capitalize'
+                            }}>
+                            <Checkbox
+                              checked={restaurantCategories.some(
+                                cat => cat._id === item._id
+                              )}
+                            />
+                            <ListItemText primary={item.name} />
                           </MenuItem>
                         ))}
                       </Select>
