@@ -1,5 +1,5 @@
 const BusinessCategory = require('../../models/BusinessCategory')
-const uploadBusinessCategoryImage = require('../../helpers/cloudinary')
+const { uploadBusinessCategoryImage } = require('../../helpers/cloudinary')
 
 module.exports = {
   Query: {
@@ -16,18 +16,23 @@ module.exports = {
   },
   Mutation: {
     async createBusinessCategory(_, args) {
+      console.log('createBusinessCategory', { args })
       try {
-        const businessCategory = await BusinessCategory.create({
+        const businessCategory = new BusinessCategory({
           name: args.input.name,
           description: args.input.description
         })
-        if (args.input.file.file && args.input.file.file['createReadStream']) {
-          await uploadBusinessCategoryImage({
-            id: businessCategory._id,
+        if (args.input.file?.file && args.input.file.file['createReadStream']) {
+          const image = await uploadBusinessCategoryImage({
             file: args.input.file
           })
+          console.log({ image })
+          businessCategory.image.url = image.secure_url
+          businessCategory.image.publicId = image.public_id
+          console.log({ businessCategory })
         }
-        return { message: 'created_business_category_successfully' }
+        await businessCategory.save()
+        return { message: 'created_business_category' }
       } catch (err) {
         throw new Error(err)
       }
@@ -35,15 +40,18 @@ module.exports = {
     async editBusinessCategory(_, args) {
       try {
         const businessCategory = await BusinessCategory.findById(args.id)
-        businessCategory.title = args.input.title
+        businessCategory.name = args.input.name
         businessCategory.description = args.input.description
         if (args.input.file.file && args.input.file.file['createReadStream']) {
-          await uploadBusinessCategoryImage({
-            id: businessCategory._id,
+          const image = await uploadBusinessCategoryImage({
             file: args.input.file
           })
+          console.log({ image })
+          businessCategory.image.url = image.secure_url
+          businessCategory.image.publicId = image.public_id
         }
-        return { message: 'updated_business_category_successfully' }
+        await businessCategory.save()
+        return { message: 'updated_business_category' }
       } catch (err) {
         throw new Error(err)
       }

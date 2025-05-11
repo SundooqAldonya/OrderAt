@@ -1336,11 +1336,16 @@ const typeDefs = gql`
     amount: Float
   }
 
+  type Image {
+    url: String
+    publicId: String
+  }
+
   type BusinessCategory {
     _id: String
     name: String
     description: String
-    image: String
+    image: Image
     isActive: Boolean
   }
 
@@ -1669,15 +1674,15 @@ const typeDefs = gql`
   }
 
   input BusinessCategoryInput {
-    title: String!
+    name: String!
     description: String
     file: Upload
   }
 
   type Mutation {
     createBusinessCategory(input: BusinessCategoryInput!): Message
-    editBusinessCategory(input: BusinessCategoryInput!): Message
-    removeBusinessCategory(input: BusinessCategoryInput!): Message
+    editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message
+    removeBusinessCategory(id: String!): Message
     createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message

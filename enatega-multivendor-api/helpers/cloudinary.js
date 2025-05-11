@@ -94,37 +94,42 @@ module.exports = {
     }
   },
 
-  async uploadBusinessCategoryImage({ id, file }) {
-    console.log({ file })
+  async uploadBusinessCategoryImage({ file }) {
     try {
-      const { createReadStream, filename, mimetype, encoding } = await file.file
+      const { createReadStream } = await file.file
       const stream = createReadStream()
-      let result_url
-      const image = await cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'auto'
-        },
-        async (error, result) => {
-          if (error) {
-            throw new Error('Upload failed')
+
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'auto'
+          },
+          (error, result) => {
+            if (error) {
+              reject(new Error('Upload failed: ' + error.message))
+            } else {
+              resolve(result)
+            }
           }
-          console.log({ image: result.secure_url })
-          const businessCategory = await BusinessCategory.findById(id)
-          businessCategory.image.url = result.secure_url
-          businessCategory.image.publicId = result.public_id
-          console.log({ businessCategory })
-          result_url = result.secure_url
-          await businessCategory.save()
-          return result.secure_url
-        }
-      )
+        )
 
-      stream.pipe(image)
+        stream.pipe(uploadStream)
+      })
 
-      return { message: 'image uploaded' }
+      console.log({
+        url: result.url,
+        secure_url: result.secure_url,
+        public_id: result.public_id
+      })
+
+      return {
+        url: result.url,
+        secure_url: result.secure_url,
+        public_id: result.public_id
+      }
     } catch (err) {
-      console.log(err)
-      throw new Error(err)
+      console.error(err)
+      throw new Error(err.message || 'Unknown upload error')
     }
   }
 }

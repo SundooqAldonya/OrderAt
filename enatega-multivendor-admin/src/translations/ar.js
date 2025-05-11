@@ -387,7 +387,13 @@ const ar = {
     delivery_prices: 'أسعار التوصيل',
     create_delivery_price: 'إنشئ سعر توصيل',
     delivery_price_created: 'تم انشاء سعر التوصيل',
-    delivery_price_updated: 'تم تعديل سعر التوصيل'
+    delivery_price_updated: 'تم تعديل سعر التوصيل',
+    business_categories: 'تصنيفات المنتجات',
+    create_business_category: 'إنشاء تصنيف المنتج',
+    edit_business_category: 'تعديل تصنيف المنتج',
+    created_business_category: 'تم إنشاء تصنيف المنتج بنجاح!',
+    updated_business_category: 'تم تعديل تصنيف المنتج بنجاح!',
+    removed_business_category: 'تم حذف تصنيف المنتج بنجاح!'
   }
 }
 

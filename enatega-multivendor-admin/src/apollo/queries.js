@@ -1043,3 +1043,15 @@ export const updateDeliveryZone = gql`
     }
   }
 `
+export const getBusinessCategories = gql`
+  query GetBusinessCategories {
+    getBusinessCategories {
+      _id
+      name
+      description
+      image {
+        url
+      }
+    }
+  }
+`

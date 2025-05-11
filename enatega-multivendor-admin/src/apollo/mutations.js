@@ -963,3 +963,24 @@ export const removeDeliveryPrice = gql`
     }
   }
 `
+export const createBusinessCategory = gql`
+  mutation CreateBusinessCategory($input: BusinessCategoryInput!) {
+    createBusinessCategory(input: $input) {
+      message
+    }
+  }
+`
+export const editBusinessCategory = gql`
+  mutation EditBusinessCategory($input: BusinessCategoryInput!, $id: String!) {
+    editBusinessCategory(input: $input, id: $id) {
+      message
+    }
+  }
+`
+export const removeBusinessCategory = gql`
+  mutation RemoveBusinessCategory($id: String!) {
+    removeBusinessCategory(id: $id) {
+      message
+    }
+  }
+`
