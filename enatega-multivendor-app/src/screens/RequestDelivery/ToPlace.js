@@ -41,6 +41,8 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
 import UserContext from '../../context/User.js'
+import { scale } from '../../utils/scaling.js'
+import { colors } from '../../utils/colors.js'
 
 const mapHeight = 250
 
@@ -235,7 +237,7 @@ export default function ToPlace() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
       style={{ flex: 1 }}
     >
       <ScrollView style={styles.container}>
@@ -393,16 +395,44 @@ export default function ToPlace() {
           style={{
             backgroundColor: '#000',
             height: 40,
-            width: '100%',
+            width: '95%',
             justifyContent: 'center',
-            marginBottom: 20
+            marginBottom: 20,
+            marginLeft: scale(10),
+            marginRight: scale(10),
+            borderRadius: scale(10),
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: scale(5)
           }}
         >
           <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
             {t('clear_search')}
           </TextDefault>
         </TouchableOpacity>
-        <Button title={t('next_rest_information')} onPress={handleNavigation} />
+        <TouchableOpacity
+          onPress={handleNavigation}
+          style={{
+            backgroundColor: colors.primary,
+            height: 40,
+            width: '95%',
+            justifyContent: 'center',
+            marginBottom: 20,
+            marginLeft: scale(10),
+            marginRight: scale(10),
+            borderRadius: scale(10),
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: scale(5)
+          }}
+        >
+          <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
+            {t('next_rest_information')}
+          </TextDefault>
+        </TouchableOpacity>
+        {/* <Button title={t('next_rest_information')} onPress={handleNavigation} /> */}
       </ScrollView>
       <MainModalize
         modalRef={modalRef}

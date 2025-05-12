@@ -28,6 +28,8 @@ import { createDeliveryRequest } from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
 import Feather from '@expo/vector-icons/Feather'
+import { scale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 
 const ORDERS = gql`
   ${myOrders}
@@ -317,7 +319,15 @@ const RequestDelivery = () => {
           disabled={disabled}
           style={{
             ...styles.submitButton,
-            backgroundColor: disabled ? 'grey' : '#000'
+            backgroundColor: disabled ? 'grey' : colors.primary,
+       
+             marginLeft: scale(10),
+            marginRight: scale(10),
+            borderRadius: scale(10),
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: scale(5)
           }}
           onPress={handleSubmit}
         >

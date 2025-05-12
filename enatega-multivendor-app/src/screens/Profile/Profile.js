@@ -523,24 +523,31 @@ function Profile(props) {
                 </View>
                 <View style={{ flex: 1 }} />
               </View> */}
-
-              <TextDefault
-                H5
-                B700
-                bolder
-                left
-                textColor={currentTheme.darkBgFont}
-                style={[
-                  styles(currentTheme).textAlignLeft,
-                  {
-                    textAlign: !isArabic ? 'left' : 'right',
-                    width: '92%',
-                    marginTop: 10
-                  }
-                ]}
+              <View
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  alignSelf: 'center'
+                }}
               >
-                {t('email')}
-              </TextDefault>
+                <TextDefault
+                  H5
+                  B700
+                  bolder
+                  left
+                  textColor={currentTheme.darkBgFont}
+                  style={[
+                    styles(currentTheme).textAlignLeft,
+                    {
+                      textAlign: !isArabic ? 'left' : 'right',
+                      width: '92%',
+                      marginTop: 10
+                    }
+                  ]}
+                >
+                  {t('email')}
+                </TextDefault>
+              </View>
               <View
                 style={{
                   borderRadius: scale(8),
@@ -594,23 +601,32 @@ function Profile(props) {
               </View>
 
               {/* password */}
-              <TextDefault
-                H5
-                B700
-                bolder
-                left
-                textColor={currentTheme.darkBgFont}
-                style={[
-                  styles(currentTheme).textAlignLeft,
-                  {
-                    textAlign: !isArabic ? 'left' : 'right',
-                    width: '92%',
-                    marginTop: 10
-                  }
-                ]}
+
+              <View
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  alignSelf: 'center'
+                }}
               >
-                {t('password')}
-              </TextDefault>
+                <TextDefault
+                  H5
+                  B700
+                  bolder
+                  left
+                  textColor={currentTheme.darkBgFont}
+                  style={[
+                    styles(currentTheme).textAlignLeft,
+                    {
+                      textAlign: !isArabic ? 'left' : 'right',
+                      width: '92%',
+                      marginTop: 10
+                    }
+                  ]}
+                >
+                  {t('password')}
+                </TextDefault>
+              </View>
               <TouchableOpacity
                 style={{
                   borderRadius: scale(8),
@@ -643,23 +659,31 @@ function Profile(props) {
               </TouchableOpacity>
 
               {/* phone */}
-              <TextDefault
-                H5
-                B700
-                bolder
-                left
-                textColor={currentTheme.darkBgFont}
-                style={[
-                  styles(currentTheme).textAlignLeft,
-                  {
-                    textAlign: !isArabic ? 'left' : 'right',
-                    width: '92%',
-                    marginTop: 10
-                  }
-                ]}
+              <View
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  width: '92%',
+                  alignSelf: 'center'
+                }}
               >
-                {t('mobileNumber')}
-              </TextDefault>
+                <TextDefault
+                  H5
+                  B700
+                  bolder
+                  left
+                  textColor={currentTheme.darkBgFont}
+                  style={[
+                    // styles(currentTheme).textAlignLeft,
+                    {
+                      textAlign: !isArabic ? 'left' : 'right',
+                      width: '92%',
+                      marginTop: 10
+                    }
+                  ]}
+                >
+                  {t('mobileNumber')}
+                </TextDefault>
+              </View>
               <View
                 style={{
                   borderRadius: scale(8),
@@ -708,119 +732,6 @@ function Profile(props) {
                 </View>
               </View>
 
-              {/* <View style={styles(currentTheme).formSubContainer}>
-                <View style={{ flex: 3 }}>
-                  <View style={styles().containerHeading}>
-                    {toggleView && (
-                      <>
-                        <View style={styles().headingTitle}>
-                          <TextDefault
-                            H5
-                            B700
-                            bolder
-                            left
-                            textColor={currentTheme.darkBgFont}
-                            style={styles(currentTheme).textAlignLeft}
-                          >
-                            {t('mobileNumber')}
-                          </TextDefault>
-                        </View>
-                      </>
-                    )}
-                  </View>
-                  {toggleView ? (
-                    changePhoneTab()
-                  ) : (
-                    <View>
-                      <View style={styles().containerHeading}>
-                        <View style={styles().headingTitle}>
-                          <TextDefault
-                            textColor={currentTheme.fontMainColor}
-                            H5
-                            B700
-                            bolder
-                            style={styles(currentTheme).textAlignLeft}
-                          >
-                            {t('mobileNumber')}
-                          </TextDefault>
-                        </View>
-                      </View>
-
-                      <View>
-                        <View style={{ ...alignment.MTxSmall }}></View>
-
-                        <View style={styles().flexRow}>
-                          <View>
-                            <TextDefault>{profile?.phone}</TextDefault>
-                          </View>
-                          <View style={styles().phoneDetailsContainer}>
-                            {(profile?.phone === '' ||
-                              !profile?.phoneIsVerified) && (
-                              <TouchableOpacity
-                                onPress={() =>
-                                  props.navigation.navigate(
-                                    profile?.phone === ''
-                                      ? 'PhoneNumber'
-                                      : 'PhoneOtp',
-                                    { prevScreen: 'Profile' }
-                                  )
-                                }
-                                disabled={
-                                  profile?.phoneIsVerified &&
-                                  profile?.phone !== ''
-                                }
-                              >
-                                <TextDefault
-                                  bold
-                                  textColor={
-                                    profile?.phoneIsVerified
-                                      ? currentTheme.startColor
-                                      : currentTheme.textErrorColor
-                                  }
-                                >
-                                  {profile?.phone === ''
-                                    ? t('addPhone')
-                                    : profile?.phoneIsVerified
-                                      ? t('verified')
-                                      : t('verify')}
-                                </TextDefault>
-                              </TouchableOpacity>
-                            )}
-                            {profile?.phone !== '' && (
-                              <Feather
-                                style={{ marginLeft: 10, marginTop: -5 }}
-                                name='check'
-                                size={20}
-                                color={currentTheme.black}
-                                onPress={() =>
-                                  props.navigation.navigate('PhoneNumber', {
-                                    prevScreen: 'Profile'
-                                  })
-                                }
-                              />
-                            )}
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  )}
-                </View>
-                <View style={styles().headingLink}>
-                  <TouchableOpacity
-                    activeOpacity={0.3}
-                    style={styles().headingButton}
-                    onPress={() =>
-                      props.navigation.navigate('PhoneNumber', {
-                        prevScreen: 'Profile'
-                      })
-                    }
-                  >
-                    <TextDefault textColor={colors.blue}>
-                      {t('edit')}
-                    </TextDefault>
-                  </TouchableOpacity>
-                </View>
-              </View> */}
               <View
                 // style={{ alignItems: 'center', padding: 10 }}
 
