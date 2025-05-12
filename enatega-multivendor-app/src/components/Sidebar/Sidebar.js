@@ -204,7 +204,7 @@ function SidebBar(props) {
                   title={t('titleLogout')}
                 />
               </View>
-              <View
+              {/* <View
                 style={[
                   styles().item,
                   {
@@ -216,7 +216,6 @@ function SidebBar(props) {
               >
                 <SideDrawerItems
                   onPress={() => props.navigation.navigate(datas[4].navigateTo)}
-                  // icon={datas[4].icon}
                   icon={
                     <SimpleLineIcons
                       name={datas[4].icon}
@@ -226,7 +225,7 @@ function SidebBar(props) {
                   }
                   title={t(datas[4].title)}
                 />
-              </View>
+              </View> */}
             </Fragment>
           ) : (
             <Fragment>

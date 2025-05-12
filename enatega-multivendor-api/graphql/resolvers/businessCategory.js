@@ -12,6 +12,20 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+
+    async getBusinessCategoriesCustomer(_, args) {
+      try {
+        const businessCategories = await BusinessCategory.find({
+          isActive: true
+        }).sort({
+          order: 1
+        })
+        console.log({ businessCategories })
+        return businessCategories
+      } catch (err) {
+        throw new Error(err)
+      }
     }
   },
   Mutation: {

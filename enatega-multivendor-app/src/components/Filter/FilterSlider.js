@@ -17,8 +17,9 @@ import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FILTER_TYPE } from '../../utils/enums'
 import { useTranslation } from 'react-i18next'
+import { Fragment } from 'react'
 
-const Filters = ({ filters, setFilters, applyFilters }) => {
+const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const [modalVisible, setModalVisible] = useState(false)
@@ -120,64 +121,130 @@ const Filters = ({ filters, setFilters, applyFilters }) => {
           </TouchableOpacity>
         </View>
         <ScrollView style={styles(currentTheme).modalContainer}>
-          {result?.map((filterValue) => (
-            <View key={filterValue}>
-              <TextDefault
-                style={styles(currentTheme).modalTitle}
-                textColor={currentTheme.newFontcolor}
-              >
-                {t(filterValue)}
-              </TextDefault>
-              <View>
-                {filters &&
-                  filters[filterValue]?.values?.map((value, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={[
-                        {
-                          flexDirection: 'row',
-                          justifyContent: 'space-between'
-                        },
-                        styles(currentTheme).modalItem,
-                        filters[filterValue].selected === value &&
-                          styles(currentTheme).selectedModalItem
-                      ]}
-                      onPress={() => handleValueSelection(filterValue, value)}
-                    >
-                      <TextDefault
-                        style={styles(currentTheme).modalItemText}
-                        textColor={currentTheme.newFontcolor}
-                      >
-                        {t(value)}
-                      </TextDefault>
-                      {filters &&
-                      filters[filterValue].type === FILTER_TYPE.CHECKBOX ? (
-                        <CheckboxBtn
-                          checked={filters[filterValue].selected.includes(
-                            value
-                          )}
-                          onPress={() =>
-                            handleValueSelection(filterValue, value)
-                          }
-                        />
-                      ) : (
-                        <RadioButton
-                          size={12}
-                          innerColor={currentTheme.main}
-                          outerColor={currentTheme.iconColorDark}
-                          isSelected={filters[filterValue].selected.includes(
-                            value
-                          )}
-                          onPress={() =>
-                            handleValueSelection(filterValue, value)
-                          }
-                        />
-                      )}
-                    </TouchableOpacity>
-                  ))}
+          {result?.map((filterValue) => {
+            return (
+              <View key={filterValue}>
+                <TextDefault
+                  style={styles(currentTheme).modalTitle}
+                  textColor={currentTheme.newFontcolor}
+                >
+                  {t(filterValue)}
+                </TextDefault>
+                <View>
+                  {filters && filterValue !== 'categories' ? (
+                    <Fragment>
+                      {filters[filterValue]?.values?.map((value, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            style={[
+                              {
+                                flexDirection: 'row',
+                                justifyContent: 'space-between'
+                              },
+                              styles(currentTheme).modalItem,
+                              filters[filterValue].selected === value &&
+                                styles(currentTheme).selectedModalItem
+                            ]}
+                            onPress={() =>
+                              handleValueSelection(filterValue, value)
+                            }
+                          >
+                            <TextDefault
+                              style={styles(currentTheme).modalItemText}
+                              textColor={currentTheme.newFontcolor}
+                            >
+                              {t(value)}
+                            </TextDefault>
+                            {filters &&
+                            filters[filterValue].type ===
+                              FILTER_TYPE.CHECKBOX ? (
+                              <CheckboxBtn
+                                checked={filters[filterValue].selected.includes(
+                                  value
+                                )}
+                                onPress={() =>
+                                  handleValueSelection(filterValue, value)
+                                }
+                              />
+                            ) : (
+                              <RadioButton
+                                size={12}
+                                innerColor={currentTheme.main}
+                                outerColor={currentTheme.iconColorDark}
+                                isSelected={filters[
+                                  filterValue
+                                ].selected.includes(value)}
+                                onPress={() =>
+                                  handleValueSelection(filterValue, value)
+                                }
+                              />
+                            )}
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      {filters[filterValue]?.values?.map((value, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            style={[
+                              {
+                                flexDirection: 'row',
+                                justifyContent: 'space-between'
+                              },
+                              styles(currentTheme).modalItem,
+                              filters[filterValue].selected === value &&
+                                styles(currentTheme).selectedModalItem
+                            ]}
+                            onPress={() =>
+                              handleValueSelection(filterValue, value)
+                            }
+                          >
+                            <TextDefault
+                              style={styles(currentTheme).modalItemText}
+                              textColor={currentTheme.newFontcolor}
+                            >
+                              {t(value.name)}
+                            </TextDefault>
+                            {filters &&
+                            filters[filterValue].type ===
+                              FILTER_TYPE.CHECKBOX ? (
+                              <CheckboxBtn
+                                checked={
+                                  filteredItem?._id === value._id ||
+                                  filters[filterValue].selected.includes(
+                                    value._id
+                                  )
+                                }
+                                onPress={() =>
+                                  handleValueSelection(filterValue, value._id)
+                                }
+                              />
+                            ) : (
+                              <RadioButton
+                                size={12}
+                                innerColor={currentTheme.main}
+                                outerColor={currentTheme.iconColorDark}
+                                isSelected={filters[
+                                  filterValue
+                                ].selected.includes(value)}
+                                onPress={() =>
+                                  handleValueSelection(filterValue, value)
+                                }
+                              />
+                            )}
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </Fragment>
+                  )}
+                </View>
               </View>
-            </View>
-          ))}
+            )
+          })}
           <TouchableOpacity
             onPress={() => {
               setModalVisible(false)
