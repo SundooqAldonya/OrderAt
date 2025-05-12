@@ -32,7 +32,11 @@ import { useLocation } from '../../ui/hooks'
 import Search from '../../components/Main/Search/Search'
 import Item from '../../components/Main/Item/Item'
 import UserContext from '../../context/User'
-import { getCuisines, restaurantListPreview } from '../../apollo/queries'
+import {
+  getBusinessCategoriesCustomer,
+  getCuisines,
+  restaurantListPreview
+} from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import styles from './styles'
@@ -92,6 +96,7 @@ export const FILTER_VALUES = {
 function Menu({ route, props }) {
   const Analytics = analytics()
   const { selectedType } = route.params
+  const filteredItem = route.params?.filteredItem || null
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -109,6 +114,8 @@ function Menu({ route, props }) {
   const { getCurrentLocation } = useLocation()
   const locationData = location
 
+  console.log({ filteredItem })
+
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
     {
@@ -125,11 +132,23 @@ function Menu({ route, props }) {
       fetchPolicy: 'network-only'
     }
   )
+
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError
   })
 
   const { data: allCuisines } = useQuery(GET_CUISINES)
+
+  const {
+    data: dataBusinessCategories,
+    loading: loadingBusinessCategories,
+    error: errorBusinessCategories
+  } = useQuery(getBusinessCategoriesCustomer, {
+    fetchPolicy: 'no-cache'
+  })
+
+  const businessCategories =
+    dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
   const newheaderColor = currentTheme.newheaderColor
 
@@ -153,12 +172,7 @@ function Menu({ route, props }) {
     }
     StatusBar.setBarStyle('light-content')
   })
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_MAIN)
-    }
-    Track()
-  }, [])
+
   useLayoutEffect(() => {
     navigation.setOptions(
       navigationOptions({
@@ -182,6 +196,31 @@ function Menu({ route, props }) {
       }
     }))
   }, [allCuisines])
+
+  useEffect(() => {
+    if (businessCategories?.length) {
+      setFilters((prev) => ({
+        ...prev,
+        categories: {
+          selected: [],
+          type: FILTER_TYPE.CHECKBOX,
+          values: businessCategories?.map((item) => item)
+        }
+      }))
+    }
+  }, [businessCategories])
+
+  useEffect(() => {
+    if (filteredItem) {
+      const filteredData = restaurantData.filter((item) =>
+        item.businessCategories.some((category) => {
+          return filteredItem._id === category._id
+        })
+      )
+      console.log({ filteredData })
+      setRestaurantData(filteredData)
+    }
+  }, [route.params])
 
   const onOpen = () => {
     const modal = modalRef.current
@@ -241,7 +280,6 @@ function Menu({ route, props }) {
             })
             setBusy(false)
           }
-          console.log(address)
         }
       })
       .catch((error) => {
@@ -417,6 +455,8 @@ function Menu({ route, props }) {
     const sort = filters.Sort
     const offers = filters.Offers
     const cuisines = filters.Cuisines
+    const businessCategories = filters.categories
+    console.log({ businessCategories: businessCategories[0] })
 
     // Apply filters incrementally
     // Ratings filter
@@ -453,6 +493,14 @@ function Menu({ route, props }) {
     if (cuisines?.selected?.length > 0) {
       filteredData = filteredData.filter((item) =>
         item.cuisines.some((cuisine) => cuisines?.selected?.includes(cuisine))
+      )
+    }
+
+    if (businessCategories?.selected?.length > 0) {
+      filteredData = filteredData.filter((item) =>
+        item.businessCategories.some((category) => {
+          return businessCategories?.selected?.includes(category._id)
+        })
       )
     }
 
@@ -522,6 +570,7 @@ function Menu({ route, props }) {
                     filters={filters}
                     setFilters={setFilters}
                     applyFilters={applyFilters}
+                    filteredItem={filteredItem}
                   />
                 </CollapsibleSubHeaderAnimator>
               </View>

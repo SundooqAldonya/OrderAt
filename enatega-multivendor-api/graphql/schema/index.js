@@ -119,6 +119,7 @@ const typeDefs = gql`
     reviewAverage: Float
     restaurantUrl: String
     phone: String
+    businessCategories: [BusinessCategory!]
   }
 
   type Restaurant {
@@ -163,6 +164,7 @@ const typeDefs = gql`
     phone: String
     city: CityArea
     createdAt: String
+    businessCategories: [BusinessCategory!]
   }
 
   type RestaurantCustomer {
@@ -986,6 +988,7 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     city: String
+    businessCategories: [String!]
   }
 
   input RestaurantProfileInput {
@@ -1005,6 +1008,7 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     city: String
+    businessCategories: [String!]
   }
 
   input OptionInput {
@@ -1336,15 +1340,22 @@ const typeDefs = gql`
     amount: Float
   }
 
+  type Image {
+    url: String
+    publicId: String
+  }
+
   type BusinessCategory {
     _id: String
     name: String
     description: String
-    image: String
+    image: Image
     isActive: Boolean
+    order: Float
   }
 
   type Query {
+    getBusinessCategoriesCustomer: [BusinessCategory!]
     getBusinessCategories: [BusinessCategory!]
     getDeliveryCalculation(
       originLong: Float!
@@ -1669,15 +1680,17 @@ const typeDefs = gql`
   }
 
   input BusinessCategoryInput {
-    title: String!
+    name: String!
     description: String
     file: Upload
+    order: Float
   }
 
   type Mutation {
+    changeActiveBusinessCategory(id: String!): Message
     createBusinessCategory(input: BusinessCategoryInput!): Message
-    editBusinessCategory(input: BusinessCategoryInput!): Message
-    removeBusinessCategory(input: BusinessCategoryInput!): Message
+    editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message
+    removeBusinessCategory(id: String!): Message
     createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message

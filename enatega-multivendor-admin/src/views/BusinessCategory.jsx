@@ -1,21 +1,22 @@
-/* eslint-disable react/display-name */
 import React, { useState } from 'react'
-import { useTranslation, withTranslation } from 'react-i18next'
 import { useQuery, useMutation, gql } from '@apollo/client'
+import { withTranslation } from 'react-i18next'
 import Header from '../components/Headers/Header'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
-import RiderComponent from '../components/Rider/Rider'
-import SearchBar from '../components/TableHeader/SearchBar'
 import {
-  getRiders,
-  deleteRider,
-  toggleAvailablity,
-  getAvailableRiders,
-  toggleActive
+  getBusinessCategories,
+  editBusinessCategory,
+  removeBusinessCategory,
+  changeActiveBusinessCategory
 } from '../apollo'
+import SearchBar from '../components/TableHeader/SearchBar'
 import useGlobalStyles from '../utils/globalStyles'
+import { customStyles } from '../utils/tableCustomStyles'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 import {
   Container,
   Grid,
@@ -28,67 +29,38 @@ import {
   Typography,
   ListItemIcon
 } from '@mui/material'
-import { customStyles } from '../utils/tableCustomStyles'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { ReactComponent as RiderIcon } from '../assets/svg/svg/Rider.svg'
+import { ReactComponent as CouponsIcon } from '../assets/svg/svg/Coupons.svg'
 import TableHeader from '../components/TableHeader'
-import Alert from '../components/Alert'
-import ConfigurableValues from '../config/constants'
+import BusinessCategoryCreate from '../components/BusinessCategoryCreate'
+import { Fragment } from 'react'
 
-const GET_RIDERS = gql`
-  ${getRiders}
-`
-const DELETE_RIDER = gql`
-  ${deleteRider}
-`
-const TOGGLE_RIDER = gql`
-  ${toggleAvailablity}
-`
-const TOGGLE_ACTIVE = gql`
-  ${toggleActive}
-`
-const GET_AVAILABLE_RIDERS = gql`
-  ${getAvailableRiders}
-`
-
-function Riders(props) {
-  // const { PAID_VERSION } = ConfigurableValues()
+const BusinessCategory = props => {
+  const { t } = props
   const [editModal, setEditModal] = useState(false)
-  const [rider, setRider] = useState(null)
+  const [businessCategory, setBusinessCategory] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
   const onChangeSearch = e => setSearchQuery(e.target.value)
-
-  const [mutateToggle] = useMutation(TOGGLE_RIDER, {
-    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
+  const [mutateActive] = useMutation(changeActiveBusinessCategory, {
+    refetchQueries: [{ query: getBusinessCategories }]
   })
-
-  const [mutateActive] = useMutation(TOGGLE_ACTIVE, {
-    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
-  })
-
-  const [mutateDelete] = useMutation(DELETE_RIDER, {
-    refetchQueries: [{ query: GET_RIDERS }]
+  const [mutateDelete] = useMutation(removeBusinessCategory, {
+    refetchQueries: [{ query: getBusinessCategories }]
   })
 
   const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
-    GET_RIDERS
+    getBusinessCategories
   )
 
-  const toggleModal = rider => {
+  const toggleModal = item => {
     setEditModal(!editModal)
-    setRider(rider)
+    setBusinessCategory(item)
   }
 
-  const closeEditModal = () => {
-    setEditModal(false)
-  }
+  console.log({ data: data?.getBusinessCategories })
 
   const customSort = (rows, field, direction) => {
     const handleField = row => {
-      if (row[field]) {
+      if (row[field] && isNaN(row[field])) {
         return row[field].toLowerCase()
       }
 
@@ -98,39 +70,39 @@ function Riders(props) {
     return orderBy(rows, handleField, direction)
   }
 
-  const handleSort = (column, sortDirection) =>
-    console.log(column.selector, sortDirection)
-
-  const { t } = props
-
   const columns = [
+    {
+      name: t('Image'),
+      cell: row => (
+        <>
+          <img
+            className="img-responsive"
+            style={{ width: 30, height: 30, borderRadius: 15 }}
+            src={
+              row.image
+                ? row.image.url
+                : 'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
+            }
+            alt=""
+          />
+        </>
+      )
+    },
     {
       name: t('Name'),
       sortable: true,
       selector: 'name'
     },
     {
-      name: t('Username'),
+      name: t('Description'),
       sortable: true,
-      selector: 'username'
+      selector: 'description'
     },
     {
-      name: t('Password'),
+      name: t('order_number'),
       sortable: true,
-      selector: 'password'
-    },
-    {
-      name: t('Phone'),
-      sortable: true,
-      selector: 'phone'
-    },
-    {
-      name: t('Zone'),
-      selector: 'zone.title'
-    },
-    {
-      name: t('Available'),
-      cell: row => <>{availableStatus(row)}</>
+      selector: 'order',
+      cell: row => <>{row.order ? row.order : 'N/A'}</>
     },
     {
       name: t('Active'),
@@ -138,31 +110,25 @@ function Riders(props) {
     },
     {
       name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
+      cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
     }
   ]
+  const regex =
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+  const filtered =
+    searchQuery.length < 3
+      ? data && data.getBusinessCategories
+      : data &&
+        data.getBusinessCategories.filter(item => {
+          return item.name.toLowerCase().search(regex) > -1
+        })
 
-  const availableStatus = row => {
-    return (
-      <>
-        {row.available}
-        <Switch
-          size="small"
-          defaultChecked={row.available}
-          onChange={_event => {
-            mutateToggle({ variables: { id: row._id } })
-          }}
-          style={{ color: 'black' }}
-        />
-      </>
-    )
-  }
+  const globalClasses = useGlobalStyles()
 
   const isActiveStatus = row => {
     console.log({ isActive: row.isActive })
     return (
-      <>
-        {/* {row.isActive} */}
+      <Fragment>
         <Switch
           size="small"
           defaultChecked={row.isActive}
@@ -171,50 +137,28 @@ function Riders(props) {
           }}
           style={{ color: 'black' }}
         />
-      </>
+      </Fragment>
     )
   }
 
-  const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
-  const filtered =
-    searchQuery.length < 3
-      ? data && data.riders
-      : data &&
-        data.riders.filter(rider => {
-          return (
-            rider.name.toLowerCase().search(regex) > -1 ||
-            rider.username.toLowerCase().search(regex) > -1 ||
-            rider.phone.toLowerCase().search(regex) > -1 ||
-            rider.zone.title.toLowerCase().search(regex) > -1
-          )
-        })
-  const globalClasses = useGlobalStyles()
   return (
     <>
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
         <Grid container>
-          <Grid item order={{ xs: 2, md: 1 }}>
-            <RiderComponent />
+          <Grid item>
+            <BusinessCategoryCreate />
           </Grid>
-          <Grid
-            sx={{ display: { xs: 'none', lg: 'block' } }}
-            item
-            mt={5}
-            order={{ xs: 1, lg: 2 }}>
-            <RiderIcon />
+          <Grid sx={{ display: { xs: 'none', lg: 'block' } }} item mt={2}>
+            <CouponsIcon />
           </Grid>
         </Grid>
-        {isOpen && (
-          <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
-        )}
-        {/* Table */}
+
         {errorQuery ? (
-          <tr>
-            <td>`Error! ${errorQuery.message}`</td>
-          </tr>
+          <span>
+            `${t('Error')}! ${errorQuery.message}`
+          </span>
         ) : null}
         {loadingQuery ? (
           <CustomLoader />
@@ -228,38 +172,36 @@ function Riders(props) {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Riders')} />}
+            title={<TableHeader title={t('business_categories')} />}
             columns={columns}
             data={filtered}
             pagination
             progressPending={loadingQuery}
             progressComponent={<CustomLoader />}
-            onSort={handleSort}
             sortFunction={customSort}
-            selectableRows
+            defaultSortField="name"
             customStyles={customStyles}
           />
         )}
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal()
+            toggleModal(null)
           }}
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <RiderComponent rider={rider} onClose={closeEditModal} />
+          <BusinessCategoryCreate item={businessCategory} />
         </Modal>
       </Container>
     </>
   )
 }
 
-const ActionButtons = (row, toggleModal, mutateDelete) => {
+const ActionButtons = (row, toggleModal, t, mutateDelete) => {
   const [anchorEl, setAnchorEl] = useState(null)
-  const { t } = useTranslation()
   const open = Boolean(anchorEl)
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -289,7 +231,6 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-
                 toggleModal(row)
               }}
               style={{ height: 25 }}>
@@ -301,7 +242,6 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
             <MenuItem
               onClick={e => {
                 e.preventDefault()
-
                 mutateDelete({ variables: { id: row._id } })
               }}
               style={{ height: 25 }}>
@@ -317,4 +257,4 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
   )
 }
 
-export default withTranslation()(Riders)
+export default withTranslation()(BusinessCategory)

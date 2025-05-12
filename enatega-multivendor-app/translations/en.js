@@ -638,5 +638,6 @@ export const en = {
   leave_review: 'Leave a Review',
   added_review: 'Added review',
   added_review_successfully: 'Added review successfully!',
-  review_added: 'Review is added'
+  review_added: 'Review is added',
+  categories: 'Categories'
 }

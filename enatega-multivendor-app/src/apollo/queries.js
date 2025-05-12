@@ -633,6 +633,10 @@ export const restaurantListPreview = `query Restaurants($latitude:Float,$longitu
           endTime
         }
       }
+      businessCategories {
+        _id
+        name
+      }
     }
 }
 }`
@@ -1236,5 +1240,19 @@ export const getReviews = gql`
 export const userHasOrderReview = gql`
   query UserHasOrderReview($orderId: String!, $restaurantId: String!) {
     userHasOrderReview(orderId: $orderId, restaurantId: $restaurantId)
+  }
+`
+export const getBusinessCategoriesCustomer = gql`
+  query GetBusinessCategoriesCustomer {
+    getBusinessCategoriesCustomer {
+      _id
+      name
+      description
+      image {
+        url
+      }
+      order
+      isActive
+    }
   }
 `

@@ -406,7 +406,14 @@ const en = {
     delivery_price_created: 'Delivery price created!',
     delivery_price_updated: 'Delivery price updated!',
     AddDeliveryZone: 'Add delivery zone',
-    EditDeliveryZone: 'Edit delivery zone'
+    EditDeliveryZone: 'Edit delivery zone',
+    business_categories: 'Business Categories',
+    create_business_category: 'Create Business Category',
+    edit_business_category: 'Edit Business Category',
+    created_business_category: 'Created business category successfully!',
+    updated_business_category: 'Updated business category successfully!',
+    removed_business_category: 'Removed business category successfully!',
+    order_number: 'Order Number'
   }
 }
 

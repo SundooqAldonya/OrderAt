@@ -690,6 +690,15 @@ export const getRestaurantProfile = `query Restaurant($id:String){
         _id
         title
       }
+      businessCategories{
+        _id
+        name
+        description
+        image {
+          url
+          publicId
+        }
+      }
     }
 }`
 
@@ -1040,6 +1049,20 @@ export const updateDeliveryZone = gql`
   mutation UpdateDeliveryZone($deliveryZoneInput: DeliveryZoneInput) {
     updateDeliveryZone(deliveryZoneInput: $deliveryZoneInput) {
       message
+    }
+  }
+`
+export const getBusinessCategories = gql`
+  query GetBusinessCategories {
+    getBusinessCategories {
+      _id
+      name
+      description
+      image {
+        url
+      }
+      order
+      isActive
     }
   }
 `

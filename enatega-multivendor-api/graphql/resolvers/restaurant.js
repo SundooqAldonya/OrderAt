@@ -283,7 +283,9 @@ module.exports = {
         } else {
           throw new Error('Invalid request, restaurant id not provided')
         }
-        const restaurant = await Restaurant.findOne(filters)
+        const restaurant = await Restaurant.findOne(filters).populate(
+          'businessCategories'
+        )
         if (!restaurant) throw Error('Restaurant not found')
         const result = await restaurant.populate(['city', 'shopCategory'])
         console.log({ result })
@@ -794,7 +796,8 @@ module.exports = {
           shopCategory: args.restaurant.shopType,
           restaurantUrl: args.restaurant.restaurantUrl,
           phone: args.restaurant.phone,
-          city: args.restaurant.city
+          city: args.restaurant.city,
+          businessCategories: args.restaurant.businessCategories
         })
         console.log('New Restaurant: ', restaurant)
 
@@ -868,6 +871,7 @@ module.exports = {
         restaurant.restaurantUrl = args.restaurant.restaurantUrl
         restaurant.phone = args.restaurant.phone
         restaurant.city = args.restaurant.city
+        restaurant.businessCategories = args.restaurant.businessCategories
         await restaurant.save()
         const result = await restaurant.populate('city')
         console.log({ result })

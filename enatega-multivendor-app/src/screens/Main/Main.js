@@ -16,7 +16,8 @@ import {
   ScrollView,
   Animated,
   RefreshControl,
-  Linking
+  Linking,
+  FlatList
 } from 'react-native'
 import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { useMutation, useQuery, gql } from '@apollo/client'
@@ -25,7 +26,11 @@ import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import { useLocation } from '../../ui/hooks'
 import Search from '../../components/Main/Search/Search'
 import UserContext from '../../context/User'
-import { restaurantList, restaurantListPreview } from '../../apollo/queries'
+import {
+  getBusinessCategoriesCustomer,
+  restaurantList,
+  restaurantListPreview
+} from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import styles from './styles'
@@ -57,6 +62,7 @@ import { colors } from '../../utils/colors'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import DeliveryIcon from '../../assets/delivery_home.png'
+import BusinessCategories from '../../components/BusinessCategories'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -83,6 +89,7 @@ function Main(props) {
 
   const locationData = location
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
+
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
     {
@@ -95,6 +102,7 @@ function Main(props) {
       fetchPolicy: 'network-only'
     }
   )
+
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
   const [selectedType, setSelectedType] = useState('restaurant')
   console.log('orderData', orderData)
@@ -117,6 +125,7 @@ function Main(props) {
     }
     StatusBar.setBarStyle('light-content')
   })
+
   useEffect(() => {
     async function Track() {
       await Analytics.track(Analytics.events.NAVIGATE_TO_MAIN)
@@ -407,7 +416,6 @@ function Main(props) {
                   <View
                     style={{
                       ...styles().searchList
-                      // flexDirection: isArabic ? 'row-reverse' : 'row'
                     }}
                   >
                     <Animated.FlatList
@@ -445,62 +453,13 @@ function Main(props) {
                     />
                   </View>
                 ) : (
-                  // the Menu
                   <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {/* the first section */}
+                    {/* business categories */}
+                    <BusinessCategories />
 
-                    {/* <ScrollView
-                      contentContainerStyle={styles().mainItemsContainer}
-                      horizontal
-                    > */}
-
-                    {/* البقالة و توصيل الطعام */}
-                    {/* <View style={styles().mainItemsContainer}>
-                      
-                      
-                      <TouchableOpacity
-                        style={styles().mainItem}
-                        onPress={() =>
-                          navigation.navigate('Menu', {
-                            selectedType: 'grocery'
-                          })
-                        }
-                      >
-                        <View>
-                          <TextDefault
-                            H4
-                            bolder
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemName,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('grocery')}
-                          </TextDefault>
-                          <TextDefault
-                            Normal
-                            textColor={currentTheme.fontThirdColor}
-                            style={{
-                              ...styles().ItemDescription,
-                              textAlign: isArabic ? 'right' : 'left'
-                            }}
-                          >
-                            {t('essentialsDeliveredFast')}
-                          </TextDefault>
-                        </View>
-                        <Image
-                          source={require('../../assets/images/ItemsList/grocery-new.png')}
-                          style={styles().popularMenuImg}
-                        />
-                      </TouchableOpacity>
-
-                    </ScrollView>
-
-                    </View> */}
                     <View
                       style={{
                         marginVertical: 20,
@@ -608,18 +567,6 @@ function Main(props) {
                               )}
                             </>
                           )}
-                      </View>
-                      <View>
-                        {/* {orderLoading ? (
-                          <MainLoadingUI />
-                        ) : (
-                          <MainRestaurantCard
-                            orders={mostOrderedRestaurantsVar}
-                            loading={orderLoading}
-                            error={orderError}
-                            title={'Top Picks for you'}
-                          />
-                        )} */}
                       </View>
                     </View>
 

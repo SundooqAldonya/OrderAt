@@ -66,6 +66,7 @@ import ElectricMopedIcon from '@mui/icons-material/ElectricMoped'
 import OrderDetailsPage from './views/OrderDetailsPage'
 import DeliveryPrices from './views/DeliveryPrices'
 import DeliveryZone from './views/DeliveryZone'
+import BusinessCategory from './views/BusinessCategory'
 
 var routes = [
   {
@@ -145,6 +146,15 @@ var routes = [
     name: 'Cuisines',
     icon: CouponsIcon,
     component: Cuisines,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/businessCategory',
+    name: 'business_categories',
+    icon: CouponsIcon,
+    component: BusinessCategory,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true
