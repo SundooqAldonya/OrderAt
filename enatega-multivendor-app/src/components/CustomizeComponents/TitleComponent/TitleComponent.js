@@ -18,9 +18,8 @@ function TitleComponent(props) {
         ...styles.mainContainer,
         justifyContent: 'space-between',
         alignItems: 'center',
-        flexDirection: isArabic ? 'row-reverse' : 'row'
-        // backgroundColor: 'red'
-      }}
+        flexDirection: isArabic ? 'row-reverse' : 'row',
+       }}
     >
       <View
         style={{

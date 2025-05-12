@@ -344,7 +344,14 @@ export default function FromPlace() {
                 textInput: { height: 44, fontSize: 16 }
               }}
             />
-            <View style={styles.checkboxContainer}>
+            <View
+              style={[
+                styles.checkboxContainer,
+                {
+                  flexDirection: !isArabic ? 'row-reverse' : 'row',
+                 }
+              ]}
+            >
               <Text style={styles.label}>{t('save_address')}</Text>
               <Checkbox
                 status={saveAddress ? 'checked' : 'unchecked'}
