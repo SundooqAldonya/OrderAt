@@ -172,33 +172,6 @@ const BusinessCategoryCreate = props => {
                   ]}
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <Typography className={classes.labelText}>
-                  {t('shopType')}
-                </Typography>
-                <Select
-                  style={{ marginTop: -1 }}
-                  // defaultValue={data.action}
-                  displayEmpty
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  value={shopType}
-                  placeholder="Select action"
-                  onChange={e => setShopType(e.target.value)}
-                  className={[
-                    globalClasses.input,
-                    !shopType ? globalClasses.inputError : '',
-                    shopType && globalClasses.inputSuccess
-                  ]}>
-                  {['restaurant', 'grocery'].map((item, index) => (
-                    <MenuItem
-                      style={{ color: 'black', textTransform: 'capitalize' }}
-                      value={item}
-                      key={item + index}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Grid> */}
               <Grid item xs={12}>
                 <Box
                   mt={3}
@@ -210,6 +183,8 @@ const BusinessCategoryCreate = props => {
                     src={
                       image
                         ? URL.createObjectURL(image)
+                        : file
+                        ? file.url
                         : 'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
                     }
                   />

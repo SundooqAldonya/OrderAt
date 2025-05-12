@@ -166,7 +166,6 @@ const BusinessCategory = props => {
 }
 
 const ActionButtons = (row, toggleModal, t, mutateDelete) => {
-  console.log({ row })
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = event => {
