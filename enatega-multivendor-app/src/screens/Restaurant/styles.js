@@ -117,11 +117,8 @@ const styles = (props = null) =>
 
     buttonContainer: {
       width: '100%',
-      // height: '10%',
       height: 50,
-      // backgroundColor: props !== null ? props.themeBackground : 'black',
       borderRadius: scale(40),
-
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 12,
@@ -131,7 +128,8 @@ const styles = (props = null) =>
         height: -verticalScale(3)
       },
       shadowOpacity: 0.5,
-      shadowRadius: verticalScale(2)
+      shadowRadius: verticalScale(2),
+      marginBottom: 5
     },
     button: {
       justifyContent: 'space-between',
