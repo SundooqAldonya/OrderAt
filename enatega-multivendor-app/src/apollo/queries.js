@@ -1256,3 +1256,68 @@ export const getBusinessCategoriesCustomer = gql`
     }
   }
 `
+export const highestRatingRestaurant = gql`
+  query HighestRatingRestaurant($longitude: Float!, $latitude: Float!) {
+    highestRatingRestaurant(longitude: $longitude, latitude: $latitude) {
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData {
+        total
+        ratings
+        reviews {
+          _id
+          order {
+            user {
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+
+      options {
+        _id
+        title
+        description
+        price
+      }
+      addons {
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone {
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes {
+        day
+        times {
+          startTime
+          endTime
+        }
+      }
+    }
+  }
+`

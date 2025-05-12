@@ -28,6 +28,7 @@ import Search from '../../components/Main/Search/Search'
 import UserContext from '../../context/User'
 import {
   getBusinessCategoriesCustomer,
+  highestRatingRestaurant,
   restaurantList,
   restaurantListPreview
 } from '../../apollo/queries'
@@ -103,7 +104,19 @@ function Main(props) {
     }
   )
 
+  console.log({ location })
+
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
+  const {
+    data: dataHighRating,
+    loading: loadingHighRating,
+    error: errorHighRating
+  } = useQuery(highestRatingRestaurant, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
+  })
   const [selectedType, setSelectedType] = useState('restaurant')
   console.log('orderData', orderData)
   console.log('orderError', orderError)
@@ -114,6 +127,8 @@ function Main(props) {
   const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants
   const newheaderColor = currentTheme.newheaderColor
+  const highestRatingRestaurantData =
+    dataHighRating?.highestRatingRestaurant || null
 
   const handleActiveOrdersChange = (activeOrdersExist) => {
     setHasActiveOrders(activeOrdersExist)
@@ -562,7 +577,27 @@ function Main(props) {
                                   orders={recentOrderRestaurantsVar}
                                   loading={orderLoading}
                                   error={orderError}
-                                  title={'Order it again'}
+                                  title={'mostOrderedNow'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    {/* heighest rating */}
+                    <View style={{ marginTop: 20 }}>
+                      <View>
+                        {highestRatingRestaurantData &&
+                          highestRatingRestaurantData.length > 0 && (
+                            <>
+                              {orderLoading ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={highestRatingRestaurantData}
+                                  loading={orderLoading}
+                                  error={orderError}
+                                  title={'highest_rated'}
                                 />
                               )}
                             </>

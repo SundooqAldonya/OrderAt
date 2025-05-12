@@ -21,7 +21,6 @@ module.exports = {
         }).sort({
           order: 1
         })
-        console.log({ businessCategories })
         return businessCategories
       } catch (err) {
         throw new Error(err)

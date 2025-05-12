@@ -57,8 +57,8 @@ function MainRestaurantCard(props) {
                   textAlign: isArabic ? 'right' : 'left'
                 }}
               >
-                {/* {t(props?.title)} */}
-                {t('mostOrderedNow')}
+                {t(props?.title)}
+                {/* {t('mostOrderedNow')} */}
               </TextDefault>
               <View style={styles().image}>
                 <Ionicons

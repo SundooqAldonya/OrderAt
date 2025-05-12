@@ -628,5 +628,6 @@ export const ar = {
   added_review: 'التقييم',
   added_review_successfully: 'تم حفظ التقييم',
   review_added: 'تم التقييم',
-  categories: 'التصنيفات'
+  categories: 'التصنيفات',
+  highest_rated: 'الأعلى تصنيفا'
 }
