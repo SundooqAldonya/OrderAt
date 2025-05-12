@@ -1355,6 +1355,10 @@ const typeDefs = gql`
   }
 
   type Query {
+    nearestRestaurants(
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
     highestRatingRestaurant(
       longitude: Float!
       latitude: Float!

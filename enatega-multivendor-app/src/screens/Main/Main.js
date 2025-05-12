@@ -29,6 +29,7 @@ import UserContext from '../../context/User'
 import {
   getBusinessCategoriesCustomer,
   highestRatingRestaurant,
+  nearestRestaurants,
   restaurantList,
   restaurantListPreview
 } from '../../apollo/queries'
@@ -107,6 +108,7 @@ function Main(props) {
   console.log({ location })
 
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
+
   const {
     data: dataHighRating,
     loading: loadingHighRating,
@@ -117,6 +119,18 @@ function Main(props) {
       latitude: location.latitude
     }
   })
+
+  const {
+    data: dataNearestRestaurants,
+    loading: loadingNearestRestaurants,
+    error: errorNearestRestaurants
+  } = useQuery(nearestRestaurants, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
+  })
+
   const [selectedType, setSelectedType] = useState('restaurant')
   console.log('orderData', orderData)
   console.log('orderError', orderError)
@@ -129,6 +143,8 @@ function Main(props) {
   const newheaderColor = currentTheme.newheaderColor
   const highestRatingRestaurantData =
     dataHighRating?.highestRatingRestaurant || null
+  const nearestRestaurantsData =
+    dataNearestRestaurants?.nearestRestaurants || null
 
   const handleActiveOrdersChange = (activeOrdersExist) => {
     setHasActiveOrders(activeOrdersExist)
@@ -585,19 +601,39 @@ function Main(props) {
                       </View>
                     </View>
                     {/* heighest rating */}
-                    <View style={{ marginTop: 20 }}>
+                    <View>
                       <View>
                         {highestRatingRestaurantData &&
                           highestRatingRestaurantData.length > 0 && (
                             <>
-                              {orderLoading ? (
+                              {loadingHighRating ? (
                                 <MainLoadingUI />
                               ) : (
                                 <MainRestaurantCard
                                   orders={highestRatingRestaurantData}
-                                  loading={orderLoading}
-                                  error={orderError}
+                                  loading={loadingHighRating}
+                                  error={errorHighRating}
                                   title={'highest_rated'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    {/* nearest restaurants */}
+                    <View>
+                      <View>
+                        {nearestRestaurantsData &&
+                          nearestRestaurantsData.length > 0 && (
+                            <>
+                              {loadingNearestRestaurants ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={nearestRestaurantsData}
+                                  loading={loadingNearestRestaurants}
+                                  error={errorNearestRestaurants}
+                                  title={'nearest_to_you'}
                                 />
                               )}
                             </>

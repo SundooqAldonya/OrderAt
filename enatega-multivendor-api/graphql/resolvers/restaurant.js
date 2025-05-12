@@ -652,6 +652,7 @@ module.exports = {
         const { longitude, latitude } = args
 
         const restaurants = await Restaurant.find({
+          reviewCount: { $gt: 0 },
           deliveryBounds: {
             $near: {
               $geometry: { type: 'Point', coordinates: [longitude, latitude] },
@@ -660,6 +661,25 @@ module.exports = {
           }
         }).sort({ reviewAverage: -1 })
         console.log({ highestRatingRestaurant: restaurants })
+        return restaurants
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async nearestRestaurants(_, args) {
+      try {
+        const { longitude, latitude } = args
+
+        const restaurants = await Restaurant.find({
+          location: {
+            $near: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] },
+              $maxDistance: 5000
+            }
+          }
+        })
+        console.log({ nearestRestaurants: restaurants })
         return restaurants
       } catch (err) {
         throw new Error(err)

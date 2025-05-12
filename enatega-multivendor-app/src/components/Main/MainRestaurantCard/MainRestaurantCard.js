@@ -30,7 +30,7 @@ function MainRestaurantCard(props) {
   if (props?.error) return <Text>Error: {props?.error?.message}</Text>
 
   return (
-    <View style={{ ...styles().orderAgainSec, marginBottom: 50 }}>
+    <View style={{ ...styles().orderAgainSec, marginBottom: 20 }}>
       {props.orders && props.orders.length > 0 ? (
         <>
           <View>
