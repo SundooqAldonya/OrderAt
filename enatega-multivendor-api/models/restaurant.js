@@ -146,4 +146,5 @@ const restaurantSchema = new Schema(
 )
 
 restaurantSchema.index({ deliveryBounds: '2dsphere' })
+restaurantSchema.index({ location: '2dsphere' })
 module.exports = mongoose.model('Restaurant', restaurantSchema)

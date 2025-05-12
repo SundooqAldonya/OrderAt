@@ -28,6 +28,8 @@ import Search from '../../components/Main/Search/Search'
 import UserContext from '../../context/User'
 import {
   getBusinessCategoriesCustomer,
+  highestRatingRestaurant,
+  nearestRestaurants,
   restaurantList,
   restaurantListPreview
 } from '../../apollo/queries'
@@ -103,7 +105,32 @@ function Main(props) {
     }
   )
 
+  console.log({ location })
+
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
+
+  const {
+    data: dataHighRating,
+    loading: loadingHighRating,
+    error: errorHighRating
+  } = useQuery(highestRatingRestaurant, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
+  })
+
+  const {
+    data: dataNearestRestaurants,
+    loading: loadingNearestRestaurants,
+    error: errorNearestRestaurants
+  } = useQuery(nearestRestaurants, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
+  })
+
   const [selectedType, setSelectedType] = useState('restaurant')
   console.log('orderData', orderData)
   console.log('orderError', orderError)
@@ -114,6 +141,10 @@ function Main(props) {
   const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants
   const newheaderColor = currentTheme.newheaderColor
+  const highestRatingRestaurantData =
+    dataHighRating?.highestRatingRestaurant || null
+  const nearestRestaurantsData =
+    dataNearestRestaurants?.nearestRestaurants || null
 
   const handleActiveOrdersChange = (activeOrdersExist) => {
     setHasActiveOrders(activeOrdersExist)
@@ -562,7 +593,47 @@ function Main(props) {
                                   orders={recentOrderRestaurantsVar}
                                   loading={orderLoading}
                                   error={orderError}
-                                  title={'Order it again'}
+                                  title={'mostOrderedNow'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    {/* heighest rating */}
+                    <View>
+                      <View>
+                        {highestRatingRestaurantData &&
+                          highestRatingRestaurantData.length > 0 && (
+                            <>
+                              {loadingHighRating ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={highestRatingRestaurantData}
+                                  loading={loadingHighRating}
+                                  error={errorHighRating}
+                                  title={'highest_rated'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    {/* nearest restaurants */}
+                    <View>
+                      <View>
+                        {nearestRestaurantsData &&
+                          nearestRestaurantsData.length > 0 && (
+                            <>
+                              {loadingNearestRestaurants ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={nearestRestaurantsData}
+                                  loading={loadingNearestRestaurants}
+                                  error={errorNearestRestaurants}
+                                  title={'nearest_to_you'}
                                 />
                               )}
                             </>

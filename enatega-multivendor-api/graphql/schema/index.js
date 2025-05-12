@@ -119,7 +119,7 @@ const typeDefs = gql`
     reviewAverage: Float
     restaurantUrl: String
     phone: String
-    businessCategories: [BusinessCategory!]
+    businessCategories: [BusinessCategory]
   }
 
   type Restaurant {
@@ -1355,6 +1355,14 @@ const typeDefs = gql`
   }
 
   type Query {
+    nearestRestaurants(
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
+    highestRatingRestaurant(
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
     getBusinessCategoriesCustomer: [BusinessCategory!]
     getBusinessCategories: [BusinessCategory!]
     getDeliveryCalculation(

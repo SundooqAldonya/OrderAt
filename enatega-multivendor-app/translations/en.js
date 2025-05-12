@@ -639,5 +639,7 @@ export const en = {
   added_review: 'Added review',
   added_review_successfully: 'Added review successfully!',
   review_added: 'Review is added',
-  categories: 'Categories'
+  categories: 'Categories',
+  highest_rated: 'Highest rated',
+  nearest_to_you: 'Nearest to you'
 }

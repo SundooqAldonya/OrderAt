@@ -316,7 +316,6 @@ module.exports = {
         const addons = await Addon.find({ restaurant })
         const categories = await Category.find({ restaurant })
         const options = await Option.find({ restaurant })
-        const reviews = await Review.find({ restaurant })
 
         const modifiedCategories = await Promise.all(
           categories.map(async category => {
@@ -328,19 +327,11 @@ module.exports = {
           })
         )
 
-        const reviewData = reviews.map(review => transformReview(review))
-
-        // console.log({ reviewData })
-        // console.log({
-        //   modifiedCategoriesFoodVariations:
-        //     modifiedCategories[0].foods[0].variations
-        // })
         return {
           ...restaurant,
           categories: modifiedCategories,
           addons,
           options
-          // reviewData
         }
       } catch (e) {
         console.error(e)
@@ -655,6 +646,46 @@ module.exports = {
         console.log('popularItems errored', error)
       }
     },
+
+    async highestRatingRestaurant(_, args) {
+      try {
+        const { longitude, latitude } = args
+
+        const restaurants = await Restaurant.find({
+          reviewCount: { $gt: 0 },
+          deliveryBounds: {
+            $near: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] },
+              $maxDistance: 10000
+            }
+          }
+        }).sort({ reviewAverage: -1 })
+        console.log({ highestRatingRestaurant: restaurants })
+        return restaurants
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async nearestRestaurants(_, args) {
+      try {
+        const { longitude, latitude } = args
+
+        const restaurants = await Restaurant.find({
+          location: {
+            $near: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] },
+              $maxDistance: 5000
+            }
+          }
+        })
+        console.log({ nearestRestaurants: restaurants })
+        return restaurants
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     topRatedVendors: async (_, args, { req }) => {
       console.log('topRatedVendors', args)
       try {
