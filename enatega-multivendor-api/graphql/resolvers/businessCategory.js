@@ -20,13 +20,13 @@ module.exports = {
       try {
         const businessCategory = new BusinessCategory({
           name: args.input.name,
-          description: args.input.description
+          description: args.input.description,
+          order: args.input.order
         })
         if (args.input.file?.file && args.input.file.file['createReadStream']) {
           const image = await uploadBusinessCategoryImage({
             file: args.input.file
           })
-          console.log({ image })
           businessCategory.image.url = image.secure_url
           businessCategory.image.publicId = image.public_id
           console.log({ businessCategory })
@@ -42,16 +42,29 @@ module.exports = {
         const businessCategory = await BusinessCategory.findById(args.id)
         businessCategory.name = args.input.name
         businessCategory.description = args.input.description
-        if (args.input.file.file && args.input.file.file['createReadStream']) {
+        businessCategory.order = args.input.order
+        if (
+          args.input?.file?.file &&
+          args.input.file.file['createReadStream']
+        ) {
           const image = await uploadBusinessCategoryImage({
             file: args.input.file
           })
-          console.log({ image })
           businessCategory.image.url = image.secure_url
           businessCategory.image.publicId = image.public_id
         }
         await businessCategory.save()
         return { message: 'updated_business_category' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    async changeActiveBusinessCategory(_, args) {
+      try {
+        const category = await BusinessCategory.findById(args.id)
+        category.isActive = category.isActive ? false : true
+        await category.save()
+        return { message: 'updated_active' }
       } catch (err) {
         throw new Error(err)
       }

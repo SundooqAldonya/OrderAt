@@ -412,7 +412,8 @@ const en = {
     edit_business_category: 'Edit Business Category',
     created_business_category: 'Created business category successfully!',
     updated_business_category: 'Updated business category successfully!',
-    removed_business_category: 'Removed business category successfully!'
+    removed_business_category: 'Removed business category successfully!',
+    order_number: 'Order Number'
   }
 }
 

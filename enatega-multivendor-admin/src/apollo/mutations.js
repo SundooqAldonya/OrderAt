@@ -984,3 +984,10 @@ export const removeBusinessCategory = gql`
     }
   }
 `
+export const changeActiveBusinessCategory = gql`
+  mutation ChangeActiveBusinessCategory($id: String!) {
+    changeActiveBusinessCategory(id: $id) {
+      message
+    }
+  }
+`

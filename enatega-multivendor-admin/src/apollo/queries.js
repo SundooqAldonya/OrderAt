@@ -1061,6 +1061,8 @@ export const getBusinessCategories = gql`
       image {
         url
       }
+      order
+      isActive
     }
   }
 `

@@ -8,7 +8,8 @@ import orderBy from 'lodash/orderBy'
 import {
   getBusinessCategories,
   editBusinessCategory,
-  removeBusinessCategory
+  removeBusinessCategory,
+  changeActiveBusinessCategory
 } from '../apollo'
 import SearchBar from '../components/TableHeader/SearchBar'
 import useGlobalStyles from '../utils/globalStyles'
@@ -31,6 +32,7 @@ import {
 import { ReactComponent as CouponsIcon } from '../assets/svg/svg/Coupons.svg'
 import TableHeader from '../components/TableHeader'
 import BusinessCategoryCreate from '../components/BusinessCategoryCreate'
+import { Fragment } from 'react'
 
 const BusinessCategory = props => {
   const { t } = props
@@ -38,17 +40,23 @@ const BusinessCategory = props => {
   const [businessCategory, setBusinessCategory] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const onChangeSearch = e => setSearchQuery(e.target.value)
-  const [mutateEdit] = useMutation(editBusinessCategory)
+  const [mutateActive] = useMutation(changeActiveBusinessCategory, {
+    refetchQueries: [{ query: getBusinessCategories }]
+  })
   const [mutateDelete] = useMutation(removeBusinessCategory, {
     refetchQueries: [{ query: getBusinessCategories }]
   })
+
   const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
     getBusinessCategories
   )
+
   const toggleModal = item => {
     setEditModal(!editModal)
     setBusinessCategory(item)
   }
+
+  console.log({ data: data?.getBusinessCategories })
 
   const customSort = (rows, field, direction) => {
     const handleField = row => {
@@ -91,6 +99,16 @@ const BusinessCategory = props => {
       selector: 'description'
     },
     {
+      name: t('order_number'),
+      sortable: true,
+      selector: 'order',
+      cell: row => <>{row.order ? row.order : 'N/A'}</>
+    },
+    {
+      name: t('Active'),
+      cell: row => <>{isActiveStatus(row)}</>
+    },
+    {
       name: t('Action'),
       cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
     }
@@ -106,6 +124,23 @@ const BusinessCategory = props => {
         })
 
   const globalClasses = useGlobalStyles()
+
+  const isActiveStatus = row => {
+    console.log({ isActive: row.isActive })
+    return (
+      <Fragment>
+        <Switch
+          size="small"
+          defaultChecked={row.isActive}
+          onChange={_event => {
+            mutateActive({ variables: { id: row._id } })
+          }}
+          style={{ color: 'black' }}
+        />
+      </Fragment>
+    )
+  }
+
   return (
     <>
       <Header />

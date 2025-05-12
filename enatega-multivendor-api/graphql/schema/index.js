@@ -1350,6 +1350,7 @@ const typeDefs = gql`
     description: String
     image: Image
     isActive: Boolean
+    order: Float
   }
 
   type Query {
@@ -1680,9 +1681,11 @@ const typeDefs = gql`
     name: String!
     description: String
     file: Upload
+    order: Float
   }
 
   type Mutation {
+    changeActiveBusinessCategory(id: String!): Message
     createBusinessCategory(input: BusinessCategoryInput!): Message
     editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message
     removeBusinessCategory(id: String!): Message

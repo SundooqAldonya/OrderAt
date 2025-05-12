@@ -18,6 +18,9 @@ const businessCategorySchema = new Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    order: {
+      type: Number
     }
   },
   { timestamps: true }

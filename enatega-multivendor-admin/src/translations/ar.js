@@ -393,7 +393,8 @@ const ar = {
     edit_business_category: 'تعديل تصنيف المنتج',
     created_business_category: 'تم إنشاء تصنيف المنتج بنجاح!',
     updated_business_category: 'تم تعديل تصنيف المنتج بنجاح!',
-    removed_business_category: 'تم حذف تصنيف المنتج بنجاح!'
+    removed_business_category: 'تم حذف تصنيف المنتج بنجاح!',
+    order_number: 'الترتيب'
   }
 }
 

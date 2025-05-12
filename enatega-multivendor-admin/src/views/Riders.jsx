@@ -157,6 +157,7 @@ function Riders(props) {
       </>
     )
   }
+
   const isActiveStatus = row => {
     console.log({ isActive: row.isActive })
     return (

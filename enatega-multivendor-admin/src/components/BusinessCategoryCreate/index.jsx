@@ -37,10 +37,14 @@ const BusinessCategoryCreate = props => {
   const [file, setFile] = useState(props.item ? props.item.image : '')
   const [fileLoading, setFileLoading] = useState(false)
   const [image, setImage] = useState(null)
+  const [order, setOrder] = useState(
+    props.item && props.item.order ? props.item.order : 1
+  )
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
   }
+
   const onCompleted = res => {
     console.log({ res })
     const message = props.item
@@ -50,6 +54,7 @@ const BusinessCategoryCreate = props => {
     mainErrorSetter('')
     if (!props.item) clearFields()
   }
+
   const onError = error => {
     console.log('Error => ', error)
     let message = ''
@@ -67,6 +72,7 @@ const BusinessCategoryCreate = props => {
     onError,
     onCompleted
   })
+
   const [mutateUpdate, { loading: loadingUpdate }] = useMutation(
     editBusinessCategory,
     {
@@ -172,6 +178,25 @@ const BusinessCategoryCreate = props => {
                   ]}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  {t('order_number')}
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  id="input-order"
+                  name="input-order"
+                  placeholder={t('order_number')}
+                  type="number"
+                  value={order}
+                  onChange={e => setOrder(e.target.value)}
+                  onBlur={event =>
+                    onBlur(setNameError, 'order', event.target.value)
+                  }
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <Box
                   mt={3}
@@ -226,7 +251,8 @@ const BusinessCategoryCreate = props => {
                           name: formRef.current['input-name'].value,
                           description:
                             formRef.current['input-description'].value,
-                          file: image
+                          file: image,
+                          order: Number(order)
                         }
                       }
                     })
@@ -237,7 +263,8 @@ const BusinessCategoryCreate = props => {
                           name: formRef.current['input-name'].value,
                           description:
                             formRef.current['input-description'].value,
-                          file: image
+                          file: image,
+                          order: Number(order)
                         },
                         id: props.item._id
                       }
