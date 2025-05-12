@@ -567,9 +567,9 @@ function Restaurant(props) {
           <Animated.View style={styles(currentTheme).flex}>
             <View
               style={{
-                height: height * 0.39,
-                borderBottomWidth: 1,
-                borderBlockColor: colors.lightGray,
+                height: height * 0.4,
+                // borderBottomWidth: 1,
+                // borderBlockColor: colors.lightGray,
                 borderRadius: 16
               }}
             >
@@ -608,9 +608,10 @@ function Restaurant(props) {
                 isArabic={isArabic}
               />
             </View>
+     
             <View
               style={{
-                height: height * 0.52
+                height: height * 0.5
               }}
             >
               <>

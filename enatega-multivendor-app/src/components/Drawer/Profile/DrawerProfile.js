@@ -15,6 +15,7 @@ function DrawerProfile(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { isLoggedIn, loadingProfile, profile } = useContext(UserContext)
+console.log('profile>>>>>>>>>>>>>>>>>',profile);
 
   if (loadingProfile) return <TextDefault>{t('loading')}</TextDefault>
   return (
