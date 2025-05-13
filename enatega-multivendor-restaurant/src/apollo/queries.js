@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const orders = `query Orders{
     restaurantOrders{
       _id
@@ -130,3 +132,17 @@ export const getCityAreas = `query AreasByCity($id: String!){
     title
   }
 }`
+
+export const areasCalculatedList = gql`
+  query AreasCalculatedList($restaurantId: String!) {
+    areasCalculatedList(restaurantId: $restaurantId) {
+      _id
+      title
+      # city
+      address
+      # location
+      distance
+      cost
+    }
+  }
+`

@@ -1,5 +1,12 @@
+const { calculateDistance } = require('../../helpers/findRiders')
+const { calculateAmount } = require('../../helpers/utilities')
 const Area = require('../../models/area')
+const Configuration = require('../../models/configuration')
+const DeliveryPrice = require('../../models/DeliveryPrice')
+const DeliveryZone = require('../../models/deliveryZone')
 const Location = require('../../models/location')
+const Restaurant = require('../../models/restaurant')
+
 module.exports = {
   Query: {
     async areas(_, args, { req, res }) {
@@ -22,6 +29,97 @@ module.exports = {
         return areas
       } catch (err) {
         throw new Error('Something went wrong')
+      }
+    },
+
+    async areasCalculatedList(_, args) {
+      try {
+        const { restaurantId } = args
+        // get the restaurant
+        const restaurant = await Restaurant.findById(restaurantId)
+        // get the origin point
+        const configuration = await Configuration.findOne()
+        const costType = configuration.costType
+        // get the areas
+        const areas = await Area.find({ city: restaurant?.city })
+          .populate('city')
+          .populate('location')
+        // loop on areas
+        const list = await Promise.all(
+          areas.map(async area => {
+            // calculate the distance of each area from the origin point
+            const distance = calculateDistance(
+              restaurant.location.coordinates[1],
+              restaurant.location.coordinates[0],
+              area.location.location.coordinates[1],
+              area.location.location.coordinates[0]
+            )
+            const originZone = await DeliveryZone.findOne({
+              location: {
+                $geoIntersects: {
+                  $geometry: [
+                    restaurant.location.coordinates[0],
+                    restaurant.location.coordinates[1]
+                  ]
+                }
+              }
+            })
+
+            const destinationZone = await DeliveryZone.findOne({
+              location: {
+                $geoIntersects: {
+                  $geometry: {
+                    type: 'Point',
+                    coordinates: [
+                      area.location.location.coordinates[0],
+                      area.location.location.coordinates[1]
+                    ]
+                  }
+                }
+              }
+            })
+
+            console.log({ originZone, destinationZone })
+            let deliveryPrice
+            if (originZone && destinationZone) {
+              deliveryPrice = await DeliveryPrice.findOne({
+                $or: [
+                  {
+                    originZone: originZone._id,
+                    destinationZone: destinationZone._id
+                  },
+                  {
+                    originZone: destinationZone._id,
+                    destinationZone: originZone._id
+                  }
+                ]
+              })
+            }
+            // calculate the amount of delivery fee
+            let amount
+            if (deliveryPrice) {
+              amount = deliveryPrice.cost
+            } else {
+              amount = calculateAmount(
+                costType,
+                configuration.deliveryRate,
+                distance
+              )
+            }
+
+            const obj = {
+              ...area._doc,
+              distance,
+              cost: amount
+            }
+            return obj
+          })
+        )
+
+        console.log({ list })
+        return list
+      } catch (err) {
+        throw new Error(err)
       }
     }
   },

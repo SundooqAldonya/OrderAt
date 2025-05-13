@@ -1354,7 +1354,18 @@ const typeDefs = gql`
     order: Float
   }
 
+  type DeliveryFeeList {
+    _id: String
+    title: String
+    city: CityArea
+    address: String
+    location: LocationArea
+    distance: Float
+    cost: Float
+  }
+
   type Query {
+    areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
     nearestRestaurants(
       longitude: Float!
       latitude: Float!

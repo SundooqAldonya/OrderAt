@@ -100,5 +100,9 @@ export const en = {
     'Are you sure you want to delete your account? This action cannot be undone. Deleting your account will permanently remove all of your data, including your orders and preferences. If you proceed, you will lose access to your account and its benefits.',
   yesSure: 'Yes Sure',
   cancel: 'Cancel',
-  save: 'Save'
+  save: 'Save',
+  areas_cost: 'Areas Costs',
+  city: 'City',
+  distance: 'Distance',
+  delivery_fee: 'Delivery Fee'
 }

@@ -13,18 +13,21 @@ export default function useAccount() {
     toggle()
     setIsAvailable(previousState => !previousState)
   }
+
   const { loading, error, data, refetch, networkStatus } = useQuery(
     gql`
       ${restaurantInfo}
     `,
     { fetchPolicy: 'network-only' }
   )
+
   const [toggle, { loading: loadingToggle }] = useMutation(
     gql`
       ${toggleAvailability}
     `,
     { onError, onCompleted }
   )
+
   useEffect(() => {
     if (!data) return
     setIsAvailable(data.restaurant.isAvailable)

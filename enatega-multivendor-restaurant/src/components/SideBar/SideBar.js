@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import SoundContext from '../../ui/context/sound'
+import IconVec from 'react-native-vector-icons/FontAwesome5'
 
 export default function SideBar() {
   const { t, i18n } = useTranslation()
@@ -245,7 +246,10 @@ export default function SideBar() {
           </View>
 
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             activeOpacity={0.8}
             onPress={() => navigator.navigate('SelectLanguage')}>
             <View style={styles.icon}>
@@ -263,9 +267,29 @@ export default function SideBar() {
               {t('language')}
             </TextDefault>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
+            activeOpacity={0.8}
+            onPress={() => navigator.navigate('AreasDeliveryCosts')}>
+            <View style={styles.icon}>
+              <IconVec color="white" name="map-marked-alt" size={26} />
+            </View>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+              {t('areas_cost')}
+            </TextDefault>
+          </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             activeOpacity={0.8}
             onPress={() => navigator.navigate('Profile')}>
             <View style={styles.icon}>
@@ -280,7 +304,10 @@ export default function SideBar() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(PRODUCT_URL).then(() => {
@@ -304,7 +331,10 @@ export default function SideBar() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL('https://orderat.ai/#/privacy').then(() => {
@@ -323,7 +353,10 @@ export default function SideBar() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             activeOpacity={0.8}
             onPress={() =>
               Linking.canOpenURL(ABOUT_URL).then(() => {
@@ -349,7 +382,10 @@ export default function SideBar() {
 
         <View style={styles.lowerContainer}>
           <TouchableOpacity
-            style={[styles.logout, isRtl && { flexDirection: 'row-reverse' }]}
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
             onPress={logout}>
             <View style={styles.icon}>
               <Icon type="entypo" color="white" name="log-out" size={26} />

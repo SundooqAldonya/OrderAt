@@ -3,8 +3,7 @@ import { colors } from '../../utilities'
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    justifyContent: 'center',
-    
+    justifyContent: 'center'
   },
   item: {
     aspectRatio: 1,
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   }
 })
 
