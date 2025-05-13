@@ -100,7 +100,9 @@ export const restaurantInfo = `query Restaurant($id:String){
   name
   image
   address
-  location{coordinates}
+  location {
+    coordinates
+  }
   deliveryTime
   username
   isAvailable
@@ -130,6 +132,11 @@ export const getCityAreas = `query AreasByCity($id: String!){
   areasByCity(id: $id){
     _id
     title
+    location {
+      location {
+        coordinates
+      }
+    }
   }
 }`
 
@@ -143,6 +150,24 @@ export const areasCalculatedList = gql`
       # location
       distance
       cost
+    }
+  }
+`
+
+export const getDeliveryCalculation = gql`
+  query GetDeliveryCalculation(
+    $originLong: Float!
+    $originLat: Float!
+    $destLong: Float!
+    $destLat: Float!
+  ) {
+    getDeliveryCalculation(
+      originLong: $originLong
+      originLat: $originLat
+      destLong: $destLong
+      destLat: $destLat
+    ) {
+      amount
     }
   }
 `

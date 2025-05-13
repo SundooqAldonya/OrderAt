@@ -8,7 +8,7 @@ export const en = {
   off: 'Off',
   settings: 'Settings',
   aboutUs: 'About Us',
-  productPage: 'Product Page',
+  productPage: 'Products Page',
   privacyPolicy: 'Privacy Policy',
   unReadOrders: 'No new orders yet!',
   deliveredOrders: 'Delivered',

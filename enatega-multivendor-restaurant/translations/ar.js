@@ -9,7 +9,7 @@ export const ar = {
   off: 'إيقاف',
   settings: 'الإعدادات',
   aboutUs: 'من نحن',
-  productPage: 'صفحة المنتج',
+  productPage: 'صفحة المنتجات',
   privacyPolicy: 'سياسة الخصوصية',
   unReadOrders: 'لا توجد طلبات جديدة حتى الآن!',
   deliveredOrders: 'تم التوصيل',

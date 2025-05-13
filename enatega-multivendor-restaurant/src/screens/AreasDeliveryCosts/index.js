@@ -24,7 +24,7 @@ const AreasDeliveryCosts = () => {
   const navigation = useNavigation()
   const { currencySymbol } = useContext(Configuration.Context)
 
-  const { data: restaurantData, loading: loadingRestaurant } = useAccount()
+  const { data: restaurantData } = useAccount()
 
   const { data, error, loading } = useQuery(areasCalculatedList, {
     variables: { restaurantId: restaurantData?.restaurant?._id },
@@ -48,28 +48,35 @@ const AreasDeliveryCosts = () => {
 
   const renderItem = ({ item }) => (
     <Card style={styles.card}>
-      <Card.Content>
+      <Card.Content
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
         <TextDefault style={styles.cardTitle}>{item.title}</TextDefault>
         {/* <Paragraph style={{ textAlign: isArabic ? 'right' : 'left' }}>
           {t('city')}: {item.city?.name}
         </Paragraph> */}
-        <Paragraph style={{ textAlign: isArabic ? 'right' : 'left' }}>
+        {/* <Paragraph style={{ textAlign: isArabic ? 'right' : 'left' }}>
           {t('distance')}: {item.distance?.toFixed(2)} km
-        </Paragraph>
+        </Paragraph> */}
         {isArabic ? (
-          <Paragraph style={{ textAlign: isArabic ? 'right' : 'left' }}>
-            {t('delivery_fee')}: {item.cost?.toFixed(2)} {currencySymbol}
+          <Paragraph
+            style={{ textAlign: isArabic ? 'right' : 'left', fontSize: 20 }}>
+            {item.cost?.toFixed(2)} {currencySymbol}
           </Paragraph>
         ) : (
-          <Paragraph style={{ textAlign: isArabic ? 'right' : 'left' }}>
-            {t('delivery_fee')}: {currencySymbol} {item.cost?.toFixed(2)}
+          <Paragraph
+            style={{ textAlign: isArabic ? 'right' : 'left', fontSize: 20 }}>
+            {currencySymbol} {item.cost?.toFixed(2)}
           </Paragraph>
         )}
       </Card.Content>
     </Card>
   )
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.arrowContainer}>
@@ -89,6 +96,9 @@ const AreasDeliveryCosts = () => {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 100
+  },
   title: {
     marginTop: 50,
     textAlign: 'center',

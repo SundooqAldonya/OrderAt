@@ -303,7 +303,7 @@ export default function SideBar() {
             </TextDefault>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.logout,
               isRtl && { flexDirection: 'row-reverse', gap: 10 }
@@ -328,7 +328,7 @@ export default function SideBar() {
               style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
               {t('productPage')}
             </TextDefault>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             style={[

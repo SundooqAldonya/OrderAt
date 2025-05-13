@@ -20,6 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 // import styles from './styles'
 import {
   getCityAreas,
+  getDeliveryCalculation,
   muteRingOrder,
   newCheckoutPlaceOrder
 } from '../../apollo'
@@ -27,14 +28,18 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import { useSelector } from 'react-redux'
 import OverlayCreateOrder from '../../components/Overlay/OverlayCreateOrder'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useAcceptOrder, useOrderRing } from '../../ui/hooks'
+import { useAcceptOrder, useAccount, useOrderRing } from '../../ui/hooks'
+import { Fragment } from 'react'
+import { Configuration } from '../../ui/context'
+import { useContext } from 'react'
 
 const GET_CITY_AREAS = gql`
   ${getCityAreas}
 `
 
 const AddNewOrder = ({ navigation }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const [userData, setUserData] = useState({
     phone: '',
     name: '',
@@ -51,6 +56,8 @@ const AddNewOrder = ({ navigation }) => {
   const [overlayVisible, setOverlayVisible] = useState(false)
   const { acceptOrder } = useAcceptOrder()
   const { muteRing } = useOrderRing()
+  const { data: restaurantData } = useAccount()
+  const { currencySymbol } = useContext(Configuration.Context)
 
   const { cityId } = useSelector(state => state.city)
 
@@ -78,6 +85,38 @@ const AddNewOrder = ({ navigation }) => {
     skip: !cityId,
     variables: { id: cityId }
   })
+
+  // console.log({ dataAreas: dataAreas?.areasByCity[0].location.location })
+
+  console.log({ selectedLocation })
+
+  // const addressInfo = null
+  const shouldSkip =
+    !selectedArea ||
+    !restaurantData?.restaurant?.location?.coordinates?.[0] ||
+    !restaurantData?.restaurant?.location?.coordinates?.[1]
+
+  const { data, loading, error } = useQuery(getDeliveryCalculation, {
+    variables: {
+      destLong: selectedLocation?.coordinates
+        ? Number(selectedLocation?.coordinates[0])
+        : null,
+      destLat: selectedLocation?.coordinates
+        ? Number(selectedLocation?.coordinates[1])
+        : null,
+      originLong: restaurantData?.restaurant?.location?.coordinates
+        ? Number(restaurantData?.restaurant?.location?.coordinates[0])
+        : null,
+      originLat: restaurantData?.restaurant?.location?.coordinates
+        ? Number(restaurantData?.restaurant?.location?.coordinates[1])
+        : null
+    },
+    skip: shouldSkip
+  })
+
+  const deliveryFee = data?.getDeliveryCalculation?.amount || null
+
+  console.log({ deliveryFee })
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible)
@@ -166,7 +205,8 @@ const AddNewOrder = ({ navigation }) => {
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.2,
                   shadowRadius: 3,
-                  marginHorizontal: 16
+                  marginHorizontal: 16,
+                  marginVertical: 10
                 }}
                 onPress={() => {
                   setAreaIsVisible(true)
@@ -197,6 +237,21 @@ const AddNewOrder = ({ navigation }) => {
                 style={styles.inputs}
                 keyboardType="number-pad"
               />
+              {selectedArea ? (
+                <View style={styles.fareBox}>
+                  {loading ? (
+                    <Text>Loading...</Text>
+                  ) : (
+                    <Text
+                      style={{
+                        textAlign: isArabic ? 'right' : 'left',
+                        color: 'grey'
+                      }}>
+                      {t('delivery_fee')}: {deliveryFee} {currencySymbol}
+                    </Text>
+                  )}
+                </View>
+              ) : null}
               <OverlayCreateOrder
                 visible={overlayVisible}
                 toggle={toggleOverlay}
@@ -271,8 +326,10 @@ const AddNewOrder = ({ navigation }) => {
                 onPress={() => {
                   if (selectedArea?._id === area._id) {
                     setSelectedArea(null)
+                    setSelectedLocation(null)
                   } else {
                     setSelectedArea(area)
+                    setSelectedLocation(area.location.location)
                     setAreaIsVisible(false)
                   }
                 }}>
@@ -304,6 +361,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     fontFamily: 'Montserrat_400Regular',
     fontSize: 16
+  },
+  fareBox: {
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginBottom: 20,
+    marginHorizontal: 16,
+    marginTop: 10
   }
 })
 
