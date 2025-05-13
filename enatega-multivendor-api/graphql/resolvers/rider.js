@@ -155,10 +155,10 @@ module.exports = {
         twoDaysAgo.setHours(0, 0, 0, 0)
         const assignedOrders = await Order.find({
           rider: req.userId,
-          createdAt: {
-            $gte: twoDaysAgo
-            // $lte: date
-          },
+          // createdAt: {
+          //   $gte: twoDaysAgo
+          //   // $lte: date
+          // },
           $or: [
             { orderStatus: 'ACCEPTED' },
             { orderStatus: 'PICKED' },
@@ -176,7 +176,7 @@ module.exports = {
         // await sendPushNotification(rider.notificationToken, orders[0])
         // const orders = await findOrdersWithinRadius(rider, 1)
 
-        return orders.concat(...assignedOrders).map(order => {
+        return [...orders, ...assignedOrders].map(order => {
           return transformOrder(order)
         })
       } catch (err) {
