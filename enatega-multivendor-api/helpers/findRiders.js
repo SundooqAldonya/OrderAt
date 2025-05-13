@@ -111,6 +111,8 @@ const findRiders = {
       notificationToken: { $ne: null }
     })
 
+    console.log({ riders })
+
     const tokens = riders.map(rider => rider.notificationToken)
     console.log({ tokens })
 
