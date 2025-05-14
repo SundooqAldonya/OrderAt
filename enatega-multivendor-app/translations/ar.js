@@ -284,8 +284,8 @@ export const ar = {
   setLocation: 'تحديد الموقع',
   cartIsEmpty: 'السلة فارغة',
   favouritelistUpdated: 'تم تحديث قائمة المفضلة',
-  minAmount: 'الحد الأدنى للمبلغ ',
-  forYourOrder: ' لطلبك لم يتم الوصول إليه.',
+  minAmount: 'يجب إضافة منتجات بقيمة',
+  forYourOrder: 'لإتمام الحد الأدنى للطلب',
   setPaymentMethod: 'قم بتعيين طريقة الدفع قبل الخروج',
   numberVerificationAlert: 'رقم الهاتف غير متحقق. يرجى التحقق من رقم الهاتف.',
   numberVerified: 'تم التحقق من رقم الهاتف بنجاح!.',
@@ -631,5 +631,8 @@ export const ar = {
   categories: 'التصنيفات',
   highest_rated: 'الأعلى تصنيفا',
   nearest_to_you: 'الأقرب إليك',
-  closed: 'مغلق'
+  closed: 'مغلق',
+  your_address: 'عنوانك',
+  business_address: 'عنوان المحل',
+  pickup_option: 'تسلم'
 }

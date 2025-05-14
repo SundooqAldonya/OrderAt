@@ -5,6 +5,7 @@ import { scale } from '../../utils/scaling'
 import { FontAwesome } from '@expo/vector-icons'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
+import { useTranslation } from 'react-i18next'
 
 export const PaymentModeOption = ({
   theme,
@@ -13,32 +14,33 @@ export const PaymentModeOption = ({
   selected,
   onSelect
 }) => {
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+
   return (
     <Pressable
       onPress={onSelect}
       style={{
-        flexDirection: 'row',
+        flexDirection: isArabic ? 'row-reverse' : 'row',
         alignItems: 'center',
-        marginVertical: scale(8)
+        marginVertical: scale(8),
+        // backgroundColor: 'red',
+        justifyContent: 'space-between'
       }}
     >
-      <View style={{ flex: 1 }}>
-        <FontAwesome
-          name={icon}
-          size={scale(16)}
-          color={theme?.fontFourthColor}
-        />
-      </View>
-      <View style={{ flex: 6 }}>
+      <View>
         <TextDefault
           textColor={theme?.fontFourthColor}
-          style={alignment.MLsmall}
+          style={{
+            ...alignment.MLsmall,
+            textAlign: isArabic ? 'right' : 'left'
+          }}
           bold
         >
           {title}
         </TextDefault>
       </View>
-      <View style={{ flex: 1 }}>
+      <View>
         <RadioButton
           size={scale(10)}
           outerColor={theme?.color12}

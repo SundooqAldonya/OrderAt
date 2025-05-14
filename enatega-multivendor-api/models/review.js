@@ -31,6 +31,7 @@ const reviewSchema = new Schema(
   },
   { timestamps: true }
 )
+
 reviewSchema.post('save', async doc => {
   try {
     let average = 0
@@ -45,12 +46,13 @@ reviewSchema.post('save', async doc => {
     ]).exec()
     if (result && result.length > 0) average = result[0].reviewsAverage || 0
     await Restaurant.findByIdAndUpdate(doc.restaurant.toString(), {
-      $set: { reviewAverage: Number(average.toFixed(2)) },
+      $set: { reviewAverage: Number(average.toFixed(1)) },
       $inc: { reviewCount: 1 }
     })
   } catch (error) {
     console.log('post save review error', error)
   }
 })
+
 const myModule = (module.exports = mongoose.model('Review', reviewSchema))
 myModule.reviewSchema = reviewSchema

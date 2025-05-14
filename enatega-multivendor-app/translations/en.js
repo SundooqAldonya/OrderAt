@@ -290,8 +290,8 @@ export const en = {
   setLocation: 'Set Location',
   cartIsEmpty: 'Cart is empty',
   favouritelistUpdated: 'Favourite list updated',
-  minAmount: 'The minimum order amount of ',
-  forYourOrder: ' for your order has not been reached.',
+  minAmount: 'You need to add items worth',
+  forYourOrder: 'more to reach the minimum order of',
   setPaymentMethod: 'Set payment method before checkout',
   numberVerificationAlert:
     'Phone number is not verified. Kindly verify phone number.',
@@ -642,5 +642,8 @@ export const en = {
   categories: 'Categories',
   highest_rated: 'Highest rated',
   nearest_to_you: 'Nearest to you',
-  closed: 'Closed'
+  closed: 'Closed',
+  your_address: 'Your address',
+  business_address: 'Business address',
+  pickup_option: 'Pickup'
 }

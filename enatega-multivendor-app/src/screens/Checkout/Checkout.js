@@ -45,7 +45,7 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { alignment } from '../../utils/alignment'
 import { useRestaurant } from '../../ui/hooks'
 import { LocationContext } from '../../context/Location'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { DAYS } from '../../utils/enums'
 import { textStyles } from '../../utils/textStyles'
 import { calculateDistance } from '../../utils/customFunctions'
@@ -67,6 +67,7 @@ import PickUp from '../../components/Pickup'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
 import { PaymentModeOption } from '../../components/Checkout/PaymentOption'
 import { colors } from '../../utils/colors'
+import { openGoogleMaps } from '../../utils/callMaps'
 
 // Constants
 const PLACEORDER = gql`
@@ -80,8 +81,11 @@ const GET_COUPON = gql`
 `
 const { height: HEIGHT } = Dimensions.get('window')
 
+const kmWidth = 0.5 // desired width in km
+
 function Checkout(props) {
-  const Analytics = analytics()
+  const mapRef = useRef()
+  const navigation = useNavigation()
 
   const configuration = useContext(ConfigurationContext)
   const {
@@ -118,15 +122,35 @@ function Checkout(props) {
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
 
+  const translatedAddress = location.deliveryAddress
+    ? location.deliveryAddress
+    : location.deliveryAddress &&
+        location.deliveryAddress === 'Current Location'
+      ? t('currentLocation')
+      : location.area
+        ? `${location.city.title}, ${location.area.title}`
+        : null
+
   const { loading, data } = useRestaurant(cartRestaurant)
   const [loadingOrder, setLoadingOrder] = useState(false)
   const latOrigin = data?.restaurantCustomer?.location?.coordinates[1]
   const lonOrigin = data?.restaurantCustomer?.location?.coordinates[0]
+
+  const businessAddress = data?.restaurantCustomer?.address || null
+
+  const { width, height } = Dimensions.get('window')
+  const ASPECT_RATIO = width / height
+
+  const latOriginNum = +latOrigin // make sure it's a number
+  const longitudeDelta =
+    kmWidth / (111.32 * Math.cos((latOriginNum * Math.PI) / 180))
+  const latitudeDelta = longitudeDelta / ASPECT_RATIO
+
   const initialRegion = {
     latitude: +latOrigin,
     longitude: +lonOrigin,
-    latitudeDelta: 0.4,
-    longitudeDelta: 0.5
+    latitudeDelta,
+    longitudeDelta
   }
 
   const {
@@ -143,12 +167,6 @@ function Checkout(props) {
     }
   })
 
-  console.log({
-    calcData,
-    originLong: data?.restaurantCustomer.location.coordinates[0],
-    originLat: data?.restaurantCustomer.location.coordinates[1]
-  })
-
   const restaurant = data?.restaurantCustomer
 
   useEffect(() => {
@@ -161,6 +179,12 @@ function Checkout(props) {
       )
     }
   }, [calcData])
+
+  useEffect(() => {
+    if (mapRef?.current) {
+      mapRef.current.animateToRegion(initialRegion, 1000) // 1000ms = 1 second animation
+    }
+  }, [initialRegion])
 
   const onModalOpen = (modalRef) => {
     const modal = modalRef.current
@@ -247,40 +271,9 @@ function Checkout(props) {
     }
   }, [tip, data])
 
-  // useEffect(() => {
-  //   let isSubscribed = true
-  //   ;(async () => {
-  //     if (data && !!data?.restaurantCustomer) {
-  //       const latOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[1]
-  //       )
-  //       const lonOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[0]
-  //       )
-  //       const latDest = Number(location.latitude)
-  //       const longDest = Number(location.longitude)
-  //       const distance = await calculateDistance(
-  //         latOrigin,
-  //         lonOrigin,
-  //         latDest,
-  //         longDest
-  //       )
-  //       const amount = Math.ceil(distance) * configuration.deliveryRate
-  //       isSubscribed &&
-  //         setDeliveryCharges(
-  //           amount >= configuration.minimumDeliveryFee
-  //             ? amount
-  //             : configuration.minimumDeliveryFee
-  //         )
-  //     }
-  //   })()
-  //   return () => {
-  //     isSubscribed = false
-  //   }
-  // }, [data, location])
-
   console.log({ deliveryCharges })
   console.log({ minimumDeliveryFee: configuration.minimumDeliveryFee })
+  console.log({ minimumOrder: minimumOrder })
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
@@ -354,12 +347,7 @@ function Checkout(props) {
       `${data?.restaurantCustomer.name} - ${data?.restaurantCustomer.address}`
     )
   }, [data])
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_CART)
-    }
-    Track()
-  }, [])
+
   useEffect(() => {
     if (cart && cartCount > 0) {
       if (
@@ -526,7 +514,7 @@ function Checkout(props) {
     total += +calculateTip()
     return parseFloat(total).toFixed(2)
   }
-  console.log({ location })
+
   function validateOrder() {
     if (!data?.restaurantCustomer.isAvailable || !isOpen()) {
       showAvailablityMessage()
@@ -539,11 +527,14 @@ function Checkout(props) {
       return false
     }
     if (calculatePrice(deliveryCharges, true) < minimumOrder) {
-      // FlashMessage({
-      //   // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
-      //   message: `(${t(minAmount)}) (${configuration.currencySymbol
-      //     } ${minimumOrder}) (${t(forYourOrder)})`
-      // })
+      // Alert.alert('Minimum order', 'Minimum Order')
+      FlashMessage({
+        // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
+        message: `${t('minAmount')} (${
+          configuration.currencySymbol
+        } ${minimumOrder}) ${t('forYourOrder')}`,
+        duration: 10000
+      })
       return false
     }
     if (!location.deliveryAddress) {
@@ -712,6 +703,24 @@ function Checkout(props) {
     }
   }
 
+  const showMinimumOrderMessage = () => {
+    if (calculatePrice(deliveryCharges, true) < minimumOrder) {
+      return (
+        <TextDefault
+          style={{
+            color: '#000',
+            fontSize: 12,
+            textAlign: 'center'
+          }}
+        >{`${t('minAmount')} (${minimumOrder - calculatePrice(0, false)} ${
+          isArabic ? configuration.currencySymbol : configuration.currency
+        }) ${t('forYourOrder')} (${minimumOrder} ${
+          isArabic ? configuration.currencySymbol : configuration.currency
+        }).`}</TextDefault>
+      )
+    }
+  }
+
   function loadginScreen() {
     return (
       <View style={styles(currentTheme).screenBackground}>
@@ -799,6 +808,18 @@ function Checkout(props) {
   let deliveryTime = Math.floor((orderDate - Date.now()) / 1000 / 60)
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
 
+  const handleNavigateAddress = () => {
+    if (profile.addresses && !profile.addresses.length) {
+      navigation.navigate('NewAddress', {
+        backScreen: 'Cart'
+      })
+    } else {
+      navigation.navigate('CartAddress', {
+        address: location
+      })
+    }
+  }
+
   return (
     <>
       <View style={styles(currentTheme).mainContainer}>
@@ -809,37 +830,189 @@ function Checkout(props) {
               style={[styles().flex]}
             >
               <View>
-                <View style={[styles(currentTheme).headerContainer]}>
-                  <View style={styles().mapView}>
-                    <MapView
-                      style={styles().flex}
-                      scrollEnabled={false}
-                      zoomEnabled={false}
-                      zoomControlEnabled={false}
-                      rotateEnabled={false}
-                      cacheEnabled={false}
-                      initialRegion={initialRegion}
-                      customMapStyle={customMapStyle}
-                      provider={PROVIDER_GOOGLE}
-                    ></MapView>
-                    <View style={styles().marker}>
-                      <RestaurantMarker />
+                {/* {isPickup ? (
+                  <View style={[styles(currentTheme).headerContainer]}>
+                    <View style={styles().mapView}>
+                      <MapView
+                        ref={mapRef}
+                        style={styles().flex}
+                        scrollEnabled={false}
+                        zoomEnabled={true}
+                        zoomControlEnabled={false}
+                        rotateEnabled={false}
+                        cacheEnabled={false}
+                        initialRegion={initialRegion}
+                        provider={PROVIDER_GOOGLE}
+                      />
+                      <View style={styles().marker}>
+                        <RestaurantMarker />
+                      </View>
                     </View>
+                    <View
+                      style={[
+                        styles(currentTheme).horizontalLine,
+                        styles().width100
+                      ]}
+                    />
                   </View>
-                  <View
-                    style={[
-                      styles(currentTheme).horizontalLine,
-                      styles().width100
-                    ]}
-                  />
-                </View>
+                ) : null} */}
                 <FulfillmentMode
                   theme={currentTheme}
                   setIsPickup={setIsPickup}
                   isPickup={isPickup}
                 />
                 <View style={[styles(currentTheme).headerContainer]}>
-                  <Location
+                  {/* user address */}
+                  <TouchableOpacity
+                    onPress={handleNavigateAddress}
+                    style={{
+                      backgroundColor: '#F5F5F5',
+                      marginVertical: 16,
+                      padding: 16,
+                      borderRadius: 12,
+                      shadowColor: '#000',
+                      shadowOpacity: 0.1,
+                      shadowRadius: 6,
+                      elevation: 3
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          alignItems: 'center',
+                          gap: 8
+                        }}
+                      >
+                        <EvilIcons
+                          name='location'
+                          size={scale(22)}
+                          color='#333'
+                        />
+                        <TextDefault
+                          bolder
+                          style={{ fontSize: 16, color: '#333' }}
+                        >
+                          {t('your_address')}
+                        </TextDefault>
+                        <TextDefault
+                          bolder
+                          style={{ fontSize: 12, color: '#000' }}
+                        >
+                          {`(${location.label})`}
+                        </TextDefault>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          gap: 5
+                        }}
+                      >
+                        <TextDefault
+                          bolder
+                          style={{ fontSize: 16, color: '#333' }}
+                        >
+                          {t('edit')}
+                        </TextDefault>
+
+                        <Feather
+                          name={isArabic ? 'chevron-left' : 'chevron-right'}
+                          size={20}
+                          color='#999'
+                        />
+                      </View>
+                    </View>
+                    <View style={{ marginTop: 8 }}>
+                      <TextDefault
+                        style={{
+                          fontSize: 14,
+                          color: '#666',
+                          textAlign: isArabic ? 'right' : 'left'
+                        }}
+                      >
+                        {translatedAddress}
+                      </TextDefault>
+                    </View>
+                  </TouchableOpacity>
+
+                  {/* business address */}
+                  <TouchableOpacity
+                    onPress={() =>
+                      openGoogleMaps({
+                        latitude: latOrigin,
+                        longitude: lonOrigin
+                      })
+                    }
+                    style={{
+                      backgroundColor: '#F5F5F5',
+                      marginVertical: 16,
+                      padding: 16,
+                      borderRadius: 12,
+                      shadowColor: '#000',
+                      shadowOpacity: 0.1,
+                      shadowRadius: 6,
+                      elevation: 3
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          alignItems: 'center',
+                          gap: 8
+                        }}
+                      >
+                        <EvilIcons
+                          name='location'
+                          size={scale(22)}
+                          color='#333'
+                        />
+                        <TextDefault
+                          bolder
+                          style={{ fontSize: 16, color: '#333' }}
+                        >
+                          {t('business_address')}
+                        </TextDefault>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          gap: 5
+                        }}
+                      >
+                        <Feather
+                          name={isArabic ? 'chevron-left' : 'chevron-right'}
+                          size={20}
+                          color='#999'
+                        />
+                      </View>
+                    </View>
+                    <View style={{ marginTop: 8 }}>
+                      {/* <TextDefault
+                        style={{
+                          fontSize: 14,
+                          color: '#666',
+                          textAlign: isArabic ? 'right' : 'left'
+                        }}
+                      >
+                        {businessAddress}
+                      </TextDefault> */}
+                    </View>
+                  </TouchableOpacity>
+
+                  {/* <Location
                     locationIcon={currentTheme.newIconColor}
                     locationLabel={currentTheme.newFontcolor}
                     location={currentTheme.newFontcolor}
@@ -847,7 +1020,7 @@ function Checkout(props) {
                     addresses={profile.addresses}
                     forwardIcon={true}
                     screenName={'checkout'}
-                  />
+                  /> */}
 
                   <View
                     style={[
@@ -855,13 +1028,12 @@ function Checkout(props) {
                       styles().width100
                     ]}
                   />
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       onModalOpen(modalRef)
                     }}
                     style={{
                       ...styles(currentTheme).deliveryTime
-                      // flexDirection: isArabic ? 'row-reverse' : 'row'
                     }}
                   >
                     <View style={[styles().iconContainer]}>
@@ -896,7 +1068,7 @@ function Checkout(props) {
                         />
                       </View>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <View>
                   <Instructions
@@ -914,13 +1086,14 @@ function Checkout(props) {
                         H5
                         bolder
                         textColor={currentTheme.fontNewColor}
+                        style={{ textAlign: isArabic ? 'right' : 'left' }}
                       >
                         {t('titlePayment')}
                       </TextDefault>
                       <View>
                         <PaymentModeOption
                           isArabic={isArabic}
-                          title={'Cash'}
+                          title={t('cod')}
                           icon={'dollar'}
                           selected={paymentMode === 'COD'}
                           theme={currentTheme}
@@ -1162,7 +1335,10 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {calculatePrice(0, false)} {configuration.currencySymbol}
+                      {calculatePrice(0, false)}{' '}
+                      {isArabic
+                        ? configuration.currencySymbol
+                        : configuration.currency}
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
@@ -1190,7 +1366,9 @@ function Checkout(props) {
                           bold
                         >
                           {deliveryCharges.toFixed(2)}{' '}
-                          {configuration.currencySymbol}
+                          {isArabic
+                            ? configuration.currencySymbol
+                            : configuration.currency}
                           {/* {deliveryCharges} */}
                         </TextDefault>
                       </View>
@@ -1218,7 +1396,10 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {taxCalculation()} {configuration.currencySymbol}
+                      {taxCalculation()}{' '}
+                      {isArabic
+                        ? configuration.currencySymbol
+                        : configuration.currency}
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
@@ -1277,6 +1458,15 @@ function Checkout(props) {
                       </View>
                     </View>
                   )} */}
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(255,0,0,0.5)',
+                      paddingVertical: 5,
+                      borderRadius: 3
+                    }}
+                  >
+                    {showMinimumOrderMessage()}
+                  </View>
                   <View style={styles(currentTheme).horizontalLine2} />
                   <View
                     style={{
@@ -1298,7 +1488,10 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {calculateTotal()} {configuration.currencySymbol}
+                      {calculateTotal()}{' '}
+                      {isArabic
+                        ? configuration.currencySymbol
+                        : configuration.currency}
                     </TextDefault>
                   </View>
                 </View>
@@ -1334,10 +1527,14 @@ function Checkout(props) {
                 </View>
               </View>
             </ScrollView>
+
             {!isModalOpen && (
               <View style={styles(currentTheme).buttonContainer}>
                 <TouchableOpacity
-                  disabled={loadingOrder}
+                  disabled={
+                    loadingOrder ||
+                    minimumOrder > calculatePrice(deliveryCharges, true)
+                  }
                   activeOpacity={0.7}
                   onPress={() => {
                     if (validateOrder()) {
@@ -1347,7 +1544,14 @@ function Checkout(props) {
                   }}
                   style={[
                     styles(currentTheme).button,
-                    { opacity: loadingOrder ? 0.5 : 1 }
+                    {
+                      opacity: loadingOrder ? 0.5 : 1,
+                      backgroundColor:
+                        loadingOrder ||
+                        minimumOrder > calculatePrice(deliveryCharges, true)
+                          ? 'grey'
+                          : currentTheme.main
+                    }
                   ]}
                 >
                   {!loadingOrder && (

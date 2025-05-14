@@ -7,7 +7,7 @@ const styles = (props = null) => {
       flex: 1,
       width: '95%',
       justifyContent: 'center',
-      paddingBottom: scale(8),
+      paddingBottom: scale(8)
     },
     locationIcon: {
       backgroundColor: props != null ? props.iconBackground : '#E5E7EB',
@@ -15,13 +15,13 @@ const styles = (props = null) => {
       height: scale(24),
       borderRadius: scale(24),
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     headerContainer: {
       width: '90%',
       paddingLeft: scale(5),
       marginTop: scale(10)
-    },
+    }
   })
 }
 export default styles

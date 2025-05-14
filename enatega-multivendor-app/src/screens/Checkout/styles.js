@@ -83,7 +83,7 @@ const styles = (props = null) =>
       paddingTop: 24,
       paddingBottom: 24,
       paddingLeft: 16,
-      paddingRight: 16,
+      paddingRight: 16
     },
     overlay: {
       backgroundColor: props !== null ? props.backgroundColor2 : 'transparent'
@@ -181,7 +181,7 @@ const styles = (props = null) =>
       gap: 5
     },
     button: {
-      backgroundColor: props !== null ? props.main : 'gray',
+      // backgroundColor: props !== null ? props.main : 'gray',
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
@@ -413,7 +413,7 @@ const styles = (props = null) =>
       color: props !== null ? props.newFontcolor : '#f9f9f9'
     },
     labelContainer: {
-      width: '80%',
+      width: '80%'
     },
     iconContainer: {
       flex: 1,
@@ -425,7 +425,7 @@ const styles = (props = null) =>
       height: scale(24),
       borderRadius: scale(24),
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     pickupButton: {
       backgroundColor: props !== null ? props.color3 : 'transparent',
