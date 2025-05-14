@@ -644,6 +644,6 @@ export const en = {
   nearest_to_you: 'Nearest to you',
   closed: 'Closed',
   your_address: 'Your address',
-  business_address: 'Business address',
+  business_address: 'Business Address',
   pickup_option: 'Pickup'
 }

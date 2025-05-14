@@ -88,6 +88,7 @@ function Checkout(props) {
   const navigation = useNavigation()
 
   const configuration = useContext(ConfigurationContext)
+
   const {
     isLoggedIn,
     profile,

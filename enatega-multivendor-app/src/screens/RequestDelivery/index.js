@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import useEnvVars from '../../../environment'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Polyline } from 'react-native-maps'
 import { LocationContext } from '../../context/Location'
 import { Controller, useForm } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker'
@@ -28,12 +28,15 @@ import { createDeliveryRequest } from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
 import Feather from '@expo/vector-icons/Feather'
+import MapViewDirections from 'react-native-maps-directions'
+import ConfigurationContext from '../../context/Configuration'
 
 const ORDERS = gql`
   ${myOrders}
 `
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
+  const mapRef = useRef()
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
   const isArabic = i18n.language === 'ar'
@@ -44,7 +47,18 @@ const RequestDelivery = () => {
   const [notes, setNotes] = useState('')
   const [disabled, setDisabled] = useState(false)
 
-  console.log({ addressInfo })
+  useEffect(() => {
+    console.log({ mapRef })
+    let timeout = setTimeout(() => {
+      if (mapRef?.current) {
+        mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
+          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          animated: true
+        })
+      }
+    }, 1000)
+    return () => clearTimeout(timeout)
+  }, [mapRef?.current])
 
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
@@ -165,12 +179,21 @@ const RequestDelivery = () => {
     <ScrollView keyboardShouldPersistTaps='handled'>
       <View>
         <MapView
+          ref={mapRef}
           style={{ height: 300 }}
           region={{
             latitude: pickupCoords?.latitude || location.latitude,
             longitude: pickupCoords?.longitude || location.longitude,
             latitudeDelta: 0.02,
             longitudeDelta: 0.02
+          }}
+          onMapReady={() => {
+            if (pickupCoords && dropOffCoords && mapRef.current) {
+              mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
+                edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+                animated: true
+              })
+            }
           }}
         >
           {pickupCoords && (
@@ -191,6 +214,25 @@ const RequestDelivery = () => {
               </Marker>
             </Fragment>
           )}
+          {/* {pickupCoords && dropOffCoords && (
+            <MapViewDirections
+              origin={pickupCoords}
+              destination={dropOffCoords}
+              apikey={googleApiKey}
+              strokeWidth={4}
+              strokeColor='#1E90FF'
+              optimizeWaypoints={true}
+              onReady={(result) => {
+                mapRef.current?.fitToCoordinates(result.coordinates, {
+                  edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+                  animated: true
+                })
+              }}
+              onError={(errorMessage) => {
+                console.warn('Route error:', errorMessage)
+              }}
+            />
+          )} */}
         </MapView>
       </View>
       <View style={styles.wrapper}>
