@@ -49,6 +49,7 @@ const {
   sendCustomerNotifications
 } = require('../../helpers/customerNotifications')
 const Review = require('../../models/review')
+const { isRestaurantOpenNow } = require('../../helpers/restaurantWorkingHours')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -790,6 +791,16 @@ module.exports = {
         )
       } catch (error) {
         console.log('topRatedVendors error', error)
+      }
+    },
+    async isRestaurantOpenNow(_, args) {
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        const isOpenNow = isRestaurantOpenNow(restaurant?.openingTimes)
+        console.log({ isOpenNow })
+        return isOpenNow
+      } catch (err) {
+        throw new Error(err)
       }
     }
   },

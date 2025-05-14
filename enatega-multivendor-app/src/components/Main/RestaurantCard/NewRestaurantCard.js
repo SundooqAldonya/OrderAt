@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import React, { useContext } from 'react'
-import { TouchableOpacity, View, Image, Text } from 'react-native'
+import { TouchableOpacity, View, Image, Text, Alert } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { alignment } from '../../../utils/alignment'
@@ -16,12 +16,13 @@ import {
 import { useTranslation } from 'react-i18next'
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { profile } from '../../../apollo/queries'
+import { isRestaurantOpenNow, profile } from '../../../apollo/queries'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../Spinner/Spinner'
 import truncate from '../../../utils/helperFun'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -46,9 +47,20 @@ function NewRestaurantCard(props) {
     refetchQueries: [{ query: PROFILE }]
   })
 
+  console.log({ _id: props._id })
+
+  const { data, loading, error } = useQuery(isRestaurantOpenNow, {
+    variables: {
+      id: props._id
+    }
+  })
+
+  console.log({ data })
+
+  const isOpenNow = data?.isRestaurantOpenNow
+
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
-    // alert("favv list updated")
   }
 
   const handleAddToFavorites = () => {
@@ -75,6 +87,25 @@ function NewRestaurantCard(props) {
             source={{ uri: props.image }}
             style={styles().restaurantImage}
           />
+          {!isOpenNow ? (
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 5
+              }}
+            >
+              <TextDefault bolder style={{ fontSize: 18 }}>
+                {t('closed')}
+              </TextDefault>
+              <MaterialIcons name='info-outline' size={24} color='#fff' />
+            </View>
+          ) : null}
           {/* AddToFavorites */}
           <View style={styles().overlayContainer}>
             <TouchableOpacity
@@ -123,41 +154,41 @@ function NewRestaurantCard(props) {
             {truncate(props.name, 15)}
           </TextDefault>
 
-          {props.reviewAverage > 0 ? (
-            <View
-              style={{
-                ...styles().aboutRestaurant,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
-              }}
-            >
-              <FontAwesome5
-                name='star'
-                size={18}
-                color={currentTheme.newFontcolor}
-              />
+          {/* {props.reviewAverage ? ( */}
+          <View
+            style={{
+              ...styles().aboutRestaurant,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
+            <FontAwesome5
+              name='star'
+              size={18}
+              color={currentTheme.newFontcolor}
+            />
 
-              <TextDefault
-                textColor={currentTheme.fontThirdColor}
-                style={styles().restaurantRatingContainer}
-                bolder
-                H4
-              >
-                {props.reviewAverage}
-              </TextDefault>
-              <TextDefault
-                textColor={currentTheme.fontNewColor}
-                style={[
-                  styles().restaurantRatingContainer,
-                  styles().restaurantTotalRating
-                ]}
-                H5
-              >
-                ({props.reviewCount})
-              </TextDefault>
-            </View>
-          ) : (
+            <TextDefault
+              textColor={currentTheme.fontThirdColor}
+              style={styles().restaurantRatingContainer}
+              bolder
+              H4
+            >
+              {props.reviewAverage}
+            </TextDefault>
+            <TextDefault
+              textColor={currentTheme.fontNewColor}
+              style={[
+                styles().restaurantRatingContainer,
+                styles().restaurantTotalRating
+              ]}
+              H5
+            >
+              ({props.reviewCount})
+            </TextDefault>
+          </View>
+          {/* ) : (
             <></>
-          )}
+          )} */}
         </View>
         {/* tags */}
         <TextDefault
@@ -202,7 +233,7 @@ function NewRestaurantCard(props) {
             </TextDefault>
           </View>
 
-          {props.tax > 0 ? (
+          {/* {props.tax > 0 ? (
             <View style={styles().deliveryTime}>
               <MaterialCommunityIcons
                 name='bike'
@@ -221,7 +252,7 @@ function NewRestaurantCard(props) {
             </View>
           ) : (
             <></>
-          )}
+          )} */}
         </View>
       </View>
     </TouchableOpacity>

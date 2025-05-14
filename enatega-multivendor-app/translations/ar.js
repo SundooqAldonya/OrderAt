@@ -630,5 +630,6 @@ export const ar = {
   review_added: 'تم التقييم',
   categories: 'التصنيفات',
   highest_rated: 'الأعلى تصنيفا',
-  nearest_to_you: 'الأقرب إليك'
+  nearest_to_you: 'الأقرب إليك',
+  closed: 'مغلق'
 }

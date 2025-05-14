@@ -15,6 +15,7 @@ import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
 import { TopBrands } from '../TopBrands'
+import { useQuery } from '@apollo/client'
 
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()

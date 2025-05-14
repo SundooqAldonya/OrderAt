@@ -25,15 +25,14 @@ const styles = (props = null) =>
       // position: 'relative',
       // zIndex: 1,
       alignItems: 'center',
-      width: '30%'
-      // height: '60%'
+      width: '30%',
+      // height: '60%',
+      overflow: 'hidden',
+      borderRadius: scale(8)
     },
     img: {
       width: '100%',
-      height: '100%',
-
-      borderTopLeftRadius: scale(8),
-      borderTopRightRadius: scale(8)
+      height: '100%'
     },
     // overlayRestaurantContainer: {
     //   position: 'absolute',

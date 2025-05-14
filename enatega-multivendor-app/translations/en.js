@@ -641,5 +641,6 @@ export const en = {
   review_added: 'Review is added',
   categories: 'Categories',
   highest_rated: 'Highest rated',
-  nearest_to_you: 'Nearest to you'
+  nearest_to_you: 'Nearest to you',
+  closed: 'Closed'
 }

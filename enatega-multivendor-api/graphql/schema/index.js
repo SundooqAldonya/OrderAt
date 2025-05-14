@@ -1365,6 +1365,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
     nearestRestaurants(
       longitude: Float!

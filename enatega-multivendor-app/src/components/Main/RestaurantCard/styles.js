@@ -19,6 +19,7 @@ const styles = (props = null) =>
       borderRadius: 16,
       width: scale(220),
       height: '70%',
+      overflow: 'hidden',
       // height: '100%',
       ...alignment.MRsmall
     },
@@ -102,7 +103,7 @@ const styles = (props = null) =>
       borderTopLeftRadius: scale(16),
       borderTopRightRadius: scale(16),
       borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
+      borderBottomRightRadius: 0
       // borderRadius: scale(16)
     },
     imageContainer: {

@@ -1289,7 +1289,8 @@ export const highestRatingRestaurant = gql`
           createdAt
         }
       }
-
+      reviewCount
+      reviewAverage
       options {
         _id
         title
@@ -1355,7 +1356,8 @@ export const nearestRestaurants = gql`
           createdAt
         }
       }
-
+      reviewCount
+      reviewAverage
       options {
         _id
         title
@@ -1385,5 +1387,10 @@ export const nearestRestaurants = gql`
         }
       }
     }
+  }
+`
+export const isRestaurantOpenNow = gql`
+  query IsRestaurantOpenNow($id: String!) {
+    isRestaurantOpenNow(id: $id)
   }
 `

@@ -175,6 +175,7 @@ function Restaurant(props) {
     }
     Track()
   }, [])
+
   useEffect(() => {
     if (
       data &&
@@ -183,17 +184,17 @@ function Restaurant(props) {
     ) {
       Alert.alert(
         '',
-        'Restaurant Closed at the moment',
+        t('restaurantClosed'),
         [
           {
-            text: 'Go back to restaurants',
+            text: t('backToRestaurants'),
             onPress: () => {
               navigation.goBack()
             },
             style: 'cancel'
           },
           {
-            text: 'See Menu',
+            text: t('seeMenu'),
             onPress: () => console.log('see menu')
           }
         ],
@@ -237,6 +238,7 @@ function Restaurant(props) {
       return false
     }
   }
+
   const onPressItem = async (food) => {
     if (!data?.restaurantCustomer.isAvailable || !isOpen()) {
       Alert.alert(

@@ -16,12 +16,13 @@ import {
 import { useTranslation } from 'react-i18next'
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { profile } from '../../../apollo/queries'
+import { isRestaurantOpenNow, profile } from '../../../apollo/queries'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../Spinner/Spinner'
 import truncate from '../../../utils/helperFun'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -45,6 +46,16 @@ function PopulerRestaurantCard(props) {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
   })
+
+  const { data, loading, error } = useQuery(isRestaurantOpenNow, {
+    variables: {
+      id: props._id
+    }
+  })
+
+  console.log({ data })
+
+  const isOpenNow = data?.isRestaurantOpenNow
 
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
@@ -75,6 +86,25 @@ function PopulerRestaurantCard(props) {
             source={{ uri: props.image }}
             style={styles().restaurantImage}
           />
+          {!isOpenNow ? (
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 5
+              }}
+            >
+              <TextDefault bolder style={{ fontSize: 18 }}>
+                {t('closed')}
+              </TextDefault>
+              <MaterialIcons name='info-outline' size={24} color='#fff' />
+            </View>
+          ) : null}
         </View>
       </View>
 

@@ -55,7 +55,9 @@ function Item(props) {
     onCompleted,
     refetchQueries: [PROFILE, FAVOURITERESTAURANTS]
   })
+
   const { isAvailable, openingTimes } = item
+
   const isOpen = () => {
     const date = new Date()
     const day = date.getDay()
@@ -97,6 +99,25 @@ function Item(props) {
               source={{ uri: item.image }}
               style={styles().img}
             />
+            {!isAvailable || !isOpen() ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 5
+                }}
+              >
+                <TextDefault bolder style={{ fontSize: 18 }}>
+                  {t('closed')}
+                </TextDefault>
+                <MaterialIcons name='info-outline' size={24} color='#fff' />
+              </View>
+            ) : null}
           </View>
           <View style={{ ...styles().descriptionContainer }}>
             <View
