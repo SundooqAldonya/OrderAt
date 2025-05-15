@@ -99,6 +99,8 @@ function Restaurant(props) {
   const [search, setSearch] = useState('')
   const [filterData, setFilterData] = useState([])
   const [showSearchResults, setShowSearchResults] = useState(false)
+  const [businessCategories, setBusinessCategories] = useState(null)
+  const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
   const {
     restaurant: restaurantCart,
     setCartRestaurant,
@@ -111,7 +113,20 @@ function Restaurant(props) {
   const { data, refetch, networkStatus, loading, error } = useRestaurant(
     propsData._id
   )
-  const restaurant = data?.restaurantCustomer
+  const restaurant = data?.restaurantCustomer || null
+
+  useEffect(() => {
+    if (data?.restaurantCustomer?.businessCategories?.length) {
+      setBusinessCategories(data?.restaurantCustomer?.businessCategories)
+      const string = data?.restaurantCustomer?.businessCategories
+        ?.map((item) => item.name)
+        .join(', ')
+      setBusinessCategoriesNames(string)
+    }
+  }, [data])
+  console.log({ businessCategories })
+  console.log({ businessCategoriesNames })
+
   const { data: popularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId }
   })
@@ -490,7 +505,7 @@ function Restaurant(props) {
           restaurantName={propsData?.name ?? data?.restaurantCustomer?.name}
           restaurantId={propsData?._id}
           restaurantImage={propsData?.image ?? data?.restaurantCustomer?.image}
-          restaurant={null}
+          restaurant={data?.restaurantCustomer ? data.restaurantCustomer : null}
           topaBarData={[]}
           loading={loading}
           minimumOrder={
@@ -505,6 +520,11 @@ function Restaurant(props) {
           searchHandler={searchHandler}
           searchPopupHandler={searchPopupHandler}
           translationY={translationY}
+          businessCategories={
+            data?.restaurantCustomer
+              ? data.restaurantCustomer.businessCategories
+              : null
+          }
         />
         <View
           style={[
@@ -569,7 +589,7 @@ function Restaurant(props) {
           <Animated.View style={styles(currentTheme).flex}>
             <View
               style={{
-                height: height * 0.39,
+                height: height * 0.44,
                 borderBottomWidth: 1,
                 borderBlockColor: colors.lightGray,
                 borderRadius: 16

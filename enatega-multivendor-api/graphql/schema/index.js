@@ -164,7 +164,7 @@ const typeDefs = gql`
     phone: String
     city: CityArea
     createdAt: String
-    businessCategories: [BusinessCategory!]
+    businessCategories: [BusinessCategory]
   }
 
   type RestaurantCustomer {
@@ -208,7 +208,9 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     createdAt: String
+    businessCategories: [BusinessCategory]
   }
+
   type CategoryCustomer {
     _id: ID!
     title: String!

@@ -645,5 +645,6 @@ export const en = {
   closed: 'Closed',
   your_address: 'Your address',
   business_address: 'Business Address',
-  pickup_option: 'Pickup'
+  pickup_option: 'Pickup',
+  new: 'New'
 }

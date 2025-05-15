@@ -310,7 +310,9 @@ module.exports = {
           throw new Error('Invalid request, restaurant id not provided')
         }
 
-        let restaurant = await Restaurant.findOne(filters).lean()
+        let restaurant = await Restaurant.findOne(filters)
+          .lean()
+          .populate('businessCategories')
         if (!restaurant) throw new Error('Restaurant not found')
 
         // Fetch related data
@@ -447,7 +449,8 @@ module.exports = {
             }
           }
         ]
-      })
+      }).populate('businessCategories')
+      // console.log({ restaurants: restaurants?.businessCategories })
       return restaurants.map(transformMinimalRestaurantData)
     },
     mostOrderedRestaurants: async (_, args, { req }) => {
@@ -640,7 +643,7 @@ module.exports = {
           return food
         })
         console.log({ foods })
-        console.log({ result: result[0]._id })
+        // console.log({ result: result[0]._id })
         // return result.map(({ _id: { id }, count }) => ({ id, count }))
         return foods
       } catch (error) {
@@ -655,12 +658,14 @@ module.exports = {
         const restaurants = await Restaurant.find({
           reviewCount: { $gt: 0 },
           deliveryBounds: {
-            $near: {
-              $geometry: { type: 'Point', coordinates: [longitude, latitude] },
-              $maxDistance: 10000
+            $geoIntersects: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] }
+              // $maxDistance: 5000
             }
           }
-        }).sort({ reviewAverage: -1 })
+        })
+          .populate('businessCategories')
+          .sort({ reviewAverage: -1 })
         console.log({ highestRatingRestaurant: restaurants })
         return restaurants
       } catch (err) {
@@ -673,13 +678,13 @@ module.exports = {
         const { longitude, latitude } = args
 
         const restaurants = await Restaurant.find({
-          location: {
-            $near: {
-              $geometry: { type: 'Point', coordinates: [longitude, latitude] },
-              $maxDistance: 5000
+          deliveryBounds: {
+            $geoIntersects: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] }
+              // $maxDistance: 5000
             }
           }
-        })
+        }).populate('businessCategories')
         console.log({ nearestRestaurants: restaurants })
         return restaurants
       } catch (err) {

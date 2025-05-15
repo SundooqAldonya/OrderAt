@@ -23,6 +23,8 @@ import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../Spinner/Spinner'
 import truncate from '../../../utils/helperFun'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { Chip } from 'react-native-paper'
+import { colors } from '../../../utils/colors'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -41,13 +43,15 @@ function NewRestaurantCard(props) {
   const currentTheme = theme[themeContext.ThemeValue]
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props._id) : false
-
+  const businessCategoriesNames = props.businessCategories
+    ?.map((item) => item.name)
+    .join('، ')
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
   })
 
-  console.log({ _id: props._id })
+  console.log({ businessCategories: props.businessCategories })
 
   const { data, loading, error } = useQuery(isRestaurantOpenNow, {
     variables: {
@@ -135,7 +139,8 @@ function NewRestaurantCard(props) {
 
       <View
         style={{
-          ...styles().descriptionContainer
+          ...styles().descriptionContainer,
+          gap: props.businessCategories?.length ? 10 : 30
         }}
       >
         <View
@@ -154,27 +159,39 @@ function NewRestaurantCard(props) {
             {truncate(props.name, 15)}
           </TextDefault>
 
-          {/* {props.reviewAverage ? ( */}
-          <View
-            style={{
-              ...styles().aboutRestaurant,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
-            }}
-          >
-            <FontAwesome5
-              name='star'
-              size={18}
-              color={currentTheme.newFontcolor}
-            />
-
-            <TextDefault
-              textColor={currentTheme.fontThirdColor}
-              style={styles().restaurantRatingContainer}
-              bolder
-              H4
+          {props.reviewCount >= 5 ? (
+            <View
+              style={{
+                ...styles().aboutRestaurant,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
             >
-              {props.reviewAverage}
-            </TextDefault>
+              <FontAwesome5
+                name='star'
+                size={11}
+                color={currentTheme.newFontcolor}
+              />
+
+              <TextDefault
+                textColor={currentTheme.fontThirdColor}
+                style={{ fontSize: 12 }}
+                bolder
+                H4
+              >
+                {props.reviewAverage}
+              </TextDefault>
+              <TextDefault
+                textColor={currentTheme.fontNewColor}
+                style={[
+                  styles().restaurantRatingContainer,
+                  styles().restaurantTotalRating
+                ]}
+                H5
+              >
+                ({props.reviewCount})
+              </TextDefault>
+            </View>
+          ) : (
             <TextDefault
               textColor={currentTheme.fontNewColor}
               style={[
@@ -183,23 +200,32 @@ function NewRestaurantCard(props) {
               ]}
               H5
             >
-              ({props.reviewCount})
+              ({t('new')})
             </TextDefault>
-          </View>
-          {/* ) : (
-            <></>
-          )} */}
+          )}
         </View>
         {/* tags */}
-        <TextDefault
-          textColor={currentTheme.fontNewColor}
-          numberOfLines={1}
-          bold
-          Normal
-          style={styles().offerCategoty}
-        >
-          {props?.tags?.join(',')}
-        </TextDefault>
+        {props.businessCategories?.length ? (
+          <View>
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {businessCategoriesNames.substring(0, 20)}...
+            </TextDefault>
+          </View>
+        ) : null}
+        {/* {props?.tags?.length ? (
+          <TextDefault
+            textColor={currentTheme.fontNewColor}
+            numberOfLines={1}
+            bold
+            Normal
+            style={styles().offerCategoty}
+          >
+            {props?.tags?.join(',')}
+          </TextDefault>
+        ) : null} */}
+
         <View
           style={{
             ...styles().deliveryInfo,

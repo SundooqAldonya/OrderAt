@@ -46,7 +46,7 @@ const foods = async foodIds => {
 
 const user = async userId => {
   try {
-    const user = await User.findById(userId.toString())
+    const user = await User.findById(userId?.toString())
     return {
       ...user?._doc,
       _id: user?.id

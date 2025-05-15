@@ -117,7 +117,8 @@ function Main(props) {
     variables: {
       longitude: location.longitude,
       latitude: location.latitude
-    }
+    },
+    fetchPolicy: 'no-cache'
   })
 
   const {
@@ -128,7 +129,8 @@ function Main(props) {
     variables: {
       longitude: location.longitude,
       latitude: location.latitude
-    }
+    },
+    fetchPolicy: 'no-cache'
   })
 
   const [selectedType, setSelectedType] = useState('restaurant')
@@ -140,6 +142,9 @@ function Main(props) {
   })
   const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants
+  // console.log({
+  //   recentOrderRestaurantsVar: recentOrderRestaurantsVar[1].businessCategories
+  // })
   const newheaderColor = currentTheme.newheaderColor
   const highestRatingRestaurantData =
     dataHighRating?.highestRatingRestaurant || null

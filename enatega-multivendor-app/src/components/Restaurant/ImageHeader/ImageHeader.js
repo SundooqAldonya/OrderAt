@@ -51,6 +51,7 @@ import Animated, {
   useAnimatedStyle
 } from 'react-native-reanimated'
 import { colors } from '../../../utils/colors'
+import { Chip } from 'react-native-paper'
 
 const AnimatedText = Animated.createAnimatedComponent(Text)
 const AnimatedBorderless = Animated.createAnimatedComponent(BorderlessButton)
@@ -71,6 +72,9 @@ const PROFILE = gql`
 
 function ImageTextCenterHeader(props, ref) {
   const { translationY, isArabic } = props
+  console.log({ props: JSON.stringify(props, 2) })
+  console.log({ restaurant: props.restaurant })
+
   const flatListRef = ref
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -82,6 +86,12 @@ function ImageTextCenterHeader(props, ref) {
   const { profile } = useContext(UserContext)
   const configuration = useContext(ConfigurationContext)
   const heart = profile ? profile.favourite.includes(props.restaurantId) : false
+  const businessCategoriesNames = props.restaurant?.businessCategories
+    ?.map((item) => item.name)
+    .join('، ')
+
+  console.log({ businessCategoriesNames })
+
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
@@ -204,12 +214,7 @@ function ImageTextCenterHeader(props, ref) {
   return (
     // <Animated.View style={[styles(currentTheme).mainContainer, headerHeight]}>
     <Animated.View style={[styles(currentTheme).mainContainer]}>
-      <Animated.View
-        style={[
-          headerHeightWithoutTopbar
-          // { backgroundColor: 'red', paddingBottom: 121 }
-        ]}
-      >
+      <Animated.View style={[headerHeightWithoutTopbar]}>
         <Animated.View style={[styles().overlayContainer]}>
           {/* top bar */}
           <View style={[styles().fixedViewNavigation]}>
@@ -492,17 +497,17 @@ function ImageTextCenterHeader(props, ref) {
                         fontSize: scale(16)
                       }}
                     >
-                      {aboutObject.average}
+                      {props.restaurant?.reviewAverage}
                     </TextDefault>
                     <TextDefault
                       textColor={currentTheme.fontNewColor}
                       style={{
                         fontWeight: '400',
                         fontSize: scale(14),
-                        marginLeft: scale(5)
+                        marginHorizontal: scale(5)
                       }}
                     >
-                      ({aboutObject.total})
+                      ({props.restaurant?.reviewCount})
                     </TextDefault>
                   </AnimatedTouchable>
                   <AnimatedTouchable
@@ -552,6 +557,17 @@ function ImageTextCenterHeader(props, ref) {
                     {aboutObject.deliveryTime} {t('Min')}
                   </TextDefault>
                 </View>
+
+                {props.restaurant?.businessCategories ? (
+                  <View style={{ marginTop: 10 }}>
+                    <Chip
+                      // icon='information'
+                      onPress={() => console.log('Pressed')}
+                    >
+                      {businessCategoriesNames}
+                    </Chip>
+                  </View>
+                ) : null}
               </View>
             </Animated.View>
           )}

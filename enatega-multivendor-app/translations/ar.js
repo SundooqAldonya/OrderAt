@@ -634,5 +634,6 @@ export const ar = {
   closed: 'مغلق',
   your_address: 'عنوانك',
   business_address: 'عنوان المحل',
-  pickup_option: 'تسلم'
+  pickup_option: 'تسلم',
+  new: 'جديد'
 }

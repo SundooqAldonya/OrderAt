@@ -280,6 +280,11 @@ export const restaurantPreviewFragment = gql`
     tags
     reviewCount
     reviewAverage
+    businessCategories {
+      _id
+      name
+      isActive
+    }
   }
 `
 export const profile = `
@@ -829,6 +834,8 @@ export const restaurantCustomer = `query RestaurantCustomer($id:String,$slug:Str
           createdAt
         }
       }
+      reviewAverage
+      reviewCount
       categories{
         _id
         title
@@ -873,6 +880,12 @@ export const restaurantCustomer = `query RestaurantCustomer($id:String,$slug:Str
           startTime
           endTime
         }
+      }
+      businessCategories {
+        _id
+        name
+        description
+        isActive
       }
     }
   }`
@@ -1319,6 +1332,11 @@ export const highestRatingRestaurant = gql`
           endTime
         }
       }
+      businessCategories {
+        _id
+        name
+        isActive
+      }
     }
   }
 `
@@ -1385,6 +1403,11 @@ export const nearestRestaurants = gql`
           startTime
           endTime
         }
+      }
+      businessCategories {
+        _id
+        name
+        isActive
       }
     }
   }
