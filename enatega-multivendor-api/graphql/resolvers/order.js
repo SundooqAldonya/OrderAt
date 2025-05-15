@@ -51,6 +51,9 @@ const Area = require('../../models/area')
 const DeliveryPrice = require('../../models/DeliveryPrice')
 const DeliveryZone = require('../../models/deliveryZone')
 const { acceptOrder } = require('../../helpers/restaurantHelpers')
+const {
+  normalizeAndValidatePhoneNumber
+} = require('../../helpers/normalizePhone')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -383,7 +386,7 @@ module.exports = {
   },
   Mutation: {
     async newCheckoutPlaceOrder(_, args) {
-      console.log({ args })
+      console.log('newCheckoutPlaceOrder', { args })
       try {
         const {
           phone,
@@ -395,15 +398,19 @@ module.exports = {
           name
         } = args.input
 
-        const phoneNumber = phone.replace('+2', '')
-        let user = await User.findOne({ phone: `+2${phoneNumber}` })
-        if (user && name) {
+        // const phoneNumber = phone.replace('+2', '')
+        // console.log({ phoneNumber: normalizeAndValidatePhoneNumber(phone) })
+
+        let user = await User.findOne({
+          phone: normalizeAndValidatePhoneNumber(phone)
+        })
+        // console.log({ user })
+        if (user && !user.name) {
           user.name = name
           await user.save()
         }
-        console.log({ user })
         const area = await Area.findById(areaId).populate('location')
-        console.log({ areaId, area })
+        // console.log({ areaId, area })
         let address = {}
         address['deliveryAddress'] = area.address
         address['details'] = addressDetails ? addressDetails : area.address
@@ -421,11 +428,11 @@ module.exports = {
         if (!user) {
           user = new User({
             name: name ? name : 'N/A',
-            phone: `+2${phoneNumber}`,
+            phone: normalizeAndValidatePhoneNumber(phone),
             governate: 'N/A',
             address_free_text: address.details,
             addresses: address || [],
-            email: `+2${phoneNumber}`,
+            email: normalizeAndValidatePhoneNumber(phone),
             userType: 'default',
             emailIsVerified: true,
             phoneIsVerified: false,
@@ -435,7 +442,7 @@ module.exports = {
           await user.save()
         }
 
-        console.log({ address })
+        // console.log({ address })
 
         const restaurant = await Restaurant.findById(restaurantId)
         // Generate dynamic orderId
@@ -465,7 +472,7 @@ module.exports = {
           longDest
         )
 
-        console.log({ distance })
+        // console.log({ distance })
 
         let configuration = await Configuration.findOne()
         const costType = configuration.costType
@@ -536,7 +543,7 @@ module.exports = {
             orderAmount + deliveryCharges + taxationAmount + tipping
         }
 
-        console.log({ orderAmount })
+        // console.log({ orderAmount })
 
         const order = new Order({
           orderId: newOrderId,
