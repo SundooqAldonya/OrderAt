@@ -16,6 +16,8 @@ const normalizeAndValidatePhoneNumber = phone => {
   let normalized
   if (containsArabicDigits(phone)) {
     normalized = phone.replace(/[٠-٩]/g, d => arabicToEnglishDigits[d])
+  } else {
+    normalized = phone
   }
 
   console.log({ normalizedBefore: normalized })

@@ -71,11 +71,13 @@ const styles = (props = null) =>
     phoneNumber: {
       width: '70%'
     },
-    phoneField:{
-      flexDirection: 'row', paddingTop: 3, alignItems:'center' 
+    phoneField: {
+      flexDirection: 'row',
+      paddingTop: 3,
+      alignItems: 'center'
     },
-    phoneNo:{
-      color: props !== null ? props.newFontcolor : '#f5f5f5f',
+    phoneNo: {
+      color: props !== null ? props.newFontcolor : '#f5f5f5f'
     },
     error: {
       marginTop: 3

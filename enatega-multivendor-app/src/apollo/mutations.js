@@ -417,3 +417,17 @@ export const createDeliveryRequest = gql`
     }
   }
 `
+export const updatePhone = gql`
+  mutation UpdatePhone($phone: String!) {
+    updatePhone(phone: $phone) {
+      message
+    }
+  }
+`
+export const validatePhone = gql`
+  mutation ValidatePhone($phone: String!) {
+    validatePhone(phone: $phone) {
+      message
+    }
+  }
+`

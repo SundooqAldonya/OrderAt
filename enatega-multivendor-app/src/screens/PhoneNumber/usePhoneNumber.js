@@ -37,11 +37,11 @@ const useRegister = () => {
   const [country, setCountry] = useState({
     callingCode: [],
     cca2: '',
-    currency: ['PKR'],
+    currency: ['EGP'],
     flag: '',
-    name: 'Pakistan',
-    region: 'Asia',
-    subregion: 'Southern Asia'
+    name: 'Egypt',
+    region: 'North Africa',
+    subregion: 'North Africa'
   })
 
   const fetchIpAddress = async () => {
@@ -98,7 +98,7 @@ const useRegister = () => {
     initializeCountry()
   }, [count])
 
-  const onCountrySelect = country => {
+  const onCountrySelect = (country) => {
     setCountryCode(country.cca2)
     setCountry(country)
   }

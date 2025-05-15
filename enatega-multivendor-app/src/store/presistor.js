@@ -1,16 +1,19 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import requestDeliveryReducer from './requestDeliverySlice.js'
+import requestDeliveryReducer from './requestDeliverySlice'
+import phoneReducer from './phoneSlice'
 
 const rootReducer = combineReducers({
-  requestDelivery: requestDeliveryReducer
+  requestDelivery: requestDeliveryReducer,
+  phone: phoneReducer
 })
 
 const persistConfig = {
   key: 'root', // Root key for AsyncStorage
   storage: AsyncStorage, // Use AsyncStorage
-  whitelist: ['requestDelivery'] // Reducers to persist
+  whitelist: ['requestDelivery'], // Reducers to persist
+  blacklist: ['phone']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

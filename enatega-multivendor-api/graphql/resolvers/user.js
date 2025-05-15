@@ -15,6 +15,10 @@ const { sendOtpToPhone } = require('../../helpers/sms')
 const { sendUserInfoToZapier } = require('../../helpers/api')
 const Configuration = require('../../models/configuration')
 const Area = require('../../models/area')
+const {
+  normalizeAndValidatePhoneNumber
+} = require('../../helpers/normalizePhone')
+const axios = require('axios')
 
 module.exports = {
   Query: {
@@ -529,6 +533,44 @@ module.exports = {
         )
       }
     },
+
+    async updatePhone(_, args, { req }) {
+      console.log('updatePhone', { args })
+      try {
+        const user = await User.findById(req.userId)
+        if (!user) throw new Error('User does not exist')
+        user.phone = normalizeAndValidatePhoneNumber(args.phone)
+        await user.save()
+        return { message: 'phone_updated' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async validatePhone(_, args, { req }) {
+      console.log('validatePhone', { args })
+      try {
+        axios.defaults.headers = {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Accept-Language': 'en-US'
+        }
+        const phoneNumber = normalizeAndValidatePhoneNumber(
+          args.phone
+        )?.replace('+', '')
+        console.log({ phoneNumber })
+        const url = `https://smssmartegypt.com/sms/api/?username=w8pRT869&password=Oqo48lklp&sendername=Sms plus&mobiles=${phoneNumber}&message=أوردرات: رمز التحقق الخاص بك هو 123456`
+        const res = await axios.post(url).catch(err => {
+          console.log({ err })
+          throw new Error('SMS integration went wrong!')
+        })
+        console.log({ res: res.data })
+        return { message: 'otp_message_sent' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     updateNotificationStatus: async (_, args, { req, res }) => {
       console.log('updateNotificationStatus')
       try {

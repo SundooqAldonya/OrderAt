@@ -1709,6 +1709,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    validatePhone(phone: String!): Message
+    updatePhone(phone: String!): Message
     changeActiveBusinessCategory(id: String!): Message
     createBusinessCategory(input: BusinessCategoryInput!): Message
     editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message

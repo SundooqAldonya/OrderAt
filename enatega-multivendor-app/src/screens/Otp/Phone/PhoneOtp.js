@@ -33,13 +33,17 @@ function PhoneOtp(props) {
     currentTheme,
     themeContext
   } = usePhoneOtp()
+
   const [code, setCode] = useState('')
+
   useEffect(() => {
     if (otp) {
       setCode(otp)
     }
   }, [otp])
+
   const { t } = useTranslation()
+
   useLayoutEffect(() => {
     props.navigation.setOptions(
       screenOptions({

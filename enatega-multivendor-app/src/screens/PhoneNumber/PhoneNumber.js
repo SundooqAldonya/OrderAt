@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -21,11 +21,16 @@ import PhoneInput from 'react-native-phone-number-input'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../utils/scaling'
+import { useMutation } from '@apollo/client'
+import { updatePhone, validatePhone } from '../../apollo/mutations'
+import { useDispatch, useSelector } from 'react-redux'
+import { setPhone } from '../../store/phoneSlice'
 
 function PhoneNumber(props) {
+  const dispatch = useDispatch()
   const {
-    phone,
-    setPhone,
+    // phone,
+    // setPhone,
     phoneError,
     country,
     countryCode,
@@ -35,7 +40,21 @@ function PhoneNumber(props) {
     loading
   } = usePhoneNumber()
 
-  const { t } = useTranslation()
+  // const [phone, setPhone] = useState('')
+  const phone = useSelector((state) => state.phone.phone)
+  console.log({ phone })
+
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+
+  const [mutate] = useMutation(validatePhone, {
+    onCompleted: (res) => {
+      console.log({ res })
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
 
   useLayoutEffect(() => {
     props.navigation.setOptions(
@@ -47,28 +66,44 @@ function PhoneNumber(props) {
       })
     )
   }, [props.navigation])
-  const phoneInput = useRef < PhoneInput > null
+
+  const handleChange = (text) => {
+    dispatch(setPhone({ phone: text }))
+  }
+
+  const handleSubmit = () => {
+    mutate({
+      variables: {
+        phone: `+${country.callingCode[0]}${phone}`
+      }
+    })
+  }
 
   return (
     <SafeAreaView
       edges={['bottom', 'left', 'right']}
-      style={[
-        styles().flex,
-        { backgroundColor: currentTheme.themeBackground }
-      ]}>
+      style={[styles().flex, { backgroundColor: currentTheme.themeBackground }]}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles().flex}>
+        style={styles().flex}
+      >
         <ScrollView
           style={styles().flex}
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
-          alwaysBounceVertical={false}>
+          alwaysBounceVertical={false}
+        >
           <View style={styles(currentTheme).mainContainer}>
             <View style={styles().subContainer}>
-              <View style={styles().logoContainer}>
+              <View
+                style={{
+                  ...styles().logoContainer,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
                 <Ionicons
-                  name="phone-portrait-outline"
+                  name='phone-portrait-outline'
                   size={30}
                   color={currentTheme.newIconColor}
                 />
@@ -80,8 +115,10 @@ function PhoneNumber(props) {
                   textColor={currentTheme.newFontcolor}
                   style={{
                     ...alignment.MTlarge,
-                    ...alignment.MBmedium
-                  }}>
+                    ...alignment.MBmedium,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
                   {t('yourPhoneNumber')}
                 </TextDefault>
                 <TextDefault
@@ -89,26 +126,36 @@ function PhoneNumber(props) {
                   bold
                   textColor={currentTheme.fontSecondColor}
                   style={{
-                    paddingBottom: scale(5)
-                  }}>
+                    paddingBottom: scale(5),
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
                   {t('secureAccountWithPhone')}
                 </TextDefault>
               </View>
               <View style={styles().form}>
-                <View style={styles().number}>
+                <View
+                  style={{
+                    ...styles().number
+                    // flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }}
+                >
                   <View
                     style={[
                       styles(currentTheme).textField,
                       styles().countryCode
-                    ]}>
+                    ]}
+                  >
                     <CountryPicker
                       countryCode={countryCode}
-                      onSelect={country => onCountrySelect(country)}
+                      onSelect={(country) => onCountrySelect(country)}
                       withAlphaFilter
                       withFilter
                     />
-                    <TextDefault  textColor={currentTheme.newFontcolor}
-                      style={{ marginTop: Platform.OS === 'android' ? 8 : 10 }}>
+                    <TextDefault
+                      textColor={currentTheme.newFontcolor}
+                      style={{ marginTop: Platform.OS === 'android' ? 8 : 10 }}
+                    >
                       {country?.cca2}
                     </TextDefault>
                   </View>
@@ -117,19 +164,20 @@ function PhoneNumber(props) {
                       styles(currentTheme).textField,
                       styles().phoneNumber,
                       phoneError && styles(currentTheme).errorInput
-                    ]}>
+                    ]}
+                  >
                     <View style={styles(currentTheme).phoneField}>
-                      <TextDefault textColor={currentTheme.newFontcolor}>+{country.callingCode[0]} </TextDefault>
-                      <TextInput style={styles(currentTheme).phoneNo}
+                      <TextDefault textColor={currentTheme.newFontcolor}>
+                        +{country.callingCode[0]}{' '}
+                      </TextDefault>
+                      <TextInput
+                        style={styles(currentTheme).phoneNo}
                         placeholder={t('mobileNumber')}
                         placeholderTextColor={currentTheme.color6}
                         value={phone}
-                        onChangeText={e => {
-                          if (e >= 0 || e <= 9) {
-                            setPhone(e)
-                          }
-                        }}
-                        keyboardType="numeric"
+                        onChangeText={handleChange}
+                        keyboardType='phone-pad'
+                        inputMode='numeric'
                       />
                     </View>
                   </View>
@@ -139,7 +187,8 @@ function PhoneNumber(props) {
                     <TextDefault
                       style={styles().error}
                       bold
-                      textColor={currentTheme.textErrorColor}>
+                      textColor={currentTheme.textErrorColor}
+                    >
                       {phoneError}
                     </TextDefault>
                   </View>
@@ -148,12 +197,18 @@ function PhoneNumber(props) {
             </View>
             <View style={{ width: '100%', marginBottom: 20 }}>
               <TouchableOpacity
-                onPress={() => registerAction()}
+                // onPress={() => registerAction()}
+                onPress={handleSubmit}
                 activeOpacity={0.7}
-                style={styles(currentTheme).btn}>
+                style={styles(currentTheme).btn}
+              >
                 <TextDefault H4 textColor={currentTheme.color4} bold>
                   {loading ? (
-                    <Spinner size="small" backColor="transparent" spinnerColor={currentTheme.white} />
+                    <Spinner
+                      size='small'
+                      backColor='transparent'
+                      spinnerColor={currentTheme.white}
+                    />
                   ) : (
                     t('continueBtn')
                   )}
