@@ -1709,6 +1709,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    phoneIsVerified: Boolean!
     verifyPhoneOTP(otp: String!): Message
     validatePhone(phone: String!): Message
     updatePhone(phone: String!): Message

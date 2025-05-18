@@ -438,3 +438,9 @@ export const verifyPhoneOTP = gql`
     }
   }
 `
+
+export const phoneIsVerified = gql`
+  mutation PhoneIsVerified {
+    phoneIsVerified
+  }
+`

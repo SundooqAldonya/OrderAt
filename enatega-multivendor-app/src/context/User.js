@@ -14,22 +14,8 @@ import { useTranslation } from 'react-i18next'
 
 const v1options = {
   random: [
-    0x10,
-    0x91,
-    0x56,
-    0xbe,
-    0xc4,
-    0xfb,
-    0xc1,
-    0xea,
-    0x71,
-    0xb4,
-    0xef,
-    0xe1,
-    0x67,
-    0x1c,
-    0x58,
-    0x36
+    0x10, 0x91, 0x56, 0xbe, 0xc4, 0xfb, 0xc1, 0xea, 0x71, 0xb4, 0xef, 0xe1,
+    0x67, 0x1c, 0x58, 0x36
   ]
 }
 
@@ -39,7 +25,7 @@ const PROFILE = gql`
 
 const UserContext = React.createContext({})
 
-export const UserProvider = props => {
+export const UserProvider = (props) => {
   const Analytics = analytics()
 
   const { t } = useTranslation()
@@ -63,8 +49,10 @@ export const UserProvider = props => {
     fetchPolicy: 'network-only',
     onError,
     onCompleted,
-    skip: !token
+    skip: !token,
+    pollInterval: 10000
   })
+
   useEffect(() => {
     let isSubscribed = true
     ;(async () => {
@@ -127,34 +115,34 @@ export const UserProvider = props => {
   }
 
   const addQuantity = async (key, quantity = 1) => {
-    const cartIndex = cart.findIndex(c => c.key === key)
+    const cartIndex = cart.findIndex((c) => c.key === key)
     cart[cartIndex].quantity += quantity
     setCart([...cart])
     await AsyncStorage.setItem('cartItems', JSON.stringify([...cart]))
   }
 
-  const deleteItem = async key => {
-    const cartIndex = cart.findIndex(c => c.key === key)
+  const deleteItem = async (key) => {
+    const cartIndex = cart.findIndex((c) => c.key === key)
     if (cartIndex > -1) {
       cart.splice(cartIndex, 1)
-      const items = [...cart.filter(c => c.quantity > 0)]
+      const items = [...cart.filter((c) => c.quantity > 0)]
       setCart(items)
       if (items.length === 0) setRestaurant(null)
       await AsyncStorage.setItem('cartItems', JSON.stringify(items))
     }
   }
 
-  const removeQuantity = async key => {
-    const cartIndex = cart.findIndex(c => c.key === key)
+  const removeQuantity = async (key) => {
+    const cartIndex = cart.findIndex((c) => c.key === key)
     cart[cartIndex].quantity -= 1
-    const items = [...cart.filter(c => c.quantity > 0)]
+    const items = [...cart.filter((c) => c.quantity > 0)]
     setCart(items)
     if (items.length === 0) setRestaurant(null)
     await AsyncStorage.setItem('cartItems', JSON.stringify(items))
   }
 
-  const checkItemCart = itemId => {
-    const cartIndex = cart.findIndex(c => c._id === itemId)
+  const checkItemCart = (itemId) => {
+    const cartIndex = cart.findIndex((c) => c._id === itemId)
     if (cartIndex < 0) {
       return {
         exist: false,
@@ -170,7 +158,7 @@ export const UserProvider = props => {
   }
   const numberOfCartItems = () => {
     return cart
-      .map(c => c.quantity)
+      .map((c) => c.quantity)
       .reduce(function (a, b) {
         return a + b
       }, 0)
@@ -200,12 +188,12 @@ export const UserProvider = props => {
     setCart([...cartItems])
   }
 
-  const updateCart = async cart => {
+  const updateCart = async (cart) => {
     setCart(cart)
     await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
   }
 
-  const setCartRestaurant = async id => {
+  const setCartRestaurant = async (id) => {
     setRestaurant(id)
     await AsyncStorage.setItem('restaurant', id)
   }
@@ -236,7 +224,8 @@ export const UserProvider = props => {
         setIsPickup,
         instructions,
         setInstructions
-      }}>
+      }}
+    >
       {props.children}
     </UserContext.Provider>
   )

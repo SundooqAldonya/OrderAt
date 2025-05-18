@@ -26,6 +26,9 @@ import { updatePhone, validatePhone } from '../../apollo/mutations'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPhone } from '../../store/phoneSlice'
 import { useNavigation } from '@react-navigation/native'
+import { useContext } from 'react'
+import UserContext from '../../context/User'
+import { useEffect } from 'react'
 
 function PhoneNumber(props) {
   const dispatch = useDispatch()
@@ -42,8 +45,16 @@ function PhoneNumber(props) {
     loading
   } = usePhoneNumber()
 
+  const { profile } = useContext(UserContext)
+
   const phone = useSelector((state) => state.phone.phone)
   console.log({ phone })
+
+  useEffect(() => {
+    if (profile?.phone) {
+      dispatch(setPhone({ phone: profile.phone.replace('+20', '') }))
+    }
+  }, [])
 
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'

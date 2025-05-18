@@ -59,10 +59,6 @@ const CreateAccount = (props) => {
     })
   }
 
-  const addToken = async ({ token }) => {
-    await AsyncStorage.setItem('token', token)
-  }
-
   const [mutateGoogleLogin] = useMutation(googleAuthCustomerApp, {
     onCompleted: (data) => {
       console.log({ token: data.googleAuthCustomerApp.token })
@@ -99,6 +95,8 @@ const CreateAccount = (props) => {
       headerTitleAlign: 'center'
     })
   }, [navigation])
+
+  // console.log('create user')
 
   function renderAppleAction() {
     if (loading && loginButton === 'Apple') {
@@ -158,25 +156,6 @@ const CreateAccount = (props) => {
     )
   }
 
-  // function renderGoogleAction() {
-  //   return (
-  //     <FdGoogleBtn
-  //       loadingIcon={loading && loginButton === 'Google'}
-  //       onPressIn={() => {
-  //         loginButtonSetter('Google')
-  //       }}
-  //       disabled={loading && loginButton === 'Google'}
-  //       onPress={async () => {
-  //         try {
-  //           await signIn()
-  //         } catch (error) {
-  //           console.error('Google sign-in error:', error)
-  //         }
-  //       }}
-  //     />
-  //   )
-  // }
-
   function renderEmailAction() {
     return (
       <FdEmailBtn
@@ -235,22 +214,6 @@ const CreateAccount = (props) => {
       }
     } catch (error) {
       console.log({ error })
-    }
-  }
-
-  const fetchPhoneNumber = async (token) => {
-    try {
-      const response = await fetch(
-        'https://people.googleapis.com/v1/people/me?personFields=phoneNumbers',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-      const data = await response.json()
-      console.log('User phone numbers:', data.phoneNumbers)
-      return data.phoneNumbers
-    } catch (error) {
-      console.error('Error fetching phone number:', error)
     }
   }
 

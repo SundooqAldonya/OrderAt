@@ -30,14 +30,23 @@ const useRegister = () => {
   const [phoneError, setPhoneError] = useState(null)
   const [countryCode, setCountryCode] = useState('PK')
   const [country, setCountry] = useState({
-    callingCode: ['92'],
-    cca2: 'PK',
-    currency: ['PKR'],
-    flag: 'flag-pk',
-    name: 'Pakistan',
-    region: 'Asia',
-    subregion: 'Southern Asia'
+    callingCode: ['20'],
+    cca2: 'EG',
+    currency: ['EGP'],
+    flag: 'flag-eg',
+    name: 'Egypt',
+    region: 'North Africa',
+    subregion: 'North Africa'
   })
+  // const [country, setCountry] = useState({
+  //   callingCode: ['92'],
+  //   cca2: 'PK',
+  //   currency: ['PKR'],
+  //   flag: 'flag-pk',
+  //   name: 'Pakistan',
+  //   region: 'Asia',
+  //   subregion: 'Southern Asia'
+  // })
 
   const [phoneExist, { loading }] = useMutation(PHONE, {
     onCompleted,
@@ -64,10 +73,11 @@ const useRegister = () => {
     if (!email) {
       setEmailError(t('emailErr1'))
       result = false
-    } else if (!emailRegex.test(email.trim())) {
-      setEmailError(t('emailErr2'))
-      result = false
     }
+    // else if (!emailRegex.test(email.trim())) {
+    //   setEmailError(t('emailErr2'))
+    //   result = false
+    // }
 
     if (!password) {
       setPasswordError(t('passErr1'))

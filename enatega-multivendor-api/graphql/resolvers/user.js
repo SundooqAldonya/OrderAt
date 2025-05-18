@@ -710,6 +710,17 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+    async phoneIsVerified(_, args, { req }) {
+      try {
+        const user = await User.findById(req.userId)
+        if (user.phoneIsVerified) {
+          return true
+        }
+        return false
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

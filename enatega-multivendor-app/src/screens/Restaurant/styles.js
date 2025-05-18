@@ -131,7 +131,8 @@ const styles = (props = null) =>
         height: -verticalScale(3)
       },
       shadowOpacity: 0.5,
-      shadowRadius: verticalScale(2)
+      shadowRadius: verticalScale(2),
+      marginBottom: 50
     },
     button: {
       justifyContent: 'space-between',

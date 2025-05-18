@@ -31,7 +31,7 @@ import {
   myOrders,
   orderFragment
 } from '../../apollo/queries'
-import { getCoupon, placeOrder } from '../../apollo/mutations'
+import { getCoupon, phoneIsVerified, placeOrder } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
 import { theme } from '../../utils/themeColors'
@@ -548,17 +548,17 @@ function Checkout(props) {
       })
       return false
     }
-    // if (profile.phone.length < 1) {
-    //   props.navigation.navigate('PhoneNumber', { backScreen: 'Cart' })
-    //   return false
-    // }
-    // if (profile.phone.length > 0 && !profile.phoneIsVerified) {
-    //   FlashMessage({
-    //     message: t('numberVerificationAlert')
-    //   })
-    //   props.navigation.navigate('PhoneNumber')
-    //   return false
-    // }
+    if (profile.phone.length < 1) {
+      props.navigation.navigate('PhoneNumber', { backScreen: 'Cart' })
+      return false
+    }
+    if (profile.phone.length > 0 && !profile.phoneIsVerified) {
+      FlashMessage({
+        message: t('numberVerificationAlert')
+      })
+      props.navigation.navigate('PhoneNumber', { backScreen: 'Cart' })
+      return false
+    }
     return true
   }
 
@@ -1459,15 +1459,17 @@ function Checkout(props) {
                       </View>
                     </View>
                   )} */}
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(255,0,0,0.5)',
-                      paddingVertical: 5,
-                      borderRadius: 3
-                    }}
-                  >
-                    {showMinimumOrderMessage()}
-                  </View>
+                  {calculatePrice(deliveryCharges, true) < minimumOrder && (
+                    <View
+                      style={{
+                        backgroundColor: 'rgba(255,0,0,0.5)',
+                        paddingVertical: 5,
+                        borderRadius: 3
+                      }}
+                    >
+                      {showMinimumOrderMessage()}
+                    </View>
+                  )}
                   <View style={styles(currentTheme).horizontalLine2} />
                   <View
                     style={{

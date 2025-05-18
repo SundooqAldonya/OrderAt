@@ -21,7 +21,7 @@ import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 
 function Login(props) {
-  console.log('here')
+  const { t } = useTranslation()
   const {
     setEmail,
     password,
@@ -38,7 +38,6 @@ function Login(props) {
     checkEmailExist,
     emailRef
   } = useLogin()
-  const { t } = useTranslation()
 
   useLayoutEffect(() => {
     props.navigation.setOptions(

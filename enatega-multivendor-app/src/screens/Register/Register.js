@@ -20,6 +20,9 @@ import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
 
 function Register(props) {
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+
   const {
     email,
     setEmail,
@@ -45,7 +48,6 @@ function Register(props) {
     currentTheme
   } = useRegister()
 
-  const { t } = useTranslation()
   useLayoutEffect(() => {
     props.navigation.setOptions(
       screenOptions({
@@ -80,7 +82,11 @@ function Register(props) {
                   style={styles().logoContainer}
                 /> */}
 
-                <SimpleLineIcons name='user' size={30} color={currentTheme.newIconColor} />
+                <SimpleLineIcons
+                  name='user'
+                  size={30}
+                  color={currentTheme.newIconColor}
+                />
               </View>
               <View>
                 <TextDefault
@@ -89,7 +95,8 @@ function Register(props) {
                   textColor={currentTheme.newFontcolor}
                   style={{
                     ...alignment.MTlarge,
-                    ...alignment.MBmedium
+                    ...alignment.MBmedium,
+                    textAlign: isArabic ? 'right' : 'left'
                   }}
                 >
                   {t('letsGetStarted')}
@@ -98,7 +105,10 @@ function Register(props) {
                   H5
                   bold
                   textColor={currentTheme.fontSecondColor}
-                  style={{ ...alignment.PBmedium }}
+                  style={{
+                    ...alignment.PBmedium,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
                 >
                   {t('createAccount')}
                 </TextDefault>
@@ -208,14 +218,14 @@ function Register(props) {
                       styles().countryCode
                     ]}
                   >
-                    <CountryPicker
+                    {/* <CountryPicker
                       countryCode={countryCode}
                       onSelect={(country) => onCountrySelect(country)}
                       withAlphaFilter
                       withFilter
-                    />
+                    /> */}
                     <TextDefault
-                    textColor={currentTheme.newFontcolor}
+                      textColor={currentTheme.newFontcolor}
                       style={{ marginTop: Platform.OS === 'android' ? 7 : 10 }}
                     >
                       {country?.cca2}
@@ -225,12 +235,14 @@ function Register(props) {
                     style={[
                       styles(currentTheme).textField,
                       styles().phoneNumber,
-                      {alignItems:'flex-start'},
+                      { alignItems: 'flex-start' },
                       phoneError && styles(currentTheme).errorInput
                     ]}
                   >
                     <View style={styles().phoneFieldInner}>
-                      <TextDefault textColor={currentTheme.newFontcolor}>+{country.callingCode[0]} </TextDefault>
+                      <TextDefault textColor={currentTheme.newFontcolor}>
+                        +{country.callingCode[0]}{' '}
+                      </TextDefault>
                       <TextInput
                         placeholder={t('mobileNumber')}
                         placeholderTextColor={currentTheme.fontSecondColor}
@@ -258,7 +270,10 @@ function Register(props) {
               <TouchableOpacity
                 onPress={() => registerAction()}
                 activeOpacity={0.7}
-                style={[styles(currentTheme).btn,{backgroundColor:colors?.primary}]}
+                style={[
+                  styles(currentTheme).btn,
+                  { backgroundColor: colors?.primary }
+                ]}
               >
                 <TextDefault H4 textColor={currentTheme.black} bold>
                   {t('createAccount')}
