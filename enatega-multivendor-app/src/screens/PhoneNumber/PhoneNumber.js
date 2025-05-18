@@ -25,9 +25,11 @@ import { useMutation } from '@apollo/client'
 import { updatePhone, validatePhone } from '../../apollo/mutations'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPhone } from '../../store/phoneSlice'
+import { useNavigation } from '@react-navigation/native'
 
 function PhoneNumber(props) {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const {
     // phone,
     // setPhone,
@@ -40,16 +42,16 @@ function PhoneNumber(props) {
     loading
   } = usePhoneNumber()
 
-  // const [phone, setPhone] = useState('')
   const phone = useSelector((state) => state.phone.phone)
   console.log({ phone })
 
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
 
-  const [mutate] = useMutation(validatePhone, {
+  const [mutate, { loading: loadingValidate }] = useMutation(validatePhone, {
     onCompleted: (res) => {
       console.log({ res })
+      navigation.navigate('PhoneOtp')
     },
     onError: (err) => {
       console.log({ err })
@@ -70,6 +72,8 @@ function PhoneNumber(props) {
   const handleChange = (text) => {
     dispatch(setPhone({ phone: text }))
   }
+
+  console.log({ country })
 
   const handleSubmit = () => {
     mutate({
@@ -197,13 +201,15 @@ function PhoneNumber(props) {
             </View>
             <View style={{ width: '100%', marginBottom: 20 }}>
               <TouchableOpacity
-                // onPress={() => registerAction()}
                 onPress={handleSubmit}
-                activeOpacity={0.7}
-                style={styles(currentTheme).btn}
+                style={{
+                  ...styles(currentTheme).btn,
+                  backgroundColor: loadingValidate && 'grey'
+                }}
+                disabled={loadingValidate}
               >
                 <TextDefault H4 textColor={currentTheme.color4} bold>
-                  {loading ? (
+                  {loadingValidate ? (
                     <Spinner
                       size='small'
                       backColor='transparent'

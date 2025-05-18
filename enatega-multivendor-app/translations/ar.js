@@ -635,5 +635,8 @@ export const ar = {
   your_address: 'عنوانك',
   business_address: 'عنوان المحل',
   pickup_option: 'تسلم',
-  new: 'جديد'
+  new: 'جديد',
+  otp_expired: 'الـotp منتهي الصلاحية',
+  phone_verified: 'تم إتمام العملية بنجاح!',
+  otp_not_match: 'OTP خطأ'
 }

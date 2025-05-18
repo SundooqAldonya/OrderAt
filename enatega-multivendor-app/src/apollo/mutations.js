@@ -431,3 +431,10 @@ export const validatePhone = gql`
     }
   }
 `
+export const verifyPhoneOTP = gql`
+  mutation VerifyPhoneOTP($otp: String!) {
+    verifyPhoneOTP(otp: $otp) {
+      message
+    }
+  }
+`

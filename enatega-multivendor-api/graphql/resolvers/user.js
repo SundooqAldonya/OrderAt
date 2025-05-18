@@ -19,6 +19,7 @@ const {
   normalizeAndValidatePhoneNumber
 } = require('../../helpers/normalizePhone')
 const axios = require('axios')
+const { generatePhoneOTP } = require('../../helpers/otp')
 
 module.exports = {
   Query: {
@@ -555,19 +556,59 @@ module.exports = {
           Accept: 'application/json',
           'Accept-Language': 'en-US'
         }
+        const user = await User.findById(req.userId)
         const phoneNumber = normalizeAndValidatePhoneNumber(
           args.phone
         )?.replace('+', '')
-        console.log({ phoneNumber })
-        const url = `https://smssmartegypt.com/sms/api/?username=w8pRT869&password=Oqo48lklp&sendername=Sms plus&mobiles=${phoneNumber}&message=أوردرات: رمز التحقق الخاص بك هو 123456`
+
+        const otp = generatePhoneOTP()
+
+        console.log({ phoneNumber, otp })
+        const body = {
+          username: 'w8pRT869',
+          password: 'Oqo48lklp',
+          // sendername: 'Sms plus',
+          sendername: 'Kayan',
+          mobiles: phoneNumber,
+          message: `أوردرات: رمز التحقق الخاص بك هو: ${otp}`
+        }
+        console.log({ body })
+
+        const url = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.mobiles}&message=${body.message}`
+
         const res = await axios.post(url).catch(err => {
           console.log({ err })
           throw new Error('SMS integration went wrong!')
         })
+        user.phoneOTP = otp
+        user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
+        await user.save()
         console.log({ res: res.data })
+        console.log({ res: res.data[0].data })
         return { message: 'otp_message_sent' }
       } catch (err) {
         throw new Error(err)
+      }
+    },
+
+    async verifyPhoneOTP(_, args, { req }) {
+      console.log('verifyPhoneOTP', { args })
+      try {
+        const user = await User.findById(req.userId)
+        if (user.otpExpiresAt < new Date()) {
+          throw new Error('otp_expired')
+        }
+        if (user.phoneOTP === args.otp) {
+          user.phoneIsVerified = true
+          user.phoneOTP = null
+          user.otpExpiresAt = null
+        } else {
+          throw new Error('otp_not_match')
+        }
+        await user.save()
+        return { message: 'phone_verified' }
+      } catch (err) {
+        throw err
       }
     },
 

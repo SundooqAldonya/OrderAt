@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Text
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from '../styles'
@@ -18,31 +19,83 @@ import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
+import { useSelector } from 'react-redux'
+import CustomOtpInput from '../../../components/CustomOTP'
+import { useMutation } from '@apollo/client'
+import { validatePhone, verifyPhoneOTP } from '../../../apollo/mutations'
+import Toast from 'react-native-toast-message'
+import usePhoneNumber from '../../PhoneNumber/usePhoneNumber'
+import { useNavigation } from '@react-navigation/native'
 
 function PhoneOtp(props) {
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
+  const navigation = useNavigation()
   const {
-    phone,
-    otp,
-    setOtp,
-    otpError,
+    // phone,
+    setSeconds,
     seconds,
     loading,
     updateUserLoading,
-    onCodeFilled,
     resendOtp,
     currentTheme,
     themeContext
   } = usePhoneOtp()
 
-  const [code, setCode] = useState('')
+  const { country } = usePhoneNumber()
 
-  useEffect(() => {
-    if (otp) {
-      setCode(otp)
+  const phone = useSelector((state) => state.phone.phone)
+  console.log({ phone })
+  const [code, setCode] = useState(new Array(4).fill('')) // 4703
+
+  const [mutateVerify] = useMutation(verifyPhoneOTP, {
+    onCompleted: (res) => {
+      console.log({ res })
+      Toast.show({
+        type: 'success',
+        text1: t('success'),
+        text2: t('phone_verified'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      setCode(new Array(4).fill(''))
+      navigation.navigate('Main')
+    },
+    onError: (err) => {
+      console.log({ err })
+      const message =
+        err?.graphQLErrors?.[0]?.message.split(': ')[1] || 'unknown_error'
+      console.log({ message })
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: t(message),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
     }
-  }, [otp])
+  })
 
-  const { t } = useTranslation()
+  const [mutateValidate, { loading: loadingValidate }] = useMutation(
+    validatePhone,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        setSeconds(30)
+      },
+      onError: (err) => {
+        console.log({ err })
+      }
+    }
+  )
 
   useLayoutEffect(() => {
     props.navigation.setOptions(
@@ -54,6 +107,24 @@ function PhoneOtp(props) {
       })
     )
   }, [props.navigation])
+
+  const onCodeFilled = (otp) => {
+    mutateVerify({
+      variables: {
+        otp
+      }
+    })
+  }
+
+  console.log({ country })
+
+  const handleResend = () => {
+    mutateValidate({
+      variables: {
+        phone: `+${country.callingCode[0]}${phone}`
+      }
+    })
+  }
 
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
@@ -94,6 +165,12 @@ function PhoneOtp(props) {
               {phone}
             </TextDefault>
           </View>
+          <CustomOtpInput
+            pinCount={4}
+            otp={code}
+            setOtp={setCode}
+            onCodeFilled={onCodeFilled}
+          />
           {/* <View>
             <OTPInputView
               pinCount={6}
@@ -160,8 +237,9 @@ function PhoneOtp(props) {
                   styles(currentTheme).btn,
                   seconds !== 0 && styles(currentTheme).disabledBtn
                 ]}
-                disabled={seconds !== 0}
-                onPress={() => resendOtp()}
+                disabled={seconds !== 0 || loadingValidate}
+                // onPress={() => resendOtp()}
+                onPress={handleResend}
               >
                 <TextDefault
                   H4

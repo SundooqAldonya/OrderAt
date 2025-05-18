@@ -78,7 +78,9 @@ const userSchema = new Schema(
     ],
     emailVerficationCode: {
       type: Array
-    }
+    },
+    phoneOTP: String,
+    phoneOtpExpiresAt: Date
   },
   { timestamps: true }
 )

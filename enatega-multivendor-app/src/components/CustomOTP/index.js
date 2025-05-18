@@ -15,9 +15,11 @@ const CustomOtpInput = ({ otp, setOtp, pinCount = 6, onCodeFilled }) => {
     if (text && index < pinCount - 1) {
       inputsRef.current[index + 1]?.focus()
     }
+    console.log({ every: newOtp.every((digit) => digit !== '') })
+    console.log({ otp: newOtp.join('').length })
 
     // Call callback when OTP is filled
-    if (newOtp.every((digit) => digit !== '')) {
+    if (newOtp.join('').length === 4 && newOtp.every((digit) => digit !== '')) {
       onCodeFilled(newOtp.join(''))
     }
   }
@@ -49,9 +51,11 @@ const CustomOtpInput = ({ otp, setOtp, pinCount = 6, onCodeFilled }) => {
 
 const styles = StyleSheet.create({
   container: {
+    // backgroundColor: 'red',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 50
+    marginTop: 50,
+    height: 50
   },
   input: {
     width: 40,
@@ -62,7 +66,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     borderRadius: 5,
-    color: '#fff'
+    color: '#000'
   }
 })
 

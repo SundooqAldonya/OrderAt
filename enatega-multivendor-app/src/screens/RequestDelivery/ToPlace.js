@@ -24,10 +24,7 @@ import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  setAddressFrom,
-  setAddressTo
-} from '../../store/requestDeliverySlice.js'
+import { setAddressFrom, setAddressTo } from '../../store/requestDeliverySlice'
 import * as Location from 'expo-location'
 import { Checkbox } from 'react-native-paper'
 import { createAddress } from '../../apollo/mutations.js'

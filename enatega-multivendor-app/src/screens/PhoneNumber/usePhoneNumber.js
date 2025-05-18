@@ -35,7 +35,7 @@ const useRegister = () => {
   let currentRetry = 0
 
   const [country, setCountry] = useState({
-    callingCode: [],
+    callingCode: ['20'],
     cca2: '',
     currency: ['EGP'],
     flag: '',

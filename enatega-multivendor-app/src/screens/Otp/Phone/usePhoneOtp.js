@@ -71,11 +71,11 @@ const usePhoneOtp = () => {
     if (!profile?.name) navigation.navigate('Profile', { editName: true })
     else {
       route.params?.prevScreen
-      ? navigation.navigate(route.params.prevScreen)
-      : navigation.navigate({
-        name: 'Main',
-        merge: true
-      })
+        ? navigation.navigate(route.params.prevScreen)
+        : navigation.navigate({
+            name: 'Main',
+            merge: true
+          })
     }
   }
 
@@ -89,8 +89,12 @@ const usePhoneOtp = () => {
     onError: onUpdateUserError
   })
 
-  const onCodeFilled = code => {
-    if (configuration.skipMobileVerification || code === otpFrom.current || code === TEST_OTP) {
+  const onCodeFilled = (code) => {
+    if (
+      configuration.skipMobileVerification ||
+      code === otpFrom.current ||
+      code === TEST_OTP
+    ) {
       mutateUser({
         variables: {
           name: profile.name,
@@ -123,32 +127,35 @@ const usePhoneOtp = () => {
     }
   })
 
-  useEffect(() => {
-    if (!configuration) return
-    if (!configuration.skipMobileVerification) {
-      otpFrom.current = Math.floor(100000 + Math.random() * 900000).toString()
-      mutate({ variables: { phone: profile?.phone, otp: otpFrom.current } })
-    }
-  }, [configuration])
+  // useEffect(() => {
+  //   if (!configuration) return
+  //   if (!configuration.skipMobileVerification) {
+  //     otpFrom.current = Math.floor(100000 + Math.random() * 900000).toString()
+  //     mutate({ variables: { phone: profile?.phone, otp: otpFrom.current } })
+  //   }
+  // }, [configuration])
 
-  useEffect(() => {
-    let timer = null
-    if (!configuration || !profile) return
-    if (configuration.skipMobileVerification) {
-      setOtp(TEST_OTP)
-      timer = setTimeout(() => {
-        onCodeFilled(TEST_OTP)
-      }, 3000)
-    }
+  // useEffect(() => {
+  //   let timer = null
+  //   if (!configuration || !profile) return
+  //   if (configuration.skipMobileVerification) {
+  //     setOtp(TEST_OTP)
+  //     timer = setTimeout(() => {
+  //       onCodeFilled(TEST_OTP)
+  //     }, 3000)
+  //   }
 
-    return () => { timer && clearTimeout(timer) }
-  }, [configuration, profile])
+  //   return () => {
+  //     timer && clearTimeout(timer)
+  //   }
+  // }, [configuration, profile])
 
   return {
     otp,
     setOtp,
     otpError,
     seconds,
+    setSeconds,
     profile,
     loading,
     updateUserLoading,

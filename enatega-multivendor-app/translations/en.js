@@ -646,5 +646,8 @@ export const en = {
   your_address: 'Your address',
   business_address: 'Business Address',
   pickup_option: 'Pickup',
-  new: 'New'
+  new: 'New',
+  otp_expired: 'OTP is expired. Please press resend!',
+  phone_verified: 'Phone is verified successfully!',
+  otp_not_match: 'OTP does not match!'
 }
