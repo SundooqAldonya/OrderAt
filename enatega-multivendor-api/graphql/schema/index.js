@@ -1709,6 +1709,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    refreshFirebaseToken(id: String!, notificationToken: String!): Message
     phoneIsVerified: Boolean!
     verifyPhoneOTP(otp: String!): Message
     validatePhone(phone: String!): Message

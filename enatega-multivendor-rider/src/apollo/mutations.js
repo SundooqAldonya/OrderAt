@@ -102,3 +102,10 @@ export const riderLogout = gql`
     }
   }
 `
+export const refreshFirebaseToken = gql`
+  mutation RefreshFirebaseToken($notificationToken: String!) {
+    refreshFirebaseToken(notificationToken: $notificationToken) {
+      message
+    }
+  }
+`

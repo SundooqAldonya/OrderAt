@@ -20,23 +20,6 @@ const RIDER_CREDS = gql`
   ${defaultRiderCreds}
 `
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async notification => {
-//     console.log('Notification received:', notification)
-
-//     // Check if notification includes sound
-//     if (notification.request.content.sound) {
-//       await playCustomSound()
-//     }
-
-//     return {
-//       shouldShowAlert: true,
-//       shouldPlaySound: false, // We play it manually
-//       shouldSetBadge: false
-//     }
-//   }
-// })
-
 const useLogin = () => {
   const { t } = useTranslation()
   const [username, setUsername] = useState('')

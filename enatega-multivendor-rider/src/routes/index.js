@@ -37,6 +37,8 @@ import { Alert } from 'react-native'
 import { setupNotificationChannel } from '../utilities/pushNotifications'
 import beep1 from '../assets/beep1.wav'
 import CameraCaptureReceipt from '../screens/CameraCaptureReceipt'
+import { useMutation } from '@apollo/client'
+import { refreshFirebaseToken } from '../apollo/mutations'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -200,6 +202,31 @@ function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
 
+  const [mutateRefreshToken] = useMutation(refreshFirebaseToken, {
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: error => {
+      console.log({ error })
+    }
+  })
+
+  const setupFCM = async () => {
+    // Listen for token refresh
+    const unsubscribe = messaging().onTokenRefresh(async newToken => {
+      console.log('FCM token refreshed:', newToken)
+      // await sendTokenToBackend(userId, newToken)
+      mutateRefreshToken({
+        variables: {
+          id: 'asdf',
+          notificationToken: newToken
+        }
+      })
+    })
+
+    return unsubscribe
+  }
+
   useEffect(() => {
     async function checkPermissions() {
       const { status } = await Notifications.getPermissionsAsync()
@@ -235,6 +262,10 @@ function AppContainer() {
     })
 
     return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    setupFCM()
   }, [])
 
   useEffect(() => {

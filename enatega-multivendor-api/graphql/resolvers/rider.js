@@ -437,6 +437,21 @@ module.exports = {
         location: location
       })
       return transformRider(result)
+    },
+
+    async refreshFirebaseToken(_, args, { req }) {
+      console.log('refreshFirebaseToken', { args })
+      console.log({ userType: req.userType, userId: req.userId })
+      if (!req.userId) throw new Error('unauthenticated')
+      try {
+        const rider = await Rider.findById(req.userId)
+        rider.notificationToken = args.notificationToken
+        await rider.save()
+        console.log('rider notification has refreshed')
+        return { message: 'Rider notification has refreshed' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }
