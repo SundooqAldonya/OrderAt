@@ -705,7 +705,7 @@ function Checkout(props) {
   }
 
   const showMinimumOrderMessage = () => {
-    if (calculatePrice(deliveryCharges, true) < minimumOrder) {
+    if (calculatePrice(0, true) < minimumOrder) {
       return (
         <TextDefault
           style={{
@@ -1342,6 +1342,18 @@ function Checkout(props) {
                         : configuration.currency}
                     </TextDefault>
                   </View>
+                  {calculatePrice(0, true) < minimumOrder && (
+                    <View
+                      style={{
+                        backgroundColor: 'rgba(255,0,0,0.5)',
+                        paddingVertical: 5,
+                        borderRadius: 3,
+                        marginTop: 10
+                      }}
+                    >
+                      {showMinimumOrderMessage()}
+                    </View>
+                  )}
                   <View style={styles(currentTheme).horizontalLine2} />
 
                   {!isPickup && (
@@ -1459,17 +1471,7 @@ function Checkout(props) {
                       </View>
                     </View>
                   )} */}
-                  {calculatePrice(deliveryCharges, true) < minimumOrder && (
-                    <View
-                      style={{
-                        backgroundColor: 'rgba(255,0,0,0.5)',
-                        paddingVertical: 5,
-                        borderRadius: 3
-                      }}
-                    >
-                      {showMinimumOrderMessage()}
-                    </View>
-                  )}
+
                   <View style={styles(currentTheme).horizontalLine2} />
                   <View
                     style={{

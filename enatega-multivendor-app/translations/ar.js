@@ -167,11 +167,14 @@ export const ar = {
   privacyPolicy: 'سياسة الخصوصية',
   and: 'و',
   whatsYourEmail: 'ما هو بريدك الإلكتروني؟',
+  whatsYourPhone: 'ما هو رقم تليفونك؟',
   checkAccount: 'سنتحقق مما إذا كان لديك حساب',
   signInWithEmail: 'تسجيل الدخول باستخدام بريدك الإلكتروني',
   continueBtn: 'متابعة',
   emailErr1: 'البريد الإلكتروني مطلوب',
   emailErr2: 'بريد إلكتروني غير صالح!',
+  phoneErr1: 'رقم الهاتف مطلوب',
+  phoneErr2: 'رقم الهاتف غير صالح!',
   passErr1: 'كلمة المرور مطلوبة',
   passErr2:
     'رمز مرور خاطئ. يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على حرف واحد كبير وحرف واحد صغير ورقم واحد.',
@@ -638,5 +641,8 @@ export const ar = {
   new: 'جديد',
   otp_expired: 'الـotp منتهي الصلاحية',
   phone_verified: 'تم إتمام العملية بنجاح!',
-  otp_not_match: 'OTP خطأ'
+  otp_not_match: 'OTP خطأ',
+  total_with_delivery_fee: 'القيمة شامل سعر التوصيل',
+  phone: 'رقم التليفون',
+  phone_placeholder: 'رقم التليفون: 010234567891'
 }

@@ -168,11 +168,14 @@ export const en = {
   privacyPolicy: 'Privacy Policy',
   and: 'and',
   whatsYourEmail: 'Enter your email or phone?',
+  whatsYourPhone: 'ًWhat is your phone number?',
   checkAccount: "We'll check if you've an account",
   signInWithEmail: 'Sign in with your email',
   continueBtn: 'Continue',
   emailErr1: 'Email is required',
   emailErr2: 'Invalid Email!',
+  phoneErr1: 'Phone is required',
+  phoneErr2: 'Invalid phone number!',
   passErr1: 'Password is required',
   passErr2:
     'Invalid Password. Password must be of atleast 8 characters and contain 1 capital letter, 1 small letter, 1 number.',
@@ -649,5 +652,8 @@ export const en = {
   new: 'New',
   otp_expired: 'OTP is expired. Please press resend!',
   phone_verified: 'Phone is verified successfully!',
-  otp_not_match: 'OTP does not match!'
+  otp_not_match: 'OTP does not match!',
+  total_with_delivery_fee: 'Total including delivery fee',
+  phone: 'Phone',
+  phone_placeholder: 'Phone number: ex;+2010234567891'
 }

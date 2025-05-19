@@ -19,9 +19,13 @@ import screenOptions from './screenOptions'
 import { useTranslation } from 'react-i18next'
 import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
+import { setPhone } from '../../store/phoneSlice'
+import { useDispatch } from 'react-redux'
 
 function Login(props) {
-  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const {
     setEmail,
     password,
@@ -35,7 +39,7 @@ function Login(props) {
     currentTheme,
     showPassword,
     setShowPassword,
-    checkEmailExist,
+    checkPhoneExists,
     emailRef
   } = useLogin()
 
@@ -67,7 +71,12 @@ function Login(props) {
         >
           <View style={styles(currentTheme).mainContainer}>
             <View style={styles().subContainer}>
-              <View style={styles().logoContainer}>
+              <View
+                style={{
+                  ...styles().logoContainer,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
                 <SimpleLineIcons
                   name='envelope'
                   size={30}
@@ -81,19 +90,23 @@ function Login(props) {
                   textColor={currentTheme.newFontcolor}
                   style={{
                     ...alignment.MTlarge,
-                    ...alignment.MBmedium
+                    ...alignment.MBmedium,
+                    textAlign: isArabic ? 'right' : 'left'
                   }}
                 >
                   {registeredEmail
                     ? t('enterEmailPassword')
-                    : t('whatsYourEmail')}
+                    : t('whatsYourPhone')}
                 </TextDefault>
 
                 <TextDefault
                   H5
                   bold
                   textColor={currentTheme.horizontalLine}
-                  style={{ ...alignment.MBmedium }}
+                  style={{
+                    ...alignment.MBmedium,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
                 >
                   {registeredEmail ? t('emailExists') : t('checkAccount')}
                 </TextDefault>
@@ -102,7 +115,8 @@ function Login(props) {
                 <View>
                   <View>
                     <TextInput
-                      placeholder={t('emailphone')}
+                      placeholder={t('phone_placeholder')}
+                      keyboardType='phone-pad'
                       style={[
                         styles(currentTheme).textField,
                         emailError !== null
@@ -112,13 +126,17 @@ function Login(props) {
                       placeholderTextColor={currentTheme.fontSecondColor}
                       autoCapitalize='none'
                       defaultValue=''
-                      onChangeText={(text) =>
-                        setEmail(text.toLowerCase().trim())
-                      }
+                      onChangeText={(text) => {
+                        // setEmail(text.toLowerCase().trim())
+                        dispatch(setPhone({ phone: text }))
+                      }}
                     />
                     {emailError !== null && (
                       <TextDefault
-                        style={styles().error}
+                        style={{
+                          ...styles().error,
+                          textAlign: isArabic ? 'right' : 'left'
+                        }}
                         bold
                         textColor={currentTheme.textErrorColor}
                       >
@@ -191,7 +209,7 @@ function Login(props) {
                     onPress={() =>
                       registeredEmail
                         ? loginAction(emailRef.current, password)
-                        : checkEmailExist()
+                        : checkPhoneExists()
                     }
                     activeOpacity={0.7}
                     style={[

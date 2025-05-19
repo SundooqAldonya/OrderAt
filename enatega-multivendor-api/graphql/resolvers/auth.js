@@ -14,6 +14,9 @@ const {
 } = require('../../helpers/templates')
 const { v4 } = require('uuid')
 const { OAuth2Client } = require('google-auth-library')
+const {
+  normalizeAndValidatePhoneNumber
+} = require('../../helpers/normalizePhone')
 
 const client = new OAuth2Client(
   '41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com',
@@ -157,10 +160,12 @@ module.exports = {
         type,
         notificationToken
       })
+      const phone = normalizeAndValidatePhoneNumber(email)
+      console.log({ phone })
       let isNewUser = false
       var user = appleId
         ? await User.findOne({ appleId })
-        : await User.findOne({ email })
+        : await User.findOne({ $or: [{ email, phone }] })
       if (!user && appleId) {
         isNewUser = true
         user = new User({
@@ -187,8 +192,9 @@ module.exports = {
         })
       }
       if (!user) {
-        // user = await User.findOne({ phone: email })
-        user = await User.findOne({ $or: [{ email }, { phone: email }] })
+        user = await User.findOne({
+          $or: [{ email }, { phone }]
+        })
         if (!user) throw new Error('User does not exist!')
       }
       if (type === 'default') {

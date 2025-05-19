@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next'
 import WouldYouLikeToAddThese from './Section'
 import { SpecialInstructions } from '../../components/Cart/SpecialInstructions'
 import { colors } from '../../utils/colors'
+import { Fragment } from 'react'
 
 // Constants
 const TIPPING = gql`
@@ -224,12 +225,7 @@ function Cart(props) {
     if (!data) return
     didFocus()
   }, [data])
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_CART)
-    }
-    Track()
-  }, [])
+
   useEffect(() => {
     if (cart && cartCount > 0) {
       if (
@@ -296,7 +292,7 @@ function Cart(props) {
   function calculateTotal() {
     let total = 0
     const delivery = isPickup ? 0 : deliveryCharges
-    total += +calculatePrice(delivery)
+    total += +calculatePrice(0) // calculatePrice(delivery)
     // total += +taxCalculation()
     // total += +calculateTip()
     return parseFloat(total).toFixed(2)
@@ -326,6 +322,25 @@ function Cart(props) {
     setSelectedRestaurant(restaurantCustomer)
     setMinimumOrder(restaurantCustomer.minimumOrder)
     setLoadingData(false)
+  }
+
+  const showMinimumOrderMessage = () => {
+    if (calculatePrice(0, true) < minimumOrder) {
+      return (
+        <TextDefault
+          bolder
+          style={{
+            color: 'red',
+            fontSize: 12,
+            textAlign: 'center'
+          }}
+        >{`${t('minAmount')} (${minimumOrder - calculatePrice(0, false)} ${
+          isArabic ? configuration.currencySymbol : configuration.currency
+        }) ${t('forYourOrder')} (${minimumOrder} ${
+          isArabic ? configuration.currencySymbol : configuration.currency
+        }).`}</TextDefault>
+      )
+    }
   }
 
   function emptyCart() {
@@ -591,41 +606,57 @@ function Cart(props) {
             <View style={styles().totalBillContainer}>
               <View style={styles(currentTheme).buttonContainer}>
                 <View style={styles().cartAmount}>
-                  <TextDefault
-                    textColor={currentTheme.black}
-                    style={styles().totalBill}
-                    bolder
-                    H2
-                  >
-                    {configuration.currencySymbol}
-                    {calcLoading ? t('calculating') : calculateTotal()}
-                  </TextDefault>
-                  <TextDefault
-                    textColor={currentTheme.black}
-                    style={styles().totalBill}
-                    bolder
-                    Smaller
-                  >
-                    {t('total_without_tax')}
-                  </TextDefault>
+                  {isArabic ? (
+                    <TextDefault
+                      textColor={currentTheme.black}
+                      style={styles().totalBill}
+                      bolder
+                      H2
+                    >
+                      {calcLoading ? t('calculating') : calculateTotal()}{' '}
+                      {configuration.currencySymbol}
+                    </TextDefault>
+                  ) : (
+                    <TextDefault
+                      textColor={currentTheme.black}
+                      style={styles().totalBill}
+                      bolder
+                      H2
+                    >
+                      {configuration.currencySymbol}
+                      {calcLoading ? t('calculating') : calculateTotal()}
+                    </TextDefault>
+                  )}
                 </View>
                 {isLoggedIn && profile ? (
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {
-                      navigation.navigate('Checkout')
-                    }}
-                    style={styles(currentTheme).button}
-                  >
-                    <TextDefault
-                      textColor={currentTheme.white}
-                      style={styles().checkoutBtn}
-                      bold
-                      H5
-                    >
-                      {t('checkoutBtn')}
-                    </TextDefault>
-                  </TouchableOpacity>
+                  <Fragment>
+                    {calculateTotal() >= minimumOrder ? (
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => {
+                          navigation.navigate('Checkout')
+                        }}
+                        style={styles(currentTheme).button}
+                      >
+                        <TextDefault
+                          textColor={currentTheme.white}
+                          style={styles().checkoutBtn}
+                          bold
+                          H5
+                        >
+                          {t('checkoutBtn')}
+                        </TextDefault>
+                      </TouchableOpacity>
+                    ) : (
+                      <View
+                        style={{
+                          width: '50%'
+                        }}
+                      >
+                        {showMinimumOrderMessage()}
+                      </View>
+                    )}
+                  </Fragment>
                 ) : (
                   <TouchableOpacity
                     activeOpacity={0.7}

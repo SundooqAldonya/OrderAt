@@ -5,7 +5,7 @@ import * as Device from 'expo-device'
 import Constants from 'expo-constants'
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
-import { login, emailExist } from '../../apollo/mutations'
+import { login, emailExist, phoneExist } from '../../apollo/mutations'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import * as Notifications from 'expo-notifications'
@@ -14,12 +14,13 @@ import analytics from '../../utils/analytics'
 import AuthContext from '../../context/Auth'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 const LOGIN = gql`
   ${login}
 `
-const EMAIL = gql`
-  ${emailExist}
+const PHONE = gql`
+  ${phoneExist}
 `
 
 export const useLogin = () => {
@@ -36,8 +37,9 @@ export const useLogin = () => {
   const currentTheme = theme[themeContext.ThemeValue]
   const { setTokenAsync } = useContext(AuthContext)
   const { t } = useTranslation()
+  const phone = useSelector((state) => state.phone.phone)
 
-  const [EmailEixst, { loading }] = useMutation(EMAIL, {
+  const [mutatePhoneExists, { loading }] = useMutation(PHONE, {
     onCompleted,
     onError
   })
@@ -55,16 +57,16 @@ export const useLogin = () => {
     let result = true
     setEmailError(null)
     setPasswordError(null)
-    if (!emailRef.current) {
-      setEmailError(t('emailErr1'))
-      result = false
-    } else {
-      // const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/
-      // if (emailRegex.test(emailRef.current) !== true) {
-      //   setEmailError(t('emailErr2'))
-      //   result = false
-      // }
-    }
+    // if (!emailRef.current) {
+    //   setEmailError(t('phoneErr1'))
+    //   result = false
+    // } else {
+    // const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/
+    // if (emailRegex.test(emailRef.current) !== true) {
+    //   setEmailError(t('emailErr2'))
+    //   result = false
+    // }
+    // }
     if (!password && registeredEmail) {
       setPasswordError(t('passErr1'))
       result = false
@@ -96,10 +98,17 @@ export const useLogin = () => {
   }
 
   function onError(error) {
+    console.log({ error })
+    const phoneNotExist = JSON.stringify(error).includes('phone_doesnt_exist')
+    if (phoneNotExist) {
+      navigation.navigate('Register')
+      return
+    }
     try {
-      FlashMessage({
-        message: error.graphQLErrors[0].message
-      })
+      if (error.includes)
+        FlashMessage({
+          message: error.graphQLErrors[0].message
+        })
     } catch (e) {
       FlashMessage({
         message: t('mailCheckingError')
@@ -176,8 +185,8 @@ export const useLogin = () => {
     }
   }
 
-  function checkEmailExist() {
-    EmailEixst({ variables: { email: emailRef.current } })
+  function checkPhoneExists() {
+    mutatePhoneExists({ variables: { phone } })
   }
 
   function onBackButtonPressAndroid() {
@@ -201,7 +210,7 @@ export const useLogin = () => {
     loading,
     loginLoading,
     loginAction,
-    checkEmailExist,
+    checkPhoneExists,
     onBackButtonPressAndroid,
     emailRef
   }

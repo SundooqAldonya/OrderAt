@@ -50,16 +50,16 @@ const styles = (props = null) =>
       width: '100%'
     },
     textField: {
-      fontSize:scale(12),
+      fontSize: scale(12),
       borderColor: colors?.border1,
       borderWidth: scale(1),
       borderRadius: scale(10),
       backgroundColor: props !== null ? props.themeBackground : 'white',
       padding: scale(12),
-      color: props !==null ? props.newFontcolor : 'red',
+      color: props !== null ? props.newFontcolor : 'red',
       ...alignment.MBxSmall,
       ...alignment.MTxSmall,
-      alignItems:'center'
+      alignItems: 'center'
     },
     passwordField: {
       display: 'flex',
@@ -101,12 +101,12 @@ const styles = (props = null) =>
     phoneFieldInner: {
       flexDirection: 'row',
       alignItems: 'center',
-      alignItemCenter:'center'
+      alignItemCenter: 'center'
     },
-    phoneField:{
-      fontSize:scale(12),
+    phoneField: {
+      fontSize: scale(12),
 
-     color: props !== null ? props.newFontcolor : 'red',
+      color: props !== null ? props.newFontcolor : 'red'
     },
     error: {
       marginTop: 3

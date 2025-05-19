@@ -10,11 +10,14 @@
       "channel": "staging",
       "distribution": "internal"
     },
-    "production": {
+    "preview": {
       "channel": "production",
       "android": {
         "buildType": "apk"
       }
+    },
+    "production": {
+      "channel": "production"
     }
   },
   "submit": {

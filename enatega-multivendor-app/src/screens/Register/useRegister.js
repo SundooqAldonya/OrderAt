@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
 import { phoneExist } from '../../apollo/mutations'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import { useSelector } from 'react-redux'
 
 const PHONE = gql`
   ${phoneExist}
@@ -15,12 +16,13 @@ const PHONE = gql`
 
 const useRegister = () => {
   const navigation = useNavigation()
+  const savedPhone = useSelector((state) => state.phone.phone)
   const { t } = useTranslation()
   const route = useRoute()
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
   const [email, setEmail] = useState(route.params?.email || '')
-  const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState(savedPhone)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(true)
   const [firstnameError, setFirstnameError] = useState(null)
@@ -70,10 +72,10 @@ const useRegister = () => {
     setFirstnameError(null)
     setLastnameError(null)
 
-    if (!email) {
-      setEmailError(t('emailErr1'))
-      result = false
-    }
+    // if (!email) {
+    //   setEmailError(t('emailErr1'))
+    //   result = false
+    // }
     // else if (!emailRegex.test(email.trim())) {
     //   setEmailError(t('emailErr2'))
     //   result = false
@@ -130,7 +132,7 @@ const useRegister = () => {
       navigation.navigate('EmailOtp', {
         user: {
           phone: '+'.concat(country.callingCode[0]).concat(phone),
-          email: email.toLowerCase().trim(),
+          email: email.length ? email.toLowerCase().trim() : '',
           password: password,
           name: firstname + ' ' + lastname
         }

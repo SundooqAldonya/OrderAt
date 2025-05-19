@@ -368,8 +368,10 @@ module.exports = {
       console.log('CheckingEmail')
       console.log(args)
       try {
+        const phone = normalizeAndValidatePhoneNumber(args.email)
+        console.log({ phone })
         const emailExists = await User.findOne({
-          $or: [{ email: args.email }, { phone: args.email }]
+          $or: [{ email: args.email }, { phone }]
         })
         console.log({ emailExists })
         if (emailExists) {
@@ -383,13 +385,14 @@ module.exports = {
       }
     },
     phoneExist: async (_, args, { res, req }) => {
-      console.log('CheckingPhone')
+      console.log('CheckingPhone', { args })
       try {
         const phoneExist = await User.findOne({ phone: args.phone })
+        console.log({ phoneExist })
         if (phoneExist) {
           return phoneExist
         } else {
-          return 'null'
+          throw new Error('phone_doesnt_exist')
         }
       } catch (err) {
         console.log(err)

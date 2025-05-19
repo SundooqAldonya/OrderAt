@@ -247,9 +247,9 @@ const CreateAccount = (props) => {
             >
               {t('signUporSignIn')}
             </TextDefault>
-            <TextDefault textColor={currentTheme?.secondaryText}>
+            {/* <TextDefault textColor={currentTheme?.secondaryText}>
               {t('signUpDiscount')}
-            </TextDefault>
+            </TextDefault> */}
           </View>
 
           {/* <View style={{ marginBottom: scale(5) }}>{renderGoogleAction()}</View> */}

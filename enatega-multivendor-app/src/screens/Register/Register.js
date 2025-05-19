@@ -18,10 +18,12 @@ import CountryPicker from 'react-native-country-picker-modal'
 import useRegister from './useRegister'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
+import { useSelector } from 'react-redux'
 
 function Register(props) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
+  const phone = useSelector((state) => state.phone.phone)
 
   const {
     email,
@@ -36,8 +38,8 @@ function Register(props) {
     password,
     setPassword,
     passwordError,
-    phone,
-    setPhone,
+    // phone,
+    // setPhone,
     phoneError,
     showPassword,
     setShowPassword,
@@ -59,6 +61,20 @@ function Register(props) {
     )
   }, [props.navigation])
 
+  const formatPhoneNumber = (phone) => {
+    // Remove any non-digit characters just in case
+    const digits = phone.replace(/\D/g, '')
+
+    // Check if it's 10 digits and starts with 0
+    if (digits.startsWith('0')) {
+      // Remove leading zero
+      return digits.slice(1)
+    }
+
+    // Invalid case - return null or original
+    return digits
+  }
+
   return (
     <SafeAreaView
       edges={['bottom', 'left', 'right']}
@@ -76,7 +92,12 @@ function Register(props) {
         >
           <View style={styles(currentTheme).mainContainer}>
             <View style={styles().subContainer}>
-              <View style={styles().logoContainer}>
+              <View
+                style={{
+                  ...styles().logoContainer,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
                 {/* <Image
                   source={require('../../../assets/login-icon.png')}
                   style={styles().logoContainer}
@@ -114,7 +135,7 @@ function Register(props) {
                 </TextDefault>
               </View>
               <View style={styles().form}>
-                <View>
+                {/* <View>
                   <TextInput
                     placeholder={t('email')}
                     style={[
@@ -134,7 +155,61 @@ function Register(props) {
                       {emailError}
                     </TextDefault>
                   )}
+                </View> */}
+                <View style={styles().number}>
+                  <View
+                    style={[
+                      styles(currentTheme).textField,
+                      styles().countryCode
+                    ]}
+                  >
+                    {/* <CountryPicker
+                      countryCode={countryCode}
+                      onSelect={(country) => onCountrySelect(country)}
+                      withAlphaFilter
+                      withFilter
+                    /> */}
+                    <TextDefault
+                      textColor={currentTheme.newFontcolor}
+                      style={{ marginTop: Platform.OS === 'android' ? 7 : 10 }}
+                    >
+                      {country?.cca2}
+                    </TextDefault>
+                  </View>
+                  <View
+                    style={[
+                      styles(currentTheme).textField,
+                      styles().phoneNumber,
+                      { alignItems: 'flex-start' },
+                      phoneError && styles(currentTheme).errorInput
+                    ]}
+                  >
+                    <View style={styles().phoneFieldInner}>
+                      <TextDefault textColor={currentTheme.newFontcolor}>
+                        +{country.callingCode[0]}{' '}
+                      </TextDefault>
+                      <TextInput
+                        keyboardType='phone-pad'
+                        placeholder={t('mobileNumber')}
+                        placeholderTextColor={currentTheme.fontSecondColor}
+                        value={formatPhoneNumber(phone)}
+                        onChangeText={(e) => setPhone(e)}
+                        style={styles(currentTheme).phoneField}
+                      />
+                    </View>
+                  </View>
                 </View>
+                {phoneError && (
+                  <View style={{ marginLeft: '30%' }}>
+                    <TextDefault
+                      style={styles(currentTheme).error}
+                      bold
+                      textColor={currentTheme.textErrorColor}
+                    >
+                      {phoneError}
+                    </TextDefault>
+                  </View>
+                )}
                 <View>
                   <TextInput
                     placeholder={t('firstNamePH')}
@@ -190,7 +265,7 @@ function Register(props) {
                     value={password}
                     onChangeText={(e) => setPassword(e)}
                   />
-                  <View>
+                  {/* <View>
                     <FontAwesome
                       onPress={() => setShowPassword(!showPassword)}
                       name={showPassword ? 'eye' : 'eye-slash'}
@@ -198,7 +273,7 @@ function Register(props) {
                       color={currentTheme.fontFourthColor}
                       style={styles().eyeBtn}
                     />
-                  </View>
+                  </View> */}
                 </View>
                 {passwordError && (
                   <View>
@@ -208,59 +283,6 @@ function Register(props) {
                       textColor={currentTheme.textErrorColor}
                     >
                       {passwordError}
-                    </TextDefault>
-                  </View>
-                )}
-                <View style={styles().number}>
-                  <View
-                    style={[
-                      styles(currentTheme).textField,
-                      styles().countryCode
-                    ]}
-                  >
-                    {/* <CountryPicker
-                      countryCode={countryCode}
-                      onSelect={(country) => onCountrySelect(country)}
-                      withAlphaFilter
-                      withFilter
-                    /> */}
-                    <TextDefault
-                      textColor={currentTheme.newFontcolor}
-                      style={{ marginTop: Platform.OS === 'android' ? 7 : 10 }}
-                    >
-                      {country?.cca2}
-                    </TextDefault>
-                  </View>
-                  <View
-                    style={[
-                      styles(currentTheme).textField,
-                      styles().phoneNumber,
-                      { alignItems: 'flex-start' },
-                      phoneError && styles(currentTheme).errorInput
-                    ]}
-                  >
-                    <View style={styles().phoneFieldInner}>
-                      <TextDefault textColor={currentTheme.newFontcolor}>
-                        +{country.callingCode[0]}{' '}
-                      </TextDefault>
-                      <TextInput
-                        placeholder={t('mobileNumber')}
-                        placeholderTextColor={currentTheme.fontSecondColor}
-                        value={phone}
-                        onChangeText={(e) => setPhone(e)}
-                        style={styles(currentTheme).phoneField}
-                      />
-                    </View>
-                  </View>
-                </View>
-                {phoneError && (
-                  <View style={{ marginLeft: '30%' }}>
-                    <TextDefault
-                      style={styles(currentTheme).error}
-                      bold
-                      textColor={currentTheme.textErrorColor}
-                    >
-                      {phoneError}
                     </TextDefault>
                   </View>
                 )}
