@@ -690,9 +690,8 @@ export const deleteRestaurant = `mutation DeltetRestaurant($id:String!){
   }
 }`
 
-export const updateTimings = `mutation UpdateTimings($id:String!,$openingTimes:[TimingsInput]){
-  updateTimings(id:$id,
-    openingTimes:$openingTimes){
+export const updateTimings = `mutation UpdateTimings($id:String!, $openingTimes:[TimingsInput]){
+  updateTimings(id:$id, openingTimes:$openingTimes){
     _id
     openingTimes{
       day
