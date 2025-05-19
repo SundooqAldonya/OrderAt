@@ -544,12 +544,18 @@ module.exports = {
         },
         {
           $limit: 20
+        },
+        {
+          $lookup: {
+            from: 'businesscategories', // must match actual collection name (usually lowercase plural)
+            localField: 'businessCategories', // assumed to be an array of ObjectIds in Restaurant
+            foreignField: '_id',
+            as: 'businessCategories'
+          }
         }
       ]).exec()
-
-      return restaurants.map(r =>
-        transformMinimalRestaurantData(new Restaurant(r))
-      )
+      console.log({ mostRestaurants: restaurants[0].businessCategories[0] })
+      return restaurants
     },
     relatedItems: async (_, args, { req }) => {
       console.log('relatedItems', args, req.userId)

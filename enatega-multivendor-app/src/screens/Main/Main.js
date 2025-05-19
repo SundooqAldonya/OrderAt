@@ -140,8 +140,12 @@ function Main(props) {
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError
   })
-  const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
+  // const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants
+  // console.log({
+  //   mostOrderedRestaurantsVar:
+  //     mostOrderedRestaurantsVar[0].businessCategories[0]
+  // })
   // console.log({
   //   recentOrderRestaurantsVar: recentOrderRestaurantsVar[1].businessCategories
   // })
@@ -588,14 +592,14 @@ function Main(props) {
 
                     <View style={{ marginTop: 20 }}>
                       <View>
-                        {recentOrderRestaurantsVar &&
-                          recentOrderRestaurantsVar.length > 0 && (
+                        {mostOrderedRestaurantsVar &&
+                          mostOrderedRestaurantsVar.length > 0 && (
                             <>
                               {orderLoading ? (
                                 <MainLoadingUI />
                               ) : (
                                 <MainRestaurantCard
-                                  orders={recentOrderRestaurantsVar}
+                                  orders={mostOrderedRestaurantsVar}
                                   loading={orderLoading}
                                   error={orderError}
                                   title={'mostOrderedNow'}

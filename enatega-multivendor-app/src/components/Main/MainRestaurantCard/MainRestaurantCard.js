@@ -85,16 +85,6 @@ function MainRestaurantCard(props) {
             <FlatList
               style={styles().offerScroll}
               inverted={isArabic}
-              contentContainerStyle={
-                {
-                  // flexGrow: 1,
-                  // ...alignment.PRlarge,
-                  // alignSelf: 'center',
-                  // alignItems: 'center',
-                  // justifyContent: 'center',
-                  // backgroundColor: 'red',
-                }
-              }
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               horizontal={true}

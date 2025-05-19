@@ -47,15 +47,14 @@ const notifications = {
   },
   async sendCustomerNotifications(customer, order) {
     console.log('Sending notification to customer app')
-    const accessToken = await getAccessToken()
+
     const newChannelId = 'default_sound4'
-    console.log({ customer })
     let body
 
     if (order.orderStatus === 'ACCEPTED') {
       body = `تم الموافقة على طلبك`
     } else if (order.orderStatus === 'ASSIGNED') {
-      if (order.type && order.type == 'delivery_request') {
+      if (order.type === 'delivery_request') {
         body = 'السائق في طريقه إليك'
       } else {
         body = `طلبك من ${order.restaurant.name} في طريقه إليك`
@@ -66,55 +65,114 @@ const notifications = {
       body = 'طلبك تم تسليمه'
     }
 
-    const messageBody = {
-      message: {
-        token: customer?.notificationToken,
+    const message = {
+      token: customer?.notificationToken,
+      notification: {
+        title:
+          order.type && order.type !== 'delivery_request'
+            ? `طلبك إلى ${order.restaurant.name}`
+            : 'طلبك',
+        body
+      },
+      data: {
+        channelId: newChannelId,
+        message: 'Testing',
+        playSound: 'true',
+        sound: 'beep1.wav',
+        orderId: order._id.toString()
+      },
+      android: {
         notification: {
-          title:
-            order.type && order.type !== 'delivery_request'
-              ? `طلبك إلى ${order.restaurant.name}`
-              : 'طلبك',
-          body
-        },
-        data: {
-          channelId: newChannelId,
-          message: 'Testing',
-          playSound: 'true',
-          sound: 'beep1.wav',
-          orderId: order._id
-        },
-        android: {
-          notification: {
-            sound: 'beep1',
-            channelId: newChannelId
+          sound: 'beep1',
+          channelId: newChannelId
+        }
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'beep1.wav'
           }
         }
       }
     }
 
-    const projectId = 'food-delivery-api-ab4e4'
-
     try {
-      const response = await fetch(
-        `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-          },
-          body: JSON.stringify(messageBody)
-        }
-      )
-
-      const data = await response.json()
-      console.log('Customer FCM push notification sent:', data)
+      const response = await admin.messaging().send(message)
+      console.log('Customer FCM push notification sent:', response)
     } catch (error) {
-      console.error('Error sending Expo push notification:', error)
+      console.error('Error sending push notification:', error)
     }
   }
+  // async sendCustomerNotifications(customer, order) {
+  //   console.log('Sending notification to customer app')
+  //   const accessToken = await getAccessToken()
+  //   const newChannelId = 'default_sound4'
+  //   console.log({ customer })
+  //   let body
+
+  //   if (order.orderStatus === 'ACCEPTED') {
+  //     body = `تم الموافقة على طلبك`
+  //   } else if (order.orderStatus === 'ASSIGNED') {
+  //     if (order.type && order.type == 'delivery_request') {
+  //       body = 'السائق في طريقه إليك'
+  //     } else {
+  //       body = `طلبك من ${order.restaurant.name} في طريقه إليك`
+  //     }
+  //   } else if (order.orderStatus === 'PICKED') {
+  //     body = 'طلبك تم استلامه'
+  //   } else if (order.orderStatus === 'DELIVERED') {
+  //     body = 'طلبك تم تسليمه'
+  //   }
+
+  //   const messageBody = {
+  //     message: {
+  //       token: customer?.notificationToken,
+  //       notification: {
+  //         title:
+  //           order.type && order.type !== 'delivery_request'
+  //             ? `طلبك إلى ${order.restaurant.name}`
+  //             : 'طلبك',
+  //         body
+  //       },
+  //       data: {
+  //         channelId: newChannelId,
+  //         message: 'Testing',
+  //         playSound: 'true',
+  //         sound: 'beep1.wav',
+  //         orderId: order._id
+  //       },
+  //       android: {
+  //         notification: {
+  //           sound: 'beep1',
+  //           channelId: newChannelId
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   const projectId = 'food-delivery-api-ab4e4'
+
+  //   try {
+  //     const response = await fetch(
+  //       `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+  //       {
+  //         method: 'POST',
+  //         headers: {
+  //           Accept: 'application/json',
+  //           'Accept-encoding': 'gzip, deflate',
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
+  //         },
+  //         body: JSON.stringify(messageBody)
+  //       }
+  //     )
+
+  //     const data = await response.json()
+  //     console.log('Customer FCM push notification sent:', data)
+  //   } catch (error) {
+  //     console.error('Error sending Expo push notification:', error)
+  //   }
+  // }
 }
 
 module.exports = notifications
