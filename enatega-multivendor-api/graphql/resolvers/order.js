@@ -399,7 +399,7 @@ module.exports = {
         } = args.input
 
         // const phoneNumber = phone.replace('+2', '')
-        // console.log({ phoneNumber: normalizeAndValidatePhoneNumber(phone) })
+        console.log({ phoneNumber: normalizeAndValidatePhoneNumber(phone) })
 
         let user = await User.findOne({
           phone: normalizeAndValidatePhoneNumber(phone)
@@ -432,7 +432,7 @@ module.exports = {
             governate: 'N/A',
             address_free_text: address.details,
             addresses: address || [],
-            email: normalizeAndValidatePhoneNumber(phone),
+            email: '',
             userType: 'default',
             emailIsVerified: true,
             phoneIsVerified: false,

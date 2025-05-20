@@ -31,6 +31,8 @@ const normalizeAndValidatePhoneNumber = phoneNum => {
     normalized = normalized.slice(3)
   } else if (normalized.startsWith('+')) {
     normalized = normalized.slice(2)
+  } else if (normalized.startsWith('02')) {
+    normalized = normalized.slice(2)
   }
   console.log({ normalizedAfter: normalized })
 

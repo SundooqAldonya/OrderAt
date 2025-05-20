@@ -136,6 +136,8 @@ const Timings = props => {
     })
   }
 
+  const dayKeys = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+
   return (
     <>
       <Header />
@@ -154,7 +156,16 @@ const Timings = props => {
                 {t('OpenTimes')}
               </Grid>
             </Grid>
-            <DayComponent
+            {dayKeys.map((dayKey, idx) => (
+              <DayComponent
+                key={dayKey}
+                day={t(dayKey)}
+                value={transformedTimes[dayKey] || [['00:00', '23:59']]}
+                onChangeTime={onChangeTime}
+                idx={idx}
+              />
+            ))}
+            {/* <DayComponent
               day={t('MON')}
               value={transformedTimes.MON || [['00:00', '23:59']]}
               onChangeTime={onChangeTime}
@@ -195,7 +206,7 @@ const Timings = props => {
               value={transformedTimes.SUN || [['00:00', '23:59']]}
               onChangeTime={onChangeTime}
               idx={6}
-            />
+            /> */}
             <Box
               sx={{
                 display: 'flex',
