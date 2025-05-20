@@ -387,7 +387,9 @@ module.exports = {
     phoneExist: async (_, args, { res, req }) => {
       console.log('CheckingPhone', { args })
       try {
-        const phoneExist = await User.findOne({ phone: args.phone })
+        const phone = normalizeAndValidatePhoneNumber(args.phone)
+        console.log({ phone })
+        const phoneExist = await User.findOne({ phone })
         console.log({ phoneExist })
         if (phoneExist) {
           return phoneExist
@@ -402,6 +404,8 @@ module.exports = {
     createUser: async (_, args, context) => {
       console.log('createUser', args.userInput)
       try {
+        let phone
+
         if (args.userInput.appleId) {
           const existingAppleId = await User.findOne({
             appleId: args.userInput.appleId
@@ -419,8 +423,10 @@ module.exports = {
           }
         }
         if (args.userInput.phone) {
+          phone = normalizeAndValidatePhoneNumber(args.userInput.phone)
+          console.log({ phone })
           const existingPhone = await User.findOne({
-            phone: args.userInput.phone
+            phone
           })
           if (existingPhone) {
             throw new Error('Phone is already associated with another account.')
@@ -437,7 +443,7 @@ module.exports = {
           appleId: args.userInput.appleId,
           email: args.userInput.email,
           password: hashedPassword,
-          phone: args.userInput.phone,
+          phone,
           name: args.userInput.name,
           notificationToken: args.userInput.notificationToken,
           isOrderNotification: !!args.userInput.notificationToken,
@@ -465,13 +471,15 @@ module.exports = {
           ...args.userInput,
           code: user.emailVerficationCode
         })
-        sendEmail(
-          result.email,
-          'Account Creation',
-          signupText,
-          signupTemp,
-          attachment
-        )
+        if (args.userInput.email?.length) {
+          sendEmail(
+            result.email,
+            'Account Creation',
+            signupText,
+            signupTemp,
+            attachment
+          )
+        }
         const token = jwt.sign(
           {
             userId: result.id,
@@ -553,6 +561,7 @@ module.exports = {
 
     async validatePhone(_, args, { req }) {
       console.log('validatePhone', { args })
+      if (!req.userId) throw new Error('unauthenticated')
       try {
         axios.defaults.headers = {
           'Content-Type': 'application/json',
@@ -567,6 +576,7 @@ module.exports = {
         const otp = generatePhoneOTP()
 
         console.log({ phoneNumber, otp })
+
         const body = {
           username: 'w8pRT869',
           password: 'Oqo48lklp',
@@ -579,28 +589,82 @@ module.exports = {
 
         const url = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.mobiles}&message=${body.message}`
 
-        const res = await axios.post(url).catch(err => {
-          console.log({ err })
-          throw new Error('SMS integration went wrong!')
-        })
+        const res = await axios.post(url)
+        if (res.data.type === 'error') {
+          throw new Error(res.data.error.msg)
+        }
         user.phoneOTP = otp
         user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
         await user.save()
-        console.log({ res: res.data })
-        console.log({ res: res.data[0].data })
+        console.log({ res: res?.data })
+
+        // console.log({ res: res?.data[0].data })
         return { message: 'otp_message_sent' }
       } catch (err) {
         throw new Error(err)
       }
     },
+    async validatePhoneUnauth(_, args) {
+      console.log('validatePhoneUnauth', { args })
+      // try {
+      axios.defaults.headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Accept-Language': 'en-US'
+      }
+      const phoneNumber = normalizeAndValidatePhoneNumber(args.phone)
+      console.log({ phoneNumber })
+
+      const user = await User.findOne({ phone: phoneNumber })
+      if (!user) throw new Error('user_doesnt_exist')
+      const otp = generatePhoneOTP()
+
+      console.log({ phoneNumber, otp })
+
+      const body = {
+        username: 'w8pRT869',
+        password: 'Oqo48lklp',
+        // sendername: 'Sms plus',
+        sendername: 'Kayan',
+        mobiles: phoneNumber?.replace('+', ''),
+        message: `أوردرات: رمز التحقق الخاص بك هو: ${otp}`
+      }
+      console.log({ body })
+
+      const url = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.mobiles}&message=${body.message}`
+
+      const res = await axios.post(url).catch(err => {
+        console.log({ err })
+        throw new Error('SMS integration went wrong!')
+      })
+      user.phoneOTP = otp
+      user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
+      await user.save()
+      console.log({ res: res.data })
+      console.log({ res: res.data[0].data })
+      return { message: 'otp_message_sent' }
+      // } catch (err) {
+      //   throw new Error(err)
+      // }
+    },
 
     async verifyPhoneOTP(_, args, { req }) {
       console.log('verifyPhoneOTP', { args })
       try {
-        const user = await User.findById(req.userId)
-        if (user.otpExpiresAt < new Date()) {
-          throw new Error('otp_expired')
-        }
+        // const user = await User.findById(req.userId)
+        const phone = normalizeAndValidatePhoneNumber(args.phone)
+        console.log({ phone })
+        const localPart = phone.replace(/[^\d]/g, '').slice(-10)
+
+        // Match any phone ending with this local part
+        const regex = new RegExp(`${localPart}$`) // e.g., /1001111111$/
+        console.log({ regex })
+        const user = await User.findOne({ phone: { $regex: regex } })
+        console.log({ user })
+        console.log({ userOTP: user.phoneOTP, otp: args.otp })
+        // if (user.otpExpiresAt < new Date()) {
+        //   throw new Error('otp_expired')
+        // }
         if (user.phoneOTP === args.otp) {
           user.phoneIsVerified = true
           user.phoneOTP = null

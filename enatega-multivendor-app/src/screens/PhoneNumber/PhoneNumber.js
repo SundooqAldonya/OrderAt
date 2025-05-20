@@ -29,6 +29,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useContext } from 'react'
 import UserContext from '../../context/User'
 import { useEffect } from 'react'
+import { colors } from '../../utils/colors'
 
 function PhoneNumber(props) {
   const dispatch = useDispatch()
@@ -52,7 +53,7 @@ function PhoneNumber(props) {
 
   useEffect(() => {
     if (profile?.phone) {
-      dispatch(setPhone({ phone: profile.phone.replace('+20', '') }))
+      dispatch(setPhone({ phone: profile.phone }))
     }
   }, [])
 
@@ -89,7 +90,7 @@ function PhoneNumber(props) {
   const handleSubmit = () => {
     mutate({
       variables: {
-        phone: `+${country.callingCode[0]}${phone}`
+        phone: `+${country.callingCode[0]}${phone.replace('+20', '')}`
       }
     })
   }
@@ -189,7 +190,7 @@ function PhoneNumber(props) {
                         style={styles(currentTheme).phoneNo}
                         placeholder={t('mobileNumber')}
                         placeholderTextColor={currentTheme.color6}
-                        value={phone}
+                        value={phone.replace('+20', '')}
                         onChangeText={handleChange}
                         keyboardType='phone-pad'
                         inputMode='numeric'
@@ -215,7 +216,7 @@ function PhoneNumber(props) {
                 onPress={handleSubmit}
                 style={{
                   ...styles(currentTheme).btn,
-                  backgroundColor: loadingValidate && 'grey'
+                  backgroundColor: loadingValidate ? 'grey' : colors.primary
                 }}
                 disabled={loadingValidate}
               >

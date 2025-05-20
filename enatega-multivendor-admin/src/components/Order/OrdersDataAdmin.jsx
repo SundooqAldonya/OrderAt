@@ -108,15 +108,15 @@ const OrdersDataAdmin = props => {
     },
     {
       name: t('business_name'),
-      cell: row => <>{row?.restaurant?.name}</>
+      cell: row => <>{row?.restaurant ? row?.restaurant?.name : 'N/A'}</>
     },
     {
       name: t('name'),
-      cell: row => <>{row.user.name}</>
+      cell: row => <>{row.user && row.user.name ? row.user.name : 'N/A'}</>
     },
     {
       name: t('phone'),
-      cell: row => <>{row.user.phone}</>
+      cell: row => <>{row.user && row.user.phone ? row.user.phone : 'N/A'}</>
     },
     {
       name: t('Payment'),

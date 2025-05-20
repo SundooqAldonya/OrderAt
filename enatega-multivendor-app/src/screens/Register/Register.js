@@ -19,8 +19,21 @@ import useRegister from './useRegister'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
 import { useSelector } from 'react-redux'
+import { gql, useMutation } from '@apollo/client'
+import { createUser, validatePhoneUnauth } from '../../apollo/mutations'
+import * as Notifications from 'expo-notifications'
+import * as Device from 'expo-device'
+import Constants from 'expo-constants'
+import { useNavigation } from '@react-navigation/native'
+import { useContext } from 'react'
+import AuthContext from '../../context/Auth'
+
+const CREATEUSER = gql`
+  ${createUser}
+`
 
 function Register(props) {
+  const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const phone = useSelector((state) => state.phone.phone)
@@ -49,6 +62,36 @@ function Register(props) {
     onCountrySelect,
     currentTheme
   } = useRegister()
+  const { setTokenAsync } = useContext(AuthContext)
+
+  const [mutateValidatePhone, { loading: loadingValidate }] = useMutation(
+    validatePhoneUnauth,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+
+        navigation.navigate('PhoneOtp')
+      },
+      onError: (err) => {
+        console.log({ err })
+      }
+    }
+  )
+
+  const [mutateCreateUser, { loading }] = useMutation(CREATEUSER, {
+    onCompleted: async (res) => {
+      console.log({ res })
+      await setTokenAsync(res.createUser.token)
+      mutateValidatePhone({
+        variables: {
+          phone
+        }
+      })
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
 
   useLayoutEffect(() => {
     props.navigation.setOptions(
@@ -73,6 +116,30 @@ function Register(props) {
 
     // Invalid case - return null or original
     return digits
+  }
+
+  const handleSubmit = async () => {
+    let notificationToken = null
+    if (Device.isDevice) {
+      const { status } = await Notifications.requestPermissionsAsync()
+      if (status === 'granted') {
+        notificationToken = (
+          await Notifications.getDevicePushTokenAsync({
+            projectId: Constants.expoConfig.extra.eas.projectId
+          })
+        ).data
+      }
+    }
+    mutateCreateUser({
+      variables: {
+        phone,
+        email: '',
+        password,
+        name: `${firstname} ${lastname}`,
+        picture: '',
+        notificationToken
+      }
+    })
   }
 
   return (
@@ -263,7 +330,8 @@ function Register(props) {
                     ]}
                     placeholderTextColor={currentTheme.fontSecondColor}
                     value={password}
-                    onChangeText={(e) => setPassword(e)}
+                    autoCapitalize='none'
+                    onChangeText={(text) => setPassword(text)}
                   />
                   {/* <View>
                     <FontAwesome
@@ -290,11 +358,14 @@ function Register(props) {
             </View>
             <View style={styles().btnContainer}>
               <TouchableOpacity
-                onPress={() => registerAction()}
-                activeOpacity={0.7}
+                disabled={loading || loadingValidate}
+                onPress={handleSubmit}
                 style={[
                   styles(currentTheme).btn,
-                  { backgroundColor: colors?.primary }
+                  {
+                    backgroundColor:
+                      loading || loadingValidate ? 'grey' : colors?.primary
+                  }
                 ]}
               >
                 <TextDefault H4 textColor={currentTheme.black} bold>

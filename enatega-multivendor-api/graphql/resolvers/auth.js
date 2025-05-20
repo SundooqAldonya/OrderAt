@@ -245,11 +245,13 @@ module.exports = {
     riderLogin: async (_, args, context) => {
       try {
         console.log('riderLogin', args.username, args.password)
-        const rider = await Rider.findOne({ username: args.username })
-        if (!rider) throw new Error('Email not registered!')
+        const rider = await Rider.findOne({
+          username: args.username?.toLowerCase()
+        })
+        if (!rider) throw new Error('Username not registered!')
 
         if (rider.password !== args.password) {
-          throw new Error('Email and password do not match!')
+          throw new Error('Username and password do not match!')
         }
 
         if (!rider.isActive) {

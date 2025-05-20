@@ -1,4 +1,5 @@
-const normalizeAndValidatePhoneNumber = phone => {
+const normalizeAndValidatePhoneNumber = phoneNum => {
+  let phone = phoneNum.replace(' ', '')
   const arabicToEnglishDigits = {
     '٠': '0',
     '١': '1',
@@ -21,9 +22,12 @@ const normalizeAndValidatePhoneNumber = phone => {
   }
 
   console.log({ normalizedBefore: normalized })
-
+  if (normalized.startsWith('+2001')) {
+    console.log({ sliced: normalized.slice(3) })
+    normalized = normalized.slice(3) // remove "00", keep "10..."
+  }
   // Remove leading "002" or "2" if present
-  if (normalized.startsWith('002')) {
+  else if (normalized.startsWith('002')) {
     normalized = normalized.slice(3)
   } else if (normalized.startsWith('+')) {
     normalized = normalized.slice(2)

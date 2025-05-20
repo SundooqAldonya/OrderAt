@@ -211,22 +211,6 @@ function AppContainer() {
     }
   })
 
-  const setupFCM = async () => {
-    // Listen for token refresh
-    const unsubscribe = messaging().onTokenRefresh(async newToken => {
-      console.log('FCM token refreshed:', newToken)
-      // await sendTokenToBackend(userId, newToken)
-      mutateRefreshToken({
-        variables: {
-          id: 'asdf',
-          notificationToken: newToken
-        }
-      })
-    })
-
-    return unsubscribe
-  }
-
   useEffect(() => {
     async function checkPermissions() {
       const { status } = await Notifications.getPermissionsAsync()
@@ -262,10 +246,6 @@ function AppContainer() {
     })
 
     return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    setupFCM()
   }, [])
 
   useEffect(() => {

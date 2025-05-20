@@ -114,12 +114,12 @@ const OrdersData = props => {
     //   cell: row => <>{getItems(row.items)}</>
     // },
     {
-      name: t('customer_name'),
-      cell: row => <>{row.user.name}</>
+      name: t('name'),
+      cell: row => <>{row.user && row.user.name ? row.user.name : 'N/A'}</>
     },
     {
       name: t('phone'),
-      cell: row => <>{row.user.phone}</>
+      cell: row => <>{row.user && row.user.phone ? row.user.phone : 'N/A'}</>
     },
     {
       name: t('Payment'),

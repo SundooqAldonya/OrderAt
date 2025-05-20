@@ -83,6 +83,7 @@ function Profile(props) {
     })
     FlashMessage({ message: t('accountDeactivated'), duration: 5000 })
   }
+
   const onErrorDeactivate = (error) => {
     if (error.graphQLErrors) {
       FlashMessage({

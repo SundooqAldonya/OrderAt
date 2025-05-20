@@ -431,9 +431,16 @@ export const validatePhone = gql`
     }
   }
 `
+export const validatePhoneUnauth = gql`
+  mutation ValidatePhoneUnauth($phone: String!) {
+    validatePhoneUnauth(phone: $phone) {
+      message
+    }
+  }
+`
 export const verifyPhoneOTP = gql`
-  mutation VerifyPhoneOTP($otp: String!) {
-    verifyPhoneOTP(otp: $otp) {
+  mutation VerifyPhoneOTP($otp: String!, $phone: String!) {
+    verifyPhoneOTP(otp: $otp, phone: $phone) {
       message
     }
   }

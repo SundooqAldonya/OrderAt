@@ -25,12 +25,17 @@ import { useMutation } from '@apollo/client'
 import { validatePhone, verifyPhoneOTP } from '../../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import usePhoneNumber from '../../PhoneNumber/usePhoneNumber'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 function PhoneOtp(props) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
+  // const route = useRoute()
+  // const { createUser } = route.params || {}
+
+  // console.log({ createUser })
+
   const {
     // phone,
     setSeconds,
@@ -108,10 +113,13 @@ function PhoneOtp(props) {
     )
   }, [props.navigation])
 
+  console.log({ phone })
+
   const onCodeFilled = (otp) => {
     mutateVerify({
       variables: {
-        otp
+        otp,
+        phone
       }
     })
   }

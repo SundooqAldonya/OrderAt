@@ -303,10 +303,10 @@ function Cart(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = data?.restaurantCustomer.openingTimes.find(
+    const todaysTimings = data?.restaurantCustomer.openingTimes?.find(
       (o) => o.day === DAYS[day]
     )
-    const times = todaysTimings.times.filter(
+    const times = todaysTimings?.times?.filter(
       (t) =>
         hours >= Number(t.startTime[0]) &&
         minutes >= Number(t.startTime[1]) &&
@@ -314,7 +314,7 @@ function Cart(props) {
         minutes <= Number(t.endTime[1])
     )
 
-    return times.length > 0
+    return times?.length > 0
   }
 
   async function didFocus() {

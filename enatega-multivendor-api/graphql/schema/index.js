@@ -440,7 +440,7 @@ const typeDefs = gql`
     restaurant: RestaurantDetail
     deliveryAddress: OrderAddress
     items: [Item!]
-    user: User!
+    user: User
     paymentMethod: String
     paidAmount: Float
     orderAmount: Float
@@ -1711,7 +1711,8 @@ const typeDefs = gql`
   type Mutation {
     refreshFirebaseToken(id: String!, notificationToken: String!): Message
     phoneIsVerified: Boolean!
-    verifyPhoneOTP(otp: String!): Message
+    verifyPhoneOTP(otp: String!, phone: String!): Message
+    validatePhoneUnauth(phone: String!): Message
     validatePhone(phone: String!): Message
     updatePhone(phone: String!): Message
     changeActiveBusinessCategory(id: String!): Message
