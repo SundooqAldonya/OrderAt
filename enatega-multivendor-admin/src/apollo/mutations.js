@@ -990,3 +990,10 @@ export const changeActiveBusinessCategory = gql`
     }
   }
 `
+export const defaultTimings = gql`
+  mutation DefaultTimings($id: String!) {
+    defaultTimings(id: $id) {
+      message
+    }
+  }
+`

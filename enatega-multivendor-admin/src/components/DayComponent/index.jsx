@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Grid, useTheme } from '@mui/material'
-import TimeRangePicker from '@wojtekmaj/react-timerange-picker/dist/TimeRangePicker'
+import TimeRangePicker from '@wojtekmaj/react-timerange-picker'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { useTranslation } from 'react-i18next'
 import useGlobalStyles from '../../utils/globalStyles'
 
-const DayComponent = ({ day, value, onChangeTime }) => {
+const DayComponent = ({ day, value, onChangeTime, idx }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const [values, setValues] = useState(value)
@@ -18,10 +18,13 @@ const DayComponent = ({ day, value, onChangeTime }) => {
   // }, [value, data, onChangeTime])
 
   const handleChange = (index, newTimeRange) => {
+    console.log({ newTimeRange })
+    console.log('change', index)
     const updatedValues = [...values]
     updatedValues[index] = newTimeRange
     setValues(updatedValues)
-    onChangeTime(day, updatedValues)
+    // onChangeTime(day, updatedValues)
+    onChangeTime({ index: idx, day, values: updatedValues })
   }
 
   return (

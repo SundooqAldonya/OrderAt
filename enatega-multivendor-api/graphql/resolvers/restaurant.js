@@ -50,6 +50,7 @@ const {
 } = require('../../helpers/customerNotifications')
 const Review = require('../../models/review')
 const { isRestaurantOpenNow } = require('../../helpers/restaurantWorkingHours')
+const { defaultOpeningTimes } = require('../../helpers/defaultValues')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -1203,6 +1204,7 @@ module.exports = {
         throw err
       }
     },
+
     toggleAvailability: async (_, args, { req }) => {
       console.log('toggleAvailablity')
       try {
@@ -1317,6 +1319,18 @@ module.exports = {
         restaurant.isActive = false
         await restaurant.save()
         return { message: 'Deactivated business account successfully!' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async defaultTimings(_, args) {
+      console.log('defaultTimings', { args })
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        restaurant.openingTimes = defaultOpeningTimes
+        await restaurant.save()
+        return { message: 'default_timings' }
       } catch (err) {
         throw new Error(err)
       }
