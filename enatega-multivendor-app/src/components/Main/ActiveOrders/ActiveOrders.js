@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import { View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
@@ -15,13 +15,15 @@ import { ProgressBar, checkStatus } from './ProgressBar'
 import styles from './styles'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'
 import { calulateRemainingTime } from '../../../utils/customFunctions'
+import { Ionicons } from '@expo/vector-icons'
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height
-const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4.5)
+const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4.9)
 
 const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
 
 const ActiveOrders = ({ onActiveOrdersChange }) => {
+  const modalRef = useRef()
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -29,6 +31,7 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
   const foundAcceptedOrder = orders?.find(
     (order) => order.status === 'ACCEPTED'
   )
+  const [alwaysOpen, setAlwaysOpen] = useState(MODAL_HEIGHT)
   console.log({ foundAcceptedOrder })
   const configuration = useContext(ConfigurationContext)
   const navigation = useNavigation()
@@ -63,15 +66,36 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
     backgroundColor: currentTheme.themeBackground
   }
 
+  const closeCompletely = () => {
+    // Step 1: Set alwaysOpen to 0
+    setAlwaysOpen(0)
+
+    // Step 2: Wait for state to apply, then close the modal
+    setTimeout(() => {
+      modalRef.current?.close()
+    }, 50) // small delay to allow re-render
+  }
+
   return (
     <Modalize
-      alwaysOpen={MODAL_HEIGHT}
+      ref={modalRef}
+      alwaysOpen={alwaysOpen}
       withHandle={false}
       modalHeight={MODAL_HEIGHT}
       modalStyle={modalStyle}
     >
       <TouchableOpacity
-        style={{ marginTop: scale(20), marginHorizontal: scale(10) }}
+        onPress={closeCompletely}
+        style={{
+          position: 'absolute',
+          top: 5,
+          right: 10
+        }}
+      >
+        <Ionicons name='close' size={24} color='#333' />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginTop: scale(30), marginHorizontal: scale(10) }}
         onPress={() => onPressDetails(order)}
       >
         <View
@@ -126,7 +150,7 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
                 textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              {t(checkStatus(order.orderStatus).statusText)}
+              {t(order.orderStatus)}
             </TextDefault>
           </View>
         </View>
