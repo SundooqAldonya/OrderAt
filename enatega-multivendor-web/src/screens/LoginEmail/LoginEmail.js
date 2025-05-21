@@ -26,11 +26,14 @@ function LoginEmail() {
   const [passError, setPassError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const { loading, loginError, setLoading, setLoginError, mutateLogin } =
     useRegistration();
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };

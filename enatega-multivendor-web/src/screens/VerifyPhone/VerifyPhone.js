@@ -16,15 +16,17 @@ import { Avatar } from "@mui/material";
 import OtpInput from "react-otp-input";
 import { Link as RouterLink } from "react-router-dom";
 import { sendOtpToPhoneNumber, updateUser } from "../../apollo/server";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import ConfigurableValues from "../../config/constants";
 
 const SEND_OTP_TO_PHONE = gql`
   ${sendOtpToPhoneNumber}
 `;
+
 const UPDATEUSER = gql`
   ${updateUser}
 `;
+
 function VerifyPhone() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -39,7 +41,7 @@ function VerifyPhone() {
     Math.floor(100000 + Math.random() * 900000).toString()
   );
   const { profile } = useContext(UserContext);
-  const { SKIP_MOBILE_VERIFICATION } = ConfigurableValues()
+  const { SKIP_MOBILE_VERIFICATION } = ConfigurableValues();
 
   const [sendOtp, { loading: loadingOtp }] = useMutation(SEND_OTP_TO_PHONE, {
     onCompleted: onOtpCompleted,
@@ -108,44 +110,60 @@ function VerifyPhone() {
     onError: onUpdateUserError,
   });
 
-  const onCodeFilled =  useCallback((code) => {
-    if (SKIP_MOBILE_VERIFICATION || code === otpFrom) {
-      mutate({
-        variables: {
-          name: profile.name,
-          phone: state?.phone ? state.phone : profile.phone,
-          phoneIsVerified: true,
-        },
-      });
-      navigate(-1, {
-        replace: true,
-      });
-    } else {
-      setOtpError(true);
-      setError("Invalid Code");
-    }
-  },[SKIP_MOBILE_VERIFICATION, mutate, navigate, otpFrom, profile?.name, profile?.phone,  state?.phone]);
+  const onCodeFilled = useCallback(
+    (code) => {
+      if (SKIP_MOBILE_VERIFICATION || code === otpFrom) {
+        mutate({
+          variables: {
+            name: profile.name,
+            phone: state?.phone ? state.phone : profile.phone,
+            phoneIsVerified: true,
+          },
+        });
+        navigate(-1, {
+          replace: true,
+        });
+      } else {
+        setOtpError(true);
+        setError("Invalid Code");
+      }
+    },
+    [
+      SKIP_MOBILE_VERIFICATION,
+      mutate,
+      navigate,
+      otpFrom,
+      profile?.name,
+      profile?.phone,
+      state?.phone,
+    ]
+  );
 
   const resendOtp = () => {
     setOtpFrom(Math.floor(100000 + Math.random() * 900000).toString());
   };
-  const handleCode = useCallback((val) => {
-    const code = val;
-    setOtp(val);
-    if (code.length === 6) {
-      onCodeFilled(code);
-    }
-  },[onCodeFilled]);
+  const handleCode = useCallback(
+    (val) => {
+      const code = val;
+      setOtp(val);
+      if (code.length === 6) {
+        onCodeFilled(code);
+      }
+    },
+    [onCodeFilled]
+  );
 
-  useEffect(()=>{
-    let timer = null
-    if(!SKIP_MOBILE_VERIFICATION) return
-    setOtp('111111')
-    timer = setTimeout(()=>{
-      handleCode('111111')
-    },3000)
-    return ()=>{timer && clearTimeout(timer)}
-  },[SKIP_MOBILE_VERIFICATION,handleCode])
+  useEffect(() => {
+    let timer = null;
+    if (!SKIP_MOBILE_VERIFICATION) return;
+    setOtp("111111");
+    timer = setTimeout(() => {
+      handleCode("111111");
+    }, 3000);
+    return () => {
+      timer && clearTimeout(timer);
+    };
+  }, [SKIP_MOBILE_VERIFICATION, handleCode]);
 
   return (
     <LoginWrapper>
@@ -170,14 +188,14 @@ function VerifyPhone() {
         </Box>
       </Box>
       <Typography variant="h5" className={classes.font700}>
-        {t('verifyPhone')} <br /> {t('number')}
+        {t("verifyPhone")} <br /> {t("number")}
       </Typography>
       <Box mt={theme.spacing(1)} />
       <Typography
         variant="caption"
         className={`${classes.caption} ${classes.fontGrey}`}
       >
-        {t('enterOtpPhone')}
+        {t("enterOtpPhone")}
       </Typography>
       <Box display="flex">
         <Box m="auto">
@@ -209,7 +227,7 @@ function VerifyPhone() {
           <Box mt={2} />
           {otpError && (
             <Typography variant={"h6"} style={{ color: "red", fontSize: 14 }}>
-              {t('invalidCode')}
+              {t("invalidCode")}
             </Typography>
           )}
         </Box>
@@ -234,13 +252,13 @@ function VerifyPhone() {
             variant="caption"
             className={`${classes.caption} ${classes.font700}`}
           >
-            {t('resendCode')}
+            {t("resendCode")}
           </Typography>
         )}
       </Button>
       <Box mt={theme.spacing(2)} />
       <Typography variant="caption" className={`${classes.caption}`}>
-        {seconds !== 0 ? `${t('retryAfter')} ${seconds}s` : ""}
+        {seconds !== 0 ? `${t("retryAfter")} ${seconds}s` : ""}
       </Typography>
       <Box mt={theme.spacing(2)} />
       <RouterLink to="/" style={{ textDecoration: "none" }}>
@@ -249,7 +267,7 @@ function VerifyPhone() {
           color="primary"
           className={`${classes.caption}`}
         >
-          {t('skipNow')}
+          {t("skipNow")}
         </Typography>
       </RouterLink>
     </LoginWrapper>

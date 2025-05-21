@@ -1131,11 +1131,14 @@ function Checkout(props) {
                   ]}
                 />
 
-                {/* <View style={styles().voucherSec}>
+                <View style={styles().voucherSec}>
                   {!coupon ? (
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      style={styles().voucherSecInner}
+                      style={{
+                        ...styles().voucherSecInner,
+                        flexDirection: isArabic ? 'row-reverse' : 'row'
+                      }}
                       onPress={() => onModalOpen(voucherModalRef)}
                     >
                       <MaterialCommunityIcons
@@ -1223,7 +1226,7 @@ function Checkout(props) {
                       </View>
                     </>
                   )}
-                </View> */}
+                </View>
                 {/* <View style={styles().tipSec}>
                   <View style={[styles().tipRow]}>
                     <TextDefault
@@ -1440,7 +1443,7 @@ function Checkout(props) {
                       {parseFloat(calculateTip()).toFixed(2)}
                     </TextDefault>
                   </View> */}
-                  {/* {coupon && (
+                  {coupon && (
                     <View>
                       <View style={styles(currentTheme).horizontalLine2} />
                       <View
@@ -1470,7 +1473,7 @@ function Checkout(props) {
                         </TextDefault>
                       </View>
                     </View>
-                  )} */}
+                  )}
 
                   <View style={styles(currentTheme).horizontalLine2} />
                   <View

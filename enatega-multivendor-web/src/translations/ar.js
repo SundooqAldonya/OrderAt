@@ -134,6 +134,7 @@ const ar = {
     signInWithGoogle: "الدخول باستخدام Google",
     or: "أو",
     continueWithEmail: "المتابعة باستخدام البريد الإلكتروني",
+    continueWithPhone: "المتابعة باستخدام رقم التليفون",
     terms: "الشروط والأحكام",
     privacyPolicy: "سياسة الخصوصية",
     bySigningUp: "عند التسجيل، أنت توافق على ",

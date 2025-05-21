@@ -138,6 +138,7 @@ const en = {
     signInWithGoogle: "CONTINUE WITH GOOGLE",
     or: "or",
     continueWithEmail: "CONTINUE WITH EMAIL",
+    continueWithPhone: "CONTINUE WITH PHONE",
     terms: "Terms and Conditions",
     privacyPolicy: "Privacy Policy",
     bySigningUp: "By signing up, you agree to our ",

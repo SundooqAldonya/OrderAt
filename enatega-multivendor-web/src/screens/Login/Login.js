@@ -155,7 +155,7 @@ function Login() {
       >
         <FacebookLoginButton />
       </LoginSocialFacebook> */}
-      <LoginSocialGoogle
+      {/* <LoginSocialGoogle
         client_id={
           "41071470725-ldfj8q61m7k9s9hpcboqmfgpi67skv0e.apps.googleusercontent.com"
         }
@@ -170,7 +170,7 @@ function Login() {
         }}
       >
         <GoogleLoginButton />
-      </LoginSocialGoogle>
+      </LoginSocialGoogle> */}
       {/* <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         render={(renderProps) => (
@@ -206,7 +206,7 @@ function Login() {
         cookiePolicy={"single_host_origin"}
       /> */}
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -232,7 +232,7 @@ function Login() {
           </Typography>
           <div className={classes.line}></div>
         </div>
-      </Box>
+      </Box> */}
       <RouterLink
         to="/new-login"
         state={{ from: location.state?.from }}
@@ -253,7 +253,7 @@ function Login() {
             color="secondary"
             className={`${classes.font700} ${classes.caption}`}
           >
-            {t("continueWithEmail")}
+            {t("continueWithPhone")}
           </Typography>
         </Button>
       </RouterLink>

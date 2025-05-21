@@ -542,7 +542,7 @@ export const ar = {
   SeeYouAgainSoon: 'إلى اللقاء قريبا!',
   enterCode: 'أدخل الرمز',
   enterAmount: 'أدخل المبلغ',
-  applyVoucher: 'قدّم قسيمة',
+  applyVoucher: 'هل لديك كوبون - قسيمة؟',
   inputCode: 'ادخل الرمز',
   AddTip: 'إضافة بقشيش',
   permanentDeleteMessage:
