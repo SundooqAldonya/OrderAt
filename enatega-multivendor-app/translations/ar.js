@@ -252,7 +252,7 @@ export const ar = {
   PastOrder: 'الطلبات السابقة',
   ContinueWithGoogle: 'المتابعة مع جوجل',
   ContinueWithEmail: 'المتابعة مع البريد الإلكتروني',
-  ContinuePhoneNumber: 'المتابعة مع رقم الهاتف',
+  ContinuePhoneNumber: 'المتابعة برقم الهاتف',
   Cancel: 'إلغاء',
   DeleteAccount: 'حذف الحساب',
   DeleteConfirmation: 'هل أنت متأكد أنك تريد حذف الحساب؟',
@@ -644,5 +644,6 @@ export const ar = {
   otp_not_match: 'OTP خطأ',
   total_with_delivery_fee: 'القيمة شامل سعر التوصيل',
   phone: 'رقم التليفون',
-  phone_placeholder: 'رقم التليفون: 010234567891'
+  phone_placeholder: 'رقم التليفون: 010234567891',
+  wrong_credentials: 'خطأ في الرقم المحمول او الرقم السري'
 }

@@ -166,6 +166,8 @@ module.exports = {
       var user = appleId
         ? await User.findOne({ appleId })
         : await User.findOne({ $or: [{ email, phone }] })
+
+      console.log({ user })
       if (!user && appleId) {
         isNewUser = true
         user = new User({
@@ -240,6 +242,31 @@ module.exports = {
         token: token,
         tokenExpiration: 1,
         isNewUser
+      }
+    },
+    async customerLogin(_, args) {
+      console.log('customerLogin', { args })
+      try {
+        const phone = normalizeAndValidatePhoneNumber(args.phone)
+        const user = await User.findOne({ phone })
+        if (!user) throw new Error('user_not_found')
+        const isValid = await user.authenticate(args.password)
+        console.log({ isValid })
+        if (!isValid.user) throw new Error('phone_password_not_match')
+        const token = jwt.sign(
+          {
+            userId: user._id,
+            email: user.email,
+            phone: user.phone
+          },
+          process.env.SECRETKEY
+        )
+        return {
+          token,
+          user
+        }
+      } catch (err) {
+        throw err
       }
     },
     riderLogin: async (_, args, context) => {

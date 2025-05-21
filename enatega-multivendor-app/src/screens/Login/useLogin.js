@@ -53,6 +53,7 @@ export const useLogin = () => {
   const setEmail = (email) => {
     emailRef.current = email
   }
+
   function validateCredentials() {
     let result = true
     setEmailError(null)
@@ -75,6 +76,7 @@ export const useLogin = () => {
   }
 
   function onCompleted({ emailExist }) {
+    setRegisteredEmail(true)
     if (validateCredentials()) {
       if (emailExist._id !== null) {
         if (
@@ -170,7 +172,7 @@ export const useLogin = () => {
         }
         LoginMutation({
           variables: {
-            email,
+            email: phone,
             password,
             type: 'default',
             notificationToken

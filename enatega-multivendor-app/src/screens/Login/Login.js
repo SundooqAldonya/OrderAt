@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useContext, useLayoutEffect } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -20,14 +20,21 @@ import { useTranslation } from 'react-i18next'
 import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { setPhone } from '../../store/phoneSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useMutation } from '@apollo/client'
+import { customerLogin } from '../../apollo/mutations'
+import AuthContext from '../../context/Auth'
+import Toast from 'react-native-toast-message'
+import { useNavigation } from '@react-navigation/native'
 
 function Login(props) {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
+  const phone = useSelector((state) => state.phone.phone)
   const {
-    setEmail,
+    // setEmail,
     password,
     setPassword,
     emailError,
@@ -43,6 +50,36 @@ function Login(props) {
     emailRef
   } = useLogin()
 
+  const { setTokenAsync } = useContext(AuthContext)
+
+  const [mutateLogin, { loading: customerLoading }] = useMutation(
+    customerLogin,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        setTokenAsync(res.customerLogin.token)
+        navigation.navigate({
+          name: 'Main',
+          merge: true
+        })
+      },
+      onError: (err) => {
+        console.log({ err })
+        Toast.show({
+          type: 'error',
+          text1: t('error'),
+          text2: t('wrong_credentials'),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+      }
+    }
+  )
+
   useLayoutEffect(() => {
     props.navigation.setOptions(
       screenOptions({
@@ -53,6 +90,15 @@ function Login(props) {
       })
     )
   }, [props.navigation])
+
+  const handleSubmitLogin = () => {
+    mutateLogin({
+      variables: {
+        phone,
+        password
+      }
+    })
+  }
 
   return (
     <SafeAreaView
@@ -207,9 +253,7 @@ function Login(props) {
                 <View>
                   <TouchableOpacity
                     onPress={() =>
-                      registeredEmail
-                        ? loginAction(emailRef.current, password)
-                        : checkPhoneExists()
+                      registeredEmail ? handleSubmitLogin() : checkPhoneExists()
                     }
                     activeOpacity={0.7}
                     style={[
@@ -218,7 +262,7 @@ function Login(props) {
                     ]}
                   >
                     <TextDefault H4 textColor={currentTheme.black} bold>
-                      {loading || loginLoading ? (
+                      {loading || loginLoading || customerLoading ? (
                         <Spinner
                           backColor='transparent'
                           spinnerColor={currentTheme.white}

@@ -432,7 +432,7 @@ module.exports = {
             throw new Error('Phone is already associated with another account.')
           }
         }
-        const hashedPassword = await bcrypt.hash(args.userInput.password, 12)
+        // const hashedPassword = await bcrypt.hash(args.userInput.password, 12)
         const generateVerificationCode = () => {
           const code = Math.floor(1000 + Math.random() * 9000)
           return String(code).split('').map(Number)
@@ -442,7 +442,7 @@ module.exports = {
         const userDetails = {
           appleId: args.userInput.appleId,
           email: args.userInput.email,
-          password: hashedPassword,
+          // password: hashedPassword,
           phone,
           name: args.userInput.name,
           notificationToken: args.userInput.notificationToken,
@@ -455,12 +455,12 @@ module.exports = {
 
         const user = new User(userDetails)
         console.log({ emailVerficationCode: user.emailVerficationCode })
-        sendUserInfoToZapier({
-          email: args.userInput.email,
-          phone: args.userInput.phone,
-          name: args.userInput.name
-        })
-
+        // sendUserInfoToZapier({
+        //   email: args.userInput.email,
+        //   phone: args.userInput.phone,
+        //   name: args.userInput.name
+        // })
+        await user.setPassword(args.userInput.password)
         const result = await user.save()
         const attachment = path.join(
           __dirname,

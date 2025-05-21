@@ -451,3 +451,15 @@ export const phoneIsVerified = gql`
     phoneIsVerified
   }
 `
+export const customerLogin = gql`
+  mutation CustomerLogin($phone: String!, $password: String!) {
+    customerLogin(phone: $phone, password: $password) {
+      token
+      user {
+        _id
+        name
+        phone
+      }
+    }
+  }
+`

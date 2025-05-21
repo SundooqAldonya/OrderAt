@@ -252,19 +252,7 @@ const CreateAccount = (props) => {
             </TextDefault> */}
           </View>
 
-          {/* <View style={{ marginBottom: scale(5) }}>{renderGoogleAction()}</View> */}
-          {/* <View style={{ marginBottom: scale(5), marginHorizontal: 'auto' }}>
-            <GoogleSigninButton
-              size={GoogleSigninButton.Size.Wide}
-              color={GoogleSigninButton.Color.Dark}
-              onPress={() => {
-                // initiate sign in
-                googleLogin()
-              }}
-              // disabled={isInProgress}
-            />
-          </View> */}
-          <View style={{ marginBottom: scale(2) }}>{rendergoogleLogin()}</View>
+          {/* <View style={{ marginBottom: scale(2) }}>{rendergoogleLogin()}</View> */}
 
           {enableApple && (
             <View style={{ marginBottom: scale(2) }}>

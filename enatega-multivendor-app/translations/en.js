@@ -655,5 +655,6 @@ export const en = {
   otp_not_match: 'OTP does not match!',
   total_with_delivery_fee: 'Total including delivery fee',
   phone: 'Phone',
-  phone_placeholder: 'Phone number: ex;+2010234567891'
+  phone_placeholder: 'Phone number: ex;+2010234567891',
+  wrong_credentials: 'Wrong credentials'
 }

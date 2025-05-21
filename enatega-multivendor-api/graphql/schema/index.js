@@ -1708,7 +1708,13 @@ const typeDefs = gql`
     order: Float
   }
 
+  type CustomerLoginResponse {
+    token: String
+    user: User
+  }
+
   type Mutation {
+    customerLogin(phone: String!, password: String!): CustomerLoginResponse
     defaultTimings(id: String!): Message
     refreshFirebaseToken(id: String!, notificationToken: String!): Message
     phoneIsVerified: Boolean!
