@@ -22,7 +22,7 @@ import { colors } from '../../utils/colors'
 import { setPhone } from '../../store/phoneSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/client'
-import { customerLogin } from '../../apollo/mutations'
+import { customerLogin, validatePhoneUnauth } from '../../apollo/mutations'
 import AuthContext from '../../context/Auth'
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
@@ -52,6 +52,21 @@ function Login(props) {
 
   const { setTokenAsync } = useContext(AuthContext)
 
+  const [mutateValidate, { loading: loadingValidate }] = useMutation(
+    validatePhoneUnauth,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        navigation.navigate('PhoneOtp', {
+          forgotPassword: true
+        })
+      },
+      onError: (error) => {
+        console.log({ error })
+      }
+    }
+  )
+
   const [mutateLogin, { loading: customerLoading }] = useMutation(
     customerLogin,
     {
@@ -65,6 +80,20 @@ function Login(props) {
       },
       onError: (err) => {
         console.log({ err })
+        const message = err?.graphQLErrors?.[0]?.message
+        console.log({ errorMessage: message })
+        if (message.includes('no_password_set')) {
+          mutateValidate({
+            variables: {
+              phone
+            }
+          })
+          // Redirect to forgot password flow
+          navigation.navigate('PhoneOtp', {
+            forgotPassword: true
+          })
+          return
+        }
         Toast.show({
           type: 'error',
           text1: t('error'),
@@ -230,23 +259,28 @@ function Login(props) {
                           </TextDefault>
                         </View>
                       )}
-                      <TouchableOpacity
-                        style={alignment.MBsmall}
-                        activeOpacity={0.7}
-                        onPress={() =>
-                          props.navigation.navigate('ForgotPassword', {
-                            email: emailRef.current
-                          })
-                        }
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
                       >
-                        <TextDefault
-                          textColor={currentTheme.main}
-                          style={alignment.MTsmall}
-                          bolder
+                        <TouchableOpacity
+                          style={alignment.MBsmall}
+                          onPress={() =>
+                            props.navigation.navigate('ForgotPassword', {
+                              email: emailRef.current
+                            })
+                          }
                         >
-                          {t('forgotPassword')}
-                        </TextDefault>
-                      </TouchableOpacity>
+                          <TextDefault
+                            textColor={currentTheme.main}
+                            style={alignment.MTsmall}
+                            bolder
+                          >
+                            {t('forgotPassword')}
+                          </TextDefault>
+                        </TouchableOpacity>
+                      </View>
                     </>
                   )}
                 </View>

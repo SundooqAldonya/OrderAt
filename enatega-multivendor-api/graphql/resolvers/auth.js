@@ -249,10 +249,20 @@ module.exports = {
       try {
         const phone = normalizeAndValidatePhoneNumber(args.phone)
         const user = await User.findOne({ phone })
+
         if (!user) throw new Error('user_not_found')
+
         const isValid = await user.authenticate(args.password)
-        console.log({ isValid })
-        if (!isValid.user) throw new Error('phone_password_not_match')
+
+        // 👉 Check if authentication failed due to no salt (no password set)
+        if (isValid?.error?.name === 'NoSaltValueStoredError') {
+          throw new Error('no_password_set')
+        }
+
+        if (!isValid.user) {
+          throw new Error('phone_password_not_match')
+        }
+
         const token = jwt.sign(
           {
             userId: user._id,
@@ -261,6 +271,7 @@ module.exports = {
           },
           process.env.SECRETKEY
         )
+
         return {
           token,
           user
