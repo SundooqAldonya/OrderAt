@@ -194,6 +194,8 @@ export const ar = {
   resendBtn: 'إعادة الإرسال',
   enterYourEmail:
     'أدخل بريدك الإلكتروني وسنرسل لك رمز OTP لإعادة تعيين كلمة المرور.',
+  enterYourPhone:
+    'أدخل رقم التليفون وسنرسل لك رمز OTP لإعادة تعيين كلمة المرور.',
   backToLogin: 'العودة إلى تسجيل الدخول',
   setYourPassword: 'تعيين كلمة المرور الخاصة بك',
   enterPass: 'الرجاء إدخال كلمة المرور',
@@ -645,5 +647,6 @@ export const ar = {
   total_with_delivery_fee: 'القيمة شامل سعر التوصيل',
   phone: 'رقم التليفون',
   phone_placeholder: 'رقم التليفون: 010234567891',
-  wrong_credentials: 'خطأ في الرقم المحمول او الرقم السري'
+  wrong_credentials: 'خطأ في الرقم المحمول او الرقم السري',
+  password_not_match: 'كلمات المرور لا تتطابق'
 }

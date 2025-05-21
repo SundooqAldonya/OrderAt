@@ -162,7 +162,7 @@ function Login(props) {
                   <View>
                     <TextInput
                       placeholder={t('phone_placeholder')}
-                      keyboardType='phone-pad'
+                      keyboardType='number-pad'
                       style={[
                         styles(currentTheme).textField,
                         emailError !== null

@@ -31,8 +31,8 @@ function PhoneOtp(props) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
-  // const route = useRoute()
-  // const { createUser } = route.params || {}
+  const route = useRoute()
+  const { forgotPassword = false } = route.params || {}
 
   // console.log({ createUser })
 
@@ -56,19 +56,23 @@ function PhoneOtp(props) {
   const [mutateVerify] = useMutation(verifyPhoneOTP, {
     onCompleted: (res) => {
       console.log({ res })
-      Toast.show({
-        type: 'success',
-        text1: t('success'),
-        text2: t('phone_verified'),
-        text1Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        },
-        text2Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        }
-      })
       setCode(new Array(4).fill(''))
-      navigation.navigate('Main')
+      if (forgotPassword) {
+        navigation.navigate('SetYourPassword')
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: t('success'),
+          text2: t('phone_verified'),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+        navigation.navigate('Main')
+      }
     },
     onError: (err) => {
       console.log({ err })

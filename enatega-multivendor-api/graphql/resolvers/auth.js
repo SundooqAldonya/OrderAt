@@ -394,12 +394,22 @@ module.exports = {
         await owner.setPassword(password)
         await owner.save()
       }
-      // validate token against time- not done yet
-      // find user from reset object
-      // generate hash of password
-      // update user
-      // remove token from reset collection
-      // return result true
+      return {
+        result: true
+      }
+    },
+    resetPasswordCustomer: async (_, { password, phone }, context) => {
+      console.log('resetPasswordCustomer')
+      console.log(password, phone)
+      const phoneNumber = normalizeAndValidatePhoneNumber(phone)
+      const user = await User.findOne({ phone: phoneNumber })
+      if (!user) {
+        throw new Error('User is not found!')
+      }
+      if (user) {
+        await user.setPassword(password)
+        await user.save()
+      }
       return {
         result: true
       }

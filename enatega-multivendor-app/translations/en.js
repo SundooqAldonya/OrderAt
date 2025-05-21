@@ -195,6 +195,8 @@ export const en = {
   resendBtn: 'Resend',
   enterYourEmail:
     "Enter your email and we'll send you an OTP to reset your password.",
+  enterYourPhone:
+    "Enter your phone number and we'll send you an OTP to reset your password.",
   backToLogin: 'Back to login',
   setYourPassword: 'Set your Password',
   enterPass: 'Kindly enter your password',
@@ -656,5 +658,6 @@ export const en = {
   total_with_delivery_fee: 'Total including delivery fee',
   phone: 'Phone',
   phone_placeholder: 'Phone number: ex;+2010234567891',
-  wrong_credentials: 'Wrong credentials'
+  wrong_credentials: 'Wrong credentials',
+  password_not_match: 'Passwords do not match!'
 }

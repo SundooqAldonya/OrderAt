@@ -1714,6 +1714,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    resetPasswordCustomer(phone: String!, password: String!): ForgotPassword
     customerLogin(phone: String!, password: String!): CustomerLoginResponse
     defaultTimings(id: String!): Message
     refreshFirebaseToken(id: String!, notificationToken: String!): Message

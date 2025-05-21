@@ -463,3 +463,11 @@ export const customerLogin = gql`
     }
   }
 `
+
+export const resetPasswordCustomer = gql`
+  mutation ResetPasswordCustomer($password: String!, $phone: String!) {
+    resetPasswordCustomer(password: $password, phone: $phone) {
+      result
+    }
+  }
+`
