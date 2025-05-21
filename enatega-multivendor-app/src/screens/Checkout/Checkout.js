@@ -117,7 +117,7 @@ function Checkout(props) {
   const [deliveryCharges, setDeliveryCharges] = useState(0)
   const [restaurantName, setrestaurantName] = useState('...')
   const [voucherCode, setVoucherCode] = useState('')
-  const [coupon, setCoupon] = useState(null)
+  const [coupon, setCoupon] = useState(0)
   const [tip, setTip] = useState(null)
   const [tipAmount, setTipAmount] = useState(null)
   const modalRef = useRef(null)
@@ -705,7 +705,7 @@ function Checkout(props) {
   }
 
   const showMinimumOrderMessage = () => {
-    if (calculatePrice(0, true) < minimumOrder) {
+    if (calculatePrice(0, true) < minimumOrder - coupon) {
       return (
         <TextDefault
           style={{
@@ -1345,7 +1345,7 @@ function Checkout(props) {
                         : configuration.currency}
                     </TextDefault>
                   </View>
-                  {calculatePrice(0, true) < minimumOrder && (
+                  {calculatePrice(0, true) < minimumOrder - coupon && (
                     <View
                       style={{
                         backgroundColor: 'rgba(255,0,0,0.5)',
@@ -1541,7 +1541,7 @@ function Checkout(props) {
                 <TouchableOpacity
                   disabled={
                     loadingOrder ||
-                    minimumOrder > calculatePrice(deliveryCharges, true)
+                    minimumOrder - coupon > calculatePrice(0, true)
                   }
                   activeOpacity={0.7}
                   onPress={() => {
@@ -1556,7 +1556,7 @@ function Checkout(props) {
                       opacity: loadingOrder ? 0.5 : 1,
                       backgroundColor:
                         loadingOrder ||
-                        minimumOrder > calculatePrice(deliveryCharges, true)
+                        minimumOrder - coupon > calculatePrice(0, true)
                           ? 'grey'
                           : currentTheme.main
                     }
