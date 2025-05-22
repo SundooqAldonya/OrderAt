@@ -174,7 +174,17 @@ const orderSchema = new Schema(
     },
     mandoobSpecialInstructions: {
       type: String
-    }
+    },
+    riderInteractions: [
+      {
+        rider: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Rider'
+        },
+        seenAt: Date,
+        openedAt: Date
+      }
+    ]
   },
   { timestamps: true }
 )

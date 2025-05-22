@@ -352,11 +352,11 @@ export const editRider = `
         }
       }`
 export const deleteRider = `
-      mutation DeleteRider($id:String!){
-        deleteRider(id:$id){
-          _id
-        }
-      }`
+  mutation DeleteRider($id:String!){
+    deleteRider(id:$id){
+      message
+    }
+  }`
 
 export const toggleAvailablity = `
   mutation ToggleRider($id:String){

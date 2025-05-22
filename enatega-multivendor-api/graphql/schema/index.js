@@ -1888,7 +1888,7 @@ const typeDefs = gql`
     deleteFood(id: String!): Message!
     createRider(riderInput: RiderInput): Rider!
     editRider(riderInput: RiderInput): Rider!
-    deleteRider(id: String!): Rider!
+    deleteRider(id: String!): Message
     toggleAvailablity(id: String): Rider!
     toggleMute(id: String): Rider!
     toggleActive(id: String): Rider!

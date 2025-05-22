@@ -263,9 +263,11 @@ module.exports = {
       console.log('deleteRider')
       try {
         const rider = await Rider.findById(id)
-        rider.isActive = false
-        const result = await rider.save()
-        return transformRider(result)
+        await rider.deleteOne()
+        return { message: 'rider_removed' }
+        // rider.isActive = false
+        // const result = await rider.save()
+        // return transformRider(result)
       } catch (err) {
         throw err
       }
