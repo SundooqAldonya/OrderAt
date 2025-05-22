@@ -7,7 +7,7 @@ import { useTheme } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlashMessage from "../../components/FlashMessage";
 import { isValidEmailAddress } from "../../utils/customFunction";
@@ -18,12 +18,21 @@ import { Avatar } from "@mui/material";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { gql, useMutation } from "@apollo/client";
-import { phoneExist } from "../../apollo/server";
+import {
+  createUser,
+  phoneExist,
+  validatePhoneUnauth,
+} from "../../apollo/server";
 import { useEffect } from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import UserContext from "../../context/User";
 
 const PHONE = gql`
   ${phoneExist}
+`;
+
+const CREATE_USER = gql`
+  ${createUser}
 `;
 
 function Registration() {
@@ -34,19 +43,58 @@ function Registration() {
   const navigate = useNavigate();
   const formRef = useRef(null);
   const { state } = useLocation();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passError, setPassError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [fNameError, setFNameError] = useState("");
   const [lNameError, setLNameError] = useState("");
   const [phone, setPhone] = useState("");
-  
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+
   const [phoneError, setPhoneError] = useState(null);
+
+  const [mutateValidatePhone] = useMutation(validatePhoneUnauth, {
+    onCompleted: (res) => {
+      console.log({ res });
+      navigate("/verify-phone", {
+        replace: true,
+        state: {
+          phone: `+${phone}`,
+          email: "",
+          password,
+          name: `${firstName} ${lastName}`,
+          picture: "",
+          notificationToken: "",
+        },
+      });
+    },
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
+
+  const [mutateCreateUser, { loading }] = useMutation(CREATE_USER, {
+    onCompleted: (res) => {
+      console.log({ res });
+      mutateValidatePhone({
+        variables: {
+          phone: `+${phone}`,
+        },
+      });
+    },
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
+
   const [PhoneEixst] = useMutation(PHONE, {
     onCompleted,
     onError,
   });
+
   const handleBackNavigation = () => {
     // Use history.push to navigate to the desired route
     navigate("/new-login");
@@ -61,15 +109,17 @@ function Registration() {
       window.removeEventListener("popstate", handleBackNavigation);
     };
   });
+
   function onCompleted({ phoneExist }) {
     if (phoneExist?._id !== null) {
       setError("Phone number already assocaited with some other user");
-      setLoading(false);
+      // setLoading(false);
     } else {
       navigate("/verify-email", {
         replace: true,
         state: {
-          email: formRef.current["email"].value.toLowerCase().trim(),
+          // email: formRef.current["email"].value.toLowerCase().trim(),
+          phone,
           password: formRef.current["userPass"].value,
           name:
             formRef.current["firstName"].value +
@@ -81,6 +131,7 @@ function Registration() {
       });
     }
   }
+
   function onError({ error }) {
     setError("Something went wrong");
   }
@@ -88,9 +139,11 @@ function Registration() {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const clearErrors = () => {
     setEmailError("");
     setFNameError("");
@@ -109,43 +162,54 @@ function Registration() {
     const passRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/;
 
     if (!isValidEmailAddress(emailValue)) {
-      setEmailError(t('emailErr2'));
+      setEmailError(t("emailErr2"));
       validate = false;
     }
     if (!firstNameValue.trim()) {
-      setFNameError(t('firstnameErr2'));
+      setFNameError(t("firstnameErr2"));
       validate = false;
     }
     if (!lastNameValue.trim()) {
-      setLNameError(t('lastnameErr2'));
+      setLNameError(t("lastnameErr2"));
       validate = false;
     }
     if (!userPass) {
-      setPassError(t('passwordErr2'));
+      setPassError(t("passwordErr2"));
       validate = false;
     }
     if (!phone) {
-      setPhoneError(t('mobileErr2'));
+      setPhoneError(t("mobileErr2"));
       validate = false;
     }
     if (!passRegex.test(userPass)) {
-      setPassError(
-       t('passwordErr1')
-      );
+      setPassError(t("passwordErr1"));
       validate = false;
     }
     if (validate) {
-      setLoading(true);
+      // setLoading(true);
       PhoneEixst({ variables: { phone: `+${phone}` } });
     } else {
-      setError(t('generalErr'));
+      setError(t("generalErr"));
     }
   };
-
 
   const toggleSnackbar = useCallback(() => {
     setError("");
   }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutateCreateUser({
+      variables: {
+        phone: `+${phone}`,
+        email: "",
+        password,
+        name: `${firstName} ${lastName}`,
+        picture: "",
+        notificationToken: "",
+      },
+    });
+  };
 
   return (
     <LoginWrapper>
@@ -172,18 +236,18 @@ function Registration() {
       </Box>
       <Box mt={theme.spacing(1)} />
       <Typography variant="h5" className={classes.font700}>
-        {t('letsGetStarted')}
+        {t("letsGetStarted")}
       </Typography>
       <Box mt={theme.spacing(1)} />
       <Typography
         variant="caption"
         className={`${classes.caption} ${classes.fontGrey}`}
       >
-        {t('createAccount')}
+        {t("createAccount")}
       </Typography>
       <Box mt={theme.spacing(3)} />
-      <form ref={formRef}>
-        <TextField
+      <form onSubmit={handleSubmit}>
+        {/* <TextField
           name={"email"}
           defaultValue={state?.email ?? ""}
           error={Boolean(emailError)}
@@ -196,11 +260,38 @@ function Registration() {
               color: theme.palette.grey[500],
             },
           }}
-        />
+        /> */}
+        <Box className={classes.rowField}>
+          <PhoneInput
+            placeholder="+2010234567891"
+            country={"eg"}
+            value={phone}
+            onChange={(phone) => setPhone(phone)}
+            containerStyle={{
+              textAlign: "center",
+              marginRight: theme.spacing(2),
+              margin: "auto",
+            }}
+            inputStyle={{
+              paddingLeft: 10,
+              width: "85%",
+              float: "right",
+              borderColor: theme.palette.grey[200],
+              height: 50,
+            }}
+            dropdownStyle={{
+              position: "absolute",
+              top: "-60px",
+              left: "60px",
+            }}
+          />
+        </Box>
         <Box className={classes.rowField}>
           <TextField
             style={{ width: "45%" }}
             name={"firstName"}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             error={Boolean(fNameError)}
             helperText={fNameError}
             variant="outlined"
@@ -215,6 +306,8 @@ function Registration() {
           <TextField
             style={{ width: "45%" }}
             name={"lastName"}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             error={Boolean(lNameError)}
             helperText={lNameError}
             variant="outlined"
@@ -229,6 +322,8 @@ function Registration() {
         </Box>
         <TextField
           name={"userPass"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputLabelProps={{
             style: {
               color: theme.palette.grey[600],
@@ -260,31 +355,7 @@ function Registration() {
           label="Password"
           type={showPassword ? "text" : "password"}
         />
-        <Box className={classes.rowField}>
-          <PhoneInput
-            placeholder="Enter phone number"
-            country={"pk"}
-            value={phone}
-            onChange={(phone) => setPhone(phone)}
-            containerStyle={{
-              textAlign: "center",
-              marginRight: theme.spacing(2),
-              margin: "auto",
-            }}
-            inputStyle={{
-              paddingLeft: 10,
-              width: "85%",
-              float: "right",
-              borderColor: theme.palette.grey[200],
-              height: 50,
-            }}
-            dropdownStyle={{
-              position: "absolute",
-              top: "-60px",
-              left: "60px",
-            }}
-          />
-        </Box>
+
         <Typography variant="caption" style={{ color: "red" }}>
           {phoneError}
         </Typography>
@@ -292,14 +363,14 @@ function Registration() {
         <Button
           variant="contained"
           fullWidth
-          type="email"
+          type="submit"
           disableElevation
           disabled={loading}
           className={classes.btnBase}
-          onClick={(e) => {
-            e.preventDefault();
-            handleAction();
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleAction();
+          // }}
         >
           {loading ? (
             <CircularProgress color="primary" />
@@ -308,7 +379,7 @@ function Registration() {
               variant="caption"
               className={`${classes.caption} ${classes.font700}`}
             >
-              {t('continue')}
+              {t("continue")}
             </Typography>
           )}
         </Button>

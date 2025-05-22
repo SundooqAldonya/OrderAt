@@ -62,6 +62,7 @@ export const resetPassword = `mutation ResetPassword($password:String!,$email:St
     result
   }
 }`;
+
 export const createUser = `
   mutation CreateUser($phone:String,$email:String,$password:String,$name:String,$notificationToken:String,$appleId:String){
       createUser(userInput:{
@@ -1236,6 +1237,43 @@ export const getDeliveryCalculation = gql`
       destLat: $destLat
     ) {
       amount
+    }
+  }
+`;
+
+export const customerLogin = gql`
+  mutation CustomerLogin($phone: String!, $password: String!) {
+    customerLogin(phone: $phone, password: $password) {
+      token
+      user {
+        _id
+        name
+        phone
+      }
+    }
+  }
+`;
+
+export const validatePhone = gql`
+  mutation ValidatePhone($phone: String!) {
+    validatePhone(phone: $phone) {
+      message
+    }
+  }
+`;
+
+export const validatePhoneUnauth = gql`
+  mutation ValidatePhoneUnauth($phone: String!) {
+    validatePhoneUnauth(phone: $phone) {
+      message
+    }
+  }
+`;
+
+export const verifyPhoneOTP = gql`
+  mutation VerifyPhoneOTP($otp: String!, $phone: String!) {
+    verifyPhoneOTP(otp: $otp, phone: $phone) {
+      message
     }
   }
 `;

@@ -7,7 +7,13 @@ import { useTheme } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import LoginEmailIcon from "../../assets/images/emailLock.png";
 import FlashMessage from "../../components/FlashMessage";
@@ -16,8 +22,13 @@ import { isValidEmailAddress } from "../../utils/customFunction";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
 import { Avatar } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client";
+import { customerLogin } from "../../apollo/server";
+import UserContext from "../../context/User";
 
 function LoginEmail() {
+  const { t } = useTranslation();
   const formRef = useRef();
   const theme = useTheme();
   const classes = useStyles();
@@ -26,9 +37,29 @@ function LoginEmail() {
   const [passError, setPassError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
 
-  const { loading, loginError, setLoading, setLoginError, mutateLogin } =
-    useRegistration();
+  const location = useLocation();
+  const { phone, from } = location.state || {};
+  const { setTokenAsync } = useContext(UserContext);
+
+  const { login, setLogin } = useRegistration();
+
+  const [mutateCustomerLogin, { loading }] = useMutation(customerLogin, {
+    onCompleted: async (res) => {
+      console.log({ res });
+      setLogin(true);
+      await setTokenAsync(res.customerLogin.token);
+    },
+    onError: (err) => {
+      console.log({ err });
+      const message = err.message.split(" ")[1];
+      setMainError({
+        type: "error",
+        message: t(message),
+      });
+    },
+  });
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -38,51 +69,62 @@ function LoginEmail() {
     event.preventDefault();
   };
 
-  useEffect(() => {
-    if (loginError) {
-      setMainError({
-        type: "error",
-        message: loginError,
-      });
-    }
-  }, [loginError]);
+  // useEffect(() => {
+  //   if (loginError) {
+  //     setMainError({
+  //       type: "error",
+  //       message: loginError,
+  //     });
+  //   }
+  // }, [loginError]);
 
-  const clearErrors = () => {
-    setEmailError("");
-    setPassError("");
-    setLoginError("");
-  };
-  const handleAction = () => {
-    clearErrors();
-    let validate = true;
-    const emailValue = formRef.current["userEmail"].value;
-    const passValue = formRef.current["userPass"].value;
-    // if (!isValidEmailAddress(emailValue)) {
-    //   setEmailError("Invalid Email");
-    //   validate = false;
-    //   return;
-    // }
-    if (!passValue) {
-      setPassError("Password required");
-      validate = false;
-      return;
-    }
-    if (validate) {
-      setLoading(true);
-      const user = {
-        email: emailValue,
-        password: passValue,
-        type: "default",
-      };
-      mutateLogin(user);
-    } else {
-      setLoginError("Something is missing");
-    }
-  };
+  // const clearErrors = () => {
+  //   setEmailError("");
+  //   setPassError("");
+  //   setLoginError("");
+  // };
+
+  // const handleAction = () => {
+  //   clearErrors();
+  //   let validate = true;
+  //   const emailValue = formRef.current["userEmail"].value;
+  //   const passValue = formRef.current["userPass"].value;
+  //   // if (!isValidEmailAddress(emailValue)) {
+  //   //   setEmailError("Invalid Email");
+  //   //   validate = false;
+  //   //   return;
+  //   // }
+  //   if (!passValue) {
+  //     setPassError("Password required");
+  //     validate = false;
+  //     return;
+  //   }
+  //   if (validate) {
+  //     setLoading(true);
+  //     const user = {
+  //       email: emailValue,
+  //       password: passValue,
+  //       type: "default",
+  //     };
+  //     mutateLogin(user);
+  //   } else {
+  //     setLoginError("Something is missing");
+  //   }
+  // };
 
   const toggleSnackbar = useCallback(() => {
     setMainError({});
   }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutateCustomerLogin({
+      variables: {
+        phone,
+        password,
+      },
+    });
+  };
 
   return (
     <LoginWrapper>
@@ -92,7 +134,7 @@ function LoginEmail() {
         alertMessage={mainError.message}
         handleClose={toggleSnackbar}
       />
-      <form ref={formRef}>
+      <form onSubmit={handleSubmit}>
         <Box display="flex">
           <Box m="auto">
             <Avatar
@@ -110,23 +152,25 @@ function LoginEmail() {
         </Box>
         <Box mt={theme.spacing(2)} />
         <Typography variant="h5" className={classes.font700}>
-          Sign in with your email or phone
+          {t("login_using_phone")}
         </Typography>
         <Typography
           variant="caption"
           className={`${classes.grayText} ${classes.caption}`}
         >
-          Type your password
+          {t("type_your_password")}
         </Typography>
         <Box mt={theme.spacing(2)} />
         <TextField
-          name={"userEmail"}
-          defaultValue={state?.email ?? "demo-customer@enatega.com"}
+          name={"phone"}
+          // defaultValue={state?.email ?? "demo-customer@enatega.com"}
           error={Boolean(emailError)}
           helperText={emailError}
           fullWidth
+          value={phone}
+          disabled
           variant="outlined"
-          label="Email or phone"
+          label="Phone"
           InputLabelProps={{
             style: {
               color: theme.palette.grey[600],
@@ -135,7 +179,8 @@ function LoginEmail() {
         />
         <Box mt={theme.spacing(2)} />
         <TextField
-          name={"userPass"}
+          name={"password"}
+          value={password}
           InputLabelProps={{
             style: {
               color: theme.palette.grey[600],
@@ -166,6 +211,7 @@ function LoginEmail() {
           variant="outlined"
           label="Password"
           type={showPassword ? "text" : "password"}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <RouterLink
           to="/forgot-password"
@@ -182,7 +228,7 @@ function LoginEmail() {
               }}
               className={classes.font700}
             >
-              Forgot your password?
+              {t("forgot_password")}
             </Typography>
           </Button>
         </RouterLink>
@@ -191,14 +237,14 @@ function LoginEmail() {
           variant="contained"
           color="primary"
           fullWidth
-          type="email"
+          type="submit"
           disableElevation
           disabled={loading}
           className={`${classes.btnBase} ${classes.customBtn}`}
-          onClick={(e) => {
-            e.preventDefault();
-            handleAction();
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleAction();
+          // }}
         >
           {loading ? (
             <CircularProgress color="primary" />
@@ -207,7 +253,7 @@ function LoginEmail() {
               variant="caption"
               className={`${classes.caption} ${classes.font700}`}
             >
-              CONTINUE
+              {t("continue")}
             </Typography>
           )}
         </Button>

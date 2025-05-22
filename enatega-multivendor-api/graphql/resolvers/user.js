@@ -641,7 +641,7 @@ module.exports = {
       user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
       await user.save()
       console.log({ res: res.data })
-      console.log({ res: res.data[0].data })
+      // console.log({ res: res.data[0].data })
       return { message: 'otp_message_sent' }
       // } catch (err) {
       //   throw new Error(err)

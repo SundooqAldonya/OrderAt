@@ -6,14 +6,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { emailExist } from "../../apollo/server";
+import { emailExist, phoneExist } from "../../apollo/server";
 import EmailImage from "../../assets/images/email.png";
 import FlashMessage from "../../components/FlashMessage";
 import { LoginWrapper } from "../Wrapper";
 import useStyles from "./styles";
 import { useTranslation } from "react-i18next";
+import UserContext from "../../context/User";
 
 function isValidEmailAddress(address) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(address);
@@ -21,6 +22,10 @@ function isValidEmailAddress(address) {
 
 const EMAIL = gql`
   ${emailExist}
+`;
+
+const PHONE_EXISTS = gql`
+  ${phoneExist}
 `;
 
 function NewLogin() {
@@ -31,9 +36,34 @@ function NewLogin() {
   const formRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [EmailEixst, { loading }] = useMutation(EMAIL, {
-    onCompleted,
-    onError,
+  const { phone, setPhone } = useContext(UserContext);
+
+  // const [EmailEixst, { loading }] = useMutation(EMAIL, {
+  //   onCompleted,
+  //   onError,
+  // });
+
+  const [mutatePhoneExists, { loading }] = useMutation(PHONE_EXISTS, {
+    onCompleted: (res) => {
+      console.log({ res });
+      navigate("/login-email", {
+        replace: true,
+        state: {
+          phone,
+          from: location.state?.from,
+        },
+      });
+    },
+    onError: (err) => {
+      console.log({ err });
+      navigate("/registration", {
+        replace: true,
+        state: {
+          phone,
+          from: location.state?.from,
+        },
+      });
+    },
   });
 
   function onCompleted({ emailExist }) {
@@ -55,24 +85,30 @@ function NewLogin() {
       });
     }
   }
-  function onError({ error }) {
-    setError("Something went wrong");
-  }
 
-  const handleAction = () => {
-    const emailValue = formRef.current["email"].value;
-    EmailEixst({ variables: { email: emailValue } });
-    // if (isValidEmailAddress(emailValue)) {
-    //   setError("");
-    //   EmailEixst({ variables: { email: emailValue } });
-    // } else {
-    //   setError("Invalid Email");
-    // }
-  };
+  // const handleAction = () => {
+  //   const emailValue = formRef.current["email"].value;
+  //   EmailEixst({ variables: { email: emailValue } });
+  //   // if (isValidEmailAddress(emailValue)) {
+  //   //   setError("");
+  //   //   EmailEixst({ variables: { email: emailValue } });
+  //   // } else {
+  //   //   setError("Invalid Email");
+  //   // }
+  // };
 
   const toggleSnackbar = useCallback(() => {
     setError("");
   }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutatePhoneExists({
+      variables: {
+        phone,
+      },
+    });
+  };
 
   return (
     <LoginWrapper>
@@ -99,7 +135,7 @@ function NewLogin() {
       </Box>
       <Box mt={theme.spacing(1)} />
       <Typography variant="h5" className={classes.font700}>
-        {t("whatsYourEmail")}
+        {t("whatsYourPhone")}
       </Typography>
       <Box mt={theme.spacing(1)} />
       <Typography
@@ -109,15 +145,16 @@ function NewLogin() {
         {t("checkAccount")}
       </Typography>
       <Box mt={theme.spacing(4)} />
-      <form ref={formRef}>
+      <form onSubmit={handleSubmit}>
         <TextField
-          name={"email"}
+          name={"phone"}
           error={Boolean(error)}
           helperText={error}
           variant="outlined"
           defaultValue={""}
-          label="Email or phone"
-          type={"email"}
+          label="Phone"
+          type={"text"}
+          onChange={(e) => setPhone(e.target.value)}
           fullWidth
           InputLabelProps={{
             style: {
@@ -129,14 +166,14 @@ function NewLogin() {
         <Button
           variant="contained"
           fullWidth
-          type="email"
+          type="submit"
           disableElevation
           disabled={loading}
           className={`${classes.btnBase} ${classes.customBtn}`}
-          onClick={(e) => {
-            e.preventDefault();
-            handleAction();
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleAction();
+          // }}
         >
           {loading ? (
             <CircularProgress color="primary" />

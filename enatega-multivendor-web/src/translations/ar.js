@@ -244,6 +244,12 @@ const ar = {
     select_area: "قم باختيار المنطقة",
     no_areas: "لا يوجد مناطق بعد نعمل بها",
     select_option: "حدد الخيار",
+    login_using_phone: "تسجيل الدخول باستخدام هاتفك",
+    type_your_password: "اكتب كلمة المرور الخاصة بك",
+    forgot_password: "نسيت كلمة السر؟",
+    continue: "استمر",
+    whatsYourPhone: "ما هو رقم تليفونك؟",
+    phone_password_not_match: "خطأ في كلمة المرور",
   },
 };
 export default ar;

@@ -232,12 +232,20 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path={"/verify-phone"}
             element={
               <PrivateRoute>
                 <VerifyPhone />
               </PrivateRoute>
+            }
+          /> */}
+          <Route
+            path={"/verify-phone"}
+            element={
+              <AuthRoute>
+                <VerifyPhone />
+              </AuthRoute>
             }
           />
           <Route

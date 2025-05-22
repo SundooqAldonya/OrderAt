@@ -35,7 +35,8 @@ export const UserProvider = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const client = useApolloClient();
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [cart, setCart] = useState([]); // use initial state of cart here
+  const [cart, setCart] = useState([]);
+  const [phone, setPhone] = useState([]);
   const [restaurant, setRestaurant] = useState(null);
   const [saveNotificationToken] = useMutation(SAVE_NOTIFICATION_TOKEN_WEB, {
     onCompleted,
@@ -332,6 +333,8 @@ export const UserProvider = (props) => {
         restaurant,
         setCartRestaurant,
         isLoading,
+        phone,
+        setPhone,
       }}
     >
       {props.children}

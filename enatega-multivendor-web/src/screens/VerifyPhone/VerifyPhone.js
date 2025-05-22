@@ -202,7 +202,7 @@ function VerifyPhone() {
           <OtpInput
             value={otp}
             onChange={handleCode}
-            numInputs={6}
+            numInputs={4}
             containerStyle={{
               width: "100%",
               display: "flex",

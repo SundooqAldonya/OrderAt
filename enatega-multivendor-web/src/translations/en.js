@@ -249,6 +249,12 @@ const en = {
     select_area: "Select Area",
     no_areas: "No Areas for the selected city yet",
     select_option: "Select option",
+    login_using_phone: "Login using your phone",
+    type_your_password: "Type your password",
+    forgot_password: "Forgot your password?",
+    continue: "Continue",
+    whatsYourPhone: "What is your phone number?",
+    phone_password_not_match: "Phone and password don't match!",
   },
 };
 export default en;
