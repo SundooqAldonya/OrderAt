@@ -160,7 +160,10 @@ const transformOrder = async order => {
       ? dateToString(order._doc.assignedAt)
       : '',
     pickupLocation: order?.pickupLocation ? order.pickupLocation : null,
-    type: order?.type ? order.type : null
+    type: order?.type ? order.type : null,
+    riderInteractions: order.riderInteractions?.length
+      ? order.riderInteractions
+      : []
   }
 }
 

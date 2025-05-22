@@ -22,6 +22,7 @@ import AmountCard from '../components/OrderDetails/AmountCard'
 import RiderDetails from '../components/OrderDetails/RiderDetails'
 import PickedUpImage from '../components/OrderDetails/PickedUpImage'
 import CustomerDetailsCard from '../components/OrderDetails/CustomerDetailsCard'
+import RiderInteractions from '../components/OrderDetails/RiderInteractions'
 
 const OrderDetailsPage = () => {
   const { id: orderId } = useParams()
@@ -55,6 +56,7 @@ const OrderDetailsPage = () => {
           className={classes.orderStatus}>
           <StatusCard {...order} />
         </Container>
+
         <Grid container style={{ marginTop: theme.spacing(5) }}>
           <DetailCard {...order} />
         </Grid>
@@ -67,7 +69,7 @@ const OrderDetailsPage = () => {
           </Grid>
         ) : null}
         {/* image receipt captured by driver */}
-        {order.pickedImage?.url ? (
+        {order?.pickedImage?.url ? (
           <Grid
             container
             style={{
@@ -84,6 +86,12 @@ const OrderDetailsPage = () => {
           }}>
           <AmountCard {...order} />
         </Grid>
+
+        {order?.riderInteractions && order?.riderInteractions.length > 0 && (
+          <Grid container style={{ marginTop: theme.spacing(5) }}>
+            <RiderInteractions interactions={order.riderInteractions} />
+          </Grid>
+        )}
       </Container>
     </>
   )

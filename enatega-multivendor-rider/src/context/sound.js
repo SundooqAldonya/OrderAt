@@ -20,7 +20,7 @@ export const SoundContextProvider = ({ children }) => {
         .filter(order => order?.isRiderRinged)
         .map(order => order._id)
       const unseenOrderIds = newOrderIds.filter(id => !seenOrders.includes(id))
-      console.log({ unseenOrderIds })
+      // console.log({ unseenOrderIds })
       // const shouldPlaySound = assignedOrders.some(order => order?.isRiderRinged)
       // console.log({ shouldPlaySound })
       // if (unseenOrderIds.length) {

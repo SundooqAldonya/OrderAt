@@ -109,3 +109,17 @@ export const refreshFirebaseToken = gql`
     }
   }
 `
+export const orderSeenByRider = gql`
+  mutation OrderSeenByRider($id: String!, $riderId: String!) {
+    orderSeenByRider(id: $id, riderId: $riderId) {
+      message
+    }
+  }
+`
+export const orderOpenedByRider = gql`
+  mutation OrderOpenedByRider($id: String!, $riderId: String!) {
+    orderOpenedByRider(id: $id, riderId: $riderId) {
+      message
+    }
+  }
+`

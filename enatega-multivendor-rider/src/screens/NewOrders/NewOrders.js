@@ -13,17 +13,19 @@ import TextError from '../../components/Text/TextError/TextError'
 import LottieView from 'lottie-react-native'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
-import { NetworkStatus } from '@apollo/client'
+import { NetworkStatus, useMutation } from '@apollo/client'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
 import useSidebar from '../../components/Sidebar/useSidebar'
+import { orderSeenByRider } from '../../apollo/mutations'
+import { useRef } from 'react'
 
 const { height, width } = Dimensions.get('window')
 
 const NewOrders = ({ navigation }) => {
   const { t } = useTranslation()
   const [orders, setOrders] = useState([])
-  const [riderIsActive, setRiderIsActive] = useState(false);
+  const [riderIsActive, setRiderIsActive] = useState(false)
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
   const {
@@ -36,6 +38,20 @@ const NewOrders = ({ navigation }) => {
   } = useContext(UserContext)
 
   const { logout, isEnabled, toggleSwitch, datas } = useSidebar()
+
+  const [mutateSeen] = useMutation(orderSeenByRider, {
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: err => {
+      console.log({ err })
+    }
+  })
+  const riderIdRef = useRef()
+
+  useEffect(() => {
+    riderIdRef.current = dataProfile?.rider?._id
+  }, [dataProfile?.rider?._id])
 
   useFocusEffect(() => {
     setActive('NewOrders')
@@ -54,7 +70,6 @@ const NewOrders = ({ navigation }) => {
     }
   }, [assignedOrders])
 
-
   useEffect(() => {
     if (dataProfile) {
       setRiderIsActive(dataProfile?.rider?.isActive)
@@ -62,7 +77,6 @@ const NewOrders = ({ navigation }) => {
   }, [dataProfile, riderIsActive])
 
   console.log({ riderIsActive })
-
 
   const noNewOrders = orders.length === 0
   useEffect(() => {
@@ -72,6 +86,24 @@ const NewOrders = ({ navigation }) => {
       refetchAssigned()
     }
   }, [noNewOrders])
+
+  const seenOrders = useRef(new Set())
+
+  console.log({ seenOrders })
+
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    viewableItems.forEach(viewToken => {
+      const item = viewToken.item
+      if (!seenOrders.current.has(item._id)) {
+        seenOrders.current.add(item._id)
+        setTimeout(() => {
+          mutateSeen({
+            variables: { id: item._id, riderId: riderIdRef.current }
+          })
+        }, 1000)
+      }
+    })
+  }).current
 
   return (
     <ScreenBackground>
@@ -91,19 +123,26 @@ const NewOrders = ({ navigation }) => {
         )}
         {!riderIsActive ? (
           <View>
-            <TextDefault bold
+            <TextDefault
+              bold
               center
               H3
               textColor={colors.fontSecondColor}
               style={{
                 marginTop: 100
-              }}>{t('inactive_screen_message')}</TextDefault>
+              }}>
+              {t('inactive_screen_message')}
+            </TextDefault>
             <TouchableOpacity style={styles.btn} onPress={() => logout()}>
-              <TextDefault style={styles.btnText}>{t('titleLogout')}</TextDefault>
+              <TextDefault style={styles.btnText}>
+                {t('titleLogout')}
+              </TextDefault>
             </TouchableOpacity>
           </View>
-        ) : riderIsActive && isEnabled ? (
+        ) : riderIsActive && isEnabled && dataProfile?.rider ? (
           <FlatList
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             ListEmptyComponent={() => {
               return (
                 <View
@@ -160,19 +199,18 @@ const NewOrders = ({ navigation }) => {
               />
             )}
           />
-        ) :
-          (
-            <TextDefault
-              bold
-              center
-              H3
-              textColor={colors.fontSecondColor}
-              style={{
-                marginTop: 100
-              }}>
-              {t('turnOnAvailability')}
-            </TextDefault>
-          )}
+        ) : (
+          <TextDefault
+            bold
+            center
+            H3
+            textColor={colors.fontSecondColor}
+            style={{
+              marginTop: 100
+            }}>
+            {t('turnOnAvailability')}
+          </TextDefault>
+        )}
       </View>
     </ScreenBackground>
   )

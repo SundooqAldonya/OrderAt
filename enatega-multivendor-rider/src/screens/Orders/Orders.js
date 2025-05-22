@@ -1,5 +1,5 @@
 import { View, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import ScreenBackground from '../../components/ScreenBackground/ScreenBackground'
 import styles from './style'
 import Tabs from '../../components/Tabs/Tabs'
@@ -14,6 +14,8 @@ import LottieView from 'lottie-react-native'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 import { useTranslation } from 'react-i18next'
+import { useMutation } from '@apollo/client'
+import { orderSeenByRider } from '../../apollo/mutations'
 
 const { height, width } = Dimensions.get('window')
 const Orders = ({ navigation }) => {
@@ -61,8 +63,6 @@ const Orders = ({ navigation }) => {
       setRiderIsActive(dataProfile?.rider?.isActive)
     }
   }, [dataProfile, riderIsActive])
-
-  console.log({ riderIsActive })
 
   return (
     <ScreenBackground>

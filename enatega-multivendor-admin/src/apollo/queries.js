@@ -1019,6 +1019,16 @@ export const singleOrder = gql`
         url
         publicId
       }
+      riderInteractions {
+        _id
+        rider {
+          _id
+          name
+          phone
+        }
+        seenAt
+        openedAt
+      }
     }
   }
 `

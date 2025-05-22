@@ -475,6 +475,16 @@ const typeDefs = gql`
     pickupAddress: String
     type: String
     mandoobSpecialInstructions: String
+    riderInteractions: [RiderInteractions]
+  }
+
+  scalar Date
+
+  type RiderInteractions {
+    _id: String
+    rider: Rider
+    seenAt: Date
+    openedAt: Date
   }
 
   type PickedImage {
@@ -1714,6 +1724,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    orderSeenByRider(id: String!, riderId: String!): Message
+    orderOpenedByRider(id: String!, riderId: String!): Message
     resetPasswordCustomer(phone: String!, password: String!): ForgotPassword
     customerLogin(phone: String!, password: String!): CustomerLoginResponse
     defaultTimings(id: String!): Message

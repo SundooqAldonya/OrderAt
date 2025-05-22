@@ -54,9 +54,11 @@ const { acceptOrder } = require('../../helpers/restaurantHelpers')
 const {
   normalizeAndValidatePhoneNumber
 } = require('../../helpers/normalizePhone')
+const dateScalar = require('../../helpers/dateScalar')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
+  Date: dateScalar,
   Subscription: {
     subscribePlaceOrder: {
       subscribe: withFilter(
@@ -128,10 +130,16 @@ module.exports = {
         if (!req.isAuth) {
           throw new Error('Unauthenticated!')
         }
-        const order = await Order.findById(args.id)
-        console.log({ order })
+        const order = await Order.findById(args.id).populate({
+          path: 'riderInteractions',
+          populate: { path: 'rider' }
+        })
+        // .populate('restaurant')
+        // .populate('user')
+        console.log({ orderRiderInteractions: order.riderInteractions[0] })
         if (!order) throw new Error('Order does not exist')
-        return transformOrder(order)
+        return await transformOrder(order)
+        // return order
       } catch (err) {
         throw err
       }
@@ -1303,6 +1311,42 @@ module.exports = {
       publishOrder(transformedOrder)
 
       return transformedOrder
+    },
+
+    async orderSeenByRider(_, args) {
+      console.log('orderSeenByRider', { args })
+      try {
+        await Order.updateOne(
+          { _id: args.id, 'riderInteractions.rider': { $ne: args.riderId } },
+          {
+            $push: {
+              riderInteractions: {
+                rider: args.riderId,
+                seenAt: new Date()
+              }
+            }
+          }
+        )
+        return { message: 'seen' }
+      } catch (err) {
+        throw err
+      }
+    },
+    async orderOpenedByRider(_, args) {
+      console.log('orderOpenedByRider', { args })
+      try {
+        await Order.updateOne(
+          { _id: args.id, 'riderInteractions.rider': args.riderId },
+          {
+            $set: {
+              'riderInteractions.$.openedAt': new Date()
+            }
+          }
+        )
+        return { message: 'seen' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

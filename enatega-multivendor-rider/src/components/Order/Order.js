@@ -7,6 +7,10 @@ import useOrder from './useOrder'
 import Spinner from '../Spinner/Spinner'
 import { useTranslation } from 'react-i18next'
 import { useSoundContext } from '../../context/sound'
+import { orderOpenedByRider } from '../../apollo/mutations'
+import { useMutation } from '@apollo/client'
+import { useContext } from 'react'
+import UserContext from '../../context/user'
 
 const Order = ({ order, orderAmount }) => {
   const { t, i18n } = useTranslation()
@@ -20,10 +24,27 @@ const Order = ({ order, orderAmount }) => {
     loadingAssignOrder
   } = useOrder(order)
 
+  const { dataProfile } = useContext(UserContext)
+
   const { stopSound, seenOrders, setSeenOrders } = useSoundContext()
 
+  const [mutateOpened] = useMutation(orderOpenedByRider, {
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: err => {
+      console.log({ err })
+    }
+  })
+
   const handlePress = async id => {
-    setSeenOrders([...seenOrders, id])
+    // setSeenOrders([...seenOrders, id])
+    mutateOpened({
+      variables: {
+        id,
+        riderId: dataProfile?.rider?._id
+      }
+    })
     await stopSound()
     navigation.navigate('OrderDetail', {
       itemId: order?._id,
