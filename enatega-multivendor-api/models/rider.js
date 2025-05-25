@@ -30,7 +30,7 @@ const riderSchema = new Schema(
     },
     available: {
       type: Boolean,
-      default: true
+      default: false
     },
     assigned: [String],
     delivered: [String],
@@ -44,7 +44,7 @@ const riderSchema = new Schema(
     },
     isActive: {
       type: Boolean,
-      default: true
+      default: false
     },
     muted: {
       type: Boolean,
@@ -59,6 +59,12 @@ const riderSchema = new Schema(
     isOnline: {
       type: Boolean,
       default: false
+    },
+    startAvailabilityDate: {
+      type: Date
+    },
+    endAvailabilityDate: {
+      type: Date
     },
     token: {
       type: String

@@ -36,6 +36,7 @@ import { ReactComponent as RiderIcon } from '../assets/svg/svg/Rider.svg'
 import TableHeader from '../components/TableHeader'
 import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
+import moment from 'moment'
 
 const GET_RIDERS = gql`
   ${getRiders}
@@ -139,6 +140,26 @@ function Riders(props) {
     {
       name: t('Action'),
       cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
+    },
+    {
+      name: t('start_date'),
+      cell: row => (
+        <>
+          {row.startAvailabilityDate
+            ? moment(row.startAvailabilityDate).format('LLL')
+            : 'N/A'}
+        </>
+      )
+    },
+    {
+      name: t('end_date'),
+      cell: row => (
+        <>
+          {row.endAvailabilityDate
+            ? moment(row.endAvailabilityDate).format('LLL')
+            : 'N/A'}
+        </>
+      )
     }
   ]
 

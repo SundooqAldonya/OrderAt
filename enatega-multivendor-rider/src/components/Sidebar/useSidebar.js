@@ -64,7 +64,6 @@ const useSidebar = () => {
   const { dataProfile } = useContext(UserContext)
   const [isMuted, setIsMuted] = useState(dataProfile?.rider.muted)
   const [isEnabled, setIsEnabled] = useState(dataProfile?.rider.available)
-  // const { stopSound } = useSoundContext()
 
   console.log({ dataProfileMuted: dataProfile?.rider.muted })
   console.log({ isEnabled })

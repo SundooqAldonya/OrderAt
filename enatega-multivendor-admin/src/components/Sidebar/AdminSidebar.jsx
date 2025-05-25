@@ -53,7 +53,7 @@ function AdminSidebar(props) {
                   {t('GENERAL')}
                 </Typography>
               ) : null}
-              {key === 6 ? (
+              {key === 7 ? (
                 <Typography className={classes.headingText} variant="h3">
                   {t('MANAGEMENT')}
                 </Typography>

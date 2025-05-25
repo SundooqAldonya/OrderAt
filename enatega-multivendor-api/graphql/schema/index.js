@@ -321,7 +321,7 @@ const typeDefs = gql`
   }
 
   type Rider {
-    _id: ID!
+    _id: String
     name: String
     email: String
     username: String
@@ -334,11 +334,17 @@ const typeDefs = gql`
     isActive: Boolean
     createdAt: String
     updatedAt: String
-    location: Point
+    location: PointUpdated
     accountNumber: String
     currentWalletAmount: Float
     totalWalletAmount: Float
     withdrawnWalletAmount: Float
+    startAvailabilityDate: Date
+    endAvailabilityDate: Date
+  }
+
+  type RiderLocation {
+    location: PointUpdated
   }
 
   type User {
@@ -735,6 +741,11 @@ const typeDefs = gql`
   type Point {
     type: String!
     coordinates: [String!]
+  }
+
+  type PointUpdated {
+    _id: String
+    coordinates: [Float]
   }
 
   type Zone {
@@ -1377,6 +1388,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getRidersLocation: [Rider]
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]

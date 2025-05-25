@@ -858,6 +858,11 @@ export const getRiders = `query{
         _id
         title
       }
+      startAvailabilityDate
+      endAvailabilityDate
+      location {
+        coordinates
+      }
     }
   }`
 
@@ -1097,6 +1102,24 @@ export const orderRidersInteractions = gql`
       }
       seenAt
       openedAt
+    }
+  }
+`
+export const getRidersLocation = gql`
+  query getRidersLocation {
+    getRidersLocation {
+      _id
+      name
+      username
+      password
+      phone
+      available
+      isActive
+      startAvailabilityDate
+      endAvailabilityDate
+      location {
+        coordinates
+      }
     }
   }
 `

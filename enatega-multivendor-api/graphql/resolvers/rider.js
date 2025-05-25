@@ -27,8 +27,10 @@ const { GraphQLUpload } = require('graphql-upload')
 const {
   sendCustomerNotifications
 } = require('../../helpers/customerNotifications')
+const dateScalar = require('../../helpers/dateScalar')
 
 module.exports = {
+  Date: dateScalar,
   Upload: GraphQLUpload,
   Subscription: {
     subscriptionRiderLocation: {
@@ -182,6 +184,16 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+
+    async getRidersLocation(_, args) {
+      try {
+        const riders = await Rider.find({ available: true })
+        console.log({ ridersLocations: riders[0].location })
+        return riders
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {
@@ -274,14 +286,20 @@ module.exports = {
     },
     toggleAvailablity: async (_, args, { req }) => {
       console.log('toggleAvailablity')
-      const userId = args.id || req.userId // if rider: get id from req, args otherwise
+      const userId = args.id || req.userId
       if (!userId) {
         throw new Error('Unauthenticated!')
       }
       try {
         const rider = await Rider.findById(userId)
         if (rider.isActive) {
-          rider.available = !rider.available
+          if (rider.available) {
+            rider.endAvailabilityDate = new Date()
+            rider.available = false
+          } else {
+            rider.startAvailabilityDate = new Date()
+            rider.available = true
+          }
         }
         const result = await rider.save()
         return transformRider(result)
@@ -291,7 +309,7 @@ module.exports = {
     },
     toggleActive: async (_, args, { req }) => {
       console.log('toggleActive')
-      const userId = args.id || req.userId // if rider: get id from req, args otherwise
+      const userId = args.id || req.userId
       if (!userId) {
         throw new Error('Unauthenticated!')
       }

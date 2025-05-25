@@ -20,8 +20,8 @@ import { useTranslation } from 'react-i18next'
 // const RiderLogin = require('../../assets/svg/RiderLogin.png')
 
 const ScreenBackground = ({ children }) => {
-  const navigation = useNavigation()
   const { t } = useTranslation()
+  const navigation = useNavigation()
 
   const { dataProfile } = useContext(UserContext)
 

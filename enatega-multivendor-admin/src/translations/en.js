@@ -415,7 +415,9 @@ const en = {
     removed_business_category: 'Removed business category successfully!',
     order_number: 'Order Number',
     restore_default: 'Restore Default',
-    seen_by: 'Seen By'
+    seen_by: 'Seen By',
+    start_date: 'Start Date',
+    end_date: 'End Date'
   }
 }
 

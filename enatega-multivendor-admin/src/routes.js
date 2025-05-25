@@ -52,6 +52,7 @@ import { ReactComponent as PaymentIcon } from './assets/svg/payment.svg'
 import { ReactComponent as RatingIcon } from './assets/svg/rating.svg'
 import { ReactComponent as TimingIcon } from './assets/svg/timings.svg'
 import { ReactComponent as RestaurantSectionIcon } from './assets/svg/restSection.svg'
+import TravelExploreIcon from '@mui/icons-material/TravelExplore'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import SuperAdminDashboard from './views/SuperAdminDashboard'
 import Cuisines from './views/Cuisines'
@@ -67,6 +68,7 @@ import OrderDetailsPage from './views/OrderDetailsPage'
 import DeliveryPrices from './views/DeliveryPrices'
 import DeliveryZone from './views/DeliveryZone'
 import BusinessCategory from './views/BusinessCategory'
+import RidersMap from './views/RidersMap'
 
 var routes = [
   {
@@ -119,6 +121,15 @@ var routes = [
     name: 'Riders',
     icon: RiderIcon,
     component: Riders,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/riders-map',
+    name: 'Riders Map',
+    icon: TravelExploreIcon,
+    component: RidersMap,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true
@@ -231,6 +242,7 @@ var routes = [
     appearInSidebar: true,
     admin: true
   },
+
   {
     path: '/zones',
     name: 'Zone',
