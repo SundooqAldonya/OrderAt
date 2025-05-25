@@ -395,7 +395,8 @@ const ar = {
     updated_business_category: 'تم تعديل تصنيف المنتج بنجاح!',
     removed_business_category: 'تم حذف تصنيف المنتج بنجاح!',
     order_number: 'الترتيب',
-    restore_default: 'استعادة الافتراضي'
+    restore_default: 'استعادة الافتراضي',
+    seen_by: 'تم رؤيته'
   }
 }
 

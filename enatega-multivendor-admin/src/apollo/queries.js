@@ -444,6 +444,16 @@ export const getActiveOrders = gql`
           username
           available
         }
+        riderInteractions {
+          _id
+          rider {
+            _id
+            name
+            phone
+          }
+          seenAt
+          openedAt
+        }
       }
       totalDocs
       limit

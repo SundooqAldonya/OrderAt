@@ -24,7 +24,9 @@ import {
   Box,
   useTheme,
   TablePagination,
-  Paper
+  Paper,
+  Typography,
+  Button
 } from '@mui/material'
 import { ReactComponent as DispatchIcon } from '../assets/svg/svg/Dispatch.svg'
 import TableHeader from '../components/TableHeader'
@@ -32,6 +34,7 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
 import RiderFunc from '../components/RiderFunc'
 import moment from 'moment'
+import DispatchDrawer from '../components/DispatchDrawer'
 
 const SUBSCRIPTION_ORDER = gql`
   ${subscriptionOrder}
@@ -50,13 +53,14 @@ const Orders = props => {
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const [mutateUpdate] = useMutation(UPDATE_STATUS)
   const globalClasses = useGlobalStyles()
-  // const [mutateAssign] = useMutation(ASSIGN_RIDER)
+  const [selectedInteraction, setSelectedInteraction] = useState(null)
+  const [modalVisible, setModalVisible] = useState(null)
 
-  const [restaurantId, seteRestaurantId] = useState(
+  const [restaurantId, setRestaurantId] = useState(
     localStorage.getItem('restaurantId')
   )
   useEffect(() => {
-    if (params.id) seteRestaurantId(params.id)
+    if (params.id) setRestaurantId(params.id)
   }, [])
 
   const {
@@ -68,8 +72,6 @@ const Orders = props => {
     variables: { restaurantId: null, page, limit },
     pollInterval: 3000
   })
-
-  console.log({ dataOrders: dataOrders?.getActiveOrders?.docs[0] })
 
   const statusFunc = row => {
     const handleStatusSuccessNotification = status => {
@@ -220,8 +222,31 @@ const Orders = props => {
     {
       name: t('OrderTimeAdvance'),
       cell: row => TimeFunc({ row })
+    },
+
+    {
+      name: t('seen_by'),
+      cell: row => (
+        <Button
+          onClick={() => {
+            handleModalVisible(row)
+          }}>
+          <Typography>{t('seen_by')}</Typography>
+        </Button>
+      )
     }
   ]
+
+  const handleModalVisible = item => {
+    setSelectedInteraction(item)
+    setModalVisible(true)
+  }
+  const toggleDrawer = () => {
+    setSelectedInteraction(null)
+    setModalVisible(false)
+  }
+
+  console.log({ selectedInteraction })
 
   const conditionalRowStyles = [
     {
@@ -350,6 +375,11 @@ const Orders = props => {
             />
           </Paper>
         )}
+        <DispatchDrawer
+          open={modalVisible}
+          order={selectedInteraction}
+          toggleDrawer={toggleDrawer}
+        />
       </Container>
     </>
   )
@@ -385,37 +415,6 @@ const TimeFunc = ({ row }) => {
   }, [])
 
   useEffect(() => {
-    console.log({
-      orderId: row.orderId,
-      Now: now.format('HH:mm:ss'),
-      createdAt
-    })
-
-    console.log({
-      orderId: row.orderId,
-      'Order Created At': orderCreatedAt.format('HH:mm:ss')
-    })
-    console.log({
-      orderId: row.orderId,
-      'Accepted At': acceptedAt
-        ? moment(acceptedAt).format('HH:mm:ss')
-        : 'Not accepted yet'
-    })
-    console.log({
-      orderId: row.orderId,
-      'Prepration time': preparationTime
-        ? moment(preparationTime).format('HH:mm:ss')
-        : 'Not accepted yet'
-    })
-    console.log({
-      orderId: row.orderId,
-      'Rider Assigned At': assignedAt
-        ? moment(assignedAt).format('HH:mm:ss')
-        : 'Not assigned yet'
-    })
-
-    console.log({ difference: now.diff(orderCreatedAt, 'minutes') })
-
     if (
       !acceptedAt &&
       orderStatus === 'PENDING' &&
@@ -447,7 +446,6 @@ const TimeFunc = ({ row }) => {
     }
   }, [now])
 
-  console.log({ assignedAt })
   return (
     <div
       style={{

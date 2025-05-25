@@ -48,7 +48,12 @@ module.exports = {
           sort: {
             createdAt: -1
           },
-          populate: ['rider', 'restaurant', 'user']
+          populate: [
+            'rider',
+            'restaurant',
+            'user',
+            { path: 'riderInteractions', populate: { path: 'rider' } }
+          ]
         })
 
         console.log({ result: result })
