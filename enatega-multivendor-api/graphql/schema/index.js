@@ -1377,6 +1377,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
     nearestRestaurants(

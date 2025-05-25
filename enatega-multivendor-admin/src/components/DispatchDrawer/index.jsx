@@ -10,8 +10,29 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import PersonIcon from '@mui/icons-material/Person'
 import moment from 'moment'
+import { orderRidersInteractions } from '../../apollo'
+import { useQuery } from '@apollo/client'
+import { Typography } from '@mui/material'
+import Loader from 'react-loader-spinner'
 
 const DispatchDrawer = ({ open, order, toggleDrawer }) => {
+  console.log({ order })
+  const { data, loading, error } = useQuery(orderRidersInteractions, {
+    variables: {
+      id: order?._id
+    },
+    skip: !order,
+    pollInterval: 10000
+  })
+
+  // if (error) return <Typography>Something went wrong!</Typography>
+
+  if (loading) return <Loader />
+
+  console.log({ data })
+
+  const riderInteractions = data?.orderRidersInteractions || null
+
   const list = () => (
     <Box
       sx={{ width: 'auto' }}
@@ -19,7 +40,7 @@ const DispatchDrawer = ({ open, order, toggleDrawer }) => {
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}>
       <List>
-        {order?.riderInteractions?.map(item => {
+        {riderInteractions?.map(item => {
           console.log({ item })
           return (
             <ListItem key={item._id} disablePadding>
@@ -72,6 +93,11 @@ const DispatchDrawer = ({ open, order, toggleDrawer }) => {
   return (
     <div>
       <Drawer anchor={'bottom'} open={open} onClose={toggleDrawer}>
+        {error && (
+          <Typography style={{ color: '#000', textAlign: 'center' }}>
+            No rider interaction for the selected order
+          </Typography>
+        )}
         {list()}
       </Drawer>
     </div>

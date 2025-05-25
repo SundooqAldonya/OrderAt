@@ -390,6 +390,21 @@ module.exports = {
     },
     getPaymentStatuses: async (_, args, context) => {
       return payment_status
+    },
+
+    async orderRidersInteractions(_, args) {
+      try {
+        const order = await Order.findById(args.id).populate({
+          path: 'riderInteractions',
+          populate: { path: 'rider' }
+        })
+        console.log({ orderRiderInteractions: order })
+        if (!order?.riderInteractions?.length)
+          throw new Error('no_rider_interactions')
+        return order.riderInteractions
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {
