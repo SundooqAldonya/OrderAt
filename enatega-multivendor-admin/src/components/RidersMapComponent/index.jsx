@@ -27,10 +27,22 @@ const RidersMapComponent = forwardRef(({ riders }, ref) => {
       markerRefs.current.forEach(marker => marker.setMap(null))
       markerRefs.current = []
 
-      const markers = mapLocations.map(position => {
+      const markers = mapLocations.map((position, i) => {
         const marker = new window.google.maps.Marker({
           position,
           map
+        })
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `<div style="font-weight:bold;">${riders[i].name}</div>`
+        })
+
+        marker.addListener('mouseover', () => {
+          infoWindow.open(map, marker)
+        })
+
+        // Hide InfoWindow when not hovering
+        marker.addListener('mouseout', () => {
+          infoWindow.close()
         })
         markerRefs.current.push(marker)
         return marker

@@ -1120,6 +1120,8 @@ export const getRidersLocation = gql`
       location {
         coordinates
       }
+      updatedAt
+      createdAt
     }
   }
 `

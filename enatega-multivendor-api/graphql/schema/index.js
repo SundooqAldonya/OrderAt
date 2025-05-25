@@ -332,8 +332,8 @@ const typeDefs = gql`
     muted: Boolean
     zone: Zone
     isActive: Boolean
-    createdAt: String
-    updatedAt: String
+    createdAt: Date
+    updatedAt: Date
     location: PointUpdated
     accountNumber: String
     currentWalletAmount: Float

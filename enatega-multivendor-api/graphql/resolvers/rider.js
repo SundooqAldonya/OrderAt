@@ -189,7 +189,7 @@ module.exports = {
     async getRidersLocation(_, args) {
       try {
         const riders = await Rider.find({ available: true })
-        console.log({ ridersLocations: riders[0].location })
+        console.log({ ridersLocations: riders[0].updatedAt })
         return riders
       } catch (err) {
         throw err

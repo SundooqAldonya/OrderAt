@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import TableHeader from '../components/TableHeader'
 import { orderBy } from 'lodash'
 import { customStyles } from '../utils/tableCustomStyles'
+import moment from 'moment'
 
 const RidersMap = () => {
   const { t } = useTranslation()
@@ -48,6 +49,16 @@ const RidersMap = () => {
       name: t('Phone'),
       sortable: true,
       selector: 'phone'
+    },
+    {
+      name: t('updatedAt'),
+      sortable: false,
+      selector: 'updatedAt',
+      row: row => {
+        console.log('updatedAt:', row.updatedAt)
+        const date = new Date(parseFloat(row.updatedAt))
+        return <div>{moment(date).format('LLL')}</div>
+      }
     }
   ]
 
