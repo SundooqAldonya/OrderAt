@@ -25,10 +25,6 @@ const DispatchDrawer = ({ open, order, toggleDrawer }) => {
     pollInterval: 10000
   })
 
-  // if (error) return <Typography>Something went wrong!</Typography>
-
-  if (loading) return <Loader />
-
   console.log({ data })
 
   const riderInteractions = data?.orderRidersInteractions || null
@@ -93,6 +89,17 @@ const DispatchDrawer = ({ open, order, toggleDrawer }) => {
   return (
     <div>
       <Drawer anchor={'bottom'} open={open} onClose={toggleDrawer}>
+        {loading && (
+          <Box
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <Loader type="ThreeDots" />
+          </Box>
+        )}
         {error && (
           <Typography style={{ color: '#000', textAlign: 'center' }}>
             No rider interaction for the selected order
