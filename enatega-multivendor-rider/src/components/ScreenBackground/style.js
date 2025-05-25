@@ -61,6 +61,17 @@ export default StyleSheet.create({
     top: 70,
     left: 40
   },
+  toggleContainer: {
+    width: 30,
+    height: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    top: 70,
+    right: 40
+  },
+
   line: {
     height: 2,
     backgroundColor: '#000',

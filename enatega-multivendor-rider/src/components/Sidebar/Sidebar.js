@@ -14,10 +14,7 @@ import UserContext from '../../context/user'
 function SidebBar() {
   const navigation = useNavigation()
   const { t, i18n } = useTranslation()
-  const {
-
-    dataProfile
-  } = useContext(UserContext)
+  const { dataProfile } = useContext(UserContext)
   const {
     logout,
     isEnabled,
@@ -44,7 +41,7 @@ function SidebBar() {
           <Profile />
         </View>
         <View style={[styles.opacity, { flex: 4 }]}>
-          <View
+          {/* <View
             style={[
               styles.rowDisplay,
               isArabic && { flexDirection: 'row-reverse' }
@@ -73,7 +70,7 @@ function SidebBar() {
                 style={{ marginTop: Platform.OS === 'android' ? -12 : -5 }}
               />
             </View>
-          </View>
+          </View> */}
           <View
             style={[
               styles.rowDisplay,
