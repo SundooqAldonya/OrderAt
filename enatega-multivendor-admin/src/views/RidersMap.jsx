@@ -54,11 +54,7 @@ const RidersMap = () => {
       name: t('updatedAt'),
       sortable: false,
       selector: 'updatedAt',
-      row: row => {
-        console.log('updatedAt:', row.updatedAt)
-        const date = new Date(parseFloat(row.updatedAt))
-        return <div>{moment(date).format('LLL')}</div>
-      }
+      cell: row => <div>{moment(row.updatedAt).format('LLL')}</div>
     }
   ]
 
