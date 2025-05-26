@@ -188,7 +188,11 @@ module.exports = {
 
     async getRidersLocation(_, args) {
       try {
-        const riders = await Rider.find({ available: true })
+        const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000)
+        const riders = await Rider.find({
+          available: true,
+          lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+        })
         return riders
       } catch (err) {
         throw err
