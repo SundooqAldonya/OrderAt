@@ -26,10 +26,6 @@ module.exports = {
     createCoupon: async (_, args, context) => {
       console.log('createCoupon')
       try {
-        // const count = await Coupon.countDocuments({
-        //   title: args.couponInput.title,
-        //   isActive: true
-        // })
         const existingCoupon = await Coupon.findOne({
           code: args.couponInput.code
         })

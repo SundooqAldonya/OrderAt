@@ -133,9 +133,9 @@ const Coupon = props => {
           <Grid item>
             <CouponComponent />
           </Grid>
-          <Grid sx={{ display: { xs: 'none', lg: 'block' } }} item mt={2}>
+          {/* <Grid sx={{ display: { xs: 'none', lg: 'block' } }} item mt={2}>
             <CouponsIcon />
-          </Grid>
+          </Grid> */}
         </Grid>
 
         {errorQuery ? (
