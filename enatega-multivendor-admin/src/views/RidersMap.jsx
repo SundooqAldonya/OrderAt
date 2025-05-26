@@ -55,7 +55,9 @@ const RidersMap = () => {
       sortable: false,
       selector: 'updatedAt',
       cell: row => (
-        <div>{moment(row.lastUpdatedLocationDate).format('LLL')}</div>
+        <div>
+          {moment(row.lastUpdatedLocationDate).locale('en-eg').format('LLL')}
+        </div>
       )
     }
   ]
