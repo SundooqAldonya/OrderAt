@@ -389,6 +389,7 @@ module.exports = {
       try {
         const phone = normalizeAndValidatePhoneNumber(args.phone)
         console.log({ phone })
+        if (!phone) throw new Error('wrong_credentials')
         const phoneExist = await User.findOne({ phone })
         console.log({ phoneExist })
         if (phoneExist) {
@@ -572,6 +573,7 @@ module.exports = {
         const phoneNumber = normalizeAndValidatePhoneNumber(
           args.phone
         )?.replace('+', '')
+        if (!phoneNumber) throw new Error('wrong_credentials')
 
         const otp = generatePhoneOTP()
 
@@ -614,7 +616,7 @@ module.exports = {
       }
       const phoneNumber = normalizeAndValidatePhoneNumber(args.phone)
       console.log({ phoneNumber })
-
+      if (!phoneNumber) throw new Error('wrong_credentials')
       const user = await User.findOne({ phone: phoneNumber })
       if (!user) throw new Error('user_doesnt_exist')
       const otp = generatePhoneOTP()

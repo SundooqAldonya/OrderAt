@@ -1,8 +1,11 @@
+const dateScalar = require('../../helpers/dateScalar')
 const Coupon = require('../../models/coupon')
 
 module.exports = {
+  Date: dateScalar,
+
   Query: {
-    coupons: async() => {
+    coupons: async () => {
       console.log('coupons')
       try {
         const coupons = await Coupon.find({ isActive: true }).sort({
@@ -18,17 +21,21 @@ module.exports = {
       }
     }
   },
+
   Mutation: {
-    createCoupon: async(_, args, context) => {
+    createCoupon: async (_, args, context) => {
       console.log('createCoupon')
       try {
-        const count = await Coupon.countDocuments({
-          title: args.couponInput.title,
-          isActive: true
+        // const count = await Coupon.countDocuments({
+        //   title: args.couponInput.title,
+        //   isActive: true
+        // })
+        const existingCoupon = await Coupon.findOne({
+          code: args.couponInput.code
         })
-        if (count > 0) throw new Error('Coupon Code already exists')
+        if (existingCoupon) throw new Error('Coupon Code already exists')
         const coupon = new Coupon({
-          title: args.couponInput.title,
+          code: args.couponInput.code,
           discount: args.couponInput.discount,
           enabled: args.couponInput.enabled
         })
@@ -42,7 +49,7 @@ module.exports = {
         throw err
       }
     },
-    editCoupon: async(_, args, context) => {
+    editCoupon: async (_, args, context) => {
       console.log('editCoupon')
       try {
         const count = await Coupon.countDocuments({ _id: args.couponInput._id })
@@ -64,7 +71,7 @@ module.exports = {
         throw err
       }
     },
-    deleteCoupon: async(_, args, context) => {
+    deleteCoupon: async (_, args, context) => {
       console.log('deleteCoupon')
       try {
         const coupon = await Coupon.findById(args.id)
@@ -76,7 +83,7 @@ module.exports = {
         throw err
       }
     },
-    coupon: async(_, args, context) => {
+    coupon: async (_, args, context) => {
       console.log('coupon', args)
       try {
         const coupon = await Coupon.findOne({

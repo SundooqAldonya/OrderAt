@@ -1080,12 +1080,53 @@ const typeDefs = gql`
     quantityMaximum: Int!
   }
 
+  # input CouponInput {
+  #   _id: String
+  #   title: String!
+  #   discount: Float!
+  #   enabled: Boolean
+  # }
+
   input CouponInput {
     _id: String
-    title: String!
-    discount: Float!
-    enabled: Boolean
+    code: String!
+    description: String
+    target: CouponTargetInput
+    rules: CouponRulesInput
+    tracking: CouponTrackingInput
+    status: String
   }
+
+  input CouponTargetInput {
+    cities: [String]
+    business_ids: [String]
+    customer_ids: [String]
+    category_ids: [String]
+    item_ids: [String]
+  }
+
+  input CouponRulesInput {
+    discount_type: String # Enum: "percent" or "flat"
+    discount_value: Float
+    applies_to: [String] # Enum: "subtotal", "delivery", etc.
+    min_order_value: Float
+    max_discount: Float
+    start_date: Date
+    end_date: Date
+    limit_total: Int
+    limit_per_user: Int
+  }
+
+  input CouponTrackingInput {
+    usage_count: Int
+    user_usage: [UserUsageEntryInput]
+  }
+
+  input UserUsageEntryInput {
+    user_id: String
+    count: Int
+  }
+
   input TippingInput {
     _id: String
     tipVariations: [Float]

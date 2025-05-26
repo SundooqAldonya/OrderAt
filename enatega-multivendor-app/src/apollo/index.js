@@ -96,7 +96,7 @@ const setupApollo = () => {
     const token = await AsyncStorage.getItem('token')
     operation.setContext({
       headers: {
-        authorization: token ? `Bearer ${token}` : ''
+        authorization: token ? `Bearer ${token}` : null
       }
     })
   }

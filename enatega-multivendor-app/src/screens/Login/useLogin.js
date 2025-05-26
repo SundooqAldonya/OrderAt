@@ -15,6 +15,7 @@ import AuthContext from '../../context/Auth'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import Toast from 'react-native-toast-message'
 
 const LOGIN = gql`
   ${login}
@@ -25,6 +26,8 @@ const PHONE = gql`
 
 export const useLogin = () => {
   const Analytics = analytics()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const navigation = useNavigation()
   const emailRef = useRef('')
@@ -36,7 +39,6 @@ export const useLogin = () => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { setTokenAsync } = useContext(AuthContext)
-  const { t } = useTranslation()
   const phone = useSelector((state) => state.phone.phone)
 
   const [mutatePhoneExists, { loading }] = useMutation(PHONE, {
@@ -188,6 +190,20 @@ export const useLogin = () => {
   }
 
   function checkPhoneExists() {
+    if (phone.length > 11) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: t('eleven_digits_number'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      return
+    }
     mutatePhoneExists({ variables: { phone } })
   }
 

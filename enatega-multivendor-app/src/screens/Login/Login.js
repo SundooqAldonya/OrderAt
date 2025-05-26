@@ -85,7 +85,7 @@ function Login(props) {
         if (message.includes('no_password_set')) {
           mutateValidate({
             variables: {
-              phone
+              phone: `+2${phone}`
             }
           })
           // Redirect to forgot password flow

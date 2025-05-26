@@ -248,6 +248,7 @@ module.exports = {
       console.log('customerLogin', { args })
       try {
         const phone = normalizeAndValidatePhoneNumber(args.phone)
+        if (!phone) throw new Error('wrong_credentials')
         const user = await User.findOne({ phone })
 
         if (!user) throw new Error('user_not_found')
