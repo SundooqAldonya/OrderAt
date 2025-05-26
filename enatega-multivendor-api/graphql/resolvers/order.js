@@ -421,9 +421,9 @@ module.exports = {
           name
         } = args.input
 
-        // const phoneNumber = phone.replace('+2', '')
-        console.log({ phoneNumber: normalizeAndValidatePhoneNumber(phone) })
-
+        const phoneNumber = normalizeAndValidatePhoneNumber(phone)
+        console.log({ phoneNumber })
+        if (!phoneNumber) throw new Error('invalid_number')
         let user = await User.findOne({
           phone: normalizeAndValidatePhoneNumber(phone)
         })

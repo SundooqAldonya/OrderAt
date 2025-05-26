@@ -608,46 +608,46 @@ module.exports = {
     },
     async validatePhoneUnauth(_, args) {
       console.log('validatePhoneUnauth', { args })
-      // try {
-      axios.defaults.headers = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Accept-Language': 'en-US'
+      try {
+        axios.defaults.headers = {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Accept-Language': 'en-US'
+        }
+        const phoneNumber = normalizeAndValidatePhoneNumber(args.phone)
+        console.log({ phoneNumber })
+        if (!phoneNumber) throw new Error('wrong_credentials')
+        const user = await User.findOne({ phone: phoneNumber })
+        if (!user) throw new Error('user_doesnt_exist')
+        const otp = generatePhoneOTP()
+
+        console.log({ phoneNumber, otp })
+
+        const body = {
+          username: 'w8pRT869',
+          password: 'Oqo48lklp',
+          // sendername: 'Sms plus',
+          sendername: 'Kayan',
+          mobiles: phoneNumber?.replace('+', ''),
+          message: `أوردرات: رمز التحقق الخاص بك هو: ${otp}`
+        }
+        console.log({ body })
+
+        const url = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.mobiles}&message=${body.message}`
+
+        const res = await axios.post(url).catch(err => {
+          console.log({ err })
+          throw new Error('SMS integration went wrong!')
+        })
+        user.phoneOTP = otp
+        user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
+        await user.save()
+        console.log({ res: res.data })
+        // console.log({ res: res.data[0].data })
+        return { message: 'otp_message_sent' }
+      } catch (err) {
+        throw new Error(err)
       }
-      const phoneNumber = normalizeAndValidatePhoneNumber(args.phone)
-      console.log({ phoneNumber })
-      if (!phoneNumber) throw new Error('wrong_credentials')
-      const user = await User.findOne({ phone: phoneNumber })
-      if (!user) throw new Error('user_doesnt_exist')
-      const otp = generatePhoneOTP()
-
-      console.log({ phoneNumber, otp })
-
-      const body = {
-        username: 'w8pRT869',
-        password: 'Oqo48lklp',
-        // sendername: 'Sms plus',
-        sendername: 'Kayan',
-        mobiles: phoneNumber?.replace('+', ''),
-        message: `أوردرات: رمز التحقق الخاص بك هو: ${otp}`
-      }
-      console.log({ body })
-
-      const url = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.mobiles}&message=${body.message}`
-
-      const res = await axios.post(url).catch(err => {
-        console.log({ err })
-        throw new Error('SMS integration went wrong!')
-      })
-      user.phoneOTP = otp
-      user.phoneOtpExpiresAt = new Date(Date.now() + 60 * 60 * 1000)
-      await user.save()
-      console.log({ res: res.data })
-      // console.log({ res: res.data[0].data })
-      return { message: 'otp_message_sent' }
-      // } catch (err) {
-      //   throw new Error(err)
-      // }
     },
 
     async verifyPhoneOTP(_, args, { req }) {
