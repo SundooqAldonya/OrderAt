@@ -129,6 +129,10 @@ const AddNewOrder = ({ navigation }) => {
       Alert.alert('Error', `Please fill phone number`)
       return
     }
+    if (userData.phone?.length > 11) {
+      Alert.alert('Error', t('digits_error'))
+      return
+    }
     if (!selectedArea) {
       Alert.alert('Error', `Please select area`)
       return

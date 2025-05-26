@@ -105,5 +105,6 @@ export const ar = {
   areas_cost: 'تكاليف المناطق',
   city: 'المدينة',
   distance: 'المسافة',
-  delivery_fee: 'سعر التوصيل'
+  delivery_fee: 'سعر التوصيل',
+  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا'
 }

@@ -417,7 +417,8 @@ const en = {
     restore_default: 'Restore Default',
     seen_by: 'Seen By',
     start_date: 'Start Date',
-    end_date: 'End Date'
+    end_date: 'End Date',
+    digits_error: 'Phone should be 11 digits'
   }
 }
 

@@ -104,5 +104,6 @@ export const en = {
   areas_cost: 'Areas Costs',
   city: 'City',
   distance: 'Distance',
-  delivery_fee: 'Delivery Fee'
+  delivery_fee: 'Delivery Fee',
+  eleven_digits_number: 'Should not exceed 11 digits'
 }

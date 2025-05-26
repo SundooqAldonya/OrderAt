@@ -398,7 +398,8 @@ const ar = {
     restore_default: 'استعادة الافتراضي',
     seen_by: 'تم رؤيته',
     start_date: 'بدأ',
-    end_date: 'أنهى'
+    end_date: 'أنهى',
+    digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا'
   }
 }
 

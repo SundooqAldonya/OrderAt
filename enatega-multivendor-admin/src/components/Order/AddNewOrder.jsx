@@ -74,6 +74,10 @@ const AddNewOrder = ({
       alert('Please add phone number')
       return
     }
+    if (phone?.length > 11) {
+      alert(t('digits_error'))
+      return
+    }
     if (!selectedArea) {
       alert('Please select area')
       return
