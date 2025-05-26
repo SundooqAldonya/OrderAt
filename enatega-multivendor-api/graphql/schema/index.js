@@ -341,6 +341,7 @@ const typeDefs = gql`
     withdrawnWalletAmount: Float
     startAvailabilityDate: Date
     endAvailabilityDate: Date
+    lastUpdatedLocationDate: Date
   }
 
   type RiderLocation {

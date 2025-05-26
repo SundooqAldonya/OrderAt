@@ -54,7 +54,9 @@ const RidersMap = () => {
       name: t('updatedAt'),
       sortable: false,
       selector: 'updatedAt',
-      cell: row => <div>{moment(row.updatedAt).format('LLL')}</div>
+      cell: row => (
+        <div>{moment(row.lastUpdatedLocationDate).format('LLL')}</div>
+      )
     }
   ]
 

@@ -189,7 +189,6 @@ module.exports = {
     async getRidersLocation(_, args) {
       try {
         const riders = await Rider.find({ available: true })
-        console.log({ ridersLocations: riders[0].updatedAt })
         return riders
       } catch (err) {
         throw err
@@ -449,6 +448,7 @@ module.exports = {
         // rider: '_id'
       })
       rider.location = location
+      rider.lastUpdatedLocationDate = new Date()
       const result = await rider.save()
 
       publishRiderLocation({

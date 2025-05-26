@@ -1122,6 +1122,7 @@ export const getRidersLocation = gql`
       }
       updatedAt
       createdAt
+      lastUpdatedLocationDate
     }
   }
 `

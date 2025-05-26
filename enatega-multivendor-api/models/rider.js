@@ -66,6 +66,9 @@ const riderSchema = new Schema(
     endAvailabilityDate: {
       type: Date
     },
+    lastUpdatedLocationDate: {
+      type: Date
+    },
     token: {
       type: String
     }
