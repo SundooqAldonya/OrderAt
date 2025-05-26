@@ -1131,7 +1131,7 @@ function Checkout(props) {
                   ]}
                 />
 
-                <View style={styles().voucherSec}>
+                {/* <View style={styles().voucherSec}>
                   {!coupon ? (
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -1226,7 +1226,7 @@ function Checkout(props) {
                       </View>
                     </>
                   )}
-                </View>
+                </View> */}
                 {/* <View style={styles().tipSec}>
                   <View style={[styles().tipRow]}>
                     <TextDefault
