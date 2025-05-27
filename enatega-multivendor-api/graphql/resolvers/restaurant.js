@@ -814,6 +814,17 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+    async searchRestaurants(_, args) {
+      try {
+        const regex = new RegExp(args.search, 'i')
+        const restaurants = await Restaurant.find({
+          name: regex
+        })
+        return restaurants
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {

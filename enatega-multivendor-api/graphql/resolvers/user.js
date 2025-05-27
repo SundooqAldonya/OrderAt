@@ -128,6 +128,18 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+
+    async searchUsers(_, args) {
+      try {
+        const regex = new RegExp(args.search, 'i')
+        const users = await User.find({
+          $or: [{ name: regex }, { phone: regex }]
+        })
+        return users
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {

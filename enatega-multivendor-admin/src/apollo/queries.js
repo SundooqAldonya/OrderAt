@@ -1126,3 +1126,30 @@ export const getRidersLocation = gql`
     }
   }
 `
+
+export const searchRestaurants = gql`
+  query SearchRestaurants($search: String) {
+    searchRestaurants(search: $search) {
+      _id
+      name
+    }
+  }
+`
+
+export const searchCategories = gql`
+  query GetBusinessCategories {
+    getBusinessCategories {
+      _id
+      name
+    }
+  }
+`
+export const searchUsers = gql`
+  query SearchUsers($search: String) {
+    searchUsers(search: $search) {
+      _id
+      name
+      phone
+    }
+  }
+`

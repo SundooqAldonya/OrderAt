@@ -1,8 +1,16 @@
-import React, { useRef, useState } from 'react'
-import { useMutation, gql, useQuery } from '@apollo/client'
+import React, { useMemo, useRef, useState } from 'react'
+import { useMutation, gql, useQuery, useLazyQuery } from '@apollo/client'
 import { validateFunc } from '../../constraints/constraints'
 import { withTranslation } from 'react-i18next'
-import { editCoupon, createCoupon, getCoupons, getCities } from '../../apollo'
+import {
+  editCoupon,
+  createCoupon,
+  getCoupons,
+  getCities,
+  searchRestaurants,
+  searchCategories,
+  searchUsers
+} from '../../apollo'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
 import {
@@ -21,6 +29,7 @@ import {
   TextField,
   Autocomplete
 } from '@mui/material'
+import { debounce } from 'lodash'
 
 const CREATE_COUPON = gql`
   ${createCoupon}
@@ -62,6 +71,11 @@ function CouponComponent(props) {
   const [titleError, titleErrorSetter] = useState(null)
   const [discountError, discountErrorSetter] = useState(null)
   const [selectedCities, setSelectedCities] = useState([])
+  const [restaurantOptions, setRestaurantOptions] = useState([])
+  const [selectedRestaurants, setSelectedRestaurants] = useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
+  const [userOptions, setUserOptions] = useState([])
+  const [selectedUsers, setSelectedUsers] = useState([])
 
   const {
     data: dataCities,
@@ -69,9 +83,48 @@ function CouponComponent(props) {
     error: errorCities
   } = useQuery(GET_CITIES)
 
-  const cities = dataCities?.cities || null
+  // const {
+  //   data: dataRestaurants,
+  //   loading: loadingRestaurants,
+  //   error: errorRestaurants
+  // } = useQuery(searchRestaurants)
 
-  console.log({ cities })
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCategories
+  } = useQuery(searchCategories)
+
+  // const {
+  //   data: dataUsers,
+  //   loading: loadingUsers,
+  //   error: errorUsers
+  // } = useQuery(searchUsers)
+  const [fetchUsers, { loading: loadingUsers }] = useLazyQuery(searchUsers, {
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      console.log({ data })
+      setUserOptions(data?.searchUsers || [])
+    }
+  })
+  const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
+    searchRestaurants,
+    {
+      fetchPolicy: 'no-cache',
+      onCompleted: data => {
+        console.log({ data })
+        setRestaurantOptions(data?.searchRestaurants || [])
+      }
+    }
+  )
+
+  const cities = dataCities?.cities || null
+  // const restaurants = dataRestaurants?.restaurants || null
+  const categories = dataCategories?.getBusinessCategories || null
+  // const users = dataUsers?.users || null
+
+  console.log({ cities, categories })
+  // console.log({ users })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -120,14 +173,46 @@ function CouponComponent(props) {
     discountErrorSetter(null)
   }
 
+  const handleDiscountInput = e => {
+    const value = e.target.value.replace(/[^0-9]/g, '') // Remove any non-numeric characters
+    e.target.value = value
+  }
+
   const handleCitiesSelect = newValue => {
     console.log({ newValue })
     setSelectedCities(newValue)
   }
+  const handleRestaurantSelect = newValue => {
+    console.log({ newValue })
+    setSelectedRestaurants(newValue)
+  }
+  const handleCategorySelect = newValue => {
+    console.log({ newValue })
+    setSelectedCategories(newValue)
+  }
 
-  const handleDiscountInput = e => {
-    const value = e.target.value.replace(/[^0-9]/g, '') // Remove any non-numeric characters
-    e.target.value = value
+  const debouncedSearchUsers = useMemo(
+    () =>
+      debounce(value => {
+        if (value.trim()) {
+          fetchUsers({ variables: { search: value } })
+        }
+      }, 300),
+    [fetchUsers]
+  )
+  const debouncedSearchRestaurants = useMemo(
+    () =>
+      debounce(value => {
+        if (value.trim()) {
+          fetchRestaurants({ variables: { search: value } })
+        }
+      }, 300),
+    [fetchRestaurants]
+  )
+
+  const handleUserSelect = newValue => {
+    console.log({ newValue })
+    setSelectedUsers(newValue)
   }
 
   return (
@@ -247,6 +332,270 @@ function CouponComponent(props) {
                         />
                         <ListItemText
                           primary={option.title}
+                          style={{ textTransform: 'capitalize', color: '#000' }}
+                        />
+                      </li>
+                    )}
+                    disableCloseOnSelect
+                    sx={{
+                      width: 300, // ✅ or a fixed width like '300px'
+                      '& .MuiAutocomplete-inputRoot': {
+                        flexWrap: 'wrap',
+                        paddingRight: '8px',
+                        alignItems: 'flex-start' // keeps label up
+                      },
+                      '& .MuiAutocomplete-tag': {
+                        maxWidth: '100%' // ensures long chip labels wrap or truncate
+                      },
+                      '& .MuiChip-root': {
+                        margin: '2px' // spacing between chips
+                      },
+                      margin: '0 0 0 0',
+                      padding: '0px 0px',
+                      '& .MuiOutlinedInput-root': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none' // ✅ remove border including on focus
+                        }
+                      },
+                      '& .MuiChip-root': {
+                        backgroundColor: '#f0f0f0', // ✅ light background
+                        color: '#000', // ✅ black text
+                        fontWeight: 500
+                      },
+                      '& .MuiChip-deleteIcon': {
+                        color: '#888', // Optional: change delete icon color
+                        '&:hover': {
+                          color: '#000'
+                        }
+                      }
+                    }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          color: 'black', // Text color
+                          backgroundColor: 'white' // Optional: background for contrast
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography className={classes.labelText}>
+                    {t('businesses')}
+                  </Typography>
+                  <Autocomplete
+                    multiple
+                    options={restaurantOptions || []}
+                    value={selectedRestaurants}
+                    onChange={(e, newValue) => handleRestaurantSelect(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    onInputChange={(event, inputValue) => {
+                      debouncedSearchRestaurants(inputValue)
+                    }}
+                    getOptionLabel={option => option.name}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select Business"
+                        className={globalClasses.input}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            color: 'black',
+                            '& fieldset': { border: 'none' }, // ❌ remove border
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' }
+                          }
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props} key={option._id}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        <ListItemText
+                          primary={option.name}
+                          style={{ textTransform: 'capitalize', color: '#000' }}
+                        />
+                      </li>
+                    )}
+                    disableCloseOnSelect
+                    sx={{
+                      width: 300, // ✅ or a fixed width like '300px'
+                      '& .MuiAutocomplete-inputRoot': {
+                        flexWrap: 'wrap',
+                        paddingRight: '8px',
+                        alignItems: 'flex-start' // keeps label up
+                      },
+                      '& .MuiAutocomplete-tag': {
+                        maxWidth: '100%' // ensures long chip labels wrap or truncate
+                      },
+                      '& .MuiChip-root': {
+                        margin: '2px' // spacing between chips
+                      },
+                      margin: '0 0 0 0',
+                      padding: '0px 0px',
+                      '& .MuiOutlinedInput-root': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none' // ✅ remove border including on focus
+                        }
+                      },
+                      '& .MuiChip-root': {
+                        backgroundColor: '#f0f0f0', // ✅ light background
+                        color: '#000', // ✅ black text
+                        fontWeight: 500
+                      },
+                      '& .MuiChip-deleteIcon': {
+                        color: '#888', // Optional: change delete icon color
+                        '&:hover': {
+                          color: '#000'
+                        }
+                      }
+                    }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          color: 'black', // Text color
+                          backgroundColor: 'white' // Optional: background for contrast
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography className={classes.labelText}>
+                    {t('Categories')}
+                  </Typography>
+                  <Autocomplete
+                    multiple
+                    options={categories || []}
+                    value={selectedCategories}
+                    onChange={(e, newValue) => handleCategorySelect(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    getOptionLabel={option => option.name}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select Categories"
+                        className={globalClasses.input}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            color: 'black',
+                            '& fieldset': { border: 'none' }, // ❌ remove border
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' }
+                          }
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props} key={option._id}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        <ListItemText
+                          primary={option.name}
+                          style={{ textTransform: 'capitalize', color: '#000' }}
+                        />
+                      </li>
+                    )}
+                    disableCloseOnSelect
+                    sx={{
+                      width: 300, // ✅ or a fixed width like '300px'
+                      '& .MuiAutocomplete-inputRoot': {
+                        flexWrap: 'wrap',
+                        paddingRight: '8px',
+                        alignItems: 'flex-start' // keeps label up
+                      },
+                      '& .MuiAutocomplete-tag': {
+                        maxWidth: '100%' // ensures long chip labels wrap or truncate
+                      },
+                      '& .MuiChip-root': {
+                        margin: '2px' // spacing between chips
+                      },
+                      margin: '0 0 0 0',
+                      padding: '0px 0px',
+                      '& .MuiOutlinedInput-root': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none' // ✅ remove border including on focus
+                        }
+                      },
+                      '& .MuiChip-root': {
+                        backgroundColor: '#f0f0f0', // ✅ light background
+                        color: '#000', // ✅ black text
+                        fontWeight: 500
+                      },
+                      '& .MuiChip-deleteIcon': {
+                        color: '#888', // Optional: change delete icon color
+                        '&:hover': {
+                          color: '#000'
+                        }
+                      }
+                    }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          color: 'black', // Text color
+                          backgroundColor: 'white' // Optional: background for contrast
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography className={classes.labelText}>
+                    {t('Users')}
+                  </Typography>
+                  <Autocomplete
+                    multiple
+                    options={userOptions || []}
+                    value={selectedUsers}
+                    onChange={(e, newValue) => handleUserSelect(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    onInputChange={(event, inputValue) => {
+                      debouncedSearchUsers(inputValue)
+                    }}
+                    getOptionLabel={option => option.name}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select Users"
+                        className={globalClasses.input}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            color: 'black',
+                            '& fieldset': { border: 'none' }, // ❌ remove border
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' }
+                          }
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props} key={option._id}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        <ListItemText
+                          primary={option.name}
                           style={{ textTransform: 'capitalize', color: '#000' }}
                         />
                       </li>

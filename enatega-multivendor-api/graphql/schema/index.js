@@ -1430,6 +1430,8 @@ const typeDefs = gql`
   }
 
   type Query {
+    searchUsers(search: String): [User]
+    searchRestaurants(search: String): [Restaurant]
     getRidersLocation: [Rider]
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
