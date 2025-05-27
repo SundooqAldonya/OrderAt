@@ -1153,3 +1153,11 @@ export const searchUsers = gql`
     }
   }
 `
+export const searchFood = gql`
+  query SearchFood($search: String) {
+    searchFood(search: $search) {
+      _id
+      title
+    }
+  }
+`

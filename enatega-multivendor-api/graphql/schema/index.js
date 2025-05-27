@@ -1430,6 +1430,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    searchFood(search: String): [Food]
     searchUsers(search: String): [User]
     searchRestaurants(search: String): [Restaurant]
     getRidersLocation: [Rider]

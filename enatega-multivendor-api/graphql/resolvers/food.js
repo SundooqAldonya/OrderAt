@@ -32,6 +32,16 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+
+    async searchFood(_, args) {
+      try {
+        const regexp = new RegExp(args.search, 'i')
+        const foodList = await Food.find({ title: regexp })
+        return foodList
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {

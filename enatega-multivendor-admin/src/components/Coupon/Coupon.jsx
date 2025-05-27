@@ -9,7 +9,8 @@ import {
   getCities,
   searchRestaurants,
   searchCategories,
-  searchUsers
+  searchUsers,
+  searchFood
 } from '../../apollo'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -76,6 +77,8 @@ function CouponComponent(props) {
   const [selectedCategories, setSelectedCategories] = useState([])
   const [userOptions, setUserOptions] = useState([])
   const [selectedUsers, setSelectedUsers] = useState([])
+  const [foodOptions, setFoodOptions] = useState([])
+  const [selectedFoods, setSelectedFoods] = useState([])
 
   const {
     data: dataCities,
@@ -83,23 +86,12 @@ function CouponComponent(props) {
     error: errorCities
   } = useQuery(GET_CITIES)
 
-  // const {
-  //   data: dataRestaurants,
-  //   loading: loadingRestaurants,
-  //   error: errorRestaurants
-  // } = useQuery(searchRestaurants)
-
   const {
     data: dataCategories,
     loading: loadingCategories,
     error: errorCategories
   } = useQuery(searchCategories)
 
-  // const {
-  //   data: dataUsers,
-  //   loading: loadingUsers,
-  //   error: errorUsers
-  // } = useQuery(searchUsers)
   const [fetchUsers, { loading: loadingUsers }] = useLazyQuery(searchUsers, {
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -107,6 +99,7 @@ function CouponComponent(props) {
       setUserOptions(data?.searchUsers || [])
     }
   })
+
   const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
     searchRestaurants,
     {
@@ -117,14 +110,18 @@ function CouponComponent(props) {
       }
     }
   )
+  const [fetchFoods, { loading: loadingFoods }] = useLazyQuery(searchFood, {
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      console.log({ data })
+      setFoodOptions(data?.searchFood || [])
+    }
+  })
 
   const cities = dataCities?.cities || null
-  // const restaurants = dataRestaurants?.restaurants || null
   const categories = dataCategories?.getBusinessCategories || null
-  // const users = dataUsers?.users || null
 
   console.log({ cities, categories })
-  // console.log({ users })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -182,10 +179,22 @@ function CouponComponent(props) {
     console.log({ newValue })
     setSelectedCities(newValue)
   }
+
+  const debouncedSearchRestaurants = useMemo(
+    () =>
+      debounce(value => {
+        if (value.trim()) {
+          fetchRestaurants({ variables: { search: value } })
+        }
+      }, 300),
+    [fetchRestaurants]
+  )
+
   const handleRestaurantSelect = newValue => {
     console.log({ newValue })
     setSelectedRestaurants(newValue)
   }
+
   const handleCategorySelect = newValue => {
     console.log({ newValue })
     setSelectedCategories(newValue)
@@ -200,19 +209,24 @@ function CouponComponent(props) {
       }, 300),
     [fetchUsers]
   )
-  const debouncedSearchRestaurants = useMemo(
-    () =>
-      debounce(value => {
-        if (value.trim()) {
-          fetchRestaurants({ variables: { search: value } })
-        }
-      }, 300),
-    [fetchRestaurants]
-  )
 
   const handleUserSelect = newValue => {
     console.log({ newValue })
     setSelectedUsers(newValue)
+  }
+  const debouncedSearchFoods = useMemo(
+    () =>
+      debounce(value => {
+        if (value.trim()) {
+          fetchFoods({ variables: { search: value } })
+        }
+      }, 300),
+    [fetchFoods]
+  )
+
+  const handleFoodSelect = newValue => {
+    console.log({ newValue })
+    setSelectedFoods(newValue)
   }
 
   return (
@@ -317,7 +331,7 @@ function CouponComponent(props) {
                         sx={{
                           '& .MuiInputBase-input': {
                             color: 'black',
-                            '& fieldset': { border: 'none' }, // ❌ remove border
+                            '& fieldset': { border: 'none' },
                             '&:hover fieldset': { border: 'none' },
                             '&.Mui-focused fieldset': { border: 'none' }
                           }
@@ -596,6 +610,95 @@ function CouponComponent(props) {
                         />
                         <ListItemText
                           primary={option.name}
+                          style={{ textTransform: 'capitalize', color: '#000' }}
+                        />
+                      </li>
+                    )}
+                    disableCloseOnSelect
+                    sx={{
+                      width: 300, // ✅ or a fixed width like '300px'
+                      '& .MuiAutocomplete-inputRoot': {
+                        flexWrap: 'wrap',
+                        paddingRight: '8px',
+                        alignItems: 'flex-start' // keeps label up
+                      },
+                      '& .MuiAutocomplete-tag': {
+                        maxWidth: '100%' // ensures long chip labels wrap or truncate
+                      },
+                      '& .MuiChip-root': {
+                        margin: '2px' // spacing between chips
+                      },
+                      margin: '0 0 0 0',
+                      padding: '0px 0px',
+                      '& .MuiOutlinedInput-root': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none' // ✅ remove border including on focus
+                        }
+                      },
+                      '& .MuiChip-root': {
+                        backgroundColor: '#f0f0f0', // ✅ light background
+                        color: '#000', // ✅ black text
+                        fontWeight: 500
+                      },
+                      '& .MuiChip-deleteIcon': {
+                        color: '#888', // Optional: change delete icon color
+                        '&:hover': {
+                          color: '#000'
+                        }
+                      }
+                    }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          color: 'black', // Text color
+                          backgroundColor: 'white' // Optional: background for contrast
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography className={classes.labelText}>
+                    {t('Food')}
+                  </Typography>
+                  <Autocomplete
+                    multiple
+                    options={foodOptions || []}
+                    value={selectedFoods}
+                    onChange={(e, newValue) => handleFoodSelect(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    onInputChange={(event, inputValue) => {
+                      debouncedSearchFoods(inputValue)
+                    }}
+                    getOptionLabel={option => option.title}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select Users"
+                        className={globalClasses.input}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            color: 'black',
+                            '& fieldset': { border: 'none' }, // ❌ remove border
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' }
+                          }
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props} key={option._id}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        <ListItemText
+                          primary={option.title}
                           style={{ textTransform: 'capitalize', color: '#000' }}
                         />
                       </li>
