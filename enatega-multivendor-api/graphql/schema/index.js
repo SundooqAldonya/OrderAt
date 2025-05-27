@@ -1104,6 +1104,7 @@ const typeDefs = gql`
   }
 
   input CouponRulesInput {
+    discount_type: String # Enum: "percent" or "flat"
     discount_value: Float
     applies_to: [String]
     min_order_value: Float
