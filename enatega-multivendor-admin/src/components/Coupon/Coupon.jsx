@@ -10,7 +10,8 @@ import {
   searchRestaurants,
   searchCategories,
   searchUsers,
-  searchFood
+  searchFood,
+  getCouponEnums
 } from '../../apollo'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -61,8 +62,10 @@ function CouponComponent(props) {
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
   const formRef = useRef()
-  const title = props.coupon ? props.coupon.title : ''
-  const discount = props.coupon ? props.coupon.discount : ''
+  // const title = props.coupon ? props.coupon.title : ''
+  // const discount = props.coupon ? props.coupon.discount : ''
+  const [code, setCode] = useState('')
+  const [discount, setDiscount] = useState('')
   const [enabled, setEnabled] = useState(
     props.coupon ? props.coupon.enabled : false
   )
@@ -79,6 +82,7 @@ function CouponComponent(props) {
   const [selectedUsers, setSelectedUsers] = useState([])
   const [foodOptions, setFoodOptions] = useState([])
   const [selectedFoods, setSelectedFoods] = useState([])
+  const [selectedAppliedTo, setSelectedAppliedTo] = useState('')
 
   const {
     data: dataCities,
@@ -91,6 +95,16 @@ function CouponComponent(props) {
     loading: loadingCategories,
     error: errorCategories
   } = useQuery(searchCategories)
+
+  const {
+    data: dataAppliesTo,
+    loading: loadingAppliesTo,
+    error: errorAppliesTo
+  } = useQuery(getCouponEnums)
+
+  console.log({ dataAppliesTo })
+
+  const appliesToList = dataAppliesTo?.getCouponEnums || null
 
   const [fetchUsers, { loading: loadingUsers }] = useLazyQuery(searchUsers, {
     fetchPolicy: 'no-cache',
@@ -110,6 +124,7 @@ function CouponComponent(props) {
       }
     }
   )
+
   const [fetchFoods, { loading: loadingFoods }] = useLazyQuery(searchFood, {
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -122,19 +137,22 @@ function CouponComponent(props) {
   const categories = dataCategories?.getBusinessCategories || null
 
   console.log({ cities, categories })
+  console.log({ selectedUsers })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
   }
 
   const onCompleted = data => {
-    const message = props.coupon ? t('CouponUpdated') : t('CouponAdded')
-    successSetter(message)
-    mainErrorSetter('')
-    if (!props.coupon) clearFields()
+    console.log({ data })
+    // const message = props.coupon ? t('CouponUpdated') : t('CouponAdded')
+    // successSetter(message)
+    // mainErrorSetter('')
+    // if (!props.coupon) clearFields()
   }
 
   const onError = error => {
+    console.log({ error })
     let message = ''
     try {
       message = error.graphQLErrors[0].message
@@ -152,17 +170,17 @@ function CouponComponent(props) {
   })
 
   const onSubmitValidaiton = () => {
-    const titleError = !validateFunc(
-      { title: formRef.current['input-code'].value },
-      'title'
-    )
-    const discountError = !validateFunc(
-      { discount: formRef.current['input-discount'].value },
-      'discount'
-    )
-    titleErrorSetter(titleError)
-    discountErrorSetter(discountError)
-    return titleError && discountError
+    // const titleError = !validateFunc(
+    //   { title: formRef.current['input-code'].value },
+    //   'title'
+    // )
+    // const discountError = !validateFunc(
+    //   { discount: formRef.current['input-discount'].value },
+    //   'discount'
+    // )
+    // titleErrorSetter(titleError)
+    // discountErrorSetter(discountError)
+    // return titleError && discountError
   }
   const clearFields = () => {
     formRef.current.reset()
@@ -229,6 +247,29 @@ function CouponComponent(props) {
     setSelectedFoods(newValue)
   }
 
+  const handleSubmit = e => {
+    e.preventDefault()
+    // if(props.coupon)
+    // if (onSubmitValidaiton() && !loading) {
+    mutate({
+      variables: {
+        couponInput: {
+          code,
+          // discount,
+          // enabled,
+          target: {
+            cities: selectedCities.map(item => item._id),
+            businesses: selectedRestaurants.map(item => item._id),
+            foods: selectedFoods.map(item => item._id),
+            categories: selectedCategories.map(item => item._id),
+            customers: selectedUsers.map(item => item._id)
+          }
+        }
+      }
+    })
+    // }
+  }
+
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
@@ -254,7 +295,7 @@ function CouponComponent(props) {
         </Box>
       </Box>
       <Box className={classes.form}>
-        <form ref={formRef}>
+        <form onSubmit={handleSubmit}>
           <Box className={globalClasses.flexRow}>
             <Grid container spacing={0}>
               <Grid item xs={12} sm={6}>
@@ -267,19 +308,11 @@ function CouponComponent(props) {
                   name="input-code"
                   placeholder={t('PHCode')}
                   type="text"
-                  defaultValue={title}
-                  onBlur={event =>
-                    onBlur(titleErrorSetter, 'title', event.target.value)
-                  }
+                  defaultValue={code}
+                  value={code}
+                  onChange={e => setCode(e.target.value)}
                   disableUnderline
-                  className={[
-                    globalClasses.input,
-                    titleError === false
-                      ? globalClasses.inputError
-                      : titleError === true
-                      ? globalClasses.inputSuccess
-                      : ''
-                  ]}
+                  className={[globalClasses.input]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -294,19 +327,33 @@ function CouponComponent(props) {
                   type="number"
                   onInput={handleDiscountInput}
                   defaultValue={discount}
-                  onBlur={event => {
-                    onBlur(discountErrorSetter, 'discount', event.target.value)
-                  }}
+                  value={discount}
+                  onChange={e => setDiscount(e.target.value)}
                   disableUnderline
-                  className={[
-                    globalClasses.input,
-                    discountError === false
-                      ? globalClasses.inputError
-                      : discountError === true
-                      ? globalClasses.inputSuccess
-                      : ''
-                  ]}
+                  className={[globalClasses.input]}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Select
+                  id="appliedTo"
+                  name="appliedTo"
+                  defaultValue={selectedAppliedTo || ''}
+                  value={selectedAppliedTo}
+                  onChange={e => setSelectedAppliedTo(e.target.value)}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  className={[globalClasses.input]}>
+                  {!selectedAppliedTo && (
+                    <MenuItem value="" disabled style={{ color: 'black' }}>
+                      Select to which should be applied
+                    </MenuItem>
+                  )}
+                  {appliesToList?.map((item, i) => (
+                    <MenuItem value={item} key={i} style={{ color: 'black' }}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Box>
@@ -658,118 +705,114 @@ function CouponComponent(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography className={classes.labelText}>
-                    {t('Food')}
-                  </Typography>
-                  <Autocomplete
-                    multiple
-                    options={foodOptions || []}
-                    value={selectedFoods}
-                    onChange={(e, newValue) => handleFoodSelect(newValue)}
-                    isOptionEqualToValue={(option, value) =>
-                      option._id === value._id
-                    }
-                    onInputChange={(event, inputValue) => {
-                      debouncedSearchFoods(inputValue)
-                    }}
-                    getOptionLabel={option => option.title}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Select Users"
-                        className={globalClasses.input}
-                        sx={{
-                          '& .MuiInputBase-input': {
-                            color: 'black',
-                            '& fieldset': { border: 'none' }, // ❌ remove border
-                            '&:hover fieldset': { border: 'none' },
-                            '&.Mui-focused fieldset': { border: 'none' }
+              {selectedAppliedTo === 'items' && (
+                <Grid item xs={12} sm={6}>
+                  <Box>
+                    <Typography className={classes.labelText}>
+                      {t('Food')}
+                    </Typography>
+                    <Autocomplete
+                      multiple
+                      options={foodOptions || []}
+                      value={selectedFoods}
+                      onChange={(e, newValue) => handleFoodSelect(newValue)}
+                      isOptionEqualToValue={(option, value) =>
+                        option._id === value._id
+                      }
+                      onInputChange={(event, inputValue) => {
+                        debouncedSearchFoods(inputValue)
+                      }}
+                      getOptionLabel={option => option.title}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Select Food"
+                          className={globalClasses.input}
+                          sx={{
+                            '& .MuiInputBase-input': {
+                              color: 'black',
+                              '& fieldset': { border: 'none' }, // ❌ remove border
+                              '&:hover fieldset': { border: 'none' },
+                              '&.Mui-focused fieldset': { border: 'none' }
+                            }
+                          }}
+                        />
+                      )}
+                      renderOption={(props, option, { selected }) => (
+                        <li {...props} key={option._id}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          <ListItemText
+                            primary={option.title}
+                            style={{
+                              textTransform: 'capitalize',
+                              color: '#000'
+                            }}
+                          />
+                        </li>
+                      )}
+                      disableCloseOnSelect
+                      sx={{
+                        width: 300, // ✅ or a fixed width like '300px'
+                        '& .MuiAutocomplete-inputRoot': {
+                          flexWrap: 'wrap',
+                          paddingRight: '8px',
+                          alignItems: 'flex-start' // keeps label up
+                        },
+                        '& .MuiAutocomplete-tag': {
+                          maxWidth: '100%' // ensures long chip labels wrap or truncate
+                        },
+                        '& .MuiChip-root': {
+                          margin: '2px' // spacing between chips
+                        },
+                        margin: '0 0 0 0',
+                        padding: '0px 0px',
+                        '& .MuiOutlinedInput-root': {
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none' // ✅ remove border including on focus
                           }
-                        }}
-                      />
-                    )}
-                    renderOption={(props, option, { selected }) => (
-                      <li {...props} key={option._id}>
-                        <Checkbox
-                          style={{ marginRight: 8 }}
-                          checked={selected}
-                        />
-                        <ListItemText
-                          primary={option.title}
-                          style={{ textTransform: 'capitalize', color: '#000' }}
-                        />
-                      </li>
-                    )}
-                    disableCloseOnSelect
-                    sx={{
-                      width: 300, // ✅ or a fixed width like '300px'
-                      '& .MuiAutocomplete-inputRoot': {
-                        flexWrap: 'wrap',
-                        paddingRight: '8px',
-                        alignItems: 'flex-start' // keeps label up
-                      },
-                      '& .MuiAutocomplete-tag': {
-                        maxWidth: '100%' // ensures long chip labels wrap or truncate
-                      },
-                      '& .MuiChip-root': {
-                        margin: '2px' // spacing between chips
-                      },
-                      margin: '0 0 0 0',
-                      padding: '0px 0px',
-                      '& .MuiOutlinedInput-root': {
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          border: 'none' // ✅ remove border including on focus
+                        },
+                        '& .MuiChip-root': {
+                          backgroundColor: '#f0f0f0', // ✅ light background
+                          color: '#000', // ✅ black text
+                          fontWeight: 500
+                        },
+                        '& .MuiChip-deleteIcon': {
+                          color: '#888', // Optional: change delete icon color
+                          '&:hover': {
+                            color: '#000'
+                          }
                         }
-                      },
-                      '& .MuiChip-root': {
-                        backgroundColor: '#f0f0f0', // ✅ light background
-                        color: '#000', // ✅ black text
-                        fontWeight: 500
-                      },
-                      '& .MuiChip-deleteIcon': {
-                        color: '#888', // Optional: change delete icon color
-                        '&:hover': {
-                          color: '#000'
+                      }}
+                      slotProps={{
+                        paper: {
+                          sx: {
+                            color: 'black', // Text color
+                            backgroundColor: 'white' // Optional: background for contrast
+                          }
                         }
-                      }
-                    }}
-                    slotProps={{
-                      paper: {
-                        sx: {
-                          color: 'black', // Text color
-                          backgroundColor: 'white' // Optional: background for contrast
-                        }
-                      }
-                    }}
-                  />
-                </Box>
-              </Grid>
+                      }}
+                    />
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           </Box>
 
           {loading ? t('Loading') : null}
           <Box>
             <Button
+              type="submit"
               className={globalClasses.button}
               disabled={loading}
-              onClick={async e => {
-                e.preventDefault()
-                if (onSubmitValidaiton() && !loading) {
-                  mutate({
-                    variables: {
-                      couponInput: {
-                        _id: props.coupon ? props.coupon._id : '',
-                        title: formRef.current['input-code'].value,
-                        discount: +formRef.current['input-discount'].value,
-                        enabled: enabled
-                      }
-                    }
-                  })
-                }
-              }}>
+              // onClick={async e => {
+              //   e.preventDefault()
+
+              // }}
+            >
               {t('Save')}
             </Button>
           </Box>

@@ -652,10 +652,8 @@ const typeDefs = gql`
     count: Int!
   }
   type Coupon {
-    _id: String!
-    title: String!
-    discount: Float!
-    enabled: Boolean!
+    _id: String
+    code: String
   }
   type Taxation {
     _id: String!
@@ -1099,16 +1097,15 @@ const typeDefs = gql`
 
   input CouponTargetInput {
     cities: [String]
-    business_ids: [String]
-    customer_ids: [String]
-    category_ids: [String]
-    item_ids: [String]
+    businesses: [String]
+    customers: [String]
+    categories: [String]
+    foods: [String]
   }
 
   input CouponRulesInput {
-    discount_type: String # Enum: "percent" or "flat"
     discount_value: Float
-    applies_to: [String] # Enum: "subtotal", "delivery", etc.
+    applies_to: [String]
     min_order_value: Float
     max_discount: Float
     start_date: Date
@@ -1430,6 +1427,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getCouponEnums: [String]
     searchFood(search: String): [Food]
     searchUsers(search: String): [User]
     searchRestaurants(search: String): [Restaurant]
@@ -1782,6 +1780,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    createCoupon(couponInput: CouponInput!): Message
     orderSeenByRider(id: String!, riderId: String!): Message
     orderOpenedByRider(id: String!, riderId: String!): Message
     resetPasswordCustomer(phone: String!, password: String!): ForgotPassword
@@ -1978,9 +1977,8 @@ const typeDefs = gql`
     createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
     editAddon(id: String!, addonInput: AddonInput!): AddonResponse!
     deleteAddon(id: String!): Message!
-    createCoupon(couponInput: CouponInput!): Coupon!
     editCoupon(couponInput: CouponInput!): Coupon!
-    deleteCoupon(id: String!): String!
+    deleteCoupon(id: String!): Message
     coupon(coupon: String!): Coupon!
     createCuisine(cuisineInput: CuisineInput!): Cuisine!
     editCuisine(cuisineInput: CuisineInput!): Cuisine!

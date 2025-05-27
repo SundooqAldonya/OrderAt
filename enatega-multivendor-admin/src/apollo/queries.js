@@ -547,9 +547,7 @@ export const getTaxation = `query Taxes{
 export const getCoupons = `query Coupons{
     coupons {
       _id
-      title
-      discount
-      enabled
+      code
     }
   }`
 
@@ -1159,5 +1157,10 @@ export const searchFood = gql`
       _id
       title
     }
+  }
+`
+export const getCouponEnums = gql`
+  query GetCouponEnums {
+    getCouponEnums
   }
 `

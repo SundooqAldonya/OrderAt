@@ -4,13 +4,13 @@ const Schema = mongoose.Schema
 const couponSchema = new Schema(
   {
     title: {
-      type: String,
-      required: true
+      type: String
+      // required: true
     },
     // TODO: TBD, adding discountPercent and flatDiscount to the coupons in future
     discount: {
-      type: Number,
-      required: true
+      type: Number
+      // required: true
     },
     // TODO: TBD, adding an expiry date to coupons in future, maybe start date too?
     enabled: {
@@ -23,7 +23,7 @@ const couponSchema = new Schema(
     },
     code: {
       type: String,
-      required: true,
+      // required: true,
       unique: true
     },
     description: {
@@ -36,25 +36,25 @@ const couponSchema = new Schema(
           ref: 'City'
         }
       ],
-      business_ids: [
+      businesses: [
         {
           type: Schema.Types.ObjectId,
           ref: 'Restaurant'
         }
       ],
-      customer_ids: [
+      customers: [
         {
           type: Schema.Types.ObjectId,
           ref: 'User'
         }
       ],
-      category_ids: [
+      categories: [
         {
           type: Schema.Types.ObjectId,
           ref: 'Category'
         }
       ],
-      food_ids: [
+      foods: [
         {
           type: Schema.Types.ObjectId,
           ref: 'Food'
@@ -62,14 +62,9 @@ const couponSchema = new Schema(
       ]
     },
     rules: {
-      discount_type: {
-        type: String,
-        enum: ['percent', 'flat'],
-        required: true
-      },
       discount_value: {
-        type: Number,
-        required: true
+        type: Number
+        // required: true
       },
       applies_to: {
         type: [String],

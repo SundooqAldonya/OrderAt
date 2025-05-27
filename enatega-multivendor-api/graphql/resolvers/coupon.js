@@ -16,7 +16,15 @@ module.exports = {
           _id: coupon.id
         }))
       } catch (err) {
-        console.log(err)
+        throw err
+      }
+    },
+    async getCouponEnums(_, args) {
+      try {
+        const enums = await Coupon.schema.path('rules.applies_to').caster
+          .enumValues
+        return enums
+      } catch (err) {
         throw err
       }
     }
@@ -24,21 +32,41 @@ module.exports = {
 
   Mutation: {
     createCoupon: async (_, args, context) => {
-      console.log('createCoupon')
+      console.log('createCoupon', { args, target: args.couponInput.target })
       try {
         const existingCoupon = await Coupon.findOne({
           code: args.couponInput.code
         })
         if (existingCoupon) throw new Error('Coupon Code already exists')
         const coupon = new Coupon({
-          code: args.couponInput.code,
-          discount: args.couponInput.discount,
-          enabled: args.couponInput.enabled
+          code: args.couponInput.code
+          // discount: args.couponInput.discount,
+          // enabled: args.couponInput.enabled
+          // target: {
+          //   categories:
+          // }
         })
-        const result = await coupon.save()
+        if (args.couponInput?.target?.categories?.length) {
+          coupon.target.categories = [...args.couponInput.target?.categories]
+        }
+        if (args.couponInput?.target?.cities?.length) {
+          coupon.target.cities = [...args.couponInput.target?.cities]
+        }
+        if (args.couponInput?.target?.businesses?.length) {
+          coupon.target.businesses = [...args.couponInput.target?.businesses]
+        }
+        if (args.couponInput?.target?.items?.length) {
+          coupon.target.items = [...args.couponInput.target?.items]
+        }
+        if (args.couponInput?.target?.customers?.length) {
+          coupon.target.customers = [...args.couponInput.target?.customers]
+        }
+        if (args.couponInput?.target?.foods?.length) {
+          coupon.target.foods = [...args.couponInput.target?.foods]
+        }
+        await coupon.save()
         return {
-          ...result._doc,
-          _id: result.id
+          message: 'created_coupon'
         }
       } catch (err) {
         console.log(err)
@@ -71,9 +99,11 @@ module.exports = {
       console.log('deleteCoupon')
       try {
         const coupon = await Coupon.findById(args.id)
-        coupon.isActive = false
-        const result = await coupon.save()
-        return result.id
+        await coupon.deleteOne()
+        return { message: 'removed_coupon_successfully' }
+        // coupon.isActive = false
+        // const result = await coupon.save()
+        // return result.id
       } catch (err) {
         console.log(err)
         throw err

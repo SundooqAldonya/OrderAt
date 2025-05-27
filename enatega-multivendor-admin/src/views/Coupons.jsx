@@ -70,9 +70,9 @@ const Coupon = props => {
 
   const columns = [
     {
-      name: t('Title'),
+      name: t('Code'),
       sortable: true,
-      selector: 'title'
+      selector: 'code'
     },
     {
       name: t('Discount'),
