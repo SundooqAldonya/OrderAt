@@ -1428,6 +1428,8 @@ const typeDefs = gql`
   }
 
   type Query {
+    getCouponStatuses: [String]
+    getCouponDiscountTypeEnums: [String]
     getCouponEnums: [String]
     searchFood(search: String): [Food]
     searchUsers(search: String): [User]

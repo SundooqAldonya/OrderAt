@@ -27,6 +27,22 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+    async getCouponDiscountTypeEnums(_, args) {
+      try {
+        const enums = await Coupon.schema.path('rules.discount_type').enumValues
+        return enums
+      } catch (err) {
+        throw err
+      }
+    },
+    async getCouponStatuses(_, args) {
+      try {
+        const enums = await Coupon.schema.path('status').enumValues
+        return enums
+      } catch (err) {
+        throw err
+      }
     }
   },
 
@@ -38,13 +54,21 @@ module.exports = {
           code: args.couponInput.code
         })
         if (existingCoupon) throw new Error('Coupon Code already exists')
+        const rules = {
+          discount_type: args.couponInput.rules.discount_type,
+          discount_value: args.couponInput.rules.discount_value,
+          applies_to: args.couponInput.rules.applies_to,
+          min_order_value: args.couponInput.rules.min_order_value,
+          max_discount: args.couponInput.rules.max_discount,
+          start_date: args.couponInput.rules.start_date,
+          end_date: args.couponInput.rules.end_date,
+          limit_total: args.couponInput.rules.limit_total,
+          limit_per_user: args.couponInput.rules.limit_per_user
+        }
         const coupon = new Coupon({
-          code: args.couponInput.code
-          // discount: args.couponInput.discount,
-          // enabled: args.couponInput.enabled
-          // target: {
-          //   categories:
-          // }
+          code: args.couponInput.code,
+          status: args.couponInput.status,
+          rules
         })
         if (args.couponInput?.target?.categories?.length) {
           coupon.target.categories = [...args.couponInput.target?.categories]
@@ -114,7 +138,7 @@ module.exports = {
       try {
         const coupon = await Coupon.findOne({
           isActive: true,
-          title: args.coupon
+          code: args.coupon
         })
         if (coupon) {
           return {

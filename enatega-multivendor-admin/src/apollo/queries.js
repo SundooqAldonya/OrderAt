@@ -1164,3 +1164,13 @@ export const getCouponEnums = gql`
     getCouponEnums
   }
 `
+export const getCouponDiscountTypeEnums = gql`
+  query GetCouponDiscountTypeEnums {
+    getCouponDiscountTypeEnums
+  }
+`
+export const getCouponStatuses = gql`
+  query GetCouponStatuses {
+    getCouponStatuses
+  }
+`

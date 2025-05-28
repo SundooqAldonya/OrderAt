@@ -11,7 +11,9 @@ import {
   searchCategories,
   searchUsers,
   searchFood,
-  getCouponEnums
+  getCouponEnums,
+  getCouponDiscountTypeEnums,
+  getCouponStatuses
 } from '../../apollo'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -32,6 +34,9 @@ import {
   Autocomplete
 } from '@mui/material'
 import { debounce } from 'lodash'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import './customDatePickerStyle.css'
 
 const CREATE_COUPON = gql`
   ${createCoupon}
@@ -83,6 +88,14 @@ function CouponComponent(props) {
   const [foodOptions, setFoodOptions] = useState([])
   const [selectedFoods, setSelectedFoods] = useState([])
   const [selectedAppliedTo, setSelectedAppliedTo] = useState('')
+  const [selectedDiscountType, setSelectedDiscountType] = useState('')
+  const [minimumOrder, setMinimumOrder] = useState('')
+  const [maxDiscount, setMaxDiscount] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [limitTotal, setLimitTotal] = useState('')
+  const [limitByUser, setLimitByUser] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState('')
 
   const {
     data: dataCities,
@@ -102,9 +115,26 @@ function CouponComponent(props) {
     error: errorAppliesTo
   } = useQuery(getCouponEnums)
 
-  console.log({ dataAppliesTo })
-
   const appliesToList = dataAppliesTo?.getCouponEnums || null
+
+  const {
+    data: dataStatuses,
+    loading: loadingStatus,
+    error: errorStatus
+  } = useQuery(getCouponStatuses)
+
+  console.log({ dataStatuses })
+  const statuses = dataStatuses?.getCouponStatuses || null
+
+  const {
+    data: dataDiscountTypes,
+    loading: loadingDiscountTypes,
+    error: errorDiscountTypes
+  } = useQuery(getCouponDiscountTypeEnums)
+
+  console.log({ dataDiscountTypes })
+
+  const discountTypes = dataDiscountTypes?.getCouponDiscountTypeEnums || null
 
   const [fetchUsers, { loading: loadingUsers }] = useLazyQuery(searchUsers, {
     fetchPolicy: 'no-cache',
@@ -255,14 +285,24 @@ function CouponComponent(props) {
       variables: {
         couponInput: {
           code,
-          // discount,
-          // enabled,
+          status: selectedStatus,
           target: {
             cities: selectedCities.map(item => item._id),
             businesses: selectedRestaurants.map(item => item._id),
             foods: selectedFoods.map(item => item._id),
             categories: selectedCategories.map(item => item._id),
             customers: selectedUsers.map(item => item._id)
+          },
+          rules: {
+            discount_type: selectedDiscountType,
+            discount_value: Number(discount),
+            applies_to: selectedAppliedTo,
+            min_order_value: Number(minimumOrder),
+            max_discount: Number(maxDiscount),
+            start_date: startDate,
+            end_date: endDate,
+            limit_total: Number(limitTotal),
+            limit_per_user: Number(limitByUser)
           }
         }
       }
@@ -282,7 +322,7 @@ function CouponComponent(props) {
             {props.coupon ? t('EditCoupon') : t('AddCoupon')}
           </Typography>
         </Box>
-        <Box ml={10} mt={1}>
+        {/* <Box ml={10} mt={1}>
           <label>{enabled ? t('Disable') : t('Enable')}</label>
           <Switch
             defaultChecked={enabled}
@@ -292,7 +332,7 @@ function CouponComponent(props) {
             name="input-enabled"
             style={{ color: 'black' }}
           />
-        </Box>
+        </Box> */}
       </Box>
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
@@ -323,7 +363,7 @@ function CouponComponent(props) {
                   style={{ marginTop: -1 }}
                   id="input-discount"
                   name="input-discount"
-                  placeholder={t('PHDiscount')}
+                  placeholder={t('Discount')}
                   type="number"
                   onInput={handleDiscountInput}
                   defaultValue={discount}
@@ -332,6 +372,146 @@ function CouponComponent(props) {
                   disableUnderline
                   className={[globalClasses.input]}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  Minimum order
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  id="minimuOrder"
+                  name="minimumOrder"
+                  placeholder={t('Minimum Order')}
+                  type="number"
+                  onInput={handleDiscountInput}
+                  defaultValue={minimumOrder}
+                  value={minimumOrder}
+                  onChange={e => setMinimumOrder(e.target.value)}
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  Max Discount
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  id="maxDiscount"
+                  name="maxDiscount"
+                  placeholder={t('Max Discount')}
+                  type="number"
+                  onInput={handleDiscountInput}
+                  defaultValue={maxDiscount}
+                  value={maxDiscount}
+                  onChange={e => setMaxDiscount(e.target.value)}
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  Limit Total
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  id="limitTotal"
+                  name="limitTotal"
+                  placeholder={t('Max Discount')}
+                  type="number"
+                  onInput={handleDiscountInput}
+                  defaultValue={limitTotal}
+                  value={limitTotal}
+                  onChange={e => setLimitTotal(e.target.value)}
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  Limit by user
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  id="limitByUser"
+                  name="limitByUser"
+                  placeholder={t('Max Discount')}
+                  type="number"
+                  onInput={handleDiscountInput}
+                  defaultValue={limitByUser}
+                  value={limitByUser}
+                  onChange={e => setLimitByUser(e.target.value)}
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>
+                  Start date
+                </Typography>
+                <DatePicker
+                  selected={startDate}
+                  onChange={date => setStartDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Select a start date"
+                  className="custom_datepicker"
+                  calendarClassName="custom-calendar"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography className={classes.labelText}>End date</Typography>
+                <DatePicker
+                  selected={endDate}
+                  onChange={date => setEndDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Select a end date"
+                  className="custom_datepicker"
+                  calendarClassName="custom-calendar"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Select
+                  id="discountType"
+                  name="discountType"
+                  defaultValue={selectedDiscountType || ''}
+                  value={selectedDiscountType}
+                  onChange={e => setSelectedDiscountType(e.target.value)}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  className={[globalClasses.input]}>
+                  {!selectedDiscountType && (
+                    <MenuItem value="" disabled style={{ color: 'black' }}>
+                      Discount type
+                    </MenuItem>
+                  )}
+                  {discountTypes?.map((item, i) => (
+                    <MenuItem value={item} key={i} style={{ color: 'black' }}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Select
+                  id="status"
+                  name="status"
+                  defaultValue={selectedStatus || ''}
+                  value={selectedStatus}
+                  onChange={e => setSelectedStatus(e.target.value)}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  className={[globalClasses.input]}>
+                  {!selectedStatus && (
+                    <MenuItem value="" disabled style={{ color: 'black' }}>
+                      Select status
+                    </MenuItem>
+                  )}
+                  {statuses?.map((item, i) => (
+                    <MenuItem value={item} key={i} style={{ color: 'black' }}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Select

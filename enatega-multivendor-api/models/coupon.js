@@ -64,12 +64,11 @@ const couponSchema = new Schema(
     rules: {
       discount_type: {
         type: String,
-        enum: ['percent', 'flat']
-        // required: true
+        enum: ['percent', 'flat'],
+        default: 'percent'
       },
       discount_value: {
         type: Number
-        // required: true
       },
       applies_to: {
         type: [String],
