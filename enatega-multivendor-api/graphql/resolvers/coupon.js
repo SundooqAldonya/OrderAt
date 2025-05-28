@@ -1,5 +1,10 @@
 const dateScalar = require('../../helpers/dateScalar')
 const Coupon = require('../../models/coupon')
+const User = require('../../models/user')
+const {
+  isInTarget,
+  intersectsWithTarget
+} = require('../../helpers/couponsHelpers')
 
 module.exports = {
   Date: dateScalar,
@@ -138,7 +143,7 @@ module.exports = {
       try {
         const coupon = await Coupon.findOne({
           isActive: true,
-          code: args.coupon
+          title: args.coupon
         })
         if (coupon) {
           return {
@@ -152,6 +157,109 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+    async applyCoupon(_, args, { req }) {
+      console.log('applyCoupon', { args })
+      const { code, orderSubtotal, orderMeta } = args.applyCouponInput
+      if (!req.isAuth) throw new Error('Unauthenticated!')
+      // try {
+      const now = new Date()
+
+      const coupon = await Coupon.findOne({ code })
+      console.log({ coupon })
+
+      const categories = categoryIdsFromItems(orderMeta.item_ids)
+
+      console.log({ categories })
+
+      if (!coupon) {
+        throw new Error('Coupon not found.')
+      }
+
+      // 1. Status check
+      if (coupon.status !== 'active') {
+        throw new Error('Coupon is not active.')
+      }
+
+      // 2. Date range check
+      const { start_date, end_date } = coupon.rules
+      if (start_date && now < new Date(start_date)) {
+        throw new Error('Coupon is not yet valid.')
+      }
+      if (end_date && now > new Date(end_date)) {
+        throw new Error('Coupon has expired.')
+      }
+
+      if (!isInTarget(coupon.target.businesses, orderMeta.business_id)) {
+        throw new Error('This coupon is not valid for this business.')
+      }
+
+      if (!isInTarget(coupon.target.customers, req.userId)) {
+        throw new Error('This coupon is not available to this customer.')
+      }
+
+      if (!isInTarget(coupon.target.cities, orderMeta.city_id)) {
+        throw new Error('This coupon is not valid in your city.')
+      }
+
+      if (!intersectsWithTarget(coupon.target.categories, categories)) {
+        throw new Error('This coupon does not apply to selected categories.')
+      }
+
+      if (!intersectsWithTarget(coupon.target.foods, orderMeta.item_ids)) {
+        throw new Error('This coupon does not apply to selected items.')
+      }
+
+      // 3. Min order value
+      if (
+        coupon.rules.min_order_value &&
+        orderSubtotal < coupon.rules.min_order_value
+      ) {
+        throw new Error(
+          `Order must be at least ${coupon.rules.min_order_value} to use this coupon.`
+        )
+      }
+
+      // 4. Limit total usage
+      if (
+        coupon.rules.limit_total &&
+        coupon.tracking.usage_count >= coupon.rules.limit_total
+      ) {
+        throw new Error('Coupon usage limit reached.')
+      }
+
+      // 5. Limit per user
+      const userUsageCount = coupon.tracking.user_usage?.get(req.userId) || 0
+      if (
+        coupon.rules.limit_per_user &&
+        userUsageCount >= coupon.rules.limit_per_user
+      ) {
+        throw new Error('You have reached the usage limit for this coupon.')
+      }
+
+      // 6. Calculate discount
+      let discountAmount = 0
+      const { discount_type, discount_value, max_discount } = coupon.rules
+
+      if (discount_type === 'percent') {
+        discountAmount = (orderSubtotal * discount_value) / 100
+        if (max_discount && discountAmount > max_discount) {
+          discountAmount = max_discount
+        }
+      } else if (discount_type === 'flat') {
+        discountAmount = discount_value
+      }
+
+      return {
+        valid: true,
+        discount: discountAmount,
+        appliesTo: coupon.rules.applies_to[0],
+        discountType: coupon.rules.discount_type,
+        message: `Coupon applied successfully. Discount: ${discountAmount}`
+      }
+      // } catch (err) {
+      //   throw err
+      // }
     }
   }
 }

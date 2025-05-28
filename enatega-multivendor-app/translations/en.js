@@ -660,5 +660,7 @@ export const en = {
   phone_placeholder: 'Phone number: ex;+2010234567891',
   wrong_credentials: 'Wrong credentials',
   password_not_match: 'Passwords do not match!',
-  eleven_digits_number: 'Should not exceed 11 digits'
+  eleven_digits_number: 'Should not exceed 11 digits',
+  voucherDiscountSubtotal: 'Voucher Discount Subtotal',
+  voucherDiscountDelivery: 'Voucher Discount Delivery'
 }

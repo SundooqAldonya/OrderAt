@@ -654,7 +654,21 @@ const typeDefs = gql`
   type Coupon {
     _id: String
     code: String
+    rules: CouponRules
   }
+
+  type CouponRules {
+    discount_type: String
+    discount_value: Float
+    applies_to: [String]
+    min_order_value: Float
+    max_discount: Float
+    start_date: Date
+    end_date: Date
+    limit_total: Int
+    limit_per_user: Int
+  }
+
   type Taxation {
     _id: String!
     taxationCharges: Float
@@ -1782,7 +1796,30 @@ const typeDefs = gql`
     user: User
   }
 
+  input ApplyCouponInput {
+    code: String!
+    orderSubtotal: Float!
+    orderMeta: CouponOrderMetaInput
+  }
+
+  type ApplyCouponResult {
+    valid: Boolean!
+    discount: Float
+    message: String!
+    appliesTo: String
+    discountType: String
+  }
+
+  input CouponOrderMetaInput {
+    business_id: String
+    # customer_id: String // Obtained from the authenticated user token - req.userId
+    # city: String
+    # category_ids: [String] // Obtained from the item_ids
+    item_ids: [String]
+  }
+
   type Mutation {
+    applyCoupon(applyCouponInput: ApplyCouponInput): ApplyCouponResult
     createCoupon(couponInput: CouponInput!): Message
     orderSeenByRider(id: String!, riderId: String!): Message
     orderOpenedByRider(id: String!, riderId: String!): Message

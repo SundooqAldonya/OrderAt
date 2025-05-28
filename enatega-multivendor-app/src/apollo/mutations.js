@@ -113,15 +113,6 @@ export const resetPassword = `mutation ResetPassword($password:String!,$email:St
     }
   }`
 
-export const getCoupon = `mutation Coupon($coupon:String!){
-    coupon(coupon:$coupon){
-      _id
-      title
-      discount
-      enabled
-    }
-  }`
-
 export const deleteAddress = `mutation DeleteAddress($id:ID!){
     deleteAddress(id:$id){
       _id
@@ -468,6 +459,29 @@ export const resetPasswordCustomer = gql`
   mutation ResetPasswordCustomer($password: String!, $phone: String!) {
     resetPasswordCustomer(password: $password, phone: $phone) {
       result
+    }
+  }
+`
+
+export const getCoupon = gql`
+  mutation Coupon($coupon: String!) {
+    coupon(coupon: $coupon) {
+      _id
+      code
+      rules {
+        discount_value
+      }
+    }
+  }
+`
+export const applyCoupon = gql`
+  mutation ApplyCoupon($applyCouponInput: ApplyCouponInput) {
+    applyCoupon(applyCouponInput: $applyCouponInput) {
+      valid
+      discount
+      message
+      appliesTo
+      discountType
     }
   }
 `

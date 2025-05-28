@@ -3,10 +3,12 @@ import { persistStore, persistReducer } from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import requestDeliveryReducer from './requestDeliverySlice'
 import phoneReducer from './phoneSlice'
+import restaurantReducer from './restaurantSlice'
 
 const rootReducer = combineReducers({
   requestDelivery: requestDeliveryReducer,
-  phone: phoneReducer
+  phone: phoneReducer,
+  restaurant: restaurantReducer
 })
 
 const persistConfig = {

@@ -25,6 +25,9 @@ import truncate from '../../../utils/helperFun'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { Chip } from 'react-native-paper'
 import { colors } from '../../../utils/colors'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { setRestaurant } from '../../../store/restaurantSlice'
+import { useDispatch } from 'react-redux'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -34,6 +37,7 @@ const PROFILE = gql`
 `
 
 function NewRestaurantCard(props) {
+  const dispatch = useDispatch()
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -77,7 +81,10 @@ function NewRestaurantCard(props) {
     <TouchableOpacity
       style={styles(currentTheme).offerContainer}
       activeOpacity={1}
-      onPress={() => navigation.navigate('Restaurant', { ...props })}
+      onPress={async () => {
+        dispatch(setRestaurant({ restaurantId: props._id }))
+        navigation.navigate('Restaurant', { ...props })
+      }}
     >
       <View style={styles().imageContainer}>
         <View

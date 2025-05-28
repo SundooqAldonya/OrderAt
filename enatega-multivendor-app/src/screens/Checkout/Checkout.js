@@ -31,7 +31,12 @@ import {
   myOrders,
   orderFragment
 } from '../../apollo/queries'
-import { getCoupon, phoneIsVerified, placeOrder } from '../../apollo/mutations'
+import {
+  applyCoupon,
+  getCoupon,
+  phoneIsVerified,
+  placeOrder
+} from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
 import { theme } from '../../utils/themeColors'
@@ -68,6 +73,8 @@ import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
 import { PaymentModeOption } from '../../components/Checkout/PaymentOption'
 import { colors } from '../../utils/colors'
 import { openGoogleMaps } from '../../utils/callMaps'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useSelector } from 'react-redux'
 
 // Constants
 const PLACEORDER = gql`
@@ -75,9 +82,6 @@ const PLACEORDER = gql`
 `
 const TIPPING = gql`
   ${getTipping}
-`
-const GET_COUPON = gql`
-  ${getCoupon}
 `
 const { height: HEIGHT } = Dimensions.get('window')
 
@@ -122,6 +126,10 @@ function Checkout(props) {
   const [tipAmount, setTipAmount] = useState(null)
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
+
+  const businessId = useSelector((state) => state.restaurant.restaurantId)
+
+  console.log({ businessId })
 
   const translatedAddress = location.deliveryAddress
     ? location.deliveryAddress
@@ -201,19 +209,19 @@ function Checkout(props) {
   }
 
   function onCouponCompleted(data) {
-    if (data?.coupon) {
-      if (data?.coupon.enabled) {
-        setCoupon(data?.coupon)
-        FlashMessage({
-          message: t('coupanApply')
-        })
-        setVoucherCode('')
-        onModalClose(voucherModalRef)
-      } else {
-        FlashMessage({
-          message: t('coupanFailed')
-        })
-      }
+    console.log({ data })
+    if (data?.applyCoupon) {
+      setCoupon({ ...data?.applyCoupon })
+      FlashMessage({
+        message: t('coupanApply')
+      })
+      setVoucherCode('')
+      onModalClose(voucherModalRef)
+      // } else {
+      //   FlashMessage({
+      //     message: t('coupanFailed')
+      //   })
+      // }
     }
   }
 
@@ -223,7 +231,7 @@ function Checkout(props) {
     })
   }
 
-  const [mutateCoupon, { loading: couponLoading }] = useMutation(GET_COUPON, {
+  const [mutateCoupon, { loading: couponLoading }] = useMutation(applyCoupon, {
     onCompleted: onCouponCompleted,
     onError: onCouponError
   })
@@ -500,7 +508,11 @@ function Checkout(props) {
       itemTotal += cartItem.price * cartItem.quantity
     })
     if (withDiscount && coupon && coupon.discount) {
-      itemTotal = itemTotal - (coupon.discount / 100) * itemTotal
+      if (coupon.discountType === 'percent') {
+        itemTotal = itemTotal - (coupon.discount / 100) * itemTotal
+      } else {
+        itemTotal -= coupon.discount
+      }
     }
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0
     console.log({ deliveryAmount })
@@ -704,6 +716,8 @@ function Checkout(props) {
     }
   }
 
+  console.log({ coupon })
+
   const showMinimumOrderMessage = () => {
     if (calculatePrice(0, true) < minimumOrder - coupon) {
       return (
@@ -720,6 +734,23 @@ function Checkout(props) {
         }).`}</TextDefault>
       )
     }
+  }
+
+  // console.log({ cart })
+
+  const handleApplyCoupon = () => {
+    mutateCoupon({
+      variables: {
+        applyCouponInput: {
+          code: voucherCode,
+          orderSubtotal: parseFloat(calculatePrice(0, false)),
+          orderMeta: {
+            business_id: '',
+            item_ids: cart.map((item) => item._id)
+          }
+        }
+      }
+    })
   }
 
   function loadginScreen() {
@@ -1131,7 +1162,7 @@ function Checkout(props) {
                   ]}
                 />
 
-                {/* <View style={styles().voucherSec}>
+                <View style={styles().voucherSec}>
                   {!coupon ? (
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -1226,7 +1257,7 @@ function Checkout(props) {
                       </View>
                     </>
                   )}
-                </View> */}
+                </View>
                 {/* <View style={styles().tipSec}>
                   <View style={[styles().tipRow]}>
                     <TextDefault
@@ -1345,6 +1376,38 @@ function Checkout(props) {
                         : configuration.currency}
                     </TextDefault>
                   </View>
+                  {coupon?.appliesTo === 'subtotal' && (
+                    <View>
+                      <View style={styles(currentTheme).horizontalLine2} />
+                      <View
+                        style={{
+                          ...styles().billsec,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                        >
+                          {t('voucherDiscountSubtotal')}
+                        </TextDefault>
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                        >
+                          -{!isArabic ? configuration.currencySymbol : null}
+                          {parseFloat(
+                            calculatePrice(0, false) - calculatePrice(0, true)
+                          ).toFixed(2)}{' '}
+                          {isArabic ? configuration.currencySymbol : null}
+                        </TextDefault>
+                      </View>
+                    </View>
+                  )}
                   {calculatePrice(0, true) < minimumOrder - coupon && (
                     <View
                       style={{
@@ -1388,6 +1451,39 @@ function Checkout(props) {
                           {/* {deliveryCharges} */}
                         </TextDefault>
                       </View>
+                      {coupon?.appliesTo === 'delivery' && (
+                        <View>
+                          <View style={styles(currentTheme).horizontalLine2} />
+                          <View
+                            style={{
+                              ...styles().billsec,
+                              flexDirection: isArabic ? 'row-reverse' : 'row'
+                            }}
+                          >
+                            <TextDefault
+                              numberOfLines={1}
+                              textColor={currentTheme.fontFourthColor}
+                              normal
+                              bold
+                            >
+                              {t('voucherDiscountDelivery')}
+                            </TextDefault>
+                            <TextDefault
+                              numberOfLines={1}
+                              textColor={currentTheme.fontFourthColor}
+                              normal
+                              bold
+                            >
+                              -{!isArabic ? configuration.currencySymbol : null}
+                              {parseFloat(
+                                calculatePrice(0, false) -
+                                  calculatePrice(0, true)
+                              ).toFixed(2)}{' '}
+                              {isArabic ? configuration.currencySymbol : null}
+                            </TextDefault>
+                          </View>
+                        </View>
+                      )}
                       <View style={styles(currentTheme).horizontalLine2} />
                     </>
                   )}
@@ -1443,7 +1539,7 @@ function Checkout(props) {
                       {parseFloat(calculateTip()).toFixed(2)}
                     </TextDefault>
                   </View> */}
-                  {coupon && (
+                  {/* {coupon && (
                     <View>
                       <View style={styles(currentTheme).horizontalLine2} />
                       <View
@@ -1473,7 +1569,7 @@ function Checkout(props) {
                         </TextDefault>
                       </View>
                     </View>
-                  )}
+                  )} */}
 
                   <View style={styles(currentTheme).horizontalLine2} />
                   <View
@@ -1705,9 +1801,7 @@ function Checkout(props) {
             <TouchableOpacity
               disabled={!voucherCode || couponLoading}
               activeOpacity={0.7}
-              onPress={() => {
-                mutateCoupon({ variables: { coupon: voucherCode } })
-              }}
+              onPress={handleApplyCoupon}
               style={[
                 styles(currentTheme).button,
                 !voucherCode && styles(currentTheme).buttonDisabled,

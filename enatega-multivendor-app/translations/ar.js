@@ -649,5 +649,7 @@ export const ar = {
   phone_placeholder: 'رقم التليفون: 010234567891',
   wrong_credentials: 'خطأ في الرقم المحمول او الرقم السري',
   password_not_match: 'كلمات المرور لا تتطابق',
-  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا'
+  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا',
+  voucherDiscountSubtotal: 'خصم من الاجمالي الفرعي',
+  voucherDiscountDelivery: 'خصم من رسوم التوصيل'
 }
