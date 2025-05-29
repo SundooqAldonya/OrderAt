@@ -271,7 +271,7 @@ module.exports = {
         const { discount_type, discount_value, max_discount } = coupon.rules
 
         if (discount_type === 'percent') {
-          discountAmount = (orderSubtotal * discount_value) / 100
+          discountAmount = (orderSubtotal * discount_value) / 100 // 100 * 100 / 100 = 100
           if (max_discount && discountAmount > max_discount) {
             discountAmount = max_discount
           }
@@ -280,10 +280,12 @@ module.exports = {
         }
 
         return {
+          code: coupon.code,
           valid: true,
           discount: discountAmount,
           appliesTo: coupon.rules.applies_to[0],
           discountType: coupon.rules.discount_type,
+          maxDiscount: coupon.rules.max_discount,
           message: `Coupon applied successfully. Discount: ${discountAmount}`
         }
       } catch (err) {

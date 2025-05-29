@@ -126,6 +126,7 @@ function Checkout(props) {
   const [tipAmount, setTipAmount] = useState(null)
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
+  const [deliveryDiscount, setDeliveryDiscount] = useState(0)
 
   console.log({ location })
 
@@ -367,6 +368,29 @@ function Checkout(props) {
     }
   }, [data])
 
+  useEffect(() => {
+    if (coupon && coupon.appliesTo === 'delivery') {
+      const { discountType, discount } = coupon
+      let discountValue = 0
+
+      if (discountType === 'percent') {
+        discountValue = (discount / 100) * deliveryCharges
+      } else {
+        discountValue = discount
+      }
+
+      // Make sure we don't apply more than the delivery charge
+      discountValue = Math.min(discount, deliveryCharges)
+      console.log({ discountValue })
+
+      setDeliveryDiscount(discountValue)
+    } else {
+      setDeliveryDiscount(0)
+    }
+  }, [coupon, deliveryCharges])
+
+  console.log({ deliveryDiscount })
+
   const showAvailablityMessage = () => {
     Alert.alert(
       '',
@@ -502,20 +526,41 @@ function Checkout(props) {
 
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0
+    let finalDeliveryCharges = delivery > 0 ? deliveryCharges : 0
+
     cart.forEach((cartItem) => {
       itemTotal += cartItem.price * cartItem.quantity
     })
     if (withDiscount && coupon && coupon.discount) {
-      if (coupon.discountType === 'percent') {
-        itemTotal = itemTotal - (coupon.discount / 100) * itemTotal
-      } else {
-        itemTotal -= coupon.discount
+      if (coupon.appliesTo === 'subtotal') {
+        if (coupon.discountType === 'percent') {
+          const rawTotal = itemTotal - (coupon.discount / 100) * itemTotal
+          const totalAmountDiscout = itemTotal - rawTotal
+
+          itemTotal =
+            coupon.maxDiscount < totalAmountDiscout
+              ? itemTotal - coupon.maxDiscount
+              : rawTotal
+        } else {
+          const rawTotal = itemTotal - coupon.discount
+          itemTotal =
+            rawTotal > coupon.maxDiscount
+              ? itemTotal - coupon.maxDiscount
+              : itemTotal - coupon.discount
+        }
+      }
+      if (coupon.appliesTo === 'delivery') {
+        finalDeliveryCharges = calculateDeliveryCoupon(finalDeliveryCharges)
       }
     }
-    const deliveryAmount = delivery > 0 ? deliveryCharges : 0
-    console.log({ deliveryAmount })
-    return (itemTotal + deliveryAmount).toFixed(2)
+    // const deliveryAmount = delivery > 0 ? deliveryCharges : 0
+    console.log({ itemTotal })
+    const total = (itemTotal + finalDeliveryCharges).toFixed(2)
+    console.log({ total })
+    return total
   }
+
+  // console.log({ calculatePrice: calculatePrice() })
 
   function calculateTotal() {
     let total = 0
@@ -853,6 +898,16 @@ function Checkout(props) {
         address: location
       })
     }
+  }
+
+  const calculateDeliveryCoupon = (delivery) => {
+    if (coupon.discountType === 'percent') {
+      delivery -= (coupon.discount / 100) * delivery
+    } else {
+      delivery -= coupon.discount
+    }
+    // setDeliveryDiscount(delivery)
+    return delivery
   }
 
   return (
@@ -1227,9 +1282,9 @@ function Checkout(props) {
                               bold
                               textColor={currentTheme.fontFourthColor}
                             >
-                              {coupon ? coupon.title : null} applied
+                              {coupon ? coupon.code : null} applied
                             </TextDefault>
-                            <TextDefault
+                            {/* <TextDefault
                               small
                               bold
                               textColor={currentTheme.fontFourthColor}
@@ -1239,7 +1294,7 @@ function Checkout(props) {
                                 calculatePrice(0, false) -
                                   calculatePrice(0, true)
                               ).toFixed(2)}
-                            </TextDefault>
+                            </TextDefault> */}
                           </View>
                         </View>
                         <View style={styles(currentTheme).changeBtn}>
@@ -1478,10 +1533,7 @@ function Checkout(props) {
                               bold
                             >
                               -{!isArabic ? configuration.currencySymbol : null}
-                              {parseFloat(
-                                calculatePrice(0, false) -
-                                  calculatePrice(0, true)
-                              ).toFixed(2)}{' '}
+                              {parseFloat(deliveryDiscount).toFixed(2)}{' '}
                               {isArabic ? configuration.currencySymbol : null}
                             </TextDefault>
                           </View>

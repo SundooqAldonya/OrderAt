@@ -477,11 +477,13 @@ export const getCoupon = gql`
 export const applyCoupon = gql`
   mutation ApplyCoupon($applyCouponInput: ApplyCouponInput) {
     applyCoupon(applyCouponInput: $applyCouponInput) {
+      code
       valid
       discount
       message
       appliesTo
       discountType
+      maxDiscount
     }
   }
 `

@@ -1803,8 +1803,10 @@ const typeDefs = gql`
   }
 
   type ApplyCouponResult {
+    code: String
     valid: Boolean!
     discount: Float
+    maxDiscount: Float
     message: String!
     appliesTo: String
     discountType: String
