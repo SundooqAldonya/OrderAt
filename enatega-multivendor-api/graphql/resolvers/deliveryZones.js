@@ -37,7 +37,10 @@ module.exports = {
         const originZone = await DeliveryZone.findOne({
           location: {
             $geoIntersects: {
-              $geometry: [originLong, originLat]
+              $geometry: {
+                type: 'Point',
+                coordinates: [originLong, originLat]
+              }
             }
           }
         })

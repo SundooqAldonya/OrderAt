@@ -127,9 +127,7 @@ function Checkout(props) {
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
 
-  const businessId = useSelector((state) => state.restaurant.restaurantId)
-
-  console.log({ businessId })
+  console.log({ location })
 
   const translatedAddress = location.deliveryAddress
     ? location.deliveryAddress
@@ -739,14 +737,19 @@ function Checkout(props) {
   // console.log({ cart })
 
   const handleApplyCoupon = () => {
+    const coordinates = {
+      latitude: location.latitude,
+      longitude: location.longitude
+    }
     mutateCoupon({
       variables: {
         applyCouponInput: {
           code: voucherCode,
           orderSubtotal: parseFloat(calculatePrice(0, false)),
           orderMeta: {
-            business_id: '',
-            item_ids: cart.map((item) => item._id)
+            business_id: restaurant._id,
+            item_ids: cart.map((item) => item._id),
+            location: coordinates
           }
         }
       }
