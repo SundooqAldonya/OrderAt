@@ -207,23 +207,35 @@ module.exports = {
           throw new Error('Coupon has expired.')
         }
 
-        if (!isInTarget(coupon.target.businesses, business_id)) {
+        if (
+          coupon.target.businesses?.length &&
+          !isInTarget(coupon.target.businesses, business_id)
+        ) {
           throw new Error('This coupon is not valid for this business.')
         }
 
-        if (!isInTarget(coupon.target.customers, req.userId)) {
+        if (
+          coupon.target.customers?.length &&
+          !isInTarget(coupon.target.customers, req.userId)
+        ) {
           throw new Error('This coupon is not available to this customer.')
         }
 
-        if (!isInTarget(coupon.target.cities, deliveryZone.city)) {
+        if (
+          coupon.target.cities?.length &&
+          !isInTarget(coupon.target.cities, deliveryZone.city)
+        ) {
           throw new Error('This coupon is not valid in your city.')
         }
 
-        // if (!intersectsWithTarget(coupon.target.categories, categories)) {
+        // if (coupon.target.categories?.length && !intersectsWithTarget(coupon.target.categories, categories)) {
         //   throw new Error('This coupon does not apply to selected categories.')
         // }
 
-        if (!intersectsWithTarget(coupon.target.foods, item_ids)) {
+        if (
+          coupon.target.foods?.length &&
+          !intersectsWithTarget(coupon.target.foods, item_ids)
+        ) {
           throw new Error('This coupon does not apply to selected items.')
         }
 
@@ -237,7 +249,7 @@ module.exports = {
           )
         }
 
-        // 4. Limit total usage
+        // 4. Total limit of usage overall for all users
         if (
           coupon.rules.limit_total &&
           coupon.tracking.usage_count >= coupon.rules.limit_total
@@ -245,7 +257,7 @@ module.exports = {
           throw new Error('Coupon usage limit reached.')
         }
 
-        // 5. Limit per user
+        // 5. Total Limit per user
         const userUsageCount = coupon.tracking.user_usage?.get(req.userId) || 0
         if (
           coupon.rules.limit_per_user &&
