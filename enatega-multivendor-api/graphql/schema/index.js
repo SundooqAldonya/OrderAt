@@ -1815,8 +1815,13 @@ const typeDefs = gql`
     # customer_id: String // Obtained from the authenticated user token - req.userId
     # city: String
     # category_ids: [String] // Obtained from the item_ids
+    location: CoordinatesInput
     item_ids: [String]
   }
+
+  # input LocationInputCoords {
+  #   location: CoordinatesInput
+  # }
 
   type Mutation {
     applyCoupon(applyCouponInput: ApplyCouponInput): ApplyCouponResult
