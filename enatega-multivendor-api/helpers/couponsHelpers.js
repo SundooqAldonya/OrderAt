@@ -1,3 +1,5 @@
+const Food = require('../models/food')
+
 const objectIdToStringList = (ids = []) => ids.map(id => id.toString())
 
 const isInTarget = (targetList = [], value) => {
