@@ -1375,9 +1375,9 @@ function Checkout(props) {
                             </TextDefault> */}
                           </View>
                         </View>
-                        <View style={styles(currentTheme).changeBtn}>
+                        <View>
                           <TouchableOpacity
-                            activeOpacity={0.7}
+                            style={styles(currentTheme).changeBtn}
                             onPress={() => setCoupon(null)}
                           >
                             <TextDefault

@@ -170,7 +170,7 @@ const styles = (props = null) =>
       backgroundColor: props !== null ? props.main : 'gray',
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(80),
+      width: scale(100),
       height: scale(30),
       borderRadius: 40
     },
