@@ -15,9 +15,15 @@ module.exports = {
     coupons: async () => {
       console.log('coupons')
       try {
-        const coupons = await Coupon.find({ isActive: true }).sort({
-          createdAt: -1
-        })
+        const coupons = await Coupon.find({ isActive: true })
+          .sort({
+            createdAt: -1
+          })
+          .populate('target.businesses')
+          .populate('target.categories')
+          .populate('target.cities')
+          .populate('target.customers')
+          .populate('target.foods')
         return coupons.map(coupon => ({
           ...coupon._doc,
           _id: coupon.id
@@ -105,22 +111,48 @@ module.exports = {
       }
     },
     editCoupon: async (_, args, context) => {
-      console.log('editCoupon')
+      console.log('editCoupon', { args })
       try {
-        const count = await Coupon.countDocuments({ _id: args.couponInput._id })
+        const count = await Coupon.countDocuments({ _id: args.id })
         if (count > 1) throw new Error('Coupon code already used')
-        const coupon = await Coupon.findById(args.couponInput._id)
+        const coupon = await Coupon.findById(args.id)
         if (!coupon) {
           throw new Error('Coupon does not exist')
         }
-        coupon.title = args.couponInput.title
-        coupon.discount = args.couponInput.discount
-        coupon.enabled = args.couponInput.enabled
-        const result = await coupon.save()
-        return {
-          ...result._doc,
-          _id: result.id
+        const rules = {
+          discount_type: args.couponInput.rules.discount_type,
+          discount_value: args.couponInput.rules.discount_value,
+          applies_to: args.couponInput.rules.applies_to,
+          min_order_value: args.couponInput.rules.min_order_value,
+          max_discount: args.couponInput.rules.max_discount,
+          start_date: args.couponInput.rules.start_date,
+          end_date: args.couponInput.rules.end_date,
+          limit_total: args.couponInput.rules.limit_total,
+          limit_per_user: args.couponInput.rules.limit_per_user
         }
+        coupon.code = args.couponInput.code
+        coupon.status = args.couponInput.status
+        coupon.rules = { ...rules }
+        if (args.couponInput?.target?.categories?.length) {
+          coupon.target.categories = [...args.couponInput.target?.categories]
+        }
+        if (args.couponInput?.target?.cities?.length) {
+          coupon.target.cities = [...args.couponInput.target?.cities]
+        }
+        if (args.couponInput?.target?.businesses?.length) {
+          coupon.target.businesses = [...args.couponInput.target?.businesses]
+        }
+        if (args.couponInput?.target?.items?.length) {
+          coupon.target.items = [...args.couponInput.target?.items]
+        }
+        if (args.couponInput?.target?.customers?.length) {
+          coupon.target.customers = [...args.couponInput.target?.customers]
+        }
+        if (args.couponInput?.target?.foods?.length) {
+          coupon.target.foods = [...args.couponInput.target?.foods]
+        }
+        await coupon.save()
+        return { message: 'coupon_updated' }
       } catch (err) {
         console.log(err)
         throw err
@@ -132,9 +164,6 @@ module.exports = {
         const coupon = await Coupon.findById(args.id)
         await coupon.deleteOne()
         return { message: 'removed_coupon_successfully' }
-        // coupon.isActive = false
-        // const result = await coupon.save()
-        // return result.id
       } catch (err) {
         console.log(err)
         throw err

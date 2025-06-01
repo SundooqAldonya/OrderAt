@@ -475,14 +475,11 @@ export const createCoupon = `mutation CreateCoupon($couponInput:CouponInput!){
     message
   }
 }`
-export const editCoupon = `mutation editCoupon($couponInput:CouponInput!){
-  editCoupon(couponInput:$couponInput){
-        _id
-        title
-        discount
-        enabled
-        }
-      }`
+export const editCoupon = `mutation editCoupon($id: String!,$couponInput:CouponInput!){
+  editCoupon(id: $id, couponInput:$couponInput){
+      message
+    }
+  }`
 export const deleteCoupon = `mutation DeleteCoupon($id:String!){
   deleteCoupon(id:$id) {
     message

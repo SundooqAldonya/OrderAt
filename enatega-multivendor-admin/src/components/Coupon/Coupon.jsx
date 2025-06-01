@@ -63,39 +63,74 @@ const MenuProps = {
 }
 
 function CouponComponent(props) {
-  const { t } = props
+  const { t, coupon } = props
+  console.log({ coupon })
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
   const formRef = useRef()
   // const title = props.coupon ? props.coupon.title : ''
   // const discount = props.coupon ? props.coupon.discount : ''
-  const [code, setCode] = useState('')
-  const [discount, setDiscount] = useState('')
-  const [enabled, setEnabled] = useState(
-    props.coupon ? props.coupon.enabled : false
+  const [code, setCode] = useState(coupon ? coupon.code : '')
+  const [discount, setDiscount] = useState(
+    coupon ? coupon.rules.discount_value : ''
   )
+  // const [enabled, setEnabled] = useState(
+  //   props.coupon ? props.coupon.enabled : false
+  // )
   const mutation = props.coupon ? EDIT_COUPON : CREATE_COUPON
   const [mainError, mainErrorSetter] = useState('')
   const [success, successSetter] = useState('')
   const [titleError, titleErrorSetter] = useState(null)
   const [discountError, discountErrorSetter] = useState(null)
-  const [selectedCities, setSelectedCities] = useState([])
+  const [selectedCities, setSelectedCities] = useState(
+    coupon && coupon.target.cities?.length ? [...coupon.target.cities] : []
+  )
   const [restaurantOptions, setRestaurantOptions] = useState([])
-  const [selectedRestaurants, setSelectedRestaurants] = useState([])
-  const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedRestaurants, setSelectedRestaurants] = useState(
+    coupon && coupon.target.businesses?.length
+      ? [...coupon.target.businesses]
+      : []
+  )
+  const [selectedCategories, setSelectedCategories] = useState(
+    coupon && coupon.target.categories?.length
+      ? [...coupon.target.categories]
+      : []
+  )
   const [userOptions, setUserOptions] = useState([])
-  const [selectedUsers, setSelectedUsers] = useState([])
+  const [selectedUsers, setSelectedUsers] = useState(
+    coupon && coupon.target.customers?.length
+      ? [...coupon.target.customers]
+      : []
+  )
   const [foodOptions, setFoodOptions] = useState([])
-  const [selectedFoods, setSelectedFoods] = useState([])
-  const [selectedAppliedTo, setSelectedAppliedTo] = useState('')
-  const [selectedDiscountType, setSelectedDiscountType] = useState('')
-  const [minimumOrder, setMinimumOrder] = useState('')
-  const [maxDiscount, setMaxDiscount] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [limitTotal, setLimitTotal] = useState('')
-  const [limitByUser, setLimitByUser] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState('')
+  const [selectedFoods, setSelectedFoods] = useState(
+    coupon && coupon.target.foods?.length ? [...coupon.target.foods] : []
+  )
+  const [selectedAppliedTo, setSelectedAppliedTo] = useState(
+    coupon ? coupon.rules.applies_to : ''
+  )
+  const [selectedDiscountType, setSelectedDiscountType] = useState(
+    coupon ? coupon.rules.discount_type : ''
+  )
+  const [minimumOrder, setMinimumOrder] = useState(
+    coupon ? coupon.rules.min_order_value : ''
+  )
+  const [maxDiscount, setMaxDiscount] = useState(
+    coupon ? coupon.rules.max_discount : ''
+  )
+  const [startDate, setStartDate] = useState(
+    coupon ? coupon.rules.start_date : ''
+  )
+  const [endDate, setEndDate] = useState(coupon ? coupon.rules.end_date : '')
+  const [limitTotal, setLimitTotal] = useState(
+    coupon ? coupon.rules.limit_total : ''
+  )
+  const [limitByUser, setLimitByUser] = useState(
+    coupon ? coupon.rules.limit_per_user : ''
+  )
+  const [selectedStatus, setSelectedStatus] = useState(
+    coupon ? coupon.status : ''
+  )
 
   const {
     data: dataCities,
@@ -198,6 +233,14 @@ function CouponComponent(props) {
     onError,
     onCompleted
   })
+  const [mutateUpdate, { loading: loadingUpdate }] = useMutation(EDIT_COUPON, {
+    refetchQueries: [{ query: GET_COUPONS }],
+    onError,
+    onCompleted: res => {
+      console.log({ res })
+      props.onClose()
+    }
+  })
 
   const onSubmitValidaiton = () => {
     // const titleError = !validateFunc(
@@ -279,35 +322,63 @@ function CouponComponent(props) {
 
   const handleSubmit = e => {
     e.preventDefault()
-    // if(props.coupon)
-    // if (onSubmitValidaiton() && !loading) {
-    mutate({
-      variables: {
-        couponInput: {
-          code,
-          status: selectedStatus,
-          target: {
-            cities: selectedCities.map(item => item._id),
-            businesses: selectedRestaurants.map(item => item._id),
-            foods: selectedFoods.map(item => item._id),
-            categories: selectedCategories.map(item => item._id),
-            customers: selectedUsers.map(item => item._id)
-          },
-          rules: {
-            discount_type: selectedDiscountType,
-            discount_value: Number(discount),
-            applies_to: selectedAppliedTo,
-            min_order_value: Number(minimumOrder),
-            max_discount: Number(maxDiscount),
-            start_date: startDate,
-            end_date: endDate,
-            limit_total: Number(limitTotal),
-            limit_per_user: Number(limitByUser)
+    if (coupon) {
+      // if (onSubmitValidaiton() && !loading) {
+      mutateUpdate({
+        variables: {
+          id: coupon._id,
+          couponInput: {
+            code,
+            status: selectedStatus,
+            target: {
+              cities: selectedCities.map(item => item._id),
+              businesses: selectedRestaurants.map(item => item._id),
+              foods: selectedFoods.map(item => item._id),
+              categories: selectedCategories.map(item => item._id),
+              customers: selectedUsers.map(item => item._id)
+            },
+            rules: {
+              discount_type: selectedDiscountType,
+              discount_value: Number(discount),
+              applies_to: selectedAppliedTo,
+              min_order_value: Number(minimumOrder),
+              max_discount: Number(maxDiscount),
+              start_date: startDate,
+              end_date: endDate,
+              limit_total: Number(limitTotal),
+              limit_per_user: Number(limitByUser)
+            }
           }
         }
-      }
-    })
-    // }
+      })
+    } else {
+      mutate({
+        variables: {
+          couponInput: {
+            code,
+            status: selectedStatus,
+            target: {
+              cities: selectedCities.map(item => item._id),
+              businesses: selectedRestaurants.map(item => item._id),
+              foods: selectedFoods.map(item => item._id),
+              categories: selectedCategories.map(item => item._id),
+              customers: selectedUsers.map(item => item._id)
+            },
+            rules: {
+              discount_type: selectedDiscountType,
+              discount_value: Number(discount),
+              applies_to: selectedAppliedTo,
+              min_order_value: Number(minimumOrder),
+              max_discount: Number(maxDiscount),
+              start_date: startDate,
+              end_date: endDate,
+              limit_total: Number(limitTotal),
+              limit_per_user: Number(limitByUser)
+            }
+          }
+        }
+      })
+    }
   }
 
   return (

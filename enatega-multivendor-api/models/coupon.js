@@ -51,7 +51,7 @@ const couponSchema = new Schema(
       categories: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'Category'
+          ref: 'BusinessCategory'
         }
       ],
       foods: [

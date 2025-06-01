@@ -95,7 +95,7 @@ const Coupon = props => {
       ? data && data.coupons
       : data &&
         data.coupons.filter(coupon => {
-          return coupon.title.toLowerCase().search(regex) > -1
+          return coupon.code.toLowerCase().search(regex) > -1
         })
 
   const statusChanged = row => {
@@ -124,6 +124,10 @@ const Coupon = props => {
   }
 
   const globalClasses = useGlobalStyles()
+
+  const handleClose = () => {
+    setEditModal(false)
+  }
   return (
     <>
       <Header />
@@ -176,7 +180,7 @@ const Coupon = props => {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <CouponComponent coupon={coupon} />
+          <CouponComponent coupon={coupon} onClose={handleClose} />
         </Modal>
       </Container>
     </>

@@ -548,6 +548,40 @@ export const getCoupons = `query Coupons{
     coupons {
       _id
       code
+      target {
+        cities {
+          _id
+          title
+        }
+        businesses {
+          _id
+          name
+        }
+        customers {
+          _id
+          name
+        }
+        categories {
+          _id
+          name
+        }
+        foods {
+          _id
+          title
+        }
+      }
+      rules {
+        discount_type
+        discount_value
+        applies_to
+        min_order_value
+        max_discount
+        start_date
+        end_date
+        limit_total
+        limit_per_user
+      }
+      status
     }
   }`
 

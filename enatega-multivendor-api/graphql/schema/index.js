@@ -126,7 +126,7 @@ const typeDefs = gql`
     _id: ID!
     orderId: Int!
     orderPrefix: String
-    name: String!
+    name: String
     image: String
     logo: String
     address: String
@@ -651,10 +651,21 @@ const typeDefs = gql`
     day: String!
     count: Int!
   }
+
   type Coupon {
     _id: String
     code: String
     rules: CouponRules
+    target: CouponTarget
+    status: String
+  }
+
+  type CouponTarget {
+    cities: [CityArea]
+    businesses: [Restaurant]
+    customers: [User]
+    categories: [BusinessCategory]
+    foods: [Food]
   }
 
   type CouponRules {
@@ -1442,6 +1453,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    coupons: [Coupon!]!
     getCouponStatuses: [String]
     getCouponDiscountTypeEnums: [String]
     getCouponEnums: [String]
@@ -1534,7 +1546,6 @@ const typeDefs = gql`
       ending_date: String
       restaurant: String!
     ): DashboardSales!
-    coupons: [Coupon!]!
     cuisines: [Cuisine!]!
     banners: [Banner!]!
     bannerActions: [String!]!
@@ -1827,6 +1838,7 @@ const typeDefs = gql`
 
   type Mutation {
     applyCoupon(applyCouponInput: ApplyCouponInput): ApplyCouponResult
+    editCoupon(id: String!, couponInput: CouponInput!): Message
     createCoupon(couponInput: CouponInput!): Message
     orderSeenByRider(id: String!, riderId: String!): Message
     orderOpenedByRider(id: String!, riderId: String!): Message
@@ -2024,7 +2036,6 @@ const typeDefs = gql`
     createAddons(id: String!, addonInput: [AddonInput!]!): AddonResponse!
     editAddon(id: String!, addonInput: AddonInput!): AddonResponse!
     deleteAddon(id: String!): Message!
-    editCoupon(couponInput: CouponInput!): Coupon!
     deleteCoupon(id: String!): Message
     coupon(coupon: String!): Coupon!
     createCuisine(cuisineInput: CuisineInput!): Cuisine!
