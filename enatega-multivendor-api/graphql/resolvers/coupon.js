@@ -308,6 +308,8 @@ module.exports = {
         //   discountAmount = discount_value
         // }
 
+        console.log({ appliesTo: coupon?.rules?.applies_to })
+
         return {
           code: coupon.code,
           valid: true,

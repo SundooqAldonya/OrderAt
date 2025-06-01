@@ -76,6 +76,7 @@ import { openGoogleMaps } from '../../utils/callMaps'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDeliveryAmount } from '../../store/deliveryAmountSlice'
+import { useMemo } from 'react'
 
 // Constants
 const PLACEORDER = gql`
@@ -621,14 +622,14 @@ function Checkout(props) {
         finalDeliveryCharges -= deliveryDiscount
       }
     }
-
+    console.log({ finalDeliveryCharges })
     const total = (itemTotal + finalDeliveryCharges).toFixed(2)
     return { total, deliveryDiscount, itemTotal, finalDeliveryCharges }
   }
 
-  const { total, deliveryDiscount: deliveryDis } = calculatePrice(
-    deliveryCharges,
-    true
+  const { total, deliveryDiscount: deliveryDis } = useMemo(
+    () => calculatePrice(deliveryCharges, coupon),
+    [cart, deliveryCharges, coupon]
   )
 
   useEffect(() => {
@@ -1726,7 +1727,7 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {calculateTotal()}{' '}
+                      {calculatePrice(deliveryCharges, true).total}{' '}
                       {isArabic
                         ? configuration.currencySymbol
                         : configuration.currency}
