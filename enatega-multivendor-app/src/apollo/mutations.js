@@ -484,6 +484,9 @@ export const applyCoupon = gql`
       appliesTo
       discountType
       maxDiscount
+      foods {
+        _id
+      }
     }
   }
 `

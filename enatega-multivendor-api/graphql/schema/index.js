@@ -1821,6 +1821,7 @@ const typeDefs = gql`
     message: String!
     appliesTo: String
     discountType: String
+    foods: [Food]
   }
 
   input CouponOrderMetaInput {

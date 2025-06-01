@@ -74,7 +74,8 @@ import { PaymentModeOption } from '../../components/Checkout/PaymentOption'
 import { colors } from '../../utils/colors'
 import { openGoogleMaps } from '../../utils/callMaps'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setDeliveryAmount } from '../../store/deliveryAmountSlice'
 
 // Constants
 const PLACEORDER = gql`
@@ -90,7 +91,7 @@ const kmWidth = 0.5 // desired width in km
 function Checkout(props) {
   const mapRef = useRef()
   const navigation = useNavigation()
-
+  const dispatch = useDispatch()
   const configuration = useContext(ConfigurationContext)
 
   const {
@@ -127,7 +128,9 @@ function Checkout(props) {
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
   const [deliveryDiscount, setDeliveryDiscount] = useState(0)
-
+  const deliveryAmount = useSelector(
+    (state) => state.deliveryAmount.deliveryAmount
+  )
   console.log({ location })
 
   const translatedAddress = location.deliveryAddress
@@ -524,48 +527,122 @@ function Checkout(props) {
     return taxAmount
   }
 
+  const foundItem = (itemId) => {
+    const found = coupon?.foods?.map((item) => item._id === itemId)
+    return found
+  }
+
+  // console.log({ cart })
+
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0
     let finalDeliveryCharges = delivery > 0 ? deliveryCharges : 0
+    let deliveryDiscount = 0
+
+    // cart.forEach((cartItem) => {
+    //   if (coupon && coupon.appliesTo === 'items' && foundItem(cartItem._id)) {
+    //     const preDiscountTotalItem =
+    //       cartItem.price - (coupon.discount / 100) * cartItem.price
+    //     const maxDiscountTotalItem = cartItem.price - preDiscountTotalItem
+    //     const methodPrice = Math.min(maxDiscountTotalItem, coupon.maxDiscount)
+    //     console.log({ methodPrice, maxDiscountTotalItem, preDiscountTotalItem })
+    //     cartItem.price -= (methodPrice / 100) * cartItem.price
+    //     itemTotal += cartItem.price * cartItem.quantity
+    //   } else {
+    //     itemTotal += cartItem.price * cartItem.quantity
+    //   }
+    // })
 
     cart.forEach((cartItem) => {
-      itemTotal += cartItem.price * cartItem.quantity
+      const quantity = cartItem.quantity || 1
+      const originalPrice = parseFloat(cartItem.price)
+      let discountedPrice = originalPrice
+
+      const isEligible =
+        coupon?.appliesTo === 'items' &&
+        coupon.foods?.some((item) => item._id === cartItem._id)
+
+      if (withDiscount && coupon && coupon.discount && isEligible) {
+        if (coupon.discountType === 'percent') {
+          const totalItemDiscount =
+            originalPrice - (coupon.discount / 100) * originalPrice
+          const appliedItemDiscount = Math.min(
+            totalItemDiscount,
+            coupon.maxDiscount || totalItemDiscount
+          )
+          discountedPrice = originalPrice - appliedItemDiscount
+        } else {
+          const appliedItemDiscount = Math.min(
+            coupon.discount,
+            coupon.maxDiscount || coupon.discount
+          )
+          discountedPrice = originalPrice - appliedItemDiscount
+        }
+      }
+
+      itemTotal += discountedPrice * quantity
+      console.log({
+        foodId: cartItem._id,
+        originalPrice,
+        discountedPrice,
+        isEligible
+      })
     })
+
     if (withDiscount && coupon && coupon.discount) {
       if (coupon.appliesTo === 'subtotal') {
         if (coupon.discountType === 'percent') {
-          const rawTotal = itemTotal - (coupon.discount / 100) * itemTotal
-          const totalAmountDiscout = itemTotal - rawTotal
-
-          itemTotal =
-            coupon.maxDiscount < totalAmountDiscout
-              ? itemTotal - coupon.maxDiscount
-              : rawTotal
+          const discount = (coupon.discount / 100) * itemTotal
+          const appliedDiscount = Math.min(
+            discount,
+            coupon.maxDiscount || discount
+          )
+          itemTotal -= appliedDiscount
         } else {
-          const rawTotal = itemTotal - coupon.discount
-          itemTotal =
-            rawTotal > coupon.maxDiscount
-              ? itemTotal - coupon.maxDiscount
-              : itemTotal - coupon.discount
+          const appliedDiscount = Math.min(
+            coupon.discount,
+            coupon.maxDiscount || coupon.discount
+          )
+          itemTotal -= appliedDiscount
         }
       }
+
       if (coupon.appliesTo === 'delivery') {
-        finalDeliveryCharges = calculateDeliveryCoupon(finalDeliveryCharges)
+        if (coupon.discountType === 'percent') {
+          const discount = (coupon.discount / 100) * finalDeliveryCharges
+          deliveryDiscount = Math.min(discount, coupon.maxDiscount || discount)
+        } else {
+          deliveryDiscount = Math.min(
+            coupon.discount,
+            coupon.maxDiscount || coupon.discount
+          )
+        }
+
+        finalDeliveryCharges -= deliveryDiscount
       }
     }
-    // const deliveryAmount = delivery > 0 ? deliveryCharges : 0
-    console.log({ itemTotal })
+
     const total = (itemTotal + finalDeliveryCharges).toFixed(2)
-    console.log({ total })
-    return total
+    return { total, deliveryDiscount, itemTotal, finalDeliveryCharges }
   }
+
+  const { total, deliveryDiscount: deliveryDis } = calculatePrice(
+    deliveryCharges,
+    true
+  )
+
+  useEffect(() => {
+    if (coupon?.appliesTo === 'delivery') {
+      dispatch(setDeliveryAmount({ deliveryAmount: deliveryDis }))
+    }
+  }, [coupon, deliveryDis, dispatch])
 
   // console.log({ calculatePrice: calculatePrice() })
 
   function calculateTotal() {
     let total = 0
     const delivery = isPickup ? 0 : deliveryCharges
-    total += +calculatePrice(delivery, true)
+    total += +calculatePrice(delivery, true).itemTotal
     total += +taxCalculation()
     total += +calculateTip()
     return parseFloat(total).toFixed(2)
@@ -582,7 +659,7 @@ function Checkout(props) {
       })
       return false
     }
-    if (calculatePrice(deliveryCharges, true) < minimumOrder) {
+    if (calculatePrice(deliveryCharges, true).itemTotal < minimumOrder) {
       // Alert.alert('Minimum order', 'Minimum Order')
       FlashMessage({
         // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
@@ -762,7 +839,7 @@ function Checkout(props) {
   console.log({ coupon })
 
   const showMinimumOrderMessage = () => {
-    if (calculatePrice(0, true) < minimumOrder - coupon) {
+    if (calculatePrice(0, true).itemTotal < minimumOrder - coupon) {
       return (
         <TextDefault
           style={{
@@ -770,7 +847,7 @@ function Checkout(props) {
             fontSize: 12,
             textAlign: 'center'
           }}
-        >{`${t('minAmount')} (${minimumOrder - calculatePrice(0, false)} ${
+        >{`${t('minAmount')} (${minimumOrder - calculatePrice(0, false).itemTotal} ${
           isArabic ? configuration.currencySymbol : configuration.currency
         }) ${t('forYourOrder')} (${minimumOrder} ${
           isArabic ? configuration.currencySymbol : configuration.currency
@@ -790,7 +867,7 @@ function Checkout(props) {
       variables: {
         applyCouponInput: {
           code: voucherCode,
-          orderSubtotal: parseFloat(calculatePrice(0, false)),
+          orderSubtotal: parseFloat(calculatePrice(0, false).itemTotal),
           orderMeta: {
             business_id: restaurant._id,
             item_ids: cart.map((item) => item._id),
@@ -1223,7 +1300,7 @@ function Checkout(props) {
                 <View style={styles().voucherSec}>
                   {!coupon ? (
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                      // activeOpacity={0.7}
                       style={{
                         ...styles().voucherSecInner,
                         flexDirection: isArabic ? 'row-reverse' : 'row'
@@ -1428,7 +1505,7 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {calculatePrice(0, false)}{' '}
+                      {calculatePrice(0, false).itemTotal.toFixed(2)}{' '}
                       {isArabic
                         ? configuration.currencySymbol
                         : configuration.currency}
@@ -1459,14 +1536,16 @@ function Checkout(props) {
                         >
                           -{!isArabic ? configuration.currencySymbol : null}
                           {parseFloat(
-                            calculatePrice(0, false) - calculatePrice(0, true)
+                            calculatePrice(0, false).itemTotal -
+                              calculatePrice(0, true).itemTotal
                           ).toFixed(2)}{' '}
                           {isArabic ? configuration.currencySymbol : null}
                         </TextDefault>
                       </View>
                     </View>
                   )}
-                  {calculatePrice(0, true) < minimumOrder - coupon && (
+                  {calculatePrice(0, true).itemTotal <
+                    minimumOrder - coupon && (
                     <View
                       style={{
                         backgroundColor: 'rgba(255,0,0,0.5)',
@@ -1533,7 +1612,7 @@ function Checkout(props) {
                               bold
                             >
                               -{!isArabic ? configuration.currencySymbol : null}
-                              {parseFloat(deliveryDiscount).toFixed(2)}{' '}
+                              {parseFloat(deliveryAmount).toFixed(2)}{' '}
                               {isArabic ? configuration.currencySymbol : null}
                             </TextDefault>
                           </View>
@@ -1692,7 +1771,7 @@ function Checkout(props) {
                 <TouchableOpacity
                   disabled={
                     loadingOrder ||
-                    minimumOrder - coupon > calculatePrice(0, true)
+                    minimumOrder - coupon > calculatePrice(0, true).itemTotal
                   }
                   activeOpacity={0.7}
                   onPress={() => {
@@ -1707,7 +1786,8 @@ function Checkout(props) {
                       opacity: loadingOrder ? 0.5 : 1,
                       backgroundColor:
                         loadingOrder ||
-                        minimumOrder - coupon > calculatePrice(0, true)
+                        minimumOrder - coupon >
+                          calculatePrice(0, true).itemTotal
                           ? 'grey'
                           : currentTheme.main
                     }
