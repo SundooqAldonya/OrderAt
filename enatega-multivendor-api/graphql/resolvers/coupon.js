@@ -199,7 +199,7 @@ module.exports = {
       try {
         const now = new Date()
 
-        const coupon = await Coupon.findOne({ code })
+        const coupon = await Coupon.findOne({ code: code.replace(' ', '') })
         console.log({ coupon })
 
         const categories = await categoryIdsFromItems(orderMeta.item_ids)

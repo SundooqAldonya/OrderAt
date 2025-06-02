@@ -922,13 +922,11 @@ module.exports = {
           throw new Error('Delivery zone not found')
         }
 
-        // const foods = restaurant.categories.map(c => c.foods).flat()
         const foods = await Food.find({ restaurant }).populate('variations')
         const availableAddons = await Addon.find({ restaurant })
         const availableOptions = await Option.find({ restaurant })
         console.log({ foods })
-        // const availableAddons = restaurant.addons
-        // const availableOptions = restaurant.options
+
         console.log({ argsOrder: args })
         console.log({ argsOrderInput: args.orderInput })
         const ItemsData = args.orderInput.map(item => {
@@ -978,27 +976,6 @@ module.exports = {
           await configuration.save()
         }
 
-        // const orderid =
-        //   restaurant.orderPrefix + '-' + (Number(restaurant.orderId) + 1)
-        // restaurant.orderId = Number(restaurant.orderId) + 1
-        // await restaurant.save()
-        // const latOrigin = +restaurant.location.coordinates[1]
-        // const lonOrigin = +restaurant.location.coordinates[0]
-        // const latDest = +args.address.latitude
-        // const longDest = +args.address.longitude
-        // const distance = calculateDistance(
-        //   latOrigin,
-        //   lonOrigin,
-        //   latDest,
-        //   longDest
-        // )
-        // const costType = configuration.costType
-
-        // if (costType === 'fixed') {
-        //   DELIVERY_CHARGES = configuration.deliveryRate
-        // } else {
-        //   DELIVERY_CHARGES = Math.ceil(distance) * configuration.deliveryRate
-        // }
         const orderid =
           restaurant.orderPrefix + '-' + (Number(restaurant.orderId) + 1)
         restaurant.orderId = Number(restaurant.orderId) + 1
@@ -1070,66 +1047,139 @@ module.exports = {
           )
         }
 
-        // Calculate delivery charges based on distance
-        // let DELIVERY_CHARGES = 0;
-        // if (distance > 2) {
-        //   if (costType === 'fixed') {
-        //     DELIVERY_CHARGES = configuration.deliveryRate;
-        //   } else {
-        //     DELIVERY_CHARGES = Math.ceil(distance) * configuration.deliveryRate;
-        //   }
-        // } else {
-        //   DELIVERY_CHARGES = configuration.minimumDeliveryFee;
-        // }
-
-        // let amount = calculateAmount(
-        //   costType,
-        //   configuration.deliveryRate,
-        //   distance
-        // )
         let DELIVERY_CHARGES = amount
         if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
           DELIVERY_CHARGES = configuration.minimumDeliveryFee
         }
 
-        // let DELIVERY_CHARGES = 0;
-        // if (distance > 2) {
-        //   if (costType === 'fixed') {
-        //     DELIVERY_CHARGES = configuration.deliveryRate;
-        //   } else {
-        //     DELIVERY_CHARGES = Math.ceil(distance) * configuration.deliveryRate;
-        //   }
-        // } else {
-        //   DELIVERY_CHARGES = configuration.minimumDeliveryFee;
-        // }
-
         console.log(`Delivery Charges: ${DELIVERY_CHARGES}`)
         let price = 0.0
 
-        ItemsData.forEach(async item => {
-          let itemPrice = item.variation.price
-          if (item.addons && item.addons.length > 0) {
-            const addonDetails = []
-            item.addons.forEach(({ options }) => {
-              options.forEach(option => {
-                itemPrice = itemPrice + option.price
-                addonDetails.push(
-                  `${option.title}	${configuration.currencySymbol}${option.price}`
-                )
-              })
-            })
-          }
-          price += itemPrice * item.quantity
-          return `${item.quantity} x ${item.title}${
-            item.variation.title ? `(${item.variation.title})` : ''
-          }	${configuration.currencySymbol}${item.variation.price}`
-        })
+        // ItemsData.forEach(async item => {
+        //   let itemPrice = item.variation.price
+        //   if (item.addons && item.addons.length > 0) {
+        //     const addonDetails = []
+        //     item.addons.forEach(({ options }) => {
+        //       options.forEach(option => {
+        //         itemPrice = itemPrice + option.price
+        //         addonDetails.push(
+        //           `${option.title}	${configuration.currencySymbol}${option.price}`
+        //         )
+        //       })
+        //     })
+        //   }
+        //   price += itemPrice * item.quantity
+        // })
+        // for (const item of ItemsData) {
+        //   let itemPrice = item.variation.price
+
+        //   if (item.addons && item.addons.length > 0) {
+        //     for (const addon of item.addons) {
+        //       for (const option of addon.options) {
+        //         itemPrice += option.price
+        //       }
+        //     }
+        //   }
+
+        //   price += itemPrice * item.quantity
+        // }
+        // let coupon = null
+        // if (args.couponCode) {
+        //   coupon = await Coupon.findOne({ code: args.couponCode })
+        //   if (coupon) {
+        //     price = price - (coupon.discount / 100) * price
+        //   }
+        // }
+        let itemTotal = 0
+        let deliveryDiscount = 0
+        let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
+
         let coupon = null
         if (args.couponCode) {
-          coupon = await Coupon.findOne({ title: args.couponCode })
-          if (coupon) {
-            price = price - (coupon.discount / 100) * price
+          coupon = await Coupon.findOne({ code: args.couponCode }).lean()
+        }
+
+        for (const item of ItemsData) {
+          const quantity = item.quantity || 1
+          let originalPrice = item.variation.price
+
+          if (item.addons?.length > 0) {
+            for (const addon of item.addons) {
+              for (const option of addon.options) {
+                originalPrice += option.price
+              }
+            }
           }
+
+          let discountedPrice = originalPrice
+
+          const isEligible =
+            coupon?.rules?.applies_to?.includes('items') &&
+            coupon?.target?.foods?.some(
+              food => food.toString() === item.food.toString()
+            )
+
+          if (coupon && coupon.rules && isEligible) {
+            const { discount_type, discount_value, max_discount } = coupon.rules
+
+            if (discount_type === 'percent') {
+              const discount = (discount_value / 100) * originalPrice
+              const appliedItemDiscount = Math.min(
+                discount,
+                max_discount || discount
+              )
+              discountedPrice = originalPrice - appliedItemDiscount
+            } else if (discount_type === 'flat') {
+              const appliedItemDiscount = Math.min(
+                discount_value,
+                max_discount || discount_value
+              )
+              discountedPrice = originalPrice - appliedItemDiscount
+            }
+          }
+
+          itemTotal += discountedPrice * quantity
+        }
+        console.log({
+          itemTotal,
+          coupon,
+          applies_to: coupon.rules.applies_to[0]
+        })
+        // Apply subtotal-level discount
+        if (coupon?.rules?.applies_to?.includes('subtotal')) {
+          console.log('inside_subtotal')
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            console.log('inside_percent')
+            const discount = (discount_value / 100) * itemTotal
+            const appliedDiscount = Math.min(discount, max_discount || discount)
+            itemTotal -= appliedDiscount
+          } else if (discount_type === 'flat') {
+            console.log('inside_flat')
+            const appliedDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+            console.log({ appliedDiscount })
+            itemTotal -= appliedDiscount
+          }
+        }
+
+        console.log({ itemTotal })
+
+        // Apply delivery discount
+        if (coupon?.rules?.applies_to?.includes('delivery')) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * finalDeliveryCharges
+            deliveryDiscount = Math.min(discount, max_discount || discount)
+          } else if (discount_type === 'flat') {
+            deliveryDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+          }
+          finalDeliveryCharges -= deliveryDiscount
         }
         const orderObj = {
           zone: zone._id,
@@ -1149,8 +1199,8 @@ module.exports = {
           orderDate: args.orderDate,
           isPickedUp: args.isPickedUp,
           orderAmount: (
-            price +
-            (args.isPickedUp ? 0 : DELIVERY_CHARGES) +
+            itemTotal +
+            finalDeliveryCharges +
             args.taxationAmount +
             args.tipping
           ).toFixed(2),

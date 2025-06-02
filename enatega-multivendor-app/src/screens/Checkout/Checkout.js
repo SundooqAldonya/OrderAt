@@ -540,20 +540,6 @@ function Checkout(props) {
     let finalDeliveryCharges = delivery > 0 ? deliveryCharges : 0
     let deliveryDiscount = 0
 
-    // cart.forEach((cartItem) => {
-    //   if (coupon && coupon.appliesTo === 'items' && foundItem(cartItem._id)) {
-    //     const preDiscountTotalItem =
-    //       cartItem.price - (coupon.discount / 100) * cartItem.price
-    //     const maxDiscountTotalItem = cartItem.price - preDiscountTotalItem
-    //     const methodPrice = Math.min(maxDiscountTotalItem, coupon.maxDiscount)
-    //     console.log({ methodPrice, maxDiscountTotalItem, preDiscountTotalItem })
-    //     cartItem.price -= (methodPrice / 100) * cartItem.price
-    //     itemTotal += cartItem.price * cartItem.quantity
-    //   } else {
-    //     itemTotal += cartItem.price * cartItem.quantity
-    //   }
-    // })
-
     cart.forEach((cartItem) => {
       const quantity = cartItem.quantity || 1
       const originalPrice = parseFloat(cartItem.price)
@@ -729,7 +715,7 @@ function Checkout(props) {
           restaurant: cartRestaurant,
           orderInput: items,
           paymentMethod: paymentMode,
-          couponCode: coupon ? coupon.title : null,
+          couponCode: coupon ? coupon.code : null,
           tipping: +calculateTip(),
           taxationAmount: +taxCalculation(),
           orderDate: orderDate,

@@ -290,7 +290,6 @@ module.exports = {
         )
         if (!restaurant) throw Error('Restaurant not found')
         const result = await restaurant.populate(['city', 'shopCategory'])
-        console.log({ result })
 
         return transformRestaurant(result)
       } catch (e) {
@@ -555,7 +554,6 @@ module.exports = {
           }
         }
       ]).exec()
-      console.log({ mostRestaurants: restaurants[0].businessCategories[0] })
       return restaurants
     },
     relatedItems: async (_, args, { req }) => {
@@ -649,7 +647,6 @@ module.exports = {
           const food = await Food.findById(item._id.id).populate('variations')
           return food
         })
-        console.log({ foods })
         // console.log({ result: result[0]._id })
         // return result.map(({ _id: { id }, count }) => ({ id, count }))
         return foods
@@ -673,7 +670,6 @@ module.exports = {
         })
           .populate('businessCategories')
           .sort({ reviewAverage: -1 })
-        console.log({ highestRatingRestaurant: restaurants })
         return restaurants
       } catch (err) {
         throw new Error(err)
@@ -692,7 +688,6 @@ module.exports = {
             }
           }
         }).populate('businessCategories')
-        console.log({ nearestRestaurants: restaurants })
         return restaurants
       } catch (err) {
         throw new Error(err)
@@ -939,7 +934,6 @@ module.exports = {
         restaurant.businessCategories = args.restaurant.businessCategories
         await restaurant.save()
         const result = await restaurant.populate('city')
-        console.log({ result })
         return transformRestaurant(result)
       } catch (err) {
         throw err
