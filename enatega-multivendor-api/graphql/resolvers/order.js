@@ -1211,7 +1211,7 @@ module.exports = {
           coupon = await Coupon.findOne({ code: args.couponCode }).lean()
         }
 
-        for (const item of ItemsData) {
+        for (const item of items) {
           const quantity = item.quantity || 1
           let originalPrice = item.variation.price
 
@@ -1297,7 +1297,7 @@ module.exports = {
           zone: zone._id,
           restaurant: args.restaurant,
           user: req.userId,
-          items: ItemsData,
+          items: items,
           deliveryAddress: {
             ...args.address,
             location: location
@@ -1329,23 +1329,23 @@ module.exports = {
           const order = new Order(orderObj)
           result = await order.save()
 
-          const placeOrder_template = await placeOrderTemplate([
-            result.orderId,
-            ItemsData,
-            args.isPickedUp
-              ? restaurant.address
-              : result.deliveryAddress.deliveryAddress,
-            `${configuration.currencySymbol} ${Number(price).toFixed(2)}`,
-            `${configuration.currencySymbol} ${order.tipping.toFixed(2)}`,
-            `${configuration.currencySymbol} ${order.taxationAmount.toFixed(
-              2
-            )}`,
-            `${configuration.currencySymbol} ${order.deliveryCharges.toFixed(
-              2
-            )}`,
-            `${configuration.currencySymbol} ${order.orderAmount.toFixed(2)}`,
-            configuration.currencySymbol
-          ])
+          // const placeOrder_template = await placeOrderTemplate([
+          //   result.orderId,
+          //   items,
+          //   args.isPickedUp
+          //     ? restaurant.address
+          //     : result.deliveryAddress.deliveryAddress,
+          //   `${configuration.currencySymbol} ${Number(price).toFixed(2)}`,
+          //   `${configuration.currencySymbol} ${order.tipping.toFixed(2)}`,
+          //   `${configuration.currencySymbol} ${order.taxationAmount.toFixed(
+          //     2
+          //   )}`,
+          //   `${configuration.currencySymbol} ${order.deliveryCharges.toFixed(
+          //     2
+          //   )}`,
+          //   `${configuration.currencySymbol} ${order.orderAmount.toFixed(2)}`,
+          //   configuration.currencySymbol
+          // ])
           const transformedOrder = await transformOrder(result)
 
           publishToDashboard(
