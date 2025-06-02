@@ -59,8 +59,8 @@ const rider = async riderId => {
   try {
     const rider = await Rider.findById(riderId.toString())
     return {
-      ...rider._doc,
-      _id: rider.id
+      ...rider?._doc,
+      _id: rider?.id
     }
   } catch (err) {
     throw err
@@ -121,7 +121,7 @@ const transformOrder = async order => {
     user: await user.bind(this, order?._doc?.user),
     userId: order?._doc.user.toString(),
     orderDate: dateToString(order?._doc.orderDate) || dateToString(new Date()),
-    items: await order?.items.map(item => {
+    items: await order?.items?.map(item => {
       return {
         ...item._doc,
         _id: item.id,

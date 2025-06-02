@@ -26,6 +26,7 @@ import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
 import {
+  checkoutCalculatePrice,
   getDeliveryCalculation,
   getTipping,
   myOrders,
@@ -180,10 +181,40 @@ function Checkout(props) {
   })
 
   const restaurant = data?.restaurantCustomer
+  const amount = calcData?.getDeliveryCalculation.amount
+
+  const {
+    data: dataCalculatePrice,
+    loading: loadingCalculatePrice,
+    error: errorCalculatePrice
+  } = useQuery(checkoutCalculatePrice, {
+    variables: {
+      cart: {
+        couponCode: coupon?.code,
+        items: cart?.map((item) => {
+          console.log({ itemVariations: item.variation })
+          console.log({ itemAddons: item.addons })
+          return {
+            _id: item._id,
+            price: parseFloat(item.price),
+            quantity: parseFloat(item.quantity),
+            variation: item.variation
+            // addons: item.addons
+          }
+        }),
+        deliveryCharges:
+          amount >= configuration.minimumDeliveryFee
+            ? amount
+            : configuration.minimumDeliveryFee
+      }
+    },
+    nextFetchPolicy: 'no-cache'
+  })
+
+  console.log({ dataCalculatePrice, errorCalculatePrice, deliveryCharges })
 
   useEffect(() => {
     if (calcData) {
-      const amount = calcData.getDeliveryCalculation.amount
       setDeliveryCharges(
         amount >= configuration.minimumDeliveryFee
           ? amount
@@ -528,12 +559,7 @@ function Checkout(props) {
     return taxAmount
   }
 
-  const foundItem = (itemId) => {
-    const found = coupon?.foods?.map((item) => item._id === itemId)
-    return found
-  }
-
-  // console.log({ cart })
+  console.log({ cart })
 
   function calculatePrice(delivery = 0, withDiscount) {
     let itemTotal = 0
@@ -541,6 +567,7 @@ function Checkout(props) {
     let deliveryDiscount = 0
 
     cart.forEach((cartItem) => {
+      console.log({ cartItem })
       const quantity = cartItem.quantity || 1
       const originalPrice = parseFloat(cartItem.price)
       let discountedPrice = originalPrice

@@ -55,6 +55,7 @@ const {
   normalizeAndValidatePhoneNumber
 } = require('../../helpers/normalizePhone')
 const dateScalar = require('../../helpers/dateScalar')
+const Variation = require('../../models/variation')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -405,6 +406,117 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+    async checkoutCalculatePrice(_, args) {
+      console.log('checkoutCalculatePrice', { args: args.cart })
+      const { cart, code } = args
+      const { items } = cart
+      console.log({ items, variation: items[0].variation })
+      // try {
+      let subtotal = 0
+      let deliveryDiscount = 0
+      let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
+
+      const food = await Food.find({ _id: { $in: [...items] } })
+      console.log({ food })
+
+      let coupon = null
+      if (args.couponCode) {
+        coupon = await Coupon.findOne({ code: args.couponCode }).lean()
+      }
+
+      for (const item of items) {
+        const quantity = item.quantity || 1
+        const variation = await Variation.findById(item.variation._id).lean()
+        if (!variation) continue
+
+        let originalPrice = variation.price || 0
+
+        // Add add-on prices
+        if (item.addons?.length > 0) {
+          for (const addon of item.addons) {
+            for (const option of addon.options) {
+              originalPrice += option?.price || 0
+            }
+          }
+        }
+
+        let discountedPrice = originalPrice
+
+        // Apply item-level discount
+        const isItemEligible =
+          coupon?.rules?.applies_to?.includes('items') &&
+          coupon?.target?.foods?.some(
+            f => f.toString() === item.food.toString()
+          )
+
+        if (coupon && isItemEligible) {
+          const {
+            discount_type,
+            discount_value,
+            max_discount = 0
+          } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * originalPrice
+            const appliedDiscount =
+              max_discount > 0 ? Math.min(discount, max_discount) : discount
+            discountedPrice = originalPrice - appliedDiscount
+          } else if (discount_type === 'flat') {
+            const appliedDiscount =
+              max_discount > 0
+                ? Math.min(discount_value, max_discount)
+                : discount_value
+            discountedPrice = originalPrice - appliedDiscount
+          }
+        }
+
+        subtotal += discountedPrice * quantity
+      }
+      console.log({
+        subtotal,
+        coupon,
+        applies_to: coupon?.rules?.applies_to[0]
+      })
+      // Apply subtotal-level discount
+      if (coupon?.rules?.applies_to?.includes('subtotal')) {
+        console.log('inside_subtotal')
+        const { discount_type, discount_value, max_discount } = coupon.rules
+        if (discount_type === 'percent') {
+          console.log('inside_percent')
+          const discount = (discount_value / 100) * subtotal
+          const appliedDiscount = Math.min(discount, max_discount || discount)
+          subtotal -= appliedDiscount
+        } else if (discount_type === 'flat') {
+          console.log('inside_flat')
+          const appliedDiscount = Math.min(
+            discount_value,
+            max_discount || discount_value
+          )
+          console.log({ appliedDiscount })
+          subtotal -= appliedDiscount
+        }
+      }
+
+      // Apply delivery discount
+      if (coupon?.rules?.applies_to?.includes('delivery')) {
+        const { discount_type, discount_value, max_discount } = coupon.rules
+        if (discount_type === 'percent') {
+          const discount = (discount_value / 100) * finalDeliveryCharges
+          deliveryDiscount = Math.min(discount, max_discount || discount)
+        } else if (discount_type === 'flat') {
+          deliveryDiscount = Math.min(
+            discount_value,
+            max_discount || discount_value
+          )
+        }
+        finalDeliveryCharges -= deliveryDiscount
+      }
+      console.log({ subtotal })
+
+      return { message: 'got there' }
+      // } catch (err) {
+      //   throw err
+      // }
     }
   },
   Mutation: {
@@ -929,7 +1041,7 @@ module.exports = {
 
         console.log({ argsOrder: args })
         console.log({ argsOrderInput: args.orderInput })
-        const ItemsData = args.orderInput.map(item => {
+        const items = args.orderInput.map(item => {
           const food = foods.find(
             element => element._id.toString() === item.food
           )
@@ -1143,7 +1255,7 @@ module.exports = {
         console.log({
           itemTotal,
           coupon,
-          applies_to: coupon.rules.applies_to[0]
+          applies_to: coupon?.rules?.applies_to[0]
         })
         // Apply subtotal-level discount
         if (coupon?.rules?.applies_to?.includes('subtotal')) {

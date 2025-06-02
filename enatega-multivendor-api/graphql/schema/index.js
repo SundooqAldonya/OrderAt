@@ -1452,7 +1452,31 @@ const typeDefs = gql`
     cost: Float
   }
 
+  type calculatePriceResult {
+    total: Float
+    subtotal: Float
+    deliveryCharge: Float
+  }
+
+  input ItemCart {
+    _id: String
+    price: Float
+    quantity: Float
+    variation: _idInput
+  }
+
+  input _idInput {
+    _id: String
+  }
+
+  input Cart {
+    couponCode: String
+    items: [ItemCart]
+    deliveryCharges: Float
+  }
+
   type Query {
+    checkoutCalculatePrice(cart: Cart): Message
     coupons: [Coupon!]!
     getCouponStatuses: [String]
     getCouponDiscountTypeEnums: [String]

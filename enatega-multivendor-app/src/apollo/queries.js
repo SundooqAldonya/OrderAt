@@ -1417,3 +1417,13 @@ export const isRestaurantOpenNow = gql`
     isRestaurantOpenNow(id: $id)
   }
 `
+export const checkoutCalculatePrice = gql`
+  query CheckoutCalculatePrice($cart: Cart) {
+    checkoutCalculatePrice(cart: $cart) {
+      message
+      # total
+      # subtotal
+      # deliveryCharge
+    }
+  }
+`
