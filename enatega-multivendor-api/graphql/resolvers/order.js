@@ -409,9 +409,10 @@ module.exports = {
     },
     async checkoutCalculatePrice(_, args) {
       console.log('checkoutCalculatePrice', { args: args.cart })
-      const { cart, code } = args
-      const { items, deliveryCharges } = cart
+      const { cart } = args
+      const { items, deliveryCharges, tax, code } = cart
       console.log({
+        code,
         items,
         variation: items[0].variation,
         addons: items[0].addons
@@ -420,13 +421,14 @@ module.exports = {
       let subtotal = 0
       let deliveryDiscount = 0
       let finalDeliveryCharges = args.isPickedUp ? 0 : deliveryCharges
+      let subtotalDiscount = 0
 
       const food = await Food.find({ _id: { $in: [...items] } })
       console.log({ food })
 
       let coupon = null
-      if (args.couponCode) {
-        coupon = await Coupon.findOne({ code: args.couponCode }).lean()
+      if (code) {
+        coupon = await Coupon.findOne({ code }).lean()
       }
 
       for (const item of items) {
@@ -452,9 +454,7 @@ module.exports = {
         // Apply item-level discount
         const isItemEligible =
           coupon?.rules?.applies_to?.includes('items') &&
-          coupon?.target?.foods?.some(
-            f => f.toString() === item.food.toString()
-          )
+          coupon?.target?.foods?.some(f => f.toString() === item._id.toString())
 
         if (coupon && isItemEligible) {
           const {
@@ -466,12 +466,14 @@ module.exports = {
             const discount = (discount_value / 100) * originalPrice
             const appliedDiscount =
               max_discount > 0 ? Math.min(discount, max_discount) : discount
+            subtotalDiscount = appliedDiscount
             discountedPrice = originalPrice - appliedDiscount
           } else if (discount_type === 'flat') {
             const appliedDiscount =
               max_discount > 0
                 ? Math.min(discount_value, max_discount)
                 : discount_value
+            subtotalDiscount = appliedDiscount
             discountedPrice = originalPrice - appliedDiscount
           }
         }
@@ -491,6 +493,7 @@ module.exports = {
           console.log('inside_percent')
           const discount = (discount_value / 100) * subtotal
           const appliedDiscount = Math.min(discount, max_discount || discount)
+          subtotalDiscount = appliedDiscount
           subtotal -= appliedDiscount
         } else if (discount_type === 'flat') {
           console.log('inside_flat')
@@ -499,6 +502,7 @@ module.exports = {
             max_discount || discount_value
           )
           console.log({ appliedDiscount })
+          subtotalDiscount = appliedDiscount
           subtotal -= appliedDiscount
         }
       }
@@ -519,10 +523,17 @@ module.exports = {
       }
       console.log({ subtotal })
 
-      const total = subtotal + finalDeliveryCharges
-      console.log({ total })
+      const total = subtotal + finalDeliveryCharges + tax
+      console.log({ total, subtotalDiscount })
 
-      return { subtotal, total, finalDeliveryCharges }
+      return {
+        subtotal,
+        total,
+        finalDeliveryCharges,
+        deliveryDiscount,
+        subtotalDiscount,
+        tax
+      }
       // } catch (err) {
       //   throw err
       // }
@@ -1314,7 +1325,7 @@ module.exports = {
           orderId: orderid,
           paidAmount: 0,
           orderStatus: 'PENDING',
-          deliveryCharges: args.isPickedUp ? 0 : DELIVERY_CHARGES,
+          deliveryCharges: args.isPickedUp ? 0 : finalDeliveryCharges,
           tipping: args.tipping,
           taxationAmount: args.taxationAmount,
           orderDate: args.orderDate,

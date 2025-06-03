@@ -180,21 +180,20 @@ function Checkout(props) {
     }
   })
 
-  const restaurant = data?.restaurantCustomer
-  const amount = calcData?.getDeliveryCalculation.amount
+  const restaurant = data?.restaurantCustomer || null
+  const amount = calcData?.getDeliveryCalculation.amount || null
 
   const {
     data: dataCalculatePrice,
     loading: loadingCalculatePrice,
-    error: errorCalculatePrice
+    error: errorCalculatePrice,
+    refetch
   } = useQuery(checkoutCalculatePrice, {
     variables: {
       cart: {
-        couponCode: coupon?.code,
+        code: coupon?.code,
+        tax: restaurant?.tax || 0,
         items: cart?.map((item) => {
-          console.log({ itemVariations: item.variation })
-          console.log({ itemAddons: item.addons })
-          console.log({ itemOptions: item.addons[0].options[0] })
           return {
             _id: item._id,
             price: parseFloat(item.price),
@@ -212,7 +211,7 @@ function Checkout(props) {
     nextFetchPolicy: 'no-cache'
   })
 
-  console.log({ dataCalculatePrice, errorCalculatePrice })
+  console.log({ dataCalculatePrice, errorCalculatePrice, coupon })
 
   const calculatedPrice = dataCalculatePrice?.checkoutCalculatePrice || null
 
@@ -254,6 +253,9 @@ function Checkout(props) {
       })
       setVoucherCode('')
       onModalClose(voucherModalRef)
+      setTimeout(() => {
+        refetch()
+      }, 2000)
       // } else {
       //   FlashMessage({
       //     message: t('coupanFailed')
@@ -1516,51 +1518,62 @@ function Checkout(props) {
                     >
                       {t('subTotal')}
                     </TextDefault>
-                    <TextDefault
-                      numberOfLines={1}
-                      textColor={currentTheme.fontFourthColor}
-                      normal
-                      bold
-                    >
-                      {calculatePrice(0, false).itemTotal.toFixed(2)}{' '}
-                      {isArabic
-                        ? configuration.currencySymbol
-                        : configuration.currency}
-                    </TextDefault>
-                  </View>
-                  {coupon?.appliesTo === 'subtotal' && (
-                    <View>
-                      <View style={styles(currentTheme).horizontalLine2} />
-                      <View
-                        style={{
-                          ...styles().billsec,
-                          flexDirection: isArabic ? 'row-reverse' : 'row'
-                        }}
+                    {calculatedPrice ? (
+                      <TextDefault
+                        numberOfLines={1}
+                        textColor={currentTheme.fontFourthColor}
+                        normal
+                        bold
                       >
-                        <TextDefault
-                          numberOfLines={1}
-                          textColor={currentTheme.fontFourthColor}
-                          normal
-                          bold
+                        {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
+                        {loadingCalculatePrice
+                          ? 'loading...'
+                          : parseFloat(calculatedPrice?.subtotal).toFixed(2)}
+                        {isArabic
+                          ? configuration.currencySymbol
+                          : configuration.currency}
+                      </TextDefault>
+                    ) : null}
+                  </View>
+                  {coupon?.appliesTo === 'subtotal' ||
+                    (coupon?.appliesTo === 'items' && (
+                      <View>
+                        <View style={styles(currentTheme).horizontalLine2} />
+                        <View
+                          style={{
+                            ...styles().billsec,
+                            flexDirection: isArabic ? 'row-reverse' : 'row'
+                          }}
                         >
-                          {t('voucherDiscountSubtotal')}
-                        </TextDefault>
-                        <TextDefault
-                          numberOfLines={1}
-                          textColor={currentTheme.fontFourthColor}
-                          normal
-                          bold
-                        >
-                          -{!isArabic ? configuration.currencySymbol : null}
-                          {parseFloat(
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                          >
+                            {t('voucherDiscountSubtotal')}
+                          </TextDefault>
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                          >
+                            -{!isArabic ? configuration.currencySymbol : null}
+                            {/* {parseFloat(
                             calculatePrice(0, false).itemTotal -
                               calculatePrice(0, true).itemTotal
-                          ).toFixed(2)}{' '}
-                          {isArabic ? configuration.currencySymbol : null}
-                        </TextDefault>
+                          ).toFixed(2)}{' '} */}
+                            {loadingCalculatePrice
+                              ? 'loading...'
+                              : parseFloat(
+                                  calculatedPrice?.subtotalDiscount
+                                ).toFixed(2)}
+                            {isArabic ? configuration.currencySymbol : null}
+                          </TextDefault>
+                        </View>
                       </View>
-                    </View>
-                  )}
+                    ))}
                   {calculatePrice(0, true).itemTotal <
                     minimumOrder - coupon && (
                     <View
@@ -1592,18 +1605,23 @@ function Checkout(props) {
                         >
                           {t('deliveryFee')}
                         </TextDefault>
-                        <TextDefault
-                          numberOfLines={1}
-                          textColor={currentTheme.fontFourthColor}
-                          normal
-                          bold
-                        >
-                          {deliveryCharges.toFixed(2)}{' '}
-                          {isArabic
-                            ? configuration.currencySymbol
-                            : configuration.currency}
-                          {/* {deliveryCharges} */}
-                        </TextDefault>
+                        {calculatedPrice ? (
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                          >
+                            {loadingCalculatePrice
+                              ? 'loading...'
+                              : parseFloat(
+                                  calculatedPrice?.finalDeliveryCharges
+                                ).toFixed(2)}{' '}
+                            {isArabic
+                              ? configuration.currencySymbol
+                              : configuration.currency}
+                          </TextDefault>
+                        ) : null}
                       </View>
                       {coupon?.appliesTo === 'delivery' && (
                         <View>
@@ -1629,7 +1647,11 @@ function Checkout(props) {
                               bold
                             >
                               -{!isArabic ? configuration.currencySymbol : null}
-                              {parseFloat(deliveryAmount).toFixed(2)}{' '}
+                              {loadingCalculatePrice
+                                ? 'loading...'
+                                : parseFloat(
+                                    calculatedPrice?.deliveryDiscount
+                                  ).toFixed(2)}{' '}
                               {isArabic ? configuration.currencySymbol : null}
                             </TextDefault>
                           </View>
@@ -1659,7 +1681,9 @@ function Checkout(props) {
                       normal
                       bold
                     >
-                      {taxCalculation()}{' '}
+                      {loadingCalculatePrice
+                        ? 'loading...'
+                        : parseFloat(calculatedPrice?.tax).toFixed(2)}{' '}
                       {isArabic
                         ? configuration.currencySymbol
                         : configuration.currency}
@@ -1737,17 +1761,21 @@ function Checkout(props) {
                     >
                       {t('total')}
                     </TextDefault>
-                    <TextDefault
-                      numberOfLines={1}
-                      textColor={currentTheme.fontFourthColor}
-                      normal
-                      bold
-                    >
-                      {calculatePrice(deliveryCharges, true).total}{' '}
-                      {isArabic
-                        ? configuration.currencySymbol
-                        : configuration.currency}
-                    </TextDefault>
+                    {calculatedPrice ? (
+                      <TextDefault
+                        numberOfLines={1}
+                        textColor={currentTheme.fontFourthColor}
+                        normal
+                        bold
+                      >
+                        {loadingCalculatePrice
+                          ? 'loading...'
+                          : parseFloat(calculatedPrice?.total).toFixed(2)}{' '}
+                        {isArabic
+                          ? configuration.currencySymbol
+                          : configuration.currency}
+                      </TextDefault>
+                    ) : null}
                   </View>
                 </View>
 

@@ -1420,10 +1420,12 @@ export const isRestaurantOpenNow = gql`
 export const checkoutCalculatePrice = gql`
   query CheckoutCalculatePrice($cart: Cart) {
     checkoutCalculatePrice(cart: $cart) {
-      # message
       total
       subtotal
       finalDeliveryCharges
+      subtotalDiscount
+      deliveryDiscount
+      tax
     }
   }
 `

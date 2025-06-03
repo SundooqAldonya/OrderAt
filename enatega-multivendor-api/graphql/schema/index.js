@@ -1452,12 +1452,6 @@ const typeDefs = gql`
     cost: Float
   }
 
-  type CalculatePriceResult {
-    total: Float
-    subtotal: Float
-    finalDeliveryCharges: Float
-  }
-
   input ItemCart {
     _id: String
     price: Float
@@ -1480,9 +1474,19 @@ const typeDefs = gql`
   }
 
   input Cart {
-    couponCode: String
+    code: String
     items: [ItemCart]
     deliveryCharges: Float
+    tax: Float
+  }
+
+  type CalculatePriceResult {
+    total: Float
+    subtotal: Float
+    finalDeliveryCharges: Float
+    subtotalDiscount: Float
+    deliveryDiscount: Float
+    tax: Float
   }
 
   type Query {
