@@ -1452,10 +1452,10 @@ const typeDefs = gql`
     cost: Float
   }
 
-  type calculatePriceResult {
+  type CalculatePriceResult {
     total: Float
     subtotal: Float
-    deliveryCharge: Float
+    finalDeliveryCharges: Float
   }
 
   input ItemCart {
@@ -1463,10 +1463,20 @@ const typeDefs = gql`
     price: Float
     quantity: Float
     variation: _idInput
+    addons: [AddonCart]
   }
 
   input _idInput {
     _id: String
+  }
+
+  input OptionCart {
+    _id: String
+  }
+
+  input AddonCart {
+    _id: String
+    options: [OptionCart]
   }
 
   input Cart {
@@ -1476,7 +1486,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    checkoutCalculatePrice(cart: Cart): Message
+    checkoutCalculatePrice(cart: Cart): CalculatePriceResult
     coupons: [Coupon!]!
     getCouponStatuses: [String]
     getCouponDiscountTypeEnums: [String]

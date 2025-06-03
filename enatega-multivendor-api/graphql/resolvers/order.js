@@ -410,12 +410,16 @@ module.exports = {
     async checkoutCalculatePrice(_, args) {
       console.log('checkoutCalculatePrice', { args: args.cart })
       const { cart, code } = args
-      const { items } = cart
-      console.log({ items, variation: items[0].variation })
+      const { items, deliveryCharges } = cart
+      console.log({
+        items,
+        variation: items[0].variation,
+        addons: items[0].addons
+      })
       // try {
       let subtotal = 0
       let deliveryDiscount = 0
-      let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
+      let finalDeliveryCharges = args.isPickedUp ? 0 : deliveryCharges
 
       const food = await Food.find({ _id: { $in: [...items] } })
       console.log({ food })
@@ -435,7 +439,9 @@ module.exports = {
         // Add add-on prices
         if (item.addons?.length > 0) {
           for (const addon of item.addons) {
-            for (const option of addon.options) {
+            for (const optionSingle of addon.options) {
+              const option = await Option.findById(optionSingle._id)
+              console.log({ option })
               originalPrice += option?.price || 0
             }
           }
@@ -513,7 +519,10 @@ module.exports = {
       }
       console.log({ subtotal })
 
-      return { message: 'got there' }
+      const total = subtotal + finalDeliveryCharges
+      console.log({ total })
+
+      return { subtotal, total, finalDeliveryCharges }
       // } catch (err) {
       //   throw err
       // }

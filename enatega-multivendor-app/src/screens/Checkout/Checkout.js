@@ -194,12 +194,13 @@ function Checkout(props) {
         items: cart?.map((item) => {
           console.log({ itemVariations: item.variation })
           console.log({ itemAddons: item.addons })
+          console.log({ itemOptions: item.addons[0].options[0] })
           return {
             _id: item._id,
             price: parseFloat(item.price),
             quantity: parseFloat(item.quantity),
-            variation: item.variation
-            // addons: item.addons
+            variation: item.variation,
+            addons: item.addons
           }
         }),
         deliveryCharges:
@@ -211,7 +212,9 @@ function Checkout(props) {
     nextFetchPolicy: 'no-cache'
   })
 
-  console.log({ dataCalculatePrice, errorCalculatePrice, deliveryCharges })
+  console.log({ dataCalculatePrice, errorCalculatePrice })
+
+  const calculatedPrice = dataCalculatePrice?.checkoutCalculatePrice || null
 
   useEffect(() => {
     if (calcData) {
