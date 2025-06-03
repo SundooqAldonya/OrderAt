@@ -288,6 +288,10 @@ module.exports = {
 
         // 5. Total Limit per user
         const userUsageCount = coupon.tracking.user_usage?.get(req.userId) || 0
+        console.log({
+          userUsageCount,
+          limit_user: coupon?.rules?.limit_per_user
+        })
         if (
           coupon.rules.limit_per_user &&
           userUsageCount >= coupon.rules.limit_per_user

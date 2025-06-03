@@ -1487,6 +1487,9 @@ const typeDefs = gql`
     subtotalDiscount: Float
     deliveryDiscount: Float
     tax: Float
+    originalSubtotal: Float
+    originalTotal: Float
+    originalDeliveryCharges: Float
   }
 
   type Query {

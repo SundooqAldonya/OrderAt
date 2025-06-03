@@ -2,6 +2,7 @@ import { verticalScale, scale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { fontStyles } from '../../utils/fontStyles'
+import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -181,17 +182,18 @@ const styles = (props = null) =>
       gap: 5
     },
     button: {
-      // backgroundColor: props !== null ? props.main : 'gray',
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
       height: scale(50),
-      borderRadius: 40
+      borderRadius: 40,
+      borderColor: props !== null ? props.black : 'black'
     },
     buttonDisabled: {
-      backgroundColor: props !== null ? props.white : 'white',
-      borderWidth: 1,
-      borderColor: props !== null ? props.black : 'black'
+      backgroundColor: 'gray',
+      borderWidth: 1
+      // borderColor: props !== null ? props.black : 'black'
     },
 
     // totalBill:{
@@ -405,7 +407,7 @@ const styles = (props = null) =>
       gap: 5
     },
     modalInput: {
-      height: scale(40),
+      height: scale(60),
       borderWidth: 1,
       borderColor: props != null ? props.verticalLine : '#B8B8B8',
       padding: 10,

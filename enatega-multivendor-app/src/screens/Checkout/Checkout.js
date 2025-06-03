@@ -78,6 +78,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDeliveryAmount } from '../../store/deliveryAmountSlice'
 import { useMemo } from 'react'
+import { Fragment } from 'react'
 
 // Constants
 const PLACEORDER = gql`
@@ -92,6 +93,7 @@ const kmWidth = 0.5 // desired width in km
 
 function Checkout(props) {
   const mapRef = useRef()
+  const inputRef = useRef()
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const configuration = useContext(ConfigurationContext)
@@ -226,6 +228,13 @@ function Checkout(props) {
   }, [calcData])
 
   useEffect(() => {
+    if (dataCalculatePrice && coupon)
+      FlashMessage({
+        message: t('coupanApply')
+      })
+  }, [dataCalculatePrice])
+
+  useEffect(() => {
     if (mapRef?.current) {
       mapRef.current.animateToRegion(initialRegion, 1000) // 1000ms = 1 second animation
     }
@@ -248,9 +257,9 @@ function Checkout(props) {
     console.log({ data })
     if (data?.applyCoupon) {
       setCoupon({ ...data?.applyCoupon })
-      FlashMessage({
-        message: t('coupanApply')
-      })
+      // FlashMessage({
+      //   message: t('coupanApply')
+      // })
       setVoucherCode('')
       onModalClose(voucherModalRef)
       setTimeout(() => {
@@ -678,7 +687,11 @@ function Checkout(props) {
       })
       return false
     }
-    if (calculatePrice(deliveryCharges, true).itemTotal < minimumOrder) {
+    const couponDiscount = coupon?.discount || 0
+    if (
+      calculatePrice(deliveryCharges, true).itemTotal <
+      minimumOrder - couponDiscount
+    ) {
       // Alert.alert('Minimum order', 'Minimum Order')
       FlashMessage({
         // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
@@ -1519,61 +1532,87 @@ function Checkout(props) {
                       {t('subTotal')}
                     </TextDefault>
                     {calculatedPrice ? (
-                      <TextDefault
-                        numberOfLines={1}
-                        textColor={currentTheme.fontFourthColor}
-                        normal
-                        bold
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row' : 'row-reverse',
+                          gap: 10
+                        }}
                       >
-                        {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
-                        {loadingCalculatePrice
-                          ? 'loading...'
-                          : parseFloat(calculatedPrice?.subtotal).toFixed(2)}
-                        {isArabic
-                          ? configuration.currencySymbol
-                          : configuration.currency}
-                      </TextDefault>
-                    ) : null}
-                  </View>
-                  {coupon?.appliesTo === 'subtotal' ||
-                    (coupon?.appliesTo === 'items' && (
-                      <View>
-                        <View style={styles(currentTheme).horizontalLine2} />
-                        <View
-                          style={{
-                            ...styles().billsec,
-                            flexDirection: isArabic ? 'row-reverse' : 'row'
-                          }}
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
                         >
+                          {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
+                          {loadingCalculatePrice
+                            ? 'loading...'
+                            : parseFloat(calculatedPrice?.subtotal).toFixed(2)}
+                          {isArabic
+                            ? configuration.currencySymbol
+                            : configuration.currency}
+                        </TextDefault>
+                        {coupon ? (
                           <TextDefault
                             numberOfLines={1}
                             textColor={currentTheme.fontFourthColor}
                             normal
                             bold
+                            style={{ textDecorationLine: 'line-through' }}
                           >
-                            {t('voucherDiscountSubtotal')}
-                          </TextDefault>
-                          <TextDefault
-                            numberOfLines={1}
-                            textColor={currentTheme.fontFourthColor}
-                            normal
-                            bold
-                          >
-                            -{!isArabic ? configuration.currencySymbol : null}
-                            {/* {parseFloat(
-                            calculatePrice(0, false).itemTotal -
-                              calculatePrice(0, true).itemTotal
-                          ).toFixed(2)}{' '} */}
+                            {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
                             {loadingCalculatePrice
                               ? 'loading...'
                               : parseFloat(
-                                  calculatedPrice?.subtotalDiscount
+                                  calculatedPrice?.originalSubtotal
                                 ).toFixed(2)}
-                            {isArabic ? configuration.currencySymbol : null}
+                            {isArabic
+                              ? configuration.currencySymbol
+                              : configuration.currency}
                           </TextDefault>
-                        </View>
+                        ) : null}
                       </View>
-                    ))}
+                    ) : null}
+                  </View>
+                  {coupon?.appliesTo === 'subtotal' ||
+                  coupon?.appliesTo === 'items' ? (
+                    <View>
+                      <View style={styles(currentTheme).horizontalLine2} />
+                      <View
+                        style={{
+                          ...styles().billsec,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                        >
+                          {t('voucherDiscountSubtotal')}
+                        </TextDefault>
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                        >
+                          -{!isArabic ? configuration.currencySymbol : null}
+                          {/* {parseFloat(
+                            calculatePrice(0, false).itemTotal -
+                              calculatePrice(0, true).itemTotal
+                          ).toFixed(2)}{' '} */}
+                          {loadingCalculatePrice
+                            ? 'loading...'
+                            : parseFloat(
+                                calculatedPrice?.subtotalDiscount
+                              ).toFixed(2)}
+                          {isArabic ? configuration.currencySymbol : null}
+                        </TextDefault>
+                      </View>
+                    </View>
+                  ) : null}
                   {calculatePrice(0, true).itemTotal <
                     minimumOrder - coupon && (
                     <View
@@ -1762,19 +1801,47 @@ function Checkout(props) {
                       {t('total')}
                     </TextDefault>
                     {calculatedPrice ? (
-                      <TextDefault
-                        numberOfLines={1}
-                        textColor={currentTheme.fontFourthColor}
-                        normal
-                        bold
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row' : 'row-reverse',
+                          gap: 10
+                        }}
                       >
-                        {loadingCalculatePrice
-                          ? 'loading...'
-                          : parseFloat(calculatedPrice?.total).toFixed(2)}{' '}
-                        {isArabic
-                          ? configuration.currencySymbol
-                          : configuration.currency}
-                      </TextDefault>
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                        >
+                          {loadingCalculatePrice
+                            ? 'loading...'
+                            : parseFloat(calculatedPrice?.total).toFixed(
+                                2
+                              )}{' '}
+                          {isArabic
+                            ? configuration.currencySymbol
+                            : configuration.currency}
+                        </TextDefault>
+                        {coupon ? (
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                            style={{ textDecorationLine: 'line-through' }}
+                          >
+                            {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
+                            {loadingCalculatePrice
+                              ? 'loading...'
+                              : parseFloat(
+                                  calculatedPrice?.originalTotal
+                                ).toFixed(2)}
+                            {isArabic
+                              ? configuration.currencySymbol
+                              : configuration.currency}
+                          </TextDefault>
+                        ) : null}
+                      </View>
                     ) : null}
                   </View>
                 </View>
@@ -1928,6 +1995,11 @@ function Checkout(props) {
         {/* Voucher Modal */}
         <Modalize
           ref={voucherModalRef}
+          onOpened={() => {
+            setTimeout(() => {
+              inputRef.current?.focus()
+            }, 100) // slight delay to ensure animation settles
+          }}
           modalStyle={[styles(currentTheme).modal]}
           overlayStyle={styles(currentTheme).overlay}
           handleStyle={styles(currentTheme).handle}
@@ -1940,6 +2012,10 @@ function Checkout(props) {
           closeAnimationConfig={{
             timing: { duration: 400 },
             spring: { speed: 20, bounciness: 10 }
+          }}
+          keyboardAvoidingBehavior='padding'
+          scrollViewProps={{
+            keyboardShouldPersistTaps: 'handled'
           }}
         >
           <View style={styles().modalContainer}>
@@ -1961,7 +2037,7 @@ function Checkout(props) {
               </View>
               <Feather
                 name='x-circle'
-                size={24}
+                size={34}
                 color={currentTheme.newIconColor}
                 onPress={() => onModalClose(voucherModalRef)}
               />
@@ -1971,6 +2047,7 @@ function Checkout(props) {
                 {t('enterCode')}
               </TextDefault>
               <TextInput
+                ref={inputRef}
                 label={t('inputCode')}
                 placeholder={t('inputCode')}
                 value={voucherCode}

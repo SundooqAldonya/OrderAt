@@ -418,6 +418,8 @@ module.exports = {
         addons: items[0].addons
       })
       // try {
+      let originalSubtotal = 0
+      let originalTotal = 0
       let subtotal = 0
       let deliveryDiscount = 0
       let finalDeliveryCharges = args.isPickedUp ? 0 : deliveryCharges
@@ -437,7 +439,7 @@ module.exports = {
         if (!variation) continue
 
         let originalPrice = variation.price || 0
-
+        originalSubtotal += variation.price
         // Add add-on prices
         if (item.addons?.length > 0) {
           for (const addon of item.addons) {
@@ -445,10 +447,12 @@ module.exports = {
               const option = await Option.findById(optionSingle._id)
               console.log({ option })
               originalPrice += option?.price || 0
+              originalSubtotal += option?.price || 0
             }
           }
         }
-
+        originalSubtotal *= quantity
+        console.log({ originalSubtotal })
         let discountedPrice = originalPrice
 
         // Apply item-level discount
@@ -524,11 +528,15 @@ module.exports = {
       console.log({ subtotal })
 
       const total = subtotal + finalDeliveryCharges + tax
-      console.log({ total, subtotalDiscount })
+      originalTotal = originalSubtotal + deliveryCharges + tax
+      console.log({ total, subtotalDiscount, originalTotal })
 
       return {
+        originalSubtotal,
         subtotal,
         total,
+        originalTotal,
+        originalDeliveryCharges: deliveryCharges,
         finalDeliveryCharges,
         deliveryDiscount,
         subtotalDiscount,
@@ -1313,6 +1321,30 @@ module.exports = {
           }
           finalDeliveryCharges -= deliveryDiscount
         }
+        const couponCode = await Coupon.findById(coupon?._id)
+        if (!couponCode.tracking.user_usage) {
+          couponCode.tracking.user_usage = new Map()
+        }
+
+        // Convert to Map if it's a plain object (can happen when using `.lean()` or from Mongo)
+        if (!(couponCode.tracking.user_usage instanceof Map)) {
+          couponCode.tracking.user_usage = new Map(
+            Object.entries(couponCode.tracking.user_usage)
+          )
+        }
+
+        const previousCount =
+          couponCode.tracking.user_usage.get(req.userId) || 0
+        console.log({ previousCount })
+        couponCode.tracking.user_usage.set(req.userId, previousCount + 1)
+        couponCode.tracking.usage_count += 1
+        console.log({
+          nextCount: couponCode.tracking.user_usage.get(req.userId),
+          usage_count: couponCode.tracking.usage_count
+        })
+
+        await couponCode.save()
+
         const orderObj = {
           zone: zone._id,
           restaurant: args.restaurant,

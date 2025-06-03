@@ -1426,6 +1426,9 @@ export const checkoutCalculatePrice = gql`
       subtotalDiscount
       deliveryDiscount
       tax
+      originalSubtotal
+      originalTotal
+      originalDeliveryCharges
     }
   }
 `

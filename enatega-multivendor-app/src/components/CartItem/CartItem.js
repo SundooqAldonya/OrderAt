@@ -136,8 +136,14 @@ const CartItem = (props) => {
             )}
             <View style={styles().divider} />
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Restaurant', { _id: cartRestaurant })
+              onPress={
+                () => navigation.navigate('Restaurant', { _id: cartRestaurant })
+                // navigation.navigate('ItemDetail', {
+                //   food,
+                //   addons: restaurant.addons,
+                //   options: restaurant.options,
+                //   restaurant: restaurant._id
+                // })
               }
             >
               <TextDefault
