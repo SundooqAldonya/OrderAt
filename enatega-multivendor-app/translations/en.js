@@ -662,5 +662,10 @@ export const en = {
   password_not_match: 'Passwords do not match!',
   eleven_digits_number: 'Should not exceed 11 digits',
   voucherDiscountSubtotal: 'Voucher Discount Subtotal',
-  voucherDiscountDelivery: 'Voucher Discount Delivery'
+  voucherDiscountDelivery: 'Voucher Discount Delivery',
+  discount_on: 'discount on',
+  subtotal: 'subtotal',
+  applied: 'Applied',
+  delivery: 'delivery',
+  items: 'items'
 }

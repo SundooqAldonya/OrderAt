@@ -1391,19 +1391,19 @@ function Checkout(props) {
                               bold
                               textColor={currentTheme.fontFourthColor}
                             >
-                              {coupon ? coupon.code : null} applied
+                              {coupon ? coupon.code : null} {t('applied')}
                             </TextDefault>
-                            {/* <TextDefault
+                            <TextDefault
                               small
                               bold
                               textColor={currentTheme.fontFourthColor}
                             >
-                              -{configuration.currencySymbol}
-                              {parseFloat(
-                                calculatePrice(0, false) -
-                                  calculatePrice(0, true)
-                              ).toFixed(2)}
-                            </TextDefault> */}
+                              -{coupon.discount}
+                              {coupon.discountType === 'percent'
+                                ? '%'
+                                : configuration.currencySymbol}{' '}
+                              {t('discount_on')} {t(coupon.appliesTo)}
+                            </TextDefault>
                           </View>
                         </View>
                         <View>
@@ -1574,47 +1574,44 @@ function Checkout(props) {
                       </View>
                     ) : null}
                   </View>
-                  {coupon?.appliesTo === 'subtotal' ||
-                  coupon?.appliesTo === 'items' ? (
-                    <View>
-                      <View style={styles(currentTheme).horizontalLine2} />
-                      <View
-                        style={{
-                          ...styles().billsec,
-                          flexDirection: isArabic ? 'row-reverse' : 'row'
-                        }}
-                      >
-                        <TextDefault
-                          numberOfLines={1}
-                          textColor={currentTheme.fontFourthColor}
-                          normal
-                          bold
+                  {/* <Fragment>
+                    {coupon?.appliesTo === 'subtotal' ||
+                    coupon?.appliesTo === 'items' ? (
+                      <View>
+                        <View style={styles(currentTheme).horizontalLine2} />
+                        <View
+                          style={{
+                            ...styles().billsec,
+                            flexDirection: isArabic ? 'row-reverse' : 'row'
+                          }}
                         >
-                          {t('voucherDiscountSubtotal')}
-                        </TextDefault>
-                        <TextDefault
-                          numberOfLines={1}
-                          textColor={currentTheme.fontFourthColor}
-                          normal
-                          bold
-                        >
-                          -{!isArabic ? configuration.currencySymbol : null}
-                          {/* {parseFloat(
-                            calculatePrice(0, false).itemTotal -
-                              calculatePrice(0, true).itemTotal
-                          ).toFixed(2)}{' '} */}
-                          {loadingCalculatePrice
-                            ? 'loading...'
-                            : parseFloat(
-                                calculatedPrice?.subtotalDiscount
-                              ).toFixed(2)}
-                          {isArabic ? configuration.currencySymbol : null}
-                        </TextDefault>
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                          >
+                            {t('voucherDiscountSubtotal')}
+                          </TextDefault>
+                          <TextDefault
+                            numberOfLines={1}
+                            textColor={currentTheme.fontFourthColor}
+                            normal
+                            bold
+                          >
+                            -{!isArabic ? configuration.currencySymbol : null}
+                            {loadingCalculatePrice
+                              ? 'loading...'
+                              : parseFloat(
+                                  calculatedPrice?.subtotalDiscount
+                                ).toFixed(2)}
+                            {isArabic ? configuration.currencySymbol : null}
+                          </TextDefault>
+                        </View>
                       </View>
-                    </View>
-                  ) : null}
-                  {calculatePrice(0, true).itemTotal <
-                    minimumOrder - coupon && (
+                    ) : null}
+                  </Fragment> */}
+                  {calculatedPrice?.subtotal < minimumOrder - coupon && (
                     <View
                       style={{
                         backgroundColor: 'rgba(255,0,0,0.5)',

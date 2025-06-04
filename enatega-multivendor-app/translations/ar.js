@@ -140,9 +140,9 @@ export const ar = {
   condition2:
     'أوافق وأطالب بتنفيذ الخدمة المطلوبة قبل نهاية فترة الرجوع. أنا على علم بأن بعد الوفاء التام بالخدمة، أفقد حقي في الرجوع.',
   checkoutBtn: 'إتمام الطلب',
-  coupanApply: 'تم تطبيق خصم القسيمة',
-  coupanFailed: 'القسيمة غير متاحة',
-  invalidCoupan: 'قسيمة غير صالحة',
+  coupanApply: 'تم تطبيق خصم الكوبون',
+  coupanFailed: 'الكوبون غير متاحة',
+  invalidCoupan: 'كوبون غير صالح',
   validateItems: 'أضف عناصر إلى السلة قبل الدفع',
   validateDelivery: 'قم بتحديد عنوان التوصيل قبل الدفع',
   Favourite: 'المفضلة',
@@ -381,7 +381,7 @@ export const ar = {
     'ليس لديك أي طلب سابق حتى الآن. جرب أحد مطاعمنا الرائعة وقدم طلبك الأول!',
   BrowseRESTAURANTS: 'تصفح المطاعم في منطقتك',
   RateOrder: 'تقييم الطلب',
-  voucherCode: 'أدخل رمز القسيمة الخاص بك',
+  voucherCode: 'أدخل رمز الكوبون الخاص بك',
   networkError: 'حدث خطأ ما. تحقق من شبكتك وحاول مرة أخرى.',
   noRestaurants: 'لا مطاعم',
   clearCartText:
@@ -438,10 +438,10 @@ export const ar = {
   replyRider: 'الرد على الكابتن!',
   within: 'في غضون',
   AddTip: 'إضافة بقشيش للكابتن',
-  voucher: 'قسيمة',
+  voucher: 'كوبون',
   paymentSummary: 'ملخص الدفع',
-  voucherDiscount: 'خصم القسيمة',
-  addVoucher: 'إضافة كود القسيمة',
+  voucherDiscount: 'خصم الكوبون',
+  addVoucher: 'إضافة كود الكوبون',
   signUpDiscount: 'اشتراك للحصول على الخصم',
   foodDelivery: 'أطلب طعام',
   OrderfoodLove: 'وجبتك المفضله من مطعمك المفضل',
@@ -542,7 +542,7 @@ export const ar = {
   SeeYouAgainSoon: 'إلى اللقاء قريبا!',
   enterCode: 'أدخل الرمز',
   enterAmount: 'أدخل المبلغ',
-  applyVoucher: 'هل لديك كوبون - قسيمة؟',
+  applyVoucher: 'هل لديك كوبون؟',
   inputCode: 'ادخل الرمز',
   AddTip: 'إضافة بقشيش',
   permanentDeleteMessage:
@@ -651,5 +651,10 @@ export const ar = {
   password_not_match: 'كلمات المرور لا تتطابق',
   eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا',
   voucherDiscountSubtotal: 'خصم من الاجمالي الفرعي',
-  voucherDiscountDelivery: 'خصم من رسوم التوصيل'
+  voucherDiscountDelivery: 'خصم من رسوم التوصيل',
+  discount_on: 'خصم على',
+  subtotal: 'الاجمالي الفرعي',
+  applied: 'تم تطبيق الكوبون',
+  delivery: 'سعر التوصيل',
+  items: 'المنتج'
 }
