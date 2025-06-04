@@ -656,5 +656,7 @@ export const ar = {
   subtotal: 'الاجمالي الفرعي',
   applied: 'تم تطبيق الكوبون',
   delivery: 'سعر التوصيل',
-  items: 'المنتج'
+  items: 'المنتج',
+  coupon: 'الكوبون',
+  max: 'الحد الأقصى'
 }

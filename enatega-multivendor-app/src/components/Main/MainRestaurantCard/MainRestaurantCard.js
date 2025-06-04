@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
 import { TopBrands } from '../TopBrands'
 import { useQuery } from '@apollo/client'
+import AntDesign from '@expo/vector-icons/AntDesign'
 
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
@@ -61,13 +62,18 @@ function MainRestaurantCard(props) {
                 {t(props?.title)}
                 {/* {t('mostOrderedNow')} */}
               </TextDefault>
-              <View style={styles().image}>
-                <Ionicons
+              <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+                <AntDesign
+                  name={isArabic ? 'arrowleft' : 'arrowright'}
+                  size={20}
+                  color='black'
+                />
+                {/* <Ionicons
                   name={isArabic ? 'arrow-back' : 'arrow-forward'}
                   size={scale(24)}
                   style={styles().image1}
                   color={colors.dark}
-                />
+                /> */}
               </View>
             </TouchableOpacity>
 

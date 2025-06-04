@@ -569,6 +569,7 @@ function Cart(props) {
                         style={[styles(currentTheme).itemContainer]}
                       >
                         <CartItem
+                          itemKey={food.key}
                           quantity={food.quantity}
                           dealName={food.title}
                           optionsTitle={food.optionsTitle}

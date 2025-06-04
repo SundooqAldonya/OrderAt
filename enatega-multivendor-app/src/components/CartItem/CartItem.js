@@ -12,12 +12,14 @@ import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { IMAGE_LINK } from '../../utils/constants'
 import { colors } from '../../utils/colors'
+import UserContext from '../../context/User'
 
 const CartItem = (props) => {
   const cartRestaurant = props.cartRestaurant
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
+  const { deleteItem } = useContext(UserContext)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -137,7 +139,8 @@ const CartItem = (props) => {
             <View style={styles().divider} />
             <TouchableOpacity
               onPress={
-                () => navigation.navigate('Restaurant', { _id: cartRestaurant })
+                () => deleteItem(props.itemKey)
+                // navigation.navigate('Restaurant', { _id: cartRestaurant })
                 // navigation.navigate('ItemDetail', {
                 //   food,
                 //   addons: restaurant.addons,
@@ -151,7 +154,7 @@ const CartItem = (props) => {
                 bolder
                 Normal
               >
-                {t('edit')}
+                {t('remove')}
               </TextDefault>
             </TouchableOpacity>
           </View>

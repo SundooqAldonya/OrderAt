@@ -10,7 +10,7 @@ const styles = (props = null) =>
     //   ...alignment.MLlarge
     // },
     offerScroll: {
-       height: height * 0.376,
+      height: height * 0.376,
       width: '100%'
     },
     ItemTitle: {
@@ -54,11 +54,11 @@ const styles = (props = null) =>
     },
     image: {
       backgroundColor: colors.lightGray,
-       borderRadius: 10,
+      borderRadius: 10,
       marginHorizontal: 5,
       paddingHorizontal: 5,
-      alignItems:'center',
-      justifyContent:'center',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     image1: {
       // width: 30,
@@ -67,7 +67,7 @@ const styles = (props = null) =>
     noDataTextWrapper: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     noDataText: {
       fontSize: 18,

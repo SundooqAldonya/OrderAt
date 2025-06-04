@@ -187,12 +187,12 @@ const styles = (props = null) =>
       alignItems: 'center',
       flexDirection: 'row',
       height: scale(50),
-      borderRadius: 40,
-      borderColor: props !== null ? props.black : 'black'
+      borderRadius: 40
+      // borderColor: props !== null ? props.black : 'black'
     },
     buttonDisabled: {
-      backgroundColor: 'gray',
-      borderWidth: 1
+      backgroundColor: 'gray'
+      // borderWidth: 1
       // borderColor: props !== null ? props.black : 'black'
     },
 

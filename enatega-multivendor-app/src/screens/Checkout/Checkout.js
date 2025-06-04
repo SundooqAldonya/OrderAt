@@ -688,20 +688,20 @@ function Checkout(props) {
       return false
     }
     const couponDiscount = coupon?.discount || 0
-    if (
-      calculatePrice(deliveryCharges, true).itemTotal <
-      minimumOrder - couponDiscount
-    ) {
-      // Alert.alert('Minimum order', 'Minimum Order')
-      FlashMessage({
-        // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
-        message: `${t('minAmount')} (${
-          configuration.currencySymbol
-        } ${minimumOrder}) ${t('forYourOrder')}`,
-        duration: 10000
-      })
-      return false
-    }
+    // if (
+    //   calculatePrice(deliveryCharges, true).itemTotal <
+    //   minimumOrder - couponDiscount
+    // ) {
+    //   // Alert.alert('Minimum order', 'Minimum Order')
+    //   FlashMessage({
+    //     // message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
+    //     message: `${t('minAmount')} (${
+    //       configuration.currencySymbol
+    //     } ${minimumOrder}) ${t('forYourOrder')}`,
+    //     duration: 10000
+    //   })
+    //   return false
+    // }
     if (!location.deliveryAddress) {
       props.navigation.navigate('CartAddress')
       return false
@@ -1360,12 +1360,13 @@ function Checkout(props) {
                         H5
                         bolder
                         textColor={currentTheme.fontNewColor}
+                        style={{ textAlign: isArabic ? 'right' : 'left' }}
                       >
-                        Voucher
+                        {t('coupon')}
                       </TextDefault>
                       <View
                         style={{
-                          flexDirection: 'row',
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
                           alignItems: 'center',
                           justifyContent: 'space-between'
                         }}
@@ -1379,36 +1380,55 @@ function Checkout(props) {
                             gap: scale(5)
                           }}
                         >
-                          <AntDesign
-                            name='tags'
-                            size={24}
-                            color={currentTheme.main}
-                          />
                           <View>
-                            <TextDefault
-                              numberOfLines={1}
-                              tnormal
-                              bold
-                              textColor={currentTheme.fontFourthColor}
+                            <View
+                              style={{
+                                flexDirection: isArabic ? 'row-reverse' : 'row',
+                                alignItems: 'center',
+                                gap: 5
+                              }}
                             >
-                              {coupon ? coupon.code : null} {t('applied')}
-                            </TextDefault>
+                              <AntDesign
+                                name='tags'
+                                size={24}
+                                color={currentTheme.main}
+                              />
+                              <TextDefault
+                                numberOfLines={1}
+                                tnormal
+                                bold
+                                textColor={currentTheme.fontFourthColor}
+                                style={{
+                                  textAlign: isArabic ? 'right' : 'left'
+                                }}
+                              >
+                                {coupon ? coupon.code : null} {t('applied')}
+                              </TextDefault>
+                            </View>
                             <TextDefault
                               small
-                              bold
-                              textColor={currentTheme.fontFourthColor}
+                              bolder
+                              textColor={colors.primary}
+                              style={{
+                                textAlign: isArabic ? 'right' : 'left',
+                                fontSize: 12,
+                                marginTop: 10
+                              }}
                             >
-                              -{coupon.discount}
+                              {coupon.discount}
                               {coupon.discountType === 'percent'
                                 ? '%'
                                 : configuration.currencySymbol}{' '}
-                              {t('discount_on')} {t(coupon.appliesTo)}
+                              {t('discount_on')} {t(coupon.appliesTo)}{' '}
+                              {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
                             </TextDefault>
                           </View>
                         </View>
-                        <View>
+                        <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
                           <TouchableOpacity
-                            style={styles(currentTheme).changeBtn}
+                            style={{
+                              ...styles(currentTheme).changeBtn
+                            }}
                             onPress={() => setCoupon(null)}
                           >
                             <TextDefault
@@ -1552,7 +1572,7 @@ function Checkout(props) {
                             ? configuration.currencySymbol
                             : configuration.currency}
                         </TextDefault>
-                        {coupon ? (
+                        {coupon && coupon.appliesTo === 'subtotal' ? (
                           <TextDefault
                             numberOfLines={1}
                             textColor={currentTheme.fontFourthColor}
@@ -1560,7 +1580,6 @@ function Checkout(props) {
                             bold
                             style={{ textDecorationLine: 'line-through' }}
                           >
-                            {/* {calculatePrice(0, false).itemTotal.toFixed(2)}{' '} */}
                             {loadingCalculatePrice
                               ? 'loading...'
                               : parseFloat(
@@ -1611,7 +1630,7 @@ function Checkout(props) {
                       </View>
                     ) : null}
                   </Fragment> */}
-                  {calculatedPrice?.subtotal < minimumOrder - coupon && (
+                  {/* {calculatedPrice?.subtotal < minimumOrder - coupon && (
                     <View
                       style={{
                         backgroundColor: 'rgba(255,0,0,0.5)',
@@ -1622,7 +1641,7 @@ function Checkout(props) {
                     >
                       {showMinimumOrderMessage()}
                     </View>
-                  )}
+                  )} */}
                   <View style={styles(currentTheme).horizontalLine2} />
 
                   {!isPickup && (
@@ -1641,25 +1660,50 @@ function Checkout(props) {
                         >
                           {t('deliveryFee')}
                         </TextDefault>
-                        {calculatedPrice ? (
-                          <TextDefault
-                            numberOfLines={1}
-                            textColor={currentTheme.fontFourthColor}
-                            normal
-                            bold
-                          >
-                            {loadingCalculatePrice
-                              ? 'loading...'
-                              : parseFloat(
-                                  calculatedPrice?.finalDeliveryCharges
-                                ).toFixed(2)}{' '}
-                            {isArabic
-                              ? configuration.currencySymbol
-                              : configuration.currency}
-                          </TextDefault>
-                        ) : null}
+                        <View
+                          style={{
+                            flexDirection: isArabic ? 'row' : 'row-reverse',
+                            gap: 10
+                          }}
+                        >
+                          {calculatedPrice ? (
+                            <TextDefault
+                              numberOfLines={1}
+                              textColor={currentTheme.fontFourthColor}
+                              normal
+                              bold
+                            >
+                              {loadingCalculatePrice
+                                ? 'loading...'
+                                : parseFloat(
+                                    calculatedPrice?.finalDeliveryCharges
+                                  ).toFixed(2)}{' '}
+                              {isArabic
+                                ? configuration.currencySymbol
+                                : configuration.currency}
+                            </TextDefault>
+                          ) : null}
+                          {coupon &&
+                          coupon.appliesTo === 'delivery' &&
+                          calculatedPrice ? (
+                            <TextDefault
+                              numberOfLines={1}
+                              textColor={currentTheme.fontFourthColor}
+                              normal
+                              bold
+                              style={{ textDecorationLine: 'line-through' }}
+                            >
+                              {parseFloat(
+                                calculatedPrice?.originalDeliveryCharges
+                              ).toFixed(2)}
+                              {isArabic
+                                ? configuration.currencySymbol
+                                : configuration.currency}
+                            </TextDefault>
+                          ) : null}
+                        </View>
                       </View>
-                      {coupon?.appliesTo === 'delivery' && (
+                      {/* {coupon?.appliesTo === 'delivery' && (
                         <View>
                           <View style={styles(currentTheme).horizontalLine2} />
                           <View
@@ -1692,7 +1736,7 @@ function Checkout(props) {
                             </TextDefault>
                           </View>
                         </View>
-                      )}
+                      )} */}
                       <View style={styles(currentTheme).horizontalLine2} />
                     </>
                   )}
@@ -1878,10 +1922,7 @@ function Checkout(props) {
             {!isModalOpen && (
               <View style={styles(currentTheme).buttonContainer}>
                 <TouchableOpacity
-                  disabled={
-                    loadingOrder ||
-                    minimumOrder - coupon > calculatePrice(0, true).itemTotal
-                  }
+                  disabled={loadingOrder}
                   activeOpacity={0.7}
                   onPress={() => {
                     if (validateOrder()) {
@@ -1893,12 +1934,7 @@ function Checkout(props) {
                     styles(currentTheme).button,
                     {
                       opacity: loadingOrder ? 0.5 : 1,
-                      backgroundColor:
-                        loadingOrder ||
-                        minimumOrder - coupon >
-                          calculatePrice(0, true).itemTotal
-                          ? 'grey'
-                          : currentTheme.main
+                      backgroundColor: loadingOrder ? 'grey' : currentTheme.main
                     }
                   ]}
                 >
@@ -2016,8 +2052,19 @@ function Checkout(props) {
           }}
         >
           <View style={styles().modalContainer}>
-            <View style={styles().modalHeader}>
-              <View activeOpacity={0.7} style={styles().modalheading}>
+            <View
+              style={{
+                ...styles().modalHeader,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
+            >
+              <View
+                activeOpacity={0.7}
+                style={{
+                  ...styles().modalheading,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
                 <MaterialCommunityIcons
                   name='ticket-confirmation-outline'
                   size={24}
@@ -2040,9 +2087,14 @@ function Checkout(props) {
               />
             </View>
             <View style={{ gap: 8 }}>
-              <TextDefault uppercase bold textColor={currentTheme.gray500}>
+              {/* <TextDefault
+                uppercase
+                bold
+                textColor={currentTheme.gray500}
+                style={{ textAlign: isArabic ? 'right' : 'left' }}
+              >
                 {t('enterCode')}
-              </TextDefault>
+              </TextDefault> */}
               <TextInput
                 ref={inputRef}
                 label={t('inputCode')}
@@ -2054,7 +2106,6 @@ function Checkout(props) {
             </View>
             <TouchableOpacity
               disabled={!voucherCode || couponLoading}
-              activeOpacity={0.7}
               onPress={handleApplyCoupon}
               style={[
                 styles(currentTheme).button,

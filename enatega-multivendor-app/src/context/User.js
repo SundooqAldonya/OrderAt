@@ -141,6 +141,8 @@ export const UserProvider = (props) => {
     await AsyncStorage.setItem('cartItems', JSON.stringify(items))
   }
 
+  console.log({ cart })
+
   const checkItemCart = (itemId) => {
     const cartIndex = cart.findIndex((c) => c._id === itemId)
     if (cartIndex < 0) {

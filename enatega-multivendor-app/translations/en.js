@@ -667,5 +667,7 @@ export const en = {
   subtotal: 'subtotal',
   applied: 'Applied',
   delivery: 'delivery',
-  items: 'items'
+  items: 'items',
+  coupon: 'Coupon',
+  max: 'Max'
 }
