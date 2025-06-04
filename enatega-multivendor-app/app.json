@@ -125,6 +125,8 @@
           "sounds": ["./assets/beep1.wav"]
         }
       ],
+      "@react-native-firebase/app", 
+      "@react-native-firebase/messaging",
       "./app.plugin.js"
     ],
     "extra": {
