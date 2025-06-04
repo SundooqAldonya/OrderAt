@@ -10,7 +10,7 @@ import * as Updates from 'expo-updates'
 const useEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
 
-  if (env === 'production' || env === 'staging') {
+  if (env === 'production' || env === 'staging' || process.env.NODE_ENV === 'development') {
     return {
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',
       WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
