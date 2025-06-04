@@ -3,6 +3,7 @@ const {
   calculateDistance
 } = require('../../helpers/utilities')
 const Configuration = require('../../models/configuration')
+const Coupon = require('../../models/coupon')
 const DeliveryPrice = require('../../models/DeliveryPrice')
 const DeliveryZone = require('../../models/deliveryZone')
 
@@ -21,7 +22,7 @@ module.exports = {
     async getDeliveryCalculation(_, args) {
       console.log({ deliveryCalcArgs: args })
       try {
-        const { originLong, originLat, destLong, destLat } = args
+        const { originLong, originLat, destLong, destLat, code } = args
         // get zone charges from delivery prices
 
         const distance = calculateDistance(
@@ -74,6 +75,7 @@ module.exports = {
         }
 
         console.log({ deliveryPrice })
+
         let amount
         if (deliveryPrice) {
           amount = deliveryPrice.cost
@@ -84,7 +86,28 @@ module.exports = {
             distance
           )
         }
-        return { amount }
+
+        let deliveryDiscount = 0
+        let originalDiscount = amount
+        const coupon = await Coupon.findOne({ code })
+        console.log({ coupon })
+        if (coupon) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * amount
+            deliveryDiscount = Math.min(discount, max_discount || discount)
+          } else if (discount_type === 'flat') {
+            deliveryDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+          }
+        }
+        amount -= deliveryDiscount
+
+        console.log({ amount, originalDiscount, deliveryDiscount })
+
+        return { amount, originalDiscount }
       } catch (err) {
         throw new Error(err)
       }

@@ -1426,6 +1426,7 @@ const typeDefs = gql`
 
   type Amount {
     amount: Float
+    originalDiscount: Float
   }
 
   type Image {
@@ -1520,6 +1521,7 @@ const typeDefs = gql`
       originLat: Float!
       destLong: Float!
       destLat: Float!
+      code: String
     ): Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
@@ -1850,6 +1852,7 @@ const typeDefs = gql`
 
   input ApplyCouponInput {
     code: String!
+    type: String
     orderSubtotal: Float!
     orderMeta: CouponOrderMetaInput
   }
@@ -1878,7 +1881,16 @@ const typeDefs = gql`
   #   location: CoordinatesInput
   # }
 
+  input ApplyCouponMandoobInput {
+    code: String
+    deliveryFee: Float
+    location: CoordinatesInput
+  }
+
   type Mutation {
+    applyCouponMandoob(
+      applyCouponMandoobInput: ApplyCouponMandoobInput
+    ): ApplyCouponResult
     applyCoupon(applyCouponInput: ApplyCouponInput): ApplyCouponResult
     editCoupon(id: String!, couponInput: CouponInput!): Message
     createCoupon(couponInput: CouponInput!): Message

@@ -490,3 +490,21 @@ export const applyCoupon = gql`
     }
   }
 `
+export const applyCouponMandoob = gql`
+  mutation ApplyCouponMandoob(
+    $applyCouponMandoobInput: ApplyCouponMandoobInput
+  ) {
+    applyCouponMandoob(applyCouponMandoobInput: $applyCouponMandoobInput) {
+      code
+      valid
+      discount
+      message
+      appliesTo
+      discountType
+      maxDiscount
+      foods {
+        _id
+      }
+    }
+  }
+`

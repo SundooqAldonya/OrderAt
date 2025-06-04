@@ -1221,14 +1221,17 @@ export const getDeliveryCalculation = gql`
     $originLat: Float!
     $destLong: Float!
     $destLat: Float!
+    $code: String
   ) {
     getDeliveryCalculation(
       originLong: $originLong
       originLat: $originLat
       destLong: $destLong
       destLat: $destLat
+      code: $code
     ) {
       amount
+      originalDiscount
     }
   }
 `

@@ -328,6 +328,101 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+
+    async applyCouponMandoob(_, args, { req }) {
+      console.log('applyCouponMandoob', { args })
+      const { applyCouponMandoobInput } = args
+      const { code, deliveryFee, location } = applyCouponMandoobInput
+      try {
+        const coupon = await Coupon.findOne({ code })
+        console.log({ coupon })
+
+        const deliveryZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [location.longitude, location.latitude]
+              }
+            }
+          }
+        })
+
+        if (!coupon) {
+          throw new Error('Coupon not found.')
+        }
+
+        // 1. Status check
+        if (coupon.status !== 'active') {
+          throw new Error('Coupon is not active.')
+        }
+
+        // 2. Date range check
+        const { start_date, end_date } = coupon.rules
+        if (start_date && now < new Date(start_date)) {
+          throw new Error('Coupon is not yet valid.')
+        }
+        if (end_date && now > new Date(end_date)) {
+          throw new Error('Coupon has expired.')
+        }
+
+        if (
+          coupon.target.cities?.length &&
+          !isInTarget(coupon.target.cities, deliveryZone.city)
+        ) {
+          throw new Error('This coupon is not valid in your city.')
+        }
+
+        if (
+          coupon.target.customers?.length &&
+          !isInTarget(coupon.target.customers, req.userId)
+        ) {
+          throw new Error('This coupon is not available to this customer.')
+        }
+
+        if (
+          coupon.rules.min_order_value &&
+          deliveryFee < coupon.rules.min_order_value
+        ) {
+          throw new Error(
+            `Order must be at least ${coupon.rules.min_order_value} to use this coupon.`
+          )
+        }
+
+        if (
+          coupon.rules.limit_total &&
+          coupon.tracking.usage_count >= coupon.rules.limit_total
+        ) {
+          throw new Error('Coupon usage limit reached.')
+        }
+
+        // 5. Total Limit per user
+        const userUsageCount = coupon.tracking.user_usage?.get(req.userId) || 0
+        console.log({
+          userUsageCount,
+          limit_user: coupon?.rules?.limit_per_user
+        })
+        if (
+          coupon.rules.limit_per_user &&
+          userUsageCount >= coupon.rules.limit_per_user
+        ) {
+          throw new Error('You have reached the usage limit for this coupon.')
+        }
+        const { discount_type, discount_value, max_discount } = coupon.rules
+
+        return {
+          code: coupon.code,
+          valid: true,
+          discount: discount_value,
+          appliesTo: coupon.rules.applies_to[0],
+          discountType: discount_type,
+          maxDiscount: max_discount,
+          message: `Coupon applied successfully. Discount: ${discount_value}`
+        }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

@@ -21,15 +21,27 @@ import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { getDeliveryCalculation, myOrders } from '../../apollo/queries'
-import { Entypo } from '@expo/vector-icons'
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
 import ToIcon from '../../assets/delivery_to.png'
-import { createDeliveryRequest } from '../../apollo/mutations'
+import {
+  applyCoupon,
+  applyCouponMandoob,
+  createDeliveryRequest
+} from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
 import Feather from '@expo/vector-icons/Feather'
 import MapViewDirections from 'react-native-maps-directions'
 import ConfigurationContext from '../../context/Configuration'
+import { Modalize } from 'react-native-modalize'
+import ThemeContext from '../../ui/ThemeContext/ThemeContext'
+import { theme } from '../../utils/themeColors'
+import { scale } from '../../utils/scaling'
+import { alignment } from '../../utils/alignment'
+import Spinner from '../../components/Spinner/Spinner'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import { colors } from '../../utils/colors'
 
 const ORDERS = gql`
   ${myOrders}
@@ -37,6 +49,10 @@ const ORDERS = gql`
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
   const mapRef = useRef()
+  const voucherModalRef = useRef(null)
+  const inputRef = useRef()
+  const configuration = useContext(ConfigurationContext)
+
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
   const isArabic = i18n.language === 'ar'
@@ -46,6 +62,12 @@ const RequestDelivery = () => {
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
   const [disabled, setDisabled] = useState(false)
+
+  const [coupon, setCoupon] = useState(null)
+  const [voucherCode, setVoucherCode] = useState('')
+
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = theme[themeContext.ThemeValue]
 
   useEffect(() => {
     console.log({ mapRef })
@@ -112,8 +134,9 @@ const RequestDelivery = () => {
     }
   })
 
-  const { data, loading, error } = useQuery(getDeliveryCalculation, {
+  const { data, loading, error, refetch } = useQuery(getDeliveryCalculation, {
     variables: {
+      code: coupon?.code.replace(' ', ''),
       destLong: Number(addressInfo.regionTo.longitude),
       destLat: Number(addressInfo.regionTo.latitude),
       originLong: Number(addressInfo.regionFrom.longitude),
@@ -122,8 +145,38 @@ const RequestDelivery = () => {
   })
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || null
+  const originalDiscount =
+    data?.getDeliveryCalculation?.originalDiscount || null
 
   console.log({ addressInfo })
+
+  useEffect(() => {
+    if (data && coupon)
+      FlashMessage({
+        message: t('coupanApply')
+      })
+  }, [data])
+
+  const [mutateCouponMandoob, { loading: couponLoading }] = useMutation(
+    applyCouponMandoob,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        setCoupon({ ...res.applyCouponMandoob })
+        setVoucherCode('')
+        onModalClose(voucherModalRef)
+        setTimeout(() => {
+          refetch()
+        }, 2000)
+      },
+      onError: (err) => {
+        console.log({ err })
+        FlashMessage({
+          message: t('invalidCoupan')
+        })
+      }
+    }
+  )
 
   const validate = () => {
     if (!notes) {
@@ -173,6 +226,35 @@ const RequestDelivery = () => {
 
   const toggleSwitch = () => {
     setIsUrgent(!isUrgent)
+  }
+
+  const onModalOpen = (modalRef) => {
+    const modal = modalRef.current
+    if (modal) {
+      modal.open()
+    }
+  }
+  const onModalClose = (modalRef) => {
+    const modal = modalRef.current
+    if (modal) {
+      modal.close()
+    }
+  }
+
+  const handleApplyCoupon = () => {
+    const coordinates = {
+      latitude: location.latitude,
+      longitude: location.longitude
+    }
+    mutateCouponMandoob({
+      variables: {
+        applyCouponMandoobInput: {
+          code: voucherCode,
+          deliveryFee,
+          location: coordinates
+        }
+      }
+    })
   }
 
   return (
@@ -331,7 +413,7 @@ const RequestDelivery = () => {
         />
 
         {/* Urgency */}
-        <View
+        {/* <View
           style={{
             ...styles.switchRow,
             flexDirection: isArabic ? 'row-reverse' : 'row'
@@ -340,6 +422,118 @@ const RequestDelivery = () => {
           <Text style={styles.label}>{t('is_urgent')}</Text>
 
           <Switch value={isUrgent} onValueChange={toggleSwitch} />
+        </View> */}
+
+        <View style={{ marginTop: 20 }}>
+          {!coupon ? (
+            <TouchableOpacity
+              // activeOpacity={0.7}
+              style={{
+                ...styles.voucherSecInner,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
+              onPress={() => onModalOpen(voucherModalRef)}
+            >
+              <MaterialCommunityIcons
+                name='ticket-confirmation-outline'
+                size={24}
+                color={currentTheme.lightBlue}
+              />
+              <TextDefault H4 bolder textColor={currentTheme.lightBlue} center>
+                {t('applyVoucher')}
+              </TextDefault>
+            </TouchableOpacity>
+          ) : (
+            <View>
+              <TextDefault
+                numberOfLines={1}
+                H5
+                bolder
+                textColor={currentTheme.fontNewColor}
+                style={{ textAlign: isArabic ? 'right' : 'left' }}
+              >
+                {t('coupon')}
+              </TextDefault>
+              <View
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingTop: scale(8),
+                    gap: scale(5)
+                  }}
+                >
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        alignItems: 'center',
+                        gap: 5
+                      }}
+                    >
+                      <AntDesign
+                        name='tags'
+                        size={24}
+                        color={currentTheme.main}
+                      />
+                      <TextDefault
+                        numberOfLines={1}
+                        tnormal
+                        bold
+                        textColor={currentTheme.fontFourthColor}
+                        style={{
+                          textAlign: isArabic ? 'right' : 'left'
+                        }}
+                      >
+                        {coupon ? coupon.code : null} {t('applied')}
+                      </TextDefault>
+                    </View>
+                    <TextDefault
+                      small
+                      bolder
+                      textColor={colors.primary}
+                      style={{
+                        textAlign: isArabic ? 'right' : 'left',
+                        fontSize: 12,
+                        marginTop: 10
+                      }}
+                    >
+                      {coupon.discount}
+                      {coupon.discountType === 'percent'
+                        ? '%'
+                        : configuration.currencySymbol}{' '}
+                      {t('discount_on')} {t(coupon.appliesTo)}{' '}
+                      {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
+                    </TextDefault>
+                  </View>
+                </View>
+                <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
+                  <TouchableOpacity
+                    style={{
+                      ...styles.changeBtn
+                    }}
+                    onPress={() => setCoupon(null)}
+                  >
+                    <TextDefault
+                      small
+                      bold
+                      textColor={currentTheme.darkBgFont}
+                      center
+                    >
+                      {coupon ? t('remove') : null}
+                    </TextDefault>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Fare Preview */}
@@ -347,9 +541,26 @@ const RequestDelivery = () => {
           {loading ? (
             <Text>Loading...</Text>
           ) : (
-            <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
-              {t('deliveryFee')}: {deliveryFee} EGP
-            </Text>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 10
+              }}
+            >
+              <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
+                {t('deliveryFee')}: {deliveryFee} {configuration.currencySymbol}
+              </Text>
+              {coupon && (
+                <Text
+                  style={{
+                    textAlign: isArabic ? 'right' : 'left',
+                    textDecorationLine: 'line-through'
+                  }}
+                >
+                  {originalDiscount} {configuration.currencySymbol}
+                </Text>
+              )}
+            </View>
           )}
 
           {/* <Text>ETA: 25 mins</Text> */}
@@ -366,6 +577,100 @@ const RequestDelivery = () => {
           <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
         </TouchableOpacity>
       </View>
+      <Modalize
+        ref={voucherModalRef}
+        onOpened={() => {
+          setTimeout(() => {
+            inputRef.current?.focus()
+          }, 100) // slight delay to ensure animation settles
+        }}
+        modalStyle={[styles.modal]}
+        overlayStyle={styles.overlay}
+        handleStyle={styles.handle}
+        modalHeight={550}
+        handlePosition='inside'
+        openAnimationConfig={{
+          timing: { duration: 400 },
+          spring: { speed: 20, bounciness: 10 }
+        }}
+        closeAnimationConfig={{
+          timing: { duration: 400 },
+          spring: { speed: 20, bounciness: 10 }
+        }}
+        keyboardAvoidingBehavior='padding'
+        scrollViewProps={{
+          keyboardShouldPersistTaps: 'handled'
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View
+            style={{
+              ...styles.modalHeader,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
+            <View
+              activeOpacity={0.7}
+              style={{
+                ...styles.modalheading,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
+            >
+              <MaterialCommunityIcons
+                name='ticket-confirmation-outline'
+                size={24}
+                color={currentTheme.newIconColor}
+              />
+              <TextDefault
+                H4
+                bolder
+                textColor={currentTheme.newFontcolor}
+                center
+              >
+                {t('applyVoucher')}
+              </TextDefault>
+            </View>
+            <Feather
+              name='x-circle'
+              size={34}
+              color={currentTheme.newIconColor}
+              onPress={() => onModalClose(voucherModalRef)}
+            />
+          </View>
+          <View style={{ gap: 8 }}>
+            <TextInput
+              ref={inputRef}
+              label={t('inputCode')}
+              placeholder={t('inputCode')}
+              value={voucherCode}
+              onChangeText={(text) => setVoucherCode(text)}
+              style={styles.modalInput}
+            />
+          </View>
+          <TouchableOpacity
+            disabled={!voucherCode || couponLoading}
+            onPress={handleApplyCoupon}
+            style={[
+              styles.button,
+              !voucherCode && styles.buttonDisabled,
+              { height: scale(40) },
+              { opacity: couponLoading ? 0.5 : 1 }
+            ]}
+          >
+            {!couponLoading && (
+              <TextDefault
+                textColor={currentTheme.black}
+                style={styles.checkoutBtn}
+                bold
+                H4
+              >
+                {t('apply')}
+              </TextDefault>
+            )}
+            {couponLoading && <Spinner backColor={'transparent'} />}
+          </TouchableOpacity>
+        </View>
+      </Modalize>
     </ScrollView>
   )
 }
@@ -438,5 +743,82 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5
+  },
+  modalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    gap: 24
+  },
+  modalHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  modalheading: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
+  },
+  modalInput: {
+    height: scale(60),
+    borderWidth: 1,
+    borderColor: '#B8B8B8',
+    padding: 10,
+    borderRadius: 6,
+    color: '#000'
+  },
+  modal: {
+    backgroundColor: '#FFF',
+    borderTopEndRadius: scale(20),
+    borderTopStartRadius: scale(20),
+    shadowOpacity: 0,
+    paddingTop: 24,
+    paddingBottom: 24,
+    paddingLeft: 16,
+    paddingRight: 16
+  },
+  overlay: {
+    backgroundColor: 'transparent'
+  },
+  handle: {
+    width: 150,
+    backgroundColor: '#b0afbc'
+  },
+
+  voucherSecInner: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(5),
+    marginTop: scale(10),
+    marginBottom: scale(10)
+  },
+  button: {
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: scale(50),
+    borderRadius: 40
+  },
+  buttonDisabled: {
+    backgroundColor: 'gray'
+  },
+  changeBtn: {
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: scale(100),
+    height: scale(30),
+    borderRadius: 40
+  },
+  changeBtnInner: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
   }
 })
