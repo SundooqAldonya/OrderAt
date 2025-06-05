@@ -1076,6 +1076,9 @@ export const singleOrder = gql`
         seenAt
         openedAt
       }
+      originalDeliveryCharges
+      originalSubtotal
+      originalPrice
     }
   }
 `

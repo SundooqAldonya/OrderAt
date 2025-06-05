@@ -13,51 +13,6 @@ export default function AmountCard(props) {
   const configuration = useContext(ConfigurationContext)
   const theme = useTheme()
 
-  // const [deliveryChargesdata, setDeliveryChargesdata] = useState(0)
-  // const [isBelowMinimumDistance, setIsBelowMinimumDistance] = useState(false)
-
-  // useEffect(() => {
-  //   ;(async () => {
-  //     // const destinationObj = JSON.parse(localStorage.getItem('location'))
-  //     const latOrigin = Number(props.restaurant.location.coordinates[1])
-  //     const lonOrigin = Number(props.restaurant.location.coordinates[0])
-  //     const latDest = Number(props.deliveryAddress.location.coordinates[1])
-  //     const longDest = Number(props.deliveryAddress.location.coordinates[0])
-
-  //     const distance = await calculateDistance(
-  //       latOrigin,
-  //       lonOrigin,
-  //       latDest,
-  //       longDest
-  //     )
-  //     console.log(distance, 'DISTANCE------------')
-
-  //     let costType = configuration.costType
-
-  //     let calculatedDeliveryFee
-
-  //     if (distance < 2) {
-  //       // If the distance is less than 2km, set delivery fee to minimum
-  //       calculatedDeliveryFee = configuration.minimumDeliveryFee
-  //       setIsBelowMinimumDistance(true)
-  //     } else {
-  //       // Otherwise, calculate the delivery fee
-  //       let amount = calculateAmount(
-  //         costType,
-  //         configuration.deliveryRate,
-  //         distance
-  //       )
-  //       calculatedDeliveryFee = amount > 0 ? amount : configuration.deliveryRate
-  //       setIsBelowMinimumDistance(false)
-  //     }
-
-  //     // Ensure the calculated delivery fee is not lower than the minimum
-  //     setDeliveryChargesdata(
-  //       Math.max(calculatedDeliveryFee, configuration.minimumDeliveryFee)
-  //     )
-  //   })()
-  // }, [props, configuration])
-
   return (
     <>
       <Grid container item xs={12}>
@@ -223,23 +178,55 @@ export default function AmountCard(props) {
             </Grid>
             {!props.isPickedUp && (
               <>
-                <Grid container className={clsx(classes.cardRow, classes.mv2)}>
-                  <Grid item xs={9}>
+                <Grid
+                  container
+                  style={{
+                    flexWrap: 'nowrap',
+                    justifyContent: 'space-between'
+                  }}
+                  className={clsx(classes.cardRow, classes.mv2)}>
+                  <Grid item xs={4}>
                     <Typography
                       variant="body2"
                       className={clsx(classes.disabledText, classes.smallText)}>
                       {t('deliveryFee')}
                     </Typography>
                   </Grid>
-                  <Grid item xs={3}>
+                  {/* <Box
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      gap: 10,
+                      flexWrap: 'no-wrap'
+                    }}> */}
+                  {props.originalDeliveryCharges ? (
+                    <Grid item xs={4}>
+                      <Typography
+                        variant="body2"
+                        className={clsx(
+                          classes.disabledText,
+                          classes.smallText
+                        )}
+                        style={{ textDecorationLine: 'line-through' }}>
+                        {`${configuration.currencySymbol} ${parseFloat(
+                          props.originalDeliveryCharges
+                        ).toFixed(2)}`}
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                  <Grid item xs={4}>
                     <Typography
                       variant="body2"
-                      className={clsx(classes.disabledText, classes.smallText)}>
+                      className={clsx(classes.disabledText, classes.smallText)}
+                      style={{ textAlign: 'right' }}>
                       {`${configuration.currencySymbol} ${parseFloat(
                         props.deliveryCharges
                       ).toFixed(2)}`}
                     </Typography>
                   </Grid>
+
+                  {/* </Box> */}
                 </Grid>
               </>
             )}
