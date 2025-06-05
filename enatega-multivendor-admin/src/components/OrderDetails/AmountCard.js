@@ -13,6 +13,12 @@ export default function AmountCard(props) {
   const configuration = useContext(ConfigurationContext)
   const theme = useTheme()
 
+  const subtotal =
+    props.orderAmount -
+    props.deliveryCharges -
+    props.taxationAmount -
+    props.tipping
+
   return (
     <>
       <Grid container item xs={12}>
@@ -110,15 +116,34 @@ export default function AmountCard(props) {
             <Grid
               container
               className={clsx(classes.cardRow, classes.mv2)}
-              mb={5}>
-              <Grid item xs={9}>
+              mb={5}
+              style={{
+                flexWrap: 'nowrap',
+                justifyContent: 'space-between'
+              }}>
+              <Grid item xs={4}>
                 <Typography
                   variant="body2"
                   className={clsx(classes.disabledText, classes.smallText)}>
                   {t('subTotal')}
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              {props.originalSubtotal > subtotal ? (
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body2"
+                    className={clsx(classes.disabledText, classes.smallText)}
+                    style={{
+                      textDecorationLine: 'line-through',
+                      textAlign: 'center'
+                    }}>
+                    {`${configuration.currencySymbol} ${parseFloat(
+                      props.originalSubtotal
+                    ).toFixed(2)}`}
+                  </Typography>
+                </Grid>
+              ) : null}
+              <Grid item xs={4}>
                 <Typography
                   variant="body2"
                   className={clsx(classes.disabledText, classes.smallText)}>
@@ -129,12 +154,7 @@ export default function AmountCard(props) {
                       props.tipping
                   ).toFixed(2)}`} */}
                   {`${configuration.currencySymbol} ${parseFloat(
-                    Math.abs(
-                      props.orderAmount -
-                        props.deliveryCharges -
-                        props.taxationAmount -
-                        props.tipping
-                    )
+                    Math.abs(subtotal)
                   ).toFixed(2)}`}
                 </Typography>
               </Grid>
@@ -200,7 +220,7 @@ export default function AmountCard(props) {
                       gap: 10,
                       flexWrap: 'no-wrap'
                     }}> */}
-                  {props.originalDeliveryCharges ? (
+                  {props.originalDeliveryCharges > props.deliveryCharges ? (
                     <Grid item xs={4}>
                       <Typography
                         variant="body2"
@@ -208,7 +228,10 @@ export default function AmountCard(props) {
                           classes.disabledText,
                           classes.smallText
                         )}
-                        style={{ textDecorationLine: 'line-through' }}>
+                        style={{
+                          textDecorationLine: 'line-through',
+                          textAlign: 'center'
+                        }}>
                         {`${configuration.currencySymbol} ${parseFloat(
                           props.originalDeliveryCharges
                         ).toFixed(2)}`}
@@ -219,7 +242,7 @@ export default function AmountCard(props) {
                     <Typography
                       variant="body2"
                       className={clsx(classes.disabledText, classes.smallText)}
-                      style={{ textAlign: 'right' }}>
+                      style={{ textAlign: 'center' }}>
                       {`${configuration.currencySymbol} ${parseFloat(
                         props.deliveryCharges
                       ).toFixed(2)}`}
@@ -231,8 +254,14 @@ export default function AmountCard(props) {
               </>
             )}
 
-            <Grid container className={clsx(classes.cardRow, classes.mv2)}>
-              <Grid item xs={9}>
+            <Grid
+              container
+              className={clsx(classes.cardRow, classes.mv2)}
+              style={{
+                flexWrap: 'nowrap',
+                justifyContent: 'space-between'
+              }}>
+              <Grid item xs={4}>
                 <Box>
                   <Typography
                     variant="body2"
@@ -240,14 +269,29 @@ export default function AmountCard(props) {
                     className={clsx(classes.textBold, classes.smallText)}>
                     {t('total')}
                   </Typography>
-                  <Typography
+                  {/* <Typography
                     variant="caption"
                     className={classes.disabledText}>
                     (Incl. TAX)
-                  </Typography>
+                  </Typography> */}
                 </Box>
               </Grid>
-              <Grid item xs={3}>
+              {props.originalPrice > props.orderAmount ? (
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body2"
+                    className={clsx(classes.disabledText, classes.smallText)}
+                    style={{
+                      textDecorationLine: 'line-through',
+                      textAlign: 'center'
+                    }}>
+                    {`${configuration.currencySymbol} ${parseFloat(
+                      props.originalPrice
+                    ).toFixed(2)}`}
+                  </Typography>
+                </Grid>
+              ) : null}
+              <Grid item xs={4}>
                 <Typography
                   variant="body2"
                   color="textSecondary"
