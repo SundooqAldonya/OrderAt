@@ -413,9 +413,9 @@ module.exports = {
       const { items, deliveryCharges, tax, code } = cart
       console.log({
         code,
-        items,
-        variation: items[0].variation,
-        addons: items[0].addons
+        items
+        // variation: items[0].variation,
+        // addons: items[0].addons
       })
       // try {
       let originalSubtotal = 0
@@ -1233,7 +1233,7 @@ module.exports = {
         let itemTotal = 0
         let deliveryDiscount = 0
         let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
-
+        let originalTotalPrice = 0
         let coupon = null
         if (args.couponCode) {
           coupon = await Coupon.findOne({ code: args.couponCode }).lean()
@@ -1241,7 +1241,7 @@ module.exports = {
 
         for (const item of items) {
           const quantity = item.quantity || 1
-          let originalPrice = item.variation.price
+          const originalPrice = item.variation.price
 
           if (item.addons?.length > 0) {
             for (const addon of item.addons) {
@@ -1252,6 +1252,8 @@ module.exports = {
           }
 
           let discountedPrice = originalPrice
+          originalTotalPrice = originalPrice * quantity
+          console.log({ originalPrice, originalTotalPrice })
 
           const isEligible =
             coupon?.rules?.applies_to?.includes('items') &&
@@ -1277,7 +1279,6 @@ module.exports = {
               discountedPrice = originalPrice - appliedItemDiscount
             }
           }
-
           itemTotal += discountedPrice * quantity
         }
         console.log({
@@ -1322,28 +1323,31 @@ module.exports = {
           finalDeliveryCharges -= deliveryDiscount
         }
         const couponCode = await Coupon.findById(coupon?._id)
-        if (!couponCode.tracking.user_usage) {
-          couponCode.tracking.user_usage = new Map()
-        }
+        if (couponCode) {
+          if (!couponCode.tracking.user_usage) {
+            couponCode.tracking.user_usage = new Map()
+          }
 
-        // Convert to Map if it's a plain object (can happen when using `.lean()` or from Mongo)
-        if (!(couponCode.tracking.user_usage instanceof Map)) {
-          couponCode.tracking.user_usage = new Map(
-            Object.entries(couponCode.tracking.user_usage)
-          )
+          // Convert to Map if it's a plain object (can happen when using `.lean()` or from Mongo)
+          if (!(couponCode.tracking.user_usage instanceof Map)) {
+            couponCode.tracking.user_usage = new Map(
+              Object.entries(couponCode.tracking.user_usage)
+            )
+          }
         }
 
         const previousCount =
-          couponCode.tracking.user_usage.get(req.userId) || 0
+          couponCode?.tracking.user_usage.get(req.userId) || 0
         console.log({ previousCount })
-        couponCode.tracking.user_usage.set(req.userId, previousCount + 1)
-        couponCode.tracking.usage_count += 1
-        console.log({
-          nextCount: couponCode.tracking.user_usage.get(req.userId),
-          usage_count: couponCode.tracking.usage_count
-        })
-
-        await couponCode.save()
+        if (couponCode) {
+          couponCode.tracking.user_usage.set(req.userId, previousCount + 1)
+          couponCode.tracking.usage_count += 1
+          console.log({
+            nextCount: couponCode.tracking.user_usage.get(req.userId),
+            usage_count: couponCode.tracking.usage_count
+          })
+          await couponCode.save()
+        }
 
         const orderObj = {
           zone: zone._id,
@@ -1358,6 +1362,8 @@ module.exports = {
           paidAmount: 0,
           orderStatus: 'PENDING',
           deliveryCharges: args.isPickedUp ? 0 : finalDeliveryCharges,
+          originalDeliveryCharges:
+            finalDeliveryCharges < DELIVERY_CHARGES ? DELIVERY_CHARGES : 0,
           tipping: args.tipping,
           taxationAmount: args.taxationAmount,
           orderDate: args.orderDate,
@@ -1368,6 +1374,13 @@ module.exports = {
             args.taxationAmount +
             args.tipping
           ).toFixed(2),
+          originalPrice: coupon
+            ? originalTotalPrice +
+              DELIVERY_CHARGES +
+              args.taxationAmount +
+              args.tipping
+            : 0,
+          originalSubtotal: coupon ? originalTotalPrice : 0,
           paymentStatus: payment_status[0],
           coupon: coupon,
           completionTime: new Date(

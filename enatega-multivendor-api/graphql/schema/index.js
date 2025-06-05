@@ -483,6 +483,9 @@ const typeDefs = gql`
     type: String
     mandoobSpecialInstructions: String
     riderInteractions: [RiderInteractions]
+    originalDeliveryCharges: Float
+    originalSubtotal: Float
+    originalPrice: Float
   }
 
   scalar Date

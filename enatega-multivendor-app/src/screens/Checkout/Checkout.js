@@ -1572,7 +1572,9 @@ function Checkout(props) {
                             ? configuration.currencySymbol
                             : configuration.currency}
                         </TextDefault>
-                        {coupon && coupon.appliesTo === 'subtotal' ? (
+                        {coupon &&
+                        (coupon.appliesTo === 'subtotal' ||
+                          coupon.appliesTo === 'items') ? (
                           <TextDefault
                             numberOfLines={1}
                             textColor={currentTheme.fontFourthColor}

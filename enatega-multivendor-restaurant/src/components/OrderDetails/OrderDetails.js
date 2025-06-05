@@ -122,7 +122,10 @@ function OrderItems({ orderData }) {
     orderAmount,
     tipping,
     deliveryCharges,
-    taxationAmount
+    taxationAmount,
+    originalDeliveryCharges,
+    originalSubtotal,
+    originalPrice
   } = orderData
 
   const configuration = useContext(Configuration.Context)
@@ -256,9 +259,23 @@ function OrderItems({ orderData }) {
           style={[styles.itemHeading, textAlignStyle]}>
           {t('subT')}
         </TextDefault>
-        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
-          {formatAmount(subTotal.toFixed(2))}
-        </TextDefault>
+        <View
+          style={{ flexDirection: isArabic ? 'row' : 'row-reverse', gap: 10 }}>
+          <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+            {formatAmount(subTotal.toFixed(2))}
+          </TextDefault>
+          {originalSubtotal > subTotal ? (
+            <TextDefault
+              bold
+              style={[
+                styles.itemText,
+                textAlignStyle,
+                { textDecorationLine: 'line-through' }
+              ]}>
+              {formatAmount(originalSubtotal.toFixed(2))}
+            </TextDefault>
+          ) : null}
+        </View>
       </View>
       <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
@@ -292,9 +309,23 @@ function OrderItems({ orderData }) {
           style={[styles.itemHeading, textAlignStyle]}>
           {t('deliveryCharges')}
         </TextDefault>
-        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
-          {formatAmount(deliveryCharges)}
-        </TextDefault>
+        <View
+          style={{ flexDirection: isArabic ? 'row' : 'row-reverse', gap: 10 }}>
+          <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+            {formatAmount(deliveryCharges)}
+          </TextDefault>
+          {originalDeliveryCharges > deliveryCharges ? (
+            <TextDefault
+              bold
+              style={[
+                styles.itemText,
+                textAlignStyle,
+                { textDecorationLine: 'line-through' }
+              ]}>
+              {formatAmount(originalDeliveryCharges.toFixed(2))}
+            </TextDefault>
+          ) : null}
+        </View>
       </View>
 
       <View style={[styles.itemRow, { marginTop: 30 }, directionStyle]}>
@@ -305,9 +336,23 @@ function OrderItems({ orderData }) {
           style={[styles.itemHeading, textAlignStyle]}>
           {t('total')}
         </TextDefault>
-        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
-          {formatAmount(orderAmount)}
-        </TextDefault>
+        <View
+          style={{ flexDirection: isArabic ? 'row' : 'row-reverse', gap: 10 }}>
+          <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+            {formatAmount(orderAmount)}
+          </TextDefault>
+          {originalPrice > orderAmount ? (
+            <TextDefault
+              bold
+              style={[
+                styles.itemText,
+                textAlignStyle,
+                { textDecorationLine: 'line-through' }
+              ]}>
+              {formatAmount(originalPrice.toFixed(2))}
+            </TextDefault>
+          ) : null}
+        </View>
       </View>
     </View>
   )

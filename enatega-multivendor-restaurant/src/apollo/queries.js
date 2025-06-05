@@ -80,6 +80,9 @@ export const orders = `query Orders{
         available
         phone
       }
+      originalDeliveryCharges
+      originalSubtotal
+      originalPrice
     }
 }`
 

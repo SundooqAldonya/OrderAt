@@ -163,7 +163,12 @@ const transformOrder = async order => {
     type: order?.type ? order.type : null,
     riderInteractions: order.riderInteractions?.length
       ? order.riderInteractions
-      : []
+      : [],
+    originalDeliveryCharges: order?.originalDeliveryCharges
+      ? order?.originalDeliveryCharges
+      : 0,
+    originalSubtotal: order?.originalSubtotal ? order?.originalSubtotal : 0,
+    originalPrice: order?.originalPrice ? order?.originalPrice : 0
   }
 }
 

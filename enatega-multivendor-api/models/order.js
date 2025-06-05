@@ -184,7 +184,16 @@ const orderSchema = new Schema(
         seenAt: Date,
         openedAt: Date
       }
-    ]
+    ],
+    originalDeliveryCharges: {
+      type: Number
+    },
+    originalSubtotal: {
+      type: Number
+    },
+    originalPrice: {
+      type: Number
+    }
   },
   { timestamps: true }
 )
