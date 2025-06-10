@@ -669,5 +669,6 @@ export const en = {
   delivery: 'delivery',
   items: 'items',
   coupon: 'Coupon',
-  max: 'Max'
+  max: 'Max',
+  next: 'Next'
 }

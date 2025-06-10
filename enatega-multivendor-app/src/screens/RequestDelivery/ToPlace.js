@@ -19,7 +19,7 @@ import useEnvVars from '../../../environment'
 import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { Entypo, Ionicons } from '@expo/vector-icons'
+import { Entypo, Feather, Ionicons } from '@expo/vector-icons'
 import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
@@ -73,6 +73,9 @@ export default function ToPlace() {
   const [saveAddress, setSaveAddress] = useState(false)
   const [label, setLabel] = useState('')
   const { isLoggedIn, profile } = useContext(UserContext)
+  const { addressTo, regionTo, addressFreeTextTo, labelTo } = useSelector(
+    (state) => state.requestDelivery
+  )
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -106,6 +109,44 @@ export default function ToPlace() {
         })
     }
   }, [initiated])
+
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      if (mapRef.current) {
+        if (regionTo) {
+          setRegion({ ...regionTo })
+        }
+        if (addressTo) {
+          console.log('inside address from')
+          searchRef?.current.setAddressText(addressTo)
+          setFormattedAddress(addressTo)
+        }
+        if (addressFreeTextTo) {
+          setAddressFreeText(addressFreeTextTo)
+        }
+        if (labelTo) {
+          setLabel(labelTo)
+        }
+      }
+    }, 1000)
+    return () => clearTimeout(timeout)
+  }, [regionTo, addressTo])
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => {
+  //       return (
+  //         <TouchableOpacity
+  //           onPress={handleNavigation}
+  //           style={{ marginRight: 20 }}
+  //         >
+  //           <TextDefault bolder style={{ fontSize: 18 }}>
+  //             {t('next')}
+  //           </TextDefault>
+  //         </TouchableOpacity>
+  //       )
+  //     }
+  //   })
+  // }, [])
 
   const updateRegion = (newRegion) => {
     const isSameRegion =
@@ -141,7 +182,8 @@ export default function ToPlace() {
       setAddressTo({
         addressTo: formattedAddress,
         regionTo: region,
-        addressFreeTextTo: addressFreeText
+        addressFreeTextTo: addressFreeText,
+        labelTo: label
       })
     )
     if (saveAddress) {
@@ -155,6 +197,7 @@ export default function ToPlace() {
       }
       mutateSaveAddress({ variables: { addressInput } })
     }
+    console.log('triggered the handle navigation')
     navigation.navigate('RequestDelivery')
   }
 
@@ -234,8 +277,9 @@ export default function ToPlace() {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 100}
     >
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps='handled'>
         <MapView
           ref={mapRef}
           style={styles.map}
@@ -303,15 +347,29 @@ export default function ToPlace() {
         </View>
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
-            <TextDefault
-              bolder
+            <View
               style={{
-                ...styles.title,
-                textAlign: isArabic ? 'right' : 'left'
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                gap: 10,
+                marginBottom: 16
               }}
             >
-              {t('ToPlace')}
-            </TextDefault>
+              <TextDefault
+                bolder
+                style={{
+                  ...styles.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('ToPlace')}
+              </TextDefault>
+              <TouchableOpacity
+                onPress={() => searchRef?.current.setAddressText('')}
+              >
+                <Feather name='trash-2' size={18} color='red' />
+              </TouchableOpacity>
+            </View>
             <GooglePlacesAutocomplete
               ref={searchRef}
               placeholder={t('search')}
@@ -330,7 +388,7 @@ export default function ToPlace() {
                 region: 'EG'
               }}
               styles={{
-                container: { flex: 0 },
+                container: { flex: 0, zIndex: 9999 },
                 textInput: { height: 44, fontSize: 16 }
               }}
             />
@@ -347,7 +405,8 @@ export default function ToPlace() {
               <TextDefault
                 style={{
                   ...styles.title,
-                  textAlign: isArabic ? 'right' : 'left'
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginBottom: 16
                 }}
               >
                 {t('address_label')}
@@ -366,7 +425,8 @@ export default function ToPlace() {
               <TextDefault
                 style={{
                   ...styles.title,
-                  textAlign: isArabic ? 'right' : 'left'
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginBottom: 16
                 }}
               >
                 {t('helpful_information')}
@@ -385,7 +445,7 @@ export default function ToPlace() {
             </View>
           </View>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => searchRef?.current.setAddressText('')}
           style={{
             backgroundColor: '#000',
@@ -398,7 +458,7 @@ export default function ToPlace() {
           <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
             {t('clear_search')}
           </TextDefault>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Button title={t('next_rest_information')} onPress={handleNavigation} />
       </ScrollView>
       <MainModalize
@@ -441,8 +501,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#000',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16
+    fontWeight: 'bold'
   },
   currentLocationWrapper: {
     flexDirection: 'column',

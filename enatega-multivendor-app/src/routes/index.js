@@ -83,7 +83,7 @@ function Drawer() {
     <SideDrawer.Navigator
       screenOptions={{
         drawerStyle: {
-          width: '80%'
+          width: '75%'
         }
       }}
       drawerContent={(props) => <SideBar {...props} />}

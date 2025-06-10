@@ -29,7 +29,7 @@ function DrawerProfile(props) {
           <View style={{ flex: 1 }}>
             <TextDefault textColor={colors.dark} bolder H3>
               {profile?.name ? profile?.name : 'Guest'}
-             </TextDefault>
+            </TextDefault>
             <TextDefault textColor={colors.dark}>
               {profile?.email ? profile?.email : null}
             </TextDefault>

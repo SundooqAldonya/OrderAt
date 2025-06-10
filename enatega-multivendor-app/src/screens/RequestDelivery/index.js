@@ -338,7 +338,9 @@ const RequestDelivery = () => {
             <TextDefault
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
-              {addressInfo.addressFrom}
+              {addressInfo.labelFrom
+                ? addressInfo.labelFrom
+                : addressInfo.addressFrom}
             </TextDefault>
             <View
               style={{
@@ -373,8 +375,12 @@ const RequestDelivery = () => {
             <View style={styles.editContainer}>
               <Feather name='edit' size={24} color='black' />
             </View>
-            <TextDefault style={{ color: '#000' }}>
-              {addressInfo.addressTo}
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {addressInfo.labelTo
+                ? addressInfo.labelTo
+                : addressInfo.addressTo}
             </TextDefault>
             <View
               style={{
@@ -742,7 +748,7 @@ const styles = StyleSheet.create({
   editContainer: {
     position: 'absolute',
     top: 5,
-    right: 5
+    left: 10
   },
   modalContainer: {
     display: 'flex',

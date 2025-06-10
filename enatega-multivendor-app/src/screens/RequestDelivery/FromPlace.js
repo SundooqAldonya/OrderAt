@@ -39,6 +39,7 @@ import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon.js'
 import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
+import Feather from '@expo/vector-icons/Feather'
 
 const mapHeight = 250
 
@@ -50,6 +51,8 @@ export default function FromPlace() {
   const { location } = useContext(LocationContext)
   const { i18n, t } = useTranslation()
   const dispatch = useDispatch()
+  const { addressFrom, regionFrom, addressFreeTextFrom, labelFrom } =
+    useSelector((state) => state.requestDelivery)
   const searchRef = useRef()
   const mapRef = useRef()
   const modalRef = useRef(null)
@@ -81,9 +84,6 @@ export default function FromPlace() {
   const [initiated, setInitiated] = useState(false)
   const [saveAddress, setSaveAddress] = useState(false)
   const [label, setLabel] = useState('')
-  const { addressFrom, regionFrom } = useSelector(
-    (state) => state.requestDelivery
-  )
 
   const [mutateSaveAddress] = useMutation(CREATE_ADDRESS, {
     onCompleted: (data) => {
@@ -111,9 +111,49 @@ export default function FromPlace() {
     }
   }, [initiated])
 
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      if (mapRef.current) {
+        if (regionFrom) {
+          setRegion({ ...regionFrom })
+        }
+        if (addressFrom) {
+          console.log('inside address from')
+          searchRef?.current.setAddressText(addressFrom)
+          setFormattedAddress(addressFrom)
+        }
+        if (addressFreeTextFrom) {
+          setAddressFreeText(addressFreeTextFrom)
+        }
+        if (labelFrom) {
+          setLabel(labelFrom)
+        }
+      }
+    }, 1000)
+    return () => clearTimeout(timeout)
+  }, [regionFrom, addressFrom])
+
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => {
+  //       return (
+  //         <TouchableOpacity
+  //           onPress={handleNavigation}
+  //           style={{ marginRight: 20 }}
+  //         >
+  //           <TextDefault bolder style={{ fontSize: 18 }}>
+  //             {t('next')}
+  //           </TextDefault>
+  //         </TouchableOpacity>
+  //       )
+  //     }
+  //   })
+  // }, [])
+
   console.log({ initiated })
 
-  console.log({ addressFrom, regionFrom })
+  console.log({ addressFrom })
+  console.log({ regionFrom })
 
   const updateRegion = (newRegion) => {
     const isSameRegion =
@@ -149,7 +189,8 @@ export default function FromPlace() {
       setAddressFrom({
         addressFrom: formattedAddress,
         regionFrom: region,
-        addressFreeTextFrom: addressFreeText
+        addressFreeTextFrom: addressFreeText,
+        labelFrom: label
       })
     )
     if (saveAddress) {
@@ -163,6 +204,7 @@ export default function FromPlace() {
       }
       mutateSaveAddress({ variables: { addressInput } })
     }
+    console.log('triggered the handle navigation')
     navigation.navigate('ToPlace')
   }
 
@@ -242,16 +284,19 @@ export default function FromPlace() {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 100}
     >
-      <ScrollView style={styles.container}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          region={region}
-          onRegionChangeComplete={handleRegionChangeComplete}
-        />
-        <View style={styles.markerFixed}>
-          <Ionicons name='location-sharp' size={40} color='#d00' />
+      <ScrollView style={styles.container} keyboardShouldPersistTaps='handled'>
+        <View style={{ position: 'relative' }}>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            region={region}
+            onRegionChangeComplete={handleRegionChangeComplete}
+          />
+          <View style={styles.markerFixed}>
+            <Ionicons name='location-sharp' size={40} color='#d00' />
+          </View>
         </View>
         <View style={styles.topWrapper}>
           <TouchableOpacity
@@ -311,15 +356,29 @@ export default function FromPlace() {
         </View>
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
-            <TextDefault
-              bolder
+            <View
               style={{
-                ...styles.title,
-                textAlign: isArabic ? 'right' : 'left'
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                gap: 10,
+                marginBottom: 16
               }}
             >
-              {t('search_place')}
-            </TextDefault>
+              <TextDefault
+                bolder
+                style={{
+                  ...styles.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('search_place')}
+              </TextDefault>
+              <TouchableOpacity
+                onPress={() => searchRef?.current.setAddressText('')}
+              >
+                <Feather name='trash-2' size={18} color='red' />
+              </TouchableOpacity>
+            </View>
             <GooglePlacesAutocomplete
               ref={searchRef}
               placeholder={t('search')}
@@ -338,7 +397,7 @@ export default function FromPlace() {
                 region: 'EG'
               }}
               styles={{
-                container: { flex: 0 },
+                container: { flex: 0, zIndex: 9999 },
                 textInput: { height: 44, fontSize: 16 }
               }}
             />
@@ -355,7 +414,8 @@ export default function FromPlace() {
               <TextDefault
                 style={{
                   ...styles.title,
-                  textAlign: isArabic ? 'right' : 'left'
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginBottom: 16
                 }}
               >
                 {t('address_label')}
@@ -374,7 +434,8 @@ export default function FromPlace() {
               <TextDefault
                 style={{
                   ...styles.title,
-                  textAlign: isArabic ? 'right' : 'left'
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginBottom: 16
                 }}
               >
                 {t('helpful_information')}
@@ -393,7 +454,7 @@ export default function FromPlace() {
             </View>
           </View>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => searchRef?.current.setAddressText('')}
           style={{
             backgroundColor: '#000',
@@ -406,7 +467,7 @@ export default function FromPlace() {
           <TextDefault style={{ color: '#fff', textAlign: 'center' }}>
             {t('clear_search')}
           </TextDefault>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Button title={t('next_drop_off')} onPress={handleNavigation} />
       </ScrollView>
       <MainModalize
@@ -443,15 +504,14 @@ const styles = StyleSheet.create({
   },
   markerFixed: {
     position: 'absolute',
-    top: mapHeight / 2 - 40, // adjust based on marker size
-    left: Dimensions.get('window').width / 2 - 20,
-    zIndex: 10
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -20 }, { translateY: -40 }]
   },
   title: {
     color: '#000',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16
+    fontWeight: 'bold'
   },
   currentLocationWrapper: {
     flexDirection: 'column',

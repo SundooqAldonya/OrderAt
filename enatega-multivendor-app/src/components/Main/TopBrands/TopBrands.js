@@ -13,7 +13,7 @@ import { useQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import TopBrandsLoadingUI from '../LoadingUI/TopBrandsLoadingUI'
 import truncate from '../../../utils/helperFun'
-import { Ionicons } from '@expo/vector-icons'
+import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -104,13 +104,18 @@ function TopBrands(props) {
         >
           {t('topBrands')}
         </TextDefault>
-        <View style={styles().image}>
-          <Ionicons
+        <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+          <AntDesign
+            name={isArabic ? 'arrowleft' : 'arrowright'}
+            size={20}
+            color='black'
+          />
+          {/* <Ionicons
             name={isArabic ? 'arrow-back' : 'arrow-forward'}
             size={scale(24)}
             style={styles().image1}
             color={colors.dark}
-          />
+          /> */}
         </View>
       </TouchableOpacity>
       <View style={{ ...alignment.PRsmall }}>

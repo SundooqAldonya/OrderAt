@@ -22,24 +22,24 @@ const styles = (props = null) =>
     loggedInContainer: {
       flex: 1,
       justifyContent: 'space-around',
-      alignItems: 'center',
-      },
+      alignItems: 'center'
+    },
     subContainer: {
       width: '90%',
       height: '50%',
       flexDirection: 'row',
       alignItems: 'center',
       gap: 20,
-      ...alignment.MBlarge,
-     },
+      ...alignment.MBlarge
+    },
     imgContainer: {
       width: scale(50),
       height: scale(50),
       borderRadius: scale(35),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: theme.Pink.gray100,
-      ...alignment.MTlarge
+      backgroundColor: theme.Pink.gray100
+      // ...alignment.MTlarge
     }
   })
 

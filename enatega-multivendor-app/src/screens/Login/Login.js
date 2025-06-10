@@ -134,15 +134,16 @@ function Login(props) {
       edges={['bottom', 'left', 'right']}
       style={styles(currentTheme).safeAreaViewStyles}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <ScrollView
         style={styles().flex}
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+        alwaysBounceVertical={false}
       >
-        <ScrollView
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles().flex}
-          contentContainerStyle={{ flexGrow: 1 }}
-          showsVerticalScrollIndicator={false}
-          alwaysBounceVertical={false}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 100}
         >
           <View style={styles(currentTheme).mainContainer}>
             <View style={styles().subContainer}>
@@ -224,6 +225,7 @@ function Login(props) {
                       <View style={styles().passwordField}>
                         <TextInput
                           secureTextEntry={showPassword}
+                          autoCapitalize='none'
                           placeholder={t('password')}
                           style={[
                             styles(currentTheme).textField,
@@ -313,8 +315,8 @@ function Login(props) {
               </View>
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   )
 }

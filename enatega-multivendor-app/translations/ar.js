@@ -658,5 +658,6 @@ export const ar = {
   delivery: 'سعر التوصيل',
   items: 'المنتج',
   coupon: 'الكوبون',
-  max: 'الحد الأقصى'
+  max: 'الحد الأقصى',
+  next: 'التالي'
 }

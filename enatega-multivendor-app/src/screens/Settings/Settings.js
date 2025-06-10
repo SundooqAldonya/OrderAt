@@ -83,7 +83,7 @@ function Settings(props) {
   const [activeRadio, activeRadioSetter] = useState(languageTypes[0].index)
   const [darkTheme, setDarkTheme] = useState(themeContext.ThemeValue === 'Dark')
   const [btnText, setBtnText] = useState(null)
-  const [appState, setAppState] = useState(AppState.currentState)
+  // const [appState, setAppState] = useState(AppState.currentState)
   const [uploadToken] = useMutation(PUSH_TOKEN)
   const [mutateDisableToken] = useMutation(disableUserNotifications)
   const [mutate, { loading }] = useMutation(UPDATE_NOTIFICATION_TOKEN, {
@@ -158,30 +158,30 @@ function Settings(props) {
     checkPermission()
   }, [props.navigation, languageName, themeContext.ThemeValue])
 
-  const _handleAppStateChange = async (nextAppState) => {
-    if (nextAppState === 'active') {
-      let token = null
-      const permission = await getPermission()
-      if (permission === 'granted') {
-        if (profile.notificationToken) {
-          console.log('Disabling notification token')
-          mutateDisableToken({ variables: { id: profile?._id } })
-        } else {
-          console.log('Generating new push notification token')
-          token = await Notifications.getDevicePushTokenAsync({
-            projectId: Constants.expoConfig.extra.eas.projectId
-          })
-          uploadToken({ variables: { token: token.data } })
-        }
-        offerNotificationSetter(profile.isOfferNotification)
-        setOrderNotification(profile.isOrderNotification)
-      } else {
-        offerNotificationSetter(false)
-        setOrderNotification(false)
-      }
-    }
-    setAppState(nextAppState)
-  }
+  // const _handleAppStateChange = async (nextAppState) => {
+  //   if (nextAppState === 'active') {
+  //     let token = null
+  //     const permission = await getPermission()
+  //     if (permission === 'granted') {
+  //       if (profile.notificationToken) {
+  //         console.log('Disabling notification token')
+  //         mutateDisableToken({ variables: { id: profile?._id } })
+  //       } else {
+  //         console.log('Generating new push notification token')
+  //         token = await Notifications.getDevicePushTokenAsync({
+  //           projectId: Constants.expoConfig.extra.eas.projectId
+  //         })
+  //         uploadToken({ variables: { token: token.data } })
+  //       }
+  //       offerNotificationSetter(profile.isOfferNotification)
+  //       setOrderNotification(profile.isOrderNotification)
+  //     } else {
+  //       offerNotificationSetter(false)
+  //       setOrderNotification(false)
+  //     }
+  //   }
+  //   setAppState(nextAppState)
+  // }
 
   // useEffect(() => {
   //   AppState.addEventListener('change', _handleAppStateChange)
