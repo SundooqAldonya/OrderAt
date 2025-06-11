@@ -16,11 +16,11 @@ const ErrorView = () => {
 
   return (
     <View style={styles(currentTheme).errorViewContainer}>
-      <ErrorSvg  fill={currentTheme.newIconColor}/>
-      <TextDefault center H3 bolder textColor={currentTheme.newFontcolor}>
+      <ErrorSvg fill={'#000'} />
+      <TextDefault center H3 bolder textColor={'#000'}>
         {t('somethingWentWrong')}
       </TextDefault>
-      <TextDefault center H4 textColor={currentTheme.newFontcolor}>
+      <TextDefault center H4 textColor={'#000'}>
         {t('checkInternet')}
       </TextDefault>
     </View>

@@ -142,22 +142,20 @@ export default function FromPlace() {
     return () => clearTimeout(timeout)
   }, [regionFrom, addressFrom])
 
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => {
-  //       return (
-  //         <TouchableOpacity
-  //           onPress={handleNavigation}
-  //           style={{ marginRight: 20 }}
-  //         >
-  //           <TextDefault bolder style={{ fontSize: 18 }}>
-  //             {t('next')}
-  //           </TextDefault>
-  //         </TouchableOpacity>
-  //       )
-  //     }
-  //   })
-  // }, [])
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ paddingVertical: 5, paddingHorizontal: 16, marginLeft: 8 }}
+          >
+            <AntDesign name='arrowleft' size={24} color='#fff' />
+          </TouchableOpacity>
+        )
+      }
+    })
+  }, [])
 
   console.log({ initiated })
 
@@ -387,70 +385,15 @@ export default function FromPlace() {
             <Ionicons name='location-sharp' size={40} color='#d00' />
           </View>
         </View>
-        <View style={styles.topWrapper}>
-          <TouchableOpacity
-            style={styles.currentLocationWrapper}
-            onPress={getCurrentPositionNav}
-          >
-            <View
-              style={{
-                alignSelf: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 10
-              }}
-            >
-              <TextDefault bolder Left style={{ color: '#000' }}>
-                {t('useCurrentLocation')}
-              </TextDefault>
-              <Entypo name='location' size={15} color={'green'} />
-            </View>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: 'green',
-                width: 150,
-                marginTop: 10
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.currentLocationWrapper}
-            onPress={onOpen}
-          >
-            <View
-              style={{
-                alignSelf: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 10
-              }}
-            >
-              <TextDefault bolder Left style={{ color: '#000' }}>
-                {t('choose_address')}
-              </TextDefault>
-              <Entypo name='location' size={15} color={'green'} />
-            </View>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: 'green',
-                width: 150,
-                marginTop: 10
-              }}
-            />
-          </TouchableOpacity>
-        </View>
+
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
             <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
                 alignItems: 'center',
-                gap: 10,
-                marginBottom: 16
+                gap: 10
+                // marginBottom: 16
               }}
             >
               <TextDefault
@@ -462,62 +405,134 @@ export default function FromPlace() {
               >
                 {t('search_place')}
               </TextDefault>
+            </View>
+            <View style={styles.topWrapper}>
+              <TouchableOpacity
+                style={styles.currentLocationWrapper}
+                onPress={getCurrentPositionNav}
+              >
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 10
+                  }}
+                >
+                  <TextDefault bolder Left style={{ color: '#000' }}>
+                    {t('useCurrentLocation')}
+                  </TextDefault>
+                  <Entypo name='location' size={15} color={'#000'} />
+                </View>
+                {/* <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'green',
+                    width: 150,
+                    marginTop: 10
+                  }}
+                /> */}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.currentLocationWrapper}
+                onPress={onOpen}
+              >
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 10
+                  }}
+                >
+                  <TextDefault bolder Left style={{ color: '#000' }}>
+                    {t('choose_address')}
+                  </TextDefault>
+                  <Entypo name='location' size={15} color={'#000'} />
+                </View>
+                {/* <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'green',
+                    width: 150,
+                    marginTop: 10
+                  }}
+                /> */}
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              <GooglePlacesAutocomplete
+                ref={searchRef}
+                placeholder={t('search')}
+                fetchDetails
+                onPress={(data, details = null) => {
+                  const lat = details?.geometry?.location.lat || 0
+                  const lng = details?.geometry?.location.lng || 0
+                  setPlace({ lat, lng })
+                  setRegion({ ...region, latitude: lat, longitude: lng })
+                  setFormattedAddress(data.description)
+                }}
+                query={{
+                  key: GOOGLE_MAPS_KEY,
+                  language: 'ar',
+                  sessiontoken: sessionToken,
+                  region: 'EG'
+                }}
+                styles={{
+                  container: { flex: 0, zIndex: 9999, width: '90%' },
+                  textInput: { height: 44, fontSize: 16 }
+                }}
+              />
               <TouchableOpacity
                 onPress={() => searchRef?.current.setAddressText('')}
               >
                 <Feather name='trash-2' size={18} color='red' />
               </TouchableOpacity>
             </View>
-            <GooglePlacesAutocomplete
-              ref={searchRef}
-              placeholder={t('search')}
-              fetchDetails
-              onPress={(data, details = null) => {
-                const lat = details?.geometry?.location.lat || 0
-                const lng = details?.geometry?.location.lng || 0
-                setPlace({ lat, lng })
-                setRegion({ ...region, latitude: lat, longitude: lng })
-                setFormattedAddress(data.description)
+            <TouchableOpacity
+              onPress={() => setSaveAddress(!saveAddress)}
+              style={{
+                ...styles.checkboxContainer,
+                flexDirection: isArabic ? 'row' : 'row-reverse'
               }}
-              query={{
-                key: GOOGLE_MAPS_KEY,
-                language: 'ar',
-                sessiontoken: sessionToken,
-                region: 'EG'
-              }}
-              styles={{
-                container: { flex: 0, zIndex: 9999 },
-                textInput: { height: 44, fontSize: 16 }
-              }}
-            />
-            <View style={styles.checkboxContainer}>
+            >
               <Text style={styles.label}>{t('save_address')}</Text>
               <Checkbox
                 status={saveAddress ? 'checked' : 'unchecked'}
-                onPress={() => setSaveAddress(!saveAddress)}
+                // onPress={() => setSaveAddress(!saveAddress)}
                 style={styles.checkbox}
               />
-            </View>
+            </TouchableOpacity>
             {/* {saveAddress ? ( */}
-            <View style={styles.inputContainer}>
-              <TextDefault
-                style={{
-                  ...styles.title,
-                  textAlign: isArabic ? 'right' : 'left',
-                  marginBottom: 16
-                }}
-              >
-                {t('address_label')}
-              </TextDefault>
-              <TextInput
-                placeholder={t('address_label_placeholder')}
-                value={label}
-                onChangeText={(text) => {
-                  setLabel(text)
-                }}
-                style={styles.inputLabel}
-              />
-            </View>
+            {saveAddress ? (
+              <View style={styles.inputContainer}>
+                <TextDefault
+                  style={{
+                    ...styles.title,
+                    textAlign: isArabic ? 'right' : 'left',
+                    marginBottom: 16
+                  }}
+                >
+                  {t('address_label')}
+                </TextDefault>
+                <TextInput
+                  placeholder={t('address_label_placeholder')}
+                  value={label}
+                  onChangeText={(text) => {
+                    setLabel(text)
+                  }}
+                  style={styles.inputLabel}
+                />
+              </View>
+            ) : null}
             {/* ) : null} */}
             <View style={styles.inputContainer}>
               <TextDefault
@@ -527,7 +542,7 @@ export default function FromPlace() {
                   marginBottom: 16
                 }}
               >
-                {t('helpful_information')}
+                {t('address_details')} {`(${t('optional')})`}
               </TextDefault>
               <TextInput
                 placeholder={t('better_place_description')}
@@ -535,7 +550,7 @@ export default function FromPlace() {
                 onChangeText={(text) => {
                   setAddressFreeText(text)
                 }}
-                style={styles.input}
+                style={{ ...styles.input, marginBottom: 16 }}
                 multiline
                 numberOfLines={4}
                 textAlignVertical='top'
@@ -557,7 +572,22 @@ export default function FromPlace() {
             {t('clear_search')}
           </TextDefault>
         </TouchableOpacity> */}
-        <Button title={t('next_drop_off')} onPress={handleNavigation} />
+        {/* <Button title={t('next_drop_off')} onPress={handleNavigation} /> */}
+        <TouchableOpacity
+          onPress={handleNavigation}
+          style={{
+            backgroundColor: colors.primary,
+            height: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginHorizontal: 16,
+            marginTop: 16
+          }}
+        >
+          <TextDefault style={{ color: '#000' }}>
+            {t('next_drop_off')}
+          </TextDefault>
+        </TouchableOpacity>
       </ScrollView>
       <MainModalize
         modalRef={modalRef}
@@ -592,7 +622,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   wrapper: {
-    padding: 16
+    paddingHorizontal: 16
   },
   inputContainer: {
     marginTop: 20
@@ -615,7 +645,12 @@ const styles = StyleSheet.create({
   currentLocationWrapper: {
     flexDirection: 'column',
     marginTop: 20,
-    alignItems: 'center'
+    marginBottom: 10,
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 50
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -634,6 +669,7 @@ const styles = StyleSheet.create({
   topWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 16
   }
 })

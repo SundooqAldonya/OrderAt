@@ -67,6 +67,8 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import SelectLanguageScreen from './src/screens/ChooseLanguageLanding'
 import i18next from 'i18next'
+import ErrorView from './src/components/ErrorView/ErrorView'
+import NetInfo from '@react-native-community/netinfo'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -89,6 +91,8 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const reviewModalRef = useRef()
+  const [isConnected, setIsConnected] = useState(true)
+
   const [appIsReady, setAppIsReady] = useState(false)
   const [location, setLocation] = useState(null)
   const notificationListener = useRef()
@@ -112,6 +116,19 @@ export default function App() {
 
   useEffect(() => {
     checkLang()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected)
+      if (state.isConnected) {
+        console.log('🟢 Reconnected to the internet')
+
+        client.reFetchObservableQueries()
+      }
+    })
+
+    return () => unsubscribe()
   }, [])
 
   let [fontsLoaded] = useFonts({
@@ -330,6 +347,8 @@ export default function App() {
     setLanguage(lang)
     i18next.changeLanguage(lang)
   }
+
+  if (!isConnected) return <ErrorView />
 
   if (!language) {
     return <SelectLanguageScreen onSelectLanguage={handleLanguageSelect} />

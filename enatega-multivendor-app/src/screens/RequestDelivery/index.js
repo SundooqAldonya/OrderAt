@@ -319,7 +319,7 @@ const RequestDelivery = () => {
       </View>
       <View style={styles.wrapper}>
         <View style={styles.inputContainer}>
-          <TextDefault
+          {/* <TextDefault
             bolder
             style={{
               ...styles.title,
@@ -327,22 +327,58 @@ const RequestDelivery = () => {
             }}
           >
             {t('pick_up_location')}
-          </TextDefault>
+          </TextDefault> */}
           <TouchableOpacity
             onPress={() => navigation.navigate('FromPlace')}
-            style={styles.address}
+            style={{
+              ...styles.address,
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
           >
-            <View style={styles.editContainer}>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row' : 'row-reverse',
+                alignItems: 'center'
+              }}
+            >
+              <TextDefault
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left',
+                  fontSize: 18
+                }}
+              >
+                {/* {addressInfo.labelFrom
+                ? addressInfo.labelFrom
+                : addressInfo.addressFrom} */}
+                {/* {t('FromPlace')} */}
+                {t('pick_up_location')}
+              </TextDefault>
+              <Image
+                source={FromIcon}
+                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 5
+              }}
+            >
+              <TextDefault
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left',
+                  fontSize: 18
+                }}
+              >
+                {t('edit')}
+              </TextDefault>
               <Feather name='edit' size={24} color='black' />
             </View>
-            <TextDefault
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {addressInfo.labelFrom
-                ? addressInfo.labelFrom
-                : addressInfo.addressFrom}
-            </TextDefault>
-            <View
+            {/* <View
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: '#000',
@@ -355,11 +391,11 @@ const RequestDelivery = () => {
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
               {addressInfo.addressFreeTextFrom}
-            </TextDefault>
+            </TextDefault> */}
           </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
-          <TextDefault
+          {/* <TextDefault
             bolder
             style={{
               ...styles.title,
@@ -367,22 +403,58 @@ const RequestDelivery = () => {
             }}
           >
             {t('drop_off_location')}
-          </TextDefault>
+          </TextDefault> */}
           <TouchableOpacity
             onPress={() => navigation.navigate('ToPlace')}
-            style={styles.address}
+            style={{
+              ...styles.address,
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
           >
-            <View style={styles.editContainer}>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row' : 'row-reverse',
+                alignItems: 'center'
+              }}
+            >
+              <TextDefault
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left',
+                  fontSize: 18
+                }}
+              >
+                {/* {addressInfo.labelTo
+                ? addressInfo.labelTo
+                : addressInfo.addressTo} */}
+                {/* {t('ToPlace')} */}
+                {t('drop_off_location')}
+              </TextDefault>
+              <Image
+                source={ToIcon}
+                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 5
+              }}
+            >
+              <TextDefault
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left',
+                  fontSize: 18
+                }}
+              >
+                {t('edit')}
+              </TextDefault>
               <Feather name='edit' size={24} color='black' />
             </View>
-            <TextDefault
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {addressInfo.labelTo
-                ? addressInfo.labelTo
-                : addressInfo.addressTo}
-            </TextDefault>
-            <View
+            {/* <View
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: '#000',
@@ -395,7 +467,7 @@ const RequestDelivery = () => {
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
               {addressInfo.addressFreeTextTo}
-            </TextDefault>
+            </TextDefault> */}
           </TouchableOpacity>
         </View>
 
@@ -553,14 +625,17 @@ const RequestDelivery = () => {
                 gap: 10
               }}
             >
-              <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
+              <Text
+                style={{ textAlign: isArabic ? 'right' : 'left', fontSize: 20 }}
+              >
                 {t('deliveryFee')}: {deliveryFee} {configuration.currencySymbol}
               </Text>
               {coupon && (
                 <Text
                   style={{
                     textAlign: isArabic ? 'right' : 'left',
-                    textDecorationLine: 'line-through'
+                    textDecorationLine: 'line-through',
+                    fontSize: 20
                   }}
                 >
                   {originalDiscount} {configuration.currencySymbol}
@@ -736,8 +811,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    paddingTop: 40
+    shadowOffset: { width: 0, height: 2 }
+    // paddingTop: 40
   },
   submitButton: {
     justifyContent: 'center',
