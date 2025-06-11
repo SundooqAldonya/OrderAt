@@ -19,7 +19,12 @@ import useEnvVars from '../../../environment'
 import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { Entypo, Ionicons } from '@expo/vector-icons'
+import {
+  AntDesign,
+  Entypo,
+  Ionicons,
+  SimpleLineIcons
+} from '@expo/vector-icons'
 import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
@@ -40,6 +45,9 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
 import Feather from '@expo/vector-icons/Feather'
+import { scale } from '../../utils/scaling.js'
+import { colors } from '../../utils/colors.js'
+import ModalDropdown from '../../components/Picker/ModalDropdown.js'
 
 const mapHeight = 250
 
@@ -67,6 +75,7 @@ export default function FromPlace() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   })
+  const [modalVisible, setModalVisible] = useState(false)
   const { isLoggedIn, profile } = useContext(UserContext)
 
   const addressIcons = {
@@ -280,6 +289,86 @@ export default function FromPlace() {
     }
   }
 
+  const onItemPress = (city) => {
+    console.log({ city })
+    setModalVisible(false)
+    searchRef.current?.setAddressText(city.title)
+  }
+
+  // const modalHeader = () => (
+  //   <View>
+  //     <View>
+  //       <TouchableOpacity
+  //         style={{ paddingVertical: 15 }}
+  //         onPress={getCurrentPositionNav}
+  //       >
+  //         <View
+  //           style={{
+  //             flexDirection: isArabic ? 'row-reverse' : 'row',
+  //             alignItems: 'center',
+  //             justifyContent: 'center',
+  //             gap: 5
+  //           }}
+  //         >
+  //           <SimpleLineIcons
+  //             name='target'
+  //             size={scale(18)}
+  //             color={colors.primary}
+  //           />
+  //           <View />
+  //           <TextDefault bold H4 style={{ color: colors.primary }}>
+  //             {t('useCurrentLocation')}
+  //           </TextDefault>
+  //         </View>
+  //       </TouchableOpacity>
+  //     </View>
+  //   </View>
+  // )
+
+  const modalHeader = () => (
+    <View>
+      <View style={{ justifyContent: 'center' }}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={{
+            paddingVertical: 8,
+            backgroundColor: colors.primary,
+            marginHorizontal: 26,
+            borderRadius: 50,
+            marginBottom: 16
+          }}
+          onPress={() => {
+            if (isLoggedIn) {
+              navigation.navigate('AddNewAddressUser')
+            } else {
+              navigation.navigate('SelectLocation', {
+                ...location
+              })
+              const modal = modalRef.current
+              modal?.close()
+            }
+          }}
+        >
+          <View
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 5
+            }}
+          >
+            <AntDesign name='pluscircleo' size={scale(20)} color={'#000'} />
+            <View />
+            <TextDefault bold H4 style={{ color: '#000' }}>
+              {t('addAddress')}
+            </TextDefault>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View></View>
+    </View>
+  )
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -478,6 +567,16 @@ export default function FromPlace() {
         setAddressLocation={setAddressLocation}
         profile={profile}
         location={location}
+        modalHeader={modalHeader}
+        // modalFooter={modalFooter}
+      />
+      {/* /List of cities */}
+      <ModalDropdown
+        theme={currentTheme}
+        visible={modalVisible}
+        onItemPress={onItemPress}
+        onClose={() => setModalVisible(false)}
+        isLoggedIn={isLoggedIn}
       />
     </KeyboardAvoidingView>
   )

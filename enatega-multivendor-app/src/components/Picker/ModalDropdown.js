@@ -61,7 +61,7 @@ const ModalDropdown = ({
       backdropOpacity={1}
       transparent={true}
       style={{
-        height:'100px'
+        height: '100px'
       }}
     >
       <TouchableWithoutFeedback onPress={onClose}>

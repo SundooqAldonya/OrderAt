@@ -19,7 +19,7 @@ import useEnvVars from '../../../environment'
 import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { Entypo, Feather, Ionicons } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather, Ionicons } from '@expo/vector-icons'
 import { v4 as uuidv4 } from 'uuid'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { debounce } from 'lodash'
@@ -38,6 +38,8 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon.js'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon.js'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon.js'
 import UserContext from '../../context/User.js'
+import { colors } from '../../utils/colors.js'
+import { scale } from '../../utils/scaling.js'
 
 const mapHeight = 250
 
@@ -273,6 +275,50 @@ export default function ToPlace() {
     }
   }
 
+  const modalHeader = () => (
+    <View>
+      <View style={{ justifyContent: 'center' }}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={{
+            paddingVertical: 8,
+            backgroundColor: colors.primary,
+            marginHorizontal: 26,
+            borderRadius: 50,
+            marginBottom: 16
+          }}
+          onPress={() => {
+            if (isLoggedIn) {
+              navigation.navigate('AddNewAddressUser')
+            } else {
+              navigation.navigate('SelectLocation', {
+                ...location
+              })
+              const modal = modalRef.current
+              modal?.close()
+            }
+          }}
+        >
+          <View
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 5
+            }}
+          >
+            <AntDesign name='pluscircleo' size={scale(20)} color={'#000'} />
+            <View />
+            <TextDefault bold H4 style={{ color: '#000' }}>
+              {t('addAddress')}
+            </TextDefault>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View></View>
+    </View>
+  )
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -469,6 +515,7 @@ export default function ToPlace() {
         setAddressLocation={setAddressLocation}
         profile={profile}
         location={location}
+        modalHeader={modalHeader}
       />
     </KeyboardAvoidingView>
   )
