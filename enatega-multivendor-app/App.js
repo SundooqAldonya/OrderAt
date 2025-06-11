@@ -65,6 +65,8 @@ import { colors } from './src/utils/colors'
 import { persistor, store } from './src/store/presistor'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import SelectLanguageScreen from './src/screens/ChooseLanguageLanding'
+import i18next from 'i18next'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -100,6 +102,17 @@ export default function App() {
     systemTheme === 'Pink'
   )
   const [isUpdating, setIsUpdating] = useState(false)
+
+  const [language, setLanguage] = useState(null)
+
+  const checkLang = async () => {
+    const savedLang = await AsyncStorage.getItem('enatega-language')
+    if (savedLang) setLanguage(savedLang)
+  }
+
+  useEffect(() => {
+    checkLang()
+  }, [])
 
   let [fontsLoaded] = useFonts({
     Montserrat_100Thin,
@@ -310,6 +323,16 @@ export default function App() {
 
   const onOverlayPress = () => {
     reviewModalRef?.current?.close()
+  }
+
+  const handleLanguageSelect = async (lang) => {
+    await AsyncStorage.setItem('enatega-language', lang)
+    setLanguage(lang)
+    i18next.changeLanguage(lang)
+  }
+
+  if (!language) {
+    return <SelectLanguageScreen onSelectLanguage={handleLanguageSelect} />
   }
 
   if (appIsReady) {
