@@ -484,7 +484,8 @@ export default function FromPlace() {
                   key: GOOGLE_MAPS_KEY,
                   language: 'ar',
                   sessiontoken: sessionToken,
-                  region: 'EG'
+                  region: 'EG',
+                  components: 'country:eg'
                 }}
                 styles={{
                   container: { flex: 0, zIndex: 9999, width: '90%' },

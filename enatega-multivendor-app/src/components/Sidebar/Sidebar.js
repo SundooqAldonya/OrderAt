@@ -21,11 +21,13 @@ import { SimpleLineIcons } from '@expo/vector-icons'
 import { verticalScale } from '../../utils/scaling'
 import MandoobImg from '../../assets/delivery_dark.png'
 import { Image } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 function SidebBar(props) {
   const Analytics = analytics()
 
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
@@ -124,11 +126,16 @@ function SidebBar(props) {
   }
   const handleLogout = async () => {
     setModalVisible(false)
-    await Analytics.track(Analytics.events.USER_LOGGED_OUT)
-    await Analytics.identify(null, null)
     logout()
     props.navigation.closeDrawer()
-    FlashMessage({ message: t('logoutMessage') })
+    // FlashMessage({ message: t('logoutMessage') })
+    Toast.show({
+      type: 'success',
+      text1: t('success'),
+      text1Style: { textAlign: isArabic ? 'right' : 'left', fontSize: 16 },
+      text2: t('logoutMessage'),
+      text2Style: { textAlign: isArabic ? 'right' : 'left', fontSize: 16 }
+    })
   }
   const logoutClick = () => {
     setModalVisible(true)
