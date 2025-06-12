@@ -659,5 +659,6 @@ export const ar = {
   items: 'المنتج',
   coupon: 'الكوبون',
   max: 'الحد الأقصى',
-  next: 'التالي'
+  next: 'التالي',
+  cancel: 'إلغاء'
 }

@@ -13,7 +13,8 @@ import {
   StatusBar,
   Text,
   Modal,
-  Pressable
+  Pressable,
+  TextInput
 } from 'react-native'
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
@@ -67,6 +68,8 @@ function Profile(props) {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
 
   const { profile, logout } = useContext(UserContext)
+  const [name, setName] = useState(profile?.name ? profile.name : '')
+  const [email, setEmail] = useState(profile?.email ? profile.email : '')
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const backScreen = props.route.params ? props.route.params.backScreen : null
@@ -184,6 +187,8 @@ function Profile(props) {
       FlashMessage({
         message: t('userInfoUpdated')
       })
+      setToggleNameView(false)
+      setToggleEmailView(true)
       if (backScreen) {
         props.navigation.goBack()
       }
@@ -193,8 +198,6 @@ function Profile(props) {
   const validateName = async () => {
     setNameError('')
 
-    const name = refName.current.value()
-
     if (name !== profile?.name) {
       if (!name.trim()) {
         refName.current.focus()
@@ -202,27 +205,30 @@ function Profile(props) {
         return false
       }
 
-      try {
-        await mutate({
-          variables: {
-            name: name
-          }
-        })
-      } catch (error) {
-        return false
-      }
+      // try {
+      //   await mutate({
+      //     variables: {
+      //       name: name
+      //     }
+      //   })
+      // } catch (error) {
+      //   return false
+      // }
     }
 
     return true
   }
 
   const updateName = async () => {
+    console.log({ name })
     const isValid = await validateName()
     if (isValid) {
       await mutate({
         variables: {
-          name: refName.current.value(),
-          phone: profile?.phone
+          updateUserInput: {
+            name,
+            email
+          }
         }
       })
     }
@@ -233,7 +239,7 @@ function Profile(props) {
   }
   const handleNamePressUpdate = async () => {
     await updateName()
-    viewHideAndShowName()
+    // viewHideAndShowName()
   }
 
   function onError(error) {
@@ -264,10 +270,16 @@ function Profile(props) {
 
   function changeNameTab() {
     return (
-      <>
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          height: 40
+        }}
+      >
         <View
           style={{
-            ...styles(currentTheme).containerInfo
+            ...styles(currentTheme).containerInfo,
+            flex: 2
           }}
         >
           <TextDefault
@@ -281,7 +293,19 @@ function Profile(props) {
             {profile?.name ? profile?.name : 'N/A'}
           </TextDefault>
         </View>
-      </>
+        <View style={{ flex: 1, alignSelf: 'center' }}>
+          <TouchableOpacity
+            activeOpacity={0.3}
+            style={{
+              ...styles().headingButton,
+              alignSelf: isArabic ? 'flex-start' : 'flex-end'
+            }}
+            onPress={handleNamePress}
+          >
+            <TextDefault textColor={colors.blue}>{t('edit')}</TextDefault>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
@@ -380,6 +404,8 @@ function Profile(props) {
     setModalVisible(true)
   }
 
+  console.log({ toggleEmailView })
+
   return (
     <>
       <ChangePassword
@@ -438,93 +464,76 @@ function Profile(props) {
                     changeNameTab()
                   ) : (
                     <View>
-                      <View style={styles(currentTheme).containerHeading}>
-                        <View style={styles(currentTheme).headingTitle}>
+                      <View
+                        style={{
+                          ...styles(currentTheme).containerHeading,
+                          flexDirection: isArabic ? 'row-reverse' : 'row'
+                        }}
+                      >
+                        <View
+                          style={{
+                            ...styles(currentTheme).headingTitle
+                          }}
+                        >
                           <TextDefault
                             H5
                             B700
                             bolder
                             left
                             textColor={currentTheme.newFontcolor}
-                            style={styles(currentTheme).textAlignLeft}
+                            style={{ textAlign: isArabic ? 'right' : 'left' }}
                           >
                             {t('name')}
                           </TextDefault>
                         </View>
                       </View>
                       <View style={{ marginTop: 10 }}>
-                        {/* <OutlinedTextField
-                          ref={refName}
-                          defaultValue={profile?.name}
-                          autoFocus={true}
-                          maxLength={20}
-                          textColor={currentTheme.newFontcolor}
-                          baseColor={currentTheme.newFontcolor}
-                          errorColor={currentTheme.textErrorColor}
-                          tintColor={
-                            !nameError ? currentTheme.newFontcolor : 'red'
-                          }
-                          error={nameError}
-                        /> */}
+                        <TextInput
+                          name='name'
+                          value={name}
+                          onChangeText={(text) => setName(text)}
+                          style={{
+                            backgroundColor: colors.white,
+                            color: '#000',
+                            width: '100%',
+                            height: 40,
+                            paddingHorizontal: 5,
+                            borderRadius: 5
+                          }}
+                        />
                       </View>
-
-                      <TouchableOpacity
-                        disabled={loadingMutation}
-                        activeOpacity={0.7}
+                      <View
                         style={{
-                          ...styles(currentTheme).saveContainer
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          gap: 10,
+                          marginTop: 10
                         }}
-                        onPress={handleNamePressUpdate}
                       >
-                        <TextDefault bold>{t('update')}</TextDefault>
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          disabled={loadingMutation}
+                          style={{
+                            ...styles(currentTheme).saveContainer
+                          }}
+                          onPress={handleNamePressUpdate}
+                        >
+                          <TextDefault bold>{t('update')}</TextDefault>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          disabled={loadingMutation}
+                          style={{
+                            ...styles(currentTheme).saveContainer
+                          }}
+                          onPress={() => setToggleNameView(!toggleNameView)}
+                        >
+                          <TextDefault bold>{t('cancel')}</TextDefault>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   )}
-                </View>
-                <View style={styles().headingLink}>
-                  <TouchableOpacity
-                    activeOpacity={0.3}
-                    style={{
-                      ...styles().headingButton,
-                      alignSelf: isArabic ? 'flex-start' : 'flex-end'
-                    }}
-                    onPress={handleNamePress}
-                  >
-                    <TextDefault textColor={colors.blue}>
-                      {t('edit')}
-                    </TextDefault>
-                  </TouchableOpacity>
                 </View>
               </View>
 
               {/* email */}
-              {/* <View style={styles(currentTheme).formSubContainer}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <View style={styles().containerHeading}>
-                    <View
-                      style={{
-                        ...styles().headingTitle,
-                        width: '100%',
-                        backgroundColor: 'red'
-                      }}
-                    >
-                      <TextDefault
-                        H5
-                        B700
-                        bolder
-                        left
-                        textColor={currentTheme.darkBgFont}
-                        style={{ textAlign: 'right' }}
-                      >
-                        {t('email')}
-                      </TextDefault>
-                    </View>
-                  </View>
-                  {changeEmailTab()}
-                </View>
-                <View style={{ flex: 1 }} />
-              </View> */}
-
               <TextDefault
                 H5
                 B700
@@ -560,36 +569,100 @@ function Profile(props) {
                   alignItems: 'center'
                 }}
               >
-                <View>
-                  {/* <TextDefault
-                    style={{ textAlign: isArabic ? 'right' : 'left' }}
-                  >
-                    {t('email')}
-                  </TextDefault> */}
-                  <TextDefault
+                {toggleEmailView ? (
+                  <View
                     style={{
-                      color: colors.dark
+                      flexDirection: isArabic ? 'row-reverse' : 'row',
+                      justifyContent: 'space-between',
+                      width: '100%'
                     }}
                   >
-                    {profile?.email ? profile?.email : 'N/A'}
-                  </TextDefault>
-                </View>
-                {profile?.email !== '' && (
-                  <View
-                    style={[
-                      styles().verifiedButton,
-                      {
-                        backgroundColor: profile?.emailIsVerified
-                          ? colors.primary
-                          : colors.dark
-                      }
-                    ]}
-                  >
-                    <TextDefault textColor={currentTheme.color4} bold>
-                      {profile?.emailIsVerified
-                        ? t('verified')
-                        : t('unverified')}
+                    {/* <View > */}
+                    <TextDefault
+                      style={{
+                        color: colors.dark
+                      }}
+                    >
+                      {email ? `${email.substring(0, 18)}...` : 'N/A'}
                     </TextDefault>
+                    {profile?.email.length && toggleEmailView && (
+                      <View
+                        style={[
+                          styles().verifiedButton,
+                          {
+                            backgroundColor: profile?.emailIsVerified
+                              ? colors.primary
+                              : colors.dark
+                          }
+                        ]}
+                      >
+                        <TextDefault
+                          textColor={
+                            profile?.emailIsVerified ? colors.primary : '#fff'
+                          }
+                          bold
+                        >
+                          {profile?.emailIsVerified
+                            ? t('verified')
+                            : t('unverified')}
+                        </TextDefault>
+                      </View>
+                    )}
+                    {/* </View> */}
+                    <TouchableOpacity onPress={() => setToggleEmailView(false)}>
+                      <TextDefault style={{ color: colors.blue }}>
+                        {t('edit')}
+                      </TextDefault>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      width: '100%'
+                    }}
+                  >
+                    <View>
+                      <TextInput
+                        autoCapitalize='none'
+                        name='email'
+                        value={email}
+                        onChangeText={(text) => setEmail(text)}
+                        style={{
+                          backgroundColor: colors.white,
+                          color: '#000',
+                          width: '100%',
+                          height: 40,
+                          paddingHorizontal: 5,
+                          borderRadius: 5
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        gap: 10,
+                        marginTop: 10
+                      }}
+                    >
+                      <TouchableOpacity
+                        disabled={loadingMutation}
+                        style={{
+                          ...styles(currentTheme).saveContainer
+                        }}
+                        onPress={handleNamePressUpdate}
+                      >
+                        <TextDefault bold>{t('update')}</TextDefault>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        disabled={loadingMutation}
+                        style={{
+                          ...styles(currentTheme).saveContainer
+                        }}
+                        onPress={() => setToggleEmailView(true)}
+                      >
+                        <TextDefault bold>{t('cancel')}</TextDefault>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 )}
               </View>

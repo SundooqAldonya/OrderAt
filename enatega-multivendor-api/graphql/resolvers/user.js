@@ -533,29 +533,19 @@ module.exports = {
       }
       const user = await User.findById(req.userId)
       if (!user) throw new Error('Please logout and login again')
-      // check if phone number is already associated with another account
-      if (
-        !(await checkPhoneAlreadyUsed(req.userId, args.updateUserInput.phone))
-      ) {
-        try {
-          if (args.updateUserInput.phone !== user.phone) {
-            user.phoneIsVerified = args.updateUserInput.phoneIsVerified
-          }
-          if (args.updateUserInput.phoneIsVerified) {
-            user.phoneIsVerified = args.updateUserInput.phoneIsVerified
-          }
-          user.name = args.updateUserInput.name
-          user.phone = args.updateUserInput.phone
-          const result = await user.save()
-          return transformUser(result)
-        } catch (err) {
-          console.log(err)
-          throw err
+
+      try {
+        if (args.updateUserInput.phone !== user.phone) {
+          user.phoneIsVerified = args.updateUserInput.phoneIsVerified
         }
-      } else {
-        throw new Error(
-          'Phone number is already associated with another account'
-        )
+
+        user.name = args.updateUserInput.name
+        user.email = args.updateUserInput.email
+        const result = await user.save()
+        return transformUser(result)
+      } catch (err) {
+        console.log(err)
+        throw err
       }
     },
 

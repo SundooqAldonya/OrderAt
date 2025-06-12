@@ -18,21 +18,21 @@ const styles = (props = null) =>
     },
     containerInfo: {
       width: '100%',
-      ...alignment.MTmedium,
+      ...alignment.MTmedium
     },
     mainContainer: {
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'space-between',
       ...alignment.MBlarge,
-      marginBottom: 0,
-     },
+      marginBottom: 0
+    },
     formSubContainer: {
       borderRadius: scale(8),
       flexDirection: 'row',
       width: '92%',
       // backgroundColor: props !== null ? props.color5 : 'transparent',
-      backgroundColor:colors.lightGray,
+      backgroundColor: colors.lightGray,
 
       alignSelf: 'center',
       elevation: 1,
@@ -49,8 +49,7 @@ const styles = (props = null) =>
     containerHeading: {
       width: '100%',
       flexDirection: 'row',
-      alignItems: 'flex-start',
-
+      alignItems: 'flex-start'
     },
     headingTitle: {
       width: '50%'
@@ -83,12 +82,13 @@ const styles = (props = null) =>
       marginLeft: scale(5)
     },
     verifiedButton: {
-      padding: scale(8),
+      paddingVertical: scale(4),
+      paddingHorizontal: scale(3),
       borderRadius: scale(16),
       // marginTop: scale(10),
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(120)
+      width: scale(80)
     },
 
     // Model for password changing

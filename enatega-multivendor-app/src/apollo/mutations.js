@@ -341,17 +341,6 @@ export const createUser = `
         }
       }`
 
-export const updateUser = `
-      mutation UpdateUser($name:String!,$phone:String!,$phoneIsVerified:Boolean,$emailIsVerified:Boolean){
-          updateUser(updateUserInput:{name:$name,phone:$phone,phoneIsVerified:$phoneIsVerified,emailIsVerified:$emailIsVerified}){
-            _id
-            name
-            phone
-            phoneIsVerified
-            emailIsVerified
-          }
-        }`
-
 export const updateNotificationStatus = `
   mutation UpdateNotificationStatus($offerNotification:Boolean!,$orderNotification:Boolean!){
     updateNotificationStatus(offerNotification:$offerNotification,orderNotification:$orderNotification){
@@ -505,6 +494,18 @@ export const applyCouponMandoob = gql`
       foods {
         _id
       }
+    }
+  }
+`
+
+export const updateUser = gql`
+  mutation UpdateUser($updateUserInput: UpdateUser) {
+    updateUser(updateUserInput: $updateUserInput) {
+      _id
+      name
+      phone
+      phoneIsVerified
+      emailIsVerified
     }
   }
 `

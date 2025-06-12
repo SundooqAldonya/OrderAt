@@ -670,5 +670,6 @@ export const en = {
   items: 'items',
   coupon: 'Coupon',
   max: 'Max',
-  next: 'Next'
+  next: 'Next',
+  cancel: 'Cancel'
 }

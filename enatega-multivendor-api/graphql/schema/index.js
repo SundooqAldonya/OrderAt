@@ -918,9 +918,7 @@ const typeDefs = gql`
 
   input UpdateUser {
     name: String!
-    phone: String
-    phoneIsVerified: Boolean
-    emailIsVerified: Boolean
+    email: String
   }
   input AddonsInput {
     _id: String
@@ -1980,7 +1978,7 @@ const typeDefs = gql`
     createVendor(vendorInput: VendorInput): OwnerData!
     editVendor(vendorInput: VendorInput): OwnerData!
     deleteVendor(id: String!): Boolean
-    updateUser(updateUserInput: UpdateUser!): User!
+    updateUser(updateUserInput: UpdateUser): User!
     updateNotificationStatus(
       offerNotification: Boolean!
       orderNotification: Boolean!
