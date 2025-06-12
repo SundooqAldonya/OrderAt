@@ -228,40 +228,8 @@ const CreateAccount = (props) => {
       </View>
       <View style={[styles(currentTheme).subContainer]}>
         <View style={[styles().signupContainer]}>
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              marginBottom: scale(10)
-            }}
-          >
-            <TextDefault
-              H4
-              bolder
-              textColor={currentTheme.newFontcolor}
-              style={{
-                marginBottom: scale(7),
-                color: currentTheme?.secondaryText,
-                fontSize: 20
-              }}
-            >
-              {t('signUporSignIn')}
-            </TextDefault>
-            {/* <TextDefault textColor={currentTheme?.secondaryText}>
-              {t('signUpDiscount')}
-            </TextDefault> */}
-          </View>
-
-          {/* <View style={{ marginBottom: scale(2) }}>{rendergoogleLogin()}</View> */}
-
-          {enableApple && (
-            <View style={{ marginBottom: scale(2) }}>
-              {renderAppleAction()}
-            </View>
-          )}
           <View style={{ marginBottom: scale(2) }}>{renderEmailAction()}</View>
-          {/* <View style={{ marginBottom: scale(2) }}>{renderPhoneNumber()}</View> */}
-          {/* or */}
+          
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles(currentTheme).line} />
             <View style={{ marginBottom: scale(2) }}>

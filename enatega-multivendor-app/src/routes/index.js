@@ -59,7 +59,7 @@ import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 import messaging from '@react-native-firebase/messaging'
 import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -373,7 +373,7 @@ const BottomTabs = () => {
         },
         tabBarStyle: {
           backgroundColor: colors.white,
-          height: 70,
+          height: Platform.OS === 'ios' ? 90 : 70,
           //   paddingBottom: 10,
           //  position: 'absolute',
           // bottom: 15,
