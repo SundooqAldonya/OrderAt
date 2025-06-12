@@ -53,7 +53,8 @@ const styles = (props = null) =>
       alignSelf: 'center',
       width: '100%',
       flex: 1,
-      justifyContent: 'space-between'
+      gap: scale(20),
+      justifyContent: 'center',
     },
     whiteColor: {
       backgroundColor: props !== null ? props.buttonText : 'transparent'

@@ -481,7 +481,7 @@ function Profile(props) {
                     </View>
                   )}
                 </View>
-                <View style={styles().headingLink}>
+                {/* <View style={styles().headingLink}>
                   <TouchableOpacity
                     activeOpacity={0.3}
                     style={{
@@ -494,7 +494,7 @@ function Profile(props) {
                       {t('edit')}
                     </TextDefault>
                   </TouchableOpacity>
-                </View>
+                </View> */}
               </View>
 
               {/* email */}
@@ -536,7 +536,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >
@@ -568,7 +569,7 @@ function Profile(props) {
                   </TextDefault> */}
                   <TextDefault
                     style={{
-                      color: colors.dark
+                      color: colors.dark,
                     }}
                   >
                     {profile?.email ? profile?.email : 'N/A'}
@@ -606,7 +607,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >
@@ -655,7 +657,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >
