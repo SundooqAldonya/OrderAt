@@ -139,7 +139,7 @@ const useEmailOtp = () => {
   }
 
   const resendOtp = () => {
-    otpFrom.current = Math.floor(100000 + Math.random() * 900000).toString()
+    otpFrom.current = Math.floor(1000 + Math.random() * 9000).toString()
     mutate({
       variables: { email: user.email, otp: otpFrom.current }
     })
@@ -174,7 +174,7 @@ const useEmailOtp = () => {
     if (configuration.skipEmailVerification) {
       setOtp(TEST_OTP)
       timer = setTimeout(() => {
-        onCodeFilled(TEST_OTP)
+        // onCodeFilled(TEST_OTP)
       }, 3000)
     }
     return () => {

@@ -1889,6 +1889,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    updateEmail(email: String): Message
     applyCouponMandoob(
       applyCouponMandoobInput: ApplyCouponMandoobInput
     ): ApplyCouponResult

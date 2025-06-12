@@ -428,23 +428,25 @@ module.exports = {
     },
     changePassword: async (_, { oldPassword, newPassword }, { req, res }) => {
       console.log('changePassword')
+      if (!req.isAuth) throw new Error('Unauthenticated')
       try {
-        if (!req.isAuth) throw new Error('Unauthenticated')
         const user = await User.findById(req.userId)
         if (!user) {
           throw new Error('User not found')
         }
-        const isEqual = await bcrypt.compare(oldPassword, user.password)
-        if (!isEqual) {
-          throw new Error('Invalid credentials!')
-          // throw new Error('Password is incorrect!');
+
+        const result = await user.authenticate(oldPassword)
+        if (!result.user) {
+          throw new Error('old_password_wrong')
         }
-        const hashedPassword = await bcrypt.hash(newPassword, 12)
-        user.password = hashedPassword
+
+        // Set new password
+        await user.setPassword(newPassword)
         await user.save()
+
         return true
-      } catch (e) {
-        return false
+      } catch (err) {
+        throw err
       }
     },
     uploadToken: async (_, args, context) => {

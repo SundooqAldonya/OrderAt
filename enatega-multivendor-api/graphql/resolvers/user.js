@@ -540,7 +540,7 @@ module.exports = {
         }
 
         user.name = args.updateUserInput.name
-        user.email = args.updateUserInput.email
+
         const result = await user.save()
         return transformUser(result)
       } catch (err) {
@@ -557,6 +557,21 @@ module.exports = {
         user.phone = normalizeAndValidatePhoneNumber(args.phone)
         await user.save()
         return { message: 'phone_updated' }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
+    async updateEmail(_, args, { req }) {
+      console.log('updateEmail', { args })
+      try {
+        const user = await User.findById(req.userId)
+        if (!user) throw new Error('User does not exist')
+        // if (user.email !== args.email) {
+        user.email = args.email
+        // }
+        await user.save()
+        return { message: 'email_updated' }
       } catch (err) {
         throw new Error(err)
       }
@@ -730,6 +745,10 @@ module.exports = {
           __dirname,
           '../../public/assets/tempImages/enatega.png'
         )
+        const user = await User.findOne({ email: args.email })
+        const otp = args.otp.split()
+        user.emailVerficationCode = [...otp]
+        await user.save()
         sendEmail(
           args.email,
           'OTP to confirm email',

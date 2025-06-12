@@ -671,5 +671,6 @@ export const en = {
   coupon: 'Coupon',
   max: 'Max',
   next: 'Next',
-  cancel: 'Cancel'
+  cancel: 'Cancel',
+  old_password_wrong: 'Wrong old password!'
 }

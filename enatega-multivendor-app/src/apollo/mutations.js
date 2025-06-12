@@ -509,3 +509,10 @@ export const updateUser = gql`
     }
   }
 `
+export const updateEmail = gql`
+  mutation UpdateEmail($email: String) {
+    updateEmail(email: $email) {
+      message
+    }
+  }
+`

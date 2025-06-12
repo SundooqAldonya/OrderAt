@@ -20,7 +20,12 @@ import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 //import { TextField, OutlinedTextField } from 'react-native-material-textfield'
 import { scale } from '../../utils/scaling'
-import { updateUser, login, Deactivate } from '../../apollo/mutations'
+import {
+  updateUser,
+  login,
+  Deactivate,
+  updateEmail
+} from '../../apollo/mutations'
 import ChangePassword from './ChangePassword'
 import { theme } from '../../utils/themeColors'
 import UserContext from '../../context/User'
@@ -76,6 +81,24 @@ function Profile(props) {
   const [mutate, { loading: loadingMutation }] = useMutation(UPDATEUSER, {
     onCompleted,
     onError
+  })
+  const [mutateEmail, { loading: loadingEmail }] = useMutation(updateEmail, {
+    onCompleted: (res) => {
+      console.log({ res })
+      // setToggleEmailView(true)
+      navigation.navigate('EmailOtp', {
+        user: {
+          editProfile: true,
+          // phone: profile.phone,
+          email: email.length ? email.toLowerCase().trim() : ''
+          // password: password,
+          // name: profile.name
+        }
+      })
+    },
+    onError: (error) => {
+      console.log({ error })
+    }
   })
 
   const onCompletedDeactivate = () => {
@@ -197,25 +220,13 @@ function Profile(props) {
 
   const validateName = async () => {
     setNameError('')
-
     if (name !== profile?.name) {
       if (!name.trim()) {
         refName.current.focus()
         setNameError(t('nameError'))
         return false
       }
-
-      // try {
-      //   await mutate({
-      //     variables: {
-      //       name: name
-      //     }
-      //   })
-      // } catch (error) {
-      //   return false
-      // }
     }
-
     return true
   }
 
@@ -226,12 +237,20 @@ function Profile(props) {
       await mutate({
         variables: {
           updateUserInput: {
-            name,
-            email
+            name
+            // email
           }
         }
       })
     }
+  }
+
+  const updateEmailMutation = () => {
+    mutateEmail({
+      variables: {
+        email
+      }
+    })
   }
 
   const handleNamePress = () => {
@@ -596,12 +615,7 @@ function Profile(props) {
                           }
                         ]}
                       >
-                        <TextDefault
-                          textColor={
-                            profile?.emailIsVerified ? colors.primary : '#fff'
-                          }
-                          bold
-                        >
+                        <TextDefault textColor={'#fff'} bold>
                           {profile?.emailIsVerified
                             ? t('verified')
                             : t('unverified')}
@@ -649,7 +663,7 @@ function Profile(props) {
                         style={{
                           ...styles(currentTheme).saveContainer
                         }}
-                        onPress={handleNamePressUpdate}
+                        onPress={updateEmailMutation}
                       >
                         <TextDefault bold>{t('update')}</TextDefault>
                       </TouchableOpacity>
@@ -689,18 +703,19 @@ function Profile(props) {
                 style={{
                   borderRadius: scale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
+                  justifyContent: 'space-between',
                   width: '92%',
-                  // backgroundColor: colors.secondaryOrange,
+
                   backgroundColor: colors.lightGray,
                   alignSelf: 'center',
-                  // elevation: 1,
+
                   borderWidth: 1,
                   borderColor: '#E5E7EB',
                   marginBottom: 0,
                   marginVertical: 10,
                   paddingHorizontal: 10,
                   paddingVertical: 15,
-                  justifyContent: 'flex-start',
+                  // justifyContent: 'flex-start',
                   alignItems: 'center'
                 }}
                 onPress={showModal}
@@ -714,6 +729,11 @@ function Profile(props) {
                 >
                   {t('change_password')}
                 </TextDefault>
+                {/* <TouchableOpacity onPress={() => setToggleEmailView(false)}> */}
+                <TextDefault style={{ color: colors.blue }}>
+                  {t('edit')}
+                </TextDefault>
+                {/* </TouchableOpacity> */}
               </TouchableOpacity>
 
               {/* phone */}
@@ -765,7 +785,7 @@ function Profile(props) {
                     {profile?.phone ? profile?.phone : 'N/A'}
                   </TextDefault>
                 </View>
-                <View>
+                {/* <View>
                   <TouchableOpacity
                     activeOpacity={0.3}
                     style={styles().headingButton}
@@ -779,7 +799,7 @@ function Profile(props) {
                       {t('edit')}
                     </TextDefault>
                   </TouchableOpacity>
-                </View>
+                </View> */}
               </View>
 
               {/* <View style={styles(currentTheme).formSubContainer}>

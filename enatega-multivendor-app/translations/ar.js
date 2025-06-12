@@ -660,5 +660,6 @@ export const ar = {
   coupon: 'الكوبون',
   max: 'الحد الأقصى',
   next: 'التالي',
-  cancel: 'إلغاء'
+  cancel: 'إلغاء',
+  old_password_wrong: 'خطأ في كلمة المرور القديمة'
 }

@@ -29,16 +29,25 @@ function EmailOtp(props) {
     updateUserLoading,
     onCodeFilled,
     resendOtp,
-    currentTheme,
-    themeContext
+    currentTheme
   } = useEmailOtp()
 
   const [otp, setOtp] = useState(new Array(4).fill(''))
 
+  const { editProfile } = useRoute().params
+
+  useEffect(() => {
+    resendOtp()
+  }, [])
+
   const [mutateOtp] = useMutation(submitEmailOTP, {
     onCompleted: (data) => {
       console.log({ data })
-      navigation.navigate('Main')
+      if (editProfile) {
+        navigation.navigate('Profile')
+      } else {
+        navigation.navigate('Main')
+      }
     },
     onError: (error) => {
       console.log({ error })
