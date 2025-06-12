@@ -23,7 +23,7 @@ const getStoredLanguage = async () => {
   const lng = await AsyncStorage.getItem('enatega-language')
   i18next.use(initReactI18next).init({
     compatibilityJSON: 'v3',
-    lng: lng,
+    lng: lng || 'ar',
     fallbackLng: 'ar',
     resources: languageResources
   })
@@ -35,7 +35,7 @@ if (Platform.OS === 'ios') {
   i18next.locale = Localization.locale
   i18next.use(initReactI18next).init({
     compatibilityJSON: 'v3',
-    lng: i18next.locale,
+    lng: i18next.locale || 'ar',
     fallbackLng: 'ar',
     resources: languageResources
   })

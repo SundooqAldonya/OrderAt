@@ -661,5 +661,6 @@ export const ar = {
   max: 'الحد الأقصى',
   next: 'التالي',
   cancel: 'إلغاء',
-  old_password_wrong: 'خطأ في كلمة المرور القديمة'
+  old_password_wrong: 'خطأ في كلمة المرور القديمة',
+  select_language: 'أختر اللغة المفضلة'
 }

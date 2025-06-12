@@ -672,5 +672,6 @@ export const en = {
   max: 'Max',
   next: 'Next',
   cancel: 'Cancel',
-  old_password_wrong: 'Wrong old password!'
+  old_password_wrong: 'Wrong old password!',
+  select_language: 'Select Language'
 }

@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { colors } from '../../utils/colors'
 import Logo from '../../../assets/logo.jpg'
+import { useTranslation } from 'react-i18next'
 
 const languages = [
   { value: 'English', code: 'en', index: 0 },
@@ -16,6 +17,7 @@ const languages = [
 ]
 
 const SelectLanguageScreen = ({ onSelectLanguage }) => {
+  const { t } = useTranslation()
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -23,7 +25,10 @@ const SelectLanguageScreen = ({ onSelectLanguage }) => {
       >
         <Image source={Logo} style={{ width: 'auto', height: '100%' }} />
       </View>
-      {/* <Text style={styles.title}>Select Language</Text> */}
+      <Text style={{ ...styles.title, marginBottom: 5 }}>
+        Select Your Favorite Language
+      </Text>
+      <Text style={styles.title}>{t('select_language')}</Text>
 
       <View style={styles.buttonContainer}>
         {languages.map((lang) => (
