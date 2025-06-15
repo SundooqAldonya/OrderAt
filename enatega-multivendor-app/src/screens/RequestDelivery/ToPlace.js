@@ -74,6 +74,7 @@ export default function ToPlace() {
   const [initiated, setInitiated] = useState(false)
   const [saveAddress, setSaveAddress] = useState(false)
   const [label, setLabel] = useState('')
+  const [mapLoaded, setMapLoaded] = useState(false)
   const { isLoggedIn, profile } = useContext(UserContext)
   const { addressTo, regionTo, addressFreeTextTo, labelTo } = useSelector(
     (state) => state.requestDelivery
@@ -147,6 +148,11 @@ export default function ToPlace() {
         )
       }
     })
+  }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setMapLoaded(true), 3000) // fallback
+    return () => clearTimeout(timeout)
   }, [])
 
   const updateRegion = (newRegion) => {
@@ -325,16 +331,40 @@ export default function ToPlace() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 100}
     >
       <ScrollView style={styles.container} keyboardShouldPersistTaps='handled'>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          region={region}
-          onRegionChangeComplete={handleRegionChangeComplete}
-        />
-        <View style={styles.markerFixed}>
-          <Ionicons name='location-sharp' size={40} color='#d00' />
+        <View>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            region={region}
+            onRegionChangeComplete={handleRegionChangeComplete}
+            onMapReady={() => setMapLoaded(true)}
+          />
+          {!mapLoaded && (
+            <View
+              style={[
+                styles.map,
+                {
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  zIndex: 1
+                }
+              ]}
+            >
+              <TextDefault style={{ color: '#000' }}>
+                Loading map...
+              </TextDefault>
+            </View>
+          )}
+          <View style={styles.markerFixed}>
+            <Ionicons name='location-sharp' size={40} color='#d00' />
+          </View>
         </View>
-
         <View style={styles.wrapper}>
           <View style={styles.inputContainer}>
             <View

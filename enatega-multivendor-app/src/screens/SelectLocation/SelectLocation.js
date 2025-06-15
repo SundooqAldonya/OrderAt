@@ -60,12 +60,13 @@ export default function SelectLocation(props) {
 
   const isArabic = i18n.language === 'ar'
 
-  const { longitude, latitude } = props.route.params || {}
+  const { longitude, latitude, areaCoords } = props.route.params || {}
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const navigation = useNavigation()
   const inset = useSafeAreaInsets()
   const [loading, setLoading] = useState(false)
+  const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { setLocation } = useContext(LocationContext)
@@ -73,8 +74,8 @@ export default function SelectLocation(props) {
   const { isLoggedIn } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
-    latitude: latitude || null,
-    longitude: longitude || null,
+    latitude: latitude || 31.1091,
+    longitude: longitude || 30.9426,
     latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
@@ -114,31 +115,55 @@ export default function SelectLocation(props) {
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
         elevation: 0
-      },
-      headerLeft: () => (
-        <HeaderBackButton
-          truncatedLabel=''
-          backImage={() => (
-            <View>
-              <MaterialIcons
-                name='arrow-back'
-                size={30}
-                color={currentTheme.newIconColor}
-              />
-            </View>
-          )}
-          onPress={() => {
-            navigationService.goBack()
-          }}
-        />
-      )
+      }
+      // headerLeft: () => (
+      //   <HeaderBackButton
+      //     truncatedLabel=''
+      //     backImage={() => (
+      //       <View>
+      //         <MaterialIcons
+      //           name='arrow-back'
+      //           size={30}
+      //           color={currentTheme.newIconColor}
+      //         />
+      //       </View>
+      //     )}
+      //     onPress={() => {
+      //       navigationService.goBack()
+      //     }}
+      //   />
+      // )
     })
   }, [])
+
+  console.log({ areaCoords })
+
+  useEffect(() => {
+    if (areaCoords && mapRef?.current) {
+      const newRegion = {
+        latitude: areaCoords[1],
+        longitude: areaCoords[0],
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+      }
+
+      // Animate the map
+      mapRef.current.animateToRegion(newRegion, 1000)
+
+      // Update state to match the animated region
+      setCoordinates(newRegion)
+    }
+  }, [areaCoords])
 
   useEffect(() => {
     if (!coordinates.latitude) {
       getCurrentPosition()
     }
+  }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setMapLoaded(true), 3000) // fallback
+    return () => clearTimeout(timeout)
   }, [])
 
   StatusBar.setBackgroundColor(colors.primary)
@@ -254,6 +279,21 @@ export default function SelectLocation(props) {
       }
     })
   }
+  const setAreaLocation = async () => {
+    setLoading(true)
+
+    getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+      console.log({ res })
+      setLocation({
+        _id: '',
+        label: 'Home',
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        deliveryAddress: res.formattedAddress,
+        details: res.formattedAddress
+      })
+    })
+  }
 
   const onRegionChangeComplete = (coords) => {
     console.log({ coords })
@@ -274,6 +314,7 @@ export default function SelectLocation(props) {
   }
   const onItemPress = (city) => {
     setModalVisible(false)
+    console.log({ city })
     navigation.navigate('AddNewAddress', {
       // latitude: +city.latitude,
       // longitude: +city.longitude,
@@ -282,6 +323,14 @@ export default function SelectLocation(props) {
         ? props.route.params.prevScreen
         : null
     })
+  }
+
+  const handleSaveLocation = () => {
+    if (areaCoords) {
+      setAreaLocation()
+    } else {
+      setCurrentLocation()
+    }
   }
 
   return (
@@ -295,46 +344,72 @@ export default function SelectLocation(props) {
             }
           ]}
         >
-          {coordinates.latitude ? (
-            <Fragment>
-              <MapView
-                ref={mapRef}
-                initialRegion={coordinates}
-                style={{ flex: 1 }}
-                provider={PROVIDER_GOOGLE}
-                // onRegionChangeComplete={onRegionChangeComplete}
-                onPress={handleMapPress}
-                zoomEnabled
-                maxZoomLevel={50}
-                bounce
+          {/* {coordinates.latitude ? ( */}
+          <Fragment>
+            <MapView
+              ref={mapRef}
+              initialRegion={coordinates}
+              style={{ flex: 1 }}
+              provider={PROVIDER_GOOGLE}
+              onRegionChangeComplete={onRegionChangeComplete}
+              onPress={handleMapPress}
+              zoomEnabled
+              maxZoomLevel={50}
+              bounce
+              onMapReady={() => {
+                console.log('Map is ready')
+                setMapLoaded(true)
+              }}
+            />
+            {!mapLoaded && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  zIndex: 1
+                }}
               >
-                <Marker
-                  coordinate={coordinates}
-                  title={t('your_order_will_send_here')}
+                <TextDefault style={{ color: '#000' }}>
+                  Loading map...
+                </TextDefault>
+              </View>
+            )}
+            <View
+              pointerEvents='none'
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: [{ translateX: -25 }, { translateY: -50 }], // center the marker
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <View style={styles().deliveryMarker}>
+                <View
+                  style={[
+                    styles().markerBubble,
+                    { backgroundColor: '#06C167' }
+                  ]}
                 >
-                  <View style={styles().deliveryMarker}>
-                    <View
-                      style={[
-                        styles().markerBubble,
-                        { backgroundColor: '#06C167' }
-                      ]}
-                    >
-                      <Text style={styles().markerText}>
-                        {t('your_location')}
-                      </Text>
-                    </View>
-                    <View style={styles().markerPin}>
-                      <View
-                        style={[
-                          styles().pinInner,
-                          { backgroundColor: '#06C167' }
-                        ]}
-                      />
-                    </View>
-                  </View>
-                </Marker>
-              </MapView>
-              {/* <View style={styles().mainContainer}>
+                  <Text style={styles().markerText}>
+                    {t('your_order_delivered_here')}
+                  </Text>
+                </View>
+                <View style={styles().markerPin}>
+                  <View
+                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                  />
+                </View>
+              </View>
+            </View>
+            {/* <View style={styles().mainContainer}>
                 <CustomMarker
                   width={40}
                   height={40}
@@ -342,8 +417,8 @@ export default function SelectLocation(props) {
                   translateY={-20}
                 />
               </View> */}
-            </Fragment>
-          ) : null}
+          </Fragment>
+          {/* ) : null} */}
         </View>
         <SafeAreaView>
           <ScrollView>
@@ -364,29 +439,16 @@ export default function SelectLocation(props) {
                   activeOpacity={0.7}
                   style={[
                     styles(currentTheme).button,
-                    { flexDirection: isArabic ? 'row-reverse' : 'row' }
+                    { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 0 }
                   ]}
-                  onPress={setCurrentLocation}
+                  onPress={handleSaveLocation}
                 >
-                  <View
-                    style={[
-                      styles(currentTheme).icon,
-
-                      { marginLeft: isArabic ? scale(16) : scale(16) }
-                    ]}
-                  >
+                  <View style={[styles(currentTheme).icon]}>
                     <EvilIcons name='location' size={18} color='black' />
                   </View>
                   <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-                    {t('set_location')}
+                    {t('selectLocation')}
                   </TextDefault>
-                  {loading && (
-                    <Spinner
-                      size={'small'}
-                      backColor={currentTheme.themeBackground}
-                      spinnerColor={currentTheme.main}
-                    />
-                  )}
                 </TouchableOpacity>
               ) : null}
               <View style={styles(currentTheme).line} />
@@ -395,17 +457,11 @@ export default function SelectLocation(props) {
                 activeOpacity={0.7}
                 style={[
                   styles(currentTheme).button,
-                  { flexDirection: isArabic ? 'row-reverse' : 'row' }
+                  { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 5 }
                 ]}
                 onPress={() => setModalVisible(true)}
               >
-                <View
-                  style={[
-                    styles(currentTheme).icon,
-
-                    { marginLeft: isArabic ? scale(16) : scale(16) }
-                  ]}
-                >
+                <View style={[styles(currentTheme).icon]}>
                   <Feather name='list' size={18} color='black' />
                 </View>
 

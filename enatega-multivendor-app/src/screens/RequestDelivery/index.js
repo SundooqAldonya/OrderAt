@@ -1,4 +1,6 @@
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -258,45 +260,53 @@ const RequestDelivery = () => {
   }
 
   return (
-    <ScrollView keyboardShouldPersistTaps='handled'>
-      <View>
-        <MapView
-          ref={mapRef}
-          style={{ height: 300 }}
-          region={{
-            latitude: pickupCoords?.latitude || location.latitude,
-            longitude: pickupCoords?.longitude || location.longitude,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02
-          }}
-          onMapReady={() => {
-            if (pickupCoords && dropOffCoords && mapRef.current) {
-              mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
-                edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-                animated: true
-              })
-            }
-          }}
-        >
-          {pickupCoords && (
-            <Marker coordinate={pickupCoords} title='Pickup'>
-              <Image
-                source={FromIcon}
-                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-              />
-            </Marker>
-          )}
-          {dropOffCoords && (
-            <Fragment>
-              <Marker coordinate={dropOffCoords} title='Dropoff'>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 120}
+    >
+      <ScrollView
+        keyboardShouldPersistTaps='handled'
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <View>
+          <MapView
+            ref={mapRef}
+            style={{ height: 300 }}
+            region={{
+              latitude: pickupCoords?.latitude || location.latitude,
+              longitude: pickupCoords?.longitude || location.longitude,
+              latitudeDelta: 0.02,
+              longitudeDelta: 0.02
+            }}
+            onMapReady={() => {
+              if (pickupCoords && dropOffCoords && mapRef.current) {
+                mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
+                  edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+                  animated: true
+                })
+              }
+            }}
+          >
+            {pickupCoords && (
+              <Marker coordinate={pickupCoords} title='Pickup'>
                 <Image
-                  source={ToIcon}
+                  source={FromIcon}
                   style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
                 />
               </Marker>
-            </Fragment>
-          )}
-          {/* {pickupCoords && dropOffCoords && (
+            )}
+            {dropOffCoords && (
+              <Fragment>
+                <Marker coordinate={dropOffCoords} title='Dropoff'>
+                  <Image
+                    source={ToIcon}
+                    style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                  />
+                </Marker>
+              </Fragment>
+            )}
+            {/* {pickupCoords && dropOffCoords && (
             <MapViewDirections
               origin={pickupCoords}
               destination={dropOffCoords}
@@ -315,11 +325,11 @@ const RequestDelivery = () => {
               }}
             />
           )} */}
-        </MapView>
-      </View>
-      <View style={styles.wrapper}>
-        <View style={styles.inputContainer}>
-          {/* <TextDefault
+          </MapView>
+        </View>
+        <View style={styles.wrapper}>
+          <View style={styles.inputContainer}>
+            {/* <TextDefault
             bolder
             style={{
               ...styles.title,
@@ -328,57 +338,57 @@ const RequestDelivery = () => {
           >
             {t('pick_up_location')}
           </TextDefault> */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('FromPlace')}
-            style={{
-              ...styles.address,
-              flexDirection: isArabic ? 'row-reverse' : 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate('FromPlace')}
               style={{
-                flexDirection: isArabic ? 'row' : 'row-reverse',
+                ...styles.address,
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center'
               }}
             >
-              <TextDefault
+              <View
                 style={{
-                  color: '#000',
-                  textAlign: isArabic ? 'right' : 'left',
-                  fontSize: 18
+                  flexDirection: isArabic ? 'row' : 'row-reverse',
+                  alignItems: 'center'
                 }}
               >
-                {/* {addressInfo.labelFrom
+                <TextDefault
+                  style={{
+                    color: '#000',
+                    textAlign: isArabic ? 'right' : 'left',
+                    fontSize: 18
+                  }}
+                >
+                  {/* {addressInfo.labelFrom
                 ? addressInfo.labelFrom
                 : addressInfo.addressFrom} */}
-                {/* {t('FromPlace')} */}
-                {t('pick_up_location')}
-              </TextDefault>
-              <Image
-                source={FromIcon}
-                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 5
-              }}
-            >
-              <TextDefault
+                  {/* {t('FromPlace')} */}
+                  {t('pick_up_location')}
+                </TextDefault>
+                <Image
+                  source={FromIcon}
+                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                />
+              </View>
+              <View
                 style={{
-                  color: '#000',
-                  textAlign: isArabic ? 'right' : 'left',
-                  fontSize: 18
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 5
                 }}
               >
-                {t('edit')}
-              </TextDefault>
-              <Feather name='edit' size={24} color='black' />
-            </View>
-            {/* <View
+                <TextDefault
+                  style={{
+                    color: '#000',
+                    textAlign: isArabic ? 'right' : 'left',
+                    fontSize: 18
+                  }}
+                >
+                  {t('edit')}
+                </TextDefault>
+                <Feather name='edit' size={24} color='black' />
+              </View>
+              {/* <View
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: '#000',
@@ -392,10 +402,10 @@ const RequestDelivery = () => {
             >
               {addressInfo.addressFreeTextFrom}
             </TextDefault> */}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputContainer}>
-          {/* <TextDefault
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputContainer}>
+            {/* <TextDefault
             bolder
             style={{
               ...styles.title,
@@ -404,57 +414,57 @@ const RequestDelivery = () => {
           >
             {t('drop_off_location')}
           </TextDefault> */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ToPlace')}
-            style={{
-              ...styles.address,
-              flexDirection: isArabic ? 'row-reverse' : 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ToPlace')}
               style={{
-                flexDirection: isArabic ? 'row' : 'row-reverse',
+                ...styles.address,
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center'
               }}
             >
-              <TextDefault
+              <View
                 style={{
-                  color: '#000',
-                  textAlign: isArabic ? 'right' : 'left',
-                  fontSize: 18
+                  flexDirection: isArabic ? 'row' : 'row-reverse',
+                  alignItems: 'center'
                 }}
               >
-                {/* {addressInfo.labelTo
+                <TextDefault
+                  style={{
+                    color: '#000',
+                    textAlign: isArabic ? 'right' : 'left',
+                    fontSize: 18
+                  }}
+                >
+                  {/* {addressInfo.labelTo
                 ? addressInfo.labelTo
                 : addressInfo.addressTo} */}
-                {/* {t('ToPlace')} */}
-                {t('drop_off_location')}
-              </TextDefault>
-              <Image
-                source={ToIcon}
-                style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 5
-              }}
-            >
-              <TextDefault
+                  {/* {t('ToPlace')} */}
+                  {t('drop_off_location')}
+                </TextDefault>
+                <Image
+                  source={ToIcon}
+                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                />
+              </View>
+              <View
                 style={{
-                  color: '#000',
-                  textAlign: isArabic ? 'right' : 'left',
-                  fontSize: 18
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  gap: 5
                 }}
               >
-                {t('edit')}
-              </TextDefault>
-              <Feather name='edit' size={24} color='black' />
-            </View>
-            {/* <View
+                <TextDefault
+                  style={{
+                    color: '#000',
+                    textAlign: isArabic ? 'right' : 'left',
+                    fontSize: 18
+                  }}
+                >
+                  {t('edit')}
+                </TextDefault>
+                <Feather name='edit' size={24} color='black' />
+              </View>
+              {/* <View
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: '#000',
@@ -468,30 +478,30 @@ const RequestDelivery = () => {
             >
               {addressInfo.addressFreeTextTo}
             </TextDefault> */}
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
 
-        {/* Item Description */}
-        <TextDefault
-          bolder
-          style={{
-            ...styles.title,
-            textAlign: isArabic ? 'right' : 'left'
-          }}
-        >
-          {t('item_description')}
-        </TextDefault>
-        <TextInput
-          placeholder={t('item_description_notes')}
-          style={styles.textArea}
-          onChangeText={(text) => setNotes(text)}
-          multiline
-          numberOfLines={4}
-          textAlignVertical='top'
-        />
+          {/* Item Description */}
+          <TextDefault
+            bolder
+            style={{
+              ...styles.title,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {t('item_description')}
+          </TextDefault>
+          <TextInput
+            placeholder={t('item_description_notes')}
+            style={styles.textArea}
+            onChangeText={(text) => setNotes(text)}
+            multiline
+            numberOfLines={4}
+            textAlignVertical='top'
+          />
 
-        {/* Urgency */}
-        {/* <View
+          {/* Urgency */}
+          {/* <View
           style={{
             ...styles.switchRow,
             flexDirection: isArabic ? 'row-reverse' : 'row'
@@ -502,257 +512,267 @@ const RequestDelivery = () => {
           <Switch value={isUrgent} onValueChange={toggleSwitch} />
         </View> */}
 
-        <View style={{ marginTop: 20 }}>
-          {!coupon ? (
-            <TouchableOpacity
-              // activeOpacity={0.7}
-              style={{
-                ...styles.voucherSecInner,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
-              }}
-              onPress={() => onModalOpen(voucherModalRef)}
-            >
-              <MaterialCommunityIcons
-                name='ticket-confirmation-outline'
-                size={24}
-                color={currentTheme.lightBlue}
-              />
-              <TextDefault H4 bolder textColor={currentTheme.lightBlue} center>
-                {t('applyVoucher')}
-              </TextDefault>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <TextDefault
-                numberOfLines={1}
-                H5
-                bolder
-                textColor={currentTheme.fontNewColor}
-                style={{ textAlign: isArabic ? 'right' : 'left' }}
+          <View style={{ marginTop: 20 }}>
+            {!coupon ? (
+              <TouchableOpacity
+                // activeOpacity={0.7}
+                style={{
+                  ...styles.voucherSecInner,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+                onPress={() => onModalOpen(voucherModalRef)}
               >
-                {t('coupon')}
-              </TextDefault>
+                <MaterialCommunityIcons
+                  name='ticket-confirmation-outline'
+                  size={24}
+                  color={currentTheme.lightBlue}
+                />
+                <TextDefault
+                  H4
+                  bolder
+                  textColor={currentTheme.lightBlue}
+                  center
+                >
+                  {t('applyVoucher')}
+                </TextDefault>
+              </TouchableOpacity>
+            ) : (
+              <View>
+                <TextDefault
+                  numberOfLines={1}
+                  H5
+                  bolder
+                  textColor={currentTheme.fontNewColor}
+                  style={{ textAlign: isArabic ? 'right' : 'left' }}
+                >
+                  {t('coupon')}
+                </TextDefault>
+                <View
+                  style={{
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingTop: scale(8),
+                      gap: scale(5)
+                    }}
+                  >
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: isArabic ? 'row-reverse' : 'row',
+                          alignItems: 'center',
+                          gap: 5
+                        }}
+                      >
+                        <AntDesign
+                          name='tags'
+                          size={24}
+                          color={currentTheme.main}
+                        />
+                        <TextDefault
+                          numberOfLines={1}
+                          tnormal
+                          bold
+                          textColor={currentTheme.fontFourthColor}
+                          style={{
+                            textAlign: isArabic ? 'right' : 'left'
+                          }}
+                        >
+                          {coupon ? coupon.code : null} {t('applied')}
+                        </TextDefault>
+                      </View>
+                      <TextDefault
+                        small
+                        bolder
+                        textColor={colors.primary}
+                        style={{
+                          textAlign: isArabic ? 'right' : 'left',
+                          fontSize: 12,
+                          marginTop: 10
+                        }}
+                      >
+                        {coupon.discount}
+                        {coupon.discountType === 'percent'
+                          ? '%'
+                          : configuration.currencySymbol}{' '}
+                        {t('discount_on')} {t(coupon.appliesTo)}{' '}
+                        {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
+                      </TextDefault>
+                    </View>
+                  </View>
+                  <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
+                    <TouchableOpacity
+                      style={{
+                        ...styles.changeBtn
+                      }}
+                      onPress={() => setCoupon(null)}
+                    >
+                      <TextDefault
+                        small
+                        bold
+                        textColor={currentTheme.darkBgFont}
+                        center
+                      >
+                        {coupon ? t('remove') : null}
+                      </TextDefault>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* Fare Preview */}
+          <View style={styles.fareBox}>
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
               <View
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
+                  gap: 10
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingTop: scale(8),
-                    gap: scale(5)
-                  }}
-                >
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: isArabic ? 'row-reverse' : 'row',
-                        alignItems: 'center',
-                        gap: 5
-                      }}
-                    >
-                      <AntDesign
-                        name='tags'
-                        size={24}
-                        color={currentTheme.main}
-                      />
-                      <TextDefault
-                        numberOfLines={1}
-                        tnormal
-                        bold
-                        textColor={currentTheme.fontFourthColor}
-                        style={{
-                          textAlign: isArabic ? 'right' : 'left'
-                        }}
-                      >
-                        {coupon ? coupon.code : null} {t('applied')}
-                      </TextDefault>
-                    </View>
-                    <TextDefault
-                      small
-                      bolder
-                      textColor={colors.primary}
-                      style={{
-                        textAlign: isArabic ? 'right' : 'left',
-                        fontSize: 12,
-                        marginTop: 10
-                      }}
-                    >
-                      {coupon.discount}
-                      {coupon.discountType === 'percent'
-                        ? '%'
-                        : configuration.currencySymbol}{' '}
-                      {t('discount_on')} {t(coupon.appliesTo)}{' '}
-                      {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
-                    </TextDefault>
-                  </View>
-                </View>
-                <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
-                  <TouchableOpacity
-                    style={{
-                      ...styles.changeBtn
-                    }}
-                    onPress={() => setCoupon(null)}
-                  >
-                    <TextDefault
-                      small
-                      bold
-                      textColor={currentTheme.darkBgFont}
-                      center
-                    >
-                      {coupon ? t('remove') : null}
-                    </TextDefault>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Fare Preview */}
-        <View style={styles.fareBox}>
-          {loading ? (
-            <Text>Loading...</Text>
-          ) : (
-            <View
-              style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 10
-              }}
-            >
-              <Text
-                style={{ textAlign: isArabic ? 'right' : 'left', fontSize: 20 }}
-              >
-                {t('deliveryFee')}: {deliveryFee} {configuration.currencySymbol}
-              </Text>
-              {coupon && (
                 <Text
                   style={{
                     textAlign: isArabic ? 'right' : 'left',
-                    textDecorationLine: 'line-through',
                     fontSize: 20
                   }}
                 >
-                  {originalDiscount} {configuration.currencySymbol}
+                  {t('deliveryFee')}: {deliveryFee}{' '}
+                  {configuration.currencySymbol}
                 </Text>
-              )}
-            </View>
-          )}
+                {coupon && (
+                  <Text
+                    style={{
+                      textAlign: isArabic ? 'right' : 'left',
+                      textDecorationLine: 'line-through',
+                      fontSize: 20
+                    }}
+                  >
+                    {originalDiscount} {configuration.currencySymbol}
+                  </Text>
+                )}
+              </View>
+            )}
 
-          {/* <Text>ETA: 25 mins</Text> */}
-        </View>
+            {/* <Text>ETA: 25 mins</Text> */}
+          </View>
 
-        <TouchableOpacity
-          disabled={disabled}
-          style={{
-            ...styles.submitButton,
-            backgroundColor: disabled ? 'grey' : '#000'
-          }}
-          onPress={handleSubmit}
-        >
-          <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
-        </TouchableOpacity>
-      </View>
-      <Modalize
-        ref={voucherModalRef}
-        onOpened={() => {
-          setTimeout(() => {
-            inputRef.current?.focus()
-          }, 100) // slight delay to ensure animation settles
-        }}
-        modalStyle={[styles.modal]}
-        overlayStyle={styles.overlay}
-        handleStyle={styles.handle}
-        modalHeight={550}
-        handlePosition='inside'
-        openAnimationConfig={{
-          timing: { duration: 400 },
-          spring: { speed: 20, bounciness: 10 }
-        }}
-        closeAnimationConfig={{
-          timing: { duration: 400 },
-          spring: { speed: 20, bounciness: 10 }
-        }}
-        keyboardAvoidingBehavior='padding'
-        scrollViewProps={{
-          keyboardShouldPersistTaps: 'handled'
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View
+          <TouchableOpacity
+            disabled={disabled}
             style={{
-              ...styles.modalHeader,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
+              ...styles.submitButton,
+              backgroundColor: disabled ? 'grey' : '#000'
             }}
+            onPress={handleSubmit}
           >
+            <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
+          </TouchableOpacity>
+        </View>
+        <Modalize
+          ref={voucherModalRef}
+          onOpened={() => {
+            setTimeout(() => {
+              inputRef.current?.focus()
+            }, 100) // slight delay to ensure animation settles
+          }}
+          modalStyle={[styles.modal]}
+          overlayStyle={styles.overlay}
+          handleStyle={styles.handle}
+          modalHeight={550}
+          handlePosition='inside'
+          openAnimationConfig={{
+            timing: { duration: 400 },
+            spring: { speed: 20, bounciness: 10 }
+          }}
+          closeAnimationConfig={{
+            timing: { duration: 400 },
+            spring: { speed: 20, bounciness: 10 }
+          }}
+          keyboardAvoidingBehavior='padding'
+          scrollViewProps={{
+            keyboardShouldPersistTaps: 'handled'
+          }}
+        >
+          <View style={styles.modalContainer}>
             <View
-              activeOpacity={0.7}
               style={{
-                ...styles.modalheading,
+                ...styles.modalHeader,
                 flexDirection: isArabic ? 'row-reverse' : 'row'
               }}
             >
-              <MaterialCommunityIcons
-                name='ticket-confirmation-outline'
-                size={24}
+              <View
+                activeOpacity={0.7}
+                style={{
+                  ...styles.modalheading,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
+                <MaterialCommunityIcons
+                  name='ticket-confirmation-outline'
+                  size={24}
+                  color={currentTheme.newIconColor}
+                />
+                <TextDefault
+                  H4
+                  bolder
+                  textColor={currentTheme.newFontcolor}
+                  center
+                >
+                  {t('applyVoucher')}
+                </TextDefault>
+              </View>
+              <Feather
+                name='x-circle'
+                size={34}
                 color={currentTheme.newIconColor}
+                onPress={() => onModalClose(voucherModalRef)}
               />
-              <TextDefault
-                H4
-                bolder
-                textColor={currentTheme.newFontcolor}
-                center
-              >
-                {t('applyVoucher')}
-              </TextDefault>
             </View>
-            <Feather
-              name='x-circle'
-              size={34}
-              color={currentTheme.newIconColor}
-              onPress={() => onModalClose(voucherModalRef)}
-            />
+            <View style={{ gap: 8 }}>
+              <TextInput
+                ref={inputRef}
+                label={t('inputCode')}
+                placeholder={t('inputCode')}
+                value={voucherCode}
+                onChangeText={(text) => setVoucherCode(text)}
+                style={styles.modalInput}
+              />
+            </View>
+            <TouchableOpacity
+              disabled={!voucherCode || couponLoading}
+              onPress={handleApplyCoupon}
+              style={[
+                styles.button,
+                !voucherCode && styles.buttonDisabled,
+                { height: scale(40) },
+                { opacity: couponLoading ? 0.5 : 1 }
+              ]}
+            >
+              {!couponLoading && (
+                <TextDefault
+                  textColor={currentTheme.black}
+                  style={styles.checkoutBtn}
+                  bold
+                  H4
+                >
+                  {t('apply')}
+                </TextDefault>
+              )}
+              {couponLoading && <Spinner backColor={'transparent'} />}
+            </TouchableOpacity>
           </View>
-          <View style={{ gap: 8 }}>
-            <TextInput
-              ref={inputRef}
-              label={t('inputCode')}
-              placeholder={t('inputCode')}
-              value={voucherCode}
-              onChangeText={(text) => setVoucherCode(text)}
-              style={styles.modalInput}
-            />
-          </View>
-          <TouchableOpacity
-            disabled={!voucherCode || couponLoading}
-            onPress={handleApplyCoupon}
-            style={[
-              styles.button,
-              !voucherCode && styles.buttonDisabled,
-              { height: scale(40) },
-              { opacity: couponLoading ? 0.5 : 1 }
-            ]}
-          >
-            {!couponLoading && (
-              <TextDefault
-                textColor={currentTheme.black}
-                style={styles.checkoutBtn}
-                bold
-                H4
-              >
-                {t('apply')}
-              </TextDefault>
-            )}
-            {couponLoading && <Spinner backColor={'transparent'} />}
-          </TouchableOpacity>
-        </View>
-      </Modalize>
-    </ScrollView>
+        </Modalize>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 

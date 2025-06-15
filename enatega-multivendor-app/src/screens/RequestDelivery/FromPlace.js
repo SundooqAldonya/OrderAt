@@ -77,6 +77,7 @@ export default function FromPlace() {
   })
   const [modalVisible, setModalVisible] = useState(false)
   const { isLoggedIn, profile } = useContext(UserContext)
+  const [mapLoaded, setMapLoaded] = useState(false)
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -155,6 +156,11 @@ export default function FromPlace() {
         )
       }
     })
+  }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setMapLoaded(true), 3000) // fallback
+    return () => clearTimeout(timeout)
   }, [])
 
   console.log({ initiated })
@@ -380,7 +386,33 @@ export default function FromPlace() {
             style={styles.map}
             region={region}
             onRegionChangeComplete={handleRegionChangeComplete}
+            onMapReady={() => {
+              console.log('Map is ready')
+              setMapLoaded(true)
+            }}
           />
+          {!mapLoaded && (
+            <View
+              style={[
+                styles.map,
+                {
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  zIndex: 1
+                }
+              ]}
+            >
+              <TextDefault style={{ color: '#000' }}>
+                Loading map...
+              </TextDefault>
+            </View>
+          )}
           <View style={styles.markerFixed}>
             <Ionicons name='location-sharp' size={40} color='#d00' />
           </View>

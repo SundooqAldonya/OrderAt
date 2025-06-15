@@ -662,5 +662,7 @@ export const ar = {
   next: 'التالي',
   cancel: 'إلغاء',
   old_password_wrong: 'خطأ في كلمة المرور القديمة',
-  select_language: 'أختر اللغة المفضلة'
+  select_language: 'أختر اللغة المفضلة',
+  your_order_delivered_here: 'طلباتك ستصل إلى هنا',
+  city: 'المدينة'
 }

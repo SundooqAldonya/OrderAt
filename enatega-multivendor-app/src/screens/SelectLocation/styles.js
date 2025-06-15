@@ -206,10 +206,10 @@ const styles = (props = null) =>
       marginTop: -1
     },
 
-    deliveryMarker: {
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
+    // deliveryMarker: {
+    //   alignItems: 'center',
+    //   justifyContent: 'center'
+    // },
     markerBubble: {
       paddingHorizontal: 12,
       paddingVertical: 8,
@@ -220,7 +220,8 @@ const styles = (props = null) =>
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.3,
       shadowRadius: 3,
-      elevation: 5
+      elevation: 5,
+      transform: [{ translateX: '-45%' }]
     },
     markerText: {
       color: '#fff',

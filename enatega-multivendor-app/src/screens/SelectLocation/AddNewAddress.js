@@ -46,9 +46,11 @@ const GET_AREAS = gql`
 `
 
 export default function AddNewAddress(props) {
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const { isLoggedIn } = useContext(UserContext)
   const { getAddress } = useGeocoding()
-  const [searchModalVisible, setSearchModalVisible] = useState()
+  const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [cityModalVisible, setCityModalVisible] = useState(false)
   const [selectedArea, setSelectedArea] = useState(null)
   const [areasModalOpen, setAreasModalOpen] = useState(false)
@@ -56,7 +58,7 @@ export default function AddNewAddress(props) {
   const [isClicked, setIsClicked] = useState(false)
 
   const { longitude, latitude, city } = props.route.params || {}
-
+  console.log({ city })
   const {
     data,
     loading: loadingAreas,
@@ -88,7 +90,6 @@ export default function AddNewAddress(props) {
   const navigation = useNavigation()
   const { getCurrentLocation } = useLocation()
 
-  const { t } = useTranslation()
   const setCurrentLocation = async () => {
     const { coords, error } = await getCurrentLocation()
     if (!error) {
@@ -114,7 +115,7 @@ export default function AddNewAddress(props) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: t('addAddress'),
+      title: t('select_area'),
       setCurrentLocation,
 
       headerRight: null,
@@ -247,7 +248,12 @@ export default function AddNewAddress(props) {
   const handleAreaSelect = (item) => {
     setSelectedArea(item)
     setAreasModalOpen(false)
+    navigation.navigate('SelectLocation', {
+      areaCoords: [...item.location.location.coordinates]
+    })
   }
+
+  // console.log({ selectedArea: selectedArea?.location.location })
 
   return (
     <>
@@ -283,9 +289,12 @@ export default function AddNewAddress(props) {
             H3
             bolder
             Left
-            style={styles().addressHeading}
+            style={{
+              ...styles().addressHeading,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
           >
-            {t('addAddress')}
+            {t('city')}
           </TextDefault>
           {/* <CityModal
             theme={currentTheme}
@@ -300,14 +309,23 @@ export default function AddNewAddress(props) {
           {/* selected city */}
           <View
             style={[
-              styles(currentTheme).textInput,
+              // styles(currentTheme).textInput,
 
               {
-                height: 50 // Fixed height
+                height: 50,
+                marginTop: 20
               }
             ]}
           >
-            <TextDefault>{city?.title}</TextDefault>
+            <TextDefault
+              style={{
+                color: '#000',
+                textAlign: isArabic ? 'right' : 'left',
+                fontSize: 20
+              }}
+            >
+              {city?.title}
+            </TextDefault>
           </View>
 
           <View
@@ -315,11 +333,12 @@ export default function AddNewAddress(props) {
               width: '95%',
               alignSelf: 'center',
               justifyContent: 'center',
-
               marginTop: scale(5)
             }}
           >
-            <Text>{t('select_area')}</Text>
+            <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
+              {t('select_area')}
+            </Text>
           </View>
           {/* select area */}
           <TouchableOpacity
@@ -333,7 +352,8 @@ export default function AddNewAddress(props) {
           >
             <TextDefault
               style={{
-                color: 'red'
+                color: selectedArea ? '#000' : 'red',
+                textAlign: isArabic ? 'right' : 'left'
               }}
             >
               {selectedArea ? selectedArea.title : t('select_area')}
@@ -356,7 +376,7 @@ export default function AddNewAddress(props) {
           </View> */}
 
           {/* toggle address api button */}
-          {!isLoggedIn ? (
+          {/* {!isLoggedIn ? (
             <View
               style={{
                 display: 'flex',
@@ -379,10 +399,10 @@ export default function AddNewAddress(props) {
                 </Text>
               </TouchableOpacity>
             </View>
-          ) : null}
+          ) : null} */}
 
           {/* toggle address input */}
-          {isClicked ? (
+          {/* {isClicked ? (
             <View style={[styles(currentTheme).textInput]}>
               <TouchableOpacity onPress={() => setSearchModalVisible(true)}>
                 <Text
@@ -396,11 +416,11 @@ export default function AddNewAddress(props) {
                 </Text>
               </TouchableOpacity>
             </View>
-          ) : null}
+          ) : null} */}
 
           {/* saving address */}
           <View style={{ flex: 1 }} />
-          {!isLoggedIn ? (
+          {/* {!isLoggedIn ? (
             <Fragment>
               {city && selectedArea ? (
                 <TouchableOpacity
@@ -427,7 +447,7 @@ export default function AddNewAddress(props) {
                 </TouchableOpacity>
               ) : null}
             </Fragment>
-          ) : null}
+          ) : null} */}
           {/* search address google api */}
           <SearchModal
             visible={searchModalVisible}

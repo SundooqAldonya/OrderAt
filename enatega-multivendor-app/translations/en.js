@@ -673,5 +673,7 @@ export const en = {
   next: 'Next',
   cancel: 'Cancel',
   old_password_wrong: 'Wrong old password!',
-  select_language: 'Select Language'
+  select_language: 'Select Language',
+  your_order_delivered_here: 'Your orders will be delivered here',
+  city: 'City'
 }
