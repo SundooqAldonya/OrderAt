@@ -342,6 +342,7 @@ const typeDefs = gql`
     startAvailabilityDate: Date
     endAvailabilityDate: Date
     lastUpdatedLocationDate: Date
+    assignedOrdersCount: Float
   }
 
   type RiderLocation {

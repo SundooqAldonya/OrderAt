@@ -1,61 +1,84 @@
-import { useRef, useCallback, useImperativeHandle, forwardRef } from 'react'
+import {
+  useState,
+  useRef,
+  Fragment,
+  useEffect,
+  useImperativeHandle,
+  forwardRef
+} from 'react'
 import { GoogleMap, LoadScript } from '@react-google-maps/api'
 import { MarkerClusterer } from '@googlemaps/markerclusterer'
-import { Fragment } from 'react'
 
 const containerStyle = {
   width: '100%',
   height: '600px'
 }
 
-const RidersMapComponent = forwardRef(({ riders }, ref) => {
+const RidersMapComponent = forwardRef(({ riders, trackedRiderId }, ref) => {
   const mapRef = useRef(null)
-  const markerRefs = useRef([])
+  const markerRefs = useRef({})
+  const clustererRef = useRef(null)
+  const [mapReady, setMapReady] = useState(false)
+  const [center, setCenter] = useState({ lat: 31.1107, lng: 30.9388 })
 
-  const center = { lat: 31.1107, lng: 30.9388 }
+  useEffect(() => {
+    if (!mapRef.current || !riders) return
+    if (!trackedRiderId && riders.length) {
+      const defaultCenter = {
+        lat: riders[0].location.coordinates[1],
+        lng: riders[0].location.coordinates[0]
+      }
+      setCenter(defaultCenter)
+    }
+    // Clear old markers
+    Object.values(markerRefs.current).forEach(marker => marker.setMap(null))
+    markerRefs.current = {}
 
-  const mapLocations = riders?.map(item => ({
-    lat: item?.location?.coordinates[1],
-    lng: item?.location?.coordinates[0]
-  }))
+    if (clustererRef.current) {
+      clustererRef.current.clearMarkers()
+    }
 
-  const onLoad = useCallback(
-    map => {
-      mapRef.current = map
+    const markers = riders
+      .map(rider => {
+        const coords = rider?.location?.coordinates
+        if (
+          !coords ||
+          coords.length < 2 ||
+          isNaN(coords[0]) ||
+          isNaN(coords[1])
+        )
+          return null
 
-      // Clean previous markers
-      markerRefs.current.forEach(marker => marker.setMap(null))
-      markerRefs.current = []
+        const position = {
+          lat: coords[1],
+          lng: coords[0]
+        }
 
-      const markers = mapLocations.map((position, i) => {
         const marker = new window.google.maps.Marker({
           position,
-          map
+          map: mapRef.current
         })
+
         const infoWindow = new window.google.maps.InfoWindow({
-          content: `<div style="font-weight:bold;">${riders[i].name}</div>`
+          content: `<div style="font-weight:bold;">${rider.name}</div>`
         })
 
-        marker.addListener('mouseover', () => {
-          infoWindow.open(map, marker)
-        })
+        marker.addListener('mouseover', () =>
+          infoWindow.open(mapRef.current, marker)
+        )
+        marker.addListener('mouseout', () => infoWindow.close())
 
-        // Hide InfoWindow when not hovering
-        marker.addListener('mouseout', () => {
-          infoWindow.close()
-        })
-        markerRefs.current.push(marker)
+        markerRefs.current[rider._id] = marker
         return marker
       })
+      .filter(Boolean)
 
-      new MarkerClusterer({ markers, map })
-    },
-    [mapLocations]
-  )
+    clustererRef.current = new MarkerClusterer({ markers, map: mapRef.current })
+  }, [riders, mapReady])
 
   useImperativeHandle(ref, () => ({
-    highlightMarkerByIndex: index => {
-      const marker = markerRefs.current[index]
+    highlightMarkerById: id => {
+      const marker = markerRefs.current[id]
       if (marker && mapRef.current) {
         mapRef.current.panTo(marker.getPosition())
         mapRef.current.setZoom(18)
@@ -71,7 +94,10 @@ const RidersMapComponent = forwardRef(({ riders }, ref) => {
         mapContainerStyle={containerStyle}
         center={center}
         zoom={15}
-        onLoad={onLoad}
+        onLoad={map => {
+          mapRef.current = map
+          setMapReady(true)
+        }}
         options={{
           scrollwheel: true,
           gestureHandling: 'auto',

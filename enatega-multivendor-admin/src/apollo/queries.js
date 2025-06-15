@@ -1158,6 +1158,7 @@ export const getRidersLocation = gql`
       updatedAt
       createdAt
       lastUpdatedLocationDate
+      assignedOrdersCount
     }
   }
 `
@@ -1209,5 +1210,12 @@ export const getCouponDiscountTypeEnums = gql`
 export const getCouponStatuses = gql`
   query GetCouponStatuses {
     getCouponStatuses
+  }
+`
+export const assignedOrders = gql`
+  query AssignedOrders($id: String!) {
+    assignedOrders(id: $id) {
+      _id
+    }
   }
 `

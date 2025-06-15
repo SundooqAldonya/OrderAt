@@ -399,7 +399,9 @@ const ar = {
     seen_by: 'تم رؤيته',
     start_date: 'بدأ',
     end_date: 'أنهى',
-    digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا'
+    digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا',
+    rider_orders: 'اوردرات كابتن التوصيل',
+    assigned_picked: 'الاوردرات المكلفة'
   }
 }
 

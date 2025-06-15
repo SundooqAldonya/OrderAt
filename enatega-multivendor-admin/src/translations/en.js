@@ -418,7 +418,9 @@ const en = {
     seen_by: 'Seen By',
     start_date: 'Start Date',
     end_date: 'End Date',
-    digits_error: 'Phone should be 11 digits'
+    digits_error: 'Phone should be 11 digits',
+    rider_orders: 'Rider Orders',
+    assigned_picked: 'Assigned orders'
   }
 }
 

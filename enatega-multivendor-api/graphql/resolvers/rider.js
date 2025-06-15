@@ -189,10 +189,47 @@ module.exports = {
     async getRidersLocation(_, args) {
       try {
         const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000)
-        const riders = await Rider.find({
-          available: true,
-          lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
-        })
+        // const riders = await Rider.find({
+        //   available: true,
+        //   lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+        // })
+        const riders = await Rider.aggregate([
+          {
+            $match: {
+              available: true,
+              lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+            }
+          },
+          {
+            $lookup: {
+              from: 'orders', // collection name in MongoDB (lowercase + plural by default)
+              localField: '_id',
+              foreignField: 'rider',
+              as: 'orders'
+            }
+          },
+          {
+            $addFields: {
+              assignedOrdersCount: {
+                $size: {
+                  $filter: {
+                    input: '$orders',
+                    as: 'order',
+                    cond: {
+                      $in: ['$$order.orderStatus', ['ASSIGNED', 'PICKED']] // 👈 include both
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            $project: {
+              orders: 0 // exclude full orders array if not needed
+            }
+          }
+        ])
+
         return riders
       } catch (err) {
         throw err
