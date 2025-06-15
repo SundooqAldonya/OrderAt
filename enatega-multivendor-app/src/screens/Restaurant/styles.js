@@ -1,10 +1,10 @@
 import { scale, verticalScale } from '../../utils/scaling'
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { textStyles } from '../../utils/textStyles'
 import { theme } from '../../utils/themeColors'
 import { colors } from '../../utils/colors'
-
+const { height } = Dimensions.get('window')
 const styles = (props = null) =>
   StyleSheet.create({
     flex: {
@@ -130,7 +130,7 @@ const styles = (props = null) =>
         width: 0,
         height: -verticalScale(3)
       },
-      shadowOpacity: 0.5,
+      shadowOpacity: 0.2,
       shadowRadius: verticalScale(2),
       marginBottom: 50
     },
@@ -138,9 +138,9 @@ const styles = (props = null) =>
       justifyContent: 'space-between',
       flexDirection: 'row',
       alignItems: 'center',
-      borderRadius: scale(40),
+      borderRadius: scale(16),
       backgroundColor: props !== null ? props.main : 'black',
-      height: '75%',
+      height: height * 0.06,
       width: '95%',
       ...alignment.PLsmall,
       ...alignment.PRsmall

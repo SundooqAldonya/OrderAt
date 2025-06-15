@@ -550,6 +550,23 @@ function Profile(props) {
                     </View>
                   )}
                 </View>
+                {/* <<<<<<< HEAD
+======= */}
+                {/* <View style={styles().headingLink}>
+                  <TouchableOpacity
+                    activeOpacity={0.3}
+                    style={{
+                      ...styles().headingButton,
+                      alignSelf: isArabic ? 'flex-start' : 'flex-end'
+                    }}
+                    onPress={handleNamePress}
+                  >
+                    <TextDefault textColor={colors.blue}>
+                      {t('edit')}
+                    </TextDefault>
+                  </TouchableOpacity>
+                </View> */}
+                {/* >>>>>>> d2bb9e7b17990dbcc93961db35f78cc6d72df51d */}
               </View>
 
               {/* email */}
@@ -564,7 +581,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >
@@ -593,7 +611,8 @@ function Profile(props) {
                     style={{
                       flexDirection: isArabic ? 'row-reverse' : 'row',
                       justifyContent: 'space-between',
-                      width: '100%'
+                      width: '100%',
+                      color: colors.dark
                     }}
                   >
                     {/* <View > */}
@@ -693,7 +712,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >
@@ -748,7 +768,8 @@ function Profile(props) {
                   {
                     textAlign: !isArabic ? 'left' : 'right',
                     width: '92%',
-                    marginTop: 10
+                    marginTop: 20,
+                    paddingHorizontal: 20
                   }
                 ]}
               >

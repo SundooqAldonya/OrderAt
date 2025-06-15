@@ -9,10 +9,11 @@ import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
 import { colors } from '../../utils/colors'
 import { scale } from '../../utils/scaling'
+import { Platform } from 'react-native'
 
 const navigationOptions = (props) => ({
   headerStyle: {
-    height: scale(50),
+    height: Platform.OS === 'ios' ? scale(110) : scale(50),
     backgroundColor: colors.primary,
     shadowColor: 'transparent',
     shadowRadius: 0

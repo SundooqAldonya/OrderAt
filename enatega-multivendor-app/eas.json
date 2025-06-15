@@ -11,6 +11,12 @@
       "channel": "production",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true,
+        "env": {
+            "GOOGLE_SERVICES_FILE": "./GoogleService-Info.plist"
+          }
       }
     },
     "staging": {
