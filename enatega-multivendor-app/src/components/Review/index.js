@@ -1,5 +1,13 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
-import { Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
 import { Modalize } from 'react-native-modalize'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import CrossCirleIcon from '../../assets/SVG/cross-circle-icon'
@@ -17,7 +25,9 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height
 const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
 const SNAP_HEIGHT = MODAL_HEIGHT
 
-const ORDER = gql`${order}`
+const ORDER = gql`
+  ${order}
+`
 const REVIEWORDER = gql`
   ${reviewOrder}
 `
@@ -27,7 +37,11 @@ function Review({ onOverlayPress, theme, orderId, rating }, ref) {
 
   const ratingRef = useRef()
   const [description, setDescription] = useState('')
-  const [mutate] = useMutation(REVIEWORDER, { variables: { order: orderId, description, rating: ratingRef.current }, onCompleted, onError })
+  const [mutate] = useMutation(REVIEWORDER, {
+    variables: { order: orderId, description, rating: ratingRef.current },
+    onCompleted,
+    onError
+  })
 
   function onCompleted() {
     setDescription('')
@@ -40,11 +54,16 @@ function Review({ onOverlayPress, theme, orderId, rating }, ref) {
   const [showSection, setShowSection] = useState(false)
   const [order, setOrder] = useState()
   const onSelectRating = (rating) => {
-    if (!showSection) { setShowSection(true) }
+    if (!showSection) {
+      setShowSection(true)
+    }
     ratingRef.current = rating
   }
-  const fetchOrder = async() => {
-    const result = await client.query({ query: ORDER, variables: { id: orderId } })
+  const fetchOrder = async () => {
+    const result = await client.query({
+      query: ORDER,
+      variables: { id: orderId }
+    })
     setOrder(result?.data?.order)
   }
   useEffect(() => {
@@ -53,39 +72,80 @@ function Review({ onOverlayPress, theme, orderId, rating }, ref) {
   }, [orderId])
 
   const onSubmit = () => {
-    mutate({variables: { order: orderId, description, rating: ratingRef.current }})
+    mutate({
+      variables: { order: orderId, description, rating: ratingRef.current }
+    })
   }
   return (
-    <Modalize snapPoint={SNAP_HEIGHT} handlePosition='inside' ref={ref} withHandle={false} adjustToContentHeight modalStyle={{ borderWidth: StyleSheet.hairlineWidth }} onOverlayPress={onOverlayPress}>
+    <Modalize
+      snapPoint={SNAP_HEIGHT}
+      handlePosition='inside'
+      ref={ref}
+      withHandle={false}
+      adjustToContentHeight
+      modalStyle={{ borderWidth: StyleSheet.hairlineWidth }}
+      onOverlayPress={onOverlayPress}
+    >
       <View style={styles.container(theme)}>
         <View style={styles.headingContainer}>
           <TextDefault bolder H3 textColor={theme.gray900}>
             {t('howWasOrder')}
           </TextDefault>
           <TouchableOpacity onPress={onCompleted}>
-            <CrossCirleIcon stroke={theme.newIconColor}/>
+            <CrossCirleIcon stroke={theme.newIconColor} />
           </TouchableOpacity>
         </View>
         <View style={styles.itemContainer}>
           <View style={{ justifyContent: 'space-evenly' }}>
-            {order?.items?.slice(0, 2).map((item, index) => (<TextDefault key={`${item.food}-${index}`} H5 bold textColor={theme.gray900}>{item.title}</TextDefault>))}
+            {order?.items?.slice(0, 2).map((item, index) => (
+              <TextDefault
+                key={`${item.food}-${index}`}
+                H5
+                bold
+                textColor={theme.gray900}
+              >
+                {item.title}
+              </TextDefault>
+            ))}
             <View>
-              {order?.deliveredAt && <TextDefault textColor={theme.gray500} >{(new Date(order?.deliveredAt).toString())}</TextDefault>}
+              {order?.deliveredAt && (
+                <TextDefault textColor={theme.gray500}>
+                  {new Date(order?.deliveredAt).toString()}
+                </TextDefault>
+              )}
             </View>
           </View>
           <View>
-            <Image source={order?.restaurant?.image ? { uri: order?.restaurant?.image }: require('../../assets/images/food_placeholder.png') } style={styles.image}/>
-
+            <Image
+              source={
+                order?.restaurant?.image
+                  ? { uri: order?.restaurant?.image }
+                  : require('../../assets/images/food_placeholder.png')
+              }
+              style={styles.image}
+            />
           </View>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
-          <StarRating numberOfStars={5} onSelect={onSelectRating} defaultRating={rating}/>
+          <StarRating
+            numberOfStars={5}
+            onSelect={onSelectRating}
+            defaultRating={rating}
+          />
         </View>
 
-        {(showSection || rating>0) && <View>
-          <TextDefault textColor={theme.gray900} H4 bolder style={{ marginVertical: scale(8) }}>{t('tellAboutExp')} {order?.restaurant?.name}</TextDefault>
-          {/* <OutlinedTextField
+        {(showSection || rating > 0) && (
+          <View>
+            <TextDefault
+              textColor={theme.gray900}
+              H4
+              bolder
+              style={{ marginVertical: scale(8) }}
+            >
+              {t('tellAboutExp')} {order?.restaurant?.name}
+            </TextDefault>
+            {/* <OutlinedTextField
             label={t('review')}
             placeholder={t('typeHere')}
             fontSize={scale(12)}
@@ -97,40 +157,53 @@ function Review({ onOverlayPress, theme, orderId, rating }, ref) {
             placeholderTextColor={theme.newFontcolor}
             textColor={theme.newFontcolor}
           /> */}
-          <TextInput
-            label={t('review')}
-            placeholder={t('typeHere')}
-            value={description}
-            onChangeText={(text) => setDescription(text)}
-            style={styles.modalInput(theme)}
-          />
-          <Button text={t('submit')}
-            buttonProps={{ onPress: onSubmit }}
-            buttonStyles={{ borderRadius: 15, backgroundColor: theme.primary, margin: 10 }} textStyles={{ margin: 10, alignSelf: 'center' }}
-            textProps={{ H4: true, bold: true, textColor: theme.black }}/>
-        </View>}
+            <TextInput
+              label={t('review')}
+              placeholder={t('typeHere')}
+              value={description}
+              onChangeText={(text) => setDescription(text)}
+              style={styles.modalInput(theme)}
+            />
+            <Button
+              text={t('submit')}
+              buttonProps={{ onPress: onSubmit }}
+              buttonStyles={{
+                borderRadius: 15,
+                backgroundColor: theme.primary,
+                margin: 10
+              }}
+              textStyles={{ margin: 10, alignSelf: 'center' }}
+              textProps={{ H4: true, bold: true, textColor: theme.black }}
+            />
+          </View>
+        )}
       </View>
     </Modalize>
   )
 }
 
-const StarRating = ({ numberOfStars = 5, onSelect, defaultRating=0 }) => {
+const StarRating = ({ numberOfStars = 5, onSelect, defaultRating = 0 }) => {
   const stars = Array.from({ length: numberOfStars }, (_, index) => index + 1)
   const [selected, setSelected] = useState(defaultRating)
-  useEffect(()=>{
-    if(defaultRating) onSelect(defaultRating)
-  },[])
-  const onPress = index => {
+  useEffect(() => {
+    if (defaultRating) onSelect(defaultRating)
+  }, [])
+  const onPress = (index) => {
     onSelect(index)
     setSelected(index)
   }
   return (
     <View style={styles.starContainer}>
-      {stars.map(index => <TouchableWithoutFeedback key={`star-${index}`} onPress={() => onPress(index)}>
-        <View style={{ flex: 1 }}>
-          <StarIcon isFilled={index <= selected}/>
-        </View>
-      </TouchableWithoutFeedback>)}
+      {stars.map((index) => (
+        <TouchableWithoutFeedback
+          key={`star-${index}`}
+          onPress={() => onPress(index)}
+        >
+          <View style={{ flex: 1 }}>
+            <StarIcon isFilled={index <= selected} />
+          </View>
+        </TouchableWithoutFeedback>
+      ))}
     </View>
   )
 }

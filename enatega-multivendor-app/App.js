@@ -13,7 +13,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   I18nManager,
-  Text
+  Text,
+  AppState
 } from 'react-native'
 import { ApolloProvider } from '@apollo/client'
 import { exitAlert } from './src/utils/androidBackButton'
@@ -114,22 +115,61 @@ export default function App() {
     if (savedLang) setLanguage(savedLang)
   }
 
+  const appState = useRef(AppState.currentState)
+
+  console.log({ appState })
+
   useEffect(() => {
     checkLang()
   }, [])
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsConnected(state.isConnected)
-      if (state.isConnected) {
-        console.log('🟢 Reconnected to the internet')
+    const subscription = AppState.addEventListener(
+      'change',
+      async (nextAppState) => {
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextAppState === 'active'
+        ) {
+          console.log(
+            '🔄 App resumed from background. Checking connectivity...'
+          )
+          const netState = await NetInfo.fetch()
+          setIsConnected(netState.isConnected)
 
-        client.reFetchObservableQueries()
+          if (netState.isConnected) {
+            console.log('🟢 Network is connected. Re-fetching queries...')
+            client.reFetchObservableQueries()
+            Toast.show({
+              type: 'success',
+              text1: 'Connected',
+              text2: 'You are back online.'
+            })
+          } else {
+            console.log('🔴 Still offline after resume.')
+          }
+        }
+        appState.current = nextAppState
       }
-    })
+    )
 
-    return () => unsubscribe()
+    return () => {
+      subscription.remove()
+    }
   }, [])
+
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener((state) => {
+  //     setIsConnected(state.isConnected)
+  //     if (state.isConnected) {
+  //       console.log('🟢 Reconnected to the internet')
+
+  //       client.reFetchObservableQueries()
+  //     }
+  //   })
+
+  //   return () => unsubscribe()
+  // }, [])
 
   let [fontsLoaded] = useFonts({
     Montserrat_100Thin,
@@ -159,15 +199,6 @@ export default function App() {
       RNRestart.Restart()
     }
   }, [I18nManager.isRTL])
-
-  // useEffect(() => {
-
-  //   if (!I18nManager.isRTL) {
-  //     I18nManager.allowRTL(true)
-  //     I18nManager.forceRTL(true)
-  //     RNRestart.Restart()
-  //   }
-  // }, [I18nManager.isRTL])
 
   useWatchLocation()
   useEffect(() => {
@@ -406,6 +437,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
+
 async function registerForPushNotificationsAsync() {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
