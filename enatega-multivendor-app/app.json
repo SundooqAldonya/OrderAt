@@ -52,7 +52,7 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 64,
+      "versionCode": 65,
       "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
@@ -125,7 +125,7 @@
           "sounds": ["./assets/beep1.wav"]
         }
       ],
-      "@react-native-firebase/app", 
+      "@react-native-firebase/app",
       "@react-native-firebase/messaging",
       "./app.plugin.js"
     ],

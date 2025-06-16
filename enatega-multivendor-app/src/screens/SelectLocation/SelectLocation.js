@@ -115,24 +115,28 @@ export default function SelectLocation(props) {
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
         elevation: 0
+      },
+      headerLeft: () => {
+        if (isLoggedIn) {
+          return (
+            <HeaderBackButton
+              truncatedLabel=''
+              backImage={() => (
+                <View>
+                  <MaterialIcons
+                    name='arrow-back'
+                    size={30}
+                    color={currentTheme.newIconColor}
+                  />
+                </View>
+              )}
+              onPress={() => {
+                navigationService.goBack()
+              }}
+            />
+          )
+        }
       }
-      // headerLeft: () => (
-      //   <HeaderBackButton
-      //     truncatedLabel=''
-      //     backImage={() => (
-      //       <View>
-      //         <MaterialIcons
-      //           name='arrow-back'
-      //           size={30}
-      //           color={currentTheme.newIconColor}
-      //         />
-      //       </View>
-      //     )}
-      //     onPress={() => {
-      //       navigationService.goBack()
-      //     }}
-      //   />
-      // )
     })
   }, [])
 
@@ -154,6 +158,10 @@ export default function SelectLocation(props) {
       setCoordinates(newRegion)
     }
   }, [areaCoords])
+
+  useEffect(() => {
+    mapRef.current.animateToRegion(coordinates, 1000)
+  }, [])
 
   useEffect(() => {
     if (!coordinates.latitude) {

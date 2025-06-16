@@ -64,7 +64,7 @@ export default function EditUserAddress(props) {
   const [locationChangeLoading, setLocationChangeLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
   const [selectedAddress, setSelectedAddress] = useState(null)
-
+  const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { location, setLocation } = useContext(LocationContext)
@@ -101,23 +101,27 @@ export default function EditUserAddress(props) {
     }
   }, [address])
 
-  useEffect(() => {
-    // if (mapRef && mapRef.current) {
-    console.log('zooming in')
-    if (address?.location && mapRef?.current) {
-      zoomIn()
-    } else {
-      // Retry after a short delay if mapRef is not available yet
-      const timeout = setTimeout(() => {
-        if (mapRef.current) {
-          console.log('zooming in after delay')
-          zoomIn()
-        }
-      }, 500) // Adjust delay if needed
+  // useEffect(() => {
+  //   // if (mapRef && mapRef.current) {
+  //   console.log('zooming in')
+  //   if (address?.location && mapRef?.current) {
+  //     zoomIn()
+  //   } else {
+  //     // Retry after a short delay if mapRef is not available yet
+  //     const timeout = setTimeout(() => {
+  //       if (mapRef.current) {
+  //         console.log('zooming in after delay')
+  //         zoomIn()
+  //       }
+  //     }, 500) // Adjust delay if needed
 
-      return () => clearTimeout(timeout)
-    }
-  }, [mapRef])
+  //     return () => clearTimeout(timeout)
+  //   }
+  // }, [mapRef])
+
+  useEffect(() => {
+    mapRef.current.animateToRegion(coordinates, 1000)
+  }, [coordinates])
 
   const zoomIn = () => {
     const newCoordinates = {
@@ -125,7 +129,6 @@ export default function EditUserAddress(props) {
       longitude: address.location.coordinates[0],
       latitudeDelta: 0.01,
       longitudeDelta: 0.01
-      // zoom: 15
     }
     if (mapRef?.current) {
       mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
@@ -314,15 +317,16 @@ export default function EditUserAddress(props) {
       })
     })
   }
-    // when press map
-    const handleMapPress = (e) => {
-      const newCoords = e.nativeEvent.coordinate
-      setCoordinates({
-        ...coordinates,
-        latitude: newCoords.latitude,
-        longitude: newCoords.longitude
-      })
-    }
+
+  // when press map
+  const handleMapPress = (e) => {
+    const newCoords = e.nativeEvent.coordinate
+    setCoordinates({
+      ...coordinates,
+      latitude: newCoords.latitude,
+      longitude: newCoords.longitude
+    })
+  }
 
   const onItemPress = (city) => {
     setModalVisible(false)
@@ -336,18 +340,18 @@ export default function EditUserAddress(props) {
     })
   }
   // Assuming coordinates comes from somewhere as strings
-  const fixedCoordinates = {
-    latitude:
-      typeof coordinates.latitude === 'string'
-        ? parseFloat(coordinates.latitude)
-        : coordinates.latitude,
-    longitude:
-      typeof coordinates.longitude === 'string'
-        ? parseFloat(coordinates.longitude)
-        : coordinates.longitude,
-    latitudeDelta: coordinates.latitudeDelta,
-    longitudeDelta: coordinates.longitudeDelta
-  }
+  // const fixedCoordinates = {
+  //   latitude:
+  //     typeof coordinates.latitude === 'string'
+  //       ? parseFloat(coordinates.latitude)
+  //       : coordinates.latitude,
+  //   longitude:
+  //     typeof coordinates.longitude === 'string'
+  //       ? parseFloat(coordinates.longitude)
+  //       : coordinates.longitude,
+  //   latitudeDelta: coordinates.latitudeDelta,
+  //   longitudeDelta: coordinates.longitudeDelta
+  // }
   return (
     <>
       <View style={styles().flex}>
@@ -361,38 +365,62 @@ export default function EditUserAddress(props) {
         >
           <MapView
             ref={mapRef}
-            initialRegion={fixedCoordinates}
+            initialRegion={coordinates}
             style={{ flex: 1 }}
             provider={PROVIDER_GOOGLE}
             onMapReady={zoomIn}
-            // onRegionChangeComplete={onRegionChangeComplete}
-            onPress={handleMapPress}  
+            onRegionChangeComplete={onRegionChangeComplete}
+            // onPress={handleMapPress}
             zoomEnabled
             maxZoomLevel={50}
             bounce
-          >
-            <Marker
-              coordinate={fixedCoordinates}
-              title={t('your_order_will_send_here')}
+            onMapLoaded={() => setMapLoaded(true)}
+          />
+          {!mapLoaded && (
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                zIndex: 1
+              }}
             >
-              <View style={styles().deliveryMarker}>
-                <View
-                  style={[
-                    styles().markerBubble,
-                    { backgroundColor: '#06C167' }
-                  ]}
-                >
-                  <Text style={styles().markerText}>{t('your_location')}</Text>
-                </View>
-                <View style={styles().markerPin}>
-                  <View
-                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
-                  />
-                </View>
+              <TextDefault style={{ color: '#000' }}>
+                Loading map...
+              </TextDefault>
+            </View>
+          )}
+          <View
+            pointerEvents='none'
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: [{ translateX: -25 }, { translateY: -50 }], // center the marker
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <View style={styles().deliveryMarker}>
+              <View
+                style={[styles().markerBubble, { backgroundColor: '#06C167' }]}
+              >
+                <Text style={styles().markerText}>
+                  {t('your_order_delivered_here')}
+                </Text>
               </View>
-            </Marker>
-          </MapView>
-
+              <View style={styles().markerPin}>
+                <View
+                  style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                />
+              </View>
+            </View>
+          </View>
           {/* <MapView
             ref={mapRef}
             initialRegion={coordinates}

@@ -72,6 +72,7 @@ export default function AddNewAddressUser(props) {
   const [loading, setLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
   const [selectedAddress, setSelectedAddress] = useState(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef()
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { location, setLocation } = useContext(LocationContext)
@@ -112,20 +113,15 @@ export default function AddNewAddressUser(props) {
           truncatedLabel=''
           backImage={() => (
             <View>
-              <MaterialIcons
-                name='arrow-back'
-                size={30}
-                color={currentTheme.newIconColor}
-              />
+              <MaterialIcons name='arrow-back' size={30} color={'#000'} />
             </View>
           )}
-          onPress={() => {
-            navigationService.goBack()
-          }}
+          onPress={() => navigationService.goBack()}
         />
       )
     })
   }, [])
+
   useEffect(() => {
     if (!coordinates.latitude) {
       getCurrentPositionNav()
@@ -144,7 +140,7 @@ export default function AddNewAddressUser(props) {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
       }
-
+      setCoordinates({ ...newCoordinates })
       if (mapRef.current) {
         mapRef.current.animateToRegion(newCoordinates, 1000) // Moves the map smoothly
       }
@@ -219,17 +215,7 @@ export default function AddNewAddressUser(props) {
         deliveryAddress: res.formattedAddress,
         details: addressDetails
       })
-      // setCoordinates({
-      //   ...coordinates,
-      //   longitude: position.coords.longitude,
-      //   latitude: position.coords.latitude
-      // })
     })
-    // setCoordinates({
-    //   ...coordinates,
-    //   longitude: position.coords.longitude,
-    //   latitude: position.coords.latitude
-    // })
   }
   const [mutate] = useMutation(CREATE_ADDRESS, {
     onCompleted: (data) => {
@@ -254,26 +240,11 @@ export default function AddNewAddressUser(props) {
       setLoading(false)
       return
     }
-    // const { error, coords, message } = await getCurrentLocation()
-    // if (error) {
-    //   FlashMessage({
-    //     message
-    //   })
-    //   setLoading(false)
-    //   return
-    // }
+
     setLoading(false)
     getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
       console.log({ res })
       if (isLoggedIn) {
-        // save the location
-        // if (!addressDetails) {
-        //   Alert.alert(
-        //     'Address details is required',
-        //     'Please add address details'
-        //   )
-        //   return
-        // }
         const addressInput = {
           _id: '',
           label: 'Home',
@@ -364,38 +335,59 @@ export default function AddNewAddressUser(props) {
                 onPress={handleMapPress}
                 // onRegionChangeComplete={onRegionChangeComplete}
                 maxZoomLevel={50}
-              >
-                <Marker
+                onMapLoaded={() => setMapLoaded(true)}
+              />
+              {!mapLoaded && (
+                <View
                   style={{
-                    borderRadius: 16,
-                    backgroundColor: ''
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    zIndex: 1
                   }}
-                  coordinate={coordinates}
-                  title={t('your_order_will_send_here')}
                 >
-                  <View style={styles().deliveryMarker}>
+                  <TextDefault style={{ color: '#000' }}>
+                    Loading map...
+                  </TextDefault>
+                </View>
+              )}
+              <View
+                pointerEvents='none'
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: [{ translateX: -25 }, { translateY: -50 }], // center the marker
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <View style={styles().deliveryMarker}>
+                  <View
+                    style={[
+                      styles().markerBubble,
+                      { backgroundColor: '#06C167' }
+                    ]}
+                  >
+                    <Text style={styles().markerText}>
+                      {t('your_order_delivered_here')}
+                    </Text>
+                  </View>
+                  <View style={styles().markerPin}>
                     <View
                       style={[
-                        styles().markerBubble,
+                        styles().pinInner,
                         { backgroundColor: '#06C167' }
                       ]}
-                    >
-                      <Text style={styles().markerText}>
-                        {t('your_location')}
-                      </Text>
-                    </View>
-
-                    <View style={styles().markerPin}>
-                      <View
-                        style={[
-                          styles().pinInner,
-                          { backgroundColor: '#06C167' }
-                        ]}
-                      />
-                    </View>
+                    />
                   </View>
-                </Marker>
-              </MapView>
+                </View>
+              </View>
             </Fragment>
           ) : null}
         </View>

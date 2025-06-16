@@ -140,11 +140,6 @@ export default function App() {
           if (netState.isConnected) {
             console.log('🟢 Network is connected. Re-fetching queries...')
             client.reFetchObservableQueries()
-            Toast.show({
-              type: 'success',
-              text1: 'Connected',
-              text2: 'You are back online.'
-            })
           } else {
             console.log('🔴 Still offline after resume.')
           }
