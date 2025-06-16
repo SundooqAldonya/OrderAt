@@ -39,6 +39,7 @@ import beep1 from '../assets/beep1.wav'
 import CameraCaptureReceipt from '../screens/CameraCaptureReceipt'
 import { useMutation } from '@apollo/client'
 import { refreshFirebaseToken } from '../apollo/mutations'
+import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -261,6 +262,13 @@ function AppContainer() {
       })
     }
   }, [configuration?.riderAppSentryUrl])
+
+  useEffect(() => {
+    // Optional: Start immediately
+    if (token) {
+      startBackgroundUpdate().catch(console.warn)
+    }
+  }, [token])
 
   return (
     <SafeAreaProvider>

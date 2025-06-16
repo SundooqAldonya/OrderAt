@@ -474,7 +474,7 @@ module.exports = {
       }
     },
     updateRiderLocation: async (_, args, { req }) => {
-      console.log('updateRiderLocation', req.userId)
+      console.log('updateRiderLocation', args)
       if (!req.userId) {
         throw new Error('Unauthenticated!')
       }

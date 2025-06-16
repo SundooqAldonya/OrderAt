@@ -2126,7 +2126,11 @@ const typeDefs = gql`
     selectAddress(id: String!): User!
     assignOrder(id: String): Order!
     muteRing(orderId: String): Boolean!
-    updateRiderLocation(latitude: String!, longitude: String!): Rider!
+    updateRiderLocation(
+      latitude: String!
+      longitude: String!
+      tracking: String
+    ): Rider!
     restaurantLogin(username: String!, password: String!): RestaurantAuth!
     restaurantLogout(id: String!): Message
     createZone(zone: ZoneInput!): Zone!

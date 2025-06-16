@@ -16,6 +16,7 @@ import UserContext from '../../context/user'
 import useSidebar from '../Sidebar/useSidebar'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
+import Feather from '@expo/vector-icons/Feather'
 
 // const RiderLogin = require('../../assets/svg/RiderLogin.png')
 
@@ -36,9 +37,10 @@ const ScreenBackground = ({ children }) => {
       <TouchableOpacity
         style={styles.hamburger}
         onPress={() => navigation.openDrawer()}>
+        <Feather name="menu" size={34} color="black" />
+        {/* <View style={styles.line}></View>
         <View style={styles.line}></View>
-        <View style={styles.line}></View>
-        <View style={styles.line}></View>
+        <View style={styles.line}></View> */}
       </TouchableOpacity>
       <View style={styles.container}>
         <View

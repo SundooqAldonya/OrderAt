@@ -81,26 +81,26 @@ export const UserProvider = props => {
     }
   }, [dataProfile])
 
-  useEffect(() => {
-    const trackRiderLocation = async () => {
-      locationListener.current = await watchPositionAsync(
-        { accuracy: LocationAccuracy.BestForNavigation, timeInterval: 10000 },
-        async location => {
-          client.mutate({
-            mutation: UPDATE_LOCATION,
-            variables: {
-              latitude: location.coords.latitude.toString(),
-              longitude: location.coords.longitude.toString()
-            }
-          })
-        }
-      )
-    }
-    trackRiderLocation()
-    return () => {
-      locationListener.current && locationListener.current.remove()
-    }
-  }, [locationPermission])
+  // useEffect(() => {
+  //   const trackRiderLocation = async () => {
+  //     locationListener.current = await watchPositionAsync(
+  //       { accuracy: LocationAccuracy.BestForNavigation, timeInterval: 10000 },
+  //       async location => {
+  //         client.mutate({
+  //           mutation: UPDATE_LOCATION,
+  //           variables: {
+  //             latitude: location.coords.latitude.toString(),
+  //             longitude: location.coords.longitude.toString()
+  //           }
+  //         })
+  //       }
+  //     )
+  //   }
+  //   trackRiderLocation()
+  //   return () => {
+  //     locationListener.current && locationListener.current.remove()
+  //   }
+  // }, [locationPermission])
 
   function onCompleted({ rider, assignedOrders }) {
     console.log(rider)

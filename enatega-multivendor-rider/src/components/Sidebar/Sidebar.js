@@ -10,6 +10,7 @@ import useSidebar from './useSidebar'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import UserContext from '../../context/user'
+import { stopBackgroundUpdate } from '../../utilities/backgroundLocationTask'
 
 function SidebBar() {
   const navigation = useNavigation()
@@ -29,6 +30,11 @@ function SidebBar() {
   }
 
   const isArabic = i18n.language === 'ar'
+
+  const handleLogout = () => {
+    logout()
+    stopBackgroundUpdate()
+  }
 
   return (
     <ImageBackground
@@ -127,7 +133,7 @@ function SidebBar() {
         </View>
         <View style={[styles.opacity, { flex: 2 }]}>
           <NavItem
-            onPress={() => logout()}
+            onPress={handleLogout}
             icon="sign-out"
             title={t('titleLogout')}
             reverse={isArabic}

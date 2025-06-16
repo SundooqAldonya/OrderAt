@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import { playCustomSound } from '../../utilities/playSound'
+import { startBackgroundUpdate } from '../../utilities/backgroundLocationTask'
 
 const RIDER_LOGIN = gql`
   ${riderLogin}
@@ -59,6 +60,7 @@ const useLogin = () => {
       FlashMessage({ message: t('loginFlashMsg') })
       await AsyncStorage.setItem('rider-id', riderLogin.userId)
       await setTokenAsync(riderLogin.token)
+      startBackgroundUpdate().catch(console.warn)
       navigation.navigate('Home')
     } else {
       if (

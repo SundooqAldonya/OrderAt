@@ -27,8 +27,8 @@ export const assignOrder = `mutation AssignOrder($id:String!){
   }
 }`
 
-export const updateLocation = `mutation UpdateRiderLocation($latitude:String!,$longitude:String!){
-updateRiderLocation(latitude:$latitude,longitude:$longitude){
+export const updateLocation = `mutation UpdateRiderLocation($latitude:String!,$longitude:String!, $tracking: String){
+updateRiderLocation(latitude:$latitude,longitude:$longitude, tracking: $tracking){
   _id
 }
 }`

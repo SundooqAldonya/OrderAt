@@ -52,14 +52,17 @@ export default StyleSheet.create({
     ...alignment.MLmedium
   },
   hamburger: {
-    width: 30,
-    height: 20,
+    width: 60,
+    height: 40,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
-    top: 70,
-    left: 40
+    top: 50,
+    left: 30
+    // backgroundColor: 'red'
+    // padding: 8
   },
   toggleContainer: {
     width: 30,
