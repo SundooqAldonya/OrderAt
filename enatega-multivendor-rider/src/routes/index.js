@@ -265,10 +265,10 @@ function AppContainer() {
 
   useEffect(() => {
     // Optional: Start immediately
-    if (token) {
-      startBackgroundUpdate().catch(console.warn)
-    }
-  }, [token])
+    // if (token) {
+    startBackgroundUpdate().catch(console.warn)
+    // }
+  }, [])
 
   return (
     <SafeAreaProvider>

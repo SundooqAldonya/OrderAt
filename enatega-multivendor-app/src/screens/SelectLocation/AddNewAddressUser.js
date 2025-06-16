@@ -71,6 +71,7 @@ export default function AddNewAddressUser(props) {
   const inset = useSafeAreaInsets()
   const [loading, setLoading] = useState(false)
   const [addressDetails, setAddressDetails] = useState('')
+  const [label, setLabel] = useState('')
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef()
@@ -247,7 +248,7 @@ export default function AddNewAddressUser(props) {
       if (isLoggedIn) {
         const addressInput = {
           _id: '',
-          label: 'Home',
+          label,
           latitude: String(coordinates.latitude),
           longitude: String(coordinates.longitude),
           deliveryAddress: res.formattedAddress,
@@ -257,7 +258,7 @@ export default function AddNewAddressUser(props) {
         // set location
         setLocation({
           _id: '',
-          label: 'Home',
+          label,
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
           deliveryAddress: res.formattedAddress,
@@ -318,7 +319,7 @@ export default function AddNewAddressUser(props) {
           style={[
             styles().mapView,
             {
-              height: '60%'
+              height: '55%'
             }
           ]}
         >
@@ -470,13 +471,32 @@ export default function AddNewAddressUser(props) {
                     : null}
                 </TextDefault>
               </View> */}
-              <View style={[styles(currentTheme).textInput]}>
+              <View style={[styles(currentTheme).textInput, { height: 50 }]}>
+                <TextInput
+                  value={label}
+                  onChangeText={(text) => setLabel(text)}
+                  placeholder={t('address_label_placeholder')}
+                  placeholderTextColor={
+                    themeContext.ThemeValue === 'Dark' ? '#fff' : 'grey'
+                  }
+                  style={[
+                    {
+                      color:
+                        themeContext.ThemeValue === 'Dark' ? '#fff' : '#000',
+                      textAlignVertical: 'top' // Aligns text to the top (important for Android)
+                    }
+                  ]}
+                  blurOnSubmit={true} // Keyboard will dismiss when submit is pressed
+                  returnKeyType='done' // Changes return key to "done" on iOS
+                />
+              </View>
+              <View style={[styles(currentTheme).textInput, { height: 50 }]}>
                 <TextInput
                   value={addressDetails}
                   onChangeText={(text) => setAddressDetails(text)}
-                  placeholder={t('address_details')}
+                  placeholder={t('better_place_description')}
                   placeholderTextColor={
-                    themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
+                    themeContext.ThemeValue === 'Dark' ? '#fff' : 'grey'
                   }
                   style={[
                     {

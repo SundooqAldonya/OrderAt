@@ -6,6 +6,7 @@ import UserContext from '../../context/user'
 import { profile } from '../../apollo/queries'
 import { useTranslation } from 'react-i18next'
 import { useSoundContext } from '../../context/sound'
+import { stopBackgroundUpdate } from '../../utilities/backgroundLocationTask'
 
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
@@ -74,6 +75,7 @@ const useSidebar = () => {
       mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
       if (isEnabled) {
         setIsMuted(true)
+        stopBackgroundUpdate()
       }
       setIsEnabled(previousState => !previousState)
     }

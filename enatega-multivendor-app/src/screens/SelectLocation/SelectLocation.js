@@ -49,8 +49,8 @@ const CREATE_ADDRESS = gql`
   ${createAddress}
 `
 
-// const LATITUDE = 30.04442
-// const LONGITUDE = 31.235712
+const LATITUDE = 30.04442
+const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
@@ -348,7 +348,7 @@ export default function SelectLocation(props) {
           style={[
             styles().mapView,
             {
-              height: '70%'
+              height: '80%'
             }
           ]}
         >

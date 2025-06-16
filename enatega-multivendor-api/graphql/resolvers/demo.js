@@ -15,10 +15,10 @@ module.exports = {
       })
 
       return {
-        restaurantUsername: restaurant.username,
-        restaurantPassword: restaurant.password,
-        riderUsername: rider.username,
-        riderPassword: rider.password
+        restaurantUsername: restaurant?.username,
+        restaurantPassword: restaurant?.password,
+        riderUsername: rider?.username,
+        riderPassword: rider?.password
       }
     }
   }

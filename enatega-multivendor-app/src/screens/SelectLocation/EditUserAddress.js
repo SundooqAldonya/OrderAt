@@ -70,6 +70,7 @@ export default function EditUserAddress(props) {
   const { location, setLocation } = useContext(LocationContext)
   const { getAddress } = useGeocoding()
   const { isLoggedIn, refetchProfile } = useContext(UserContext)
+  const [label, setLabel] = useState('')
 
   console.log({ address })
 
@@ -92,6 +93,7 @@ export default function EditUserAddress(props) {
         deliveryAddress: address.deliveryAddress,
         details: address.details
       })
+      setLabel(address.label)
 
       setCoordinates({
         ...coordinates,
@@ -276,7 +278,7 @@ export default function EditUserAddress(props) {
         // save the location
         const addressInput = {
           _id: address?._id,
-          label: 'Home',
+          label,
           latitude: String(coordinates.latitude),
           longitude: String(coordinates.longitude),
           deliveryAddress: res.formattedAddress,
@@ -510,13 +512,31 @@ export default function EditUserAddress(props) {
             </TextDefault>
           </View>
            */}
-          <View style={[styles(currentTheme).textInput]}>
+          <View style={[styles(currentTheme).textInput, { height: 50 }]}>
+            <TextInput
+              value={label}
+              onChangeText={(text) => setLabel(text)}
+              placeholder={t('address_label_placeholder')}
+              placeholderTextColor={
+                themeContext.ThemeValue === 'Dark' ? '#fff' : 'grey'
+              }
+              style={[
+                {
+                  color: themeContext.ThemeValue === 'Dark' ? '#fff' : '#000',
+                  textAlignVertical: 'top' // Aligns text to the top (important for Android)
+                }
+              ]}
+              blurOnSubmit={true} // Keyboard will dismiss when submit is pressed
+              returnKeyType='done' // Changes return key to "done" on iOS
+            />
+          </View>
+          <View style={[styles(currentTheme).textInput, { height: 50 }]}>
             <TextInput
               value={addressDetails}
               onChangeText={(text) => setAddressDetails(text)}
-              placeholder={t('address_details')}
+              placeholder={t('better_place_description')}
               placeholderTextColor={
-                themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
+                themeContext.ThemeValue === 'Dark' ? '#fff' : 'grey'
               }
               style={{
                 color: themeContext.ThemeValue === 'Dark' ? '#fff' : '#000'
