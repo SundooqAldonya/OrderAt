@@ -1,10 +1,21 @@
 import { Fragment, useRef, useState } from 'react'
 import Header from '../components/Headers/Header'
-import { Button, Container, Modal, Paper, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+  Typography
+} from '@mui/material'
 import useGlobalStyles from '../utils/globalStyles'
 import RidersMapComponent from '../components/RidersMapComponent'
-import { useQuery } from '@apollo/client'
-import { assignedOrders, getRidersLocation } from '../apollo'
+import { useQuery, gql } from '@apollo/client'
+import { assignedOrders, getCities, getRidersLocation } from '../apollo'
 import DataTable from 'react-data-table-component'
 import CustomLoader from '../components/Loader/CustomLoader'
 import SearchBar from '../components/TableHeader/SearchBar'
@@ -15,6 +26,10 @@ import { customStyles } from '../utils/tableCustomStyles'
 import moment from 'moment'
 import RiderMapView from '../components/RiderMapView'
 
+const GET_CITIES = gql`
+  ${getCities}
+`
+
 const RidersMap = () => {
   const { t } = useTranslation()
   const mapRef = useRef()
@@ -24,13 +39,21 @@ const RidersMap = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRider, setSelectedRider] = useState(null)
   const [trackedRiderId, setTrackedRiderId] = useState(null)
+  const [selectedCity, setSelectedCity] = useState(null)
+
   const { data, loading, error, refetch } = useQuery(getRidersLocation, {
     pollInterval: 10000
   })
+  const {
+    data: dataCities,
+    loading: loadingCities,
+    error: errorCities
+  } = useQuery(GET_CITIES)
 
   const riders = data?.getRidersLocation || null
+  const cities = dataCities?.cities || null
 
-  console.log({ riders })
+  console.log({ dataCities })
 
   const handleSort = (column, sortDirection) => {
     console.log(column.selector, sortDirection)
@@ -112,18 +135,22 @@ const RidersMap = () => {
     }
   }
 
-  const handleShow = row => {
-    console.log({ row })
-    setSelectedRider(row)
-    setOpen(true)
-  }
+  // const handleShow = row => {
+  //   console.log({ row })
+  //   setSelectedRider(row)
+  //   setOpen(true)
+  // }
 
-  const toggleModal = () => {
-    setOpen(!open)
-  }
+  // const toggleModal = () => {
+  //   setOpen(!open)
+  // }
 
-  const closeModal = () => {
-    setOpen(false)
+  // const closeModal = () => {
+  //   setOpen(false)
+  // }
+
+  const handleChange = e => {
+    setSelectedCity(e.target.value)
   }
 
   return (
@@ -131,7 +158,37 @@ const RidersMap = () => {
       <Header />
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
-        <Typography variant="h4">Riders map</Typography>
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 10
+          }}>
+          <Typography variant="h4">Riders map</Typography>
+          <Box sx={{ bgcolor: '#fff', width: 200 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">City</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedCity}
+                label="City"
+                onChange={handleChange}>
+                {cities?.map(city => {
+                  return (
+                    <MenuItem
+                      key={city._id}
+                      sx={{ color: '#000' }}
+                      value={city._id}>
+                      {city.title}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+        </Box>
         {error && <Typography>Something went wrong!</Typography>}
         {data && (
           <RidersMapComponent

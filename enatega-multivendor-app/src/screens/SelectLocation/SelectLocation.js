@@ -371,7 +371,7 @@ export default function SelectLocation(props) {
                 console.log('Map is ready')
                 setMapLoaded(true)
               }}
-              cacheEnabled={true}
+              // cacheEnabled={true}
             />
             {!mapLoaded && (
               <View

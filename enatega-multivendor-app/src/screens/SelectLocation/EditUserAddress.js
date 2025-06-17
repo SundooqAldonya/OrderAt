@@ -378,7 +378,7 @@ export default function EditUserAddress(props) {
             maxZoomLevel={50}
             bounce
             onMapLoaded={() => setMapLoaded(true)}
-            cacheEnabled={true}
+            // cacheEnabled={true}
           />
           {!mapLoaded && (
             <View

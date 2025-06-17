@@ -340,11 +340,11 @@ export default function AddNewAddressUser(props) {
               showsTraffic={false}
               zoomEnabled={true}
               scrollEnabled={true}
-              onPress={handleMapPress}
-              // onRegionChangeComplete={onRegionChangeComplete}
+              // onPress={handleMapPress}
+              onRegionChangeComplete={onRegionChangeComplete}
               maxZoomLevel={50}
               onMapLoaded={() => setMapLoaded(true)}
-              cacheEnabled={true} // Android only
+              // cacheEnabled={true} // Android only
               // liteMode={true} // Android only
             />
             {!mapLoaded && (
