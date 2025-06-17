@@ -6,7 +6,10 @@ import UserContext from '../../context/user'
 import { profile } from '../../apollo/queries'
 import { useTranslation } from 'react-i18next'
 import { useSoundContext } from '../../context/sound'
-import { stopBackgroundUpdate } from '../../utilities/backgroundLocationTask'
+import {
+  startBackgroundUpdate,
+  stopBackgroundUpdate
+} from '../../utilities/backgroundLocationTask'
 
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
@@ -76,6 +79,8 @@ const useSidebar = () => {
       if (isEnabled) {
         setIsMuted(true)
         stopBackgroundUpdate()
+      } else {
+        startBackgroundUpdate()
       }
       setIsEnabled(previousState => !previousState)
     }

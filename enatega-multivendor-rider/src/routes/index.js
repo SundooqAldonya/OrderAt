@@ -14,7 +14,7 @@ import OrderDetail from '../screens/OrderDetail/OrderDetail'
 import Language from '../screens/Language/Language'
 import Help from '../screens/Help/Help'
 import HelpBrowser from '../screens/HelpBrowser/HelpBrowser'
-import { UserProvider } from '../context/user'
+import UserContext, { UserProvider } from '../context/user'
 import { screenOptions, tabOptions, tabIcon } from './screenOptions'
 import LeftButton from '../components/Header/HeaderIcons/HeaderIcons'
 import navigationService from './navigationService'
@@ -202,6 +202,7 @@ function NoDrawer() {
 function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
+  const { refetchAssigned } = useContext(UserContext)
 
   const [mutateRefreshToken] = useMutation(refreshFirebaseToken, {
     onCompleted: res => {
@@ -244,6 +245,14 @@ function AppContainer() {
       if (sound !== 'false') {
         playCustomSound()
       }
+    })
+
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+      refetchAssigned() // when user taps on notification
     })
 
     return unsubscribe

@@ -10,7 +10,11 @@ import * as Updates from 'expo-updates'
 const useEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
 
-  if (env === 'production' || env === 'staging' || process.env.NODE_ENV === 'development') {
+  if (
+    env === 'production' ||
+    env === 'staging' ||
+    process.env.NODE_ENV === 'development'
+  ) {
     return {
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',
       WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
@@ -33,9 +37,9 @@ const useEnvVars = (env = Updates.channel) => {
 
   if (process.env.NODE_ENV === 'development') {
     return {
-      GRAPHQL_URL: 'http://192.168.1.3:8001/graphql',
-      WS_GRAPHQL_URL: 'ws://192.168.1.3:8001/graphql',
-      SERVER_URL: 'http://192.168.1.3:8001/',
+      GRAPHQL_URL: 'http://192.168.1.8:8001/graphql',
+      WS_GRAPHQL_URL: 'ws://192.168.1.8:8001/graphql',
+      SERVER_URL: 'http://192.168.1.8:8001/',
       IOS_CLIENT_ID_GOOGLE: configuration.iOSClientID,
       ANDROID_CLIENT_ID_GOOGLE:
         '808523856739-lcqe5kqkh1nvh61uuc4q94d3ghfdqft4.apps.googleusercontent.com',

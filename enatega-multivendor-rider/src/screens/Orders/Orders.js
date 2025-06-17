@@ -1,5 +1,11 @@
-import { View, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import { useContext, useState, useEffect, useRef } from 'react'
+import {
+  View,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  AppState
+} from 'react-native'
+import { useContext, useState, useEffect, useRef, useCallback } from 'react'
 import ScreenBackground from '../../components/ScreenBackground/ScreenBackground'
 import styles from './style'
 import Tabs from '../../components/Tabs/Tabs'
@@ -21,6 +27,7 @@ const { height, width } = Dimensions.get('window')
 const Orders = ({ navigation }) => {
   const { t } = useTranslation()
   const [riderIsActive, setRiderIsActive] = useState(false)
+  const appState = useRef(AppState.currentState)
 
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
@@ -58,11 +65,54 @@ const Orders = ({ navigation }) => {
     setActive('MyOrders')
   })
 
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener('change', nextAppState => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === 'active'
+  //     ) {
+  //       refetchAssigned().then(result => {
+  //         if (result?.data?.assignedOrders) {
+  //           updateOrders(result.data.assignedOrders)
+  //         }
+  //       })
+  //     }
+  //     appState.current = nextAppState
+  //   })
+
+  //   return () => {
+  //     subscription.remove()
+  //   }
+  // }, [refetchAssigned, dataProfile?.rider?._id])
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchAssigned().then(result => {
+        console.log({ result })
+        if (result?.data?.assignedOrders) {
+          updateOrders(result.data.assignedOrders)
+        }
+      })
+    }, [dataProfile?.rider?._id])
+  )
+
   useEffect(() => {
     if (dataProfile) {
       setRiderIsActive(dataProfile?.rider?.isActive)
     }
   }, [dataProfile, riderIsActive])
+
+  const updateOrders = rawOrders => {
+    const filtered = rawOrders.filter(
+      o =>
+        ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
+          o?.orderStatus
+        ) &&
+        o?.rider &&
+        dataProfile?.rider?._id === o?.rider?._id
+    )
+    setOrders(filtered)
+  }
 
   return (
     <ScreenBackground>
