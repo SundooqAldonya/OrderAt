@@ -8,7 +8,8 @@ import {
   editRider,
   getRiders,
   getZones,
-  getAvailableRiders
+  getAvailableRiders,
+  getCities
 } from '../../apollo'
 import useStyles from './styles'
 import useGlobalStyles from '../../utils/globalStyles'
@@ -22,7 +23,9 @@ import {
   MenuItem,
   Button,
   Grid,
-  Checkbox
+  Checkbox,
+  FormControl,
+  InputLabel
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -42,6 +45,10 @@ const GET_ZONES = gql`
 `
 const GET_AVAILABLE_RIDERS = gql`
   ${getAvailableRiders}
+`
+
+const GET_CITIES = gql`
+  ${getCities}
 `
 
 function Rider(props) {
@@ -67,6 +74,16 @@ function Rider(props) {
   const [riderZone, setRiderZone] = useState(
     props.rider ? props.rider.zone._id : ''
   )
+  const [selectedCity, setSelectedCity] = useState(
+    props.rider ? props.rider.city : ''
+  )
+
+  const {
+    data: dataCities,
+    loading: loadingCities,
+    error: errorCities
+  } = useQuery(GET_CITIES)
+  const cities = dataCities?.cities || null
 
   const onCompleted = data => {
     if (!props.rider) clearFields()
@@ -152,10 +169,10 @@ function Rider(props) {
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
 
-  const handlePhoneInput = (e) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
-    e.target.value = value;
-  };
+  const handlePhoneInput = e => {
+    const value = e.target.value.replace(/[^0-9]/g, '') // Remove any non-numeric characters
+    e.target.value = value
+  }
 
   return (
     <Box container className={classes.container}>
@@ -245,7 +262,7 @@ function Rider(props) {
                     float: 'left',
                     marginTop: '5px',
                     textAlign: 'left',
-                    marginLeft: '10px',
+                    marginLeft: '10px'
                   }}>
                   {t(userNameErrorMessage)}
                 </Typography>
@@ -356,6 +373,31 @@ function Rider(props) {
               ))}
           </Select>
         </Box>
+        <Box className={globalClasses.flexRow}>
+          <Select
+            labelId="rider-city"
+            id="input-city"
+            name="input-city"
+            value={selectedCity}
+            displayEmpty
+            inputProps={{ 'aria-label': 'Without label' }}
+            onChange={e => setSelectedCity(e.target.value)}
+            className={[globalClasses.input]}>
+            {!selectedCity && (
+              <MenuItem sx={{ color: 'black' }} value={''}>
+                {t('City')}
+              </MenuItem>
+            )}
+            {cities?.map(zone => (
+              <MenuItem
+                style={{ color: 'black' }}
+                value={zone._id}
+                key={zone._id}>
+                {zone.title}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
         <Box>
           <Button
             className={globalClasses.button}
@@ -372,7 +414,8 @@ function Rider(props) {
                       password: formRef.current['input-password'].value,
                       phone: formRef.current['input-phone'].value,
                       zone: riderZone,
-                      available: riderAvailable
+                      available: riderAvailable,
+                      city: selectedCity
                     }
                   }
                 })

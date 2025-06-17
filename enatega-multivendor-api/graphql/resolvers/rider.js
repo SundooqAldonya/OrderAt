@@ -3,6 +3,8 @@ const Rider = require('../../models/rider')
 const Order = require('../../models/order')
 const Point = require('../../models/point')
 const User = require('../../models/user')
+const Area = require('../../models/area')
+const Zone = require('../../models/zone')
 const { transformOrder, transformRider } = require('../resolvers/merge')
 const {
   pubsub,
@@ -187,17 +189,35 @@ module.exports = {
     },
 
     async getRidersLocation(_, args) {
+      console.log('getRidersLocation', { args })
       try {
         const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000)
-        // const riders = await Rider.find({
-        //   available: true,
-        //   lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
-        // })
+        // const area = await Area.findOne({ city: args.cityId }).populate(
+        //   'location'
+        // )
+        // console.log({ area: area?.location })
+        // let zone = null
+        // if (area) {
+        //   const point = {
+        //     type: 'Point',
+        //     coordinates: area?.location?.location?.coordinates
+        //   }
+        //   console.log({ point })
+        //   zone = await Zone.findOne({
+        //     location: {
+        //       $geoIntersects: {
+        //         $geometry: [...area?.location?.location?.coordinates]
+        //       }
+        //     }
+        //   })
+        // }
+        // console.log({ zone })
         const riders = await Rider.aggregate([
           {
             $match: {
               available: true,
-              lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+              lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO },
+              city: args.cityId
             }
           },
           {
@@ -303,6 +323,7 @@ module.exports = {
         rider.phone = args.riderInput.phone
         rider.available = args.riderInput.available
         rider.zone = args.riderInput.zone
+        rider.city = args.riderInput.city
 
         const result = await rider.save()
         return transformRider(result)

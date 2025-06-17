@@ -343,6 +343,7 @@ const typeDefs = gql`
     endAvailabilityDate: Date
     lastUpdatedLocationDate: Date
     assignedOrdersCount: Float
+    city: String
   }
 
   type RiderLocation {
@@ -962,6 +963,7 @@ const typeDefs = gql`
     available: Boolean!
     zone: String!
     accountNumber: String
+    city: String
   }
 
   input UserInput {
@@ -1504,7 +1506,7 @@ const typeDefs = gql`
     searchFood(search: String): [Food]
     searchUsers(search: String): [User]
     searchRestaurants(search: String): [Restaurant]
-    getRidersLocation: [Rider]
+    getRidersLocation(cityId: String): [Rider]
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]

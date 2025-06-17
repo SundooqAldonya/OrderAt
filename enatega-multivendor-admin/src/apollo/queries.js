@@ -895,6 +895,7 @@ export const getRiders = `query{
       location {
         coordinates
       }
+      city
     }
   }`
 
@@ -1141,8 +1142,8 @@ export const orderRidersInteractions = gql`
   }
 `
 export const getRidersLocation = gql`
-  query getRidersLocation {
-    getRidersLocation {
+  query getRidersLocation($cityId: String) {
+    getRidersLocation(cityId: $cityId) {
       _id
       name
       username

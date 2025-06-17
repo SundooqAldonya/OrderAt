@@ -71,6 +71,10 @@ const riderSchema = new Schema(
     },
     token: {
       type: String
+    },
+    city: {
+      type: Schema.Types.ObjectId,
+      ref: 'City'
     }
   },
   { timestamps: true }

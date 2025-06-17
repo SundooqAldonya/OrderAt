@@ -151,6 +151,7 @@ const RidersMap = () => {
 
   const handleChange = e => {
     setSelectedCity(e.target.value)
+    refetch({ cityId: e.target.value })
   }
 
   return (
@@ -174,7 +175,8 @@ const RidersMap = () => {
                 id="demo-simple-select"
                 value={selectedCity}
                 label="City"
-                onChange={handleChange}>
+                onChange={handleChange}
+                sx={{ color: '#000' }}>
                 {cities?.map(city => {
                   return (
                     <MenuItem
