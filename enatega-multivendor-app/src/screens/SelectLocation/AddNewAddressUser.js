@@ -51,6 +51,8 @@ import { createAddress } from '../../apollo/mutations'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
 import { scale } from '../../utils/scaling'
+import useEnvVars from '../../../environment'
+import { Image } from 'react-native'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -64,6 +66,7 @@ const LONGITUDE_DELTA = 0.01
 export default function AddNewAddressUser(props) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
+
   const { longitude, latitude, area } = props.route.params || {}
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -81,8 +84,8 @@ export default function AddNewAddressUser(props) {
   const { isLoggedIn } = useContext(UserContext)
 
   const [coordinates, setCoordinates] = useState({
-    latitude: latitude || null,
-    longitude: longitude || null,
+    latitude: latitude || 31.1091,
+    longitude: longitude || 30.9426,
     latitudeDelta: latitude ? 0.003 : LATITUDE_DELTA,
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
@@ -121,6 +124,10 @@ export default function AddNewAddressUser(props) {
         />
       )
     })
+  }, [])
+
+  useEffect(() => {
+    mapRef.current.animateToRegion(coordinates, 1000)
   }, [])
 
   useEffect(() => {
@@ -323,74 +330,80 @@ export default function AddNewAddressUser(props) {
             }
           ]}
         >
-          {coordinates.latitude ? (
-            <Fragment>
-              <MapView
-                ref={mapRef}
-                initialRegion={coordinates}
-                style={{ flex: 1 }}
-                provider={PROVIDER_GOOGLE}
-                showsTraffic={false}
-                zoomEnabled={true}
-                scrollEnabled={true}
-                onPress={handleMapPress}
-                // onRegionChangeComplete={onRegionChangeComplete}
-                maxZoomLevel={50}
-                onMapLoaded={() => setMapLoaded(true)}
-              />
-              {!mapLoaded && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    zIndex: 1
-                  }}
-                >
-                  <TextDefault style={{ color: '#000' }}>
-                    Loading map...
-                  </TextDefault>
-                </View>
-              )}
+          {/* {coordinates.latitude ? ( */}
+          <Fragment>
+            <MapView
+              ref={mapRef}
+              initialRegion={coordinates}
+              style={{ flex: 1 }}
+              provider={PROVIDER_GOOGLE}
+              showsTraffic={false}
+              zoomEnabled={true}
+              scrollEnabled={true}
+              onPress={handleMapPress}
+              // onRegionChangeComplete={onRegionChangeComplete}
+              maxZoomLevel={50}
+              onMapLoaded={() => setMapLoaded(true)}
+              cacheEnabled={true} // Android only
+              // liteMode={true} // Android only
+            />
+            {!mapLoaded && (
               <View
-                pointerEvents='none'
                 style={{
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: [{ translateX: -25 }, { translateY: -50 }], // center the marker
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  backgroundColor: '#fff',
+                  zIndex: 1
                 }}
               >
-                <View style={styles().deliveryMarker}>
+                {/* <TextDefault style={{ color: '#000' }}>
+                  Loading map...
+                </TextDefault> */}
+                <Image
+                  source={{
+                    uri: `https://maps.googleapis.com/maps/api/staticmap?center=30.033333,31.233334&zoom=10&size=600x300&maptype=roadmap%7C30.033333,31.233334&key=AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY`
+                  }} // use Google Static Maps API
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode='cover'
+                />
+              </View>
+            )}
+            <View
+              pointerEvents='none'
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: [{ translateX: -25 }, { translateY: -50 }], // center the marker
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <View style={styles().deliveryMarker}>
+                <View
+                  style={[
+                    styles().markerBubble,
+                    { backgroundColor: '#06C167' }
+                  ]}
+                >
+                  <Text style={styles().markerText}>
+                    {t('your_order_delivered_here')}
+                  </Text>
+                </View>
+                <View style={styles().markerPin}>
                   <View
-                    style={[
-                      styles().markerBubble,
-                      { backgroundColor: '#06C167' }
-                    ]}
-                  >
-                    <Text style={styles().markerText}>
-                      {t('your_order_delivered_here')}
-                    </Text>
-                  </View>
-                  <View style={styles().markerPin}>
-                    <View
-                      style={[
-                        styles().pinInner,
-                        { backgroundColor: '#06C167' }
-                      ]}
-                    />
-                  </View>
+                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                  />
                 </View>
               </View>
-            </Fragment>
-          ) : null}
+            </View>
+          </Fragment>
+          {/* ) : null} */}
         </View>
         <View style={styles(currentTheme).container}>
           <SafeAreaView>

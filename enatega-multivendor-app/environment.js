@@ -10,6 +10,8 @@ import * as Updates from 'expo-updates'
 const useEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
 
+  console.log({ configuration: configuration.googleApiKey })
+
   if (
     env === 'production' ||
     env === 'staging' ||
@@ -45,7 +47,7 @@ const useEnvVars = (env = Updates.channel) => {
         '808523856739-lcqe5kqkh1nvh61uuc4q94d3ghfdqft4.apps.googleusercontent.com',
       AMPLITUDE_API_KEY: configuration.appAmplitudeApiKey,
       GOOGLE_MAPS_KEY:
-        configuration.googleApiKey ?? 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
+        configuration.googleApiKey || 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY',
       EXPO_CLIENT_ID: configuration.expoClientID,
       SENTRY_DSN: configuration.customerAppSentryUrl,
       TERMS_AND_CONDITIONS: configuration.termsAndConditions,

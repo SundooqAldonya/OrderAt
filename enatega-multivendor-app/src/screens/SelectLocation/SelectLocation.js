@@ -44,6 +44,8 @@ import { createAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import navigationService from '../../routes/navigationService'
 import { HeaderBackButton } from '@react-navigation/elements'
+import { Image } from 'react-native'
+import useEnvVars from '../../../environment'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -55,8 +57,9 @@ const LATITUDE_DELTA = 0.01
 const LONGITUDE_DELTA = 0.01
 
 export default function SelectLocation(props) {
-  const Analytics = analytics()
   const { i18n, t } = useTranslation()
+  const { GOOGLE_MAPS_KEY } = useEnvVars()
+  console.log({ GOOGLE_MAPS_KEY })
 
   const isArabic = i18n.language === 'ar'
 
@@ -368,6 +371,7 @@ export default function SelectLocation(props) {
                 console.log('Map is ready')
                 setMapLoaded(true)
               }}
+              cacheEnabled={true}
             />
             {!mapLoaded && (
               <View
@@ -383,9 +387,17 @@ export default function SelectLocation(props) {
                   zIndex: 1
                 }}
               >
-                <TextDefault style={{ color: '#000' }}>
+                {/* <TextDefault style={{ color: '#000' }}>
                   Loading map...
-                </TextDefault>
+                </TextDefault> */}
+                <Image
+                  source={{
+                    uri: `https://maps.googleapis.com/maps/api/staticmap?center=30.033333,31.233334&zoom=10&size=600x300&maptype=roadmap%7C30.033333,31.233334&key=AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY
+`
+                  }} // use Google Static Maps API
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode='cover'
+                />
               </View>
             )}
             <View
