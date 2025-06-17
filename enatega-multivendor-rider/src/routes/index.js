@@ -238,6 +238,7 @@ function AppContainer() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      refetchAssigned()
       Toast.info(remoteMessage.notification.body)
       const sound = remoteMessage?.notification?.android?.sound
         ? remoteMessage.notification.android.sound

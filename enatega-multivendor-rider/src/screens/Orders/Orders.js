@@ -3,7 +3,8 @@ import {
   FlatList,
   Dimensions,
   TouchableOpacity,
-  AppState
+  AppState,
+  InteractionManager
 } from 'react-native'
 import { useContext, useState, useEffect, useRef, useCallback } from 'react'
 import ScreenBackground from '../../components/ScreenBackground/ScreenBackground'
@@ -28,6 +29,7 @@ const Orders = ({ navigation }) => {
   const { t } = useTranslation()
   const [riderIsActive, setRiderIsActive] = useState(false)
   const appState = useRef(AppState.currentState)
+  const [isMounted, setIsMounted] = useState(false)
 
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
@@ -66,35 +68,54 @@ const Orders = ({ navigation }) => {
   })
 
   // useEffect(() => {
-  //   const subscription = AppState.addEventListener('change', nextAppState => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === 'active'
-  //     ) {
-  //       refetchAssigned().then(result => {
-  //         if (result?.data?.assignedOrders) {
-  //           updateOrders(result.data.assignedOrders)
+  //   const subscription = AppState.addEventListener(
+  //     'change',
+  //     async nextAppState => {
+  //       if (
+  //         appState.current.match(/inactive|background/) &&
+  //         nextAppState === 'active'
+  //       ) {
+  //         try {
+  //           const result = await refetchAssigned()
+
+  //           if (result?.data?.assignedOrders) {
+  //             const filtered = updateOrders(result.data.assignedOrders)
+
+  //             // ✅ This guarantees it runs on the UI thread
+  //             setTimeout(() => {
+  //               setOrders(filtered)
+  //             }, 0)
+  //           }
+  //         } catch (err) {
+  //           console.error('Failed to refetch on app resume', err)
   //         }
-  //       })
+  //       }
+
+  //       appState.current = nextAppState
   //     }
-  //     appState.current = nextAppState
-  //   })
+  //   )
 
   //   return () => {
   //     subscription.remove()
   //   }
   // }, [refetchAssigned, dataProfile?.rider?._id])
 
-  useFocusEffect(
-    useCallback(() => {
-      refetchAssigned().then(result => {
-        console.log({ result })
-        if (result?.data?.assignedOrders) {
-          updateOrders(result.data.assignedOrders)
-        }
-      })
-    }, [dataProfile?.rider?._id])
-  )
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     let isActive = true
+  //     refetchAssigned().then(result => {
+  //       if (result?.data?.assignedOrders && isActive) {
+  //         const filtered = updateOrders(result.data.assignedOrders)
+  //         setTimeout(() => {
+  //           setOrders(filtered)
+  //         }, 0)
+  //       }
+  //     })
+  //     return () => {
+  //       isActive = false
+  //     }
+  //   }, [dataProfile?.rider?._id])
+  // )
 
   useEffect(() => {
     if (dataProfile) {
@@ -102,7 +123,12 @@ const Orders = ({ navigation }) => {
     }
   }, [dataProfile, riderIsActive])
 
+  useEffect(() => {
+    setTimeout(() => setIsMounted(true), 0)
+  }, [])
+
   const updateOrders = rawOrders => {
+    if (!dataProfile?.rider?._id) return []
     const filtered = rawOrders.filter(
       o =>
         ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
@@ -111,7 +137,9 @@ const Orders = ({ navigation }) => {
         o?.rider &&
         dataProfile?.rider?._id === o?.rider?._id
     )
-    setOrders(filtered)
+    InteractionManager.runAfterInteractions(() => {
+      setOrders(filtered)
+    })
   }
 
   return (
@@ -188,15 +216,17 @@ const Orders = ({ navigation }) => {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            <LottieView
-              style={{
-                width: width - 100,
-                height: 250
-              }}
-              source={require('../../assets/loader.json')}
-              autoPlay
-              loop
-            />
+            {isMounted && (
+              <LottieView
+                style={{
+                  width: width - 100,
+                  height: 250
+                }}
+                source={require('../../assets/loader.json')}
+                autoPlay
+                loop
+              />
+            )}
             <TextDefault bolder center H3 textColor={colors.fontSecondColor}>
               {t('notAnyOrdersYet')}
             </TextDefault>
