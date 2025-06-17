@@ -1902,7 +1902,7 @@ const typeDefs = gql`
     resetPasswordCustomer(phone: String!, password: String!): ForgotPassword
     customerLogin(phone: String!, password: String!): CustomerLoginResponse
     defaultTimings(id: String!): Message
-    refreshFirebaseToken(id: String!, notificationToken: String!): Message
+    refreshFirebaseToken(notificationToken: String): Message
     phoneIsVerified: Boolean!
     verifyPhoneOTP(otp: String!, phone: String!): Message
     validatePhoneUnauth(phone: String!): Message

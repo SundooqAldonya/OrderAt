@@ -214,6 +214,20 @@ function AppContainer() {
   })
 
   useEffect(() => {
+    const unsubscribe = messaging().onTokenRefresh(token => {
+      // ✅ Send this new token to your backend
+      mutateRefreshToken({
+        variables: {
+          notificationToken: token
+        }
+      })
+      console.log('FCM Token refreshed:', token)
+    })
+
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
     async function checkPermissions() {
       const { status } = await Notifications.getPermissionsAsync()
       console.log('🔍 Notification permission status:', status)
