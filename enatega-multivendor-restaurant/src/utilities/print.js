@@ -1,3 +1,4 @@
+//src/utilities/print.js
 import * as Print from 'expo-print'
 import { formatReceipt } from './formatReceipt'
 import { formattedPrintedText } from './formattedPrintedText'
