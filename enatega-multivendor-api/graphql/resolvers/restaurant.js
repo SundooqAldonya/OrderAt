@@ -51,9 +51,11 @@ const {
 const Review = require('../../models/review')
 const { isRestaurantOpenNow } = require('../../helpers/restaurantWorkingHours')
 const { defaultOpeningTimes } = require('../../helpers/defaultValues')
+const dateScalar = require('../../helpers/dateScalar')
 
 module.exports = {
   Upload: GraphqlUpload,
+  Date: dateScalar,
 
   Query: {
     nearByRestaurants: async (_, args) => {
@@ -256,7 +258,9 @@ module.exports = {
     restaurants: async _ => {
       console.log('restaurants')
       try {
-        const restaurants = await Restaurant.find().populate('owner')
+        const restaurants = await Restaurant.find()
+          .populate('owner')
+          .populate('city')
         // return transformRestaurants(restaurants)
         return restaurants
       } catch (e) {

@@ -685,6 +685,11 @@ export const restaurants = `query Restaurants{
       name
     }
     shopType
+    city {
+      _id
+      title
+    }
+    createdAt
   }
 }
 `

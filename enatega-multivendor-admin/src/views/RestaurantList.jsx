@@ -29,19 +29,22 @@ const Restaurants = props => {
   const [error, setError] = useState(null)
   const onChangeSearch = e => setSearchQuery(e.target.value)
   const globalClasses = useGlobalStyles()
-  console.log('restaurants here list')
+
   const [mutate, { loading }] = useMutation(DELETE_RESTAURANT, {
     onError: error => {
       setError(error.graphQLErrors[0].message || 'Something went wrong')
     }
   })
+
   const {
     data,
     loading: loadingQuery,
     refetch,
     networkStatus
   } = useQuery(GET_RESTAURANTS, { fetchPolicy: 'network-only' })
+
   console.log({ data })
+
   const onClickRefetch = cb => {
     cb()
   }
@@ -114,6 +117,29 @@ const Restaurants = props => {
       cell: row => <>{row.owner && row.owner.name ? row.owner.name : 'N/A'}</>
     },
     {
+      name: t('city'),
+      selector: 'city',
+      style: {
+        cursor: 'pointer'
+      },
+      cell: row => <>{row.city?.title ? row.city.title : 'N/A'}</>
+    },
+    {
+      name: t('createdAt'),
+      selector: 'createdAt',
+      style: {
+        cursor: 'pointer'
+      },
+      sortable: true,
+      cell: row => (
+        <>
+          {row.createdAt
+            ? new Date(row.createdAt).toLocaleDateString('en-GB')
+            : 'N/A'}
+        </>
+      )
+    },
+    {
       name: t('Action'),
       cell: row => <>{actionButtons(row)}</>
     }
@@ -177,7 +203,9 @@ const Restaurants = props => {
               restaurant.owner.email &&
               restaurant.owner.email.toLowerCase().search(regex) > -1) ||
             (restaurant.address &&
-              restaurant.address.toLowerCase().search(regex) > -1)
+              restaurant.address.toLowerCase().search(regex) > -1) ||
+            (restaurant.city &&
+              restaurant.city.title.toLowerCase().search(regex) > -1)
           )
         })
 

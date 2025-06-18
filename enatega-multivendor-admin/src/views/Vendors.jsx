@@ -62,17 +62,6 @@ const Vendors = props => {
     refetchQueries: [{ query: GET_VENDORS }]
   })
 
-  const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
-
-  const filtered =
-    searchQuery.length < 3
-      ? data && data.vendors
-      : data &&
-        data.vendors.filter(vendor => {
-          return vendor.email.toLowerCase().search(regex) > -1
-        })
-
   const toggleModal = vendor => {
     setEditModal(!editModal)
     console.log({ setVendor: vendor })
@@ -138,6 +127,21 @@ const Vendors = props => {
     }
   ]
 
+  const regex =
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+
+  const filtered =
+    searchQuery.length < 3
+      ? data && data.vendors
+      : data &&
+        data.vendors.filter(vendor => {
+          return (
+            vendor.email.toLowerCase().search(regex) > -1 ||
+            vendor.name?.toLowerCase().search(regex) > -1 ||
+            vendor.phone?.toLowerCase().search(regex) > -1
+          )
+        })
+
   return (
     <>
       <Header />
@@ -161,7 +165,7 @@ const Vendors = props => {
             <VendorIcon />
           </Grid>
         </Grid>
-        {errorQuery ? <span> `Error! ${errorQuery.message}`</span> : null}
+        {errorQuery ? <span>{`Error! ${errorQuery.message}`}</span> : null}
         {loadingQuery ? (
           <CustomLoader />
         ) : (

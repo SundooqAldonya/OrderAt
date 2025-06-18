@@ -163,7 +163,7 @@ const typeDefs = gql`
     restaurantUrl: String
     phone: String
     city: CityArea
-    createdAt: String
+    createdAt: Date
     businessCategories: [BusinessCategory]
   }
 
