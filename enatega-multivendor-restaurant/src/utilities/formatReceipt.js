@@ -1,3 +1,4 @@
+//src/utilities/formatReceipt.js
 export const formatReceipt = (order, currency) => {
   const address =
     order.shippingMethod === 'PICKUP'
@@ -6,6 +7,7 @@ export const formatReceipt = (order, currency) => {
 
   const {
     user: { phone },
+    restaurant: { name, image },
     taxationAmount: tax,
     orderAmount,
     deliveryCharges,
@@ -117,7 +119,11 @@ export const formatReceipt = (order, currency) => {
     </head>
     <body>
       <div id="receipt">
-        <div class="center bold" style="font-size: 22px;">Orderat</div>
+	  
+        <img src="${image}" width="120" height="120" />
+		
+        <div class="center bold" style="text-align:center; font-size: 22px;">${name}</div>
+		
         <div class="center" style="font-size: 16px; margin-bottom: 5px;">تاريخ الطلب: ${formattedDate}</div>
 
         <div class="line"></div>

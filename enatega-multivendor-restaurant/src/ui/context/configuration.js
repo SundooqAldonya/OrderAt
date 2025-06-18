@@ -6,7 +6,7 @@ import { configuration } from '../../apollo'
 const Context = React.createContext({})
 
 export const Provider = props => {
-  const [addressToken, setAddressToken] = useState("")
+  const [addressToken, setAddressToken] = useState('')
 
   const { loading, data, error } = useQuery(
     gql`
