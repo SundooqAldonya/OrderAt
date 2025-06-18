@@ -768,13 +768,15 @@ export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!)
       title
       price
       discounted
-      addons 
+      addons
+      stock
     }
     category {
       _id
       title
     }
     isActive
+    stock
     createdAt
     updatedAt
   }
@@ -1223,5 +1225,10 @@ export const assignedOrders = gql`
     assignedOrders(id: $id) {
       _id
     }
+  }
+`
+export const getStockUnits = gql`
+  query getStockEnumValues {
+    getStockEnumValues
   }
 `

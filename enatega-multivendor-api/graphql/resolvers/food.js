@@ -6,6 +6,7 @@ const {
 } = require('../../helpers/cloudinary')
 const Food = require('../../models/food')
 const Restaurant = require('../../models/restaurant')
+const Stock = require('../../models/stock')
 const Variation = require('../../models/variation')
 const { transformRestaurant } = require('./merge')
 
@@ -53,8 +54,10 @@ module.exports = {
           title: args.foodInput.title,
           description: args.foodInput.description,
           restaurant: args.foodInput.restaurant,
-          category: args.foodInput.category
+          category: args.foodInput.category,
+          stock: args.foodInput.stock
         })
+
         if (args.foodInput.variations.length) {
           const variationsArr = args.foodInput.variations.map(item => {
             return { ...item, food: food._id }
@@ -89,6 +92,7 @@ module.exports = {
         food.title = foodInput.title
         food.description = foodInput.description
         food.category = foodInput.category
+        food.stock = foodInput.stock
         if (foodInput.file.file && foodInput.file.file['createReadStream']) {
           await uploadFoodImage({
             id: food._id,

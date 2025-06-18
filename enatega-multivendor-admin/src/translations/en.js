@@ -420,7 +420,10 @@ const en = {
     end_date: 'End Date',
     digits_error: 'Phone should be 11 digits',
     rider_orders: 'Rider Orders',
-    assigned_picked: 'Assigned orders'
+    assigned_picked: 'Assigned orders',
+    select_stock_unit: 'Select Stock Unit',
+    stock_amount: 'Stock Amount',
+    select_stock: 'Select Stock'
   }
 }
 

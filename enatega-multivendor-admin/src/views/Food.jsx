@@ -64,12 +64,6 @@ const Food = props => {
 
   console.log({ data })
 
-  // const foodListByRestaurant = data?.foodListByRestaurant
-
-  // useEffect(() => {
-  //   setFoodList(data?.foodListByRestaurant)
-  // }, [foodListByRestaurant])
-
   const toggleModal = food => {
     setEditModal(!editModal)
     setFood(food)

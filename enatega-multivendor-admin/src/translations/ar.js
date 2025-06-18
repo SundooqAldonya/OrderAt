@@ -401,7 +401,10 @@ const ar = {
     end_date: 'أنهى',
     digits_error: 'يجب أن يكون الهاتف مكونًا من 11 رقمًا',
     rider_orders: 'اوردرات كابتن التوصيل',
-    assigned_picked: 'الاوردرات المكلفة'
+    assigned_picked: 'الاوردرات المكلفة',
+    select_stock_unit: 'حدد وحدة المخزون',
+    stock_amount: 'سعة التخزين',
+    select_stock: 'حدد التخزين'
   }
 }
 

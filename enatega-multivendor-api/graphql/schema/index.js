@@ -234,6 +234,7 @@ const typeDefs = gql`
     price: Float!
     discounted: Float
     addons: [String!]
+    stock: String
   }
   type VariationCustomer {
     _id: ID!
@@ -241,6 +242,7 @@ const typeDefs = gql`
     price: Float!
     discounted: Float
     addons: [String!]
+    stock: String
   }
 
   type CartVariation {
@@ -305,6 +307,7 @@ const typeDefs = gql`
     category: Category!
     image: String
     isActive: Boolean!
+    stock: String
     createdAt: String!
     updatedAt: String!
   }
@@ -940,6 +943,7 @@ const typeDefs = gql`
     price: Float!
     discounted: Float
     addons: [String!]
+    stock: String
   }
 
   input FoodInput {
@@ -950,6 +954,7 @@ const typeDefs = gql`
     description: String
     file: Upload
     variations: [VariationInput!]
+    stock: String
   }
 
   input RiderInput {
@@ -1498,6 +1503,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getStockEnumValues: [String]
     checkoutCalculatePrice(cart: Cart): CalculatePriceResult
     coupons: [Coupon!]!
     getCouponStatuses: [String]

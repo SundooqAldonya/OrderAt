@@ -37,6 +37,7 @@ const DeliveryPricing = require('./deliveryPricing')
 const deliveryZones = require('./deliveryZones')
 const deliveryRequest = require('./deliveryRequest')
 const businessCategory = require('./businessCategory')
+const stock = require('./stock')
 
 const rootResolver = {
   Query: {
@@ -73,7 +74,8 @@ const rootResolver = {
     ...shopCategories.Query,
     ...deliveryZones.Query,
     ...DeliveryPricing.Query,
-    ...businessCategory.Query
+    ...businessCategory.Query,
+    ...stock.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -112,7 +114,8 @@ const rootResolver = {
     ...deliveryZones.Mutation,
     ...DeliveryPricing.Mutation,
     ...deliveryRequest.Mutation,
-    ...businessCategory.Mutation
+    ...businessCategory.Mutation,
+    ...stock.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

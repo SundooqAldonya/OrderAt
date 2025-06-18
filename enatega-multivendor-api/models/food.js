@@ -31,7 +31,12 @@ const foodSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Variation'
       }
-    ]
+    ],
+    stock: {
+      type: String,
+      enum: ['In Stock', 'Low Stock', 'Out of Stock'],
+      default: 'In Stock'
+    }
   },
   { timestamps: true }
 )
