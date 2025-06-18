@@ -193,26 +193,6 @@ module.exports = {
       console.log('getRidersLocation', { args })
       try {
         const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000)
-        // const area = await Area.findOne({ city: args.cityId }).populate(
-        //   'location'
-        // )
-        // console.log({ area: area?.location })
-        // let zone = null
-        // if (area) {
-        //   const point = {
-        //     type: 'Point',
-        //     coordinates: area?.location?.location?.coordinates
-        //   }
-        //   console.log({ point })
-        //   zone = await Zone.findOne({
-        //     location: {
-        //       $geoIntersects: {
-        //         $geometry: [...area?.location?.location?.coordinates]
-        //       }
-        //     }
-        //   })
-        // }
-        // console.log({ zone })
 
         const match = {
           available: true,
