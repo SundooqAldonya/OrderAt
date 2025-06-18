@@ -30,6 +30,7 @@ const {
   sendCustomerNotifications
 } = require('../../helpers/customerNotifications')
 const dateScalar = require('../../helpers/dateScalar')
+const { Types } = require('mongoose')
 
 module.exports = {
   Date: dateScalar,
@@ -212,13 +213,21 @@ module.exports = {
         //   })
         // }
         // console.log({ zone })
+
+        const match = {
+          available: true,
+          lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+        }
+
+        if (args.cityId) {
+          match['city'] = new Types.ObjectId(args.cityId)
+        }
+
+        console.log({ match })
+
         const riders = await Rider.aggregate([
           {
-            $match: {
-              available: true,
-              lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO },
-              city: args.cityId
-            }
+            $match: match
           },
           {
             $lookup: {

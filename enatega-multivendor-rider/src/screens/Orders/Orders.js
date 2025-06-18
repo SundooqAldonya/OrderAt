@@ -123,24 +123,24 @@ const Orders = ({ navigation }) => {
     }
   }, [dataProfile, riderIsActive])
 
-  useEffect(() => {
-    setTimeout(() => setIsMounted(true), 0)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => setIsMounted(true), 0)
+  // }, [])
 
-  const updateOrders = rawOrders => {
-    if (!dataProfile?.rider?._id) return []
-    const filtered = rawOrders.filter(
-      o =>
-        ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
-          o?.orderStatus
-        ) &&
-        o?.rider &&
-        dataProfile?.rider?._id === o?.rider?._id
-    )
-    InteractionManager.runAfterInteractions(() => {
-      setOrders(filtered)
-    })
-  }
+  // const updateOrders = rawOrders => {
+  //   if (!dataProfile?.rider?._id) return []
+  //   const filtered = rawOrders.filter(
+  //     o =>
+  //       ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
+  //         o?.orderStatus
+  //       ) &&
+  //       o?.rider &&
+  //       dataProfile?.rider?._id === o?.rider?._id
+  //   )
+  //   InteractionManager.runAfterInteractions(() => {
+  //     setOrders(filtered)
+  //   })
+  // }
 
   return (
     <ScreenBackground>
@@ -216,17 +216,17 @@ const Orders = ({ navigation }) => {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            {isMounted && (
-              <LottieView
-                style={{
-                  width: width - 100,
-                  height: 250
-                }}
-                source={require('../../assets/loader.json')}
-                autoPlay
-                loop
-              />
-            )}
+            {/* {isMounted && ( */}
+            <LottieView
+              style={{
+                width: width - 100,
+                height: 250
+              }}
+              source={require('../../assets/loader.json')}
+              autoPlay
+              loop
+            />
+            {/* )} */}
             <TextDefault bolder center H3 textColor={colors.fontSecondColor}>
               {t('notAnyOrdersYet')}
             </TextDefault>
