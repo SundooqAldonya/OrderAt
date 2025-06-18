@@ -2,24 +2,24 @@ import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { View, Pressable, TouchableOpacity } from 'react-native'
 import { Spinner, TextDefault } from '..'
 import styles from './styles'
-import { colors, formatReceipt, TIMES } from '../../utilities'
+import { colors, TIMES } from '../../utilities'
 import { Overlay } from 'react-native-elements'
 import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
 import { useTranslation } from 'react-i18next'
 
 export default function OverlayComponent(props) {
   const { t } = useTranslation()
-  const { visible, toggle, order, print, navigation } = props
+  const { visible, toggle, order, print, navigation, printOrder } = props
   const [selectedTime, setSelectedTime] = useState(TIMES[0])
   const { acceptOrder, loading } = useAcceptOrder()
   const { muteRing } = useOrderRing()
-  const { printOrder } = usePrintOrder()
+  //const { printOrder } = usePrintOrder()
 
   const btnPress = async () => {
     if (print) {
       acceptOrder(order._id, selectedTime.toString())
       muteRing(order.orderId)
-      printOrder(order._id)
+      printOrder()
       // dispatch(showPrintersFn())
       // await startPrinting()
     } else {

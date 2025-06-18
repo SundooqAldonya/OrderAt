@@ -3,6 +3,7 @@ import {
   View,
   ActivityIndicator,
   ImageBackground,
+  Alert,
   ScrollView
 } from 'react-native'
 import { Spinner, TextDefault } from '../../components'
@@ -18,8 +19,26 @@ import CountDown from 'react-native-countdown-component'
 import { useRestaurantContext } from '../../ui/context/restaurant'
 import { useTranslation } from 'react-i18next'
 import Status from '../../components/Status'
+import { formatReceipt } from '../../utilities/formatReceipt'
+import SpriteCapture, {
+  SpriteCaptureHandle
+} from '../../utilities/SpriteCapture'
+import PrinterManager from '../../utilities/printers/printerManager'
+import fs from 'react-native-fs'
+
+import * as htmlToImage from 'html-to-image'
+import { toPng } from 'html-to-image'
+import RenderHtml from '@builder.io/react-native-render-html'
+import { Configuration } from '../../ui/context'
+
+const ReceiptViewer = ({ receiptHTML, width }) => {
+  return <RenderHtml contentWidth={width} source={{ html: receiptHTML }} />
+}
 
 export default function OrderDetail({ navigation, route }) {
+  const { currency } = useContext(Configuration.Context)
+  const receiptRef = useRef(null)
+
   const { t, i18n } = useTranslation()
   const {
     activeBar,
@@ -59,6 +78,7 @@ export default function OrderDetail({ navigation, route }) {
     : 0
 
   const order = data?.restaurantOrders?.find(o => o._id === _id)
+  const receiptHTML = formatReceipt(order, currency)
   const imagePath = require('../../assets/bowl.png')
 
   const toggleOverlay = () => {
@@ -69,6 +89,22 @@ export default function OrderDetail({ navigation, route }) {
   const togglePrintOverlay = () => {
     setPrint(true)
     setOverlayVisible(!overlayVisible)
+  }
+
+  const printOrder = async () => {
+    if (receiptRef.current) {
+      try {
+        let b64 = await receiptRef.current.captureBase64()
+        b64 = await fs.readFile(b64, 'base64')
+        b64 = b64.replace(/\r?\n|\r/g, '')
+        await PrinterManager.printBase64(b64, { width: 384 })
+        await PrinterManager.print('\n', { align: 'center', cutPaper: true })
+      } catch (err) {
+        console.error(err)
+      }
+    } else {
+      console.log('NO Ref FOUND!')
+    }
   }
 
   const cancelOrderFunc = () => {
@@ -220,12 +256,20 @@ export default function OrderDetail({ navigation, route }) {
                     }}
                     onPress={toggleOverlay}
                   />
+
+                  <SpriteCapture ref={receiptRef} width={250}>
+                    <ReceiptViewer
+                      receiptHTML={receiptHTML}
+                      width={384}></ReceiptViewer>
+                  </SpriteCapture>
+
                   <OverlayComponent
                     visible={overlayVisible}
                     toggle={toggleOverlay}
                     order={order}
                     print={print}
                     navigation={navigation}
+                    printOrder={printOrder}
                   />
                 </>
               )}
