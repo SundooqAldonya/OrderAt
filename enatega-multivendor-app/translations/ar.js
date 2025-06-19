@@ -665,5 +665,5 @@ export const ar = {
   select_language: 'أختر اللغة المفضلة',
   your_order_delivered_here: 'طلباتك ستصل إلى هنا',
   city: 'المدينة',
-  out_of_stock: 'إنتهى من المخزن'
+  out_of_stock: 'غير متاح الآن'
 }
