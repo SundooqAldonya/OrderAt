@@ -202,30 +202,30 @@ function NoDrawer() {
 function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
-  const { refetchAssigned } = useContext(UserContext)
+  // const { refetchAssigned } = useContext(UserContext)
 
-  const [mutateRefreshToken] = useMutation(refreshFirebaseToken, {
-    onCompleted: res => {
-      console.log({ res })
-    },
-    onError: error => {
-      console.log({ error })
-    }
-  })
+  // const [mutateRefreshToken] = useMutation(refreshFirebaseToken, {
+  //   onCompleted: res => {
+  //     console.log({ res })
+  //   },
+  //   onError: error => {
+  //     console.log({ error })
+  //   }
+  // })
 
-  useEffect(() => {
-    const unsubscribe = messaging().onTokenRefresh(token => {
-      // ✅ Send this new token to your backend
-      mutateRefreshToken({
-        variables: {
-          notificationToken: token
-        }
-      })
-      console.log('FCM Token refreshed:', token)
-    })
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onTokenRefresh(token => {
+  //     // ✅ Send this new token to your backend
+  //     mutateRefreshToken({
+  //       variables: {
+  //         notificationToken: token
+  //       }
+  //     })
+  //     console.log('FCM Token refreshed:', token)
+  //   })
 
-    return unsubscribe
-  }, [])
+  //   return unsubscribe
+  // }, [])
 
   useEffect(() => {
     async function checkPermissions() {
@@ -252,7 +252,7 @@ function AppContainer() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      refetchAssigned()
+      // refetchAssigned()
       Toast.info(remoteMessage.notification.body)
       const sound = remoteMessage?.notification?.android?.sound
         ? remoteMessage.notification.android.sound
@@ -267,7 +267,7 @@ function AppContainer() {
 
   useEffect(() => {
     const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
-      refetchAssigned() // when user taps on notification
+      // refetchAssigned() // when user taps on notification
     })
 
     return unsubscribe

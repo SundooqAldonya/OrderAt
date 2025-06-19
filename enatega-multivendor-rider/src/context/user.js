@@ -178,8 +178,7 @@ export const UserProvider = props => {
         dataProfile,
         loadingAssigned,
         errorAssigned,
-        assignedOrders:
-          loadingAssigned || errorAssigned ? [] : dataAssigned.riderOrders,
+        assignedOrders: dataAssigned?.riderOrders ?? [],
         refetchAssigned,
         networkStatusAssigned,
         requestForegroundPermissionsAsync
