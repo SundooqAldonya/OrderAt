@@ -33,7 +33,8 @@ const OrderDetailsPage = () => {
   const { data, loading, error } = useQuery(singleOrder, {
     variables: {
       id: orderId
-    }
+    },
+    pullInterval: 3000
   })
 
   const order = data?.singleOrder || null

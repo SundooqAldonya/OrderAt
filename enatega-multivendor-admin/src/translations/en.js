@@ -321,6 +321,12 @@ const en = {
     ASSIGNED: 'ASSIGNED',
     DELIVERED: 'DELIVERED',
     REJECTED: 'REJECTED',
+    pending: 'PENDING',
+    accepted: 'ACCEPTED',
+    assigned: 'ASSIGNED',
+    picked: 'PICKED',
+    delivered: 'DELIVERED',
+    completed: 'COMPLETED',
     shopType: 'Shop Type',
     UploadaLogo: 'Upload a logo',
     StatusUpdated: 'Status Updated!',
@@ -423,7 +429,8 @@ const en = {
     assigned_picked: 'Assigned orders',
     select_stock_unit: 'Select Stock Unit',
     stock_amount: 'Stock Amount',
-    select_stock: 'Select Stock'
+    select_stock: 'Select Stock',
+    orderPlaced: 'Order Placed'
   }
 }
 

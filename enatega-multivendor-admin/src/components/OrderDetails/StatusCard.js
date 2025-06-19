@@ -32,6 +32,15 @@ export default function StatusCard(props) {
     t('completed')
   ]
 
+  // const STATUS_ORDER = [
+  //   t('PENDING'),
+  //   t('ACCEPTED'),
+  //   t('ASSIGNED'),
+  //   t('PICKED'),
+  //   t('DELIVERED'),
+  //   t('COMPLETED')
+  // ]
+
   const formatTime = date =>
     new Date(date).toLocaleTimeString('en-US', { timeStyle: 'short' })
 
@@ -101,6 +110,9 @@ export default function StatusCard(props) {
   const { description, estimated_time, status_image } = getOrderStatusValues(
     props
   )
+
+  console.log({ orderStatus: STATUS_ORDER.indexOf(orderStatus) })
+  console.log({ orderStatus })
 
   return (
     <>

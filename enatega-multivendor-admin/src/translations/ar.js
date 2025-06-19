@@ -404,7 +404,14 @@ const ar = {
     assigned_picked: 'الاوردرات المكلفة',
     select_stock_unit: 'حدد وحدة المخزون',
     stock_amount: 'سعة التخزين',
-    select_stock: 'حدد التخزين'
+    select_stock: 'حدد التخزين',
+    orderPlaced: 'Order Placed',
+    pending: 'قيد الانتظار',
+    accepted: 'تم القبول',
+    assigned: 'تم تحديد مندوب',
+    picked: 'الاوردر مع الندوب',
+    delivered: 'تم التوصيل',
+    completed: 'تم'
   }
 }
 
