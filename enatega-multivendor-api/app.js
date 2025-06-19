@@ -120,7 +120,8 @@ async function startApolloServer() {
       console.log({ formattedError })
       console.log({ errorLocation: formattedError.extensions.exception })
       return {
-        message: formattedError.extensions.exception.stacktrace[0]
+        message: formattedError.extensions.exception.stacktrace[0],
+        extensions: formattedError.extensions
         // code: error.extensions.code,
         // path: error.path
       }

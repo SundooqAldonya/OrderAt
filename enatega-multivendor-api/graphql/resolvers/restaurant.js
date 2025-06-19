@@ -329,7 +329,16 @@ module.exports = {
             const food = await Food.find({ category })
               .populate('variations')
               .lean()
+            console.log({ food })
             category.foods = food
+              .filter(item => item.stock !== 'Out of Stock')
+              .map(item => ({
+                ...item,
+                variations:
+                  item.variations?.filter(
+                    variation => variation.stock !== 'Out of Stock'
+                  ) || []
+              }))
             return category
           })
         )

@@ -10,12 +10,10 @@ import * as Updates from 'expo-updates'
 const useEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
 
-  console.log({ configuration: configuration.googleApiKey })
-
   if (
     env === 'production' ||
     env === 'staging' ||
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV === 'production'
   ) {
     return {
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',

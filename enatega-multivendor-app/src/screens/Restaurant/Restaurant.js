@@ -1018,7 +1018,12 @@ function Restaurant(props) {
               </>
               {/* </View> */}
               {cartCount > 0 && (
-                <View style={[styles(currentTheme).buttonContainer, Platform.OS === 'ios' && {marginBottom: 70}]}>
+                <View
+                  style={[
+                    styles(currentTheme).buttonContainer,
+                    Platform.OS === 'ios' && { marginBottom: 70 }
+                  ]}
+                >
                   <TouchableOpacity
                     activeOpacity={0.7}
                     style={styles(currentTheme).button}

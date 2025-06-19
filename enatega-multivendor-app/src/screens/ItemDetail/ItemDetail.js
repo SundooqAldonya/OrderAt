@@ -42,6 +42,7 @@ import Animated, {
 import { scale } from '../../utils/scaling'
 import { Card } from 'react-native-paper'
 import { colors } from '../../utils/colors'
+import Toast from 'react-native-toast-message'
 
 const { height } = Dimensions.get('window')
 const TOP_BAR_HEIGHT = height * 0.08
@@ -157,13 +158,15 @@ function ItemDetail(props) {
 
   async function onPressAddToCart(quantity) {
     if (validateOrderItem()) {
-      // Analytics.track(Analytics.events.ADD_TO_CART, {
-      //   title: food.title,
-      //   restaurantName: food.restaurantName,
-      //   variations: food.variations
-      // })
       if (!restaurantCart || restaurant === restaurantCart) {
         await addToCart(quantity, restaurant !== restaurantCart)
+        Toast.show({
+          type: 'success',
+          text1: 'تمت الإضافة بنجاح',
+          text2: 'المنتج أضيف إلى السلة 👌',
+          position: 'top',
+          visibilityTime: 3000
+        })
       } else if (food.restaurant !== restaurantCart) {
         Alert.alert(
           '',
@@ -333,7 +336,7 @@ function ItemDetail(props) {
       )
     } else {
       return (
-        <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
+        <View>
           <CheckComponent
             options={addon?.options}
             onPress={onSelectOption.bind(this, addon)}
@@ -418,7 +421,9 @@ function ItemDetail(props) {
               <Text
                 style={{
                   textAlign: 'center',
-                  color: '#000000'
+                  color: '#fff',
+                  fontSize: 20,
+                  fontWeight: 'bold'
                 }}
               >
                 {food.restaurantName}

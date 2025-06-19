@@ -67,13 +67,6 @@ function CartComponent(props) {
           // onPress={props.onPress.bind(this, quantity)}
           onPress={() => {
             props.onPress(quantity)
-            Toast.show({
-              type: 'success',
-              text1: 'تمت الإضافة بنجاح',
-              text2: 'المنتج أضيف إلى السلة 👌',
-              position: 'top',
-              visibilityTime: 3000 // 2 ثواني
-            })
           }}
           style={
             !props.disabled

@@ -532,16 +532,44 @@ function Checkout(props) {
   function onError(error) {
     setLoadingOrder(false)
     console.log('onError', error)
-    if (error.graphQLErrors.length) {
-      console.log('error', JSON.stringify(error))
+    const gqlError = error.graphQLErrors?.[0]
+    console.log({ gqlError })
+    if (gqlError) {
+      const { extensions, message } = gqlError
+      console.log({ extensions })
+      const code = extensions?.code
+      const foodTitle = extensions?.foodTitle
+      const variationTitle = extensions?.variationTitle
+
+      if (code === 'out_of_stock') {
+        const name = variationTitle || foodTitle || t('item')
+        FlashMessage({
+          message: `${name} ${t('out_of_stock')}`
+        })
+        return
+      }
+
+      // fallback
       FlashMessage({
-        message: error.graphQLErrors[0].message
+        message: message || t('something_went_wrong')
       })
     } else {
       FlashMessage({
-        message: error.message
+        message: error.message || t('something_went_wrong')
       })
     }
+    // if (error.graphQLErrors.length) {
+    //   console.log('error', JSON.stringify(error))
+    //   const title = error.graphQLErrors[0].message.split(' ')[1]
+    //   const message = error.graphQLErrors[0].message.split(' ')[2]
+    //   FlashMessage({
+    //     message: `${title} ${t(message)}`
+    //   })
+    // } else {
+    //   FlashMessage({
+    //     message: error.message
+    //   })
+    // }
   }
 
   function calculateTip() {
@@ -854,6 +882,7 @@ function Checkout(props) {
             FlashMessage({
               message: t('itemNotAvailable')
             })
+            navigation.goBack()
           }
         }
       } else {

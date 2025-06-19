@@ -56,6 +56,7 @@ const {
 } = require('../../helpers/normalizePhone')
 const dateScalar = require('../../helpers/dateScalar')
 const Variation = require('../../models/variation')
+const { GraphQLError } = require('graphql')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -1069,13 +1070,32 @@ module.exports = {
 
         console.log({ argsOrder: args })
         console.log({ argsOrderInput: args.orderInput })
+
         const items = args.orderInput.map(item => {
           const food = foods.find(
             element => element._id.toString() === item.food
           )
+          if (food.stock && food.stock === 'Out of Stock') {
+            // throw new Error(`${food.title} out_of_stock`)
+            throw new GraphQLError('Out of stock', {
+              extensions: {
+                code: 'out_of_stock',
+                foodTitle: food.title
+              }
+            })
+          }
           const variation = food.variations.find(
             v => v._id.toString() === item.variation
           )
+          if (variation.stock && variation.stock === 'Out of Stock') {
+            // throw new Error(`${variation.title} out_of_stock`)
+            throw new GraphQLError('Out of stock', {
+              extensions: {
+                code: 'out_of_stock',
+                variationTitle: variation?.title
+              }
+            })
+          }
           const addonList = []
           item.addons.forEach((data, index) => {
             const selectedOptions = []
@@ -1241,7 +1261,7 @@ module.exports = {
 
         for (const item of items) {
           const quantity = item.quantity || 1
-          const originalPrice = item.variation.price
+          let originalPrice = item.variation.price
 
           if (item.addons?.length > 0) {
             for (const addon of item.addons) {
