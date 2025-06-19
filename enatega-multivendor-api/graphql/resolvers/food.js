@@ -1,4 +1,5 @@
 // const cons = require('consolidate')
+const { default: mongoose } = require('mongoose')
 const {
   cloudinaryClient,
   uploadFoodImage,
@@ -101,48 +102,68 @@ module.exports = {
         }
         if (foodInput.variations.length) {
           const variationsArr = foodInput.variations
-          const variationsTitle = variationsArr.map(item => item.title)
-          console.log({ variationsTitle })
+
+          // Step 1: Get all valid _id values
+          const variationIds = variationsArr
+            .filter(
+              item =>
+                item._id &&
+                item._id !== '' &&
+                mongoose.Types.ObjectId.isValid(item._id)
+            )
+            .map(item => item._id.toString())
+          console.log({ variationIds })
+          // Step 2: Find existing variations by _id
           const existingVariations = await Variation.find({
-            title: { $in: variationsTitle },
+            _id: { $in: variationIds },
             food: foodInput._id
           })
 
-          console.log({ existingVariations })
-
-          // existingVariations.forEach(async (variant, index) => {
-          //   variant?.addons = [...foodInput.variations[index].addons]
-          //   await variant.save()
-          // })
+          // Step 3: Update existing variations
           await Promise.all(
             existingVariations.map(async variant => {
-              const matchingInput = foodInput.variations.find(
-                item => item.title === variant.title
+              const matchingInput = variationsArr.find(
+                item =>
+                  item._id && item._id.toString() === variant._id.toString()
               )
+              console.log({ matchingInput })
               if (matchingInput) {
                 variant.addons = [...matchingInput.addons]
+                variant.stock = matchingInput.stock
+                variant.title = matchingInput.title
+                variant.price = matchingInput.price
+                variant.discounted = matchingInput.discounted
+                // variant.markModified('addons')
                 await variant.save()
               }
             })
           )
 
-          const existingTitles = existingVariations.map(item => item.title)
-          console.log({ existingTitles })
-          const newVariations = variationsArr.filter(
-            item => !existingTitles.includes(item.title)
+          // Step 4: Insert new variations (no _id)
+          const newVariationsInput = variationsArr.filter(
+            item => !item._id || !mongoose.Types.ObjectId.isValid(item._id)
           )
-          console.log({ newVariations })
-          // let insertedVariations
-          if (newVariations.length) {
-            const insertedVariations = await Variation.insertMany([
-              ...newVariations
-            ])
-            food.variations = [...existingVariations, ...insertedVariations]
+
+          let insertedVariations = []
+          if (newVariationsInput.length) {
+            insertedVariations = await Variation.insertMany(
+              newVariationsInput.map(item => ({
+                ...item,
+                food: food._id
+              }))
+            )
           }
+
+          // Step 5: Update food.variations with full list
+          food.variations = [
+            ...existingVariations.map(v => v._id),
+            ...insertedVariations.map(v => v._id)
+          ]
         }
+
         await food.save()
-        const newFood = await food.populate('category')
-        return newFood
+        const populatedFood = await food.populate('category')
+        return populatedFood
       } catch (err) {
         console.log(err)
         throw err

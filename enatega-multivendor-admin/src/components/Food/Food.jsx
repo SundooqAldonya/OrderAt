@@ -81,8 +81,9 @@ function Food(props) {
   const [variation, setVariation] = useState(
     props.food && props.food.variations.length
       ? props.food?.variations?.map(
-          ({ title, price, discounted, addons, stock }) => {
+          ({ _id, title, price, discounted, addons, stock }) => {
             return {
+              _id,
               title,
               price,
               discounted,
@@ -100,7 +101,8 @@ function Food(props) {
             discounted: '',
             addons: [],
             titleError: null,
-            priceError: null
+            priceError: null,
+            stock: ''
           }
         ]
   )
@@ -234,6 +236,7 @@ function Food(props) {
     }
     setVariation([...variations])
   }
+
   const onRemove = index => {
     if (variation.length === 1 && index === 0) {
       return
@@ -242,30 +245,31 @@ function Food(props) {
     variations.splice(index, 1)
     setVariation([...variations])
   }
-  const handleVariationChange = (event, index, type) => {
-    const variations = variation
 
-    if (type === 'title') {
-      variations[index][type] =
-        event.target.value.length === 1
-          ? event.target.value.toUpperCase()
-          : event.target.value
-      setVariation([...variations])
-    } else if (type === 'discounted') {
-      // Enforce non-negative discounted price
-      const newValue = Math.max(0, parseFloat(event.target.value))
-      // variations[index][type] = newValue
-      if (newValue > 0) {
-        variations[index][type] = newValue
-        setVariation([...variations])
+  console.log({ variation })
+
+  const handleVariationChange = (event, index, type) => {
+    setVariation(prev => {
+      const updated = [...prev] // shallow copy array
+      const updatedItem = { ...updated[index] } // shallow copy the item
+      const value = event.target.value
+
+      if (type === 'title') {
+        updatedItem[type] = value.length === 1 ? value.toUpperCase() : value
+      } else if (type === 'discounted') {
+        const newValue = Math.max(0, parseFloat(value))
+        if (newValue > 0) {
+          updatedItem[type] = newValue
+        }
+      } else {
+        updatedItem[type] = value
       }
-      // variations[index][type + 'Error'] = newValue < 0 // Update error based on new value
-      // setVariation([...variations])
-    } else {
-      variations[index][type] = event.target.value
-      setVariation([...variations])
-    }
+
+      updated[index] = updatedItem // replace with cloned and modified item
+      return updated
+    })
   }
+
   const onSubmitValidaiton = () => {
     const titleError = !validateFunc(
       { title: formRef.current['input-title'].value },
@@ -544,7 +548,11 @@ function Food(props) {
               </Box>
               <Box classes={classes.form}>
                 {variation?.map((variationItem, index) => {
-                  console.log({ variationItem })
+                  console.log(
+                    `stock value for index ${index}:`,
+                    variationItem.stock
+                  )
+
                   return (
                     <Box key={index} pl={1} pr={1}>
                       <Box className={globalClasses.flexRow}>
@@ -652,12 +660,14 @@ function Food(props) {
                               <Select
                                 id="input-stockUnit"
                                 name="input-stockUnit"
-                                // defaultValue={[variationItem.stock || '']}
-                                value={
-                                  selectedStockVariation || variationItem.stock
-                                }
+                                value={variationItem.stock || ''}
                                 onChange={e =>
-                                  setSelectedStockVariation(e.target.value)
+                                  handleVariationChange(
+                                    e,
+                                    index,
+                                    'stock',
+                                    'variations'
+                                  )
                                 }
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
@@ -770,14 +780,26 @@ function Food(props) {
                         stock: selectedStockUnit,
                         category: formRef.current['input-category'].value,
                         variations: variation.map(
-                          ({ title, price, discounted, addons, stock }) => {
-                            return {
+                          ({
+                            _id,
+                            title,
+                            price,
+                            discounted,
+                            addons,
+                            stock
+                          }) => {
+                            console.log({ _id })
+                            const obj = {
                               title,
                               price: +price,
                               discounted: +discounted,
                               addons,
-                              stock: selectedStockVariation || stock
+                              stock
                             }
+                            if (_id) {
+                              obj._id = _id // only include if truthy
+                            }
+                            return obj
                           }
                         )
                       }
