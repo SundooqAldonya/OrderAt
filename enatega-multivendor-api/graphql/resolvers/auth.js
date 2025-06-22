@@ -264,6 +264,9 @@ module.exports = {
           throw new Error('phone_password_not_match')
         }
 
+        user.isOnline = true
+        // should add notificationToken to user when login
+        await user.save()
         const token = jwt.sign(
           {
             userId: user._id,

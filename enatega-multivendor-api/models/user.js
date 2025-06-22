@@ -80,7 +80,11 @@ const userSchema = new Schema(
       type: Array
     },
     phoneOTP: String,
-    phoneOtpExpiresAt: Date
+    phoneOtpExpiresAt: Date,
+    isOnline: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 )

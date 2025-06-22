@@ -1104,8 +1104,16 @@ module.exports = {
           publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
           await sendPushNotification(result.zone.toString(), result)
         }
-        if (user && user.isOrderNotification) {
-          sendCustomerNotifications(transformedOrder.user, transformedOrder)
+        if (
+          user &&
+          user.isOnline &&
+          user.isOrderNotification &&
+          user.notificationToken
+        ) {
+          await sendCustomerNotifications(
+            transformedOrder.user,
+            transformedOrder
+          )
         }
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')
@@ -1149,9 +1157,16 @@ module.exports = {
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
           await sendPushNotification(order.zone.toString(), order)
         }
-        console.log('Starting to send notification')
-        sendCustomerNotifications(populatedOrder.user, order)
-        console.log('Finished sending notification to customer')
+        if (
+          user &&
+          user.isOnline &&
+          user.isOrderNotification &&
+          user.notificationToken
+        ) {
+          console.log('Starting to send notification')
+          sendCustomerNotifications(populatedOrder.user, order)
+          console.log('Finished sending notification to customer')
+        }
         publishToUser(result.user.toString(), transformedOrder, 'update')
         // sendNotificationToCustomerWeb(
         //   user.notificationTokenWeb,
