@@ -27,8 +27,9 @@ function Footer() {
 
   const links = [
     { id: 1, to: "/", label: "Home" },
-    { id: 2, to: "/privacy", label: "Privacy and policy" },
-    { id: 3, to: "/terms", label: "Terms and condition" }, // New link
+    { id: 2, to: "/contact-us", label: "Contact us" },
+    { id: 3, to: "/privacy", label: "Privacy and policy" },
+    { id: 4, to: "/terms", label: "Terms and condition" },
   ];
 
   const redirectHandler = (link) => {
