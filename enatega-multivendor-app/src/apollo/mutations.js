@@ -432,8 +432,16 @@ export const phoneIsVerified = gql`
   }
 `
 export const customerLogin = gql`
-  mutation CustomerLogin($phone: String!, $password: String!) {
-    customerLogin(phone: $phone, password: $password) {
+  mutation CustomerLogin(
+    $phone: String!
+    $password: String!
+    $notificationToken: String
+  ) {
+    customerLogin(
+      phone: $phone
+      password: $password
+      notificationToken: $notificationToken
+    ) {
       token
       user {
         _id

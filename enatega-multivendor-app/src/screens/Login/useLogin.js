@@ -1,6 +1,6 @@
 import { useState, useContext, useRef } from 'react'
 import { Alert } from 'react-native'
-import _ from 'lodash' // Import lodash
+import _ from 'lodash'
 import * as Device from 'expo-device'
 import Constants from 'expo-constants'
 import { useMutation } from '@apollo/client'

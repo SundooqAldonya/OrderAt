@@ -1908,7 +1908,11 @@ const typeDefs = gql`
     orderSeenByRider(id: String!, riderId: String!): Message
     orderOpenedByRider(id: String!, riderId: String!): Message
     resetPasswordCustomer(phone: String!, password: String!): ForgotPassword
-    customerLogin(phone: String!, password: String!): CustomerLoginResponse
+    customerLogin(
+      phone: String!
+      password: String!
+      notificationToken: String
+    ): CustomerLoginResponse
     defaultTimings(id: String!): Message
     refreshFirebaseToken(notificationToken: String): Message
     phoneIsVerified: Boolean!

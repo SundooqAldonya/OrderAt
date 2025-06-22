@@ -26,6 +26,9 @@ import { customerLogin, validatePhoneUnauth } from '../../apollo/mutations'
 import AuthContext from '../../context/Auth'
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
+import * as Notifications from 'expo-notifications'
+import * as Device from 'expo-device'
+import Constants from 'expo-constants'
 
 function Login(props) {
   const dispatch = useDispatch()
@@ -120,11 +123,25 @@ function Login(props) {
     )
   }, [props.navigation])
 
-  const handleSubmitLogin = () => {
+  const handleSubmitLogin = async () => {
+    let notificationToken = null
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync()
+      if (existingStatus === 'granted') {
+        notificationToken = (
+          await Notifications.getDevicePushTokenAsync({
+            projectId: Constants.expoConfig.extra.eas.projectId
+          })
+        ).data
+      }
+    }
+    console.log({ notificationToken })
     mutateLogin({
       variables: {
         phone,
-        password
+        password,
+        notificationToken
       }
     })
   }

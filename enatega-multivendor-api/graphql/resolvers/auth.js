@@ -265,7 +265,7 @@ module.exports = {
         }
 
         user.isOnline = true
-        // should add notificationToken to user when login
+        user.notificationToken = args.notificationToken
         await user.save()
         const token = jwt.sign(
           {
