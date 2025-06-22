@@ -223,5 +223,6 @@ export const ar = {
   okay: 'نعم',
   customer_notes: 'ملاحظات العميل',
   click_here_location: 'أضغط لرؤية المكان',
-  loading: 'جاري التحميل...'
+  loading: 'جاري التحميل...',
+  order_assigned_someone_else: 'تم تعيين الطلب لشخص آخر!'
 }

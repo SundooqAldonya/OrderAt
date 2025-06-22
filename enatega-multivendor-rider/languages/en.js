@@ -226,5 +226,6 @@ export const en = {
   okay: 'Okay',
   customer_notes: 'Customer Notes',
   click_here_location: 'Click here to reveal the location',
-  loading: 'Loading...'
+  loading: 'Loading...',
+  order_assigned_someone_else: 'Order is assigned to someone else!'
 }

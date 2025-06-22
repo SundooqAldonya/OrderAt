@@ -70,11 +70,13 @@ const useOrder = order => {
   }
 
   function onError({ graphQLErrors, networkError }) {
+    console.log({ graphQLErrors })
     let message = 'Unknown error occured'
     if (networkError) message = 'Internal Server Error'
     if (graphQLErrors) message = graphQLErrors.map(o => o.message).join(', ')
 
     FlashMessage({ message: message })
+    refetchAssigned()
   }
 
   return {

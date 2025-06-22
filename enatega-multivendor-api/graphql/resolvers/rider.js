@@ -461,7 +461,7 @@ module.exports = {
         const order = await Order.findById(args.id)
         if (!order) throw new Error('Order does not exist')
         if (order.rider) {
-          throw new Error('Order was assigned to someone else.')
+          throw new Error('تم تعيين الطلب لشخص آخر!')
         }
         order.rider = req.userId
         order.orderStatus = order_status[6]
