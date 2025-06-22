@@ -168,7 +168,10 @@ const transformOrder = async order => {
       ? order?.originalDeliveryCharges
       : 0,
     originalSubtotal: order?.originalSubtotal ? order?.originalSubtotal : 0,
-    originalPrice: order?.originalPrice ? order?.originalPrice : 0
+    originalPrice: order?.originalPrice ? order?.originalPrice : 0,
+    mandoobSpecialInstructions: order?.mandoobSpecialInstructions
+      ? order?.mandoobSpecialInstructions
+      : null
   }
 }
 
