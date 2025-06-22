@@ -250,6 +250,7 @@ const ar = {
     continue: "استمر",
     whatsYourPhone: "ما هو رقم تليفونك؟",
     phone_password_not_match: "خطأ في كلمة المرور",
+    message_sent_successfully: "تم إرسال الرسالة بنجاح!",
   },
 };
 export default ar;

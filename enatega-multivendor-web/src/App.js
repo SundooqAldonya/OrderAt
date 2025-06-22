@@ -39,6 +39,7 @@ import AddYourBusiness from "./screens/AddYourBusiness";
 import BusinessList from "./screens/BusinessList";
 import LandingPage from "./screens/LandingPage";
 import SignupAsRider from "./screens/SignupAsRider";
+import ContactUs from "./screens/ContactUs";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -174,6 +175,7 @@ function App() {
           <Route path="/signup-as-rider" element={<SignupAsRider />} />
           <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/pickup" element={<Pickup />} />
           <Route

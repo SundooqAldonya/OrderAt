@@ -1277,3 +1277,11 @@ export const verifyPhoneOTP = gql`
     }
   }
 `;
+
+export const createContactus = gql`
+  mutation CreateContactus($name: String, $email: String, $message: String) {
+    createContactus(name: $name, email: $email, message: $message) {
+      message
+    }
+  }
+`;

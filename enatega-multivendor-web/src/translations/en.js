@@ -255,6 +255,7 @@ const en = {
     continue: "Continue",
     whatsYourPhone: "What is your phone number?",
     phone_password_not_match: "Phone and password don't match!",
+    message_sent_successfully: "Message sent successfully!",
   },
 };
 export default en;

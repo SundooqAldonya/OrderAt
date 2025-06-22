@@ -1502,7 +1502,14 @@ const typeDefs = gql`
     originalDeliveryCharges: Float
   }
 
+  type Contactus {
+    name: String
+    email: String
+    message: String
+  }
+
   type Query {
+    getAllContactus: [Contactus]
     getStockEnumValues: [String]
     checkoutCalculatePrice(cart: Cart): CalculatePriceResult
     coupons: [Coupon!]!
@@ -1898,6 +1905,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    markContactusResponded(id: String): Message
+    createContactus(email: String, name: String, message: String): Message
     updateEmail(email: String): Message
     applyCouponMandoob(
       applyCouponMandoobInput: ApplyCouponMandoobInput
