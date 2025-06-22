@@ -29,7 +29,7 @@ const Orders = ({ navigation }) => {
   const { t } = useTranslation()
   const [riderIsActive, setRiderIsActive] = useState(false)
   const appState = useRef(AppState.currentState)
-  const [isMounted, setIsMounted] = useState(false)
+  const [readyForLottie, setReadyForLottie] = useState(false)
 
   const { setActive } = useContext(TabsContext)
   const configuration = useContext(ConfigurationContext)
@@ -67,80 +67,19 @@ const Orders = ({ navigation }) => {
     setActive('MyOrders')
   })
 
-  // useEffect(() => {
-  //   const subscription = AppState.addEventListener(
-  //     'change',
-  //     async nextAppState => {
-  //       if (
-  //         appState.current.match(/inactive|background/) &&
-  //         nextAppState === 'active'
-  //       ) {
-  //         try {
-  //           const result = await refetchAssigned()
-
-  //           if (result?.data?.assignedOrders) {
-  //             const filtered = updateOrders(result.data.assignedOrders)
-
-  //             // ✅ This guarantees it runs on the UI thread
-  //             setTimeout(() => {
-  //               setOrders(filtered)
-  //             }, 0)
-  //           }
-  //         } catch (err) {
-  //           console.error('Failed to refetch on app resume', err)
-  //         }
-  //       }
-
-  //       appState.current = nextAppState
-  //     }
-  //   )
-
-  //   return () => {
-  //     subscription.remove()
-  //   }
-  // }, [refetchAssigned, dataProfile?.rider?._id])
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     let isActive = true
-  //     refetchAssigned().then(result => {
-  //       if (result?.data?.assignedOrders && isActive) {
-  //         const filtered = updateOrders(result.data.assignedOrders)
-  //         setTimeout(() => {
-  //           setOrders(filtered)
-  //         }, 0)
-  //       }
-  //     })
-  //     return () => {
-  //       isActive = false
-  //     }
-  //   }, [dataProfile?.rider?._id])
-  // )
-
   useEffect(() => {
     if (dataProfile) {
       setRiderIsActive(dataProfile?.rider?.isActive)
     }
   }, [dataProfile, riderIsActive])
 
-  // useEffect(() => {
-  //   setTimeout(() => setIsMounted(true), 0)
-  // }, [])
+  useEffect(() => {
+    const interaction = InteractionManager.runAfterInteractions(() => {
+      setReadyForLottie(true)
+    })
 
-  // const updateOrders = rawOrders => {
-  //   if (!dataProfile?.rider?._id) return []
-  //   const filtered = rawOrders.filter(
-  //     o =>
-  //       ['PICKED', 'ACCEPTED', 'DELIVERED', 'ASSIGNED'].includes(
-  //         o?.orderStatus
-  //       ) &&
-  //       o?.rider &&
-  //       dataProfile?.rider?._id === o?.rider?._id
-  //   )
-  //   InteractionManager.runAfterInteractions(() => {
-  //     setOrders(filtered)
-  //   })
-  // }
+    return () => interaction.cancel()
+  }, [])
 
   return (
     <ScreenBackground>
@@ -216,17 +155,17 @@ const Orders = ({ navigation }) => {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            {/* {isMounted && ( */}
-            <LottieView
-              style={{
-                width: width - 100,
-                height: 250
-              }}
-              source={require('../../assets/loader.json')}
-              autoPlay
-              loop
-            />
-            {/* )} */}
+            {readyForLottie && (
+              <LottieView
+                style={{
+                  width: width - 100,
+                  height: 250
+                }}
+                source={require('../../assets/loader.json')}
+                autoPlay
+                loop
+              />
+            )}
             <TextDefault bolder center H3 textColor={colors.fontSecondColor}>
               {t('notAnyOrdersYet')}
             </TextDefault>
