@@ -40,6 +40,7 @@ import CameraCaptureReceipt from '../screens/CameraCaptureReceipt'
 import { useMutation } from '@apollo/client'
 import { refreshFirebaseToken } from '../apollo/mutations'
 import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
+import NotificationListener from '../components/NotificationListener'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -140,6 +141,7 @@ function Main() {
   return locationPermission ? (
     <UserProvider>
       <SoundContextProvider>
+        <NotificationListener />
         <Drawer.Navigator
           drawerType="slide"
           drawerPosition="right"
@@ -227,51 +229,51 @@ function AppContainer() {
   //   return unsubscribe
   // }, [])
 
-  useEffect(() => {
-    async function checkPermissions() {
-      const { status } = await Notifications.getPermissionsAsync()
-      console.log('🔍 Notification permission status:', status)
+  // useEffect(() => {
+  //   async function checkPermissions() {
+  //     const { status } = await Notifications.getPermissionsAsync()
+  //     console.log('🔍 Notification permission status:', status)
 
-      if (status !== 'granted') {
-        console.log(
-          '⚠️ Notifications are not enabled, requesting permission...'
-        )
-        const {
-          status: newStatus
-        } = await Notifications.requestPermissionsAsync()
-        console.log('🔍 New notification status:', newStatus)
-      }
-    }
+  //     if (status !== 'granted') {
+  //       console.log(
+  //         '⚠️ Notifications are not enabled, requesting permission...'
+  //       )
+  //       const {
+  //         status: newStatus
+  //       } = await Notifications.requestPermissionsAsync()
+  //       console.log('🔍 New notification status:', newStatus)
+  //     }
+  //   }
 
-    checkPermissions()
-  }, [])
+  //   checkPermissions()
+  // }, [])
 
-  useEffect(() => {
-    setupNotificationChannel()
-  }, [])
+  // useEffect(() => {
+  //   setupNotificationChannel()
+  // }, [])
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // refetchAssigned()
-      Toast.info(remoteMessage.notification.body)
-      const sound = remoteMessage?.notification?.android?.sound
-        ? remoteMessage.notification.android.sound
-        : null
-      if (sound !== 'false') {
-        playCustomSound()
-      }
-    })
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     refetchAssigned()
+  //     Toast.info(remoteMessage.notification.body)
+  //     const sound = remoteMessage?.notification?.android?.sound
+  //       ? remoteMessage.notification.android.sound
+  //       : null
+  //     if (sound !== 'false') {
+  //       playCustomSound()
+  //     }
+  //   })
 
-    return unsubscribe
-  }, [])
+  //   return unsubscribe
+  // }, [])
 
-  useEffect(() => {
-    const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
-      // refetchAssigned() // when user taps on notification
-    })
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+  //     refetchAssigned()
+  //   })
 
-    return unsubscribe
-  }, [])
+  //   return unsubscribe
+  // }, [])
 
   useEffect(() => {
     const dsn = configuration?.riderAppSentryUrl

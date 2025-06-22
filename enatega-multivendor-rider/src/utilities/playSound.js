@@ -10,13 +10,13 @@ export async function playCustomSound() {
   }
 }
 
-export async function setupNotificationChannel() {
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'Default Channel',
-      importance: Notifications.AndroidImportance.MAX,
-      sound: beep1, // 🔹 Ensure the sound filename matches your FCM payload
-      enableVibrate: true
-    })
-  }
-}
+// export async function setupNotificationChannel() {
+//   if (Platform.OS === 'android') {
+//     await Notifications.setNotificationChannelAsync('default', {
+//       name: 'Default Channel',
+//       importance: Notifications.AndroidImportance.MAX,
+//       sound: beep1, // 🔹 Ensure the sound filename matches your FCM payload
+//       enableVibrate: true
+//     })
+//   }
+// }
