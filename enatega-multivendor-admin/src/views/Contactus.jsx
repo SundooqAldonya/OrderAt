@@ -119,7 +119,6 @@ const ContactUs = () => {
 
   const handleChangeRowsPerPage = event => {
     const newLimit = parseInt(event.target.value, 10)
-    // setLimit(newLimit)
     setPage(0)
     refetch({ page: 1, limit: newLimit })
   }
@@ -150,10 +149,9 @@ const ContactUs = () => {
                   onClick={() => refetch()}
                 />
               }
-              title={<TableHeader title={t('contact_us')} />}
+              title={<TableHeader title={t('Contact us')} />}
               columns={columns}
               data={contactUsList}
-              // pagination
               progressPending={loading}
               progressComponent={<CustomLoader />}
               sortFunction={customSort}
