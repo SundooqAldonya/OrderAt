@@ -1511,8 +1511,20 @@ const typeDefs = gql`
     createdAt: Date
   }
 
+  type PaginatedContactus {
+    docs: [Contactus]
+    totalDocs: Int
+    limit: Int
+    page: Int
+    totalPages: Int
+    hasNextPage: Boolean
+    hasPrevPage: Boolean
+    nextPage: Int
+    prevPage: Int
+  }
+
   type Query {
-    getAllContactus: [Contactus]
+    getAllContactus(page: Int, limit: Int): PaginatedContactus
     getStockEnumValues: [String]
     checkoutCalculatePrice(cart: Cart): CalculatePriceResult
     coupons: [Coupon!]!

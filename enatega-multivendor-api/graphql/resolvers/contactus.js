@@ -5,9 +5,16 @@ module.exports = {
   Date: dateScalar,
   Query: {
     async getAllContactus(_, args) {
-      console.log('getAllContactus')
+      console.log('getAllContactus', { args })
       try {
-        const allContactus = await Contactus.find()
+        const allContactus = await Contactus.paginate(
+          {},
+          {
+            page: args.page || 1,
+            limit: 10,
+            sort: { _id: -1 }
+          }
+        )
         console.log({ allContactus })
         return allContactus
       } catch (err) {

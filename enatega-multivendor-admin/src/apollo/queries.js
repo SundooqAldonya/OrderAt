@@ -1233,14 +1233,23 @@ export const getStockUnits = gql`
   }
 `
 export const getAllContactus = gql`
-  query GetAllContactus {
-    getAllContactus {
-      _id
-      name
-      phone
-      email
-      message
-      createdAt
+  query GetAllContactus($page: Int, $limit: Int) {
+    getAllContactus(page: $page, limit: $limit) {
+      docs {
+        _id
+        name
+        phone
+        email
+        message
+        createdAt
+      }
+      totalDocs
+      page
+      totalPages
+      hasNextPage
+      hasPrevPage
+      nextPage
+      prevPage
     }
   }
 `

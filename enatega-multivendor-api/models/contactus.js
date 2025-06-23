@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const pagination = require('mongoose-paginate-v2')
 
 const contactUsSchema = new Schema(
   {
@@ -31,5 +32,7 @@ const contactUsSchema = new Schema(
     timestamps: true
   }
 )
+
+contactUsSchema.plugin(pagination)
 
 module.exports = model('ContactUs', contactUsSchema)
