@@ -7,9 +7,12 @@ const contactUsSchema = new Schema(
       required: true,
       trim: true
     },
+    phone: {
+      type: String,
+      required: true
+    },
     email: {
       type: String,
-      required: true,
       lowercase: true,
       trim: true,
       match: [/\S+@\S+\.\S+/, 'Please enter a valid email']

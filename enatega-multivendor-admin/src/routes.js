@@ -69,6 +69,7 @@ import DeliveryPrices from './views/DeliveryPrices'
 import DeliveryZone from './views/DeliveryZone'
 import BusinessCategory from './views/BusinessCategory'
 import RidersMap from './views/RidersMap'
+import ContactUs from './views/Contactus'
 
 var routes = [
   {
@@ -139,6 +140,15 @@ var routes = [
     name: 'Configuration',
     icon: ConfigurationIcon,
     component: Configuration,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/contact-us',
+    name: 'Contact us',
+    icon: CouponsIcon,
+    component: ContactUs,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

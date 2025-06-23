@@ -26,18 +26,19 @@ function ContactUs() {
   const [successMessage, setSuccessMessage] = useState(null);
   const [values, setValues] = useState({
     name: "",
+    phone: "",
     email: "",
     message: "",
   });
 
-  const { name, email, message } = values;
+  const { name, email, phone, message } = values;
 
   const [mutate, { loading, error }] = useMutation(createContactus, {
     onCompleted: (res) => {
       console.log({ res });
       setErrorMessage(null);
       setSuccessMessage(t(res.createContactus.message));
-      setValues({ name: "", email: "", message: "" });
+      setValues({ name: "", email: "", phone: "", message: "" });
     },
     onError: (err) => {
       console.log({ err });
@@ -58,12 +59,13 @@ function ContactUs() {
       setErrorMessage("Name is required");
       return false;
     }
-
-    if (!email) {
-      errors.email = "Email is required";
-      setErrorMessage("Email is required");
+    if (!phone) {
+      errors.phone = "Phone is required";
+      setErrorMessage("Phone is required");
       return false;
-    } else if (!emailRegex.test(email)) {
+    }
+
+    if (email.length && !emailRegex.test(email)) {
       errors.email = "Email is invalid";
       setErrorMessage("Email is invalid");
       return false;
@@ -84,6 +86,7 @@ function ContactUs() {
       mutate({
         variables: {
           name,
+          phone,
           email,
           message,
         },
@@ -170,7 +173,7 @@ function ContactUs() {
                   <Box component="form" onSubmit={handleSubmit}>
                     <TextField
                       fullWidth
-                      label="Name"
+                      label="Name *"
                       margin="normal"
                       variant="outlined"
                       name="name"
@@ -184,7 +187,21 @@ function ContactUs() {
                     />
                     <TextField
                       fullWidth
-                      label="Email"
+                      label="Phone *"
+                      margin="normal"
+                      variant="outlined"
+                      name="phone"
+                      value={phone}
+                      onChange={handleChange}
+                      InputProps={{
+                        sx: {
+                          color: "#000",
+                        },
+                      }}
+                    />
+                    <TextField
+                      fullWidth
+                      label="Email (optional)"
                       type="email"
                       margin="normal"
                       variant="outlined"
@@ -199,7 +216,7 @@ function ContactUs() {
                     />
                     <TextField
                       fullWidth
-                      label="Message"
+                      label="Message *"
                       multiline
                       rows={4}
                       margin="normal"

@@ -1,10 +1,14 @@
+const dateScalar = require('../../helpers/dateScalar')
 const Contactus = require('../../models/contactus')
 
 module.exports = {
+  Date: dateScalar,
   Query: {
     async getAllContactus(_, args) {
+      console.log('getAllContactus')
       try {
         const allContactus = await Contactus.find()
+        console.log({ allContactus })
         return allContactus
       } catch (err) {
         throw err
@@ -17,6 +21,7 @@ module.exports = {
         const contact = await Contactus.create({
           name: args.name,
           email: args.email,
+          phone: args.phone,
           message: args.message
         })
         return { message: 'message_sent_successfully' }

@@ -1232,3 +1232,15 @@ export const getStockUnits = gql`
     getStockEnumValues
   }
 `
+export const getAllContactus = gql`
+  query GetAllContactus {
+    getAllContactus {
+      _id
+      name
+      phone
+      email
+      message
+      createdAt
+    }
+  }
+`

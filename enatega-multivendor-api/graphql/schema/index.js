@@ -1503,9 +1503,12 @@ const typeDefs = gql`
   }
 
   type Contactus {
+    _id: String
     name: String
+    phone: String
     email: String
     message: String
+    createdAt: Date
   }
 
   type Query {
@@ -1906,7 +1909,12 @@ const typeDefs = gql`
 
   type Mutation {
     markContactusResponded(id: String): Message
-    createContactus(email: String, name: String, message: String): Message
+    createContactus(
+      email: String
+      name: String
+      phone: String
+      message: String
+    ): Message
     updateEmail(email: String): Message
     applyCouponMandoob(
       applyCouponMandoobInput: ApplyCouponMandoobInput
