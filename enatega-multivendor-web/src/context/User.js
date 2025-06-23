@@ -335,6 +335,7 @@ export const UserProvider = (props) => {
         isLoading,
         phone,
         setPhone,
+        fetchProfile,
       }}
     >
       {props.children}

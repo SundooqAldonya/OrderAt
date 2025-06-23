@@ -43,7 +43,7 @@ function LoginEmail() {
   const { phone, from } = location.state || {};
   const { setTokenAsync } = useContext(UserContext);
 
-  const { login, setLogin } = useRegistration();
+  const { setLogin } = useRegistration();
 
   const [mutateCustomerLogin, { loading }] = useMutation(customerLogin, {
     onCompleted: async (res) => {

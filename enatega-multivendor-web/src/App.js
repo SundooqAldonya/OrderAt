@@ -178,6 +178,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/pickup" element={<Pickup />} />
+          <Route path={"/verify-phone"} element={<VerifyPhone />} />
           <Route
             path={"/login"}
             element={
@@ -242,14 +243,7 @@ function App() {
               </PrivateRoute>
             }
           /> */}
-          <Route
-            path={"/verify-phone"}
-            element={
-              <AuthRoute>
-                <VerifyPhone />
-              </AuthRoute>
-            }
-          />
+
           <Route
             path={"/forgot-password"}
             element={

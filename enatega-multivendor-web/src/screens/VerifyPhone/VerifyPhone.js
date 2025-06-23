@@ -15,9 +15,15 @@ import RegistrationIcon from "../../assets/images/emailLock.png";
 import { Avatar } from "@mui/material";
 import OtpInput from "react-otp-input";
 import { Link as RouterLink } from "react-router-dom";
-import { sendOtpToPhoneNumber, updateUser } from "../../apollo/server";
+import {
+  sendOtpToPhoneNumber,
+  updateUser,
+  validatePhoneUnauth,
+  verifyPhoneOTP,
+} from "../../apollo/server";
 import { useTranslation } from "react-i18next";
 import ConfigurableValues from "../../config/constants";
+import useRegistration from "../../hooks/useRegistration";
 
 const SEND_OTP_TO_PHONE = gql`
   ${sendOtpToPhoneNumber}
@@ -38,10 +44,12 @@ function VerifyPhone() {
   const [seconds, setSeconds] = useState(30);
   const [otpError, setOtpError] = useState(false);
   const [otpFrom, setOtpFrom] = useState(
-    Math.floor(100000 + Math.random() * 900000).toString()
+    Math.floor(1000 + Math.random() * 9000).toString()
   );
-  const { profile } = useContext(UserContext);
+  const { profile, setTokenAsync, fetchProfile } = useContext(UserContext);
   const { SKIP_MOBILE_VERIFICATION } = ConfigurableValues();
+
+  console.log({ checkoutPage: state?.checkoutPage });
 
   const [sendOtp, { loading: loadingOtp }] = useMutation(SEND_OTP_TO_PHONE, {
     onCompleted: onOtpCompleted,
@@ -99,34 +107,74 @@ function VerifyPhone() {
     }
   }
 
-  function onUpdateUserCompleted() {
+  async function onUpdateUserCompleted(res) {
     FlashMessage({
       message: "Phone number has been verified successfully!.",
     });
+    const token = localStorage.getItem("token");
+    await setTokenAsync(token);
+    if (state.checkoutPage) {
+      fetchProfile();
+      navigate("/checkout");
+    } else {
+      navigate("/business-list");
+    }
   }
 
-  const [mutate, { loading: updateUserLoading }] = useMutation(UPDATEUSER, {
+  // const [mutate, { loading: updateUserLoading }] = useMutation(UPDATEUSER, {
+  //   onCompleted: onUpdateUserCompleted,
+  //   onError: onUpdateUserError,
+  // });
+  const [mutate, { loading: updateUserLoading }] = useMutation(verifyPhoneOTP, {
     onCompleted: onUpdateUserCompleted,
     onError: onUpdateUserError,
   });
 
+  const [mutateValidatePhone] = useMutation(validatePhoneUnauth, {
+    onCompleted: (res) => {
+      console.log({ res });
+      // navigate("/business-list");
+      setSeconds(30);
+    },
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
+
+  useEffect(() => {
+    if (state.checkoutPage) {
+      mutateValidatePhone({
+        variables: {
+          phone: profile.phone,
+        },
+      });
+    }
+  }, [state.checkoutPage]);
+
   const onCodeFilled = useCallback(
     (code) => {
-      if (SKIP_MOBILE_VERIFICATION || code === otpFrom) {
-        mutate({
-          variables: {
-            name: profile.name,
-            phone: state?.phone ? state.phone : profile.phone,
-            phoneIsVerified: true,
-          },
-        });
-        navigate(-1, {
-          replace: true,
-        });
-      } else {
-        setOtpError(true);
-        setError("Invalid Code");
-      }
+      console.log({ code });
+      // if (SKIP_MOBILE_VERIFICATION || code === otpFrom) {
+      // mutate({
+      //   variables: {
+      //     name: profile.name,
+      //     phone: state?.phone ? state.phone : profile.phone,
+      //     phoneIsVerified: true,
+      //   },
+      // });
+      mutate({
+        variables: {
+          otp: code,
+          phone: state?.phone ? state.phone : profile.phone,
+        },
+      });
+      navigate(-1, {
+        replace: true,
+      });
+      // } else {
+      //   setOtpError(true);
+      //   setError("Invalid Code");
+      // }
     },
     [
       SKIP_MOBILE_VERIFICATION,
@@ -140,30 +188,36 @@ function VerifyPhone() {
   );
 
   const resendOtp = () => {
-    setOtpFrom(Math.floor(100000 + Math.random() * 900000).toString());
+    mutateValidatePhone({
+      variables: {
+        phone: state?.phone ? state.phone : profile.phone,
+      },
+    });
   };
+
   const handleCode = useCallback(
     (val) => {
       const code = val;
       setOtp(val);
-      if (code.length === 6) {
+      console.log({ codeLength: code.length });
+      if (code.length === 4) {
         onCodeFilled(code);
       }
     },
     [onCodeFilled]
   );
 
-  useEffect(() => {
-    let timer = null;
-    if (!SKIP_MOBILE_VERIFICATION) return;
-    setOtp("111111");
-    timer = setTimeout(() => {
-      handleCode("111111");
-    }, 3000);
-    return () => {
-      timer && clearTimeout(timer);
-    };
-  }, [SKIP_MOBILE_VERIFICATION, handleCode]);
+  // useEffect(() => {
+  //   let timer = null;
+  //   if (!SKIP_MOBILE_VERIFICATION) return;
+  //   setOtp("111111");
+  //   timer = setTimeout(() => {
+  //     handleCode("111111");
+  //   }, 3000);
+  //   return () => {
+  //     timer && clearTimeout(timer);
+  //   };
+  // }, [SKIP_MOBILE_VERIFICATION, handleCode]);
 
   return (
     <LoginWrapper>
@@ -261,7 +315,15 @@ function VerifyPhone() {
         {seconds !== 0 ? `${t("retryAfter")} ${seconds}s` : ""}
       </Typography>
       <Box mt={theme.spacing(2)} />
-      <RouterLink to="/" style={{ textDecoration: "none" }}>
+      {/* user if pressed skip now should be able to redirect to home page as loggedin */}
+      <Button
+        onClick={async () => {
+          const token = localStorage.getItem("token");
+          await setTokenAsync(token);
+          navigate("/");
+        }}
+        style={{ textDecoration: "none" }}
+      >
         <Typography
           variant="caption"
           color="primary"
@@ -269,7 +331,7 @@ function VerifyPhone() {
         >
           {t("skipNow")}
         </Typography>
-      </RouterLink>
+      </Button>
     </LoginWrapper>
   );
 }

@@ -26,6 +26,7 @@ import {
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import UserContext from "../../context/User";
+import useRegistration from "../../hooks/useRegistration";
 
 const PHONE = gql`
   ${phoneExist}
@@ -55,6 +56,8 @@ function Registration() {
   const [password, setPassword] = useState("");
 
   const [phoneError, setPhoneError] = useState(null);
+  const { setLogin } = useRegistration();
+  const { setTokenAsync } = useContext(UserContext);
 
   const [mutateValidatePhone] = useMutation(validatePhoneUnauth, {
     onCompleted: (res) => {
@@ -77,13 +80,16 @@ function Registration() {
   });
 
   const [mutateCreateUser, { loading }] = useMutation(CREATE_USER, {
-    onCompleted: (res) => {
+    onCompleted: async (res) => {
       console.log({ res });
       mutateValidatePhone({
         variables: {
           phone: `+${phone}`,
         },
       });
+      setLogin(true);
+      localStorage.setItem("token", res.createUser.token);
+      // await setTokenAsync(res.createUser.token);
     },
     onError: (err) => {
       console.log({ err });
@@ -339,7 +345,7 @@ function Registration() {
                   edge="end"
                   size="large"
                 >
-                  {showPassword ? (
+                  {!showPassword ? (
                     <Visibility color="primary" />
                   ) : (
                     <VisibilityOff color="primary" />

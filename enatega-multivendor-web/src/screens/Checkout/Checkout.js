@@ -116,11 +116,10 @@ function Checkout() {
   const [deliveryCharges, setDeliveryCharges] = useState(0);
   const [shouldAddMinimumFee, setShouldAddMinimumFee] = useState(false);
   const restaurantId = localStorage.getItem("restaurant");
-  // let restCoordinates = {};
   const [restCoordinates, setRestCoordinates] = useState(null);
   const { loading, data, error } = useRestaurant(restaurantId);
   const extraSmall = useMediaQuery(theme.breakpoints.down("sm"));
-  // console.log({ error });
+
   const [mutateOrder, { loading: loadingOrderMutation }] = useMutation(
     PLACEORDER,
     {
@@ -144,12 +143,6 @@ function Checkout() {
     },
   });
 
-  console.log({
-    calcData,
-    originLong: data?.restaurantCustomer.location.coordinates[0],
-    originLat: data?.restaurantCustomer.location.coordinates[1],
-  });
-
   useEffect(() => {
     if (!location) {
       let localStorageLocation = localStorage.getItem("location");
@@ -170,53 +163,6 @@ function Checkout() {
       );
     }
   }, [calcData]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (data && data?.restaurantCustomer) {
-  //       const latOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[1]
-  //       );
-  //       const lonOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[0]
-  //       );
-  //       const latDest = Number(location.latitude);
-  //       const longDest = Number(location.longitude);
-
-  //       // Calculate distance between origin and destination
-  //       const distance = await calculateDistance(
-  //         latOrigin,
-  //         lonOrigin,
-  //         latDest,
-  //         longDest
-  //       );
-
-  //       let deliveryCharges;
-
-  //       if (distance < 1) {
-  //         // For distances less than 1 km, set deliveryCharges to minimumDeliveryFee
-  //         deliveryCharges = configuration.minimumDeliveryFee;
-  //       } else {
-  //         // For distances greater than or equal to 1 km, calculate delivery charges
-  //         const costType = configuration.costType;
-  //         const calculatedAmount = calculateAmount(
-  //           costType,
-  //           configuration.deliveryRate,
-  //           distance
-  //         );
-
-  //         // Ensure that the calculated fee is not less than the minimum fee
-  //         deliveryCharges = Math.max(
-  //           calculatedAmount,
-  //           configuration.minimumDeliveryFee
-  //         );
-  //       }
-
-  //       // Set the delivery charges state
-  //       setDeliveryCharges(deliveryCharges);
-  //     }
-  //   })();
-  // }, [data, location, configuration]); // Re-run effect when data, location, or configuration changes
 
   const onLoad = useCallback(
     (map) => {
@@ -321,11 +267,6 @@ function Checkout() {
       </Grid>
     );
   }
-
-  // restCoordinates = {
-  //   lat: parseFloat(data?.restaurantCustomer.location.coordinates[1]),
-  //   lng: parseFloat(data?.restaurantCustomer.location.coordinates[0]),
-  // };
 
   function update(cache, { data: { placeOrder } }) {
     console.log("update divya");
@@ -568,7 +509,11 @@ function Checkout() {
       });
 
       setTimeout(() => {
-        navigate("/phone-number");
+        navigate("/verify-phone", {
+          state: {
+            checkoutPage: true,
+          },
+        });
       }, 1000);
 
       return false;
