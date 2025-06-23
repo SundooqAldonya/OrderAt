@@ -36,6 +36,7 @@ import { direction } from "../../utils/helper";
 import { useQuery } from "@apollo/client";
 import { getCities } from "../../apollo/server";
 import DialogAreaSelect from "../../components/HomeScreen/DialogAreaSelect";
+import AppsSection from "../../components/HomeScreen/AppsSection";
 
 function Home() {
   const { i18n, t } = useTranslation();
@@ -219,153 +220,8 @@ function Home() {
             })}
           </Grid>
         </Box>
-        {/* app container (2nd) */}
-        {/* <Box className={classes.appContainer}>
-          <Box
-            className={classes.appWrapper}
-            style={{
-              paddingTop: medium ? "8rem" : 0,
-              zIndex: 10,
-            }}
-          >
-            <img src={Fruits2} alt="fruits2" className={classes.upperFruits} />
-            {!medium && (
-              <Box
-                className={classes.bannerContainer}
-                display={"flex"}
-                alignItems={"flex-start"}
-              >
-                <img
-                  src={Banner2}
-                  alt="banner2"
-                  className={classes.bannerOne}
-                />
-                <img
-                  src={Banner1}
-                  alt="banner1"
-                  className={classes.bannerTwo}
-                />
-              </Box>
-            )}
-
-            <AppComponent />
-          </Box>
-        </Box> */}
-        {/* card container (3rd) */}
-        {/* <Box className={classes.cardContainer}>
-          <Box className={classes.cardWrapper}>
-            <Typography
-              className={small ? classes.bgTextSmall : classes.bgText}
-              style={{ top: "3%", right: "8%" }}
-            >
-              FEATURES
-            </Typography>
-            <Container className={classes.topBottomMargin}>
-              <Grid container justify="flex-end" spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    display="flex"
-                    justifyContent={small ? "flex-end" : "flex-start"}
-                  >
-                    <CategoryCards
-                      title={"Rider App"}
-                      image={RiderApp}
-                      description={[
-                        "• " + t("findingAddress"),
-                        "• " + t("zonesFunctionality"),
-                      ]}
-                      android={
-                        "https://play.google.com/store/apps/details?id=com.enatega.multirider"
-                      }
-                      ios={
-                        "https://apps.apple.com/pk/app/enatega-mulitvendor-rider/id1526674511"
-                      }
-                      isMobile={true}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box mt={small ? 15 : 0} />
-                  <Box
-                    display="flex"
-                    justifyContent={small ? "flex-start" : "flex-end"}
-                  >
-                    <CategoryCards
-                      title={"Restaurant App"}
-                      image={RestaurantApp}
-                      description={[
-                        "• " + t("multipleRestaurants"),
-                        "• " + t("realTimeOrder"),
-                      ]}
-                      android={
-                        "https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant"
-                      }
-                      ios={
-                        "https://apps.apple.com/pk/app/enatega-multivendor-restaurant/id1526672537"
-                      }
-                      isMobile={true}
-                    />
-                  </Box>
-                </Grid>
-                <Box mt={5} />
-                <Grid item xs={12}>
-                  <Box mt={small ? 15 : 0} />
-                  <Box
-                    display="flex"
-                    justifyContent={small ? "flex-end" : "center"}
-                  >
-                    <CategoryCards
-                      title={"Customer App"}
-                      image={CustApp}
-                      description={[
-                        "• " + t("differentSections"),
-                        "• " + t("previousOrder"),
-                      ]}
-                      android={
-                        "https://play.google.com/store/apps/details?id=com.enatega.multivendor"
-                      }
-                      ios={
-                        "https://apps.apple.com/pk/app/enatega-multivendor/id1526488093"
-                      }
-                      isMobile={true}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box mt={small ? 15 : 0} />
-
-                  <CategoryCards
-                    title={"Admin Dashboard"}
-                    image={Dashboard}
-                    description={[
-                      "• " + t("findingAddress"),
-                      "• " + t("zonesFunctionality"),
-                    ]}
-                    web={true}
-                    link={"https://multivendor-admin.enatega.com/"}
-                    isMobile={false}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box mt={small ? 15 : 0} />
-                  <Box display="flex" justifyContent="flex-end">
-                    <CategoryCards
-                      title={"Product Page"}
-                      image={WebApp}
-                      description={[
-                        "• " + t("ourDelivery"),
-                        "• " + t("builtOnCommunity"),
-                      ]}
-                      web={true}
-                      link={"https://enatega.com/"}
-                      isMobile={false}
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
-            </Container>
-          </Box>
-        </Box> */}
+        {/* download apps section */}
+        <AppsSection />
 
         <Box className={classes.footerContainer}>
           <Box className={classes.footerWrapper}>
