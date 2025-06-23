@@ -22,6 +22,8 @@ import { verticalScale } from '../../utils/scaling'
 import MandoobImg from '../../assets/delivery_dark.png'
 import { Image } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { Linking } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 function SidebBar(props) {
   const Analytics = analytics()
@@ -192,6 +194,30 @@ function SidebBar(props) {
             ))}
           {isLoggedIn ? (
             <Fragment>
+              <TouchableOpacity
+                style={[
+                  styles().item,
+                  { borderBottomWidth: 0, marginVertical: 5 }
+                ]}
+              >
+                <SideDrawerItems
+                  onPress={() =>
+                    Linking.canOpenURL('https://orderat.ai/#/privacy').then(
+                      () => {
+                        Linking.openURL('https://orderat.ai/#/privacy')
+                      }
+                    )
+                  }
+                  icon={
+                    <SimpleLineIcons
+                      name={'info'}
+                      size={verticalScale(18)}
+                      color={currentTheme.darkBgFont}
+                    />
+                  }
+                  title={t('privacy')}
+                />
+              </TouchableOpacity>
               <View
                 style={[
                   styles().item,

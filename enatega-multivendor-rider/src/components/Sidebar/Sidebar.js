@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Platform, Switch, ImageBackground } from 'react-native'
+import { View, Platform, Switch, ImageBackground, Linking } from 'react-native'
 import NavItem from './NavItem/NavItem'
 import Profile from './Profile/Profile'
 import styles from './styles'
@@ -127,6 +127,18 @@ function SidebBar() {
               onPress={() => navigation.navigate('Language')}
               icon={'language'}
               title={t('language')}
+              reverse={isArabic}
+            />
+          </View>
+          <View style={styles.item}>
+            <NavItem
+              onPress={() =>
+                Linking.canOpenURL('https://orderat.ai/#/privacy').then(() => {
+                  Linking.openURL('https://orderat.ai/#/privacy')
+                })
+              }
+              icon="info"
+              title={t('privacy')}
               reverse={isArabic}
             />
           </View>

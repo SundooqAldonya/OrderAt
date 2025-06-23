@@ -676,5 +676,6 @@ export const en = {
   select_language: 'Select Language',
   your_order_delivered_here: 'Your orders will be delivered here',
   city: 'City',
-  out_of_stock: 'Out of Stock'
+  out_of_stock: 'Out of Stock',
+  privacy: 'Privacy'
 }
