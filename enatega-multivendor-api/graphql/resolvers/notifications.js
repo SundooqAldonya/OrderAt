@@ -1,6 +1,8 @@
+const dateScalar = require('../../helpers/dateScalar')
 const Notification = require('../../models/notification')
 
 module.exports = {
+  Date: dateScalar,
   RecipientItem: {
     __resolveType(obj) {
       console.log('Type resolver received:', obj?.constructor?.modelName)

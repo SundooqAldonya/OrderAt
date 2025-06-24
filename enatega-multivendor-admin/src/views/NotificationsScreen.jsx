@@ -11,7 +11,13 @@ import {
   Modal,
   Pagination,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
   TablePagination,
+  TableRow,
   Typography
 } from '@mui/material'
 import useGlobalStyles from '../utils/globalStyles'
@@ -36,6 +42,7 @@ import TableHeader from '../components/TableHeader'
 import { customStyles } from '../utils/tableCustomStyles'
 import { Switch } from '@mui/material'
 import ContactUsShow from '../components/ContactUsShow'
+import NotificationRow from '../components/Notifications/NotificationRow'
 
 const NotificationsScreen = () => {
   const { t } = useTranslation()
@@ -138,7 +145,67 @@ const NotificationsScreen = () => {
         )}
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
-        {data && (
+        <TableContainer sx={{ color: '#000' }} component={Paper}>
+          <Table>
+            <TableHead sx={{ backgroundColor: '#32620E' }}>
+              <TableRow sx={{ color: '#000' }}>
+                <TableCell />
+                <TableCell sx={{ color: '#000' }}>Title</TableCell>
+                <TableCell sx={{ color: '#000' }}>Body</TableCell>
+                <TableCell sx={{ color: '#000' }}>Created At</TableCell>
+                {/* <TableCell sx={{ color: '#000' }}>Type</TableCell> */}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {notificationsList?.map(notif => (
+                <NotificationRow key={notif._id} row={notif} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box mt={3} display="flex" justifyContent="center">
+          <TablePagination
+            component="div"
+            count={data?.getAllNotifications?.totalDocs || 0}
+            page={data?.getAllNotifications?.page - 1 || page}
+            onPageChange={handlePageChange}
+            rowsPerPage={data?.getAllNotifications?.limit || limit}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            sx={{
+              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                color: '#000' // Change text color for labels
+              },
+              '& .MuiSelect-select': {
+                color: '#000' // Change selected dropdown text color
+              },
+              '& .MuiMenuItem-root': {
+                color: '#000 !important' // Change text color inside dropdown list
+              },
+              '& .MuiSvgIcon-root': {
+                color: '#000' // Change dropdown arrow color
+              }
+            }}
+            slotProps={{
+              select: {
+                MenuProps: {
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: '#f5f5f5', // Background color of dropdown
+                      '& .MuiMenuItem-root': {
+                        color: '#000', // Text color of options
+                        '&:hover': {
+                          backgroundColor: '#ddd' // Hover background color
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }}
+          />
+        </Box>
+        {/* {data && (
           <Paper>
             <DataTable
               subHeader={true}
@@ -160,50 +227,9 @@ const NotificationsScreen = () => {
               onRowClicked={item => toggleModal(item)}
               selectableRows
             />
-            <Box mt={3} display="flex" justifyContent="center">
-              <TablePagination
-                component="div"
-                count={data?.getAllContactus?.totalDocs || 0}
-                page={data?.getAllContactus?.page - 1 || page}
-                onPageChange={handlePageChange}
-                rowsPerPage={data?.getAllContactus?.limit || limit}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5, 10, 25, 50]}
-                sx={{
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                    color: '#000' // Change text color for labels
-                  },
-                  '& .MuiSelect-select': {
-                    color: '#000' // Change selected dropdown text color
-                  },
-                  '& .MuiMenuItem-root': {
-                    color: '#000 !important' // Change text color inside dropdown list
-                  },
-                  '& .MuiSvgIcon-root': {
-                    color: '#000' // Change dropdown arrow color
-                  }
-                }}
-                slotProps={{
-                  select: {
-                    MenuProps: {
-                      PaperProps: {
-                        sx: {
-                          backgroundColor: '#f5f5f5', // Background color of dropdown
-                          '& .MuiMenuItem-root': {
-                            color: '#000', // Text color of options
-                            '&:hover': {
-                              backgroundColor: '#ddd' // Hover background color
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }}
-              />
-            </Box>
+            
           </Paper>
-        )}
+        )} */}
         <Modal
           style={{
             width: '70%',

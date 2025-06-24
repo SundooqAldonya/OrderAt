@@ -1265,6 +1265,7 @@ export const getAllNotifications = gql`
         recipients {
           kind
           status
+          lastAttempt
           item {
             ... on Rider {
               _id

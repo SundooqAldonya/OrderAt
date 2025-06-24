@@ -1541,7 +1541,7 @@ const typeDefs = gql`
     body: String
     data: NotificationData
     recipients: [NotificationRecipient]
-    createdAt: String
+    createdAt: Date
     sentAt: String
     acknowledgedAt: String
   }
@@ -1556,7 +1556,7 @@ const typeDefs = gql`
     kind: String
     item: RecipientItem
     status: String
-    lastAttempt: String
+    lastAttempt: Date
   }
 
   union RecipientItem = User | Rider
