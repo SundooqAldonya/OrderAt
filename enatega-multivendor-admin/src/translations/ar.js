@@ -411,7 +411,8 @@ const ar = {
     assigned: 'تم تحديد مندوب',
     picked: 'الاوردر مع الندوب',
     delivered: 'تم التوصيل',
-    completed: 'تم'
+    completed: 'تم',
+    notifications: 'الإشعارات'
   }
 }
 

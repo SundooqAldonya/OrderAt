@@ -15,7 +15,7 @@ import routes from '../../routes'
 import useStyles from './styles'
 // import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import { useLocation } from 'react-router-dom'
-import { useTranslation, withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import Logo from '../../assets/logo.png'
 
 const drawerWidth = 240
@@ -46,6 +46,7 @@ function AdminSidebar(props) {
       </Toolbar>
       <Box className={classes.sidebarList}>
         {routes.map((prop, key) => {
+          console.log({ name: prop.name })
           return prop.appearInSidebar && prop.admin ? (
             <React.Fragment key={key}>
               {key === 1 ? (
@@ -53,7 +54,7 @@ function AdminSidebar(props) {
                   {t('GENERAL')}
                 </Typography>
               ) : null}
-              {key === 7 ? (
+              {key === 8 ? (
                 <Typography className={classes.headingText} variant="h3">
                   {t('MANAGEMENT')}
                 </Typography>
@@ -157,4 +158,4 @@ function AdminSidebar(props) {
   )
 }
 
-export default withTranslation()(AdminSidebar)
+export default AdminSidebar

@@ -54,6 +54,7 @@ import { ReactComponent as TimingIcon } from './assets/svg/timings.svg'
 import { ReactComponent as RestaurantSectionIcon } from './assets/svg/restSection.svg'
 import TravelExploreIcon from '@mui/icons-material/TravelExplore'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 import SuperAdminDashboard from './views/SuperAdminDashboard'
 import Cuisines from './views/Cuisines'
 import Banners from './views/Banners'
@@ -70,6 +71,7 @@ import DeliveryZone from './views/DeliveryZone'
 import BusinessCategory from './views/BusinessCategory'
 import RidersMap from './views/RidersMap'
 import ContactUs from './views/Contactus'
+import NotificationsScreen from './views/NotificationsScreen'
 
 var routes = [
   {
@@ -131,6 +133,15 @@ var routes = [
     name: 'Riders Map',
     icon: TravelExploreIcon,
     component: RidersMap,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/notifications',
+    name: 'notifications',
+    icon: NotificationsActiveIcon,
+    component: NotificationsScreen,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

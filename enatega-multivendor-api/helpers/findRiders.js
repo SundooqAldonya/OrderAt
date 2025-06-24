@@ -1,5 +1,6 @@
 const Rider = require('../models/rider')
 const Order = require('../models/order')
+const Notification = require('../models/notification')
 const admin = require('firebase-admin')
 const serviceAccount = require('../serviceAccountKey.json')
 const { getAccessToken } = require('./getGoogleAccessToken')
@@ -100,10 +101,6 @@ const findRiders = {
   },
 
   async sendPushNotification(zoneId, order) {
-    console.log({ zoneId })
-    console.log({ orderRestaurant: order.restaurant })
-    // const accessToken = await getAccessToken()
-    // console.log({ accessToken })
     const riders = await Rider.find({
       zone: zoneId,
       available: true,
@@ -111,50 +108,49 @@ const findRiders = {
       notificationToken: { $ne: null }
     })
 
-    console.log({ riders })
+    const recipients = riders.map(rider => ({
+      kind: 'Rider',
+      item: rider._id,
+      token: rider.notificationToken,
+      phone: rider.phone,
+      status: 'pending'
+    }))
 
-    const tokens = riders.map(rider => rider.notificationToken)
-    console.log({ tokens })
-
-    if (tokens.length === 0) {
+    if (recipients.length === 0) {
       console.log('🚫 No valid FCM tokens found.')
       return
     }
 
-    // riders.forEach(async rider => {
-    // const messageBody = {
-    //   message: {
-    //     // token: rider.notificationToken,
-    //     tokens: [...tokens],
-    //     notification: {
-    //       title: `طلب جديد`,
-    //       body: `طلب جديد من ${
-    //         order.type && order.type === 'delivery_request'
-    //           ? order.user.name
-    //           : order.restaurant.name
-    //       }`
-    //     },
-    //     data: {
-    //       channelId: 'default',
-    //       message: 'Testing',
-    //       playSound: 'true'
-    //       // sound: rider.muted ? 'false' : 'beep3.wav'
-    //     },
-    //     android: {
-    //       notification: {
-    //         // sound: rider.muted ? 'false' : 'beep3',
-    //         channelId: 'default'
-    //       }
-    //     }
-    //   }
+    const title = 'طلب جديد'
+    const body =
+      order.type === 'delivery_request'
+        ? `طلب جديد من ${order.user.name}`
+        : `طلب جديد من ${order.restaurant.name}`
+
+    // Store notification in DB
+    const notificationDoc = await Notification.create({
+      title,
+      body,
+      data: {
+        orderId: order._id.toString(),
+        type: order.type
+      },
+      recipients,
+      createdAt: new Date()
+    })
+
+    // const tokens = riders.map(rider => rider.notificationToken)
+    // console.log({ tokens })
+
+    // if (tokens.length === 0) {
+    //   console.log('🚫 No valid FCM tokens found.')
+    //   return
     // }
+
     const message = {
       notification: {
-        title: 'طلب جديد',
-        body:
-          order.type === 'delivery_request'
-            ? `طلب جديد من ${order.user.name}`
-            : `طلب جديد من ${order.restaurant.name}`
+        title,
+        body
       },
       android: {
         notification: {
@@ -167,50 +163,55 @@ const findRiders = {
         message: 'Testing',
         playSound: 'true'
       },
-      tokens // ✅ this is allowed only with sendMulticast
+      tokens: recipients.map(r => r.token)
     }
 
-    // const projectId = 'food-delivery-api-ab4e4'
     try {
       const response = await admin.messaging().sendEachForMulticast(message)
       console.log(`✅ ${response.successCount} messages sent successfully.`)
-
-      if (response.failureCount > 0) {
-        console.warn(`⚠️ ${response.failureCount} messages failed to send.`)
-        response.responses.forEach((resp, idx) => {
-          if (!resp.success) {
-            console.error(
-              `❌ Token ${tokens[idx]} failed: ${resp.error.message}`
-            )
+      const updates = recipients.map((r, i) => {
+        const res = response.responses[i]
+        const status = res.success ? 'sent' : 'failed'
+        return {
+          updateOne: {
+            filter: {
+              _id: notificationDoc._id,
+              'recipients.item': r.item
+            },
+            update: {
+              $set: {
+                'recipients.$.status': status,
+                'recipients.$.lastAttempt': new Date()
+              }
+            }
           }
-        })
-      }
+        }
+      })
+      await Notification.bulkWrite(updates)
+
+      // Log failed tokens if needed
+      response.responses.forEach((res, i) => {
+        if (!res.success) {
+          console.warn(
+            `❌ Token for ${recipients[i].item}: ${res.error.message}`
+          )
+          // Optionally: remove invalid tokens from DB here
+        }
+      })
+
+      // if (response.failureCount > 0) {
+      //   console.warn(`⚠️ ${response.failureCount} messages failed to send.`)
+      //   response.responses.forEach((resp, idx) => {
+      //     if (!resp.success) {
+      //       console.error(
+      //         `❌ Token ${tokens[idx]} failed: ${resp.error.message}`
+      //       )
+      //     }
+      //   })
+      // }
     } catch (error) {
       console.error('🔥 Error sending push notifications:', error)
     }
-    //   try {
-    //     if (rider.available && rider.isActive && rider.token && !rider.muted) {
-    //       const response = await fetch(
-    //         `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-    //         {
-    //           method: 'POST',
-    //           headers: {
-    //             Accept: 'application/json',
-    //             'Accept-encoding': 'gzip, deflate',
-    //             'Content-Type': 'application/json',
-    //             Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-    //           },
-    //           body: JSON.stringify(messageBody)
-    //         }
-    //       )
-
-    //       const data = await response.json()
-    //       console.log('FCM push notification sent:', data)
-    //     }
-    //   } catch (error) {
-    //     console.error('Error sending Expo push notification:', error)
-    //   }
-    // })
   }
 }
 

@@ -430,7 +430,8 @@ const en = {
     select_stock_unit: 'Select Stock Unit',
     stock_amount: 'Stock Amount',
     select_stock: 'Select Stock',
-    orderPlaced: 'Order Placed'
+    orderPlaced: 'Order Placed',
+    notifications: 'Notifications'
   }
 }
 

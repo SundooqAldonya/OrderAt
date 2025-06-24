@@ -1253,3 +1253,37 @@ export const getAllContactus = gql`
     }
   }
 `
+
+export const getAllNotifications = gql`
+  query GetAllNotifications($page: Int, $limit: Int) {
+    getAllNotifications(page: $page, limit: $limit) {
+      docs {
+        _id
+        title
+        body
+        createdAt
+        recipients {
+          kind
+          status
+          item {
+            ... on Rider {
+              _id
+              name
+            }
+            ... on User {
+              _id
+              name
+            }
+          }
+        }
+      }
+      totalDocs
+      page
+      totalPages
+      hasNextPage
+      hasPrevPage
+      nextPage
+      prevPage
+    }
+  }
+`

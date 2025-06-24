@@ -39,6 +39,7 @@ const deliveryRequest = require('./deliveryRequest')
 const businessCategory = require('./businessCategory')
 const stock = require('./stock')
 const contactus = require('./contactus')
+const notifications = require('./notifications')
 
 const rootResolver = {
   Query: {
@@ -77,7 +78,8 @@ const rootResolver = {
     ...DeliveryPricing.Query,
     ...businessCategory.Query,
     ...stock.Query,
-    ...contactus.Query
+    ...contactus.Query,
+    ...notifications.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -118,14 +120,16 @@ const rootResolver = {
     ...deliveryRequest.Mutation,
     ...businessCategory.Mutation,
     ...stock.Mutation,
-    ...contactus.Mutation
+    ...contactus.Mutation,
+    ...notifications.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,
     ...riderResolver.Subscription,
     ...dispatchResolver.Subscription,
     ...chatResolver.Subscription
-  }
+  },
+  RecipientItem: notifications.RecipientItem
 }
 
 module.exports = rootResolver

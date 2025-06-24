@@ -354,7 +354,7 @@ const typeDefs = gql`
   }
 
   type User {
-    _id: ID
+    _id: String
     name: String
     phone: String
     governate: String
@@ -1523,7 +1523,46 @@ const typeDefs = gql`
     prevPage: Int
   }
 
+  type PaginatedNotification {
+    docs: [Notification]
+    totalDocs: Int
+    limit: Int
+    page: Int
+    totalPages: Int
+    hasNextPage: Boolean
+    hasPrevPage: Boolean
+    nextPage: Int
+    prevPage: Int
+  }
+
+  type Notification {
+    _id: String
+    title: String
+    body: String
+    data: NotificationData
+    recipients: [NotificationRecipient]
+    createdAt: String
+    sentAt: String
+    acknowledgedAt: String
+  }
+
+  type NotificationData {
+    orderId: ID
+    type: String
+    extraInfo: String # optional, if needed
+  }
+
+  type NotificationRecipient {
+    kind: String
+    item: RecipientItem
+    status: String
+    lastAttempt: String
+  }
+
+  union RecipientItem = User | Rider
+
   type Query {
+    getAllNotifications(page: Int, limit: Int): PaginatedNotification
     getAllContactus(page: Int, limit: Int): PaginatedContactus
     getStockEnumValues: [String]
     checkoutCalculatePrice(cart: Cart): CalculatePriceResult
