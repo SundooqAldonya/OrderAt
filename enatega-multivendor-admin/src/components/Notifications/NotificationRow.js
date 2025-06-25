@@ -37,7 +37,9 @@ const NotificationRow = ({ row }) => {
         <TableCell sx={{ color: '#000' }}>
           {row.data?.type === 'User' || row.data?.type === 'user'
             ? 'Customer'
-            : 'Rider'}
+            : row.data?.type === 'Rider'
+            ? 'Rider'
+            : 'Business'}
         </TableCell>
       </TableRow>
 

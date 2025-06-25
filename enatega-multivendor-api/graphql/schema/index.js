@@ -123,7 +123,7 @@ const typeDefs = gql`
   }
 
   type Restaurant {
-    _id: ID!
+    _id: String
     orderId: Int!
     orderPrefix: String
     name: String
@@ -1559,7 +1559,7 @@ const typeDefs = gql`
     lastAttempt: Date
   }
 
-  union RecipientItem = User | Rider
+  union RecipientItem = User | Rider | Restaurant
 
   type Query {
     getAllNotifications(page: Int, limit: Int): PaginatedNotification

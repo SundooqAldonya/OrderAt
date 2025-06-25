@@ -7,7 +7,7 @@ const notificationSchema = new Schema({
   data: Schema.Types.Mixed,
   recipients: [
     {
-      kind: { type: String, enum: ['User', 'Rider'] },
+      kind: { type: String, enum: ['User', 'Rider', 'Restaurant'] },
       item: {
         type: Schema.Types.ObjectId,
         refPath: 'recipients.kind'

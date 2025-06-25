@@ -63,6 +63,8 @@ const notifications = {
       body = 'طلبك تم استلامه'
     } else if (order.orderStatus === 'DELIVERED') {
       body = 'طلبك تم تسليمه'
+    } else if (order.orderStatus === 'CANCELLED') {
+      body = 'تم إلغاء طلبك'
     }
 
     if (!customer?.notificationToken) {

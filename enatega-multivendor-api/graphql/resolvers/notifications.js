@@ -7,6 +7,7 @@ module.exports = {
     __resolveType(obj) {
       if (obj.constructor?.modelName === 'Rider') return 'Rider'
       if (obj.constructor?.modelName === 'User') return 'User'
+      if (obj.constructor?.modelName === 'Restaurant') return 'Restaurant'
       return null
     }
   },

@@ -23,6 +23,9 @@ const {
   sendNotificationToRider
 } = require('../../helpers/notifications')
 const { order_status } = require('../../helpers/enum')
+const {
+  sendCustomerNotifications
+} = require('../../helpers/customerNotifications')
 
 module.exports = {
   Subscription: {
@@ -132,7 +135,16 @@ module.exports = {
         }
         order.orderStatus = args.orderStatus
         const result = await order.save()
+        const populatedOrder = await order.populate(['user', 'restaurant'])
         sendNotificationToUser(result.user, result)
+        if (
+          populatedOrder.user &&
+          populatedOrder.user.isOnline &&
+          populatedOrder.user.isOrderNotification &&
+          populatedOrder.user.notificationToken
+        ) {
+          await sendCustomerNotifications(populatedOrder.user, populatedOrder)
+        }
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
         publishToUser(result.user.toString(), transformedOrder, 'update')

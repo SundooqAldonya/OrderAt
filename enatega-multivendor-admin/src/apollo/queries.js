@@ -1278,6 +1278,10 @@ export const getAllNotifications = gql`
               _id
               name
             }
+            ... on Restaurant {
+              _id
+              name
+            }
           }
         }
       }
