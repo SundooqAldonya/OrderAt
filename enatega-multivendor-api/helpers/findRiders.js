@@ -207,38 +207,38 @@ const findRiders = {
           }
         }
       })
-      if (failedTokens.length) {
-        for (const failed of failedTokens) {
-          try {
-            const body = {
-              username: 'w8pRT869',
-              password: 'Oqo48lklp',
-              sendername: 'Kayan',
-              message: `تنبيه: لديك طلب جديد على Orderat`
-            }
-            const smsUrl = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${failed.phone}&message=${body.message}`
+      // if (failedTokens.length) {
+      //   for (const failed of failedTokens) {
+      //     try {
+      //       const body = {
+      //         username: 'w8pRT869',
+      //         password: 'Oqo48lklp',
+      //         sendername: 'Kayan',
+      //         message: `تنبيه: لديك طلب جديد على Orderat`
+      //       }
+      //       const smsUrl = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${failed.phone}&message=${body.message}`
 
-            await axios.post(smsUrl)
-            console.log(`✅ Fallback SMS sent to ${failed.phone}`)
+      //       await axios.post(smsUrl)
+      //       console.log(`✅ Fallback SMS sent to ${failed.phone}`)
 
-            // Optionally, update the recipient status
-            await Notification.updateOne(
-              {
-                _id: notificationDoc._id,
-                'recipients.phone': failed.phone
-              },
-              {
-                $set: {
-                  'recipients.$.status': 'fallback_sms',
-                  'recipients.$.lastAttempt': new Date()
-                }
-              }
-            )
-          } catch (error) {
-            console.error(`❌ SMS failed for ${failed.phone}`, error)
-          }
-        }
-      }
+      //       // Optionally, update the recipient status
+      //       await Notification.updateOne(
+      //         {
+      //           _id: notificationDoc._id,
+      //           'recipients.phone': failed.phone
+      //         },
+      //         {
+      //           $set: {
+      //             'recipients.$.status': 'fallback_sms',
+      //             'recipients.$.lastAttempt': new Date()
+      //           }
+      //         }
+      //       )
+      //     } catch (error) {
+      //       console.error(`❌ SMS failed for ${failed.phone}`, error)
+      //     }
+      //   }
+      // }
       // if (response.failureCount > 0) {
       //   console.warn(`⚠️ ${response.failureCount} messages failed to send.`)
       //   response.responses.forEach((resp, idx) => {
