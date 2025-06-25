@@ -48,7 +48,6 @@ const NotificationsScreen = () => {
   const { t } = useTranslation()
   const [openEdit, setOpenEdit] = useState(false)
   const [error, setError] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [success, setSuccess] = useState(false)
   const [message, setMessage] = useState('')
   const [selectedContact, setSelectedContact] = useState(null)
@@ -62,11 +61,10 @@ const NotificationsScreen = () => {
     variables: {
       page: page + 1,
       limit
-    }
+    },
+    pollInterval: 10000
   })
   console.log({ data })
-
-  const onChangeSearch = e => setSearchQuery(e.target.value)
 
   const toggleModal = item => {
     setOpenEdit(!openEdit)
@@ -75,49 +73,12 @@ const NotificationsScreen = () => {
   const closeEditModal = () => {
     setOpenEdit(false)
   }
-  const notificationsList = data?.getAllNotifications.docs || null
-  const columns = [
-    {
-      name: t('Name'),
-      selector: 'body',
-      sortable: true
-    },
-    {
-      name: t('Email'),
-      selector: 'email',
-      cell: row => <div>{row.email ? row.email : 'N/A'}</div>
-    },
-    {
-      name: t('Phone'),
-      selector: 'phone'
-    },
-    {
-      name: t('CreatedAt'),
-      selector: 'createdAt',
-      sortable: true,
-      cell: row => (
-        <div>
-          {new Date(row.createdAt).toLocaleString('en-GB', { hour12: true })}
-        </div>
-      )
-    }
-  ]
+  const notificationsList = data?.getAllNotifications?.docs || null
 
   const propExists = (obj, path) => {
     return path.split('.').reduce((obj, prop) => {
       return obj && obj[prop] ? obj[prop] : ''
     }, obj)
-  }
-
-  const customSort = (rows, field, direction) => {
-    const handleField = row => {
-      if (field && isNaN(propExists(row, field))) {
-        return propExists(row, field).toLowerCase()
-      }
-
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
   }
 
   const handlePageChange = (event, value) => {
