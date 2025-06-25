@@ -19,7 +19,11 @@ const NotificationRow = ({ row }) => {
 
   return (
     <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset', color: '#000' } }}>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        sx={{
+          '& > *': { borderBottom: 'unset', color: '#000', cursor: 'pointer' }
+        }}>
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
