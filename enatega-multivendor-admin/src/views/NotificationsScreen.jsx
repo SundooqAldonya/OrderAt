@@ -4,12 +4,7 @@ import {
   Alert,
   Box,
   Container,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
   Modal,
-  Pagination,
   Paper,
   Table,
   TableBody,
@@ -17,30 +12,13 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
-  TableRow,
-  Typography
+  TableRow
 } from '@mui/material'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
-import CityForm from '../components/CityForm'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import {
-  REMOVE_CITY,
-  getAllContactus,
-  getAllNotifications,
-  getCities,
-  toggleCityActive
-} from '../apollo'
+import { useQuery } from '@apollo/client'
+import { getAllNotifications } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import SearchBar from '../components/TableHeader/SearchBar'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import orderBy from 'lodash/orderBy'
-import TableHeader from '../components/TableHeader'
-import { customStyles } from '../utils/tableCustomStyles'
-import { Switch } from '@mui/material'
 import ContactUsShow from '../components/ContactUsShow'
 import NotificationRow from '../components/Notifications/NotificationRow'
 
@@ -70,16 +48,12 @@ const NotificationsScreen = () => {
     setOpenEdit(!openEdit)
     setSelectedContact(item)
   }
+
   const closeEditModal = () => {
     setOpenEdit(false)
   }
-  const notificationsList = data?.getAllNotifications?.docs || null
 
-  const propExists = (obj, path) => {
-    return path.split('.').reduce((obj, prop) => {
-      return obj && obj[prop] ? obj[prop] : ''
-    }, obj)
-  }
+  const notificationsList = data?.getAllNotifications?.docs || null
 
   const handlePageChange = (event, value) => {
     setPage(value)
@@ -166,31 +140,7 @@ const NotificationsScreen = () => {
             }}
           />
         </Box>
-        {/* {data && (
-          <Paper>
-            <DataTable
-              subHeader={true}
-              subHeaderComponent={
-                <SearchBar
-                  value={searchQuery}
-                  onChange={onChangeSearch}
-                  onClick={() => refetch()}
-                />
-              }
-              title={<TableHeader title={t('notifications')} />}
-              columns={columns}
-              data={notificationsList}
-              progressPending={loading}
-              progressComponent={<CustomLoader />}
-              sortFunction={customSort}
-              defaultSortField="title"
-              customStyles={customStyles}
-              onRowClicked={item => toggleModal(item)}
-              selectableRows
-            />
-            
-          </Paper>
-        )} */}
+
         <Modal
           style={{
             width: '70%',
