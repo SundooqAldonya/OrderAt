@@ -12,14 +12,15 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
-  TableRow
+  TableRow,
+  TextField,
+  Typography
 } from '@mui/material'
 import useGlobalStyles from '../utils/globalStyles'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@apollo/client'
 import { getAllNotifications } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
-import ContactUsShow from '../components/ContactUsShow'
 import NotificationRow from '../components/Notifications/NotificationRow'
 
 const NotificationsScreen = () => {
@@ -32,6 +33,7 @@ const NotificationsScreen = () => {
   const [type, setType] = useState('')
   const [page, setPage] = useState(0)
   const [limit, setLimit] = useState(10)
+  const [search, setSearch] = useState('')
 
   const globalClasses = useGlobalStyles()
 
@@ -42,16 +44,8 @@ const NotificationsScreen = () => {
     },
     pollInterval: 10000
   })
+
   console.log({ data })
-
-  const toggleModal = item => {
-    setOpenEdit(!openEdit)
-    setSelectedContact(item)
-  }
-
-  const closeEditModal = () => {
-    setOpenEdit(false)
-  }
 
   const notificationsList = data?.getAllNotifications?.docs || null
 
@@ -65,6 +59,12 @@ const NotificationsScreen = () => {
     setPage(0)
     refetch({ page: 1, limit: newLimit })
   }
+
+  const filteredNotifications = notificationsList?.filter(notification =>
+    notification.recipients.some(r =>
+      r.item?.name?.toLowerCase().includes(search.toLowerCase())
+    )
+  )
 
   return (
     <Fragment>
@@ -80,83 +80,87 @@ const NotificationsScreen = () => {
         )}
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
-        <TableContainer sx={{ color: '#000' }} component={Paper}>
-          <Table>
-            <TableHead sx={{ backgroundColor: '#32620E' }}>
-              <TableRow sx={{ color: '#000' }}>
-                <TableCell />
-                <TableCell sx={{ color: '#000' }}>Title</TableCell>
-                <TableCell sx={{ color: '#000' }}>Body</TableCell>
-                <TableCell sx={{ color: '#000' }}>Created At</TableCell>
-                <TableCell sx={{ color: '#000' }}>Type</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {notificationsList?.map(notif => (
-                <NotificationRow key={notif._id} row={notif} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box mt={3} display="flex" justifyContent="center">
-          <TablePagination
-            component="div"
-            count={data?.getAllNotifications?.totalDocs || 0}
-            page={data?.getAllNotifications?.page - 1 || page}
-            onPageChange={handlePageChange}
-            rowsPerPage={data?.getAllNotifications?.limit || limit}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            sx={{
-              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                color: '#000' // Change text color for labels
-              },
-              '& .MuiSelect-select': {
-                color: '#000' // Change selected dropdown text color
-              },
-              '& .MuiMenuItem-root': {
-                color: '#000 !important' // Change text color inside dropdown list
-              },
-              '& .MuiSvgIcon-root': {
-                color: '#000' // Change dropdown arrow color
-              }
-            }}
-            slotProps={{
-              select: {
-                MenuProps: {
-                  PaperProps: {
-                    sx: {
-                      backgroundColor: '#f5f5f5', // Background color of dropdown
-                      '& .MuiMenuItem-root': {
-                        color: '#000', // Text color of options
-                        '&:hover': {
-                          backgroundColor: '#ddd' // Hover background color
+        <Paper>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="h5" sx={{ color: '#000', mx: 2, mt: 2 }}>
+              Search
+            </Typography>
+            <TextField
+              label="Search recipient"
+              variant="outlined"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              size="small"
+              sx={{
+                marginBlock: 2,
+                background: '#fff',
+                input: { color: 'black' },
+                width: '98%',
+                marginInline: 'auto'
+              }}
+            />
+          </Box>
+          <TableContainer sx={{ color: '#000' }} component={Paper}>
+            <Table>
+              <TableHead sx={{ backgroundColor: '#32620E' }}>
+                <TableRow sx={{ color: '#000' }}>
+                  <TableCell />
+                  <TableCell sx={{ color: '#000' }}>Title</TableCell>
+                  <TableCell sx={{ color: '#000' }}>Body</TableCell>
+                  <TableCell sx={{ color: '#000' }}>Created At</TableCell>
+                  <TableCell sx={{ color: '#000' }}>Type</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredNotifications?.map(notif => (
+                  <NotificationRow key={notif._id} row={notif} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box mt={3} display="flex" justifyContent="center">
+            <TablePagination
+              component="div"
+              count={data?.getAllNotifications?.totalDocs || 0}
+              page={data?.getAllNotifications?.page - 1 || page}
+              onPageChange={handlePageChange}
+              rowsPerPage={data?.getAllNotifications?.limit || limit}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              sx={{
+                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                  color: '#000' // Change text color for labels
+                },
+                '& .MuiSelect-select': {
+                  color: '#000' // Change selected dropdown text color
+                },
+                '& .MuiMenuItem-root': {
+                  color: '#000 !important' // Change text color inside dropdown list
+                },
+                '& .MuiSvgIcon-root': {
+                  color: '#000' // Change dropdown arrow color
+                }
+              }}
+              slotProps={{
+                select: {
+                  MenuProps: {
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: '#f5f5f5', // Background color of dropdown
+                        '& .MuiMenuItem-root': {
+                          color: '#000', // Text color of options
+                          '&:hover': {
+                            backgroundColor: '#ddd' // Hover background color
+                          }
                         }
                       }
                     }
                   }
                 }
-              }
-            }}
-          />
-        </Box>
-
-        <Modal
-          style={{
-            width: '70%',
-            marginLeft: '15%',
-            overflowY: 'auto',
-            marginTop: 150
-          }}
-          open={openEdit}
-          onClose={() => {
-            toggleModal()
-          }}>
-          <ContactUsShow
-            selectedContact={selectedContact}
-            onClose={closeEditModal}
-          />
-        </Modal>
+              }}
+            />
+          </Box>
+        </Paper>
       </Container>
     </Fragment>
   )
