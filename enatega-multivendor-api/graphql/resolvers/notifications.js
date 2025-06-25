@@ -31,5 +31,33 @@ module.exports = {
       }
     }
   },
-  Mutation: {}
+  Mutation: {
+    async acknowledgeNotification(_, { notificationId }, { req }) {
+      console.log('acknowledgeNotification', { notificationId })
+      try {
+        const userId = req.userId
+
+        const notification = await Notification.findOneAndUpdate(
+          {
+            _id: notificationId,
+            'recipients.item': userId
+          },
+          {
+            $set: {
+              'recipients.$.status': 'acknowledged',
+              'recipients.$.lastAttempt': new Date()
+            }
+          },
+          { new: true }
+        )
+
+        if (!notification)
+          throw new Error('Notification not found or not authorized')
+
+        return { message: 'notification_acknowledged' }
+      } catch (err) {
+        throw err
+      }
+    }
+  }
 }

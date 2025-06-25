@@ -63,7 +63,7 @@ const NotificationRow = ({ row }) => {
                       </TableCell>
                       <TableCell sx={{ color: '#000' }}>
                         <Chip
-                          label={recipient.status}
+                          label={recipient.status.toUpperCase()}
                           color={
                             recipient.status === 'failed' ? 'error' : 'success'
                           }

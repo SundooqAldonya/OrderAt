@@ -161,7 +161,8 @@ const findRiders = {
       data: {
         channelId: 'default',
         message: 'Testing',
-        playSound: 'true'
+        playSound: 'true',
+        notificationId: notificationDoc._id.toString()
       },
       tokens: recipients.map(r => r.token)
     }

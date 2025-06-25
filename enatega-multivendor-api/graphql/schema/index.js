@@ -1959,6 +1959,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    acknowledgeNotification(notificationId: String): Message
     markContactusResponded(id: String): Message
     createContactus(
       email: String

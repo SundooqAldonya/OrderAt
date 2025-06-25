@@ -1,7 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { View } from 'react-native'
 import UserContext from '../../context/user'
-import { refreshFirebaseToken } from '../../apollo/mutations'
+import {
+  acknowledgeNotification,
+  refreshFirebaseToken
+} from '../../apollo/mutations'
 import messaging from '@react-native-firebase/messaging'
 import { useMutation } from '@apollo/client'
 import { AuthContext } from '../../context/auth'
@@ -24,9 +27,17 @@ const NotificationListener = () => {
     }
   })
 
+  const [mutateAcknowledgeNotification] = useMutation(acknowledgeNotification, {
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: error => {
+      console.warn({ error })
+    }
+  })
+
   useEffect(() => {
     const unsubscribe = messaging().onTokenRefresh(token => {
-      // ✅ Send this new token to your backend
       mutateRefreshToken({
         variables: {
           notificationToken: token
@@ -71,6 +82,10 @@ const NotificationListener = () => {
       if (sound !== 'false') {
         playCustomSound()
       }
+      const notificationId = remoteMessage?.data?.notificationId || null
+      if (notificationId) {
+        mutateAcknowledgeNotification({ variables: { notificationId } })
+      }
     })
 
     return unsubscribe
@@ -79,6 +94,10 @@ const NotificationListener = () => {
   useEffect(() => {
     const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
       refetchAssigned()
+      const notificationId = remoteMessage?.data?.notificationId || null
+      if (notificationId) {
+        mutateAcknowledgeNotification({ variables: { notificationId } })
+      }
     })
 
     return unsubscribe

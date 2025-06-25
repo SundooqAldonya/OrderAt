@@ -123,3 +123,10 @@ export const orderOpenedByRider = gql`
     }
   }
 `
+export const acknowledgeNotification = gql`
+  mutation AcknowledgeNotification($notificationId: String) {
+    acknowledgeNotification(notificationId: $notificationId) {
+      message
+    }
+  }
+`
