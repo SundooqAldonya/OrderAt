@@ -132,7 +132,7 @@ const findRiders = {
       title,
       body,
       data: {
-        orderId: order._id.toString(),
+        orderId: order.orderId,
         type: 'Rider'
       },
       recipients,

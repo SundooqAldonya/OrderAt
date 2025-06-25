@@ -14,7 +14,7 @@ const notifications = {
       title,
       body,
       data: {
-        orderId: order._id,
+        orderId: order.orderId,
         type: 'Restaurant'
       },
       recipients: [

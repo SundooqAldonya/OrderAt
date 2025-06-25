@@ -107,7 +107,7 @@ const notifications = {
       title: message.notification.title,
       body: message.notification.body,
       data: {
-        orderId: order._id,
+        orderId: order.orderId,
         type: 'User'
       },
       recipients: [

@@ -1547,7 +1547,7 @@ const typeDefs = gql`
   }
 
   type NotificationData {
-    orderId: ID
+    orderId: String
     type: String
     extraInfo: String # optional, if needed
   }

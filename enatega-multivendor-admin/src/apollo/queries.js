@@ -1262,6 +1262,7 @@ export const getAllNotifications = gql`
         title
         body
         data {
+          orderId
           type
         }
         createdAt

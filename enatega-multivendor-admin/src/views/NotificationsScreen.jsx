@@ -60,11 +60,20 @@ const NotificationsScreen = () => {
     refetch({ page: 1, limit: newLimit })
   }
 
-  const filteredNotifications = notificationsList?.filter(notification =>
-    notification.recipients.some(r =>
-      r.item?.name?.toLowerCase().includes(search.toLowerCase())
+  const filteredNotifications = notificationsList?.filter(notification => {
+    const searchLower = search.toLowerCase()
+
+    const matchesRecipient = notification.recipients.some(r =>
+      r.item?.name?.toLowerCase().includes(searchLower)
     )
-  )
+
+    const matchesOrderId = notification.data?.orderId
+      ?.toString()
+      .toLowerCase()
+      .includes(searchLower)
+
+    return matchesRecipient || matchesOrderId
+  })
 
   return (
     <Fragment>
