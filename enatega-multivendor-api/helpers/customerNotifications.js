@@ -1,5 +1,6 @@
 const { getAccessToken } = require('./getGoogleAccessToken')
 const admin = require('firebase-admin')
+const Notification = require('../models/notification')
 
 const notifications = {
   async sendNotificationCampaign(order) {
@@ -46,7 +47,7 @@ const notifications = {
       })
   },
   async sendCustomerNotifications(customer, order) {
-    console.log('Sending notification to customer app')
+    console.log('📣 Sending notification to customer app', { customer })
 
     const newChannelId = 'default_sound4'
     let body
@@ -54,22 +55,26 @@ const notifications = {
     if (order.orderStatus === 'ACCEPTED') {
       body = `تم الموافقة على طلبك`
     } else if (order.orderStatus === 'ASSIGNED') {
-      if (order.type === 'delivery_request') {
-        body = 'السائق في طريقه إليك'
-      } else {
-        body = `طلبك من ${order.restaurant.name} في طريقه إليك`
-      }
+      body =
+        order.type === 'delivery_request'
+          ? 'السائق في طريقه إليك'
+          : `طلبك من ${order.restaurant.name} في طريقه إليك`
     } else if (order.orderStatus === 'PICKED') {
       body = 'طلبك تم استلامه'
     } else if (order.orderStatus === 'DELIVERED') {
       body = 'طلبك تم تسليمه'
     }
 
+    if (!customer?.notificationToken) {
+      console.log('🚫 Customer has no notification token.')
+      return
+    }
+
     const message = {
-      token: customer?.notificationToken,
+      token: customer.notificationToken,
       notification: {
         title:
-          order.type && order.type !== 'delivery_request'
+          order.type !== 'delivery_request'
             ? `طلبك إلى ${order.restaurant.name}`
             : 'طلبك',
         body
@@ -96,11 +101,52 @@ const notifications = {
       }
     }
 
+    const notification = await Notification.create({
+      title: message.notification.title,
+      body: message.notification.body,
+      data: {
+        orderId: order._id,
+        type: 'User'
+      },
+      recipients: [
+        {
+          kind: 'User',
+          item: customer._id,
+          token: customer.notificationToken,
+          phone: customer.phone,
+          status: 'pending',
+          lastAttempt: new Date()
+        }
+      ],
+      createdAt: new Date()
+    })
+
     try {
       const response = await admin.messaging().send(message)
-      console.log('Customer FCM push notification sent:', response)
+      console.log('✅ Customer push sent:', response)
+
+      // Update recipient status
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'sent',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
     } catch (error) {
-      console.error('Error sending push notification:', error)
+      console.error('🔥 Error sending push:', error)
+
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'failed',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
     }
   }
   // async sendCustomerNotifications(customer, order) {

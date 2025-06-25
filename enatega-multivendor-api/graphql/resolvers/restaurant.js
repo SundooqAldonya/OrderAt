@@ -1098,7 +1098,7 @@ module.exports = {
         }).populate('restaurant')
         const user = await User.findById(result.user)
         const transformedOrder = await transformOrder(result)
-
+        const populatedOrder = await result.populate('user')
         console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
@@ -1110,10 +1110,7 @@ module.exports = {
           user.isOrderNotification &&
           user.notificationToken
         ) {
-          await sendCustomerNotifications(
-            transformedOrder.user,
-            transformedOrder
-          )
+          await sendCustomerNotifications(populatedOrder.user, result)
         }
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')

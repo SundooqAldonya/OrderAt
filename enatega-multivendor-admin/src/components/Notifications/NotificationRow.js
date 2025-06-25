@@ -30,7 +30,11 @@ const NotificationRow = ({ row }) => {
         <TableCell sx={{ color: '#000' }}>
           {new Date(row.createdAt).toLocaleString('en-GB', { hour12: true })}
         </TableCell>
-        {/* <TableCell sx={{ color: '#000' }}>{row.data?.type}</TableCell> */}
+        <TableCell sx={{ color: '#000' }}>
+          {row.data?.type === 'User' || row.data?.type === 'user'
+            ? 'Customer'
+            : 'Rider'}
+        </TableCell>
       </TableRow>
 
       <TableRow>

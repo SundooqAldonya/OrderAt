@@ -1261,6 +1261,9 @@ export const getAllNotifications = gql`
         _id
         title
         body
+        data {
+          type
+        }
         createdAt
         recipients {
           kind

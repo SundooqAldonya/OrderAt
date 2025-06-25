@@ -5,7 +5,6 @@ module.exports = {
   Date: dateScalar,
   RecipientItem: {
     __resolveType(obj) {
-      console.log('Type resolver received:', obj?.constructor?.modelName)
       if (obj.constructor?.modelName === 'Rider') return 'Rider'
       if (obj.constructor?.modelName === 'User') return 'User'
       return null

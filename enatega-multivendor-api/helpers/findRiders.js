@@ -133,19 +133,12 @@ const findRiders = {
       body,
       data: {
         orderId: order._id.toString(),
-        type: order.type
+        type: 'Rider'
       },
       recipients,
       createdAt: new Date()
     })
 
-    // const tokens = riders.map(rider => rider.notificationToken)
-    // console.log({ tokens })
-
-    // if (tokens.length === 0) {
-    //   console.log('🚫 No valid FCM tokens found.')
-    //   return
-    // }
     const tokens = recipients.map(r => r.token)
 
     const message = {
@@ -191,7 +184,7 @@ const findRiders = {
       })
       await Notification.bulkWrite(updates)
       let failedTokens = []
-      // Log failed tokens if needed
+      // Log failed tokens
       response.responses.forEach((res, i) => {
         if (!res.success) {
           console.warn(
@@ -214,9 +207,10 @@ const findRiders = {
       //         username: 'w8pRT869',
       //         password: 'Oqo48lklp',
       //         sendername: 'Kayan',
+      //         phone: '+20 106 525 8980',
       //         message: `تنبيه: لديك طلب جديد على Orderat`
       //       }
-      //       const smsUrl = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${failed.phone}&message=${body.message}`
+      //       const smsUrl = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.phone}&message=${body.message}`
 
       //       await axios.post(smsUrl)
       //       console.log(`✅ Fallback SMS sent to ${failed.phone}`)
@@ -238,16 +232,6 @@ const findRiders = {
       //       console.error(`❌ SMS failed for ${failed.phone}`, error)
       //     }
       //   }
-      // }
-      // if (response.failureCount > 0) {
-      //   console.warn(`⚠️ ${response.failureCount} messages failed to send.`)
-      //   response.responses.forEach((resp, idx) => {
-      //     if (!resp.success) {
-      //       console.error(
-      //         `❌ Token ${tokens[idx]} failed: ${resp.error.message}`
-      //       )
-      //     }
-      //   })
       // }
     } catch (error) {
       console.error('🔥 Error sending push notifications:', error)
