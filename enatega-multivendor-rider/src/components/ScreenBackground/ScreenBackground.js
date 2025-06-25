@@ -17,6 +17,7 @@ import useSidebar from '../Sidebar/useSidebar'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import Feather from '@expo/vector-icons/Feather'
+import { useDrawerStatus } from '@react-navigation/drawer'
 
 // const RiderLogin = require('../../assets/svg/RiderLogin.png')
 
@@ -28,15 +29,21 @@ const ScreenBackground = ({ children }) => {
 
   const { isEnabled, toggleSwitch } = useSidebar()
 
+  const drawerStatus = useDrawerStatus()
+
+  const handleOpenDrawer = () => {
+    if (drawerStatus !== 'open') {
+      navigation.openDrawer()
+    }
+  }
+
   return (
     <SafeAreaView style={[styles.flex, styles.bgColor]}>
       <StatusBar
         backgroundColor={styles.bgColor.backgroundColor}
         barStyle="dark-content"
       />
-      <TouchableOpacity
-        style={styles.hamburger}
-        onPress={() => navigation.openDrawer()}>
+      <TouchableOpacity style={styles.hamburger} onPress={handleOpenDrawer}>
         <Feather name="menu" size={34} color="black" />
         {/* <View style={styles.line}></View>
         <View style={styles.line}></View>

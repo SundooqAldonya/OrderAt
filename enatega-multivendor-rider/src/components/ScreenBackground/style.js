@@ -60,7 +60,9 @@ export default StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     top: 50,
-    left: 30
+    left: 30,
+    zIndex: 9999, // ensure it's on top
+    elevation: 9999
     // backgroundColor: 'red'
     // padding: 8
   },
