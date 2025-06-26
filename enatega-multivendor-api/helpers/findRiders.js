@@ -207,7 +207,7 @@ const findRiders = {
       //         username: 'w8pRT869',
       //         password: 'Oqo48lklp',
       //         sendername: 'Kayan',
-      //         phone: '+20 106 525 8980',
+      //         phone: '+201065258980',
       //         message: `تنبيه: لديك طلب جديد على Orderat`
       //       }
       //       const smsUrl = `https://smssmartegypt.com/sms/api/?username=${body.username}&password=${body.password}&sendername=${body.sendername}&mobiles=${body.phone}&message=${body.message}`

@@ -194,6 +194,10 @@ const orderSchema = new Schema(
     originalPrice: {
       type: Number
     },
+    notifiedUnassigned: {
+      type: Boolean,
+      default: false
+    },
     cancellation: {
       kind: {
         type: String,

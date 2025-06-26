@@ -35,6 +35,7 @@ const Restaurant = require('./models/restaurant.js')
 const Rider = require('./models/rider.js')
 const EventEmitter = require('events')
 const { pubsub } = require('./helpers/pubsub.js')
+const { orderCheckUnassigned } = require('./helpers/orderCheckUnassigned.js')
 const emitter = new EventEmitter()
 
 emitter.setMaxListeners(50)
@@ -235,6 +236,7 @@ async function startApolloServer() {
     })
   )
 
+  orderCheckUnassigned()
   // populate countries data.
   // await populateCountries()
   //
