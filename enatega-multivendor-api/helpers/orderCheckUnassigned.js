@@ -22,7 +22,7 @@ module.exports = {
       })
 
       console.log({ orders })
-      console.log({ city: orders[0].restaurant.city })
+      // console.log({ city: orders[0].restaurant.city })
 
       for (const order of orders) {
         const restaurant = order.restaurant
