@@ -478,7 +478,7 @@ const typeDefs = gql`
     acceptedAt: String
     pickedAt: String
     deliveredAt: String
-    cancelledAt: String
+    cancelledAt: Date
     assignedAt: String
     isRinged: Boolean!
     isRiderRinged: Boolean!

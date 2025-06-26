@@ -245,6 +245,7 @@ export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $
           phone
           available
         }
+        cancelledAt
       }
       totalDocs
       limit

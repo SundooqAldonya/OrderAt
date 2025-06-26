@@ -128,7 +128,16 @@ const OrdersDataAdmin = props => {
       name: t('Status'),
       selector: 'orderStatus',
       sortable: true,
-      cell: row => <>{t(row.orderStatus)}</>
+      cell: row => (
+        <>
+          {t(row.orderStatus)}{' '}
+          {row.cancelledAt
+            ? new Date(row.cancelledAt).toLocaleString('en-GB', {
+                hour12: true
+              })
+            : null}
+        </>
+      )
     },
     {
       name: t('Datetime'),

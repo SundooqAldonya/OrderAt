@@ -21,6 +21,7 @@ export default function StatusCard(props) {
     deliveredAt,
     pickedAt,
     assignedAt,
+    cancelledAt,
     cancellation
   } = props
 
@@ -138,7 +139,8 @@ export default function StatusCard(props) {
                 : cancellation.kind === 'User'
                 ? `cancelled by Customer (${cancellation.cancelledBy.name})`
                 : `cancelled by ${cancellation.cancelledBy.userType} (${cancellation.cancelledBy.name})`
-              : null}
+              : null}{' '}
+            at {new Date(cancelledAt).toLocaleString('en-GB', { hour12: true })}
           </Typography>
           <Divider
             orientation="vertical"
