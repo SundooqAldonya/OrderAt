@@ -41,7 +41,7 @@ module.exports = {
             password: 'Oqo48lklp',
             sendername: 'Kayan',
             phone: '+201065258980',
-            message: `⚠️ لقد تجاوز الطلب ${order.orderId} وقت تحضيره ولا يزال غير مخصص لأي سائق.`
+            message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
           }
           await sendSMS({
             body
