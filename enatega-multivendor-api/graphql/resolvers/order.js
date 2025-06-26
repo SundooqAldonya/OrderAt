@@ -61,6 +61,14 @@ const { GraphQLError } = require('graphql')
 var DELIVERY_CHARGES = 0.0
 module.exports = {
   Date: dateScalar,
+  CancelledBy: {
+    __resolveType(obj) {
+      if (obj.constructor?.modelName === 'Owner') return 'Owner'
+      if (obj.constructor?.modelName === 'User') return 'User'
+      if (obj.constructor?.modelName === 'Restaurant') return 'Restaurant'
+      return null
+    }
+  },
   Subscription: {
     subscribePlaceOrder: {
       subscribe: withFilter(
@@ -132,13 +140,15 @@ module.exports = {
         if (!req.isAuth) {
           throw new Error('Unauthenticated!')
         }
-        const order = await Order.findById(args.id).populate({
-          path: 'riderInteractions',
-          populate: { path: 'rider' }
-        })
+        const order = await Order.findById(args.id)
+          .populate({
+            path: 'riderInteractions',
+            populate: { path: 'rider' }
+          })
+          .populate('cancellation.cancelledBy')
         // .populate('restaurant')
         // .populate('user')
-        console.log({ orderRiderInteractions: order.riderInteractions[0] })
+        console.log({ cancellation: order.cancellation })
         if (!order) throw new Error('Order does not exist')
         return await transformOrder(order)
         // return order
@@ -1567,6 +1577,12 @@ module.exports = {
       }
       const order = await Order.findById(args.id)
       order.orderStatus = ORDER_STATUS.CANCELLED
+      order.cancelledAt = new Date()
+      order.cancellation.kind = 'User'
+      order.cancellation.cancelledBy = req.userId
+      if (args.reason) {
+        order.cancellation.reason = args.reason
+      }
       const result = await order.save()
 
       const transformedOrder = await transformOrder(result)

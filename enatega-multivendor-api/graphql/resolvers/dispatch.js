@@ -129,6 +129,8 @@ module.exports = {
         }
         if (args.orderStatus === 'CANCELLED') {
           order.cancelledAt = new Date()
+          order.cancellation.kind = 'Owner'
+          order.cancellation.cancelledBy = req.userId
         }
         if (args.orderStatus === 'DELIVERED') {
           order.deliveredAt = new Date()

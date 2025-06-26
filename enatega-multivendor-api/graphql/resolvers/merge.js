@@ -171,7 +171,8 @@ const transformOrder = async order => {
     originalPrice: order?.originalPrice ? order?.originalPrice : 0,
     mandoobSpecialInstructions: order?.mandoobSpecialInstructions
       ? order?.mandoobSpecialInstructions
-      : null
+      : null,
+    cancellation: order.cancellation ? order.cancellation : null
   }
 }
 

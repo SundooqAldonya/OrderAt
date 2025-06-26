@@ -10,8 +10,8 @@ function DetailCard(props) {
   const theme = useTheme()
   const { t } = useTranslation()
   const coords = {
-    long: props.deliveryAddress.location.coordinates[0],
-    lat: props.deliveryAddress.location.coordinates[1]
+    long: props?.deliveryAddress?.location?.coordinates[0],
+    lat: props?.deliveryAddress?.location?.coordinates[1]
   }
   console.log({ props })
   return (

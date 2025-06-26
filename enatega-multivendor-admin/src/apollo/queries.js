@@ -1087,6 +1087,29 @@ export const singleOrder = gql`
       originalDeliveryCharges
       originalSubtotal
       originalPrice
+      cancellation {
+        kind
+        reason
+        cancelledBy {
+          ... on User {
+            _id
+            name
+            phone
+          }
+          ... on Owner {
+            _id
+            name
+            phone
+            userType
+          }
+          ... on Restaurant {
+            _id
+            name
+            phone
+            image
+          }
+        }
+      }
     }
   }
 `

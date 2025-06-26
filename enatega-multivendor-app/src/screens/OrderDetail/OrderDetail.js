@@ -20,7 +20,6 @@ import OrdersContext from '../../context/Orders'
 import { mapStyle } from '../../utils/mapStyle'
 import { useTranslation } from 'react-i18next'
 import { HelpButton } from '../../components/Header/HeaderIcons/HeaderIcons'
-
 import {
   ProgressBar,
   checkStatus
@@ -35,7 +34,6 @@ import { cancelOrder as cancelOrderMutation } from '../../apollo/mutations'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { calulateRemainingTime } from '../../utils/customFunctions'
 import { Instructions } from '../../components/Checkout/Instructions'
-
 import MapViewDirections from 'react-native-maps-directions'
 import useEnvVars from '../../../environment'
 import LottieView from 'lottie-react-native'
@@ -89,20 +87,10 @@ function OrderDetail(props) {
 
   const order = data?.singleOrder
 
-  console.log({ orderStatus: order?.orderStatus })
-
-  // useEffect(() => {
-  //   async function Track() {
-  //     await Analytics.track(Analytics.events.NAVIGATE_TO_ORDER_DETAIL, {
-  //       orderId: id
-  //     })
-  //   }
-  //   Track()
-  // }, [])
-
   const cancelModalToggle = () => {
     setCancelModalVisible(!cancelModalVisible)
   }
+
   function onError(error) {
     FlashMessage({
       message: error.message
@@ -181,8 +169,6 @@ function OrderDetail(props) {
     const deliveryAmount = delivery > 0 ? deliveryCharges : 0
     return (itemTotal + deliveryAmount).toFixed(2)
   }
-
-  // console.log({ order })
 
   const subTotal = total - tip - tax - deliveryCharges
   return (
@@ -462,22 +448,36 @@ function OrderDetail(props) {
             currency={configuration.currencySymbol}
             price={total.toFixed(2)}
           />
-          {/* {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
-          <View style={{ margin: scale(20) }}>
-            <Button
-              text={t('cancelOrder')}
-              buttonProps={{ onPress: cancelModalToggle }}
-              buttonStyles={{
-                ...styles().cancelButtonContainer(currentTheme)
-              }}
-              textProps={{ textColor: currentTheme.red600 }}
-              textStyles={{
-                ...alignment.Pmedium,
-                textAlign: isArabic ? 'right' : 'left'
-              }}
-            />
-          </View>
-        )} */}
+          {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
+            <View style={{ margin: scale(20) }}>
+              <TouchableOpacity
+                onPress={cancelModalToggle}
+                style={styles().cancelButtonContainer(currentTheme)}
+              >
+                <TextDefault
+                  style={{
+                    ...alignment.Pmedium,
+                    color: currentTheme.red600,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
+                  {t('cancelOrder')}
+                </TextDefault>
+              </TouchableOpacity>
+              {/* <Button
+                text={t('cancelOrder')}
+                buttonProps={{ onPress: cancelModalToggle }}
+                buttonStyles={{
+                  ...styles().cancelButtonContainer(currentTheme)
+                }}
+                textProps={{ textColor: currentTheme.red600 }}
+                textStyles={{
+                  ...alignment.Pmedium,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              /> */}
+            </View>
+          )}
         </View>
       </ScrollView>
 

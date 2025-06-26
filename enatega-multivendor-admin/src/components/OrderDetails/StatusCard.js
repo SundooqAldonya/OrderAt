@@ -20,8 +20,11 @@ export default function StatusCard(props) {
     acceptedAt,
     deliveredAt,
     pickedAt,
-    assignedAt
+    assignedAt,
+    cancellation
   } = props
+
+  console.log({ cancellation })
 
   const STATUS_ORDER = [
     t('pending'),
@@ -128,7 +131,14 @@ export default function StatusCard(props) {
             color="common"
             mr={theme.spacing(2)}
             className={`${classes.textBold} ${classes.mediumText}`}>
-            {description}
+            {description}{' '}
+            {orderStatus === 'CANCELLED'
+              ? cancellation.kind === 'Restaurant'
+                ? `cancelled by ${cancellation.kind} (${cancellation.cancelledBy.name})`
+                : cancellation.kind === 'User'
+                ? `cancelled by Customer (${cancellation.cancelledBy.name})`
+                : `cancelled by ${cancellation.cancelledBy.userType} (${cancellation.cancelledBy.name})`
+              : null}
           </Typography>
           <Divider
             orientation="vertical"

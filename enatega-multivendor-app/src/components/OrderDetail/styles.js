@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { scale } from '../../utils/scaling'
 export default StyleSheet.create({
-  cancelButtonContainer: theme => ({
+  cancelButtonContainer: (theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: theme.red600,
@@ -9,7 +9,7 @@ export default StyleSheet.create({
     borderRadius: scale(25),
     width: scale(200)
   }),
-  dismissButtonContainer: theme => ({
+  dismissButtonContainer: (theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -17,9 +17,9 @@ export default StyleSheet.create({
     width: scale(200),
     borderColor: theme.newIconColor
   }),
-  modalContainer: theme => ({
-    borderWidth:scale(1),
-    borderColor:theme.white,
+  modalContainer: (theme) => ({
+    borderWidth: scale(1),
+    borderColor: theme.white,
     margin: 10,
     backgroundColor: theme.themeBackground,
     borderRadius: 20,
@@ -34,10 +34,10 @@ export default StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   }),
-  container: theme => ({
+  container: (theme) => ({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000'
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   })
 })

@@ -129,7 +129,8 @@ const rootResolver = {
     ...dispatchResolver.Subscription,
     ...chatResolver.Subscription
   },
-  RecipientItem: notifications.RecipientItem
+  RecipientItem: notifications.RecipientItem,
+  CancelledBy: orderResolver.CancelledBy
 }
 
 module.exports = rootResolver

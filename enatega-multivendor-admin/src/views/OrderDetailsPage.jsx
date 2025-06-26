@@ -64,7 +64,7 @@ const OrderDetailsPage = () => {
         {/* <Grid container style={{ marginTop: theme.spacing(5) }}>
           <CustomerDetailsCard {...order} />
         </Grid> */}
-        {order.rider ? (
+        {order?.rider ? (
           <Grid container style={{ marginTop: theme.spacing(5) }}>
             <RiderDetails rider={order.rider} order={order} />
           </Grid>

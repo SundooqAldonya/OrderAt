@@ -78,6 +78,7 @@ const typeDefs = gql`
     email: String
     name: String
     phone: String
+    userType: String
   }
 
   type OrdersWithCashOnDeliveryInfo {
@@ -491,6 +492,7 @@ const typeDefs = gql`
     originalDeliveryCharges: Float
     originalSubtotal: Float
     originalPrice: Float
+    cancellation: Cancellation
   }
 
   scalar Date
@@ -1853,11 +1855,11 @@ const typeDefs = gql`
     other
   }
 
-  enum CancelledBy {
-    customer
-    mandoob
-    admin
-  }
+  # enum CancelledBy {
+  #   customer
+  #   mandoob
+  #   admin
+  # }
 
   type DeliveryRequest {
     id: ID!
@@ -1957,6 +1959,20 @@ const typeDefs = gql`
     deliveryFee: Float
     location: CoordinatesInput
   }
+
+  type Cancellation {
+    kind: CancelledByKind
+    cancelledBy: CancelledBy
+    reason: String
+  }
+
+  enum CancelledByKind {
+    User
+    Owner
+    Restaurant
+  }
+
+  union CancelledBy = User | Owner | Restaurant
 
   type Mutation {
     acknowledgeNotification(notificationId: String): Message
@@ -2241,7 +2257,7 @@ const typeDefs = gql`
     sendFormSubmission(
       formSubmissionInput: FormSubmissionInput!
     ): FormSubmissionResponse!
-    abortOrder(id: String!): Order!
+    abortOrder(id: String!, reason: String): Order!
     saveVerificationsToggle(
       configurationInput: VerificationConfigurationInput!
     ): Configuration!

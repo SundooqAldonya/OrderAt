@@ -352,12 +352,12 @@ export const updateNotificationStatus = `
   }`
 
 export const cancelOrder = `
-          mutation($abortOrderId: String!){
-            abortOrder(id: $abortOrderId) {
-              _id
-              orderStatus
-            }
-          }`
+  mutation($abortOrderId: String!, $reason: String){
+    abortOrder(id: $abortOrderId, reason: $reason) {
+      _id
+      orderStatus
+    }
+  }`
 
 export const disableUserNotifications = gql`
   mutation DisableUserPushNotification($id: String!) {

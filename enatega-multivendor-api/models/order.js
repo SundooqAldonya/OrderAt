@@ -193,6 +193,19 @@ const orderSchema = new Schema(
     },
     originalPrice: {
       type: Number
+    },
+    cancellation: {
+      kind: {
+        type: String,
+        enum: ['User', 'Owner', 'Restaurant']
+      },
+      cancelledBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'cancellation.kind'
+      },
+      reason: {
+        type: String
+      }
     }
   },
   { timestamps: true }
