@@ -54,7 +54,8 @@ const notifications = {
         message: 'Testing',
         playSound: 'true',
         sound: 'beep1.wav',
-        orderId: order._id.toString()
+        orderId: order._id.toString(),
+        notificationId: notification._id.toString()
       }
     }
 

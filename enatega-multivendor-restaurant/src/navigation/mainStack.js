@@ -10,8 +10,8 @@ import { OrdersScreen } from '../screens/Orders'
 import SideBar from '../components/SideBar/SideBar'
 import { screenOptions, tabIcon } from './screenOptions'
 import { colors } from '../utilities/colors'
-import { gql, useApolloClient } from '@apollo/client'
-import { orders } from '../apollo'
+import { gql, useApolloClient, useMutation } from '@apollo/client'
+import { acknowledgeNotification, orders } from '../apollo'
 import { useNavigation } from '@react-navigation/native'
 import { SelectLanguage } from '../screens/Setting'
 import moment from 'moment'
@@ -112,6 +112,15 @@ function StackNavigator() {
   const navigation = useNavigation()
   const timeNow = new Date()
 
+  const [mutateAcknowledgeNotification] = useMutation(acknowledgeNotification, {
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: error => {
+      console.warn({ error })
+    }
+  })
+
   useEffect(() => {
     setupNotificationChannel()
   }, [])
@@ -125,6 +134,10 @@ function StackNavigator() {
         if (sound !== 'false') {
           await playCustomSound()
         }
+        const notificationId = remoteMessage?.data?.notificationId || null
+        if (notificationId) {
+          mutateAcknowledgeNotification({ variables: { notificationId } })
+        }
       } catch (error) {
         console.error('Error handling FCM message:', error)
       }
@@ -132,6 +145,17 @@ function StackNavigator() {
 
     return unsubscribe
   }, [navigation])
+
+  useEffect(() => {
+    const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+      const notificationId = remoteMessage?.data?.notificationId || null
+      if (notificationId) {
+        mutateAcknowledgeNotification({ variables: { notificationId } })
+      }
+    })
+
+    return unsubscribe
+  }, [])
 
   return (
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
