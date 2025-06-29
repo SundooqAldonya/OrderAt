@@ -431,10 +431,10 @@ module.exports = {
             { assigned: { $in: [order.id] } },
             { $pull: { assigned: { $in: [order.id] } } }
           )
-          await Rider.updateOne(
-            { _id: req.userId },
-            { $push: { delivered: order.id } }
-          )
+          // await Rider.updateOne(
+          //   { _id: req.userId },
+          //   { $push: { delivered: order.id } }
+          // )
           order.deliveredAt = new Date()
         }
         const result = await order.save()

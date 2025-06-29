@@ -33,7 +33,7 @@ const riderSchema = new Schema(
       default: false
     },
     assigned: [String],
-    delivered: [String],
+    // delivered: [String],
     zone: {
       type: Schema.Types.ObjectId,
       ref: 'Zone',

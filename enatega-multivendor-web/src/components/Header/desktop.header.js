@@ -1,4 +1,4 @@
-import { Box, Divider, Menu, MenuItem, useTheme } from "@mui/material";
+import { Box, Divider, Menu, MenuItem, useTheme, Link } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
@@ -69,30 +69,42 @@ function DHeader({
       className={classes.root}
     >
       <Toolbar className={classes.toolbar}>
-        <RouterLink
-          to={
-            location.pathname === "/checkout"
-              ? "/business-list"
-              : "/business-list"
-          }
-          className={classes.linkDecoration}
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20,
+          }}
         >
-          <Box
-            style={{
-              width: mobile ? 100 : 200,
-              height: mobile ? 40 : 64,
-            }}
+          <RouterLink
+            to={
+              location.pathname === "/checkout"
+                ? "/business-list"
+                : "/business-list"
+            }
+            className={classes.linkDecoration}
           >
-            <img
-              src={currentLang === "en" ? logo : logoAr}
-              alt="logo"
+            <Box
               style={{
-                width: "100%",
-                height: "100%",
+                width: mobile ? 100 : 200,
+                height: mobile ? 40 : 64,
               }}
-            />
-          </Box>
-        </RouterLink>
+            >
+              <img
+                src={currentLang === "en" ? logo : logoAr}
+                alt="logo"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+            </Box>
+          </RouterLink>
+          {/* <Link component={RouterLink} to={"/otlob-mandoob/pickup"}>
+            <Typography>Otlob mandoob</Typography>
+          </Link> */}
+        </Box>
         {!mobile && (
           <Fragment>
             <Box sx={{ width: "40%", display: "flex", alignItems: "center" }}>

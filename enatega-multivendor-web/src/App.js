@@ -40,6 +40,9 @@ import BusinessList from "./screens/BusinessList";
 import LandingPage from "./screens/LandingPage";
 import SignupAsRider from "./screens/SignupAsRider";
 import ContactUs from "./screens/ContactUs";
+import PickupMandoob from "./screens/DeliveryRequest/PickupMandoob";
+import DropoffMandoob from "./screens/DeliveryRequest/DropoffMandoob";
+import DeliveryRequest from "./screens/DeliveryRequest";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -178,6 +181,9 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/pickup" element={<Pickup />} />
+          {/* <Route path="/otlob-mandoob" element={<DeliveryRequest />} />
+          <Route path="/otlob-mandoob/pickup" element={<PickupMandoob />} />
+          <Route path="/otlob-mandoob/dropoff" element={<DropoffMandoob />} /> */}
           <Route path={"/verify-phone"} element={<VerifyPhone />} />
           <Route
             path={"/login"}
