@@ -170,7 +170,9 @@ module.exports = {
             { orderStatus: 'DELIVERED' },
             { orderStatus: 'ASSIGNED' }
           ]
-        }).sort({ createdAt: -1 })
+        })
+          .sort({ createdAt: -1 })
+          .limit(10)
 
         const orders = await Order.find({
           zone: rider.zone,
