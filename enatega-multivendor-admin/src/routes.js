@@ -72,6 +72,7 @@ import BusinessCategory from './views/BusinessCategory'
 import RidersMap from './views/RidersMap'
 import ContactUs from './views/Contactus'
 import NotificationsScreen from './views/NotificationsScreen'
+import OtlobMandoob from './views/OtlobMandoob'
 
 var routes = [
   {
@@ -133,6 +134,15 @@ var routes = [
     name: 'Riders Map',
     icon: TravelExploreIcon,
     component: RidersMap,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/otlob-mandoob',
+    name: 'Otlob Mandoob',
+    icon: TravelExploreIcon,
+    component: OtlobMandoob,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true

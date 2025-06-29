@@ -52,7 +52,7 @@ const Cities = () => {
       setType('success')
       setMessage(data.removeCity.message)
     },
-    refetchQueries: GET_CITIES
+    refetchQueries: [{ query: GET_CITIES }]
   })
 
   const [mutateActive] = useMutation(toggleCityActive, {
