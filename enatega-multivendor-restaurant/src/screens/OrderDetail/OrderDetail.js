@@ -41,7 +41,8 @@ const ReceiptViewer = ({ receipt_HTML, width }) => {
 export default function OrderDetail({ navigation, route }) {
   const { currency } = useContext(Configuration.Context)
   const receiptRef = useRef(null);
-  
+  let b64 = "";
+
   const { t, i18n } = useTranslation()
   const {
     activeBar,
@@ -50,6 +51,19 @@ export default function OrderDetail({ navigation, route }) {
     preparationTime,
     createdAt
   } = route.params
+
+  useEffect(() => {
+	  async function fetchData() {
+		b64 = await receiptRef.current.captureBase64();
+		b64 = await fs.readFile(b64, 'base64');
+	  }
+	  fetchData();
+  }, [receiptRef])
+
+  // Set navigation reference for PrinterManager
+  useEffect(() => {
+    PrinterManager.setNavigationRef(navigation)
+  }, [navigation])
 
   const { _id, orderDate } = orderData
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
@@ -90,25 +104,28 @@ export default function OrderDetail({ navigation, route }) {
     setOverlayVisible(!overlayVisible)
   }
 
-  const togglePrintOverlay = () => {
-	setPrint(true)
-	setOverlayVisible(!overlayVisible)
+  const togglePrintOverlay = async () => {
+	  let printed = await printOrder();
+	if(printed){
+		setPrint(true)
+		setOverlayVisible(!overlayVisible)
+	}
   }
   
  const printOrder = async () => {
     if (receiptRef.current) {
       try {
-			let b64 = await receiptRef.current.captureBase64();
-			b64 = await fs.readFile(b64, 'base64');
 			b64 = b64.replace(/\r?\n|\r/g, '');
 			await PrinterManager.printBase64(b64, { width: 384 });
 			await PrinterManager.print('\n', { align: 'center', cutPaper: true });
+			return true;
 	  } catch (err) {
 			console.error(err);
 	  }
     } else {
 		console.log("NO Ref FOUND!");
 	}
+	return false;
   }
   
   const cancelOrderFunc = () => {
@@ -135,6 +152,10 @@ export default function OrderDetail({ navigation, route }) {
   
   return (
     <View style={{ flex: 1 }}>
+
+				  <SpriteCapture ref={receiptRef} width={250}>
+					<ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
+				  </SpriteCapture>
 	
       <BackButton navigation={navigation} />
       <ImageBackground
@@ -236,6 +257,21 @@ export default function OrderDetail({ navigation, route }) {
               {activeBar === 0 && isAcceptButtonVisible && (
                 <>
                   <Button
+                    title={t('Print')}
+                    buttonStyle={{
+                      backgroundColor: 'black',
+                      borderRadius: 10,
+                      padding: 15
+                    }}
+                    titleStyle={{ color: colors.white, fontWeight: '500' }}
+                    containerStyle={{
+                      width: 250,
+                      marginVertical: 10
+                    }}
+                    onPress={printOrder}
+                  />
+				  
+                  <Button
                     title={t('acceptAndPrint')}
                     buttonStyle={{
                       backgroundColor: colors.green,
@@ -263,10 +299,6 @@ export default function OrderDetail({ navigation, route }) {
                     }}
                     onPress={toggleOverlay}
                   />
-
-				  <SpriteCapture ref={receiptRef} width={250}>
-					<ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
-				  </SpriteCapture>
 				  
                   <OverlayComponent
                     visible={overlayVisible}
