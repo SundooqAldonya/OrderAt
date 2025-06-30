@@ -677,5 +677,8 @@ export const en = {
   your_order_delivered_here: 'Your orders will be delivered here',
   city: 'City',
   out_of_stock: 'Out of Stock',
-  privacy: 'Privacy'
+  privacy: 'Privacy',
+  choose_from_map: 'Choose from map',
+  done: 'Done',
+  continue: 'Continue'
 }

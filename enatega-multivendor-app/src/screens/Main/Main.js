@@ -550,7 +550,7 @@ function Main(props) {
                           if (!isLoggedIn) {
                             navigation.navigate('Login')
                           } else {
-                            navigation.navigate('FromPlace')
+                            navigation.navigate('RequestDelivery')
                           }
                         }}
                       >
@@ -669,7 +669,7 @@ function Main(props) {
 
           <MainModalize
             modalRef={modalRef}
-            currentTheme={currentTheme}
+            // currentTheme={currentTheme}
             isLoggedIn={isLoggedIn}
             addressIcons={addressIcons}
             modalHeader={modalHeader}

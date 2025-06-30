@@ -21,7 +21,7 @@ import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import { getDeliveryCalculation, myOrders } from '../../apollo/queries'
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
@@ -87,12 +87,12 @@ const RequestDelivery = () => {
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
 
-    onCompleted: (data) => {
-      console.log({ data })
+    onCompleted: (res) => {
+      console.log({ res })
       Toast.show({
         type: 'success',
         text1: t('success'),
-        text2: t(data.createDeliveryRequest.message),
+        text2: t(res.createDeliveryRequest.message),
         text1Style: {
           textAlign: isArabic ? 'right' : 'left'
         },
@@ -136,15 +136,22 @@ const RequestDelivery = () => {
     }
   })
 
-  const { data, loading, error, refetch } = useQuery(getDeliveryCalculation, {
-    variables: {
-      code: coupon?.code.replace(' ', ''),
-      destLong: Number(addressInfo.regionTo.longitude),
-      destLat: Number(addressInfo.regionTo.latitude),
-      originLong: Number(addressInfo.regionFrom.longitude),
-      originLat: Number(addressInfo.regionFrom.latitude)
+  const [fetchCalculateDelivery, { data, loading, error, refetch }] =
+    useLazyQuery(getDeliveryCalculation)
+
+  useEffect(() => {
+    if (addressInfo.regionTo && addressInfo.regionFrom) {
+      fetchCalculateDelivery({
+        variables: {
+          code: coupon?.code.replace(' ', ''),
+          destLong: Number(addressInfo.regionTo.longitude),
+          destLat: Number(addressInfo.regionTo.latitude),
+          originLong: Number(addressInfo.regionFrom.longitude),
+          originLat: Number(addressInfo.regionFrom.latitude)
+        }
+      })
     }
-  })
+  }, [addressInfo])
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || null
   const originalDiscount =
@@ -339,7 +346,7 @@ const RequestDelivery = () => {
             {t('pick_up_location')}
           </TextDefault> */}
             <TouchableOpacity
-              onPress={() => navigation.navigate('FromPlace')}
+              onPress={() => navigation.navigate('NewPickupMandoob')}
               style={{
                 ...styles.address,
                 flexDirection: isArabic ? 'row-reverse' : 'row',

@@ -666,5 +666,8 @@ export const ar = {
   your_order_delivered_here: 'طلباتك ستصل إلى هنا',
   city: 'المدينة',
   out_of_stock: 'غير متاح الآن',
-  privacy: 'الخصوصية'
+  privacy: 'الخصوصية',
+  choose_from_map: 'أختر من الخريطة',
+  done: 'تم',
+  continue: 'متابعة'
 }

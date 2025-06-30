@@ -72,6 +72,8 @@ import ToPlace from '../screens/RequestDelivery/ToPlace'
 import MainRestaurantScreen from '../components/Main/MainRestaurantCard/MainRestaurantScreen'
 import { TopBrandsScreen } from '../components/Main/TopBrandsScreen'
 import NotificationMandoob from '../screens/RequestDelivery/NotificationMandoob'
+import NewPickupMandoob from '../screens/RequestDelivery/NewPickupMandoob'
+import PickupFromMap from '../screens/RequestDelivery/PickupFromMap'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -294,6 +296,18 @@ function NoDrawer() {
         }}
         component={RequestDelivery}
       />
+      <NavigationStack.Screen
+        name='NewPickupMandoob'
+        options={{
+          headerTitle: t('pickup'),
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
+        }}
+        component={NewPickupMandoob}
+      />
+      <NavigationStack.Screen name='PickupFromMap' component={PickupFromMap} />
       <NavigationStack.Screen
         name='FromPlace'
         options={{

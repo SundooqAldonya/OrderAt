@@ -7,10 +7,12 @@ import { alignment } from '../../../utils/alignment'
 import { scale } from '../../../utils/scaling'
 import styles from './styles'
 import { useTranslation } from 'react-i18next'
+import { theme } from '../../../utils/themeColors'
+import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 
 const MainModalize = ({
   modalRef,
-  currentTheme,
+  // currentTheme,
   isLoggedIn,
   addressIcons,
   modalHeader,
@@ -22,6 +24,8 @@ const MainModalize = ({
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
+  const themeContext = useContext(ThemeContext)
+  const currentTheme = theme[themeContext.ThemeValue]
 
   return (
     <Modalize
