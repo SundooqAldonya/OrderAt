@@ -443,15 +443,17 @@ module.exports = {
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
         // sendNotificationToUser(result.user, result)
-        if (user && user.isOrderNotification) {
-          console.log('through condition')
-          sendCustomerNotifications(user, populatedOrder)
+        if (user) {
+          if (user.isOrderNotification) {
+            console.log('through condition')
+            sendCustomerNotifications(user, populatedOrder)
+          }
+          sendNotificationToCustomerWeb(
+            user.notificationTokenWeb,
+            `Order status: ${result.orderStatus}`,
+            `Order ID ${result.orderId}`
+          )
         }
-        sendNotificationToCustomerWeb(
-          user.notificationTokenWeb,
-          `Order status: ${result.orderStatus}`,
-          `Order ID ${result.orderId}`
-        )
         return transformedOrder
       } catch (err) {
         throw err

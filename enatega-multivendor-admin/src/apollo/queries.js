@@ -882,6 +882,11 @@ export const getCityAreas = `query AreasByCity($id: String!){
     areasByCity(id: $id){
       _id
       title
+      location {
+        location {
+          coordinates
+        }
+      }
     }
   }`
 
@@ -1317,6 +1322,27 @@ export const getAllNotifications = gql`
       hasPrevPage
       nextPage
       prevPage
+    }
+  }
+`
+
+export const getDeliveryCalculation = gql`
+  query GetDeliveryCalculation(
+    $originLong: Float!
+    $originLat: Float!
+    $destLong: Float!
+    $destLat: Float!
+    $code: String
+  ) {
+    getDeliveryCalculation(
+      originLong: $originLong
+      originLat: $originLat
+      destLong: $destLong
+      destLat: $destLat
+      code: $code
+    ) {
+      amount
+      originalDiscount
     }
   }
 `

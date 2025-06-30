@@ -119,7 +119,7 @@ const transformOrder = async order => {
     zone: zone(order?.zone),
     review: review.bind(this, order?.review),
     user: await user.bind(this, order?._doc?.user),
-    userId: order?._doc.user.toString(),
+    userId: order?._doc.user?.toString(),
     orderDate: dateToString(order?._doc.orderDate) || dateToString(new Date()),
     items: await order?.items?.map(item => {
       return {

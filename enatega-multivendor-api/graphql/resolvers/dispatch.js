@@ -149,7 +149,9 @@ module.exports = {
         }
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
-        publishToUser(result.user.toString(), transformedOrder, 'update')
+        if (result.user) {
+          publishToUser(result.user.toString(), transformedOrder, 'update')
+        }
         if (!order.isPickedUp) {
           if (args.orderStatus === 'ACCEPTED' && order.rider) {
             publishToAssignedRider(order.rider, transformedOrder, 'new')

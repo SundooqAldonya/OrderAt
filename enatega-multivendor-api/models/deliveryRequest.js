@@ -33,6 +33,7 @@ const DeliveryRequestSchema = new mongoose.Schema(
         'business_app',
         'web_portal',
         'api',
+        'admin',
         'whatsapp_bot',
         'manual_entry'
       ]

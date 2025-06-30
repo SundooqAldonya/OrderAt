@@ -121,11 +121,14 @@ const findRiders = {
       return
     }
 
+    const username = order?.user?.name || 'أدمن'
+    const restaurantName = order?.restaurant?.name || 'عميل'
+
     const title = 'طلب جديد'
     const body =
       order.type === 'delivery_request'
-        ? `طلب جديد من ${order.user.name}`
-        : `طلب جديد من ${order.restaurant.name}`
+        ? `طلب جديد من ${username}`
+        : `طلب جديد من ${restaurantName}`
 
     // Store notification in DB
     const notificationDoc = await Notification.create({
