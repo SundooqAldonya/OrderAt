@@ -24,6 +24,7 @@ import {
   getDeliveryCalculation
 } from '../apollo/queries'
 import { createDeliveryRequest } from '../apollo/mutations'
+import { NotificationManager } from 'react-notifications'
 
 const containerStyle = {
   width: '100%',
@@ -54,6 +55,8 @@ const OtlobMandoob = () => {
     from: '',
     to: ''
   })
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [selectedArea1, setSelectedArea1] = useState('')
   const [selectedArea2, setSelectedArea2] = useState('')
   const { city, from, to } = values
@@ -164,6 +167,22 @@ const OtlobMandoob = () => {
 
   const handleSubmit = e => {
     e.preventDefault()
+    if (!phone.length) {
+      NotificationManager.error(
+        t('Error'),
+        t('Phone number is required!'),
+        3000
+      )
+      return
+    }
+    if (phone.length > 11 || phone.length < 11) {
+      NotificationManager.error(
+        t('Error'),
+        t('Phone number must be less than 11 digits!'),
+        3000
+      )
+      return
+    }
     const foundArea1 = areas1?.find(item => item._id === from)
     const foundArea2 = areas2?.find(item => item._id === to)
     const payload = {
@@ -178,7 +197,9 @@ const OtlobMandoob = () => {
       deliveryFee: deliveryAmount,
       requestChannel: 'admin',
       is_urgent: false,
-      notes: details
+      notes: details,
+      phone,
+      name
     }
 
     mutate({
@@ -307,6 +328,38 @@ const OtlobMandoob = () => {
               </Fragment>
             ) : null}
 
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                multiline
+                label="Name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                maxRows={1}
+                sx={{
+                  background: '#fff',
+                  '& .MuiInputBase-input': {
+                    color: '#000'
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                multiline
+                label="Phone"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                maxRows={1}
+                sx={{
+                  background: '#fff',
+                  '& .MuiInputBase-input': {
+                    color: '#000'
+                  }
+                }}
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth

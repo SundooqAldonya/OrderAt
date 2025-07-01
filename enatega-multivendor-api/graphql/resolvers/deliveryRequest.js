@@ -6,6 +6,9 @@ const {
   sendPushNotification
 } = require('../../helpers/findRiders')
 const {
+  normalizeAndValidatePhoneNumber
+} = require('../../helpers/normalizePhone')
+const {
   publishToDispatcher,
   publishToZoneRiders
 } = require('../../helpers/pubsub')
@@ -115,7 +118,16 @@ module.exports = {
         mandoobSpecialInstructions: delivery.notes
       })
       await order.save()
-      const user = await User.findById(req.user._id)
+      const phone = normalizeAndValidatePhoneNumber(input.phone)
+      const user = await User.findOne({
+        $or: [{ _id: req.user._id }, { phone }]
+      })
+      if (!user) {
+        await User.create({
+          name: input.name,
+          phone
+        })
+      }
       const populatedOrder = await order.populate('user')
       if (!order.isPickedUp) {
         publishToZoneRiders(

@@ -14,6 +14,7 @@ import { isFirebaseSupported, initialize } from './firebase.js'
 import { uploadToken } from './apollo'
 import { gql, useApolloClient } from '@apollo/client'
 import ConfigurableValues from './config/constants.js'
+import { NotificationContainer } from 'react-notifications'
 
 require('./i18n')
 
@@ -125,6 +126,7 @@ const App = () => {
 
   return (
     <Fragment>
+      <NotificationContainer />
       {GOOGLE_MAPS_KEY ? (
         <GoogleMapsLoader GOOGLE_MAPS_KEY={GOOGLE_MAPS_KEY}>
           <HashRouter basename="/">

@@ -1910,6 +1910,8 @@ const typeDefs = gql`
     requestChannel: RequestChannel!
     is_urgent: Boolean
     notes: String
+    phone: String
+    name: String
   }
 
   input BusinessCategoryInput {
