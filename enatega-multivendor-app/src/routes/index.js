@@ -75,6 +75,7 @@ import NotificationMandoob from '../screens/RequestDelivery/NotificationMandoob'
 import NewPickupMandoob from '../screens/RequestDelivery/NewPickupMandoob'
 import PickupFromMap from '../screens/RequestDelivery/PickupFromMap'
 import NewDropoffMandoob from '../screens/RequestDelivery/NewDropoffMandoob'
+import DropoffFromMap from '../screens/RequestDelivery/DropoffFromMap'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -320,6 +321,10 @@ function NoDrawer() {
         component={NewDropoffMandoob}
       />
       <NavigationStack.Screen name='PickupFromMap' component={PickupFromMap} />
+      <NavigationStack.Screen
+        name='DropoffFromMap'
+        component={DropoffFromMap}
+      />
       <NavigationStack.Screen
         name='FromPlace'
         options={{

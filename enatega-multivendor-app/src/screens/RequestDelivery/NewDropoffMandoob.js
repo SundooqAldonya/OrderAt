@@ -51,9 +51,9 @@ const NewDropoffMandoob = () => {
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
-  const { addressFrom, regionFrom, addressFreeTextFrom, labelFrom } =
-    useSelector((state) => state.requestDelivery)
-  console.log({ addressFrom, regionFrom, addressFreeTextFrom, labelFrom })
+  // const { addressFrom, regionFrom, addressFreeTextFrom, labelFrom } =
+  //   useSelector((state) => state.requestDelivery)
+  // console.log({ addressFrom, regionFrom, addressFreeTextFrom, labelFrom })
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -67,6 +67,12 @@ const NewDropoffMandoob = () => {
   const locationMap = params.locationMap || null
   const chooseMap = params.chooseMap || null
   console.log({ currentInput, locationMap, chooseMap })
+
+  useEffect(() => {
+    if (chooseMap) {
+      setChooseFromMap(true)
+    }
+  }, [chooseMap])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -138,7 +144,7 @@ const NewDropoffMandoob = () => {
   }
 
   const handleNext = () => {
-    if (chooseMap) {
+    if (chooseFromMap) {
       dispatch(
         setAddressTo({
           addressTo: currentInput,
@@ -158,7 +164,7 @@ const NewDropoffMandoob = () => {
       )
     }
 
-    navigation.navigate('')
+    navigation.navigate('RequestDelivery')
   }
 
   const modalFooter = () => (
@@ -233,12 +239,27 @@ const NewDropoffMandoob = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.option}
-        onPress={() => navigation.navigate('PickupFromMap')}
+        style={{
+          ...styles.option,
+          borderColor: chooseFromMap ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={() => navigation.navigate('DropoffFromMap')}
       >
         <View style={{ flexDirection: 'row' }}>
-          <Entypo name='location-pin' size={22} color='#000' />
-          <Text style={styles.optionText}>حدد على الخريطة</Text>
+          <Entypo
+            name='location-pin'
+            size={22}
+            color={chooseFromMap ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromMap ? 'green' : '#000'
+            }}
+          >
+            حدد على الخريطة
+          </Text>
         </View>
         {chooseFromMap && (
           <AntDesign name='checkcircleo' size={24} color='green' />

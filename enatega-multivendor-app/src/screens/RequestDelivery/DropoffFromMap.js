@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import {
   View,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { useEffect } from 'react'
 import useEnvVars from '../../../environment'
 import { v4 as uuidv4 } from 'uuid'
 import { useLayoutEffect } from 'react'
@@ -22,7 +21,7 @@ import { useDispatch } from 'react-redux'
 
 const { width, height } = Dimensions.get('window')
 
-const PickupFromMap = () => {
+const DropoffFromMap = () => {
   const mapRef = useRef(null)
   const searchRef = useRef(null)
   const navigation = useNavigation()
@@ -44,7 +43,7 @@ const PickupFromMap = () => {
         backgroundColor: colors.primary
       }
     })
-  }, [navigation, t, colors.primary])
+  }, [navigation, t, colors.primary, handleSave])
 
   useEffect(() => {
     animateToLocation({ lat: location.latitude, lng: location.longitude })
@@ -67,23 +66,17 @@ const PickupFromMap = () => {
     }
   }
 
+  console.log({ location })
+
   const clearSearch = () => {
     searchRef.current?.clear()
   }
 
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
-    console.log({ location })
-    console.log({ currentInput })
-    // dispatch(
-    //   setAddressFrom({
-    //     addressFrom: currentInput,
-    //     regionFrom: location
-    //     // addressFreeTextFrom: addressFreeText,
-    //     // labelFrom: label
-    //   })
-    // )
-    navigation.navigate('NewPickupMandoob', {
+    console.log({ currentInput, location })
+
+    navigation.navigate('NewDropoffMandoob', {
       chooseMap: true,
       currentInput,
       locationMap: location
@@ -138,7 +131,7 @@ const PickupFromMap = () => {
             textInputContainer: {
               backgroundColor: '#fff',
               borderRadius: 10,
-              paddingHorizontal: 40,
+              paddingHorizontal: 40, // leave space for icons
               paddingVertical: Platform.OS === 'ios' ? 10 : 0,
               elevation: 5,
               shadowColor: '#000',
@@ -150,7 +143,9 @@ const PickupFromMap = () => {
               height: 44,
               color: '#000',
               fontSize: 16,
-              textAlign: 'right'
+              textAlign: 'right',
+              paddingRight: 35, // for clear icon
+              paddingLeft: 35 // for send icon
             }
           }}
         />
@@ -168,7 +163,7 @@ const PickupFromMap = () => {
   )
 }
 
-export default PickupFromMap
+export default DropoffFromMap
 
 const styles = StyleSheet.create({
   container: {

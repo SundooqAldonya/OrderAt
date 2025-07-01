@@ -222,6 +222,7 @@ const RequestDelivery = () => {
         is_urgent: isUrgent,
         notes
       }
+      console.log({ pickupCoords, dropOffCoords })
 
       mutate({
         variables: {
