@@ -2012,6 +2012,7 @@ const typeDefs = gql`
     createBusinessCategory(input: BusinessCategoryInput!): Message
     editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message
     removeBusinessCategory(id: String!): Message
+    createDeliveryRequestAdmin(input: CreateDeliveryRequestInput!): Message
     createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message

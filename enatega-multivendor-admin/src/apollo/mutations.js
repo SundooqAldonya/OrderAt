@@ -994,9 +994,9 @@ export const defaultTimings = gql`
   }
 `
 
-export const createDeliveryRequest = gql`
-  mutation CreateDeliveryRequest($input: CreateDeliveryRequestInput!) {
-    createDeliveryRequest(input: $input) {
+export const createDeliveryRequestAdmin = gql`
+  mutation CreateDeliveryRequestAdmin($input: CreateDeliveryRequestInput!) {
+    createDeliveryRequestAdmin(input: $input) {
       message
     }
   }

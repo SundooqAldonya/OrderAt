@@ -23,7 +23,7 @@ import {
   getCityAreas,
   getDeliveryCalculation
 } from '../apollo/queries'
-import { createDeliveryRequest } from '../apollo/mutations'
+import { createDeliveryRequestAdmin } from '../apollo/mutations'
 import { NotificationManager } from 'react-notifications'
 
 const containerStyle = {
@@ -147,7 +147,7 @@ const OtlobMandoob = () => {
     }
   }
 
-  const [mutate] = useMutation(createDeliveryRequest, {
+  const [mutate] = useMutation(createDeliveryRequestAdmin, {
     onCompleted: res => {
       console.log({ res })
       setValues({

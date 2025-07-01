@@ -84,15 +84,19 @@ const PickupFromMap = () => {
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
     console.log({ currentInput })
-    dispatch(
-      setAddressFrom({
-        addressFrom: currentInput,
-        regionFrom: location
-        // addressFreeTextFrom: addressFreeText,
-        // labelFrom: label
-      })
-    )
-    navigation.goBack()
+    // dispatch(
+    //   setAddressFrom({
+    //     addressFrom: currentInput,
+    //     regionFrom: location
+    //     // addressFreeTextFrom: addressFreeText,
+    //     // labelFrom: label
+    //   })
+    // )
+    navigation.navigate('NewPickupMandoob', {
+      chooseMap: true,
+      currentInput,
+      locationMap: location
+    })
   }
 
   return (

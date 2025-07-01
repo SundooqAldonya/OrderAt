@@ -30,13 +30,13 @@ import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { useDispatch } from 'react-redux'
-import { setAddressFrom } from '../../store/requestDeliverySlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { setAddressTo } from '../../store/requestDeliverySlice'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
 `
-const NewPickupMandoob = () => {
+const NewDropoffMandoob = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const route = useRoute()
@@ -51,6 +51,9 @@ const NewPickupMandoob = () => {
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
+  const { addressFrom, regionFrom, addressFreeTextFrom, labelFrom } =
+    useSelector((state) => state.requestDelivery)
+  console.log({ addressFrom, regionFrom, addressFreeTextFrom, labelFrom })
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -64,12 +67,6 @@ const NewPickupMandoob = () => {
   const locationMap = params.locationMap || null
   const chooseMap = params.chooseMap || null
   console.log({ currentInput, locationMap, chooseMap })
-
-  useEffect(() => {
-    if (chooseMap) {
-      setChooseFromMap(true)
-    }
-  }, [chooseMap])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -125,7 +122,6 @@ const NewPickupMandoob = () => {
               setFormattedAddress(res.formattedAddress)
             }
             setCurrentPosSelected(true)
-            setChooseFromMap(false)
           }
         )
       } else {
@@ -142,27 +138,27 @@ const NewPickupMandoob = () => {
   }
 
   const handleNext = () => {
-    if (chooseFromMap) {
+    if (chooseMap) {
       dispatch(
-        setAddressFrom({
-          addressFrom: currentInput,
-          regionFrom: locationMap,
-          addressFreeTextFrom: details,
-          labelFrom: name
+        setAddressTo({
+          addressTo: currentInput,
+          regionTo: locationMap,
+          addressFreeTextTo: details,
+          labelTo: name
         })
       )
     } else {
       dispatch(
-        setAddressFrom({
-          addressFrom: formattedAddress,
-          regionFrom: location,
-          addressFreeTextFrom: details,
-          labelFrom: name
+        setAddressTo({
+          addressTo: formattedAddress,
+          regionTo: location,
+          addressFreeTextTo: details,
+          labelTo: name
         })
       )
     }
 
-    navigation.navigate('NewDropoffMandoob')
+    navigation.navigate('')
   }
 
   const modalFooter = () => (
@@ -198,7 +194,7 @@ const NewPickupMandoob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>حدد موقع الاستلام</Text>
+      <Text style={styles.title}>حدد موقع التسليم</Text>
 
       {/* Location options */}
       <TouchableOpacity
@@ -230,32 +226,19 @@ const NewPickupMandoob = () => {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.option} onPress={handleChooseAddress}>
-        <Feather name='bookmark' size={22} color='#000' />
-        <Text style={styles.optionText}>اختر من عناويني المحفوظة</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Feather name='bookmark' size={22} color='#000' />
+          <Text style={styles.optionText}>اختر من عناويني المحفوظة</Text>
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: chooseFromMap ? 'green' : '#eee',
-          justifyContent: 'space-between'
-        }}
+        style={styles.option}
         onPress={() => navigation.navigate('PickupFromMap')}
       >
         <View style={{ flexDirection: 'row' }}>
-          <Entypo
-            name='location-pin'
-            size={22}
-            color={chooseFromMap ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: chooseFromMap ? 'green' : '#000'
-            }}
-          >
-            حدد على الخريطة
-          </Text>
+          <Entypo name='location-pin' size={22} color='#000' />
+          <Text style={styles.optionText}>حدد على الخريطة</Text>
         </View>
         {chooseFromMap && (
           <AntDesign name='checkcircleo' size={24} color='green' />
@@ -300,7 +283,7 @@ const NewPickupMandoob = () => {
   )
 }
 
-export default NewPickupMandoob
+export default NewDropoffMandoob
 
 const styles = StyleSheet.create({
   container: {

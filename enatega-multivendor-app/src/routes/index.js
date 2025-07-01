@@ -74,6 +74,7 @@ import { TopBrandsScreen } from '../components/Main/TopBrandsScreen'
 import NotificationMandoob from '../screens/RequestDelivery/NotificationMandoob'
 import NewPickupMandoob from '../screens/RequestDelivery/NewPickupMandoob'
 import PickupFromMap from '../screens/RequestDelivery/PickupFromMap'
+import NewDropoffMandoob from '../screens/RequestDelivery/NewDropoffMandoob'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -306,6 +307,17 @@ function NoDrawer() {
           }
         }}
         component={NewPickupMandoob}
+      />
+      <NavigationStack.Screen
+        name='NewDropoffMandoob'
+        options={{
+          headerTitle: t('dropoff'),
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
+        }}
+        component={NewDropoffMandoob}
       />
       <NavigationStack.Screen name='PickupFromMap' component={PickupFromMap} />
       <NavigationStack.Screen
