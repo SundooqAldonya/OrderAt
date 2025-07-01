@@ -51,6 +51,12 @@ const NewPickupMandoob = () => {
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
+  const [coordinates, setCoordinates] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01
+  })
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -78,15 +84,23 @@ const NewPickupMandoob = () => {
   })
 
   const setAddressLocation = async (address) => {
-    setLocation({
-      _id: address._id,
-      label: address.label,
-      latitude: Number(address.location.coordinates[1]),
-      longitude: Number(address.location.coordinates[0]),
-      deliveryAddress: address.deliveryAddress,
-      details: address.details
+    console.log({ address })
+    // setLocation({
+    //   _id: address._id,
+    //   label: address.label,
+    //   latitude: Number(address.location.coordinates[1]),
+    //   longitude: Number(address.location.coordinates[0]),
+    //   deliveryAddress: address.deliveryAddress,
+    //   details: address.details
+    // })
+    // mutate({ variables: { id: address._id } })
+    setCoordinates({
+      ...coordinates,
+      latitude: +address.location.coordinates[1],
+      longitude: +address.location.coordinates[0]
     })
-    mutate({ variables: { id: address._id } })
+    setFormattedAddress(address.deliveryAddress)
+    setChooseFromAddressBook(true)
     modalRef.current.close()
   }
 
@@ -121,6 +135,8 @@ const NewPickupMandoob = () => {
               longitudeDelta: 0.01
             }
 
+            setCoordinates({ ...newCoordinates })
+
             if (res.formattedAddress) {
               setFormattedAddress(res.formattedAddress)
             }
@@ -142,6 +158,7 @@ const NewPickupMandoob = () => {
   }
 
   const handleNext = () => {
+    console.log({ locationMap })
     if (chooseFromMap) {
       dispatch(
         setAddressFrom({
@@ -155,7 +172,7 @@ const NewPickupMandoob = () => {
       dispatch(
         setAddressFrom({
           addressFrom: formattedAddress,
-          regionFrom: location,
+          regionFrom: coordinates,
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -229,9 +246,32 @@ const NewPickupMandoob = () => {
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={handleChooseAddress}>
-        <Feather name='bookmark' size={22} color='#000' />
-        <Text style={styles.optionText}>اختر من عناويني المحفوظة</Text>
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: chooseFromAddressBook ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleChooseAddress}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Feather
+            name='bookmark'
+            size={22}
+            color={chooseFromAddressBook ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromAddressBook ? 'green' : '#000'
+            }}
+          >
+            اختر من عناويني المحفوظة
+          </Text>
+        </View>
+        {chooseFromAddressBook && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity

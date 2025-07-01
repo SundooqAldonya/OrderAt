@@ -84,6 +84,13 @@ const RequestDelivery = () => {
     return () => clearTimeout(timeout)
   }, [mapRef?.current])
 
+  useEffect(() => {
+    if (addressInfo.regionFrom && addressInfo.regionTo) {
+      setPickupCoords({ ...addressInfo.regionFrom })
+      setDropOffCoords({ ...addressInfo.regionTo })
+    }
+  }, [addressInfo])
+
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
 
@@ -267,6 +274,8 @@ const RequestDelivery = () => {
     })
   }
 
+  console.log({ pickupCoords })
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -282,8 +291,8 @@ const RequestDelivery = () => {
             ref={mapRef}
             style={{ height: 300 }}
             region={{
-              latitude: pickupCoords?.latitude || location.latitude,
-              longitude: pickupCoords?.longitude || location.longitude,
+              latitude: pickupCoords?.latitude || 31.111667,
+              longitude: pickupCoords?.longitude || 30.945833,
               latitudeDelta: 0.02,
               longitudeDelta: 0.02
             }}

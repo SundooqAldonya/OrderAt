@@ -51,9 +51,12 @@ const NewDropoffMandoob = () => {
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
-  // const { addressFrom, regionFrom, addressFreeTextFrom, labelFrom } =
-  //   useSelector((state) => state.requestDelivery)
-  // console.log({ addressFrom, regionFrom, addressFreeTextFrom, labelFrom })
+  const [coordinates, setCoordinates] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01
+  })
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -81,15 +84,22 @@ const NewDropoffMandoob = () => {
   })
 
   const setAddressLocation = async (address) => {
-    setLocation({
-      _id: address._id,
-      label: address.label,
-      latitude: Number(address.location.coordinates[1]),
-      longitude: Number(address.location.coordinates[0]),
-      deliveryAddress: address.deliveryAddress,
-      details: address.details
+    // setLocation({
+    //   _id: address._id,
+    //   label: address.label,
+    //   latitude: Number(address.location.coordinates[1]),
+    //   longitude: Number(address.location.coordinates[0]),
+    //   deliveryAddress: address.deliveryAddress,
+    //   details: address.details
+    // })
+    // mutate({ variables: { id: address._id } })
+    setCoordinates({
+      ...coordinates,
+      latitude: +address.location.coordinates[1],
+      longitude: +address.location.coordinates[0]
     })
-    mutate({ variables: { id: address._id } })
+    setFormattedAddress(address.deliveryAddress)
+    setChooseFromAddressBook(true)
     modalRef.current.close()
   }
 
@@ -123,6 +133,7 @@ const NewDropoffMandoob = () => {
               latitudeDelta: 0.01,
               longitudeDelta: 0.01
             }
+            setCoordinates({ ...newCoordinates })
 
             if (res.formattedAddress) {
               setFormattedAddress(res.formattedAddress)
@@ -157,7 +168,7 @@ const NewDropoffMandoob = () => {
       dispatch(
         setAddressTo({
           addressTo: formattedAddress,
-          regionTo: location,
+          regionTo: coordinates,
           addressFreeTextTo: details,
           labelTo: name
         })
@@ -231,11 +242,32 @@ const NewDropoffMandoob = () => {
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={handleChooseAddress}>
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: chooseFromAddressBook ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleChooseAddress}
+      >
         <View style={{ flexDirection: 'row' }}>
-          <Feather name='bookmark' size={22} color='#000' />
-          <Text style={styles.optionText}>اختر من عناويني المحفوظة</Text>
+          <Feather
+            name='bookmark'
+            size={22}
+            color={chooseFromAddressBook ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromAddressBook ? 'green' : '#000'
+            }}
+          >
+            اختر من عناويني المحفوظة
+          </Text>
         </View>
+        {chooseFromAddressBook && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
