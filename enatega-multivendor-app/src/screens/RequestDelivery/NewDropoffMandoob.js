@@ -5,7 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Linking
+  Linking,
+  Modal,
+  ScrollView
 } from 'react-native'
 import { Ionicons, Feather, Entypo, AntDesign } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -25,7 +27,7 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import { selectAddress } from '../../apollo/mutations'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
@@ -34,11 +36,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   setAddressTo,
   setChooseFromAddressBookTo,
-  setChooseFromMapTo
+  setChooseFromMapTo,
+  setSelectedAreaTo,
+  setSelectedCityTo
 } from '../../store/requestDeliverySlice'
+import { getCities, getCityAreas } from '../../apollo/queries'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
+`
+const GET_CITIES = gql`
+  ${getCities}
+`
+const GET_CITIES_AREAS = gql`
+  ${getCityAreas}
 `
 const NewDropoffMandoob = () => {
   const navigation = useNavigation()
@@ -48,7 +60,10 @@ const NewDropoffMandoob = () => {
     chooseFromMapTo,
     chooseFromAddressBookTo,
     labelTo,
-    addressFreeTextTo
+    addressFreeTextTo,
+    selectedCityTo,
+    selectedCityAndAreaTo,
+    selectedAreaTo
   } = state
   console.log({ chooseFromMapTo })
   const route = useRoute()
@@ -70,6 +85,8 @@ const NewDropoffMandoob = () => {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   })
+  const [areasModalVisible, setAreasModalVisible] = useState(false)
+  const [citiesModalVisible, setCitiesModalVisible] = useState(false)
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -77,6 +94,17 @@ const NewDropoffMandoob = () => {
     Apartment: CustomApartmentIcon,
     Other: CustomOtherIcon
   }
+
+  const { data, loading, error } = useQuery(GET_CITIES)
+  const [
+    fetchAreas,
+    { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  ] = useLazyQuery(GET_CITIES_AREAS)
+
+  console.log({ dataAreas })
+
+  const cities = data?.cities || null
+  const areasList = dataAreas?.areasByCity || null
 
   const params = route.params || {}
   const currentInput = params.currentInput || null
@@ -96,7 +124,14 @@ const NewDropoffMandoob = () => {
     if (addressFreeTextTo) {
       setDetails(addressFreeTextTo)
     }
-  }, [chooseFromMapTo])
+    if (selectedCityAndAreaTo) {
+      setCoordinates({
+        ...coordinates,
+        latitude: +selectedAreaTo.location.location.coordinates[1],
+        longitude: +selectedAreaTo.location.location.coordinates[0]
+      })
+    }
+  }, [chooseFromMapTo, selectedCityAndAreaTo])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -198,6 +233,22 @@ const NewDropoffMandoob = () => {
           labelTo: name
         })
       )
+    } else if (selectedCityAndAreaTo) {
+      const newCoordinates = {
+        latitude: selectedAreaTo.location.location.coordinates[1],
+        longitude: selectedAreaTo.location.location.coordinates[0],
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+      }
+
+      dispatch(
+        setAddressTo({
+          addressTo: selectedAreaTo.address,
+          regionTo: newCoordinates,
+          addressFreeTextTo: details,
+          labelTo: name
+        })
+      )
     } else {
       dispatch(
         setAddressTo({
@@ -210,6 +261,10 @@ const NewDropoffMandoob = () => {
     }
 
     navigation.navigate('RequestDelivery')
+  }
+
+  const handleNearestArea = () => {
+    setCitiesModalVisible(true)
   }
 
   const modalFooter = () => (
@@ -245,7 +300,7 @@ const NewDropoffMandoob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>حدد موقع الاستلام</Text>
+      <Text style={styles.title}>حدد موقع التوصيل</Text>
 
       {/* Location options */}
       {/* <TouchableOpacity
@@ -332,6 +387,35 @@ const NewDropoffMandoob = () => {
         )}
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: selectedCityAndAreaTo ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleNearestArea}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <MaterialIcons
+            name='location-city'
+            size={22}
+            color={selectedCityAndAreaTo ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: selectedCityAndAreaTo ? 'green' : '#000'
+            }}
+          >
+            اختر أقرب منطقة{' '}
+            {selectedAreaTo ? `- (${selectedAreaTo.title})` : null}
+          </Text>
+        </View>
+        {selectedCityAndAreaTo && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
+      </TouchableOpacity>
+
       {/* Inputs */}
       <Text style={styles.label}>الاسم</Text>
       <TextInput
@@ -366,6 +450,72 @@ const NewDropoffMandoob = () => {
         profile={profile}
         location={location}
       />
+      {/* cities modal */}
+      <Modal visible={citiesModalVisible} transparent animationType='slide'>
+        <View style={styles.modalOverlay}>
+          <View style={styles.halfModal}>
+            <Text style={styles.modalTitle}>اختر المدينة</Text>
+
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {cities?.map((city) => (
+                <TouchableOpacity
+                  key={city._id}
+                  onPress={() => {
+                    dispatch(setSelectedCityTo(city))
+                    fetchAreas({ variables: { id: city._id } })
+                    setCitiesModalVisible(false)
+                    setAreasModalVisible(true)
+                  }}
+                  style={styles.modalItem}
+                >
+                  <Text style={styles.modalItemText}>{city.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setCitiesModalVisible(false)}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelText}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* areas modal */}
+      <Modal visible={areasModalVisible} transparent animationType='slide'>
+        <View style={styles.modalOverlay}>
+          <View style={styles.halfModal}>
+            <Text style={styles.modalTitle}>
+              اختر المنطقة داخل {selectedCityTo?.title}
+            </Text>
+
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {areasList?.map((area) => (
+                <TouchableOpacity
+                  key={area._id}
+                  onPress={() => {
+                    dispatch(setSelectedAreaTo(area))
+
+                    setAreasModalVisible(false)
+                  }}
+                  style={styles.modalItem}
+                >
+                  <Text style={styles.modalItemText}>{area.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setAreasModalVisible(false)}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelText}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -450,5 +600,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end'
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    maxHeight: '80%'
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)'
+  },
+  halfModal: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '50%',
+    paddingVertical: 20,
+    paddingHorizontal: 20
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#333'
+  },
+  scrollContainer: {
+    paddingBottom: 20
+  },
+  modalItem: {
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'right'
+  },
+  cancelButton: {
+    marginTop: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    paddingVertical: 12
+  },
+  cancelText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#333'
   }
 })

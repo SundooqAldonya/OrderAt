@@ -65,6 +65,9 @@ const RequestDelivery = () => {
   const [notes, setNotes] = useState('')
   const [disabled, setDisabled] = useState(false)
 
+  console.log({ regionFrom: addressInfo.regionFrom })
+  console.log({ pickupCoords })
+
   const [coupon, setCoupon] = useState(null)
   const [voucherCode, setVoucherCode] = useState('')
 

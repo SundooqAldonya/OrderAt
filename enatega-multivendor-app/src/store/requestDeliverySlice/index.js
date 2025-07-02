@@ -10,6 +10,12 @@ const initialState = {
   regionTo: null,
   labelTo: null,
   addressFreeTextTo: null,
+  selectedCityFrom: null,
+  selectedAreaFrom: null,
+  selectedCityAndAreaFrom: false,
+  selectedCityTo: null,
+  selectedAreaTo: null,
+  selectedCityAndAreaTo: false,
   chooseFromMapFrom: false,
   currentPosSelectedFrom: false,
   chooseFromAddressBookFrom: false,
@@ -40,6 +46,7 @@ const requestDeliverySlice = createSlice({
       state.chooseFromMapTo = action.payload.status
       if (action.payload.status === true) {
         state.chooseFromAddressBookTo = false
+        state.selectedCityAndAreaFrom = false
       }
     },
 
@@ -47,6 +54,7 @@ const requestDeliverySlice = createSlice({
       state.chooseFromAddressBookTo = action.payload.status
       if (action.payload.status === true) {
         state.chooseFromMapTo = false
+        state.selectedCityAndAreaTo = false
       }
     },
 
@@ -55,6 +63,7 @@ const requestDeliverySlice = createSlice({
       state.chooseFromMapFrom = action.payload.status
       if (action.payload.status === true) {
         state.chooseFromAddressBookFrom = false
+        state.selectedCityAndAreaFrom = false
       }
     },
 
@@ -62,7 +71,30 @@ const requestDeliverySlice = createSlice({
       state.chooseFromAddressBookFrom = action.payload.status
       if (action.payload.status === true) {
         state.chooseFromMapFrom = false
+        state.selectedCityAndAreaFrom = false
       }
+    },
+
+    setSelectedCityFrom: (state, action) => {
+      state.selectedCityFrom = action.payload
+    },
+
+    setSelectedAreaFrom: (state, action) => {
+      state.selectedAreaFrom = action.payload
+      state.selectedCityAndAreaFrom = true
+      state.chooseFromMapFrom = false
+      state.chooseFromAddressBookFrom = false
+    },
+
+    setSelectedCityTo: (state, action) => {
+      state.selectedCityTo = action.payload
+    },
+
+    setSelectedAreaTo: (state, action) => {
+      state.selectedAreaTo = action.payload
+      state.selectedCityAndAreaTo = true
+      state.chooseFromMapTo = false
+      state.chooseFromAddressBookTo = false
     }
   }
 })
@@ -73,7 +105,11 @@ export const {
   setChooseFromMapFrom,
   setChooseFromMapTo,
   setChooseFromAddressBookFrom,
-  setChooseFromAddressBookTo
+  setChooseFromAddressBookTo,
+  setSelectedCityFrom,
+  setSelectedAreaFrom,
+  setSelectedCityTo,
+  setSelectedAreaTo
 } = requestDeliverySlice.actions
 const requestDeliveryReducer = requestDeliverySlice.reducer
 export default requestDeliveryReducer

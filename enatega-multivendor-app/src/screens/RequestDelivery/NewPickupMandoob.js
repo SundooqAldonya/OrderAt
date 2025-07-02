@@ -5,7 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Linking
+  Linking,
+  Modal,
+  ScrollView
 } from 'react-native'
 import { Ionicons, Feather, Entypo, AntDesign } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -25,7 +27,7 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import { selectAddress } from '../../apollo/mutations'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
@@ -34,11 +36,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   setAddressFrom,
   setChooseFromAddressBookFrom,
-  setChooseFromMapFrom
+  setChooseFromMapFrom,
+  setSelectedAreaFrom,
+  setSelectedCityFrom
 } from '../../store/requestDeliverySlice'
+import { getCities, getCityAreas } from '../../apollo/queries'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
+`
+
+const GET_CITIES = gql`
+  ${getCities}
+`
+const GET_CITIES_AREAS = gql`
+  ${getCityAreas}
 `
 const NewPickupMandoob = () => {
   const navigation = useNavigation()
@@ -48,17 +61,19 @@ const NewPickupMandoob = () => {
     chooseFromMapFrom,
     chooseFromAddressBookFrom,
     labelFrom,
-    addressFreeTextFrom
+    addressFreeTextFrom,
+    selectedCityFrom,
+    selectedCityAndAreaFrom,
+    selectedAreaFrom
   } = state
-  console.log({ chooseFromMapFrom })
+  console.log({ selectedAreaFrom })
   const route = useRoute()
   const modalRef = useRef()
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
-  // const [chooseFromMap, setChooseFromMap] = useState(false)
-  // const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
+
   console.log({ chooseFromAddressBookFrom })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
@@ -70,6 +85,8 @@ const NewPickupMandoob = () => {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   })
+  const [areasModalVisible, setAreasModalVisible] = useState(false)
+  const [citiesModalVisible, setCitiesModalVisible] = useState(false)
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -78,11 +95,20 @@ const NewPickupMandoob = () => {
     Other: CustomOtherIcon
   }
 
+  const { data, loading, error } = useQuery(GET_CITIES)
+  const [
+    fetchAreas,
+    { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  ] = useLazyQuery(GET_CITIES_AREAS)
+
+  console.log({ dataAreas })
+
+  const cities = data?.cities || null
+  const areasList = dataAreas?.areasByCity || null
+
   const params = route.params || {}
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
-  // const chooseMap = params.chooseMap || null
-  // console.log({ currentInput, locationMap, chooseMap })
 
   useEffect(() => {
     if (chooseFromMapFrom) {
@@ -97,7 +123,14 @@ const NewPickupMandoob = () => {
     if (addressFreeTextFrom) {
       setDetails(addressFreeTextFrom)
     }
-  }, [chooseFromMapFrom])
+    if (selectedCityAndAreaFrom) {
+      setCoordinates({
+        ...coordinates,
+        latitude: +selectedAreaFrom.location.location.coordinates[1],
+        longitude: +selectedAreaFrom.location.location.coordinates[0]
+      })
+    }
+  }, [chooseFromMapFrom, selectedCityAndAreaFrom])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -133,68 +166,87 @@ const NewPickupMandoob = () => {
     modalRef.current.close()
   }
 
-  const handleCurrentPosition = async () => {
-    try {
-      if (!currentPosSelected) {
-        const { status } = await Location.requestForegroundPermissionsAsync()
-        console.log({ status })
-        if (status !== 'granted') {
-          FlashMessage({
-            message:
-              'Location permission denied. Please enable it in settings.',
-            onPress: async () => {
-              await Linking.openSettings()
-            }
-          })
-          return
-        }
-        const position = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-          maximumAge: 1000,
-          timeout: 1000
-        })
-        console.log('Current Position:', position.coords)
+  // const handleCurrentPosition = async () => {
+  //   try {
+  //     if (!currentPosSelected) {
+  //       const { status } = await Location.requestForegroundPermissionsAsync()
+  //       console.log({ status })
+  //       if (status !== 'granted') {
+  //         FlashMessage({
+  //           message:
+  //             'Location permission denied. Please enable it in settings.',
+  //           onPress: async () => {
+  //             await Linking.openSettings()
+  //           }
+  //         })
+  //         return
+  //       }
+  //       const position = await Location.getCurrentPositionAsync({
+  //         accuracy: Location.Accuracy.High,
+  //         maximumAge: 1000,
+  //         timeout: 1000
+  //       })
+  //       console.log('Current Position:', position.coords)
 
-        getAddress(position.coords.latitude, position.coords.longitude).then(
-          (res) => {
-            const newCoordinates = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01
-            }
+  //       getAddress(position.coords.latitude, position.coords.longitude).then(
+  //         (res) => {
+  //           const newCoordinates = {
+  //             latitude: position.coords.latitude,
+  //             longitude: position.coords.longitude,
+  //             latitudeDelta: 0.01,
+  //             longitudeDelta: 0.01
+  //           }
 
-            setCoordinates({ ...newCoordinates })
+  //           setCoordinates({ ...newCoordinates })
 
-            if (res.formattedAddress) {
-              setFormattedAddress(res.formattedAddress)
-            }
-            setCurrentPosSelected(true)
-            dispatch(setChooseFromMapFrom({ status: false }))
-            // setChooseFromAddressBook(false)
-            dispatch(setChooseFromAddressBookFrom({ status: false }))
-          }
-        )
-      } else {
-        setCurrentPosSelected(false)
-      }
-    } catch (error) {
-      console.log('Error fetching location:', error)
-      FlashMessage({ message: 'Failed to get current location. Try again.' })
-    }
-  }
+  //           if (res.formattedAddress) {
+  //             setFormattedAddress(res.formattedAddress)
+  //           }
+  //           setCurrentPosSelected(true)
+  //           dispatch(setChooseFromMapFrom({ status: false }))
+  //           // setChooseFromAddressBook(false)
+  //           dispatch(setChooseFromAddressBookFrom({ status: false }))
+  //         }
+  //       )
+  //     } else {
+  //       setCurrentPosSelected(false)
+  //     }
+  //   } catch (error) {
+  //     console.log('Error fetching location:', error)
+  //     FlashMessage({ message: 'Failed to get current location. Try again.' })
+  //   }
+  // }
 
   const handleChooseAddress = () => {
     modalRef.current.open()
   }
 
   const handleNext = () => {
-    console.log({ locationMap })
+    console.log({
+      selectedCityAndAreaFrom,
+      selectedAreaFrom: selectedAreaFrom.location.location.coordinates
+    })
     if (chooseFromMapFrom) {
       dispatch(
         setAddressFrom({
           addressFrom: currentInput,
           regionFrom: locationMap,
+          addressFreeTextFrom: details,
+          labelFrom: name
+        })
+      )
+    } else if (selectedCityAndAreaFrom) {
+      const newCoordinates = {
+        latitude: selectedAreaFrom.location.location.coordinates[1],
+        longitude: selectedAreaFrom.location.location.coordinates[0],
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+      }
+
+      dispatch(
+        setAddressFrom({
+          addressFrom: selectedAreaFrom.address,
+          regionFrom: newCoordinates,
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -210,7 +262,11 @@ const NewPickupMandoob = () => {
       )
     }
 
-    navigation.navigate('NewDropoffMandoob')
+    navigation.navigate('RequestDelivery')
+  }
+
+  const handleNearestArea = () => {
+    setCitiesModalVisible(true)
   }
 
   const modalFooter = () => (
@@ -333,6 +389,35 @@ const NewPickupMandoob = () => {
         )}
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: selectedCityAndAreaFrom ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleNearestArea}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <MaterialIcons
+            name='location-city'
+            size={22}
+            color={selectedCityAndAreaFrom ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: selectedCityAndAreaFrom ? 'green' : '#000'
+            }}
+          >
+            اختر أقرب منطقة{' '}
+            {selectedAreaFrom ? `- (${selectedAreaFrom.title})` : null}
+          </Text>
+        </View>
+        {selectedCityAndAreaFrom && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
+      </TouchableOpacity>
+
       {/* Inputs */}
       <Text style={styles.label}>الاسم</Text>
       <TextInput
@@ -356,6 +441,8 @@ const NewPickupMandoob = () => {
       <TouchableOpacity style={styles.saveButton} onPress={handleNext}>
         <Text style={styles.saveButtonText}>{t('continue')}</Text>
       </TouchableOpacity>
+
+      {/* choose from address book modal */}
       <MainModalize
         modalRef={modalRef}
         // currentTheme={currentTheme}
@@ -367,6 +454,73 @@ const NewPickupMandoob = () => {
         profile={profile}
         location={location}
       />
+
+      {/* cities modal */}
+      <Modal visible={citiesModalVisible} transparent animationType='slide'>
+        <View style={styles.modalOverlay}>
+          <View style={styles.halfModal}>
+            <Text style={styles.modalTitle}>اختر المدينة</Text>
+
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {cities?.map((city) => (
+                <TouchableOpacity
+                  key={city._id}
+                  onPress={() => {
+                    dispatch(setSelectedCityFrom(city))
+                    fetchAreas({ variables: { id: city._id } })
+                    setCitiesModalVisible(false)
+                    setAreasModalVisible(true)
+                  }}
+                  style={styles.modalItem}
+                >
+                  <Text style={styles.modalItemText}>{city.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setCitiesModalVisible(false)}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelText}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* areas modal */}
+      <Modal visible={areasModalVisible} transparent animationType='slide'>
+        <View style={styles.modalOverlay}>
+          <View style={styles.halfModal}>
+            <Text style={styles.modalTitle}>
+              اختر المنطقة داخل {selectedCityFrom?.title}
+            </Text>
+
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {areasList?.map((area) => (
+                <TouchableOpacity
+                  key={area._id}
+                  onPress={() => {
+                    dispatch(setSelectedAreaFrom(area))
+
+                    setAreasModalVisible(false)
+                  }}
+                  style={styles.modalItem}
+                >
+                  <Text style={styles.modalItemText}>{area.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setAreasModalVisible(false)}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelText}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -451,5 +605,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end'
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    maxHeight: '80%'
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)'
+  },
+  halfModal: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '50%',
+    paddingVertical: 20,
+    paddingHorizontal: 20
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#333'
+  },
+  scrollContainer: {
+    paddingBottom: 20
+  },
+  modalItem: {
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'right'
+  },
+  cancelButton: {
+    marginTop: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    paddingVertical: 12
+  },
+  cancelText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#333'
   }
 })
