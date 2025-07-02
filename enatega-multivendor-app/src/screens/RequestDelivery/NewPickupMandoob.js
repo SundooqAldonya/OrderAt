@@ -30,8 +30,12 @@ import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
-import { useDispatch } from 'react-redux'
-import { setAddressFrom } from '../../store/requestDeliverySlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setAddressFrom,
+  setChooseFromAddressBookFrom,
+  setChooseFromMapFrom
+} from '../../store/requestDeliverySlice'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
@@ -39,14 +43,23 @@ const SELECT_ADDRESS = gql`
 const NewPickupMandoob = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
+  const state = useSelector((state) => state.requestDelivery)
+  const {
+    chooseFromMapFrom,
+    chooseFromAddressBookFrom,
+    labelFrom,
+    addressFreeTextFrom
+  } = state
+  console.log({ chooseFromMapFrom })
   const route = useRoute()
   const modalRef = useRef()
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
-  const [chooseFromMap, setChooseFromMap] = useState(false)
-  const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
+  // const [chooseFromMap, setChooseFromMap] = useState(false)
+  // const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
+  console.log({ chooseFromAddressBookFrom })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
@@ -68,14 +81,23 @@ const NewPickupMandoob = () => {
   const params = route.params || {}
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
-  const chooseMap = params.chooseMap || null
-  console.log({ currentInput, locationMap, chooseMap })
+  // const chooseMap = params.chooseMap || null
+  // console.log({ currentInput, locationMap, chooseMap })
 
   useEffect(() => {
-    if (chooseMap) {
-      setChooseFromMap(true)
+    if (chooseFromMapFrom) {
+      // dispatch(setChooseFromMapFrom())
+      setCurrentPosSelected(false)
+      // setChooseFromAddressBook(false)
+      dispatch(setChooseFromAddressBookFrom({ status: false }))
     }
-  }, [chooseMap])
+    if (labelFrom) {
+      setName(labelFrom)
+    }
+    if (addressFreeTextFrom) {
+      setDetails(addressFreeTextFrom)
+    }
+  }, [chooseFromMapFrom])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -85,6 +107,8 @@ const NewPickupMandoob = () => {
 
   const setAddressLocation = async (address) => {
     console.log({ address })
+    // setChooseFromAddressBook(true)
+    dispatch(setChooseFromAddressBookFrom({ status: true }))
     // setLocation({
     //   _id: address._id,
     //   label: address.label,
@@ -100,7 +124,12 @@ const NewPickupMandoob = () => {
       longitude: +address.location.coordinates[0]
     })
     setFormattedAddress(address.deliveryAddress)
-    setChooseFromAddressBook(true)
+    setCurrentPosSelected(false)
+    if (chooseFromMapFrom) {
+      dispatch(setChooseFromMapFrom({ status: false }))
+    }
+    setName(address.label)
+    setDetails(address.details)
     modalRef.current.close()
   }
 
@@ -141,7 +170,9 @@ const NewPickupMandoob = () => {
               setFormattedAddress(res.formattedAddress)
             }
             setCurrentPosSelected(true)
-            setChooseFromMap(false)
+            dispatch(setChooseFromMapFrom({ status: false }))
+            // setChooseFromAddressBook(false)
+            dispatch(setChooseFromAddressBookFrom({ status: false }))
           }
         )
       } else {
@@ -159,7 +190,7 @@ const NewPickupMandoob = () => {
 
   const handleNext = () => {
     console.log({ locationMap })
-    if (chooseFromMap) {
+    if (chooseFromMapFrom) {
       dispatch(
         setAddressFrom({
           addressFrom: currentInput,
@@ -200,7 +231,7 @@ const NewPickupMandoob = () => {
             }
           }}
         >
-          <View style={styles.addressSubContainer}>
+          <View style={{ ...styles.addressSubContainer, gap: 5 }}>
             <AntDesign name='pluscircleo' size={scale(20)} color={'#fff'} />
             <View style={styles.mL5p} />
             <TextDefault bold H4>
@@ -218,7 +249,7 @@ const NewPickupMandoob = () => {
       <Text style={styles.title}>حدد موقع الاستلام</Text>
 
       {/* Location options */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           ...styles.option,
           borderColor: currentPosSelected ? 'green' : '#eee',
@@ -244,40 +275,12 @@ const NewPickupMandoob = () => {
         {currentPosSelected && (
           <AntDesign name='checkcircleo' size={24} color='green' />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity
         style={{
           ...styles.option,
-          borderColor: chooseFromAddressBook ? 'green' : '#eee',
-          justifyContent: 'space-between'
-        }}
-        onPress={handleChooseAddress}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <Feather
-            name='bookmark'
-            size={22}
-            color={chooseFromAddressBook ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: chooseFromAddressBook ? 'green' : '#000'
-            }}
-          >
-            اختر من عناويني المحفوظة
-          </Text>
-        </View>
-        {chooseFromAddressBook && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: chooseFromMap ? 'green' : '#eee',
+          borderColor: chooseFromMapFrom ? 'green' : '#eee',
           justifyContent: 'space-between'
         }}
         onPress={() => navigation.navigate('PickupFromMap')}
@@ -286,18 +289,46 @@ const NewPickupMandoob = () => {
           <Entypo
             name='location-pin'
             size={22}
-            color={chooseFromMap ? 'green' : '#000'}
+            color={chooseFromMapFrom ? 'green' : '#000'}
           />
           <Text
             style={{
               ...styles.optionText,
-              color: chooseFromMap ? 'green' : '#000'
+              color: chooseFromMapFrom ? 'green' : '#000'
             }}
           >
-            حدد على الخريطة
+            حدد الموقع على الخريطة
           </Text>
         </View>
-        {chooseFromMap && (
+        {chooseFromMapFrom && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: chooseFromAddressBookFrom ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleChooseAddress}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Feather
+            name='bookmark'
+            size={22}
+            color={chooseFromAddressBookFrom ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromAddressBookFrom ? 'green' : '#000'
+            }}
+          >
+            اختر من عناويني المحفوظة
+          </Text>
+        </View>
+        {chooseFromAddressBookFrom && (
           <AntDesign name='checkcircleo' size={24} color='green' />
         )}
       </TouchableOpacity>

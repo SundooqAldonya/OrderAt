@@ -16,8 +16,8 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root', // Root key for AsyncStorage
   storage: AsyncStorage, // Use AsyncStorage
-  whitelist: ['requestDelivery'], // Reducers to persist
-  blacklist: ['phone', 'deliveryAmount']
+  whitelist: ['requestDelivery', 'phone'] // Reducers to persist
+  // blacklist: ['phone', 'deliveryAmount']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

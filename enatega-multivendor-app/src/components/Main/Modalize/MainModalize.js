@@ -54,7 +54,6 @@ const MainModalize = ({
           <View style={styles(currentTheme).addressbtn}>
             <TouchableOpacity
               style={styles(currentTheme).addressContainer}
-              activeOpacity={0.7}
               onPress={() => setAddressLocation(address)}
             >
               <View style={styles().addressSubContainer}>
@@ -79,7 +78,7 @@ const MainModalize = ({
               <View style={styles(currentTheme).addressTextContainer}>
                 <View style={styles(currentTheme).addressDetail}>
                   <TextDefault
-                    style={{ ...alignment.PLlarge }}
+                    style={{ ...alignment.PLlarge, paddingHorizontal: 25 }}
                     textColor={currentTheme.fontSecondColor}
                     small
                   >

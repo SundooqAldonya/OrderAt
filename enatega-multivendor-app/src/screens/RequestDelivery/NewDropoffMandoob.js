@@ -31,7 +31,11 @@ import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useDispatch, useSelector } from 'react-redux'
-import { setAddressTo } from '../../store/requestDeliverySlice'
+import {
+  setAddressTo,
+  setChooseFromAddressBookTo,
+  setChooseFromMapTo
+} from '../../store/requestDeliverySlice'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
@@ -39,14 +43,23 @@ const SELECT_ADDRESS = gql`
 const NewDropoffMandoob = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
+  const state = useSelector((state) => state.requestDelivery)
+  const {
+    chooseFromMapTo,
+    chooseFromAddressBookTo,
+    labelTo,
+    addressFreeTextTo
+  } = state
+  console.log({ chooseFromMapTo })
   const route = useRoute()
   const modalRef = useRef()
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
-  const [chooseFromMap, setChooseFromMap] = useState(false)
-  const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
+  // const [chooseFromMap, setChooseFromMap] = useState(false)
+  // const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
+  console.log({ chooseFromAddressBookTo })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
@@ -68,14 +81,22 @@ const NewDropoffMandoob = () => {
   const params = route.params || {}
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
-  const chooseMap = params.chooseMap || null
-  console.log({ currentInput, locationMap, chooseMap })
+  // const chooseMap = params.chooseMap || null
+  // console.log({ currentInput, locationMap, chooseMap })
 
   useEffect(() => {
-    if (chooseMap) {
-      setChooseFromMap(true)
+    if (chooseFromMapTo) {
+      setCurrentPosSelected(false)
+      // setChooseFromAddressBook(false)
+      dispatch(setChooseFromAddressBookTo({ status: false }))
     }
-  }, [chooseMap])
+    if (labelTo) {
+      setName(labelTo)
+    }
+    if (addressFreeTextTo) {
+      setDetails(addressFreeTextTo)
+    }
+  }, [chooseFromMapTo])
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onError: (err) => {
@@ -84,6 +105,10 @@ const NewDropoffMandoob = () => {
   })
 
   const setAddressLocation = async (address) => {
+    console.log({ address })
+    // setChooseFromAddressBook(true)
+    dispatch(setChooseFromAddressBookTo({ status: true }))
+
     // setLocation({
     //   _id: address._id,
     //   label: address.label,
@@ -99,63 +124,72 @@ const NewDropoffMandoob = () => {
       longitude: +address.location.coordinates[0]
     })
     setFormattedAddress(address.deliveryAddress)
-    setChooseFromAddressBook(true)
+    setCurrentPosSelected(false)
+    if (chooseFromMapTo) {
+      dispatch(setChooseFromMapTo({ status: false }))
+    }
+    setName(address.label)
+    setDetails(address.details)
     modalRef.current.close()
   }
 
-  const handleCurrentPosition = async () => {
-    try {
-      if (!currentPosSelected) {
-        const { status } = await Location.requestForegroundPermissionsAsync()
-        console.log({ status })
-        if (status !== 'granted') {
-          FlashMessage({
-            message:
-              'Location permission denied. Please enable it in settings.',
-            onPress: async () => {
-              await Linking.openSettings()
-            }
-          })
-          return
-        }
-        const position = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-          maximumAge: 1000,
-          timeout: 1000
-        })
-        console.log('Current Position:', position.coords)
+  // const handleCurrentPosition = async () => {
+  //   try {
+  //     if (!currentPosSelected) {
+  //       const { status } = await Location.requestForegroundPermissionsAsync()
+  //       console.log({ status })
+  //       if (status !== 'granted') {
+  //         FlashMessage({
+  //           message:
+  //             'Location permission denied. Please enable it in settings.',
+  //           onPress: async () => {
+  //             await Linking.openSettings()
+  //           }
+  //         })
+  //         return
+  //       }
+  //       const position = await Location.getCurrentPositionAsync({
+  //         accuracy: Location.Accuracy.High,
+  //         maximumAge: 1000,
+  //         timeout: 1000
+  //       })
+  //       console.log('Current Position:', position.coords)
 
-        getAddress(position.coords.latitude, position.coords.longitude).then(
-          (res) => {
-            const newCoordinates = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01
-            }
-            setCoordinates({ ...newCoordinates })
+  //       getAddress(position.coords.latitude, position.coords.longitude).then(
+  //         (res) => {
+  //           const newCoordinates = {
+  //             latitude: position.coords.latitude,
+  //             longitude: position.coords.longitude,
+  //             latitudeDelta: 0.01,
+  //             longitudeDelta: 0.01
+  //           }
 
-            if (res.formattedAddress) {
-              setFormattedAddress(res.formattedAddress)
-            }
-            setCurrentPosSelected(true)
-          }
-        )
-      } else {
-        setCurrentPosSelected(false)
-      }
-    } catch (error) {
-      console.log('Error fetching location:', error)
-      FlashMessage({ message: 'Failed to get current location. Try again.' })
-    }
-  }
+  //           setCoordinates({ ...newCoordinates })
+
+  //           if (res.formattedAddress) {
+  //             setFormattedAddress(res.formattedAddress)
+  //           }
+  //           setCurrentPosSelected(true)
+  //           dispatch(setChooseFromMapTo({ status: false }))
+  //           setChooseFromAddressBook(false)
+  //         }
+  //       )
+  //     } else {
+  //       setCurrentPosSelected(false)
+  //     }
+  //   } catch (error) {
+  //     console.log('Error fetching location:', error)
+  //     FlashMessage({ message: 'Failed to get current location. Try again.' })
+  //   }
+  // }
 
   const handleChooseAddress = () => {
     modalRef.current.open()
   }
 
   const handleNext = () => {
-    if (chooseFromMap) {
+    console.log({ locationMap })
+    if (chooseFromMapTo) {
       dispatch(
         setAddressTo({
           addressTo: currentInput,
@@ -196,7 +230,7 @@ const NewDropoffMandoob = () => {
             }
           }}
         >
-          <View style={styles.addressSubContainer}>
+          <View style={{ ...styles.addressSubContainer, gap: 5 }}>
             <AntDesign name='pluscircleo' size={scale(20)} color={'#fff'} />
             <View style={styles.mL5p} />
             <TextDefault bold H4>
@@ -211,10 +245,10 @@ const NewDropoffMandoob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>حدد موقع التسليم</Text>
+      <Text style={styles.title}>حدد موقع الاستلام</Text>
 
       {/* Location options */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           ...styles.option,
           borderColor: currentPosSelected ? 'green' : '#eee',
@@ -240,40 +274,12 @@ const NewDropoffMandoob = () => {
         {currentPosSelected && (
           <AntDesign name='checkcircleo' size={24} color='green' />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity
         style={{
           ...styles.option,
-          borderColor: chooseFromAddressBook ? 'green' : '#eee',
-          justifyContent: 'space-between'
-        }}
-        onPress={handleChooseAddress}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <Feather
-            name='bookmark'
-            size={22}
-            color={chooseFromAddressBook ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: chooseFromAddressBook ? 'green' : '#000'
-            }}
-          >
-            اختر من عناويني المحفوظة
-          </Text>
-        </View>
-        {chooseFromAddressBook && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: chooseFromMap ? 'green' : '#eee',
+          borderColor: chooseFromMapTo ? 'green' : '#eee',
           justifyContent: 'space-between'
         }}
         onPress={() => navigation.navigate('DropoffFromMap')}
@@ -282,18 +288,46 @@ const NewDropoffMandoob = () => {
           <Entypo
             name='location-pin'
             size={22}
-            color={chooseFromMap ? 'green' : '#000'}
+            color={chooseFromMapTo ? 'green' : '#000'}
           />
           <Text
             style={{
               ...styles.optionText,
-              color: chooseFromMap ? 'green' : '#000'
+              color: chooseFromMapTo ? 'green' : '#000'
             }}
           >
-            حدد على الخريطة
+            حدد الموقع على الخريطة
           </Text>
         </View>
-        {chooseFromMap && (
+        {chooseFromMapTo && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: chooseFromAddressBookTo ? 'green' : '#eee',
+          justifyContent: 'space-between'
+        }}
+        onPress={handleChooseAddress}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Feather
+            name='bookmark'
+            size={22}
+            color={chooseFromAddressBookTo ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromAddressBookTo ? 'green' : '#000'
+            }}
+          >
+            اختر من عناويني المحفوظة
+          </Text>
+        </View>
+        {chooseFromAddressBookTo && (
           <AntDesign name='checkcircleo' size={24} color='green' />
         )}
       </TouchableOpacity>

@@ -432,7 +432,7 @@ const RequestDelivery = () => {
             {t('drop_off_location')}
           </TextDefault> */}
             <TouchableOpacity
-              onPress={() => navigation.navigate('ToPlace')}
+              onPress={() => navigation.navigate('NewDropoffMandoob')}
               style={{
                 ...styles.address,
                 flexDirection: isArabic ? 'row-reverse' : 'row',

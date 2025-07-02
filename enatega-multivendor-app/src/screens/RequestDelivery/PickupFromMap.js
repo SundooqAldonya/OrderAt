@@ -16,9 +16,16 @@ import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
-import { Ionicons } from '@expo/vector-icons'
-import { setAddressFrom } from '../../store/requestDeliverySlice'
+import { FontAwesome6, Ionicons } from '@expo/vector-icons'
+import {
+  setAddressFrom,
+  setChooseFromMapFrom
+} from '../../store/requestDeliverySlice'
 import { useDispatch } from 'react-redux'
+import * as Location from 'expo-location'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import useGeocoding from '../../ui/hooks/useGeocoding'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
 
 const { width, height } = Dimensions.get('window')
 
@@ -29,6 +36,7 @@ const PickupFromMap = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { GOOGLE_MAPS_KEY } = useEnvVars()
+  const { getAddress } = useGeocoding()
 
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
@@ -39,7 +47,16 @@ const PickupFromMap = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('choose_from_map'),
-      headerRight: null,
+      headerRight: () => {
+        return (
+          <TouchableOpacity
+            onPress={handleCurrentPosition}
+            style={{ paddingHorizontal: 25 }}
+          >
+            <FontAwesome6 name='location-crosshairs' size={24} color='#fff' />
+          </TouchableOpacity>
+        )
+      },
       headerStyle: {
         backgroundColor: colors.primary
       }
@@ -47,8 +64,61 @@ const PickupFromMap = () => {
   }, [navigation, t, colors.primary])
 
   useEffect(() => {
-    animateToLocation({ lat: location.latitude, lng: location.longitude })
+    // animateToLocation({ lat: location.latitude, lng: location.longitude })
+    handleCurrentPosition()
   }, [])
+
+  const handleCurrentPosition = async () => {
+    // try {
+    // if (!currentPosSelected) {
+    const { status } = await Location.requestForegroundPermissionsAsync()
+    console.log({ status })
+    if (status !== 'granted') {
+      FlashMessage({
+        message: 'Location permission denied. Please enable it in settings.',
+        onPress: async () => {
+          await Linking.openSettings()
+        }
+      })
+      return
+    }
+    const position = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+      maximumAge: 1000,
+      timeout: 1000
+    })
+    console.log('Current Position:', position.coords)
+
+    getAddress(position.coords.latitude, position.coords.longitude).then(
+      (res) => {
+        const newCoordinates = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        }
+
+        setLocation({ ...newCoordinates })
+        animateToLocation({
+          lat: newCoordinates.latitude,
+          lng: newCoordinates.longitude
+        })
+        if (res.formattedAddress) {
+          searchRef.current?.setAddressText(res.formattedAddress)
+        }
+        // setCurrentPosSelected(true)
+        // dispatch(setChooseFromMapFrom({ status: false }))
+        // setChooseFromAddressBook(false)
+      }
+    )
+    // } else {
+    //   setCurrentPosSelected(false)
+    // }
+    // } catch (error) {
+    //   console.log('Error fetching location:', error)
+    //   FlashMessage({ message: 'Failed to get current location. Try again.' })
+    // }
+  }
 
   const animateToLocation = ({ lat, lng }) => {
     const region = {
@@ -83,6 +153,7 @@ const PickupFromMap = () => {
     //     // labelFrom: label
     //   })
     // )
+    dispatch(setChooseFromMapFrom({ status: true }))
     navigation.navigate('NewPickupMandoob', {
       chooseMap: true,
       currentInput,
@@ -102,9 +173,23 @@ const PickupFromMap = () => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01
         }}
-      >
-        <Marker coordinate={location} />
-      </MapView>
+        onRegionChangeComplete={(region) => {
+          const { latitude, longitude } = region
+          setLocation({ latitude, longitude })
+
+          // Optionally reverse geocode
+          getAddress(latitude, longitude).then((res) => {
+            if (res.formattedAddress) {
+              searchRef.current?.setAddressText(res.formattedAddress)
+            }
+          })
+        }}
+      />
+      <View style={styles.markerFixed}>
+        <Ionicons name='location-sharp' size={36} color='red' />
+      </View>
+      {/* <Marker coordinate={location} />
+      </MapView> */}
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -162,6 +247,7 @@ const PickupFromMap = () => {
         {/* Send icon (left) */}
         <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
           <Ionicons name='send' size={24} color={colors.primary} />
+          {/* <TextDefault style={{color: '#000'}}>تم</TextDefault> */}
         </TouchableOpacity>
       </View>
     </View>
@@ -196,5 +282,11 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 18 : 14,
     zIndex: 999,
     transform: [{ rotate: '180deg' }]
+  },
+  markerFixed: {
+    position: 'absolute',
+    top: height / 2 - 50, // Adjust based on marker size
+    left: width / 2 - 24, // Adjust based on marker size
+    zIndex: 999
   }
 })
