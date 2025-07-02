@@ -5,7 +5,8 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
-  Text
+  Text,
+  Linking
 } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -20,7 +21,7 @@ import {
   setAddressFrom,
   setChooseFromMapTo
 } from '../../store/requestDeliverySlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 
@@ -40,6 +41,9 @@ const DropoffFromMap = () => {
     latitude: 31.1091,
     longitude: 30.9426
   })
+
+  const state = useSelector((state) => state.requestDelivery)
+  const { selectedCityAndAreaTo, selectedAreaTo } = state
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -65,60 +69,76 @@ const DropoffFromMap = () => {
   // }, [])
 
   useEffect(() => {
-    // animateToLocation({ lat: location.latitude, lng: location.longitude })
-    handleCurrentPosition()
-  }, [])
-
-  const handleCurrentPosition = async () => {
-    // try {
-    // if (!currentPosSelected) {
-    const { status } = await Location.requestForegroundPermissionsAsync()
-    console.log({ status })
-    if (status !== 'granted') {
-      FlashMessage({
-        message: 'Location permission denied. Please enable it in settings.',
-        onPress: async () => {
-          await Linking.openSettings()
-        }
+    if (selectedCityAndAreaTo) {
+      animateToLocation({
+        lat: selectedAreaTo.location.location.coordinates[1],
+        lng: selectedAreaTo.location.location.coordinates[0]
       })
-      return
-    }
-    const position = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
-      maximumAge: 1000,
-      timeout: 1000
-    })
-    console.log('Current Position:', position.coords)
-
-    getAddress(position.coords.latitude, position.coords.longitude).then(
-      (res) => {
-        const newCoordinates = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01
-        }
-
-        setLocation({ ...newCoordinates })
-        animateToLocation({
-          lat: newCoordinates.latitude,
-          lng: newCoordinates.longitude
-        })
+      getAddress(
+        selectedAreaTo.location.location.coordinates[1],
+        selectedAreaTo.location.location.coordinates[0]
+      ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
         }
-        // setCurrentPosSelected(true)
-        // dispatch(setChooseFromMapFrom({ status: false }))
-        // setChooseFromAddressBook(false)
+      })
+    } else {
+      handleCurrentPosition()
+    }
+    // handleCurrentPosition()
+  }, [])
+
+  const handleCurrentPosition = async () => {
+    try {
+      if (!currentPosSelected) {
+        const { status } = await Location.requestForegroundPermissionsAsync()
+        console.log({ status })
+        if (status !== 'granted') {
+          FlashMessage({
+            message:
+              'Location permission denied. Please enable it in settings.',
+            onPress: async () => {
+              await Linking.openSettings()
+            }
+          })
+          return
+        }
+        const position = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+          maximumAge: 1000,
+          timeout: 1000
+        })
+        console.log('Current Position:', position.coords)
+
+        getAddress(position.coords.latitude, position.coords.longitude).then(
+          (res) => {
+            const newCoordinates = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01
+            }
+
+            setLocation({ ...newCoordinates })
+            animateToLocation({
+              lat: newCoordinates.latitude,
+              lng: newCoordinates.longitude
+            })
+            if (res.formattedAddress) {
+              searchRef.current?.setAddressText(res.formattedAddress)
+            }
+            // setCurrentPosSelected(true)
+            // dispatch(setChooseFromMapFrom({ status: false }))
+            // setChooseFromAddressBook(false)
+          }
+        )
+      } else {
+        setCurrentPosSelected(false)
       }
-    )
-    // } else {
-    //   setCurrentPosSelected(false)
-    // }
-    // } catch (error) {
-    //   console.log('Error fetching location:', error)
-    //   FlashMessage({ message: 'Failed to get current location. Try again.' })
-    // }
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
   }
 
   const animateToLocation = ({ lat, lng }) => {
@@ -147,8 +167,9 @@ const DropoffFromMap = () => {
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
     console.log({ currentInput, location })
-    dispatch(setChooseFromMapTo({ status: true }))
-
+    if (!selectedCityAndAreaTo) {
+      dispatch(setChooseFromMapTo({ status: true }))
+    }
     navigation.navigate('NewDropoffMandoob', {
       chooseMap: true,
       currentInput,

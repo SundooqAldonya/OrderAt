@@ -21,7 +21,7 @@ import {
   setAddressFrom,
   setChooseFromMapFrom
 } from '../../store/requestDeliverySlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import useGeocoding from '../../ui/hooks/useGeocoding'
@@ -44,6 +44,11 @@ const PickupFromMap = () => {
     longitude: 30.9426
   })
 
+  const state = useSelector((state) => state.requestDelivery)
+  const { selectedCityAndAreaFrom, selectedAreaFrom } = state
+
+  console.log({ selectedCityAndAreaFrom })
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('choose_from_map'),
@@ -65,7 +70,22 @@ const PickupFromMap = () => {
 
   useEffect(() => {
     // animateToLocation({ lat: location.latitude, lng: location.longitude })
-    handleCurrentPosition()
+    if (selectedCityAndAreaFrom) {
+      animateToLocation({
+        lat: selectedAreaFrom.location.location.coordinates[1],
+        lng: selectedAreaFrom.location.location.coordinates[0]
+      })
+      getAddress(
+        selectedAreaFrom.location.location.coordinates[1],
+        selectedAreaFrom.location.location.coordinates[0]
+      ).then((res) => {
+        if (res.formattedAddress) {
+          searchRef.current?.setAddressText(res.formattedAddress)
+        }
+      })
+    } else {
+      handleCurrentPosition()
+    }
   }, [])
 
   const handleCurrentPosition = async () => {
@@ -153,7 +173,23 @@ const PickupFromMap = () => {
     //     // labelFrom: label
     //   })
     // )
-    dispatch(setChooseFromMapFrom({ status: true }))
+    const newCoordinates = {
+      ...location,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+    if (selectedCityAndAreaFrom) {
+      dispatch(
+        setAddressFrom({
+          addressFrom: selectedAreaFrom.address,
+          regionFrom: newCoordinates
+          // addressFreeTextFrom: details,
+          // labelFrom: name
+        })
+      )
+    } else {
+      dispatch(setChooseFromMapFrom({ status: true }))
+    }
     navigation.navigate('NewPickupMandoob', {
       chooseMap: true,
       currentInput,

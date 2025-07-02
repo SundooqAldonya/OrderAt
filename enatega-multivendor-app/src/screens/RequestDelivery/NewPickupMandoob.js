@@ -419,7 +419,7 @@ const NewPickupMandoob = () => {
       </TouchableOpacity>
 
       {/* Inputs */}
-      <Text style={styles.label}>الاسم</Text>
+      <Text style={styles.label}>اسم المكان</Text>
       <TextInput
         style={styles.input}
         placeholder='مثلاً: المنزل، العمل، إلخ'
@@ -502,8 +502,8 @@ const NewPickupMandoob = () => {
                   key={area._id}
                   onPress={() => {
                     dispatch(setSelectedAreaFrom(area))
-
                     setAreasModalVisible(false)
+                    navigation.navigate('PickupFromMap')
                   }}
                   style={styles.modalItem}
                 >

@@ -87,7 +87,9 @@ const NewDropoffMandoob = () => {
   })
   const [areasModalVisible, setAreasModalVisible] = useState(false)
   const [citiesModalVisible, setCitiesModalVisible] = useState(false)
+  // const { selectedCityAndAreaFrom, selectedAreaFrom } = state
 
+  // console.log({ selectedCityAndAreaFrom })
   const addressIcons = {
     House: CustomHomeIcon,
     Office: CustomWorkIcon,
@@ -417,7 +419,7 @@ const NewDropoffMandoob = () => {
       </TouchableOpacity>
 
       {/* Inputs */}
-      <Text style={styles.label}>الاسم</Text>
+      <Text style={styles.label}>اسم المكان</Text>
       <TextInput
         style={styles.input}
         placeholder='مثلاً: المنزل، العمل، إلخ'
@@ -497,8 +499,8 @@ const NewDropoffMandoob = () => {
                   key={area._id}
                   onPress={() => {
                     dispatch(setSelectedAreaTo(area))
-
                     setAreasModalVisible(false)
+                    navigation.navigate('DropoffFromMap')
                   }}
                   style={styles.modalItem}
                 >
