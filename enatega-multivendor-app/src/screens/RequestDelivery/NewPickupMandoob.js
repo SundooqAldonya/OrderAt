@@ -590,8 +590,8 @@ const styles = StyleSheet.create({
     ...alignment.PBsmall
   },
   addButton: {
-    // backgroundColor: colors.primary,
-    backgroundColor: colors.dark,
+    backgroundColor: colors.primary,
+    // backgroundColor: colors.dark,
     width: '100%',
     height: scale(40),
     borderRadius: 50,
