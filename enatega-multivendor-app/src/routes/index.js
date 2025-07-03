@@ -78,6 +78,8 @@ import NewDropoffMandoob from '../screens/RequestDelivery/NewDropoffMandoob'
 import DropoffFromMap from '../screens/RequestDelivery/DropoffFromMap'
 import AddressNewVersion from '../screens/AddressNewVersion'
 import AddressFromMap from '../screens/AddressNewVersion/AddressFromMap'
+import EditAddressNewVersion from '../screens/EditAddressNewVersion'
+import EditAddressFromMap from '../screens/EditAddressNewVersion/EditAddressFromMap'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -368,6 +370,21 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='AddressFromMap'
         component={AddressFromMap}
+      />
+      <NavigationStack.Screen
+        name='EditAddressNewVersion'
+        options={{
+          headerTitle: t('edit_address'),
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
+        }}
+        component={EditAddressNewVersion}
+      />
+      <NavigationStack.Screen
+        name='EditAddressFromMap'
+        component={EditAddressFromMap}
       />
     </NavigationStack.Navigator>
   )

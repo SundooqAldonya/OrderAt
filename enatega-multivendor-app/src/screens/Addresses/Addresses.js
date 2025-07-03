@@ -38,6 +38,8 @@ import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
 import { LocationContext } from '../../context/Location'
 import { restaurantListPreview } from '../../apollo/queries'
+import { setAddress } from '../../store/addNewAddressSlice'
+import { useDispatch } from 'react-redux'
 
 const DELETE_ADDRESS = gql`
   ${deleteAddress}
@@ -48,7 +50,7 @@ const RESTAURANTS = gql`
 `
 function Addresses() {
   const Analytics = analytics()
-
+  const dispatch = useDispatch()
   const navigation = useNavigation()
   const [mutate, { loading: loadingMutation }] = useMutation(DELETE_ADDRESS, {
     onCompleted
@@ -214,10 +216,20 @@ function Addresses() {
                 <View style={styles().buttonsAddress}>
                   <TouchableOpacity
                     disabled={loadingMutation}
-                    activeOpacity={0.7}
                     onPress={() => {
                       const [longitude, latitude] = address.location.coordinates
-                      navigation.navigate('EditUserAddress', {
+                      dispatch(
+                        setAddress({
+                          addressFrom: address.deliveryAddress,
+                          regionFrom: {
+                            latitude: +latitude,
+                            longitude: +longitude
+                          },
+                          addressFreeText: address.details,
+                          label: address.label
+                        })
+                      )
+                      navigation.navigate('EditAddressNewVersion', {
                         address,
                         id: address._id,
                         longitude: +longitude,
@@ -273,7 +285,10 @@ function Addresses() {
             activeOpacity={0.5}
             style={styles(currentTheme).addButton}
             onPress={() =>
-              navigation.navigate('AddNewAddressUser', {
+              // navigation.navigate('AddNewAddressUser', {
+              //   prevScreen: 'Addresses'
+              // })
+              navigation.navigate('AddressNewVersion', {
                 prevScreen: 'Addresses'
               })
             }

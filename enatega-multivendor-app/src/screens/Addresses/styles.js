@@ -112,7 +112,8 @@ const styles = (props = null) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 20,
-      paddingBottom: scale(3)
+      paddingBottom: scale(3),
+      zIndex: 999
     },
     rowContainer: {
       marginTop: scale(5),

@@ -682,5 +682,6 @@ export const en = {
   done: 'Done',
   continue: 'Continue',
   add_new_address: 'Add New Address',
-  save_new_address: 'Save New Address'
+  save_new_address: 'Save New Address',
+  edit_address: 'Edit Address'
 }

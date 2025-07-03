@@ -671,5 +671,6 @@ export const ar = {
   done: 'تم',
   continue: 'متابعة',
   add_new_address: 'أضف عنوان جديد',
-  save_new_address: 'حفظ العنوان'
+  save_new_address: 'حفظ العنوان',
+  edit_address: 'تعديل العنوان'
 }

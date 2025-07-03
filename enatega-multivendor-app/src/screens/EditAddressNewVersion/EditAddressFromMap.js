@@ -1,0 +1,344 @@
+import React, { useRef, useState } from 'react'
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  Text
+} from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+import { useEffect } from 'react'
+import useEnvVars from '../../../environment'
+import { v4 as uuidv4 } from 'uuid'
+import { useLayoutEffect } from 'react'
+import { colors } from '../../utils/colors'
+import { useTranslation } from 'react-i18next'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { FontAwesome6, Ionicons } from '@expo/vector-icons'
+import { setAddress, setChooseFromMap } from '../../store/addNewAddressSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import * as Location from 'expo-location'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import useGeocoding from '../../ui/hooks/useGeocoding'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
+
+const { width, height } = Dimensions.get('window')
+
+const EditAddressFromMap = () => {
+  const mapRef = useRef(null)
+  const searchRef = useRef(null)
+  const navigation = useNavigation()
+  const route = useRoute()
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const { GOOGLE_MAPS_KEY } = useEnvVars()
+  const { getAddress } = useGeocoding()
+
+  const [sessionToken, setSessionToken] = useState(uuidv4())
+  const [location, setLocation] = useState({
+    latitude: 31.1091,
+    longitude: 30.9426
+  })
+
+  const state = useSelector((state) => state.addNewAddress)
+  const { selectedCityAndArea, selectedArea, region } = state
+
+  console.log({ region })
+
+  const { id, address, prevScreen } = route.params || {}
+
+  useEffect(() => {
+    if (region) {
+      setLocation({ latitude: region.latitude, longitude: region.longitude })
+      animateToLocation({
+        lat: region.latitude,
+        lng: region.longitude
+      })
+      getAddress(region.latitude, region.longitude).then((res) => {
+        if (res.formattedAddress) {
+          searchRef.current?.setAddressText(res.formattedAddress)
+        }
+      })
+    }
+  }, [region])
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('choose_from_map'),
+      headerRight: () => {
+        return (
+          <TouchableOpacity
+            onPress={handleCurrentPosition}
+            style={{ paddingHorizontal: 25 }}
+          >
+            <FontAwesome6 name='location-crosshairs' size={24} color='#fff' />
+          </TouchableOpacity>
+        )
+      },
+      headerStyle: {
+        backgroundColor: colors.primary
+      }
+    })
+  }, [navigation, t, colors.primary])
+
+  useEffect(() => {
+    if (selectedCityAndArea) {
+      animateToLocation({
+        lat: selectedArea.location.location.coordinates[1],
+        lng: selectedArea.location.location.coordinates[0]
+      })
+      getAddress(
+        selectedArea.location.location.coordinates[1],
+        selectedArea.location.location.coordinates[0]
+      ).then((res) => {
+        if (res.formattedAddress) {
+          searchRef.current?.setAddressText(res.formattedAddress)
+        }
+      })
+    } else if (!region) {
+      handleCurrentPosition()
+    }
+  }, [])
+
+  const handleCurrentPosition = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
+        })
+        return
+      }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 1000,
+        timeout: 1000
+      })
+      console.log('Current Position:', position.coords)
+
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+
+          setLocation({ ...newCoordinates })
+          animateToLocation({
+            lat: newCoordinates.latitude,
+            lng: newCoordinates.longitude
+          })
+          if (res.formattedAddress) {
+            searchRef.current?.setAddressText(res.formattedAddress)
+          }
+          // dispatch(setChooseFromMap({ status: false }))
+          // setChooseFromAddressBook(false)
+        }
+      )
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
+  }
+
+  const animateToLocation = ({ lat, lng }) => {
+    const region = {
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+
+    // Update marker position
+    setLocation({ latitude: lat, longitude: lng })
+
+    // Animate the map to the selected location
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(region, 1000) // 1000ms duration
+    }
+  }
+
+  const clearSearch = () => {
+    searchRef.current?.clear()
+  }
+
+  console.log({ location })
+
+  const handleSave = () => {
+    const currentInput = searchRef.current?.getAddressText?.()
+    console.log({ location })
+    console.log({ currentInput })
+    // dispatch(
+    //   setAddress({
+    //     addressFrom: currentInput,
+    //     regionFrom: location
+    //     // addressFreeTextFrom: addressFreeText,
+    //     // labelFrom: label
+    //   })
+    // )
+    const newCoordinates = {
+      ...location,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+
+    if (selectedCityAndArea) {
+      dispatch(
+        setAddress({
+          addressFrom: selectedArea.address,
+          regionFrom: newCoordinates
+          // addressFreeTextFrom: details,
+          // labelFrom: name
+        })
+      )
+    } else {
+      dispatch(setChooseFromMap({ status: true }))
+    }
+    navigation.navigate('EditAddressNewVersion', {
+      chooseMap: true,
+      selectedAreaMap: selectedCityAndArea,
+      currentInput,
+      locationMap: location,
+      id,
+      address,
+      prevScreen
+    })
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* Map View */}
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        initialRegion={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        }}
+        onRegionChangeComplete={(region) => {
+          const { latitude, longitude } = region
+          setLocation({ latitude, longitude })
+
+          // Optionally reverse geocode
+          getAddress(latitude, longitude).then((res) => {
+            if (res.formattedAddress) {
+              searchRef.current?.setAddressText(res.formattedAddress)
+            }
+          })
+        }}
+      />
+      <View style={styles.markerFixed}>
+        <Ionicons name='location-sharp' size={36} color='red' />
+      </View>
+      {/* <Marker coordinate={location} />
+      </MapView> */}
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <GooglePlacesAutocomplete
+          ref={searchRef}
+          placeholder='ابحث عن مكان...'
+          onPress={(data, details = null) => {
+            const lat = details?.geometry?.location?.lat
+            const lng = details?.geometry?.location?.lng
+
+            if (lat && lng) {
+              const newLocation = { latitude: lat, longitude: lng }
+              setLocation(newLocation)
+              mapRef.current.animateToRegion({
+                ...newLocation,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01
+              })
+            }
+          }}
+          query={{
+            key: GOOGLE_MAPS_KEY,
+            language: 'ar',
+            sessiontoken: sessionToken,
+            region: 'EG',
+            components: 'country:eg'
+          }}
+          fetchDetails={true}
+          enablePoweredByContainer={false}
+          styles={{
+            textInputContainer: {
+              backgroundColor: '#fff',
+              borderRadius: 10,
+              paddingHorizontal: 40,
+              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+              elevation: 5,
+              shadowColor: '#000',
+              shadowOpacity: 0.2,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 5
+            },
+            textInput: {
+              height: 44,
+              color: '#000',
+              fontSize: 16,
+              textAlign: 'right'
+            }
+          }}
+        />
+        {/* Clear icon (right) */}
+        <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
+          <Ionicons name='close-circle' size={24} color='#888' />
+        </TouchableOpacity>
+
+        {/* Send icon (left) */}
+        <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
+          <Ionicons name='send' size={24} color={colors.primary} />
+          {/* <TextDefault style={{color: '#000'}}>تم</TextDefault> */}
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
+export default EditAddressFromMap
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject
+  },
+  searchContainer: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 40,
+    left: 10,
+    right: 10,
+    zIndex: 999
+  },
+  clearIcon: {
+    position: 'absolute',
+    right: 15,
+    top: Platform.OS === 'ios' ? 18 : 14,
+    zIndex: 999
+  },
+  sendIcon: {
+    position: 'absolute',
+    left: 15,
+    top: Platform.OS === 'ios' ? 18 : 14,
+    zIndex: 999,
+    transform: [{ rotate: '180deg' }]
+  },
+  markerFixed: {
+    position: 'absolute',
+    top: height / 2 - 50, // Adjust based on marker size
+    left: width / 2 - 24, // Adjust based on marker size
+    zIndex: 999
+  }
+})
