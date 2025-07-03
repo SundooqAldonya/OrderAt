@@ -89,55 +89,50 @@ const PickupFromMap = () => {
   }, [])
 
   const handleCurrentPosition = async () => {
-    // try {
-    // if (!currentPosSelected) {
-    const { status } = await Location.requestForegroundPermissionsAsync()
-    console.log({ status })
-    if (status !== 'granted') {
-      FlashMessage({
-        message: 'Location permission denied. Please enable it in settings.',
-        onPress: async () => {
-          await Linking.openSettings()
-        }
-      })
-      return
-    }
-    const position = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
-      maximumAge: 1000,
-      timeout: 1000
-    })
-    console.log('Current Position:', position.coords)
-
-    getAddress(position.coords.latitude, position.coords.longitude).then(
-      (res) => {
-        const newCoordinates = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01
-        }
-
-        setLocation({ ...newCoordinates })
-        animateToLocation({
-          lat: newCoordinates.latitude,
-          lng: newCoordinates.longitude
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
+          }
         })
-        if (res.formattedAddress) {
-          searchRef.current?.setAddressText(res.formattedAddress)
-        }
-        // setCurrentPosSelected(true)
-        // dispatch(setChooseFromMapFrom({ status: false }))
-        // setChooseFromAddressBook(false)
+        return
       }
-    )
-    // } else {
-    //   setCurrentPosSelected(false)
-    // }
-    // } catch (error) {
-    //   console.log('Error fetching location:', error)
-    //   FlashMessage({ message: 'Failed to get current location. Try again.' })
-    // }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 1000,
+        timeout: 1000
+      })
+      console.log('Current Position:', position.coords)
+
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+
+          setLocation({ ...newCoordinates })
+          animateToLocation({
+            lat: newCoordinates.latitude,
+            lng: newCoordinates.longitude
+          })
+          if (res.formattedAddress) {
+            searchRef.current?.setAddressText(res.formattedAddress)
+          }
+          // dispatch(setChooseFromMapFrom({ status: false }))
+          // setChooseFromAddressBook(false)
+        }
+      )
+    } catch (error) {
+      console.log('Error fetching location:', error)
+      FlashMessage({ message: 'Failed to get current location. Try again.' })
+    }
   }
 
   const animateToLocation = ({ lat, lng }) => {
@@ -161,6 +156,8 @@ const PickupFromMap = () => {
     searchRef.current?.clear()
   }
 
+  console.log({ location })
+
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
     console.log({ location })
@@ -178,6 +175,7 @@ const PickupFromMap = () => {
       latitudeDelta: 0.01,
       longitudeDelta: 0.01
     }
+
     if (selectedCityAndAreaFrom) {
       dispatch(
         setAddressFrom({
@@ -192,6 +190,7 @@ const PickupFromMap = () => {
     }
     navigation.navigate('NewPickupMandoob', {
       chooseMap: true,
+      selectedAreaFromMap: selectedCityAndAreaFrom,
       currentInput,
       locationMap: location
     })

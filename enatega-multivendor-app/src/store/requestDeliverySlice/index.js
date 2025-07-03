@@ -46,7 +46,7 @@ const requestDeliverySlice = createSlice({
       state.chooseFromMapTo = action.payload.status
       if (action.payload.status === true) {
         state.chooseFromAddressBookTo = false
-        state.selectedCityAndAreaFrom = false
+        state.selectedCityAndAreaTo = false
       }
     },
 

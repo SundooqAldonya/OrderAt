@@ -236,17 +236,17 @@ const NewDropoffMandoob = () => {
         })
       )
     } else if (selectedCityAndAreaTo) {
-      const newCoordinates = {
-        latitude: selectedAreaTo.location.location.coordinates[1],
-        longitude: selectedAreaTo.location.location.coordinates[0],
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01
-      }
+      // const newCoordinates = {
+      //   latitude: selectedAreaTo.location.location.coordinates[1],
+      //   longitude: selectedAreaTo.location.location.coordinates[0],
+      //   latitudeDelta: 0.01,
+      //   longitudeDelta: 0.01
+      // }
 
       dispatch(
         setAddressTo({
           addressTo: selectedAreaTo.address,
-          regionTo: newCoordinates,
+          regionTo: locationMap,
           addressFreeTextTo: details,
           labelTo: name
         })
@@ -339,7 +339,10 @@ const NewDropoffMandoob = () => {
           borderColor: chooseFromMapTo ? 'green' : '#eee',
           justifyContent: 'space-between'
         }}
-        onPress={() => navigation.navigate('DropoffFromMap')}
+        onPress={() => {
+          dispatch(setChooseFromMapTo({ status: true }))
+          navigation.navigate('DropoffFromMap')
+        }}
       >
         <View style={{ flexDirection: 'row' }}>
           <Entypo

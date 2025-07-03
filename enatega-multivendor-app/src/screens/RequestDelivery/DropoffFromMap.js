@@ -24,6 +24,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 
 const { width, height } = Dimensions.get('window')
 
@@ -90,51 +91,45 @@ const DropoffFromMap = () => {
 
   const handleCurrentPosition = async () => {
     try {
-      if (!currentPosSelected) {
-        const { status } = await Location.requestForegroundPermissionsAsync()
-        console.log({ status })
-        if (status !== 'granted') {
-          FlashMessage({
-            message:
-              'Location permission denied. Please enable it in settings.',
-            onPress: async () => {
-              await Linking.openSettings()
-            }
-          })
-          return
-        }
-        const position = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-          maximumAge: 1000,
-          timeout: 1000
-        })
-        console.log('Current Position:', position.coords)
-
-        getAddress(position.coords.latitude, position.coords.longitude).then(
-          (res) => {
-            const newCoordinates = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01
-            }
-
-            setLocation({ ...newCoordinates })
-            animateToLocation({
-              lat: newCoordinates.latitude,
-              lng: newCoordinates.longitude
-            })
-            if (res.formattedAddress) {
-              searchRef.current?.setAddressText(res.formattedAddress)
-            }
-            // setCurrentPosSelected(true)
-            // dispatch(setChooseFromMapFrom({ status: false }))
-            // setChooseFromAddressBook(false)
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      console.log({ status })
+      if (status !== 'granted') {
+        FlashMessage({
+          message: 'Location permission denied. Please enable it in settings.',
+          onPress: async () => {
+            await Linking.openSettings()
           }
-        )
-      } else {
-        setCurrentPosSelected(false)
+        })
+        return
       }
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        maximumAge: 1000,
+        timeout: 1000
+      })
+      console.log('Current Position:', position.coords)
+
+      getAddress(position.coords.latitude, position.coords.longitude).then(
+        (res) => {
+          const newCoordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }
+
+          setLocation({ ...newCoordinates })
+          animateToLocation({
+            lat: newCoordinates.latitude,
+            lng: newCoordinates.longitude
+          })
+          if (res.formattedAddress) {
+            searchRef.current?.setAddressText(res.formattedAddress)
+          }
+          // dispatch(setChooseFromMapFrom({ status: false }))
+          // setChooseFromAddressBook(false)
+        }
+      )
     } catch (error) {
       console.log('Error fetching location:', error)
       FlashMessage({ message: 'Failed to get current location. Try again.' })

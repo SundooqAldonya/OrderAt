@@ -236,17 +236,17 @@ const NewPickupMandoob = () => {
         })
       )
     } else if (selectedCityAndAreaFrom) {
-      const newCoordinates = {
-        latitude: selectedAreaFrom.location.location.coordinates[1],
-        longitude: selectedAreaFrom.location.location.coordinates[0],
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01
-      }
+      // const newCoordinates = {
+      //   latitude: selectedAreaFrom.location.location.coordinates[1],
+      //   longitude: selectedAreaFrom.location.location.coordinates[0],
+      //   latitudeDelta: 0.01,
+      //   longitudeDelta: 0.01
+      // }
 
       dispatch(
         setAddressFrom({
           addressFrom: selectedAreaFrom.address,
-          regionFrom: newCoordinates,
+          regionFrom: locationMap,
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -339,7 +339,10 @@ const NewPickupMandoob = () => {
           borderColor: chooseFromMapFrom ? 'green' : '#eee',
           justifyContent: 'space-between'
         }}
-        onPress={() => navigation.navigate('PickupFromMap')}
+        onPress={() => {
+          dispatch(setChooseFromMapFrom({ status: true }))
+          navigation.navigate('PickupFromMap')
+        }}
       >
         <View style={{ flexDirection: 'row' }}>
           <Entypo
