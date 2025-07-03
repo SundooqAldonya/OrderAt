@@ -392,9 +392,9 @@ function Main(props) {
               navigation.navigate('SelectLocation', {
                 ...locationData
               })
-              const modal = modalRef.current
-              modal?.close()
             }
+            const modal = modalRef.current
+            modal?.close()
           }}
         >
           <View style={styles().addressSubContainer}>

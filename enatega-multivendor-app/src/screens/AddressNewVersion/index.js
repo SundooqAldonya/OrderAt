@@ -26,7 +26,7 @@ import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon'
 import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
-import { selectAddress } from '../../apollo/mutations'
+import { createAddress, selectAddress } from '../../apollo/mutations'
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
@@ -34,19 +34,19 @@ import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  setAddressFrom,
-  setchooseFromAddressBook,
-  setchooseFromMap,
-  setselectedArea,
-  setselectedCity
-} from '../../store/requestDeliverySlice'
+  resetAddNewAddress,
+  setAddress,
+  setChooseFromAddressBook,
+  setChooseFromMap,
+  setSelectedArea,
+  setSelectedCity
+} from '../../store/addNewAddressSlice'
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
-const SELECT_ADDRESS = gql`
-  ${selectAddress}
+const CREATE_ADDRESS = gql`
+  ${createAddress}
 `
-
 const GET_CITIES = gql`
   ${getCities}
 `
@@ -77,7 +77,7 @@ const AddressNewVersion = () => {
   console.log({ chooseFromAddressBook })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
-  const { isLoggedIn, profile } = useContext(UserContext)
+  const { isLoggedIn, profile, refetchProfile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
   const [coordinates, setCoordinates] = useState({
     latitude: 0,
@@ -115,7 +115,7 @@ const AddressNewVersion = () => {
       // dispatch(setchooseFromMap())
       setCurrentPosSelected(false)
       // setChooseFromAddressBook(false)
-      dispatch(setchooseFromAddressBook({ status: false }))
+      dispatch(setChooseFromAddressBook({ status: false }))
     }
     if (label) {
       setName(label)
@@ -132,7 +132,13 @@ const AddressNewVersion = () => {
     }
   }, [chooseFromMap, selectedCityAndArea])
 
-  const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
+  const [mutate] = useMutation(CREATE_ADDRESS, {
+    onCompleted: (data) => {
+      console.log({ data })
+      refetchProfile()
+      resetAddNewAddress()
+      navigation.navigate('Main')
+    },
     onError: (err) => {
       console.log({ err })
     }
@@ -205,7 +211,7 @@ const AddressNewVersion = () => {
   //           setCurrentPosSelected(true)
   //           dispatch(setchooseFromMap({ status: false }))
   //           // setChooseFromAddressBook(false)
-  //           dispatch(setchooseFromAddressBook({ status: false }))
+  //           dispatch(setChooseFromAddressBook({ status: false }))
   //         }
   //       )
   //     } else {
@@ -221,48 +227,58 @@ const AddressNewVersion = () => {
   //   modalRef.current.open()
   // }
 
+  console.log({ locationMap })
+
   const handleNext = () => {
     console.log({
       selectedCityAndArea,
-      selectedArea: selectedArea.location.location.coordinates
+      locationMap
     })
-    if (chooseFromMap) {
-      dispatch(
-        setAddressFrom({
-          addressFrom: currentInput,
-          regionFrom: locationMap,
-          addressFreeText: details,
-          label: name
-        })
-      )
-    } else if (selectedCityAndArea) {
-      // const newCoordinates = {
-      //   latitude: selectedArea.location.location.coordinates[1],
-      //   longitude: selectedArea.location.location.coordinates[0],
-      //   latitudeDelta: 0.01,
-      //   longitudeDelta: 0.01
-      // }
-
-      dispatch(
-        setAddressFrom({
-          addressFrom: selectedArea.address,
-          regionFrom: locationMap,
-          addressFreeText: details,
-          label: name
-        })
-      )
-    } else {
-      dispatch(
-        setAddressFrom({
-          addressFrom: formattedAddress,
-          regionFrom: coordinates,
-          addressFreeText: details,
-          label: name
-        })
-      )
+    const addressInput = {
+      _id: '',
+      label: name,
+      latitude: String(locationMap.latitude),
+      longitude: String(locationMap.longitude),
+      deliveryAddress: currentInput,
+      details: details
     }
+    mutate({ variables: { addressInput } })
+    // if (chooseFromMap) {
+    // dispatch(
+    //   setAddress({
+    //     addressFrom: currentInput,
+    //     regionFrom: locationMap,
+    //     addressFreeText: details,
+    //     label: name
+    //   })
+    // )
 
-    navigation.navigate('RequestDelivery')
+    // } else if (selectedCityAndArea) {
+    //   // const newCoordinates = {
+    //   //   latitude: selectedArea.location.location.coordinates[1],
+    //   //   longitude: selectedArea.location.location.coordinates[0],
+    //   //   latitudeDelta: 0.01,
+    //   //   longitudeDelta: 0.01
+    //   // }
+    //   //   dispatch(
+    //   //     setAddress({
+    //   //       address: selectedArea.address,
+    //   //       region: locationMap,
+    //   //       addressFreeText: details,
+    //   //       label: name
+    //   //     })
+    //   //   )
+    //   // } else {
+    //   //   dispatch(
+    //   //     setAddress({
+    //   //       address: formattedAddress,
+    //   //       region: coordinates,
+    //   //       addressFreeText: details,
+    //   //       label: name
+    //   //     })
+    //   //   )
+    //   // }
+    // }
   }
 
   const handleNearestArea = () => {
@@ -310,7 +326,7 @@ const AddressNewVersion = () => {
           justifyContent: 'space-between'
         }}
         onPress={() => {
-          dispatch(setchooseFromMap({ status: true }))
+          dispatch(setChooseFromMap({ status: true }))
           navigation.navigate('AddressFromMap')
         }}
       >
@@ -438,7 +454,7 @@ const AddressNewVersion = () => {
                 <TouchableOpacity
                   key={city._id}
                   onPress={() => {
-                    dispatch(setselectedCity(city))
+                    dispatch(setSelectedCity(city))
                     fetchAreas({ variables: { id: city._id } })
                     setCitiesModalVisible(false)
                     setAreasModalVisible(true)
@@ -473,7 +489,7 @@ const AddressNewVersion = () => {
                 <TouchableOpacity
                   key={area._id}
                   onPress={() => {
-                    dispatch(setselectedArea(area))
+                    dispatch(setSelectedArea(area))
                     setAreasModalVisible(false)
                     navigation.navigate('AddressFromMap')
                   }}

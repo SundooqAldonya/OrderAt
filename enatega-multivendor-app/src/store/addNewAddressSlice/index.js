@@ -49,9 +49,7 @@ const addNewAddressSlice = createSlice({
     setCurrentPosSelected(state, action) {
       state.currentPosSelected = action.payload
     },
-    resetAddNewAddress(state) {
-      Object.assign(state, initialState)
-    }
+    resetAddNewAddress: (state) => initialState
   }
 })
 

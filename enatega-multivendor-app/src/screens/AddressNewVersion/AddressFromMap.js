@@ -17,10 +17,7 @@ import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons'
-import {
-  setAddress,
-  setChooseFromMapFrom
-} from '../../store/addNewAddressSlice'
+import { setAddress, setChooseFromMap } from '../../store/addNewAddressSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -69,7 +66,6 @@ const AddressFromMap = () => {
   }, [navigation, t, colors.primary])
 
   useEffect(() => {
-    // animateToLocation({ lat: location.latitude, lng: location.longitude })
     if (selectedCityAndArea) {
       animateToLocation({
         lat: selectedArea.location.location.coordinates[1],
@@ -125,7 +121,7 @@ const AddressFromMap = () => {
           if (res.formattedAddress) {
             searchRef.current?.setAddressText(res.formattedAddress)
           }
-          // dispatch(setChooseFromMapFrom({ status: false }))
+          // dispatch(setChooseFromMap({ status: false }))
           // setChooseFromAddressBook(false)
         }
       )
@@ -186,9 +182,9 @@ const AddressFromMap = () => {
         })
       )
     } else {
-      dispatch(setChooseFromMapFrom({ status: true }))
+      dispatch(setChooseFromMap({ status: true }))
     }
-    navigation.navigate('NewPickupMandoob', {
+    navigation.navigate('AddressNewVersion', {
       chooseMap: true,
       selectedAreaMap: selectedCityAndArea,
       currentInput,
