@@ -212,11 +212,8 @@ export default function Detail({
       <View style={{ marginVertical: 20 }}>
         <TouchableOpacity
           style={{
-            marginBottom: 10,
-            backgroundColor: '#f5f5f5',
-            gap: 10,
-            padding: 10,
-            borderRadius: 8
+            ...sharedStyles.container,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
           }}
           onPress={() =>
             openGoogleMaps({
@@ -225,39 +222,34 @@ export default function Detail({
             })
           }
         >
-          <View>
+          <View style={sharedStyles.textContainer}>
             <TextDefault
               bolder
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+              style={{
+                ...sharedStyles.textStyle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             >
               {t('pickup')}
             </TextDefault>
             <TextDefault
               bolder
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+              style={{
+                ...sharedStyles.textStyle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             >
               {restaurant?._id ? restaurant.address : pickupAddress}
             </TextDefault>
           </View>
-          <Feather
-            name='external-link'
-            size={24}
-            color='black'
-            style={{
-              position: 'absolute',
-              top: 20,
-              left: isArabic ? 8 : 0,
-              right: isArabic ? 0 : 8
-            }}
-          />
+          <Feather name='external-link' size={22} color='black' />
         </TouchableOpacity>
+
+        {/* dropoff */}
         <TouchableOpacity
           style={{
-            marginBottom: 10,
-            backgroundColor: '#f5f5f5',
-            gap: 10,
-            padding: 10,
-            borderRadius: 8
+            ...sharedStyles.container,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
           }}
           onPress={() =>
             openGoogleMaps({
@@ -266,31 +258,27 @@ export default function Detail({
             })
           }
         >
-          <View>
+          <View style={sharedStyles.textContainer}>
             <TextDefault
               bolder
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+              style={{
+                ...sharedStyles.textStyle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             >
               {t('dropoff')}
             </TextDefault>
             <TextDefault
               bolder
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+              style={{
+                ...sharedStyles.textStyle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
             >
               {deliveryAddress.deliveryAddress}
             </TextDefault>
           </View>
-          <Feather
-            name='external-link'
-            size={24}
-            color='black'
-            style={{
-              position: 'absolute',
-              top: 20,
-              left: isArabic ? 8 : 0,
-              right: isArabic ? 0 : 5
-            }}
-          />
+          <Feather name='external-link' size={22} color='black' />
         </TouchableOpacity>
       </View>
       {/* <View>
@@ -433,4 +421,24 @@ const ItemRow = ({
       </TextDefault>
     </View>
   )
+}
+
+const sharedStyles = {
+  container: {
+    marginBottom: 10,
+    backgroundColor: '#f5f5f5',
+    padding: 12,
+    borderRadius: 10,
+    // flexDirection: isArabic ? 'row-reverse' : 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10
+  },
+  textContainer: {
+    flex: 1
+  },
+  textStyle: {
+    color: '#000'
+    // textAlign: isArabic ? 'right' : 'left'
+  }
 }
