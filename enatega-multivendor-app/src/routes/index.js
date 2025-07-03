@@ -76,6 +76,8 @@ import NewPickupMandoob from '../screens/RequestDelivery/NewPickupMandoob'
 import PickupFromMap from '../screens/RequestDelivery/PickupFromMap'
 import NewDropoffMandoob from '../screens/RequestDelivery/NewDropoffMandoob'
 import DropoffFromMap from '../screens/RequestDelivery/DropoffFromMap'
+import AddressNewVersion from '../screens/AddressNewVersion'
+import AddressFromMap from '../screens/AddressNewVersion/AddressFromMap'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -320,6 +322,7 @@ function NoDrawer() {
         }}
         component={NewDropoffMandoob}
       />
+
       <NavigationStack.Screen name='PickupFromMap' component={PickupFromMap} />
       <NavigationStack.Screen
         name='DropoffFromMap'
@@ -350,6 +353,21 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='NotificationMandoob'
         component={NotificationMandoob}
+      />
+      <NavigationStack.Screen
+        name='AddressNewVersion'
+        options={{
+          headerTitle: t('add_new_address'),
+          headerRight: false,
+          headerStyle: {
+            backgroundColor: colors.primary
+          }
+        }}
+        component={AddressNewVersion}
+      />
+      <NavigationStack.Screen
+        name='AddressFromMap'
+        component={AddressFromMap}
       />
     </NavigationStack.Navigator>
   )

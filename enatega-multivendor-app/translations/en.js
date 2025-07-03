@@ -680,5 +680,7 @@ export const en = {
   privacy: 'Privacy',
   choose_from_map: 'Choose from map',
   done: 'Done',
-  continue: 'Continue'
+  continue: 'Continue',
+  add_new_address: 'Add New Address',
+  save_new_address: 'Save New Address'
 }

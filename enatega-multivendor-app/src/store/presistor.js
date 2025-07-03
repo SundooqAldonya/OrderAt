@@ -5,9 +5,11 @@ import requestDeliveryReducer from './requestDeliverySlice'
 import phoneReducer from './phoneSlice'
 import restaurantReducer from './restaurantSlice'
 import deliveryAmountReducer from './deliveryAmountSlice'
+import addNewAddressReducer from './addNewAddressSlice'
 
 const rootReducer = combineReducers({
   requestDelivery: requestDeliveryReducer,
+  addNewAddress: addNewAddressReducer,
   phone: phoneReducer,
   restaurant: restaurantReducer,
   deliveryAmount: deliveryAmountReducer

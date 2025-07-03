@@ -669,5 +669,7 @@ export const ar = {
   privacy: 'الخصوصية',
   choose_from_map: 'أختر من الخريطة',
   done: 'تم',
-  continue: 'متابعة'
+  continue: 'متابعة',
+  add_new_address: 'أضف عنوان جديد',
+  save_new_address: 'حفظ العنوان'
 }
