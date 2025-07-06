@@ -73,6 +73,7 @@ const NewPickupMandoob = () => {
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   console.log({ chooseFromAddressBookFrom })
   const [formattedAddress, setFormattedAddress] = useState('')
@@ -163,7 +164,7 @@ const NewPickupMandoob = () => {
     }
     setName(address.label)
     setDetails(address.details)
-    modalRef.current.close()
+    setIsVisible(false)
   }
 
   // const handleCurrentPosition = async () => {
@@ -218,7 +219,7 @@ const NewPickupMandoob = () => {
   // }
 
   const handleChooseAddress = () => {
-    modalRef.current.open()
+    setIsVisible(true)
   }
 
   const handleNext = () => {
@@ -267,6 +268,10 @@ const NewPickupMandoob = () => {
 
   const handleNearestArea = () => {
     setCitiesModalVisible(true)
+  }
+
+  const onModalClose = () => {
+    setIsVisible(false)
   }
 
   const modalFooter = () => (
@@ -447,8 +452,7 @@ const NewPickupMandoob = () => {
 
       {/* choose from address book modal */}
       <MainModalize
-        modalRef={modalRef}
-        // currentTheme={currentTheme}
+        isVisible={isVisible}
         isLoggedIn={isLoggedIn}
         addressIcons={addressIcons}
         modalHeader={modalFooter}
@@ -456,6 +460,8 @@ const NewPickupMandoob = () => {
         setAddressLocation={setAddressLocation}
         profile={profile}
         location={location}
+        onClose={onModalClose}
+        otlobMandoob={true}
       />
 
       {/* cities modal */}

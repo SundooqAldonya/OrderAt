@@ -72,6 +72,7 @@ const NewDropoffMandoob = () => {
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
   // const [chooseFromMap, setChooseFromMap] = useState(false)
   // const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
   console.log({ chooseFromAddressBookTo })
@@ -167,7 +168,7 @@ const NewDropoffMandoob = () => {
     }
     setName(address.label)
     setDetails(address.details)
-    modalRef.current.close()
+    setIsVisible(false)
   }
 
   // const handleCurrentPosition = async () => {
@@ -221,7 +222,7 @@ const NewDropoffMandoob = () => {
   // }
 
   const handleChooseAddress = () => {
-    modalRef.current.open()
+    setIsVisible(true)
   }
 
   const handleNext = () => {
@@ -267,6 +268,10 @@ const NewDropoffMandoob = () => {
 
   const handleNearestArea = () => {
     setCitiesModalVisible(true)
+  }
+
+  const onModalClose = () => {
+    setIsVisible(false)
   }
 
   const modalFooter = () => (
@@ -445,8 +450,7 @@ const NewDropoffMandoob = () => {
         <Text style={styles.saveButtonText}>{t('continue')}</Text>
       </TouchableOpacity>
       <MainModalize
-        modalRef={modalRef}
-        // currentTheme={currentTheme}
+        isVisible={isVisible}
         isLoggedIn={isLoggedIn}
         addressIcons={addressIcons}
         modalHeader={modalFooter}
@@ -454,6 +458,8 @@ const NewDropoffMandoob = () => {
         setAddressLocation={setAddressLocation}
         profile={profile}
         location={location}
+        onClose={onModalClose}
+        otlobMandoob={true}
       />
       {/* cities modal */}
       <Modal visible={citiesModalVisible} transparent animationType='slide'>

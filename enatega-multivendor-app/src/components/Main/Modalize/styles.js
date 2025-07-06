@@ -42,7 +42,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       height: '100%',
       alignSelf: 'center'
     },
-    searchbar:{
+    searchbar: {
       backgroundColor: props != null ? props.main : 'black',
       ...alignment.PBmedium
     },
@@ -59,10 +59,11 @@ const styles = (props = null, hasActiveOrders = false) =>
       padding: scale(5),
       ...alignment.PLmedium,
       ...alignment.PRmedium,
-      borderWidth:scale(1),
-      borderRadius:scale(20),
-      borderColor:props != null ? props.color10 : '#FFF', 
-     },
+      borderWidth: scale(1),
+      borderRadius: scale(20),
+      borderColor: props != null ? props.color10 : '#FFF',
+      flex: 1
+    },
     addNewAddressbtn: {
       padding: scale(5),
       ...alignment.PLmedium,
@@ -86,22 +87,12 @@ const styles = (props = null, hasActiveOrders = false) =>
       width: '90%',
       alignSelf: 'center',
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     content: {
       ...alignment.PTlarge
     },
-    modal: {
-      backgroundColor: props != null ? props.themeBackground : '#FFF',
-      paddingTop: scale(10),
-      borderTopEndRadius: scale(20),
-      borderTopStartRadius: scale(20),
-      position: 'relative',
-      zIndex: 999,
-      shadowOpacity: 0 ,
-      borderWidth:scale(1),
-      borderColor:props != null ? props.color10 : '#FFF', 
-    },
+
     addressTextContainer: {
       display: 'flex',
       flexDirection: 'row'
@@ -111,6 +102,75 @@ const styles = (props = null, hasActiveOrders = false) =>
       justifyContent: 'center',
       alignItems: 'flex-start',
       marginRight: scale(5)
+    },
+    addressbtn: {
+      backgroundColor: props ? props.color8 : '#f0f0f0',
+      marginHorizontal: scale(10),
+      marginBottom: scale(10),
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: props ? props.color10 : '#FFF',
+      padding: scale(12),
+      flexDirection: 'column', // changed from 'row'
+      gap: scale(8)
+    },
+
+    addressSubContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      gap: scale(10)
+    },
+
+    homeIcon: {
+      color: props ? props.darkBgFont : '#000',
+      width: scale(24),
+      height: scale(24),
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+
+    titleAddress: {
+      flex: 1,
+      justifyContent: 'center'
+    },
+
+    labelStyle: {
+      textAlignVertical: 'bottom',
+      fontSize: scale(14),
+      fontWeight: '700',
+      textAlign: 'left'
+    },
+
+    addressTextContainer: {
+      flexDirection: 'row'
+    },
+
+    addressDetail: {
+      flex: 1,
+      fontSize: scale(12),
+      fontWeight: '300',
+      textAlign: 'right',
+      paddingHorizontal: scale(10)
+    },
+
+    addressTick: {
+      position: 'absolute',
+      top: scale(10),
+      end: scale(10),
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    modal: {
+      backgroundColor: props != null ? props.themeBackground : '#FFF',
+      paddingTop: scale(10),
+      borderTopEndRadius: scale(20),
+      borderTopStartRadius: scale(20),
+      position: 'relative',
+      zIndex: 999,
+      shadowOpacity: 0,
+      borderWidth: scale(1),
+      borderColor: props != null ? props.color10 : '#FFF'
     },
     overlay: {
       backgroundColor:
@@ -144,7 +204,7 @@ const styles = (props = null, hasActiveOrders = false) =>
     placeHolderFadeColor: {
       backgroundColor: props != null ? props.fontSecondColor : '#B8B8B8'
     },
-    emptyViewContainer:{
+    emptyViewContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center'
@@ -159,8 +219,8 @@ const styles = (props = null, hasActiveOrders = false) =>
       padding: scale(15),
       marginTop: scale(30),
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
-      borderWidth:scale(1),
-      borderRadius:scale(10)
+      borderWidth: scale(1),
+      borderRadius: scale(10)
     },
     searchList: {
       marginBottom: 70
@@ -195,6 +255,18 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     topBrandsMargin: {
       marginBottom: hasActiveOrders ? MODAL_HEIGHT : 0
+    },
+    modal: {
+      justifyContent: 'flex-end',
+      margin: 0
+    },
+    modalContent: {
+      backgroundColor: '#fff',
+      borderTopLeftRadius: scale(20),
+      borderTopRightRadius: scale(20),
+      padding: scale(16),
+      maxHeight: '80%',
+      minHeight: scale(200)
     }
   })
 export default styles

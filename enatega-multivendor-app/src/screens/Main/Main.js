@@ -82,6 +82,8 @@ function Main(props) {
   const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
   const [search, setSearch] = useState('')
+  const [loadingAddress, setLoadingAddress] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
   const modalRef = useRef(null)
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -138,6 +140,14 @@ function Main(props) {
   console.log('orderError', orderError)
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
+    onCompleted: (res) => {
+      console.log('selected_address')
+      console.log({ res })
+      // requestAnimationFrame(() => {
+      // modalRef.current?.close()
+      setLoadingAddress(false)
+      // })
+    },
     onError
   })
   // const recentOrderRestaurantsVar = orderData?.recentOrderRestaurants
@@ -185,10 +195,11 @@ function Main(props) {
   }, [navigation, currentTheme])
 
   const onOpen = () => {
-    const modal = modalRef.current
-    if (modal) {
-      modal.open()
-    }
+    setIsVisible(true)
+    // const modal = modalRef.current
+    // if (modal) {
+    //   modal.open()
+    // }
   }
 
   function onError(error) {
@@ -209,16 +220,43 @@ function Main(props) {
   } = useCollapsibleSubHeader()
 
   const setAddressLocation = async (address) => {
-    setLocation({
-      _id: address._id,
-      label: address.label,
-      latitude: Number(address.location.coordinates[1]),
-      longitude: Number(address.location.coordinates[0]),
-      deliveryAddress: address.deliveryAddress,
-      details: address.details
-    })
-    mutate({ variables: { id: address._id } })
-    modalRef.current.close()
+    // setLocation({
+    //   _id: address._id,
+    //   label: address.label,
+    //   latitude: Number(address.location.coordinates[1]),
+    //   longitude: Number(address.location.coordinates[0]),
+    //   deliveryAddress: address.deliveryAddress,
+    //   details: address.details
+    // })
+    // mutate({ variables: { id: address._id } })
+    // modalRef.current.close()
+    console.log('Selected address:', address)
+
+    // Optional: show loading or disable button
+    setLoadingAddress(true)
+    setIsVisible(false)
+    try {
+      // Update location context
+      setLocation({
+        _id: address._id,
+        label: address.label,
+        latitude: Number(address.location.coordinates[1]),
+        longitude: Number(address.location.coordinates[0]),
+        deliveryAddress: address.deliveryAddress,
+        details: address.details
+      })
+
+      // Trigger any side-effects if needed (optional)
+      await mutate({ variables: { id: address._id } })
+
+      // Delay modal close after updates
+      // requestAnimationFrame(() => {
+      //   modalRef.current?.close()
+      // })
+    } catch (error) {
+      console.error('Address select failed:', error)
+      // Optional: show error message
+    }
   }
   // async function getAddress(lat, lon) {
   //   const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
@@ -426,6 +464,10 @@ function Main(props) {
   }
 
   if (error) return <ErrorView />
+
+  const onModalClose = () => {
+    setIsVisible(false)
+  }
 
   return (
     <>
@@ -669,7 +711,7 @@ function Main(props) {
           )}
 
           <MainModalize
-            modalRef={modalRef}
+            isVisible={isVisible}
             // currentTheme={currentTheme}
             isLoggedIn={isLoggedIn}
             addressIcons={addressIcons}
@@ -678,6 +720,8 @@ function Main(props) {
             setAddressLocation={setAddressLocation}
             profile={profile}
             location={location}
+            loading={loadingAddress}
+            onClose={onModalClose}
           />
         </View>
       </SafeAreaView>
