@@ -683,5 +683,6 @@ export const en = {
   continue: 'Continue',
   add_new_address: 'Add New Address',
   save_new_address: 'Save New Address',
-  edit_address: 'Edit Address'
+  edit_address: 'Edit Address',
+  change_language: 'Change Language'
 }

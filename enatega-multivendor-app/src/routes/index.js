@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -59,7 +59,7 @@ import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 import messaging from '@react-native-firebase/messaging'
 import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
-import { Alert, Platform } from 'react-native'
+import { Alert, Platform, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -80,11 +80,16 @@ import AddressNewVersion from '../screens/AddressNewVersion'
 import AddressFromMap from '../screens/AddressNewVersion/AddressFromMap'
 import EditAddressNewVersion from '../screens/EditAddressNewVersion'
 import EditAddressFromMap from '../screens/EditAddressNewVersion/EditAddressFromMap'
+import i18next from 'i18next'
+import SelectLanguageScreen from '../screens/ChooseLanguageLanding'
+import { AntDesign, FontAwesome } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
 const SideDrawer = createDrawerNavigator()
 const Location = createStackNavigator()
+const Language = createStackNavigator()
 
 function Drawer() {
   return (
@@ -391,6 +396,14 @@ function NoDrawer() {
 }
 
 function LocationStack() {
+  const [language, setLanguage] = useState(null)
+
+  const handleLanguageSelect = async (lang) => {
+    await AsyncStorage.setItem('enatega-language', lang)
+    setLanguage(lang)
+    i18next.changeLanguage(lang)
+  }
+
   return (
     <Location.Navigator initialRouteName='SelectLocation'>
       <Location.Screen
@@ -401,6 +414,18 @@ function LocationStack() {
       <Location.Screen name='SelectLocation' component={SelectLocation} />
       <Location.Screen name='AddNewAddress' component={AddNewAddress} />
       <Location.Screen name='Main' component={Main} />
+      <Location.Screen
+        name='SelectLanguageScreen'
+        options={{
+          headerTitle: 'الرجوع'
+        }}
+        children={(props) => (
+          <SelectLanguageScreen
+            {...props}
+            onSelectLanguage={handleLanguageSelect}
+          />
+        )}
+      />
     </Location.Navigator>
   )
 }
@@ -427,6 +452,8 @@ const BottomTabs = () => {
             iconName = 'delivery-dining'
           } else if (route.name === 'CreateAccount') {
             iconName = 'login'
+          } else if (route.name === 'SelectLanguageScreen') {
+            iconName = 'language'
           }
           return (
             <Icon
@@ -497,11 +524,35 @@ const BottomTabs = () => {
           component={Profile}
         />
       ) : null}
+      {!isLoggedIn ? (
+        <Tab.Screen
+          name='SelectLanguageScreen'
+          options={{
+            headerShown: false,
+            tabBarLabel: t('change_language')
+          }}
+          component={SelectLanguageScreen}
+        />
+      ) : null}
     </Tab.Navigator>
   )
 }
 
+const LanguageStack = () => {
+  return (
+    <Language.Navigator>
+      <Language.Screen
+        name='SelectLanguage'
+        component={SelectLanguageScreen}
+        options={{ headerShown: false }}
+      />
+    </Language.Navigator>
+  )
+}
+
 function AppContainer() {
+  const { language } = useSelector((state) => state.language)
+  console.log({ language })
   const client = useApolloClient()
   const { location } = useContext(LocationContext)
   const { SENTRY_DSN } = useEnvVars()
@@ -561,14 +612,16 @@ function AppContainer() {
           navigationService.setGlobalRef(ref)
         }}
       >
-        {!location ? (
+        {!language ? (
+          <LanguageStack />
+        ) : !location ? (
           <LocationStack />
         ) : (
           <MainStack.Navigator initialRouteName='Drawer'>
             <MainStack.Screen
-              options={{ headerShown: false }}
               name='Drawer'
               component={Drawer}
+              options={{ headerShown: false }}
             />
           </MainStack.Navigator>
         )}

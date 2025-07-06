@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -10,14 +10,32 @@ import {
 import { colors } from '../../utils/colors'
 import Logo from '../../../assets/logo.jpg'
 import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNavigation } from '@react-navigation/native'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLanguage } from '../../store/languageSlice'
 
 const languages = [
   { value: 'English', code: 'en', index: 0 },
   { value: 'العربية', code: 'ar', index: 1 }
 ]
 
-const SelectLanguageScreen = ({ onSelectLanguage }) => {
+const SelectLanguageScreen = ({ firstTime }) => {
   const { t } = useTranslation()
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+  // const [language, setLanguage] = useState(null)
+  const { language } = useSelector((state) => state.language)
+  const handleLanguageSelect = async (lang) => {
+    await AsyncStorage.setItem('enatega-language', lang)
+    // setLanguage(lang)
+    dispatch(setLanguage({ language: lang }))
+    i18next.changeLanguage(lang)
+    if (!firstTime && navigation) {
+      navigation.goBack()
+    }
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -35,7 +53,7 @@ const SelectLanguageScreen = ({ onSelectLanguage }) => {
           <TouchableOpacity
             key={lang.code}
             style={styles.languageButton}
-            onPress={() => onSelectLanguage(lang.code)}
+            onPress={() => handleLanguageSelect(lang.code)}
           >
             <Text style={styles.languageText}>{lang.value}</Text>
           </TouchableOpacity>

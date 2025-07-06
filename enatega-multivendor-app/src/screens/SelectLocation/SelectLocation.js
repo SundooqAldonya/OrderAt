@@ -29,7 +29,12 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { mapStyle } from '../../utils/mapStyle'
 import CustomMarker from '../../assets/SVG/imageComponents/CustomMarker'
 import analytics from '../../utils/analytics'
-import { Feather, EvilIcons, MaterialIcons } from '@expo/vector-icons'
+import {
+  Feather,
+  EvilIcons,
+  MaterialIcons,
+  FontAwesome
+} from '@expo/vector-icons'
 import { customMapStyle } from '../../utils/customMapStyles'
 import { useTranslation } from 'react-i18next'
 import ModalDropdown from '../../components/Picker/ModalDropdown'
@@ -102,7 +107,18 @@ export default function SelectLocation(props) {
       title: t('setLocation'),
       setCurrentLocation: getCurrentPosition,
 
-      headerRight: null,
+      headerRight: () => {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('SelectLanguageScreen')
+            }}
+            style={{ marginRight: 15 }}
+          >
+            <FontAwesome name='language' size={22} color='black' />
+          </TouchableOpacity>
+        )
+      },
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,

@@ -402,17 +402,17 @@ export default function App() {
     reviewModalRef?.current?.close()
   }
 
-  const handleLanguageSelect = async (lang) => {
-    await AsyncStorage.setItem('enatega-language', lang)
-    setLanguage(lang)
-    i18next.changeLanguage(lang)
-  }
+  // const handleLanguageSelect = async (lang) => {
+  //   await AsyncStorage.setItem('enatega-language', lang)
+  //   setLanguage(lang)
+  //   i18next.changeLanguage(lang)
+  // }
 
   if (!isConnected) return <ErrorView />
 
-  if (!language) {
-    return <SelectLanguageScreen onSelectLanguage={handleLanguageSelect} />
-  }
+  // if (!language) {
+  //   return <SelectLanguageScreen firstTime={true} />
+  // }
 
   if (appIsReady) {
     return (
