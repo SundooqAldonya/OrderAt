@@ -388,7 +388,8 @@ const RequestDelivery = () => {
                 ? addressInfo.labelFrom
                 : addressInfo.addressFrom} */}
                   {/* {t('FromPlace')} */}
-                  {t('pick_up_location')}
+                  {t('pick_up_location')}{' '}
+                  {addressInfo.labelFrom ? `(${addressInfo.labelFrom})` : null}
                 </TextDefault>
                 <Image
                   source={FromIcon}
@@ -401,7 +402,7 @@ const RequestDelivery = () => {
                   gap: 5
                 }}
               >
-                <TextDefault
+                {/* <TextDefault
                   style={{
                     color: '#000',
                     textAlign: isArabic ? 'right' : 'left',
@@ -409,7 +410,7 @@ const RequestDelivery = () => {
                   }}
                 >
                   {t('edit')}
-                </TextDefault>
+                </TextDefault> */}
                 <Feather name='edit' size={24} color='black' />
               </View>
               {/* <View
@@ -464,7 +465,8 @@ const RequestDelivery = () => {
                 ? addressInfo.labelTo
                 : addressInfo.addressTo} */}
                   {/* {t('ToPlace')} */}
-                  {t('drop_off_location')}
+                  {t('drop_off_location')}{' '}
+                  {addressInfo.labelTo ? `(${addressInfo.labelTo})` : null}
                 </TextDefault>
                 <Image
                   source={ToIcon}
@@ -477,7 +479,7 @@ const RequestDelivery = () => {
                   gap: 5
                 }}
               >
-                <TextDefault
+                {/* <TextDefault
                   style={{
                     color: '#000',
                     textAlign: isArabic ? 'right' : 'left',
@@ -485,7 +487,7 @@ const RequestDelivery = () => {
                   }}
                 >
                   {t('edit')}
-                </TextDefault>
+                </TextDefault> */}
                 <Feather name='edit' size={24} color='black' />
               </View>
               {/* <View

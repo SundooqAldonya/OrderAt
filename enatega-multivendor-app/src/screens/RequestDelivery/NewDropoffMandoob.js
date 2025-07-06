@@ -42,6 +42,7 @@ import {
 } from '../../store/requestDeliverySlice'
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import Toast from 'react-native-toast-message'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
@@ -227,6 +228,21 @@ const NewDropoffMandoob = () => {
 
   const handleNext = () => {
     console.log({ locationMap })
+    if (!name) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: 'اسم المكان مطلوب',
+        text1Style: {
+          textAlign: 'right'
+        },
+        text2Style: {
+          textAlign: 'right',
+          fontSize: 18
+        }
+      })
+      return
+    }
     if (chooseFromMapTo) {
       dispatch(
         setAddressTo({

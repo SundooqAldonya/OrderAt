@@ -722,6 +722,7 @@ function Main(props) {
             location={location}
             loading={loadingAddress}
             onClose={onModalClose}
+            otlobMandoob={false}
           />
         </View>
       </SafeAreaView>

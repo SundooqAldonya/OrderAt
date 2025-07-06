@@ -11,7 +11,7 @@ const MODAL_HEIGHT = Math.floor(SCREEN_HEIGHT / 4)
 const styles = (props = null, hasActiveOrders = false) =>
   StyleSheet.create({
     flex: {
-      flex: 1,
+      flex: 1
     },
     mainItemsContainer: {
       // flexDirection: 'row',
@@ -35,9 +35,8 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
 
     screenBackground: {
-      backgroundColor: props != null ? props.themeBackground : '#FFF',
-       // backgroundColor:colors.blue
-
+      backgroundColor: props != null ? props.themeBackground : '#FFF'
+      // backgroundColor:colors.blue
     },
     mainContentContainer: {
       width: '100%',
@@ -75,8 +74,8 @@ const styles = (props = null, hasActiveOrders = false) =>
       ...alignment.PBsmall
     },
     addButton: {
-      // backgroundColor: colors.primary,
-      backgroundColor: colors.dark,
+      backgroundColor: colors.primary,
+      // backgroundColor: colors.dark,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

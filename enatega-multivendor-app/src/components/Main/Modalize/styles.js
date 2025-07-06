@@ -70,7 +70,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       ...alignment.PRmedium
     },
     addressContainer: {
-      width: '100%',
+      width: '95%',
       ...alignment.PTsmall,
       ...alignment.PBsmall
     },
