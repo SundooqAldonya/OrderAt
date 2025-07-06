@@ -167,6 +167,8 @@ const RequestDelivery = () => {
   const originalDiscount =
     data?.getDeliveryCalculation?.originalDiscount || null
 
+  console.log({ deliveryFee })
+  console.log({ addressInfo })
   console.log({ addressInfo })
 
   useEffect(() => {
@@ -263,8 +265,10 @@ const RequestDelivery = () => {
 
   const handleApplyCoupon = () => {
     const coordinates = {
-      latitude: location.latitude,
-      longitude: location.longitude
+      // latitude: location.latitude,
+      // longitude: location.longitude
+      latitude: +location.latitude,
+      longitude: +location.longitude
     }
     mutateCouponMandoob({
       variables: {

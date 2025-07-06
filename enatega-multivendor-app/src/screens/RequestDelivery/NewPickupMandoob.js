@@ -222,10 +222,10 @@ const NewPickupMandoob = () => {
   }
 
   const handleNext = () => {
-    console.log({
-      selectedCityAndAreaFrom,
-      selectedAreaFrom: selectedAreaFrom.location.location.coordinates
-    })
+    // console.log({
+    //   selectedCityAndAreaFrom,
+    //   selectedAreaFrom: selectedAreaFrom?.location.location.coordinates
+    // })
     if (chooseFromMapFrom) {
       dispatch(
         setAddressFrom({
