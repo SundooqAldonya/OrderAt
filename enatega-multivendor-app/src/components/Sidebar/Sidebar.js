@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useState } from 'react'
-import { View, StatusBar, Platform } from 'react-native'
+import { View, StatusBar, Platform, ScrollView } from 'react-native'
 import SideDrawerItems from '../Drawer/Items/DrawerItems'
 import SideDrawerProfile from '../Drawer/Profile/DrawerProfile'
 import { theme } from '../../utils/themeColors'
@@ -151,143 +151,101 @@ function SidebBar(props) {
   })
 
   return (
-    <View
-      style={[
-        styles().flex,
-        {
-          justifyContent: 'space-between',
-          paddingBottom: inset.bottom,
-          backgroundColor: currentTheme.themeBackground
-        }
-      ]}
+    <ScrollView
+      contentContainerStyle={{
+        paddingBottom: inset.bottom,
+        backgroundColor: currentTheme.themeBackground
+      }}
     >
-      <View style={{ flexGrow: 1 }}>
-        <View style={{ height: 100, paddingTop: 30 }}>
-          <SideDrawerProfile navigation={props.navigation} />
-        </View>
-        <View style={styles(currentTheme).botContainer}>
-          {/* {isLoggedIn ? (
-            <View></View>
-          ) : null} */}
-          {isLoggedIn &&
-            datas.map((dataItem, ind) => (
-              <View
-                key={ind}
-                style={[
-                  styles().item,
-                  { borderBottomWidth: 0, marginVertical: 0 }
-                ]}
-              >
-                <SideDrawerItems
-                  style={styles(currentTheme).iconContainer}
-                  onPress={async () => {
-                    if (dataItem.isAuth && !isLoggedIn) {
-                      props.navigation.navigate('CreateAccount')
-                    } else {
-                      props.navigation.navigate(dataItem.navigateTo)
-                    }
-                  }}
-                  icon={dataItem.icon}
-                  title={t(dataItem.title)}
+      <View style={{ height: 100, paddingTop: 30 }}>
+        <SideDrawerProfile navigation={props.navigation} />
+      </View>
+
+      <View style={styles(currentTheme).botContainer}>
+        {isLoggedIn &&
+          datas.map((dataItem, ind) => (
+            <View
+              key={ind}
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 0 }
+              ]}
+            >
+              <SideDrawerItems
+                style={styles(currentTheme).iconContainer}
+                onPress={async () => {
+                  if (dataItem.isAuth && !isLoggedIn) {
+                    props.navigation.navigate('CreateAccount')
+                  } else {
+                    props.navigation.navigate(dataItem.navigateTo)
+                  }
+                }}
+                icon={dataItem.icon}
+                title={t(dataItem.title)}
+              />
+            </View>
+          ))}
+
+        {isLoggedIn ? (
+          <>
+            <TouchableOpacity
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 5 }
+              ]}
+            >
+              <SideDrawerItems
+                onPress={() => Linking.openURL('https://orderat.ai/#/privacy')}
+                icon={
+                  <SimpleLineIcons
+                    name={'info'}
+                    size={verticalScale(18)}
+                    color={currentTheme.darkBgFont}
+                  />
+                }
+                title={t('privacy')}
+              />
+            </TouchableOpacity>
+
+            <View
+              style={[
+                styles().item,
+                { borderBottomWidth: 0, marginVertical: 5 }
+              ]}
+            >
+              <SideDrawerItems
+                onPress={logoutClick}
+                icon={
+                  <SimpleLineIcons
+                    name={'logout'}
+                    size={verticalScale(18)}
+                    color={currentTheme.darkBgFont}
+                  />
+                }
+                title={t('titleLogout')}
+              />
+            </View>
+          </>
+        ) : (
+          <View
+            style={[
+              styles().item,
+              { borderBottomWidth: 0, marginVertical: 10, height: 50 }
+            ]}
+          >
+            <SideDrawerItems
+              onPress={() => props.navigation.navigate('CreateAccount')}
+              icon={
+                <SimpleLineIcons
+                  name={'login'}
+                  size={verticalScale(18)}
+                  color={currentTheme.darkBgFont}
                 />
-              </View>
-            ))}
-          {isLoggedIn ? (
-            <Fragment>
-              <TouchableOpacity
-                style={[
-                  styles().item,
-                  { borderBottomWidth: 0, marginVertical: 5 }
-                ]}
-              >
-                <SideDrawerItems
-                  onPress={() =>
-                    Linking.canOpenURL('https://orderat.ai/#/privacy').then(
-                      () => {
-                        Linking.openURL('https://orderat.ai/#/privacy')
-                      }
-                    )
-                  }
-                  icon={
-                    <SimpleLineIcons
-                      name={'info'}
-                      size={verticalScale(18)}
-                      color={currentTheme.darkBgFont}
-                    />
-                  }
-                  title={t('privacy')}
-                />
-              </TouchableOpacity>
-              <View
-                style={[
-                  styles().item,
-                  { borderBottomWidth: 0, marginVertical: 5 }
-                ]}
-              >
-                <SideDrawerItems
-                  onPress={logoutClick}
-                  // icon={'logout'}
-                  icon={
-                    <SimpleLineIcons
-                      name={'logout'}
-                      size={verticalScale(18)}
-                      color={currentTheme.darkBgFont}
-                    />
-                  }
-                  title={t('titleLogout')}
-                />
-              </View>
-              {/* <View
-                style={[
-                  styles().item,
-                  {
-                    borderBottomWidth: 0,
-                    marginVertical: 10,
-                    height: 50
-                  }
-                ]}
-              >
-                <SideDrawerItems
-                  onPress={() => props.navigation.navigate(datas[4].navigateTo)}
-                  icon={
-                    <SimpleLineIcons
-                      name={datas[4].icon}
-                      size={verticalScale(18)}
-                      color={currentTheme.darkBgFont}
-                    />
-                  }
-                  title={t(datas[4].title)}
-                />
-              </View> */}
-            </Fragment>
-          ) : (
-            <Fragment>
-              <View
-                style={[
-                  styles().item,
-                  {
-                    borderBottomWidth: 0,
-                    marginVertical: 10,
-                    height: 50
-                  }
-                ]}
-              >
-                <SideDrawerItems
-                  onPress={() => props.navigation.navigate('CreateAccount')}
-                  // icon={'login'}
-                  icon={
-                    <SimpleLineIcons
-                      name={'login'}
-                      size={verticalScale(18)}
-                      color={currentTheme.darkBgFont}
-                    />
-                  }
-                  title={t('login_or_create')}
-                />
-              </View>
-            </Fragment>
-          )}
-        </View>
+              }
+              title={t('login_or_create')}
+            />
+          </View>
+        )}
       </View>
 
       <LogoutModal
@@ -295,7 +253,7 @@ function SidebBar(props) {
         onCancel={handleCancel}
         onLogout={handleLogout}
       />
-    </View>
+    </ScrollView>
   )
 }
 export default SidebBar
