@@ -161,7 +161,7 @@ const RequestDelivery = () => {
         }
       })
     }
-  }, [addressInfo])
+  }, [addressInfo, coupon])
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || null
   const originalDiscount =
