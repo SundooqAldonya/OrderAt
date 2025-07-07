@@ -95,7 +95,8 @@ const requestDeliverySlice = createSlice({
       state.selectedCityAndAreaTo = true
       state.chooseFromMapTo = false
       state.chooseFromAddressBookTo = false
-    }
+    },
+    resetRequestDelivery: (state) => initialState
   }
 })
 
@@ -109,7 +110,8 @@ export const {
   setSelectedCityFrom,
   setSelectedAreaFrom,
   setSelectedCityTo,
-  setSelectedAreaTo
+  setSelectedAreaTo,
+  resetRequestDelivery
 } = requestDeliverySlice.actions
 const requestDeliveryReducer = requestDeliverySlice.reducer
 export default requestDeliveryReducer

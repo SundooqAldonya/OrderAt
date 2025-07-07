@@ -673,5 +673,9 @@ export const ar = {
   add_new_address: 'أضف عنوان جديد',
   save_new_address: 'حفظ العنوان',
   edit_address: 'تعديل العنوان',
-  change_language: 'تغيير اللغة'
+  change_language: 'تغيير اللغة',
+  choose_pickup: 'أختر موقع الاستلام',
+  choose_dropoff: 'أختر موقع التوصيل',
+  regions_required: 'يجب تحديد أماكن الاستلام والتسليم!',
+  notes_required: 'حقل الملاحظات مطلوب!'
 }

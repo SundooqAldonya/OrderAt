@@ -356,6 +356,7 @@ function Main(props) {
         })
       }
       refetch()
+      setIsVisible(false)
     })
 
     // navigation.navigate('AddNewAddress', {
@@ -431,8 +432,9 @@ function Main(props) {
                 ...locationData
               })
             }
-            const modal = modalRef.current
-            modal?.close()
+            setIsVisible(false)
+            // const modal = modalRef.current
+            // modal?.close()
           }}
         >
           <View style={styles().addressSubContainer}>

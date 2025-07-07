@@ -19,7 +19,7 @@ import { LocationContext } from '../../context/Location'
 import { Controller, useForm } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import { getDeliveryCalculation, myOrders } from '../../apollo/queries'
@@ -44,12 +44,14 @@ import { alignment } from '../../utils/alignment'
 import Spinner from '../../components/Spinner/Spinner'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { colors } from '../../utils/colors'
+import { resetRequestDelivery } from '../../store/requestDeliverySlice'
 
 const ORDERS = gql`
   ${myOrders}
 `
 const RequestDelivery = () => {
   const { i18n, t } = useTranslation()
+  const dispatch = useDispatch()
   const mapRef = useRef()
   const voucherModalRef = useRef(null)
   const inputRef = useRef()
@@ -64,6 +66,7 @@ const RequestDelivery = () => {
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
   const [disabled, setDisabled] = useState(false)
+  const [notesError, setNotesError] = useState(false)
 
   console.log({ regionFrom: addressInfo.regionFrom })
   console.log({ pickupCoords })
@@ -110,6 +113,7 @@ const RequestDelivery = () => {
           textAlign: isArabic ? 'right' : 'left'
         }
       })
+      dispatch(resetRequestDelivery())
       navigation.navigate('Main')
     },
     onError: (err) => {
@@ -200,10 +204,24 @@ const RequestDelivery = () => {
   )
 
   const validate = () => {
+    if (!addressInfo.regionTo || !addressInfo.regionFrom) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: t('regions_required'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      return false
+    }
     if (!notes) {
       Toast.show({
         type: 'error',
-        text1: t('important_field'),
+        text1: t('error'),
         text2: t('notes_required'),
         text1Style: {
           textAlign: isArabic ? 'right' : 'left'
@@ -212,6 +230,7 @@ const RequestDelivery = () => {
           textAlign: isArabic ? 'right' : 'left'
         }
       })
+      setNotesError(true)
       return false
     }
     return true
@@ -235,7 +254,9 @@ const RequestDelivery = () => {
         notes
       }
       console.log({ pickupCoords, dropOffCoords })
-
+      if (notes?.length) {
+        setNotesError(false)
+      }
       mutate({
         variables: {
           input: {
@@ -352,8 +373,8 @@ const RequestDelivery = () => {
           </MapView>
         </View>
         <View style={styles.wrapper}>
-          <View style={styles.inputContainer}>
-            {/* <TextDefault
+          {/* <View style={styles.inputContainer}> */}
+          {/* <TextDefault
             bolder
             style={{
               ...styles.title,
@@ -362,164 +383,84 @@ const RequestDelivery = () => {
           >
             {t('pick_up_location')}
           </TextDefault> */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('NewPickupMandoob')}
-              style={{
-                ...styles.address,
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: isArabic ? 'row' : 'row-reverse',
-                  alignItems: 'center'
-                }}
-              >
-                <TextDefault
-                  style={{
-                    color: '#000',
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: 18
-                  }}
-                >
-                  {/* {addressInfo.labelFrom
-                ? addressInfo.labelFrom
-                : addressInfo.addressFrom} */}
-                  {/* {t('FromPlace')} */}
-                  {t('pick_up_location')}{' '}
-                  {addressInfo.labelFrom ? `(${addressInfo.labelFrom})` : null}
-                </TextDefault>
-                <Image
-                  source={FromIcon}
-                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 5
-                }}
-              >
-                {/* <TextDefault
-                  style={{
-                    color: '#000',
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: 18
-                  }}
-                >
-                  {t('edit')}
-                </TextDefault> */}
-                <Feather name='edit' size={24} color='black' />
-              </View>
-              {/* <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: '#000',
-                borderStyle: 'dashed',
-                marginTop: 10,
-                marginBottom: 7
-              }}
-            />
-            <TextDefault
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {addressInfo.addressFreeTextFrom}
-            </TextDefault> */}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.inputContainer}>
-            {/* <TextDefault
-            bolder
-            style={{
-              ...styles.title,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NewPickupMandoob')}
+            style={[styles.addressCard]}
           >
-            {t('drop_off_location')}
-          </TextDefault> */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('NewDropoffMandoob')}
-              style={{
-                ...styles.address,
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: isArabic ? 'row' : 'row-reverse',
-                  alignItems: 'center'
-                }}
-              >
-                <TextDefault
-                  style={{
-                    color: '#000',
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: 18
-                  }}
-                >
-                  {/* {addressInfo.labelTo
-                ? addressInfo.labelTo
-                : addressInfo.addressTo} */}
-                  {/* {t('ToPlace')} */}
-                  {t('drop_off_location')}{' '}
-                  {addressInfo.labelTo ? `(${addressInfo.labelTo})` : null}
+            <View style={styles.addressRow(isArabic)}>
+              <View style={styles.labelContainer(isArabic)}>
+                <TextDefault style={styles.addressText(isArabic)}>
+                  {t('pick_up_location')}:
                 </TextDefault>
-                <Image
-                  source={ToIcon}
-                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-                />
+                <Image source={FromIcon} style={styles.iconStyle} />
               </View>
-              <View
+
+              <View style={styles.editIconContainer(isArabic)}>
+                <Feather name='edit' size={20} color='black' />
+              </View>
+            </View>
+            <View style={{ marginHorizontal: 35 }}>
+              <TextDefault
                 style={{
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 5
+                  ...styles.addressText(isArabic),
+                  color: !addressInfo.labelFrom ? 'red' : colors.primary
                 }}
               >
-                {/* <TextDefault
-                  style={{
-                    color: '#000',
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: 18
-                  }}
-                >
-                  {t('edit')}
-                </TextDefault> */}
-                <Feather name='edit' size={24} color='black' />
+                {addressInfo.labelFrom
+                  ? `(${addressInfo.labelFrom})`
+                  : `(${t('choose_pickup')})`}
+              </TextDefault>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NewDropoffMandoob')}
+            style={[styles.addressCard]}
+          >
+            <View style={styles.addressRow(isArabic)}>
+              <View style={styles.labelContainer(isArabic)}>
+                <TextDefault style={styles.addressText(isArabic)}>
+                  {t('drop_off_location')}:
+                </TextDefault>
+                <Image source={ToIcon} style={styles.iconStyle} />
               </View>
-              {/* <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: '#000',
-                borderStyle: 'dashed',
-                marginTop: 10,
-                marginBottom: 7
-              }}
-            />
-            <TextDefault
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {addressInfo.addressFreeTextTo}
-            </TextDefault> */}
-            </TouchableOpacity>
-          </View>
+
+              <View style={styles.editIconContainer(isArabic)}>
+                <Feather name='edit' size={20} color='black' />
+              </View>
+            </View>
+            <View style={{ marginHorizontal: 35 }}>
+              <TextDefault
+                style={{
+                  ...styles.addressText(isArabic),
+                  color: !addressInfo.labelTo ? 'red' : colors.primary
+                }}
+              >
+                {addressInfo.labelTo
+                  ? `(${addressInfo.labelTo})`
+                  : `(${t('choose_dropoff')})`}
+              </TextDefault>
+            </View>
+          </TouchableOpacity>
 
           {/* Item Description */}
           <TextDefault
             bolder
             style={{
               ...styles.title,
-              textAlign: isArabic ? 'right' : 'left'
+              textAlign: isArabic ? 'right' : 'left',
+              marginTop: 20,
+              color: notesError ? 'red' : '#000'
             }}
           >
-            {t('item_description')}
+            {t('item_description')} *
           </TextDefault>
           <TextInput
             placeholder={t('item_description_notes')}
-            style={styles.textArea}
+            style={[
+              styles.textArea,
+              notesError && { borderColor: 'red', borderWidth: 1 }
+            ]}
             onChangeText={(text) => setNotes(text)}
             multiline
             numberOfLines={4}
@@ -947,5 +888,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5
+  },
+  addressCard: {
+    backgroundColor: '#f9f9f9',
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 10,
+    elevation: 2, // shadow for Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow
+    shadowOpacity: 0.1,
+    shadowRadius: 4
+  },
+  addressRow: (isArabic) => ({
+    flexDirection: isArabic ? 'row-reverse' : 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }),
+  labelContainer: (isArabic) => ({
+    flexDirection: isArabic ? 'row' : 'row-reverse',
+    alignItems: 'center',
+    gap: 8
+  }),
+  editIconContainer: (isArabic) => ({
+    flexDirection: isArabic ? 'row-reverse' : 'row',
+    alignItems: 'center',
+    gap: 5
+  }),
+  addressText: (isArabic) => ({
+    color: '#333',
+    textAlign: isArabic ? 'right' : 'left',
+    fontSize: 14,
+    fontWeight: '500'
+  }),
+  iconStyle: {
+    width: 34,
+    height: 34,
+    resizeMode: 'contain'
   }
 })

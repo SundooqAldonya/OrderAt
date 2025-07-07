@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -119,6 +119,27 @@ const EditAddressNewVersion = () => {
 
   console.log({ address, id })
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('edit_address'),
+      headerStyle: {
+        backgroundColor: colors.primary
+      },
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(resetAddNewAddress())
+            navigation.goBack()
+          }}
+          style={{ paddingHorizontal: 15 }}
+        >
+          <Ionicons name='arrow-back' size={24} color='white' />
+        </TouchableOpacity>
+      ),
+      headerRight: () => null
+    })
+  }, [navigation, t])
+
   useEffect(() => {
     if (locationMap) {
       setCoordinates({
@@ -183,7 +204,7 @@ const EditAddressNewVersion = () => {
     onCompleted: (data) => {
       console.log({ data })
       refetchProfile()
-      resetAddNewAddress()
+      dispatch(resetAddNewAddress())
       navigation.navigate(prevScreen)
     },
     onError: (err) => {

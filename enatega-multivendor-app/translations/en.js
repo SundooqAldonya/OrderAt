@@ -684,5 +684,9 @@ export const en = {
   add_new_address: 'Add New Address',
   save_new_address: 'Save New Address',
   edit_address: 'Edit Address',
-  change_language: 'Change Language'
+  change_language: 'Change Language',
+  choose_pickup: 'Choose pickup place',
+  choose_dropoff: 'Choose dropoff place',
+  regions_required: 'Pickup and drop-off locations are required!',
+  notes_required: 'Notes of delivery required!'
 }

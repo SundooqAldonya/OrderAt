@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -110,6 +110,27 @@ const AddressNewVersion = () => {
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('add_new_address'),
+      headerStyle: {
+        backgroundColor: colors.primary
+      },
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(resetAddNewAddress())
+            navigation.goBack()
+          }}
+          style={{ paddingHorizontal: 15 }}
+        >
+          <Ionicons name='arrow-back' size={24} color='white' />
+        </TouchableOpacity>
+      ),
+      headerRight: () => null
+    })
+  }, [navigation, t])
+
   useEffect(() => {
     if (chooseFromMap) {
       // dispatch(setchooseFromMap())
@@ -136,7 +157,7 @@ const AddressNewVersion = () => {
     onCompleted: (data) => {
       console.log({ data })
       refetchProfile()
-      resetAddNewAddress()
+      dispatch(resetAddNewAddress())
       navigation.navigate('Main')
     },
     onError: (err) => {
@@ -229,7 +250,7 @@ const AddressNewVersion = () => {
 
   console.log({ locationMap })
 
-  const handleNext = () => {
+  const handleSubmit = () => {
     console.log({
       selectedCityAndArea,
       locationMap
@@ -426,7 +447,7 @@ const AddressNewVersion = () => {
       />
 
       {/* Save button */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleNext}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
         <Text style={styles.saveButtonText}>{t('save_new_address')}</Text>
       </TouchableOpacity>
 
