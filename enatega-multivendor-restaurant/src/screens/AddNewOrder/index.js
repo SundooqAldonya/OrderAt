@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   Alert,
   Image,
@@ -32,6 +32,7 @@ import { useAcceptOrder, useAccount, useOrderRing } from '../../ui/hooks'
 import { Fragment } from 'react'
 import { Configuration } from '../../ui/context'
 import { useContext } from 'react'
+import Feather from '@expo/vector-icons/Feather'
 
 const GET_CITY_AREAS = gql`
   ${getCityAreas}
@@ -46,6 +47,7 @@ const AddNewOrder = ({ navigation }) => {
     addressDetails: '',
     preparationTime: ''
   })
+  const [search, setSearch] = useState('')
   const [areaIsVisible, setAreaIsVisible] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState(null)
@@ -151,6 +153,14 @@ const AddNewOrder = ({ navigation }) => {
       }
     })
   }
+
+  const filteredAreas = useMemo(() => {
+    return (
+      dataAreas?.areasByCity?.filter(area =>
+        area.title.toLowerCase().includes(search.toLowerCase())
+      ) || []
+    )
+  }, [dataAreas, search])
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.green }}>
@@ -290,41 +300,65 @@ const AddNewOrder = ({ navigation }) => {
           onPress={() => setAreaIsVisible(false)}
           style={{
             flex: 1,
-            backgroundColor: '#00000050',
-            marginBottom: -20
-          }}></TouchableOpacity>
-        <ScrollView
-          contentContainerStyle={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            gap: 20
+            backgroundColor: '#00000080' // darker overlay
           }}
+        />
+
+        <View
           style={{
-            flex: 1,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            maxHeight: '70%',
             backgroundColor: colors.green,
-            padding: 16,
-            height: 400,
-            elevation: 10,
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 10
+            padding: 20,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -3 },
+            shadowOpacity: 0.2,
+            shadowRadius: 6,
+            elevation: 10
           }}>
-          {dataAreas?.areasByCity?.map(area => {
-            console.log({ area })
-            return (
+          <TextDefault bolder style={{ fontSize: 16, marginBottom: 16 }}>
+            أختر المنطقة
+          </TextDefault>
+          <TextInput
+            placeholder="ابحث عن المنطقة..."
+            value={search}
+            onChangeText={setSearch}
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: 8,
+              paddingVertical: 10,
+              paddingHorizontal: 16,
+              fontSize: 14,
+              marginBottom: 16
+            }}
+          />
+          <ScrollView
+            contentContainerStyle={{
+              flexDirection: 'column', // vertical list
+              gap: 12
+            }}
+            showsVerticalScrollIndicator={false}>
+            {filteredAreas?.map(area => (
               <TouchableOpacity
                 key={area._id}
                 style={{
-                  backgroundColor:
-                    selectedArea?._id === area._id ? '#000' : '#fff',
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderRadius: 8,
-                  elevation: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  paddingVertical: 14,
+                  paddingHorizontal: 20,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: '#ccc',
+                  elevation: 2,
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.2,
+                  shadowOpacity: 0.1,
                   shadowRadius: 3
                 }}
                 onPress={() => {
@@ -339,15 +373,19 @@ const AddNewOrder = ({ navigation }) => {
                 }}>
                 <TextDefault
                   style={{
-                    color: selectedArea?._id === area._id ? '#fff' : '#000',
+                    color: '#000',
+                    fontSize: 16,
                     textTransform: 'capitalize'
                   }}>
                   {area.title}
                 </TextDefault>
+                {selectedArea?._id === area._id && (
+                  <Feather name="check" size={20} color="green" />
+                )}
               </TouchableOpacity>
-            )
-          })}
-        </ScrollView>
+            ))}
+          </ScrollView>
+        </View>
       </Modal>
     </SafeAreaView>
   )
@@ -373,7 +411,44 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginHorizontal: 16,
     marginTop: 10
-  }
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: '#00000080'
+  },
+  bottomSheet: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    maxHeight: '70%',
+    backgroundColor: colors.green,
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 10
+  },
+  areaChip: isSelected => ({
+    backgroundColor: isSelected ? '#000' : '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3
+  }),
+  areaText: isSelected => ({
+    color: isSelected ? '#fff' : '#000',
+    fontSize: 14,
+    textTransform: 'capitalize'
+  })
 })
 
 export default AddNewOrder
