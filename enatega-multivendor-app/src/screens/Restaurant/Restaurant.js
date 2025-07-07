@@ -301,14 +301,16 @@ function Restaurant(props) {
   }
 
   function wrapContentAfterWords(content, numWords) {
-    const words = content.split(' ')
-    const wrappedContent = []
+    if (content?.length) {
+      const words = content.split(' ')
+      const wrappedContent = []
 
-    for (let i = 0; i < words.length; i += numWords) {
-      wrappedContent.push(words.slice(i, i + numWords).join(' '))
+      for (let i = 0; i < words.length; i += numWords) {
+        wrappedContent.push(words.slice(i, i + numWords).join(' '))
+      }
+
+      return wrappedContent.join('\n')
     }
-
-    return wrappedContent.join('\n')
   }
 
   const addToCart = async (food, clearFlag) => {
@@ -446,7 +448,7 @@ function Restaurant(props) {
 
   function onViewableItemsChanged({ viewableItems }) {
     buttonClickedSetter(false)
-    if (viewableItems.length === 0) return
+    if (viewableItems?.length === 0) return
     if (
       selectedLabel !== viewableItems[0].section.index &&
       buttonClicked === false

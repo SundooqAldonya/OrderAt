@@ -558,7 +558,7 @@ function ImageTextCenterHeader(props, ref) {
                   </TextDefault>
                 </View>
 
-                {props.restaurant?.businessCategories.length ? (
+                {props.restaurant?.businessCategories?.length ? (
                   <View style={{ marginTop: 10 }}>
                     <Chip
                       // icon='information'
