@@ -114,6 +114,14 @@ function SidebBar() {
               reverse={isArabic}
             />
           </View>
+          {/* <View style={styles.item}>
+            <NavItem
+              onPress={() => navigation.navigate('Wallet')}
+              icon={'wallet'}
+              title={t('wallet')}
+              reverse={isArabic}
+            />
+          </View> */}
           <View style={styles.item}>
             <NavItem
               onPress={() => navigation.navigate('MyOrders')}
