@@ -10,7 +10,8 @@ const DownloadPage = () => {
       window.location.href =
         "https://play.google.com/store/apps/details?id=com.orderatcustomer.app";
     } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-      window.location.href = "https://apps.apple.com/app/id123456789";
+      window.location.href =
+        "https://apps.apple.com/au/app/orderat-business/id6743945873";
     } else {
       window.location.href = "https://orderat.ai"; // fallback
     }
