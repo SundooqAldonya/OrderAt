@@ -124,37 +124,34 @@ export default function App() {
   }, [])
 
   useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('🔄 App resumed. Listening to network changes...')
+
+        let unsubscribeNetInfo = () => {}
+
+        unsubscribeNetInfo = NetInfo.addEventListener((state) => {
+          console.log('🌐 NetInfo state on resume:', state)
+          setIsConnected(state.isConnected)
+
+          if (state.isConnected) {
+            client.reFetchObservableQueries()
+            unsubscribeNetInfo() // ✅ now it’s defined and safe to call
+          }
+        })
+      }
+
+      appState.current = nextAppState
+    }
+
     const subscription = AppState.addEventListener(
       'change',
-      async (nextAppState) => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === 'active'
-        ) {
-          console.log(
-            '🔄 App resumed from background. Waiting before checking connectivity...'
-          )
-
-          setTimeout(async () => {
-            const netState = await NetInfo.fetch()
-            setIsConnected(netState.isConnected)
-
-            if (netState.isConnected) {
-              console.log('🟢 Network is connected. Re-fetching queries...')
-              client.reFetchObservableQueries()
-            } else {
-              console.log('🔴 Still offline after resume.')
-            }
-          }, 1000) // 1 second delay (you can try 500ms or tune as needed)
-        }
-
-        appState.current = nextAppState
-      }
+      handleAppStateChange
     )
-
-    return () => {
-      subscription.remove()
-    }
+    return () => subscription.remove()
   }, [])
 
   // useEffect(() => {
@@ -166,18 +163,22 @@ export default function App() {
   //         nextAppState === 'active'
   //       ) {
   //         console.log(
-  //           '🔄 App resumed from background. Checking connectivity...'
+  //           '🔄 App resumed from background. Waiting before checking connectivity...'
   //         )
-  //         const netState = await NetInfo.fetch()
-  //         setIsConnected(netState.isConnected)
 
-  //         if (netState.isConnected) {
-  //           console.log('🟢 Network is connected. Re-fetching queries...')
-  //           client.reFetchObservableQueries()
-  //         } else {
-  //           console.log('🔴 Still offline after resume.')
-  //         }
+  //         setTimeout(async () => {
+  //           const netState = await NetInfo.fetch()
+  //           setIsConnected(netState.isConnected)
+
+  //           if (netState.isConnected) {
+  //             console.log('🟢 Network is connected. Re-fetching queries...')
+  //             client.reFetchObservableQueries()
+  //           } else {
+  //             console.log('🔴 Still offline after resume.')
+  //           }
+  //         }, 1000) // 1 second delay (you can try 500ms or tune as needed)
   //       }
+
   //       appState.current = nextAppState
   //     }
   //   )
@@ -185,19 +186,6 @@ export default function App() {
   //   return () => {
   //     subscription.remove()
   //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener((state) => {
-  //     setIsConnected(state.isConnected)
-  //     if (state.isConnected) {
-  //       console.log('🟢 Reconnected to the internet')
-
-  //       client.reFetchObservableQueries()
-  //     }
-  //   })
-
-  //   return () => unsubscribe()
   // }, [])
 
   let [fontsLoaded] = useFonts({
