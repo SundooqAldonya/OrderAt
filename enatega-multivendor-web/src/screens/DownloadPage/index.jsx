@@ -8,7 +8,7 @@ const DownloadPage = () => {
 
     if (/android/i.test(userAgent)) {
       window.location.href =
-        "https://play.google.com/store/apps/details?id=com.orderat.app";
+        "https://play.google.com/store/apps/details?id=com.orderatcustomer.app";
     } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
       window.location.href = "https://apps.apple.com/app/id123456789";
     } else {
