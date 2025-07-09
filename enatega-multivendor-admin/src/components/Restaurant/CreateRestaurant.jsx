@@ -98,6 +98,9 @@ const CreateRestaurant = props => {
   const [restaurantCuisines, setRestaurantCuisines] = React.useState([])
   const [image, setImage] = useState(null)
   const [logo, setLogo] = useState(null)
+  const [salesPersonName, setSalesPersonName] = useState('')
+  const [responsiblePersonName, setResponsiblePersonName] = useState('')
+  const [contactNumber, setContactNumber] = useState('')
 
   const [uploadFile] = useMutation(UPLOAD_FILE)
   const [uploadRestaurantLogo] = useMutation(UPLOAD_LOGO)
@@ -562,6 +565,57 @@ const CreateRestaurant = props => {
               </Box>
             </Grid>
             <Grid item xs={12} sm={6}>
+              <Box>
+                <Typography className={classes.labelText}>
+                  {t('sales_person')}
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  placeholder={t('sales_person')}
+                  type="text"
+                  disableUnderline
+                  name="salesPersonName"
+                  value={salesPersonName}
+                  onChange={e => setSalesPersonName(e.target.value)}
+                  className={[globalClasses.input]}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Typography className={classes.labelText}>
+                  {t('responsiblePersonName')}
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  name="responsiblePersonName"
+                  value={responsiblePersonName}
+                  onChange={e => setResponsiblePersonName(e.target.value)}
+                  placeholder={t('responsiblePersonName')}
+                  type="text"
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Typography className={classes.labelText}>
+                  {t('contactNumber')}
+                </Typography>
+                <Input
+                  style={{ marginTop: -1 }}
+                  name="contactNumber"
+                  value={contactNumber}
+                  onChange={e => setContactNumber(e.target.value)}
+                  placeholder={t('contactNumber')}
+                  type="text"
+                  disableUnderline
+                  className={[globalClasses.input]}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <Typography className={classes.labelText}>
                 {t('Select City')}
               </Typography>
@@ -777,7 +831,10 @@ const CreateRestaurant = props => {
                         city: selectedCity,
                         businessCategories: restaurantCategories.map(
                           item => item._id
-                        )
+                        ),
+                        salesPersonName,
+                        responsiblePersonName,
+                        contactNumber
                       }
                     }
                   })

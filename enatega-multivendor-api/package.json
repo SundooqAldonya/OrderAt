@@ -68,7 +68,8 @@
     "stripe": "^8.195.0",
     "subscriptions-transport-ws": "^0.11.0",
     "twilio": "^3.73.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^7.1.0",

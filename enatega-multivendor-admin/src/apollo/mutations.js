@@ -1001,3 +1001,11 @@ export const createDeliveryRequestAdmin = gql`
     }
   }
 `
+
+export const createFoodByFile = gql`
+  mutation CreateBusinessMenu($file: Upload, $restaurantId: String!) {
+    createBusinessMenu(file: $file, restaurantId: $restaurantId) {
+      message
+    }
+  }
+`

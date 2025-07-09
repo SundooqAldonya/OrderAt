@@ -106,6 +106,9 @@ const VendorProfile = () => {
   const [logo, setLogo] = useState(null)
   const [selectedCity, setSelectedCity] = useState('')
   const [category, setCategory] = useState('')
+  const [salesPersonName, setSalesPersonName] = useState('')
+  const [responsiblePersonName, setResponsiblePersonName] = useState('')
+  const [contactNumber, setContactNumber] = useState('')
 
   const onCompleted = data => {
     setNameError(null)
@@ -366,7 +369,7 @@ const VendorProfile = () => {
       const salesTax = form.salesTax.value
       const shopType = !category ? data?.restaurant.shopCategory._id : category
       const city = selectedCity
-      console.log({ shopType })
+
       mutate({
         variables: {
           restaurantInput: {
@@ -382,7 +385,10 @@ const VendorProfile = () => {
             shopType,
             cuisines: restaurantCuisines,
             businessCategories: restaurantCategories.map(item => item._id),
-            city
+            city,
+            salesPersonName,
+            responsiblePersonName,
+            contactNumber
           }
         }
       })
@@ -647,6 +653,83 @@ const VendorProfile = () => {
                         placeholder={t('OrderPrefix')}
                         type="text"
                         defaultValue={data && data.restaurant.orderPrefix}
+                        disableUnderline
+                        className={[
+                          globalClasses.input,
+                          prefixError === false
+                            ? globalClasses.inputError
+                            : prefixError === true
+                            ? globalClasses.inputSuccess
+                            : ''
+                        ]}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('sales_person')}
+                      </Typography>
+                      <Input
+                        style={{ marginTop: -1 }}
+                        placeholder={t('sales_person')}
+                        type="text"
+                        defaultValue={data && data.restaurant.salesPersonName}
+                        disableUnderline
+                        name="salesPersonName"
+                        value={salesPersonName}
+                        onChange={e => setSalesPersonName(e.target.value)}
+                        className={[
+                          globalClasses.input,
+                          prefixError === false
+                            ? globalClasses.inputError
+                            : prefixError === true
+                            ? globalClasses.inputSuccess
+                            : ''
+                        ]}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('responsiblePersonName')}
+                      </Typography>
+                      <Input
+                        style={{ marginTop: -1 }}
+                        name="responsiblePersonName"
+                        value={responsiblePersonName}
+                        onChange={e => setResponsiblePersonName(e.target.value)}
+                        placeholder={t('responsiblePersonName')}
+                        type="text"
+                        defaultValue={
+                          data && data.restaurant.responsiblePersonName
+                        }
+                        disableUnderline
+                        className={[
+                          globalClasses.input,
+                          prefixError === false
+                            ? globalClasses.inputError
+                            : prefixError === true
+                            ? globalClasses.inputSuccess
+                            : ''
+                        ]}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('contactNumber')}
+                      </Typography>
+                      <Input
+                        style={{ marginTop: -1 }}
+                        name="contactNumber"
+                        value={contactNumber}
+                        onChange={e => setContactNumber(e.target.value)}
+                        placeholder={t('contactNumber')}
+                        type="text"
+                        defaultValue={data && data.restaurant.contactNumber}
                         disableUnderline
                         className={[
                           globalClasses.input,

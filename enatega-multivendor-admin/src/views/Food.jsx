@@ -3,11 +3,7 @@ import { useQuery, useMutation, gql } from '@apollo/client'
 import { withTranslation } from 'react-i18next'
 // core components
 import Header from '../components/Headers/Header'
-import {
-  getRestaurantDetail,
-  deleteFood,
-  getFoodListByRestaurant
-} from '../apollo'
+import { deleteFood, getFoodListByRestaurant } from '../apollo'
 import FoodComponent from '../components/Food/Food'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
@@ -33,6 +29,7 @@ import TableHeader from '../components/TableHeader'
 import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 import { Fragment } from 'react'
+import MenuFileUpload from '../components/MenuFileUpload'
 
 const GET_FOODS = gql`
   ${getFoodListByRestaurant}
@@ -40,6 +37,7 @@ const GET_FOODS = gql`
 const DELETE_FOOD = gql`
   ${deleteFood}
 `
+
 const Food = props => {
   const { t } = props
   const { PAID_VERSION } = ConfigurableValues()
@@ -167,6 +165,7 @@ const Food = props => {
         <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
       )}
       <Container className={globalClasses.flex} fluid>
+        {/* <MenuFileUpload /> */}
         <FoodComponent onClose={closeEditModal} />
         {errorQuery && <span>`Error! ${errorQuery.message}`</span>}
         {loadingQuery ? (

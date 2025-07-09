@@ -139,7 +139,16 @@ const restaurantSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'BusinessCategory'
       }
-    ]
+    ],
+    salesPersonName: {
+      type: String
+    },
+    responsiblePersonName: {
+      type: String
+    },
+    contactNumber: {
+      type: String
+    }
   },
 
   { timestamps: true }

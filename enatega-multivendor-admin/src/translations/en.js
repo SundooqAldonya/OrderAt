@@ -431,7 +431,10 @@ const en = {
     stock_amount: 'Stock Amount',
     select_stock: 'Select Stock',
     orderPlaced: 'Order Placed',
-    notifications: 'Notifications'
+    notifications: 'Notifications',
+    sales_person: 'Sales Person Name',
+    responsiblePersonName: 'Responsible Person Name',
+    contactNumber: 'Contact Number'
   }
 }
 

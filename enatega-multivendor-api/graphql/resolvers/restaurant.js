@@ -870,7 +870,10 @@ module.exports = {
           restaurantUrl: args.restaurant.restaurantUrl,
           phone: args.restaurant.phone,
           city: args.restaurant.city,
-          businessCategories: args.restaurant.businessCategories
+          businessCategories: args.restaurant.businessCategories,
+          salesPersonName: args.restaurant.salesPersonName,
+          responsiblePersonName: args.restaurant.responsiblePersonName,
+          contactNumber: args.restaurant.contactNumber
         })
         console.log('New Restaurant: ', restaurant)
 
@@ -945,6 +948,9 @@ module.exports = {
         restaurant.phone = args.restaurant.phone
         restaurant.city = args.restaurant.city
         restaurant.businessCategories = args.restaurant.businessCategories
+        restaurant.salesPersonName = args.restaurant.salesPersonName
+        restaurant.responsiblePersonName = args.restaurant.responsiblePersonName
+        restaurant.contactNumber = args.restaurant.contactNumber
         await restaurant.save()
         const result = await restaurant.populate('city')
         return transformRestaurant(result)

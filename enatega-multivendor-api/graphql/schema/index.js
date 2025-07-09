@@ -1047,6 +1047,9 @@ const typeDefs = gql`
     phone: String
     city: String
     businessCategories: [String!]
+    salesPersonName: String
+    responsiblePersonName: String
+    contactNumber: String
   }
 
   input RestaurantProfileInput {
@@ -1067,6 +1070,9 @@ const typeDefs = gql`
     phone: String
     city: String
     businessCategories: [String!]
+    salesPersonName: String
+    responsiblePersonName: String
+    contactNumber: String
   }
 
   input OptionInput {
@@ -1978,6 +1984,7 @@ const typeDefs = gql`
   union CancelledBy = User | Owner | Restaurant
 
   type Mutation {
+    createBusinessMenu(file: Upload, restaurantId: String!): Message
     acknowledgeNotification(notificationId: String): Message
     markContactusResponded(id: String): Message
     createContactus(

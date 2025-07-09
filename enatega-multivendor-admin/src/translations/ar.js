@@ -412,7 +412,10 @@ const ar = {
     picked: 'الاوردر مع الندوب',
     delivered: 'تم التوصيل',
     completed: 'تم',
-    notifications: 'الإشعارات'
+    notifications: 'الإشعارات',
+    sales_person: 'اسم مندوب المبيعات',
+    responsiblePersonName: 'اسم الشخص المسؤول',
+    contactNumber: 'رقم الاتصال'
   }
 }
 

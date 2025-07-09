@@ -40,6 +40,7 @@ const businessCategory = require('./businessCategory')
 const stock = require('./stock')
 const contactus = require('./contactus')
 const notifications = require('./notifications')
+const xlsx = require('./xlsx')
 
 const rootResolver = {
   Query: {
@@ -79,7 +80,8 @@ const rootResolver = {
     ...businessCategory.Query,
     ...stock.Query,
     ...contactus.Query,
-    ...notifications.Query
+    ...notifications.Query,
+    ...xlsx.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -121,7 +123,8 @@ const rootResolver = {
     ...businessCategory.Mutation,
     ...stock.Mutation,
     ...contactus.Mutation,
-    ...notifications.Mutation
+    ...notifications.Mutation,
+    ...xlsx.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,
