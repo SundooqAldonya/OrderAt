@@ -166,6 +166,9 @@ const typeDefs = gql`
     city: CityArea
     createdAt: Date
     businessCategories: [BusinessCategory]
+    salesPersonName: String
+    responsiblePersonName: String
+    contactNumber: String
   }
 
   type RestaurantCustomer {

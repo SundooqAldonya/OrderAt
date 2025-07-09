@@ -183,6 +183,15 @@ const VendorProfile = () => {
     if (data?.restaurant?.shopCategory) {
       setCategory(data?.restaurant.shopCategory._id)
     }
+    if (data?.restaurant?.salesPersonName) {
+      setSalesPersonName(data?.restaurant.salesPersonName)
+    }
+    if (data?.restaurant?.responsiblePersonName) {
+      setResponsiblePersonName(data?.restaurant.responsiblePersonName)
+    }
+    if (data?.restaurant?.contactNumber) {
+      setContactNumber(data?.restaurant.contactNumber)
+    }
   }, [data?.restaurant])
 
   const formRef = useRef(null)
@@ -674,19 +683,11 @@ const VendorProfile = () => {
                         style={{ marginTop: -1 }}
                         placeholder={t('sales_person')}
                         type="text"
-                        defaultValue={data && data.restaurant.salesPersonName}
                         disableUnderline
                         name="salesPersonName"
                         value={salesPersonName}
                         onChange={e => setSalesPersonName(e.target.value)}
-                        className={[
-                          globalClasses.input,
-                          prefixError === false
-                            ? globalClasses.inputError
-                            : prefixError === true
-                            ? globalClasses.inputSuccess
-                            : ''
-                        ]}
+                        className={[globalClasses.input]}
                       />
                     </Box>
                   </Grid>
@@ -702,18 +703,8 @@ const VendorProfile = () => {
                         onChange={e => setResponsiblePersonName(e.target.value)}
                         placeholder={t('responsiblePersonName')}
                         type="text"
-                        defaultValue={
-                          data && data.restaurant.responsiblePersonName
-                        }
                         disableUnderline
-                        className={[
-                          globalClasses.input,
-                          prefixError === false
-                            ? globalClasses.inputError
-                            : prefixError === true
-                            ? globalClasses.inputSuccess
-                            : ''
-                        ]}
+                        className={[globalClasses.input]}
                       />
                     </Box>
                   </Grid>
@@ -729,16 +720,8 @@ const VendorProfile = () => {
                         onChange={e => setContactNumber(e.target.value)}
                         placeholder={t('contactNumber')}
                         type="text"
-                        defaultValue={data && data.restaurant.contactNumber}
                         disableUnderline
-                        className={[
-                          globalClasses.input,
-                          prefixError === false
-                            ? globalClasses.inputError
-                            : prefixError === true
-                            ? globalClasses.inputSuccess
-                            : ''
-                        ]}
+                        className={[globalClasses.input]}
                       />
                     </Box>
                   </Grid>

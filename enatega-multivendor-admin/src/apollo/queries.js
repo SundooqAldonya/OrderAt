@@ -747,6 +747,9 @@ export const getRestaurantProfile = `query Restaurant($id:String){
           publicId
         }
       }
+      salesPersonName
+      responsiblePersonName
+      contactNumber
     }
 }`
 
