@@ -165,7 +165,7 @@ const Food = props => {
         <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
       )}
       <Container className={globalClasses.flex} fluid>
-        {/* <MenuFileUpload /> */}
+        <MenuFileUpload />
         <FoodComponent onClose={closeEditModal} />
         {errorQuery && <span>`Error! ${errorQuery.message}`</span>}
         {loadingQuery ? (

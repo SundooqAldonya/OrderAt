@@ -13,13 +13,11 @@ import { createFoodByFile } from '../../apollo'
 
 export default function MenuFileUpload() {
   const [file, setFile] = useState(null)
-  const [result, setResult] = useState(null)
   const restaurantId = localStorage.getItem('restaurantId')
 
   const [mutateUploadExcel, { loading }] = useMutation(createFoodByFile, {
     onCompleted: res => {
       console.log({ res })
-      // setResult(data.uploadExcel.rows)
     },
     onError: err => {
       console.log({ err })
@@ -94,19 +92,6 @@ export default function MenuFileUpload() {
           {loading ? <CircularProgress size={24} /> : 'Upload'}
         </Button>
       </Stack>
-
-      {/* {result && (
-        <Box mt={4}>
-          <Typography variant="subtitle1">Parsed Rows:</Typography>
-          <Paper sx={{ maxHeight: 200, overflow: 'auto', p: 2 }}>
-            {result.map((row, i) => (
-              <Typography key={i} variant="body2">
-                {row}
-              </Typography>
-            ))}
-          </Paper>
-        </Box>
-      )} */}
     </Box>
   )
 }
