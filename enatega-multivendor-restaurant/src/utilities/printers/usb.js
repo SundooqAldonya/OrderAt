@@ -32,7 +32,7 @@ export const USB = {
       }
       await USBPrinter.init(); // initialize USB
       // small delay to let Android establish the socket
-      await new Promise(res => setTimeout(res, 300));
+      await new Promise(res => setTimeout(res, 3000));
       const printer = await USBPrinter.connectPrinter(vendorId, productId);
       printer.type = 'usb';
       return printer;

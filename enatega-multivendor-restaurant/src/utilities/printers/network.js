@@ -66,7 +66,7 @@ export const Network = {
     try {
       await NetPrinter.init(); // initialize Network
       // small delay to let Android establish the socket
-      await new Promise(res => setTimeout(res, 300));
+      await new Promise(res => setTimeout(res, 3000));
       const p = await NetPrinter.connectPrinter(address, port);
       p.type = 'network';
       return p;

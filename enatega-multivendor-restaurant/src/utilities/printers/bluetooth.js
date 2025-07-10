@@ -29,7 +29,7 @@ export const Bluetooth = {
     try {
       await BLEPrinter.init(); // initialize BLE
       // small delay to let Android establish the socket
-      await new Promise(res => setTimeout(res, 300));
+      await new Promise(res => setTimeout(res, 3000));
       const printer = await BLEPrinter.connectPrinter(address);
       printer.type = 'bluetooth';
       return printer;
