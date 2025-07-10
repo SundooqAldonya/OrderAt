@@ -15,8 +15,7 @@ const checkPrinterAvailability = async (ip) => {
   }
 };
 
-const getLocalIp = async () =>
-  NetworkInfo.getIPAddress();
+//const getLocalIp = async () => NetworkInfo.getIPAddress();
 
 const scanLocalNetwork = async (localIp) => {
   const base = localIp.split('.').slice(0, 3).join('.');
@@ -30,7 +29,7 @@ const scanLocalNetwork = async (localIp) => {
       try {
         const reachable = await Ping.start(ip, { timeout: 1000 });
         if (reachable && await checkPrinterAvailability(ip)) {
-          found.push(createPrinterDevice(`Printer @ ${ip}`, ip, 'network'));
+          found.push(createPrinterDevice(`Printer @ ${ip}`, `${ip}:9100`, 'network'));
         }
       } catch {
         // ignore
@@ -50,12 +49,12 @@ export const Network = {
       if (Array.isArray(list)) {
         return list.map(d => createPrinterDevice(
           d.device_name,
-          d.ip_address,
+          `${d.ip_address}:9100`,
           'network'
         ));
       }
       // fallback to manual ping sweep
-      const localIp = await getLocalIp();
+      const localIp = '192.168.1.1'; //const localIp = await getLocalIp();
       return scanLocalNetwork(localIp);
     } catch (error) {
       console.error('Error scanning network printers:', error);

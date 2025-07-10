@@ -41,7 +41,7 @@ export class PrinterManager {
     if (!ipAddress || !ipAddress.trim()) {
       return null;
     }
-    return createPrinterDevice(`Printer @ ${ipAddress}`, ipAddress, 'network');
+    return createPrinterDevice(`Printer @ ${ipAddress}`, `${ipAddress}:9100`, 'network');
   }
 
   /**
@@ -69,7 +69,7 @@ export class PrinterManager {
     }
 
     // 3) Network - COMMENTED OUT FOR MANUAL IP CONFIGURATION
-    // Use manual IP if provided, otherwise scan network
+    // Use manual IP if provided
     if (manualIP && manualIP.trim()) {
       const networkDevice = this.createNetworkPrinterFromIP(manualIP);
       if (networkDevice) {
@@ -83,6 +83,7 @@ export class PrinterManager {
         console.error('Network scan failed:', err);
       }
     }
+	
 
     return devices;
   }
