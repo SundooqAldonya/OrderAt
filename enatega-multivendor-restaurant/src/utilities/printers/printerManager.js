@@ -41,7 +41,7 @@ export class PrinterManager {
     if (!ipAddress || !ipAddress.trim()) {
       return null;
     }
-    return createPrinterDevice(`Printer @ ${ipAddress}`, `${ipAddress}:9100`, 'network');
+    return createPrinterDevice(`Printer @ ${ipAddress}`, ipAddress, 'network');
   }
 
   /**

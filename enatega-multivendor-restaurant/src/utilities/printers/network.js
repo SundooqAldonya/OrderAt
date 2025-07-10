@@ -29,7 +29,7 @@ const scanLocalNetwork = async (localIp) => {
       try {
         const reachable = await Ping.start(ip, { timeout: 1000 });
         if (reachable && await checkPrinterAvailability(ip)) {
-          found.push(createPrinterDevice(`Printer @ ${ip}`, `${ip}:9100`, 'network'));
+          found.push(createPrinterDevice(`Printer @ ${ip}`, ip, 'network'));
         }
       } catch {
         // ignore
@@ -49,7 +49,7 @@ export const Network = {
       if (Array.isArray(list)) {
         return list.map(d => createPrinterDevice(
           d.device_name,
-          `${d.ip_address}:9100`,
+          d.ip_address,
           'network'
         ));
       }
