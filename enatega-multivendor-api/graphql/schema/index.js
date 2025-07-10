@@ -26,18 +26,18 @@ const typeDefs = gql`
   }
 
   type Item {
-    _id: ID!
-    title: String!
-    food: String!
-    description: String!
+    _id: ID
+    title: String
+    food: String
+    description: String
     image: String
-    quantity: Int!
-    variation: ItemVariation!
-    addons: [ItemAddon!]
+    quantity: Int
+    variation: ItemVariation
+    addons: [ItemAddon]
     specialInstructions: String
-    isActive: Boolean!
-    createdAt: String!
-    updatedAt: String!
+    isActive: Boolean
+    createdAt: String
+    updatedAt: String
   }
 
   type Category {
