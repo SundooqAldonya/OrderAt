@@ -249,6 +249,27 @@ const styles = (props = null) =>
       width: 12,
       height: 12,
       borderRadius: 6
+    },
+    solidButton: {
+      backgroundColor: '#06C167',
+      borderRadius: 10,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      marginVertical: 8,
+      marginHorizontal: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      gap: 8,
+      elevation: 3, // Android
+      shadowColor: '#000', // iOS
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4
+    },
+
+    buttonIcon: {
+      marginRight: 8
     }
   })
 export default styles

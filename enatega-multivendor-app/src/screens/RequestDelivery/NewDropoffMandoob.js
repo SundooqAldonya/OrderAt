@@ -300,11 +300,9 @@ const NewDropoffMandoob = () => {
             if (isLoggedIn) {
               navigation.navigate('AddNewAddressUser')
             } else {
-              navigation.navigate('SelectLocation', {
-                ...location
-              })
-              const modal = modalRef.current
-              modal?.close()
+              navigation.navigate('Login')
+              // const modal = modalRef.current
+              // modal?.close()
             }
           }}
         >

@@ -663,7 +663,7 @@ export const ar = {
   cancel: 'إلغاء',
   old_password_wrong: 'خطأ في كلمة المرور القديمة',
   select_language: 'أختر اللغة المفضلة',
-  your_order_delivered_here: 'طلباتك ستصل إلى هنا',
+  your_order_delivered_here: 'سيتم التوصيل إلى هذا العنوان',
   city: 'المدينة',
   out_of_stock: 'غير متاح الآن',
   privacy: 'الخصوصية',
@@ -677,5 +677,9 @@ export const ar = {
   choose_pickup: 'أختر موقع الاستلام',
   choose_dropoff: 'أختر موقع التوصيل',
   regions_required: 'يجب تحديد أماكن الاستلام والتسليم!',
-  notes_required: 'حقل الملاحظات مطلوب!'
+  notes_required: 'حقل الملاحظات مطلوب!',
+  set_your_delivery_address: 'حدد عنوان التوصيل',
+  choose_delivery_address: 'اختر طريقة تحديد العنوان',
+  use_current_location: 'استخدم الموقع المحدد على الخريطه',
+  browse_available_cities: 'تصفح المدن المتاحة'
 }

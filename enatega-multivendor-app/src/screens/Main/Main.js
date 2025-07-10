@@ -428,9 +428,7 @@ function Main(props) {
               // navigation.navigate('AddNewAddressUser')
               navigation.navigate('AddressNewVersion')
             } else {
-              navigation.navigate('SelectLocation', {
-                ...locationData
-              })
+              navigation.navigate('Login')
             }
             setIsVisible(false)
             // const modal = modalRef.current

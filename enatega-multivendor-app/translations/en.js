@@ -688,5 +688,9 @@ export const en = {
   choose_pickup: 'Choose pickup place',
   choose_dropoff: 'Choose dropoff place',
   regions_required: 'Pickup and drop-off locations are required!',
-  notes_required: 'Notes of delivery required!'
+  notes_required: 'Notes of delivery required!',
+  set_your_delivery_address: 'Set Your Delivery Address',
+  choose_delivery_address: 'Choose How to Set Your Address',
+  use_current_location: 'Use the Current Location',
+  browse_available_cities: 'Browse Available Cities'
 }

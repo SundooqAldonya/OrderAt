@@ -104,7 +104,7 @@ export default function SelectLocation(props) {
   // })
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: t('setLocation'),
+      title: t('set_your_delivery_address'),
       setCurrentLocation: getCurrentPosition,
 
       headerRight: () => {
@@ -367,7 +367,7 @@ export default function SelectLocation(props) {
           style={[
             styles().mapView,
             {
-              height: '80%'
+              height: '70%'
             }
           ]}
         >
@@ -466,7 +466,7 @@ export default function SelectLocation(props) {
                 Left
                 style={styles().heading}
               >
-                {t('selectLocation')}
+                {t('choose_delivery_address')}
               </TextDefault>
               <View style={styles(currentTheme).line} />
 
@@ -474,16 +474,16 @@ export default function SelectLocation(props) {
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={[
-                    styles(currentTheme).button,
+                    styles(currentTheme).solidButton,
                     { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 0 }
                   ]}
                   onPress={handleSaveLocation}
                 >
                   <View style={[styles(currentTheme).icon]}>
-                    <EvilIcons name='location' size={18} color='black' />
+                    <EvilIcons name='location' size={18} color='#fff' />
                   </View>
-                  <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-                    {t('selectLocation')}
+                  <TextDefault textColor={'#fff'} H5 bold>
+                    {t('use_current_location')}
                   </TextDefault>
                 </TouchableOpacity>
               ) : null}
@@ -492,17 +492,17 @@ export default function SelectLocation(props) {
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={[
-                  styles(currentTheme).button,
+                  styles(currentTheme).solidButton,
                   { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 5 }
                 ]}
                 onPress={() => setModalVisible(true)}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <Feather name='list' size={18} color='black' />
+                  <Feather name='list' size={18} color='#fff' />
                 </View>
 
-                <TextDefault textColor={currentTheme.newFontcolor} H5 bold>
-                  {t('browseCities')}
+                <TextDefault textColor={'#fff'} H5 bold>
+                  {t('browse_available_cities')}
                 </TextDefault>
               </TouchableOpacity>
               <View style={styles(currentTheme).line} />
