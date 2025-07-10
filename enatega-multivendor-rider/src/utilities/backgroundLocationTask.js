@@ -77,6 +77,8 @@ export async function startBackgroundUpdate() {
       accuracy: Location.Accuracy.High,
       timeInterval: 30000, // 30 seconds
       distanceInterval: 20, // 20 meters
+      deferredUpdatesDistance: 20,
+      deferredUpdatesInterval: 30000,
       showsBackgroundLocationIndicator: true, // iOS
       foregroundService: {
         notificationTitle: 'Tracking location',
