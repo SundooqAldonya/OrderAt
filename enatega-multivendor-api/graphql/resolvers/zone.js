@@ -57,12 +57,17 @@ module.exports = {
       return transformZone(result)
     },
     deleteZone: async (_, args, { req, res }) => {
-      const deletedZone = await Zone.findByIdAndUpdate(
-        args.id,
-        { isActive: false },
-        { new: true }
-      )
-      return transformZone(deletedZone)
+      console.log('deleteZone', { args })
+      const zone = await Zone.findById(args.id)
+      console.log({ zone })
+      await zone.deleteOne()
+      return { message: 'zone_deleted' }
+      // const deletedZone = await Zone.findByIdAndUpdate(
+      //   args.id,
+      //   { isActive: false },
+      //   { new: true }
+      // )
+      // return transformZone(deletedZone)
     }
   }
 }

@@ -637,11 +637,7 @@ export const editZone = `mutation EditZone($zone:ZoneInput!){
 
 export const deleteZone = `mutation DeleteZone($id:String!){
   deleteZone(id:$id){
-    _id
-    title
-    description
-    location{coordinates}
-    isActive
+    message
   }
 }`
 

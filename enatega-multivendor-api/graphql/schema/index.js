@@ -2246,7 +2246,7 @@ const typeDefs = gql`
     restaurantLogout(id: String!): Message
     createZone(zone: ZoneInput!): Zone!
     editZone(zone: ZoneInput!): Zone!
-    deleteZone(id: String!): Zone!
+    deleteZone(id: String!): Message
     saveRestaurantToken(token: String, isEnabled: Boolean): Restaurant!
     notifyRiders(id: String!): Boolean!
     updateTimings(id: String!, openingTimes: [TimingsInput]): Restaurant!
