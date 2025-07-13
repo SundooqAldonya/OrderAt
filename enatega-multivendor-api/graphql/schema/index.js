@@ -450,41 +450,41 @@ const typeDefs = gql`
   }
 
   type Order {
-    _id: ID!
+    _id: ID
     orderId: String
-    resId: String!
+    resId: String
     restaurant: RestaurantDetail
     deliveryAddress: OrderAddress
-    items: [Item!]
+    items: [Item]
     user: User
     paymentMethod: String
     paidAmount: Float
     orderAmount: Float
     status: Boolean
-    paymentStatus: String!
+    paymentStatus: String
     orderStatus: String
     reason: String
-    isActive: Boolean!
-    createdAt: String!
-    updatedAt: String!
+    isActive: Boolean
+    createdAt: String
+    updatedAt: String
     deliveryCharges: Float
-    tipping: Float!
-    taxationAmount: Float!
+    tipping: Float
+    taxationAmount: Float
     rider: Rider
     review: Review
-    zone: Zone!
+    zone: Zone
     completionTime: String
-    orderDate: String!
+    orderDate: String
     expectedTime: String
     preparationTime: String
-    isPickedUp: Boolean!
+    isPickedUp: Boolean
     acceptedAt: String
     pickedAt: String
     deliveredAt: String
     cancelledAt: Date
     assignedAt: String
-    isRinged: Boolean!
-    isRiderRinged: Boolean!
+    isRinged: Boolean
+    isRiderRinged: Boolean
     instructions: String
     pickedImage: PickedImage
     pickupLocation: Point

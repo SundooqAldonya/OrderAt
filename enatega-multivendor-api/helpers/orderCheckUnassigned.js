@@ -21,7 +21,7 @@ module.exports = {
         select: 'city name' // only get city from restaurant
       })
 
-      console.log({ orders })
+      // console.log({ orders })
       // console.log({ city: orders[0].restaurant.city })
 
       for (const order of orders) {

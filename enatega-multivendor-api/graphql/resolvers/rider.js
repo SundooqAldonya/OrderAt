@@ -159,7 +159,7 @@ module.exports = {
         twoDaysAgo.setDate(date.getDate() - 2)
         twoDaysAgo.setHours(0, 0, 0, 0)
         const assignedOrders = await Order.find({
-          rider: req.userId,
+          rider: rider._id,
           // createdAt: {
           //   $gte: twoDaysAgo
           //   // $lte: date
@@ -173,19 +173,48 @@ module.exports = {
         })
           .sort({ createdAt: -1 })
           .limit(10)
-
+        // const riderZone = await Zone.findById(rider.zone)
+        // const orders = await Order.aggregate([
+        //   {
+        //     $match: {
+        //       orderStatus: 'ACCEPTED',
+        //       rider: null
+        //     }
+        //   },
+        //   {
+        //     $lookup: {
+        //       from: 'restaurants', // or 'businesses' depending on your schema
+        //       localField: 'restaurant',
+        //       foreignField: '_id',
+        //       as: 'restaurant'
+        //     }
+        //   },
+        //   { $unwind: '$restaurant' },
+        //   {
+        //     $match: {
+        //       'restaurant.location': {
+        //         $geoWithin: {
+        //           $geometry: riderZone.location
+        //         }
+        //       }
+        //     }
+        //   },
+        //   { $sort: { preparationTime: -1 } }
+        // ])
+        console.log({ riderZone: rider.zone })
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',
           rider: null
         }).sort({ preparationTime: -1 })
-        // console.log({ ordersRider: orders })
+        console.log({ ordersRider: orders ? orders[0] : null })
+        console.log({
+          assignedOrders: assignedOrders ? assignedOrders[0] : null
+        })
         // await sendPushNotification(rider.notificationToken, orders[0])
         // const orders = await findOrdersWithinRadius(rider, 1)
 
-        return [...orders, ...assignedOrders].map(order => {
-          return transformOrder(order)
-        })
+        return [...orders, ...assignedOrders]
       } catch (err) {
         throw err
       }

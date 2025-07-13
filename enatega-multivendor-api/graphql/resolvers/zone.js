@@ -2,11 +2,11 @@ const Zone = require('../../models/zone')
 const { transformZone } = require('./merge')
 module.exports = {
   Query: {
-    zones: async(_, args, { req, res }) => {
-      const zones = await Zone.find({ isActive: true })
+    zones: async (_, args, { req, res }) => {
+      const zones = await Zone.find()
       return zones.map(transformZone)
     },
-    zone: async(_, args, { req, res }) => {
+    zone: async (_, args, { req, res }) => {
       console.log('Zones')
       const zone = await Zone.findById(args.id)
       if (!zone) throw new Error('Zone does not exist')
@@ -15,7 +15,7 @@ module.exports = {
     }
   },
   Mutation: {
-    createZone: async(_, args, { req, res }) => {
+    createZone: async (_, args, { req, res }) => {
       // polygon schema can be found in models/zone.js
       // coordinates: [[
       //     [72.9744366, 33.6857303],
@@ -41,7 +41,7 @@ module.exports = {
       console.log('Zone saved: ', result)
       return transformZone(result)
     },
-    editZone: async(_, args, { req, res }) => {
+    editZone: async (_, args, { req, res }) => {
       const zone = await Zone.findById(args.zone._id)
       if (!zone) throw new Error('Zone does not exist')
       const location = {
@@ -56,7 +56,7 @@ module.exports = {
       const result = await zone.save()
       return transformZone(result)
     },
-    deleteZone: async(_, args, { req, res }) => {
+    deleteZone: async (_, args, { req, res }) => {
       const deletedZone = await Zone.findByIdAndUpdate(
         args.id,
         { isActive: false },

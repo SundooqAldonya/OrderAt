@@ -115,12 +115,12 @@ const transformFoods = async foodIds => {
 const transformOrder = async order => {
   return {
     ...order?._doc,
-    _id: order?.id,
+    _id: order?._id,
     zone: zone(order?.zone),
     review: review.bind(this, order?.review),
     user: await user.bind(this, order?._doc?.user),
-    userId: order?._doc.user?.toString(),
-    orderDate: dateToString(order?._doc.orderDate) || dateToString(new Date()),
+    userId: order?._doc?.user?.toString(),
+    orderDate: dateToString(order?._doc?.orderDate) || dateToString(new Date()),
     items: await order?.items?.map(item => {
       return {
         ...item._doc,

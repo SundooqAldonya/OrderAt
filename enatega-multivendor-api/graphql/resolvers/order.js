@@ -717,7 +717,7 @@ module.exports = {
             orderAmount + deliveryCharges + taxationAmount + tipping
         }
 
-        // console.log({ orderAmount })
+        console.log({ zone: zone?._id })
 
         const order = new Order({
           orderId: newOrderId,
