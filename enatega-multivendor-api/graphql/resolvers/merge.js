@@ -172,7 +172,11 @@ const transformOrder = async order => {
     mandoobSpecialInstructions: order?.mandoobSpecialInstructions
       ? order?.mandoobSpecialInstructions
       : null,
-    cancellation: order.cancellation ? order.cancellation : null
+    cancellation: order.cancellation ? order.cancellation : null,
+    isPickedUp: order.isPickedUp,
+    paymentStatus: order.paymentStatus,
+    tipping: order.tipping,
+    taxationAmount: order.taxationAmount
   }
 }
 

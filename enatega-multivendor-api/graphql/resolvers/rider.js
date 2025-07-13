@@ -5,6 +5,7 @@ const Point = require('../../models/point')
 const User = require('../../models/user')
 const Area = require('../../models/area')
 const Zone = require('../../models/zone')
+const Restaurant = require('../../models/restaurant')
 const { transformOrder, transformRider } = require('../resolvers/merge')
 const {
   pubsub,
@@ -174,39 +175,43 @@ module.exports = {
           .sort({ createdAt: -1 })
           .limit(10)
         const riderZone = await Zone.findById(rider.zone)
-        // const orders = await Order.aggregate([
-        //   {
-        //     $match: {
-        //       orderStatus: 'ACCEPTED',
-        //       rider: null
-        //     }
-        //   },
-        //   {
-        //     $lookup: {
-        //       from: 'restaurants', // or 'businesses' depending on your schema
-        //       localField: 'restaurant',
-        //       foreignField: '_id',
-        //       as: 'restaurant'
-        //     }
-        //   },
-        //   { $unwind: '$restaurant' },
-        //   {
-        //     $match: {
-        //       'restaurant.location': {
-        //         $geoWithin: {
-        //           $geometry: riderZone.location
-        //         }
-        //       }
-        //     }
-        //   },
-        //   { $sort: { preparationTime: -1 } }
-        // ])
-        console.log({ riderZone: rider.zone })
+        const restaurantsInZone = await Restaurant.find({
+          location: {
+            $geoIntersects: {
+              $geometry: riderZone.location
+            }
+          }
+        }).select('_id')
+
+        const restaurantIds = restaurantsInZone.map(r => r._id)
+
+        // 2. Find unassigned accepted orders from those restaurants
         const orders = await Order.find({
-          zone: rider.zone,
           orderStatus: 'ACCEPTED',
-          rider: null
-        }).sort({ preparationTime: -1 })
+          rider: null,
+          $or: [
+            {
+              // type: 'restaurant',
+              // Join with restaurant collection manually
+              restaurant: { $in: restaurantIds }
+            },
+            {
+              type: 'delivery_request',
+              pickupLocation: {
+                $geoWithin: {
+                  $geometry: riderZone.location
+                }
+              }
+            }
+          ]
+        })
+
+        console.log({ riderZone: rider.zone })
+        // const orders = await Order.find({
+        //   zone: rider.zone,
+        //   orderStatus: 'ACCEPTED',
+        //   rider: null
+        // }).sort({ preparationTime: -1 })
         console.log({ ordersRider: orders ? orders[0] : null })
         console.log({
           assignedOrders: assignedOrders ? assignedOrders[0] : null
