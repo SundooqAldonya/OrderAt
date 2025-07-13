@@ -173,7 +173,7 @@ module.exports = {
         })
           .sort({ createdAt: -1 })
           .limit(10)
-        // const riderZone = await Zone.findById(rider.zone)
+        const riderZone = await Zone.findById(rider.zone)
         // const orders = await Order.aggregate([
         //   {
         //     $match: {
@@ -214,7 +214,9 @@ module.exports = {
         // await sendPushNotification(rider.notificationToken, orders[0])
         // const orders = await findOrdersWithinRadius(rider, 1)
 
-        return [...orders, ...assignedOrders]
+        return [...orders, ...assignedOrders].map(order => {
+          return transformOrder(order)
+        })
       } catch (err) {
         throw err
       }
