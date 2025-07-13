@@ -718,6 +718,13 @@ module.exports = {
         }
 
         console.log({ zone: zone?._id })
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [
+            restaurant.location.coordinates[0],
+            restaurant.location.coordinates[1]
+          ]
+        }
 
         const order = new Order({
           orderId: newOrderId,
@@ -741,7 +748,8 @@ module.exports = {
           ),
           preparationTime: preparationTime
             ? new Date(Date.now() + preparationTime * 60 * 1000)
-            : new Date(Date.now() + 20 * 60 * 1000)
+            : new Date(Date.now() + 20 * 60 * 1000),
+          pickupLocation
         })
 
         const savedOrder = await order.save()
@@ -1379,6 +1387,14 @@ module.exports = {
           await couponCode.save()
         }
 
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [
+            restaurant.location.coordinates[0],
+            restaurant.location.coordinates[1]
+          ]
+        }
+
         const orderObj = {
           zone: zone._id,
           restaurant: args.restaurant,
@@ -1416,7 +1432,8 @@ module.exports = {
           completionTime: new Date(
             Date.now() + restaurant.deliveryTime * 60 * 1000
           ),
-          instructions: args.instructions
+          instructions: args.instructions,
+          pickupLocation
         }
 
         let result = null

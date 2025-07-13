@@ -175,36 +175,27 @@ module.exports = {
           .sort({ createdAt: -1 })
           .limit(10)
         const riderZone = await Zone.findById(rider.zone)
-        const restaurantsInZone = await Restaurant.find({
-          location: {
-            $geoIntersects: {
-              $geometry: riderZone.location
-            }
-          }
-        }).select('_id')
+        // const restaurantsInZone = await Restaurant.find({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: riderZone.location
+        //     }
+        //   }
+        // }).select('_id')
 
-        const restaurantIds = restaurantsInZone.map(r => r._id)
+        // const restaurantIds = restaurantsInZone.map(r => r._id)
 
         // 2. Find unassigned accepted orders from those restaurants
         const orders = await Order.find({
           orderStatus: 'ACCEPTED',
           rider: null,
-          $or: [
-            {
-              // type: 'restaurant',
-              // Join with restaurant collection manually
-              restaurant: { $in: restaurantIds }
-            },
-            {
-              type: 'delivery_request',
-              pickupLocation: {
-                $geoWithin: {
-                  $geometry: riderZone.location
-                }
-              }
+          // type: 'delivery_request',
+          pickupLocation: {
+            $geoWithin: {
+              $geometry: riderZone.location
             }
-          ]
-        })
+          }
+        }).sort({ _id: -1 })
 
         console.log({ riderZone: rider.zone })
         // const orders = await Order.find({
