@@ -186,23 +186,23 @@ module.exports = {
         // const restaurantIds = restaurantsInZone.map(r => r._id)
 
         // 2. Find unassigned accepted orders from those restaurants
-        const orders = await Order.find({
-          orderStatus: 'ACCEPTED',
-          rider: null,
-          // type: 'delivery_request',
-          pickupLocation: {
-            $geoWithin: {
-              $geometry: riderZone.location
-            }
-          }
-        }).sort({ _id: -1 })
+        // const orders = await Order.find({
+        //   orderStatus: 'ACCEPTED',
+        //   rider: null,
+        //   // type: 'delivery_request',
+        //   pickupLocation: {
+        //     $geoWithin: {
+        //       $geometry: riderZone.location
+        //     }
+        //   }
+        // }).sort({ _id: -1 })
 
         console.log({ riderZone: rider.zone })
-        // const orders = await Order.find({
-        //   zone: rider.zone,
-        //   orderStatus: 'ACCEPTED',
-        //   rider: null
-        // }).sort({ preparationTime: -1 })
+        const orders = await Order.find({
+          zone: rider.zone,
+          orderStatus: 'ACCEPTED',
+          rider: null
+        }).sort({ preparationTime: -1 })
         console.log({ ordersRider: orders ? orders[0] : null })
         console.log({
           assignedOrders: assignedOrders ? assignedOrders[0] : null
