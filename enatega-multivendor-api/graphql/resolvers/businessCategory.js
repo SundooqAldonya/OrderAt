@@ -1,5 +1,5 @@
 const BusinessCategory = require('../../models/BusinessCategory')
-const { uploadBusinessCategoryImage } = require('../../helpers/cloudinary')
+const { uploadImage } = require('../../helpers/cloudinary')
 
 module.exports = {
   Query: {
@@ -37,7 +37,7 @@ module.exports = {
           order: args.input.order
         })
         if (args.input.file?.file && args.input.file.file['createReadStream']) {
-          const image = await uploadBusinessCategoryImage({
+          const image = await uploadImage({
             file: args.input.file
           })
           businessCategory.image.url = image.secure_url
@@ -60,7 +60,7 @@ module.exports = {
           args.input?.file?.file &&
           args.input.file.file['createReadStream']
         ) {
-          const image = await uploadBusinessCategoryImage({
+          const image = await uploadImage({
             file: args.input.file
           })
           businessCategory.image.url = image.secure_url

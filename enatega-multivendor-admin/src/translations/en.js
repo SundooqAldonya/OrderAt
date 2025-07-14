@@ -434,7 +434,11 @@ const en = {
     notifications: 'Notifications',
     sales_person: 'Sales Person Name',
     responsiblePersonName: 'Responsible Person Name',
-    contactNumber: 'Contact Number'
+    contactNumber: 'Contact Number',
+    UploadDocuments: 'Upload Documents',
+    'Profile Picture': 'Profile Picture',
+    'National ID Picture': 'National ID Picture',
+    ChooseImage: 'Choose Image'
   }
 }
 

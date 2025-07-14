@@ -75,6 +75,14 @@ const riderSchema = new Schema(
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'
+    },
+    profileImage: {
+      url: String,
+      publicId: String
+    },
+    nationalIdImage: {
+      url: String,
+      publicId: String
     }
   },
   { timestamps: true }

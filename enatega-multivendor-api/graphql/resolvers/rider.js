@@ -25,7 +25,7 @@ const {
   JOB_DELAY_DEFAULT
 } = require('../../queue')
 const { sendPushNotification } = require('../../helpers/findRiders')
-const { uploadReceiptImage } = require('../../helpers/cloudinary')
+const { uploadReceiptImage, uploadImage } = require('../../helpers/cloudinary')
 const { GraphQLUpload } = require('graphql-upload')
 const {
   sendCustomerNotifications
@@ -302,6 +302,23 @@ module.exports = {
           available: args.riderInput.available,
           zone: args.riderInput.zone
         })
+
+        if (args.riderInput.profileImage) {
+          const profileUpload = await uploadImage({
+            file: args.riderInput.profileImage
+          })
+          rider.profileImage.url = profileUpload.secure_url
+          rider.profileImage.publicId = profileUpload.public_id
+        }
+
+        if (args.riderInput.nationalIdImage) {
+          const nationalIdUpload = await uploadImage({
+            file: args.riderInput.nationalIdImage
+          })
+          rider.nationalIdImage.url = nationalIdUpload.secure_url
+          rider.nationalIdImage.publicId = nationalIdUpload.public_id
+        }
+
         console.log('new rider :', rider)
 
         const result = await rider.save()
@@ -342,6 +359,22 @@ module.exports = {
         rider.available = args.riderInput.available
         rider.zone = args.riderInput.zone
         rider.city = args.riderInput.city
+
+        if (args.riderInput.profileImage) {
+          const profileUpload = await uploadImage({
+            file: args.riderInput.profileImage
+          })
+          rider.profileImage.url = profileUpload.secure_url
+          rider.profileImage.publicId = profileUpload.public_id
+        }
+
+        if (args.riderInput.nationalIdImage) {
+          const nationalIdUpload = await uploadImage({
+            file: args.riderInput.nationalIdImage
+          })
+          rider.nationalIdImage.url = nationalIdUpload.secure_url
+          rider.nationalIdImage.publicId = nationalIdUpload.public_id
+        }
 
         const result = await rider.save()
         return transformRider(result)

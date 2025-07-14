@@ -94,7 +94,7 @@ module.exports = {
     }
   },
 
-  async uploadBusinessCategoryImage({ file }) {
+  async uploadImage({ file }) {
     try {
       const { createReadStream } = await file.file
       const stream = createReadStream()

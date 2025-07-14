@@ -415,7 +415,11 @@ const ar = {
     notifications: 'الإشعارات',
     sales_person: 'اسم مندوب المبيعات',
     responsiblePersonName: 'اسم الشخص المسؤول',
-    contactNumber: 'رقم الاتصال'
+    contactNumber: 'رقم الاتصال',
+    UploadDocuments: 'تحميل المستندات',
+    'Profile Picture': 'صورة الملف الشخصي',
+    'National ID Picture': 'صورة الهوية الوطنية',
+    ChooseImage: 'اختر الصورة'
   }
 }
 

@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, Fragment } from 'react'
 import { useMutation, useQuery, gql } from '@apollo/client'
 import { validateFuncForRider } from '../../constraints/constraints'
-import { withTranslation } from 'react-i18next'
+import { useTranslation, withTranslation } from 'react-i18next'
 // core components
 import {
   createRider,
@@ -51,14 +51,14 @@ const GET_CITIES = gql`
   ${getCities}
 `
 
-function Rider(props) {
+function Rider({ rider, onClose }) {
   const formRef = useRef()
-  const mutation = props.rider ? EDIT_RIDER : CREATE_RIDER
-  const name = props.rider ? props.rider.name : ''
-  const userName = props.rider ? props.rider.username : ''
-  const password = props.rider ? props.rider.password : ''
-  const phone = props.rider ? props.rider.phone : ''
-  const zone = props.rider ? props.rider.zone._id : ''
+  const mutation = rider ? EDIT_RIDER : CREATE_RIDER
+  const name = rider ? rider.name : ''
+  const userName = rider ? rider.username : ''
+  const password = rider ? rider.password : ''
+  const phone = rider ? rider.phone : ''
+  const zone = rider ? rider.zone._id : ''
   const [mainError, mainErrorSetter] = useState('')
   const [success, successSetter] = useState('')
   const [nameError, nameErrorSetter] = useState(null)
@@ -69,14 +69,26 @@ function Rider(props) {
   const [zoneError, zoneErrorSetter] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [riderAvailable, setRiderAvailable] = useState(
-    props.rider ? props.rider.available : true
+    rider ? rider.available : true
   )
-  const [riderZone, setRiderZone] = useState(
-    props.rider ? props.rider.zone._id : ''
-  )
-  const [selectedCity, setSelectedCity] = useState(
-    props.rider ? props.rider.city : ''
-  )
+  const [riderZone, setRiderZone] = useState(rider ? rider.zone._id : '')
+  const [selectedCity, setSelectedCity] = useState(rider ? rider.city : '')
+  const [profileImage, setProfileImage] = useState(null)
+  const [nationalIdImage, setNationalIdImage] = useState(null)
+
+  const [savedProfileImage, setSavedProfileImage] = useState(null)
+  const [savedNationalIdImage, setSavedNationalIdImage] = useState(null)
+
+  useEffect(() => {
+    if (rider) {
+      if (rider.profileImage?.url) {
+        setSavedProfileImage(rider.profileImage?.url)
+      }
+      if (rider.nationalIdImage?.url) {
+        setSavedNationalIdImage(rider.nationalIdImage?.url)
+      }
+    }
+  }, [rider])
 
   const {
     data: dataCities,
@@ -86,8 +98,8 @@ function Rider(props) {
   const cities = dataCities?.cities || null
 
   const onCompleted = data => {
-    if (!props.rider) clearFields()
-    const message = props.rider
+    if (!rider) clearFields()
+    const message = rider
       ? t('RiderUpdatedSuccessfully')
       : t('RiderAddedSuccessfully')
     mainErrorSetter('')
@@ -158,13 +170,15 @@ function Rider(props) {
     passwordErrorSetter(null)
     phoneErrorSetter(null)
     zoneErrorSetter(null)
+    setProfileImage(null)
+    setNationalIdImage(null)
   }
 
   const hideAlert = () => {
     mainErrorSetter('')
     successSetter('')
   }
-  const { t } = props
+  const { t } = useTranslation()
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -177,13 +191,11 @@ function Rider(props) {
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.rider ? classes.headingBlack : classes.heading}>
+        <Box item className={rider ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
-            className={props.rider ? classes.textWhite : classes.text}>
-            {props.rider ? t('EditRider') : t('AddRider')}
+            className={rider ? classes.textWhite : classes.text}>
+            {rider ? t('EditRider') : t('AddRider')}
           </Typography>
         </Box>
         <Box ml={10} mt={1}>
@@ -398,6 +410,119 @@ function Rider(props) {
             ))}
           </Select>
         </Box>
+        {/* Uploads Section */}
+        <Box style={{ marginTop: 24, padding: 20 }}>
+          <Box>
+            <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+              {t('UploadDocuments')}
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography
+              className={classes.labelText}
+              sx={{ marginInline: '0 !important' }}>
+              {t('Profile Picture')}
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              style={{ justifyContent: 'flex-start' }}>
+              {profileImage ? profileImage.name : t('ChooseImage')}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={e => setProfileImage(e.target.files[0])}
+              />
+            </Button>
+            {profileImage ? (
+              <img
+                src={URL.createObjectURL(profileImage)}
+                alt="Profile Preview"
+                style={{
+                  width: 100,
+                  height: 100,
+                  objectFit: 'cover',
+                  marginTop: 10,
+                  borderRadius: 6,
+                  border: '1px solid #ddd'
+                }}
+              />
+            ) : (
+              <Fragment>
+                {savedProfileImage && (
+                  <img
+                    src={savedProfileImage}
+                    alt="Profile Preview"
+                    style={{
+                      width: 100,
+                      height: 100,
+                      objectFit: 'cover',
+                      marginTop: 10,
+                      borderRadius: 6,
+                      border: '1px solid #ddd'
+                    }}
+                  />
+                )}
+              </Fragment>
+            )}
+          </Box>
+
+          <Box>
+            <Typography
+              className={classes.labelText}
+              sx={{ marginInline: '0 !important' }}>
+              {t('National ID Picture')}
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              style={{ justifyContent: 'flex-start' }}>
+              {nationalIdImage ? nationalIdImage.name : t('ChooseImage')}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={e => setNationalIdImage(e.target.files[0])}
+              />
+            </Button>
+            {nationalIdImage ? (
+              <img
+                src={URL.createObjectURL(nationalIdImage)}
+                alt="National ID Preview"
+                style={{
+                  width: 100,
+                  height: 100,
+                  objectFit: 'cover',
+                  marginTop: 10,
+                  borderRadius: 6,
+                  border: '1px solid #ddd'
+                }}
+              />
+            ) : (
+              <Fragment>
+                {savedNationalIdImage && (
+                  <img
+                    src={savedNationalIdImage}
+                    alt="Profile Preview"
+                    style={{
+                      width: 100,
+                      height: 100,
+                      objectFit: 'cover',
+                      marginTop: 10,
+                      borderRadius: 6,
+                      border: '1px solid #ddd'
+                    }}
+                  />
+                )}
+              </Fragment>
+            )}
+          </Box>
+        </Box>
+
         <Box>
           <Button
             className={globalClasses.button}
@@ -408,21 +533,25 @@ function Rider(props) {
                 mutate({
                   variables: {
                     riderInput: {
-                      _id: props.rider ? props.rider._id : '',
+                      _id: rider ? rider._id : '',
                       name: formRef.current['input-name'].value,
                       username: formRef.current['input-userName'].value,
                       password: formRef.current['input-password'].value,
                       phone: formRef.current['input-phone'].value,
                       zone: riderZone,
                       available: riderAvailable,
-                      city: selectedCity
+                      city: selectedCity,
+                      profileImage,
+                      nationalIdImage
                     }
                   }
                 })
                 // Close the modal after 3 seconds by calling the parent's onClose callback
-                setTimeout(() => {
-                  props.onClose() // Close the modal
-                }, 4000)
+                if (onClose) {
+                  setTimeout(() => {
+                    onClose() // Close the modal
+                  }, 4000)
+                }
               }
             }}>
             {t('Save')}

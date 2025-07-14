@@ -351,6 +351,8 @@ const typeDefs = gql`
     lastUpdatedLocationDate: Date
     assignedOrdersCount: Float
     city: String
+    profileImage: Image
+    nationalIdImage: Image
   }
 
   type RiderLocation {
@@ -974,6 +976,8 @@ const typeDefs = gql`
     zone: String!
     accountNumber: String
     city: String
+    profileImage: Upload
+    nationalIdImage: Upload
   }
 
   input UserInput {

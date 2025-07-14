@@ -912,6 +912,12 @@ export const getRiders = `query{
         coordinates
       }
       city
+      profileImage {
+        url
+      }
+      nationalIdImage {
+        url
+      }
     }
   }`
 
