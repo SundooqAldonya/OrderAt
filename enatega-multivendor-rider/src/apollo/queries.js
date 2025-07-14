@@ -15,6 +15,12 @@ query Rider($id:String){
       currentWalletAmount
       totalWalletAmount
       withdrawnWalletAmount
+      profileImage {
+        url
+      }
+      nationalIdImage {
+        url
+      }
     }
   }`
 
