@@ -288,7 +288,7 @@ module.exports = {
       try {
         console.log('riderLogin', args.username, args.password)
         const rider = await Rider.findOne({
-          username: args.username?.toLowerCase()
+          username: args.username?.toLowerCase().replace(' ', '')
         })
         if (!rider) throw new Error('Username not registered!')
 
