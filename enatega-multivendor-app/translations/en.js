@@ -696,7 +696,7 @@ export const en = {
   use_this_location: 'Use This Location',
   select_pickup_location: 'Select Pickup Location',
   locate_on_map: 'Locate on the map',
-  select_from_addressbook: 'Select from Addressbook',
+  select_from_addressbook: 'Select from my address book',
   select_dropoff_location: 'Select Drop-off Location',
   choose_area_in: 'Choose area in',
   choose_city: 'Choose City'
