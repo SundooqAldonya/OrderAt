@@ -680,6 +680,7 @@ export const ar = {
   notes_required: 'حقل الملاحظات مطلوب!',
   set_your_delivery_address: 'حدد عنوان التوصيل',
   choose_delivery_address: 'اختر طريقة تحديد العنوان',
-  use_current_location: 'استخدم الموقع المحدد على الخريطه',
-  browse_available_cities: 'تصفح المدن المتاحة'
+  use_current_location: 'استخدم الموقع الحالي',
+  browse_available_cities: 'تصفح المدن المتاحة',
+  use_this_location: 'استخدم الموقع المحدد على الخريطه'
 }

@@ -692,5 +692,6 @@ export const en = {
   set_your_delivery_address: 'Set Your Delivery Address',
   choose_delivery_address: 'Choose How to Set Your Address',
   use_current_location: 'Use the Current Location',
-  browse_available_cities: 'Browse Available Cities'
+  browse_available_cities: 'Browse Available Cities',
+  use_this_location: 'Use This Location'
 }

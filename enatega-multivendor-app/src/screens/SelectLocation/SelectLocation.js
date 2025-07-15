@@ -14,7 +14,9 @@ import {
   I18nManager,
   SafeAreaView,
   ScrollView,
-  Text
+  Text,
+  Modal,
+  StyleSheet
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
@@ -44,18 +46,23 @@ import { LocationContext } from '../../context/Location'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import UserContext from '../../context/User'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { createAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import navigationService from '../../routes/navigationService'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { Image } from 'react-native'
 import useEnvVars from '../../../environment'
+import { getCityAreas } from '../../apollo/queries'
+import { alignment } from '../../utils/alignment'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
 `
 
+const GET_CITIES_AREAS = gql`
+  ${getCityAreas}
+`
 const LATITUDE = 30.04442
 const LONGITUDE = 31.235712
 const LATITUDE_DELTA = 0.01
@@ -81,6 +88,11 @@ export default function SelectLocation(props) {
   const { getAddress } = useGeocoding()
   const { isLoggedIn } = useContext(UserContext)
 
+  const [areasModalVisible, setAreasModalVisible] = useState(false)
+  const [citiesModalVisible, setCitiesModalVisible] = useState(false)
+  const [selectedCity, setSelectedCity] = useState(null)
+  const [selectedArea, setSelectedArea] = useState(null)
+
   const [coordinates, setCoordinates] = useState({
     latitude: latitude || 31.1091,
     longitude: longitude || 30.9426,
@@ -88,6 +100,14 @@ export default function SelectLocation(props) {
     longitudeDelta: longitude ? 0.003 : LONGITUDE_DELTA
   })
   const [modalVisible, setModalVisible] = useState(false)
+
+  const [
+    fetchAreas,
+    { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  ] = useLazyQuery(GET_CITIES_AREAS)
+
+  console.log({ dataAreas })
+  const areasList = dataAreas?.areasByCity || null
 
   // useLayoutEffect(() => {
   //   navigation.setOptions(
@@ -342,14 +362,15 @@ export default function SelectLocation(props) {
   const onItemPress = (city) => {
     setModalVisible(false)
     console.log({ city })
-    navigation.navigate('AddNewAddress', {
-      // latitude: +city.latitude,
-      // longitude: +city.longitude,
-      city,
-      prevScreen: props?.route?.params?.prevScreen
-        ? props.route.params.prevScreen
-        : null
-    })
+    setSelectedCity(city)
+    fetchAreas({ variables: { id: city._id } })
+    setAreasModalVisible(true)
+    // navigation.navigate('AddNewAddress', {
+    //   city,
+    //   prevScreen: props?.route?.params?.prevScreen
+    //     ? props.route.params.prevScreen
+    //     : null
+    // })
   }
 
   const handleSaveLocation = () => {
@@ -360,8 +381,23 @@ export default function SelectLocation(props) {
     }
   }
 
+  const handleChooseArea = (area) => {
+    setSelectedArea(area)
+    const newCoordinates = {
+      latitude: area?.location.location.coordinates[1],
+      longitude: area?.location.location.coordinates[0],
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+    setCoordinates({ ...newCoordinates })
+    mapRef.current.animateToRegion(newCoordinates, 1000)
+    setAreasModalVisible(false)
+  }
+
+  console.log({ selectedArea: selectedArea?.location.location })
+
   return (
-    <>
+    <Fragment>
       <View style={styles().flex}>
         <View
           style={[
@@ -483,7 +519,7 @@ export default function SelectLocation(props) {
                     <EvilIcons name='location' size={18} color='#fff' />
                   </View>
                   <TextDefault textColor={'#fff'} H5 bold>
-                    {t('use_current_location')}
+                    {t('use_this_location')}
                   </TextDefault>
                 </TouchableOpacity>
               ) : null}
@@ -519,6 +555,174 @@ export default function SelectLocation(props) {
         onClose={() => setModalVisible(false)}
         isLoggedIn={isLoggedIn}
       />
-    </>
+
+      {/* areas modal */}
+      <Modal visible={areasModalVisible} transparent animationType='slide'>
+        <View style={styles1.modalOverlay}>
+          <View style={styles1.halfModal}>
+            <Text style={styles1.modalTitle}>
+              اختر المنطقة داخل {selectedCity?.title}
+            </Text>
+
+            <ScrollView contentContainerStyle={styles1.scrollContainer}>
+              {areasList?.map((area) => (
+                <TouchableOpacity
+                  key={area._id}
+                  onPress={() => handleChooseArea(area)}
+                  style={styles1.modalItem}
+                >
+                  <Text style={styles1.modalItemText}>{area.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setAreasModalVisible(false)}
+              style={styles1.cancelButton}
+            >
+              <Text style={styles1.cancelText}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </Fragment>
   )
 }
+
+const styles1 = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+    direction: 'rtl'
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#eee',
+    borderRadius: 12,
+    marginBottom: 12
+  },
+  optionText: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    color: '#000'
+  },
+  label: {
+    fontSize: 14,
+    color: '#000',
+    marginTop: 15,
+    marginBottom: 5
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#eee',
+    borderRadius: 12,
+    padding: 12,
+    color: '#000'
+  },
+  saveButton: {
+    marginTop: 30,
+    backgroundColor: '#2ecc71',
+    padding: 14,
+    borderRadius: 25,
+    alignItems: 'center'
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  addNewAddressbtn: {
+    padding: scale(5),
+    ...alignment.PLmedium,
+    ...alignment.PRmedium
+  },
+  addressContainer: {
+    width: '100%',
+    ...alignment.PTsmall,
+    ...alignment.PBsmall
+  },
+  addButton: {
+    backgroundColor: colors.primary,
+    // backgroundColor: colors.dark,
+    width: '100%',
+    height: scale(40),
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  addressSubContainer: {
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end'
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    maxHeight: '80%'
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)'
+  },
+  halfModal: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '50%',
+    paddingVertical: 20,
+    paddingHorizontal: 20
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#333'
+  },
+  scrollContainer: {
+    paddingBottom: 20
+  },
+  modalItem: {
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'right'
+  },
+  cancelButton: {
+    marginTop: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    paddingVertical: 12
+  },
+  cancelText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#333'
+  }
+})
