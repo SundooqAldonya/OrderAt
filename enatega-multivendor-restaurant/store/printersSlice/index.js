@@ -3,7 +3,9 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   showPrinters: false,
   printerIP: null,
-  printers: []
+  printers: [],
+  connectedDevice: null,
+  isScanning: false
 }
 
 export const printerSlice = createSlice({
@@ -14,17 +16,31 @@ export const printerSlice = createSlice({
       state.showPrinters = !state.showPrinters
     },
     setPrinters: (state, action) => {
-      console.log({ actionPrinters: action.payload })
       const printers = [...action.payload.printers]
       state.printers = printers
     },
     setPrinter: (state, action) => {
-      console.log({ payload: action.payload })
       state.printerIP = action.payload.printerIP
+    },
+    setConnectedDevice: (state, action) => {
+      state.connectedDevice = action.payload
+    },
+    setIsScanning: (state, action) => {
+      state.isScanning = action.payload
+    },
+    clearConnectedDevice: state => {
+      state.connectedDevice = null
     }
   }
 })
 
-export const { setPrinter, setPrinters, showPrintersFn } = printerSlice.actions
+export const {
+  setPrinter,
+  setPrinters,
+  showPrintersFn,
+  setConnectedDevice,
+  setIsScanning,
+  clearConnectedDevice
+} = printerSlice.actions
 const printerReducer = printerSlice.reducer
 export default printerReducer

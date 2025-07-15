@@ -4,7 +4,7 @@ import printerReducer from './printersSlice'
 
 export const store = configureStore({
   reducer: {
-    city: cityReducer
-    // printers: printerReducer
+    city: cityReducer,
+    printers: printerReducer
   }
 })
