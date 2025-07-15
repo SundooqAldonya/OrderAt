@@ -682,5 +682,11 @@ export const ar = {
   choose_delivery_address: 'اختر طريقة تحديد العنوان',
   use_current_location: 'استخدم الموقع الحالي',
   browse_available_cities: 'تصفح المدن المتاحة',
-  use_this_location: 'استخدم الموقع المحدد على الخريطه'
+  use_this_location: 'استخدم الموقع المحدد على الخريطه',
+  select_pickup_location: 'حدد موقع الاستلام',
+  locate_on_map: 'حدد على الخريطة',
+  select_from_addressbook: 'اختر من عناويني المحفوظة',
+  select_dropoff_location: 'حدد موقع التوصيل',
+  choose_area_in: 'اختر منطقة داخل',
+  choose_city: 'اختر المدينة'
 }

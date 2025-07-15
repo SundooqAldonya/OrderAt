@@ -54,6 +54,8 @@ const GET_CITIES_AREAS = gql`
   ${getCityAreas}
 `
 const NewDropoffMandoob = () => {
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const state = useSelector((state) => state.requestDelivery)
@@ -69,7 +71,6 @@ const NewDropoffMandoob = () => {
   console.log({ chooseFromMapTo })
   const route = useRoute()
   const modalRef = useRef()
-  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
@@ -321,7 +322,7 @@ const NewDropoffMandoob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>حدد موقع التوصيل</Text>
+      <Text style={styles.title}>{t('select_dropoff_location')}</Text>
 
       {/* Location options */}
       {/* <TouchableOpacity
@@ -356,14 +357,15 @@ const NewDropoffMandoob = () => {
         style={{
           ...styles.option,
           borderColor: chooseFromMapTo ? 'green' : '#eee',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={() => {
           dispatch(setChooseFromMapTo({ status: true }))
           navigation.navigate('DropoffFromMap')
         }}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Entypo
             name='location-pin'
             size={22}
@@ -375,7 +377,7 @@ const NewDropoffMandoob = () => {
               color: chooseFromMapTo ? 'green' : '#000'
             }}
           >
-            حدد الموقع على الخريطة
+            {t('locate_on_map')}
           </Text>
         </View>
         {chooseFromMapTo && (
@@ -387,11 +389,12 @@ const NewDropoffMandoob = () => {
         style={{
           ...styles.option,
           borderColor: chooseFromAddressBookTo ? 'green' : '#eee',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={handleChooseAddress}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Feather
             name='bookmark'
             size={22}
@@ -403,7 +406,7 @@ const NewDropoffMandoob = () => {
               color: chooseFromAddressBookTo ? 'green' : '#000'
             }}
           >
-            اختر من عناويني المحفوظة
+            {t('select_from_addressbook')}
           </Text>
         </View>
         {chooseFromAddressBookTo && (
@@ -415,11 +418,12 @@ const NewDropoffMandoob = () => {
         style={{
           ...styles.option,
           borderColor: selectedCityAndAreaTo ? 'green' : '#eee',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={handleNearestArea}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <MaterialIcons
             name='location-city'
             size={22}
@@ -431,7 +435,7 @@ const NewDropoffMandoob = () => {
               color: selectedCityAndAreaTo ? 'green' : '#000'
             }}
           >
-            اختر أقرب منطقة{' '}
+            {t('choose_nearest_area')}{' '}
             {selectedAreaTo ? `- (${selectedAreaTo.title})` : null}
           </Text>
         </View>
@@ -441,19 +445,23 @@ const NewDropoffMandoob = () => {
       </TouchableOpacity>
 
       {/* Inputs */}
-      <Text style={styles.label}>اسم المكان</Text>
+      <Text style={{ ...styles.label, textAlign: isArabic ? 'left' : 'right' }}>
+        {t('address_label')}
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder='مثلاً: المنزل، العمل، إلخ'
+        placeholder={t('address_label_placeholder')}
         placeholderTextColor='#aaa'
         value={name}
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>تفاصيل العنوان (اختياري)</Text>
+      <Text style={{ ...styles.label, textAlign: isArabic ? 'left' : 'right' }}>
+        {t('address_details')} {`(${t('optional')})`}
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder='عمارة بجوار بنك مصر...'
+        placeholder={t('better_place_description')}
         placeholderTextColor='#aaa'
         value={details}
         onChangeText={setDetails}
@@ -479,7 +487,7 @@ const NewDropoffMandoob = () => {
       <Modal visible={citiesModalVisible} transparent animationType='slide'>
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
-            <Text style={styles.modalTitle}>اختر المدينة</Text>
+            <Text style={styles.modalTitle}>{t('choose_city')}</Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               {cities?.map((city) => (
@@ -502,7 +510,7 @@ const NewDropoffMandoob = () => {
               onPress={() => setCitiesModalVisible(false)}
               style={styles.cancelButton}
             >
-              <Text style={styles.cancelText}>إلغاء</Text>
+              <Text style={styles.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -513,7 +521,7 @@ const NewDropoffMandoob = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
             <Text style={styles.modalTitle}>
-              اختر المنطقة داخل {selectedCityTo?.title}
+              {t('choose_area_in')} {selectedCityTo?.title}
             </Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -536,7 +544,7 @@ const NewDropoffMandoob = () => {
               onPress={() => setAreasModalVisible(false)}
               style={styles.cancelButton}
             >
-              <Text style={styles.cancelText}>إلغاء</Text>
+              <Text style={styles.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>

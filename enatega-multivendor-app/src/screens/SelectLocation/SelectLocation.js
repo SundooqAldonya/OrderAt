@@ -561,7 +561,7 @@ export default function SelectLocation(props) {
         <View style={styles1.modalOverlay}>
           <View style={styles1.halfModal}>
             <Text style={styles1.modalTitle}>
-              اختر المنطقة داخل {selectedCity?.title}
+              {t('choose_area_in')} {selectedCity?.title}
             </Text>
 
             <ScrollView contentContainerStyle={styles1.scrollContainer}>
@@ -580,7 +580,7 @@ export default function SelectLocation(props) {
               onPress={() => setAreasModalVisible(false)}
               style={styles1.cancelButton}
             >
-              <Text style={styles1.cancelText}>إلغاء</Text>
+              <Text style={styles1.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
