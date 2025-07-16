@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState }  from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   View,
   ActivityIndicator,
@@ -21,27 +21,26 @@ import Status from '../../components/Status'
 import { Configuration } from '../../ui/context'
 import { useRestaurantContext } from '../../ui/context/restaurant'
 import { formatReceipt } from '../../utilities/formatReceipt'
-import SpriteCapture, { SpriteCaptureHandle } from '../../utilities/SpriteCapture';
-import PrinterManager from '../../utilities/printers/printerManager';
-import fs from 'react-native-fs';
+import SpriteCapture, {
+  SpriteCaptureHandle
+} from '../../utilities/SpriteCapture'
+import PrinterManager from '../../utilities/printers/printerManager'
+import fs from 'react-native-fs'
 
-import * as htmlToImage from 'html-to-image';
-import { toPng } from 'html-to-image';
-import RenderHtml from '@builder.io/react-native-render-html';
+import * as htmlToImage from 'html-to-image'
+import { toPng } from 'html-to-image'
+import RenderHtml from '@builder.io/react-native-render-html'
+import { loadPrinterInfo } from '../../utilities/printers'
 
 const ReceiptViewer = ({ receipt_HTML, width }) => {
-  return (
-    <RenderHtml
-      contentWidth={width}
-      source={{ html: receipt_HTML }}
-    />
-  );
-};
+  return <RenderHtml contentWidth={width} source={{ html: receipt_HTML }} />
+}
 
 export default function OrderDetail({ navigation, route }) {
   const { currency } = useContext(Configuration.Context)
-  const receiptRef = useRef(null);
-  let b64 = "";
+  const receiptRef = useRef(null)
+  // let b64 = ''
+  const [b64, setB64] = useState(null)
 
   const { t, i18n } = useTranslation()
   const {
@@ -53,11 +52,13 @@ export default function OrderDetail({ navigation, route }) {
   } = route.params
 
   useEffect(() => {
-	  async function fetchData() {
-		b64 = await receiptRef.current.captureBase64();
-		b64 = await fs.readFile(b64, 'base64');
-	  }
-	  fetchData();
+    async function fetchData() {
+      let base64 = await receiptRef.current.captureBase64()
+      base64 = await fs.readFile(base64, 'base64')
+      setB64(base64.replace(/\r?\n|\r/g, ''))
+      console.log('fetched', b64?.substring(0, 40))
+    }
+    fetchData()
   }, [receiptRef])
 
   // Set navigation reference for PrinterManager
@@ -72,7 +73,6 @@ export default function OrderDetail({ navigation, route }) {
   const [overlayVisible, setOverlayVisible] = useState(false)
   const isAcceptButtonVisible = !moment().isBefore(orderDate)
   const [print, setPrint] = useState(false)
-
 
   const { data } = useRestaurantContext()
   const timeNow = new Date()
@@ -105,29 +105,36 @@ export default function OrderDetail({ navigation, route }) {
   }
 
   const togglePrintOverlay = async () => {
-	  let printed = await printOrder();
-	if(printed){
-		setPrint(true)
-		setOverlayVisible(!overlayVisible)
-	}
+    let printed = await printOrder()
+    if (printed) {
+      setPrint(true)
+      setOverlayVisible(!overlayVisible)
+    }
   }
-  
- const printOrder = async () => {
+
+  const printOrder = async () => {
+    const lastPrinter = await loadPrinterInfo()
+    console.log({ printerInfo: lastPrinter })
+    console.log({ b64: b64?.substring(0, 40) })
+    // await PrinterManager.disconnect(lastPrinter)
+    // await PrinterManager.connect(lastPrinter)
     if (receiptRef.current) {
       try {
-			b64 = b64.replace(/\r?\n|\r/g, '');
-			await PrinterManager.printBase64(b64, { width: 384 });
-			await PrinterManager.print('\n', { align: 'center', cutPaper: true });
-			return true;
-	  } catch (err) {
-			console.error(err);
-	  }
+        // b64 = b64.replace(/\r?\n|\r/g, '')
+        await new Promise(res => setTimeout(res, 1000))
+        // console.log({ b64 })
+        await PrinterManager.printBase64(b64, { width: 384 })
+        await PrinterManager.print('\n', { align: 'center', cutPaper: true })
+        return true
+      } catch (err) {
+        console.error(err)
+      }
     } else {
-		console.log("NO Ref FOUND!");
-	}
-	return false;
+      console.log('NO Ref FOUND!')
+    }
+    return false
   }
-  
+
   const cancelOrderFunc = () => {
     cancelOrder(order._id, 'not available')
     muteRing(order.orderId)
@@ -148,15 +155,15 @@ export default function OrderDetail({ navigation, route }) {
   }
 
   const isArabic = i18n.language === 'ar'
-  
-  
+
+  if (!order) return <TextDefault>⚠️ Order not available</TextDefault>
+
   return (
     <View style={{ flex: 1 }}>
+      <SpriteCapture ref={receiptRef} width={250}>
+        <ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
+      </SpriteCapture>
 
-				  <SpriteCapture ref={receiptRef} width={250}>
-					<ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
-				  </SpriteCapture>
-	
       <BackButton navigation={navigation} />
       <ImageBackground
         source={require('../../assets/bg.png')}
@@ -253,7 +260,7 @@ export default function OrderDetail({ navigation, route }) {
                   </>
                 )}
               </View>
-				  
+
               {activeBar === 0 && isAcceptButtonVisible && (
                 <>
                   <Button
@@ -270,7 +277,7 @@ export default function OrderDetail({ navigation, route }) {
                     }}
                     onPress={printOrder}
                   />
-				  
+
                   <Button
                     title={t('acceptAndPrint')}
                     buttonStyle={{
@@ -299,7 +306,7 @@ export default function OrderDetail({ navigation, route }) {
                     }}
                     onPress={toggleOverlay}
                   />
-				  
+
                   <OverlayComponent
                     visible={overlayVisible}
                     toggle={toggleOverlay}
@@ -307,7 +314,6 @@ export default function OrderDetail({ navigation, route }) {
                     print={print}
                     navigation={navigation}
                     printOrder={printOrder}
-					
                   />
                 </>
               )}
