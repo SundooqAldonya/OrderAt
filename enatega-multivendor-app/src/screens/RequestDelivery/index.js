@@ -79,9 +79,9 @@ const RequestDelivery = () => {
 
   useEffect(() => {
     console.log({ mapRef })
-    if (!pickupCoords || !dropOffCoords) return null
+
     let timeout = setTimeout(() => {
-      if (mapRef?.current) {
+      if (mapRef?.current && pickupCoords && dropOffCoords) {
         mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
           edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
           animated: true

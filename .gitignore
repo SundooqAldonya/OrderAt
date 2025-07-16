@@ -1,5 +1,8 @@
-.expo
-.DS_Store
-business_app
-customer_app
-driver_app
+.expo
+.DS_Store
+business_app
+customer_app
+driver_app
+config.bat
+node_modules
+.env
