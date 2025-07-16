@@ -16,7 +16,12 @@ import { useAccount } from '../../ui/hooks'
 import { colors, scale } from '../../utilities'
 import { useMutation } from '@apollo/client'
 import { deactivateRestaurant } from '../../apollo'
-import { AntDesign, EvilIcons, Feather, MaterialIcons } from '@expo/vector-icons'
+import {
+  AntDesign,
+  EvilIcons,
+  Feather,
+  MaterialIcons
+} from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import styles from '../Login/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -87,14 +92,17 @@ const Profile = () => {
       dispatch(setPrinters({ printers: foundPrinters }))
     } catch (error) {
       console.error('Error scanning printers:', error)
-      Alert.alert('Scan Error', 'Failed to scan for printers. Please try again.')
+      Alert.alert(
+        'Scan Error',
+        'Failed to scan for printers. Please try again.'
+      )
     } finally {
       dispatch(setIsScanning(false))
     }
   }
 
   // Connect to a printer with confirmation
-  const connectToPrinter = (printer) => {
+  const connectToPrinter = printer => {
     Alert.alert(
       'Connect to Printer',
       `Do you want to connect to ${printer.name}?`,
@@ -110,9 +118,13 @@ const Profile = () => {
               await PrinterManager.connect(printer)
               dispatch(setConnectedDevice(printer))
               Alert.alert('Success', `Connected to ${printer.name}`)
+              dispatch(setIsScanning(false))
             } catch (error) {
               console.error('Connection error:', error)
-              Alert.alert('Connection Error', `Failed to connect to ${printer.name}`)
+              Alert.alert(
+                'Connection Error',
+                `Failed to connect to ${printer.name}`
+              )
             }
           }
         }
@@ -137,6 +149,7 @@ const Profile = () => {
               await PrinterManager.disconnect()
               dispatch(clearConnectedDevice())
               Alert.alert('Success', 'Printer disconnected')
+              dispatch(setIsScanning(false))
             } catch (error) {
               console.error('Disconnect error:', error)
               Alert.alert('Disconnect Error', 'Failed to disconnect printer')
@@ -149,7 +162,8 @@ const Profile = () => {
 
   // Render printer item
   const renderPrinterItem = ({ item }) => {
-    const isConnected = connectedDevice &&
+    const isConnected =
+      connectedDevice &&
       connectedDevice.address === item.address &&
       connectedDevice.type === item.type
 
@@ -159,8 +173,7 @@ const Profile = () => {
           printerItemStyle.container,
           isConnected && printerItemStyle.connectedContainer
         ]}
-        onPress={() => connectToPrinter(item)}
-      >
+        onPress={() => connectToPrinter(item)}>
         <View style={printerItemStyle.info}>
           <TextDefault bolder style={printerItemStyle.name}>
             {item.name}
@@ -170,11 +183,7 @@ const Profile = () => {
           </TextDefault>
         </View>
         {isConnected && (
-          <MaterialIcons
-            name="check-circle"
-            size={24}
-            color={colors.green}
-          />
+          <MaterialIcons name="check-circle" size={24} color={colors.green} />
         )}
       </TouchableOpacity>
     )
@@ -226,13 +235,18 @@ const Profile = () => {
 
           {/* Printer Management Section */}
           <View style={{ marginTop: 20 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 10
+              }}>
               <TextDefault bolder>Available Printers</TextDefault>
               <TouchableOpacity
                 style={printerButtonStyle.scanButton}
                 onPress={scanPrinters}
-                disabled={isScanning}
-              >
+                disabled={isScanning}>
                 {isScanning ? (
                   <Spinner size="small" />
                 ) : (
@@ -249,9 +263,10 @@ const Profile = () => {
                 </TextDefault>
                 <TouchableOpacity
                   style={printerButtonStyle.disconnectButton}
-                  onPress={disconnectPrinter}
-                >
-                  <TextDefault style={{ color: '#fff', fontSize: 12 }}>Disconnect</TextDefault>
+                  onPress={disconnectPrinter}>
+                  <TextDefault style={{ color: '#fff', fontSize: 12 }}>
+                    Disconnect
+                  </TextDefault>
                 </TouchableOpacity>
               </View>
             )}
@@ -261,7 +276,9 @@ const Profile = () => {
               <FlatList
                 data={printers}
                 renderItem={renderPrinterItem}
-                keyExtractor={(item, index) => `${item.type}-${item.address}-${index}`}
+                keyExtractor={(item, index) =>
+                  `${item.type}-${item.address}-${index}`
+                }
                 style={{ maxHeight: 200 }}
                 showsVerticalScrollIndicator={false}
               />

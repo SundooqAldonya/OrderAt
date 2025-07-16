@@ -2,6 +2,7 @@ import { NetPrinter } from 'react-native-thermal-receipt-printer-image-qr'
 import { createPrinterDevice } from './types'
 import { NetworkInfo } from 'react-native-network-info'
 import Ping from 'react-native-ping'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const checkPrinterAvailability = async ip => {
   try {
@@ -67,6 +68,7 @@ export const Network = {
       // small delay to let Android establish the socket
       await new Promise(res => setTimeout(res, 1000))
       const p = await NetPrinter.connectPrinter(address, port)
+      await savePrinterInfo(address, port)
       p.type = 'network'
       return p
     } catch (error) {
@@ -81,5 +83,34 @@ export const Network = {
     } catch (error) {
       console.error('Error disconnecting network printer:', error)
     }
+  }
+}
+
+const LAST_PRINTER_KEY = 'last_connected_printer'
+
+export const savePrinterInfo = async printerDevice => {
+  if (!printerDevice || !printerDevice.address || !printerDevice.type) return
+  try {
+    await AsyncStorage.setItem(LAST_PRINTER_KEY, JSON.stringify(printerDevice))
+  } catch (err) {
+    console.error('Failed to save printer info:', err)
+  }
+}
+
+export const loadPrinterInfo = async () => {
+  try {
+    const stored = await AsyncStorage.getItem(LAST_PRINTER_KEY)
+    return stored ? JSON.parse(stored) : null
+  } catch (err) {
+    console.error('Failed to load printer info:', err)
+    return null
+  }
+}
+
+export const clearPrinterInfo = async () => {
+  try {
+    await AsyncStorage.removeItem(LAST_PRINTER_KEY)
+  } catch (err) {
+    console.error('Failed to clear printer info:', err)
   }
 }

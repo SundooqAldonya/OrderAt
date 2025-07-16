@@ -1,9 +1,9 @@
 //src/utilities/formatReceipt.js
 export const formatReceipt = (order, currency) => {
   const address =
-    order.shippingMethod === 'PICKUP'
+    order?.shippingMethod === 'PICKUP'
       ? 'الاستلام من الفرع'
-      : `${order.deliveryAddress.label} ${order.deliveryAddress.details} ${order.deliveryAddress.deliveryAddress}`
+      : `${order?.deliveryAddress?.label} ${order?.deliveryAddress?.details} ${order?.deliveryAddress?.deliveryAddress}`
 
   const {
     user: { phone },
