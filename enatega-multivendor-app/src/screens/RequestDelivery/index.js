@@ -79,6 +79,7 @@ const RequestDelivery = () => {
 
   useEffect(() => {
     console.log({ mapRef })
+    if (!pickupCoords || !dropOffCoords) return null
     let timeout = setTimeout(() => {
       if (mapRef?.current) {
         mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
