@@ -49,6 +49,7 @@ import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
 import { restaurantLogout } from './src/apollo'
 import { AuthProvider } from './src/ui/context/auth'
+import * as ScreenOrientation from 'expo-screen-orientation'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -108,6 +109,16 @@ export default function App() {
         setIsUpdating(false)
       }
     })()
+  }, [])
+
+  useEffect(() => {
+    // Lock the screen to landscape
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE)
+
+    // Optional: reset to portrait on unmount
+    return () => {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
+    }
   }, [])
 
   const [fontLoaded] = useFonts({
