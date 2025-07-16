@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 
 import { Bluetooth } from './bluetooth'
 import { USB } from './usb'
-import { Network } from './network'
+import { clearPrinterInfo, Network, savePrinterInfo } from './network'
 import { createPrintOptions, createPrinterDevice } from './types'
 import {
   BLEPrinter,
@@ -90,8 +90,10 @@ export class PrinterManager {
 
   /** Connect & remember the device */
   static async connect(device) {
+    console.log({ device })
     try {
       connectedDevice = device
+      await savePrinterInfo(device)
       switch (device.type) {
         case 'bluetooth':
           return Bluetooth.connect(device.address)
@@ -123,6 +125,7 @@ export class PrinterManager {
       }
     } finally {
       connectedDevice = null
+      await clearPrinterInfo()
     }
   }
 

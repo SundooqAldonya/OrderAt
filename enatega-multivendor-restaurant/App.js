@@ -49,6 +49,8 @@ import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
 import { restaurantLogout } from './src/apollo'
 import { AuthProvider } from './src/ui/context/auth'
+import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
+import { NetPrinter } from 'react-native-thermal-receipt-printer-image-qr'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -108,6 +110,22 @@ export default function App() {
         setIsUpdating(false)
       }
     })()
+  }, [])
+
+  useEffect(() => {
+    const reconnectLastPrinter = async () => {
+      const lastPrinter = await loadPrinterInfo()
+      if (lastPrinter) {
+        try {
+          console.log('Reconnecting to last used printer:', lastPrinter)
+          await PrinterManager.connect(lastPrinter)
+        } catch (e) {
+          console.warn('Auto-reconnect failed:', e)
+        }
+      }
+    }
+
+    reconnectLastPrinter()
   }, [])
 
   const [fontLoaded] = useFonts({
