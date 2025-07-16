@@ -103,7 +103,8 @@ function Main(props) {
         shopType: null,
         ip: null
       },
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
     }
   )
 
@@ -136,8 +137,6 @@ function Main(props) {
   })
 
   const [selectedType, setSelectedType] = useState('restaurant')
-  console.log('orderData', orderData)
-  console.log('orderError', orderError)
 
   const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
     onCompleted: (res) => {
