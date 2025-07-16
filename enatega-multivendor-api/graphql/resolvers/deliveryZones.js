@@ -85,6 +85,7 @@ module.exports = {
             configuration.deliveryRate,
             distance
           )
+          console.log({ distance, amount })
         }
 
         let deliveryDiscount = 0
@@ -104,7 +105,9 @@ module.exports = {
           }
         }
         amount -= deliveryDiscount
-
+        // if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+        //   amount = configuration.minimumDeliveryFee
+        // }
         console.log({ amount, originalDiscount, deliveryDiscount })
 
         return { amount, originalDiscount }

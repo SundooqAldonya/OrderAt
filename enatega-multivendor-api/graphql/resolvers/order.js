@@ -655,7 +655,10 @@ module.exports = {
         const originZone = await DeliveryZone.findOne({
           location: {
             $geoIntersects: {
-              $geometry: restaurant.location.coordinates
+              $geometry: {
+                type: 'Point',
+                coordinates: restaurant.location.coordinates
+              }
             }
           }
         })
@@ -699,6 +702,7 @@ module.exports = {
             configuration.deliveryRate,
             distance
           )
+          console.log({ amount, distance })
         }
 
         let deliveryCharges = amount

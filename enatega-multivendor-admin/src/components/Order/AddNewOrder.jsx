@@ -3,22 +3,31 @@ import {
   Box,
   Button,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { newCheckoutPlaceOrder } from '../../apollo'
-import { useMutation } from '@apollo/client'
+import {
+  getDeliveryCalculation,
+  getRestaurantProfile,
+  newCheckoutPlaceOrder
+} from '../../apollo'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { useTranslation } from 'react-i18next'
 import { useContext } from 'react'
 import { AreaContext } from '../../context/AreaContext'
 import useGlobalStyles from '../../utils/globalStyles'
 import useAcceptOrder from '../../context/useAcceptOrder'
 import { direction } from '../../utils/direction'
+
+const GET_PROFILE = gql`
+  ${getRestaurantProfile}
+`
 
 const AddNewOrder = ({
   refetchOrders,
@@ -39,8 +48,55 @@ const AddNewOrder = ({
     name: '',
     addressDetails: ''
   })
+  const [loaded, setLoaded] = useState(false)
   const { areas } = useContext(AreaContext)
   const { acceptOrder } = useAcceptOrder()
+  const { data, error: errorQuery, loading: loadingQuery } = useQuery(
+    GET_PROFILE,
+    {
+      variables: { id: restaurantId }
+    }
+  )
+
+  const restaurantData = data?.restaurant || null
+
+  console.log({ data })
+
+  const [
+    fetchDeliveryCost,
+    { data: calcData, loading: calcLoading, error: errorCalc }
+  ] = useLazyQuery(getDeliveryCalculation, {
+    onCompleted: res => {
+      setLoaded(true)
+    }
+  })
+
+  const deliveryAmount = calcData?.getDeliveryCalculation?.amount || null
+
+  console.log({ deliveryAmount })
+
+  useEffect(() => {
+    if (data && selectedArea && areas) {
+      const foundArea = areas.find(item => item._id === selectedArea)
+      console.log({ foundArea })
+      fetchDeliveryCost({
+        variables: {
+          destLong: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[0])
+            : null,
+          destLat: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[1])
+            : null,
+          originLong: restaurantData?.location?.coordinates
+            ? Number(restaurantData?.location?.coordinates[0])
+            : null,
+          originLat: restaurantData?.location?.coordinates
+            ? Number(restaurantData?.location?.coordinates[1])
+            : null
+        }
+      })
+    }
+  }, [selectedArea])
 
   const { phone, name, addressDetails } = values
 
@@ -274,6 +330,17 @@ const AddNewOrder = ({
           }}
         />
       </Box>
+      {calcLoading && (
+        <Grid item xs={12}>
+          <Typography>Calculating delivery amount...</Typography>
+        </Grid>
+      )}
+      {deliveryAmount && loaded ? (
+        <Grid item xs={12}>
+          <Typography>Delivery Amount: {deliveryAmount} EGP</Typography>
+          <Typography>Total: {deliveryAmount + Number(cost)} EGP</Typography>
+        </Grid>
+      ) : null}
       {/* Submit and Cancel Buttons */}
       <Box sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" fullWidth type="submit">

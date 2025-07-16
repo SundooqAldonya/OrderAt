@@ -62,6 +62,7 @@ const AddNewOrder = ({ navigation }) => {
   const { currencySymbol } = useContext(Configuration.Context)
 
   const { cityId } = useSelector(state => state.city)
+  console.log({ cityId })
 
   const [mutateCreateOrder] = useMutation(newCheckoutPlaceOrder, {
     onCompleted: data => {
