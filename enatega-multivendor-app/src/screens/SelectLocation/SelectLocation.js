@@ -129,14 +129,20 @@ export default function SelectLocation(props) {
 
       headerRight: () => {
         return (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SelectLanguageScreen')
-            }}
-            style={{ marginRight: 15 }}
-          >
-            <FontAwesome name='language' size={22} color='black' />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', marginRight: 10 }}>
+            <TouchableOpacity
+              onPress={getCurrentPosition}
+              style={{ marginRight: 15 }}
+            >
+              <FontAwesome name='location-arrow' size={22} color='black' />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SelectLanguageScreen')}
+            >
+              <FontAwesome name='language' size={22} color='black' />
+            </TouchableOpacity>
+          </View>
         )
       },
       headerTitleAlign: 'center',

@@ -30,7 +30,7 @@ import { LocationProvider } from './src/context/Location'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import 'expo-dev-client'
 import useEnvVars, { isProduction } from './environment'
-// import { requestTrackingPermissions } from './src/utils/useAppTrackingTrasparency'
+import { requestTrackingPermissions } from './src/utils/useAppTrackingTrasparency'
 import { OrdersProvider } from './src/context/Orders'
 import { MessageComponent } from './src/components/FlashMessage/MessageComponent'
 import * as Updates from 'expo-updates'
@@ -70,6 +70,7 @@ import SelectLanguageScreen from './src/screens/ChooseLanguageLanding'
 import i18next from 'i18next'
 import ErrorView from './src/components/ErrorView/ErrorView'
 import NetInfo from '@react-native-community/netinfo'
+import TrackingPermissionModal from './src/components/TrackingPermissionModal'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -287,12 +288,6 @@ export default function App() {
     saveLocation()
   }, [location])
 
-  // useEffect(() => {
-  //   if (Platform.OS === 'ios') {
-  //     requestTrackingPermissions()
-  //   }
-  // }, [])
-
   const client = setupApolloClient()
   const shouldBeRTL = false
   if (shouldBeRTL !== I18nManager.isRTL && Platform.OS !== 'web') {
@@ -390,17 +385,7 @@ export default function App() {
     reviewModalRef?.current?.close()
   }
 
-  // const handleLanguageSelect = async (lang) => {
-  //   await AsyncStorage.setItem('enatega-language', lang)
-  //   setLanguage(lang)
-  //   i18next.changeLanguage(lang)
-  // }
-
   if (!isConnected) return <ErrorView />
-
-  // if (!language) {
-  //   return <SelectLanguageScreen firstTime={true} />
-  // }
 
   if (appIsReady) {
     return (
@@ -421,6 +406,7 @@ export default function App() {
                       <UserProvider>
                         <OrdersProvider>
                           <AppContainer />
+                          <TrackingPermissionModal />
                           <ReviewModal
                             ref={reviewModalRef}
                             onOverlayPress={onOverlayPress}
