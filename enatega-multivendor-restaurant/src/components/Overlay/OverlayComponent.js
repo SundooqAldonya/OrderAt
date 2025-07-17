@@ -7,9 +7,16 @@ import { Overlay } from 'react-native-elements'
 import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
 import { useTranslation } from 'react-i18next'
 
-export default function OverlayComponent(props) {
+export default function OverlayComponent({
+  visible,
+  toggle,
+  order,
+  print,
+  navigation,
+  printOrder
+}) {
   const { t } = useTranslation()
-  const { visible, toggle, order, print, navigation, printOrder } = props
+
   const [selectedTime, setSelectedTime] = useState(TIMES[0])
   const { acceptOrder, loading } = useAcceptOrder()
   const { muteRing } = useOrderRing()
