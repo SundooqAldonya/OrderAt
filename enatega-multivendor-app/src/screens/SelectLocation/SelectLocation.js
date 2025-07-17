@@ -326,6 +326,7 @@ export default function SelectLocation(props) {
       }
     })
   }
+
   const setAreaLocation = async () => {
     setLoading(true)
 
@@ -373,12 +374,16 @@ export default function SelectLocation(props) {
     // })
   }
 
+  // const selectThisLocation = () => {
+
+  // }
+
   const handleSaveLocation = () => {
-    if (areaCoords) {
-      setAreaLocation()
-    } else {
-      setCurrentLocation()
-    }
+    // if (areaCoords) {
+    setAreaLocation()
+    // } else {
+    //   setCurrentLocation()
+    // }
   }
 
   const handleChooseArea = (area) => {
