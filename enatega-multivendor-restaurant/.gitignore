@@ -11,7 +11,7 @@ web-build/
 
 # macOS
 .DS_Store
-android
+#android
 
 google-services.json
 google-service-account.json
