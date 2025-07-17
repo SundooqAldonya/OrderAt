@@ -1,46 +1,32 @@
+// i18n.js
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import * as Localization from 'expo-localization'
-import { Platform } from 'react-native'
-import { en } from './translations/en'
-import { de } from './translations/de'
-import { fr } from './translations/fr'
-import { km } from './translations/km'
-import { zh } from './translations/zh'
-import { ar } from './translations/ar'
-import { he } from './translations/he'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Localization from 'expo-localization'
+
+import { en } from './translations/en'
+import { ar } from './translations/ar'
+// Add others if needed
 
 export const languageResources = {
   en: { translation: en },
   ar: { translation: ar }
-  // zh: { translation: zh },
-  // de: { translation: de },
-  // fr: { translation: fr },
-  // km: { translation: km },
-}
-const getStoredLanguage = async () => {
-  const lng = await AsyncStorage.getItem('enatega-language')
-  i18next.use(initReactI18next).init({
-    compatibilityJSON: 'v3',
-    lng: lng || 'ar',
-    fallbackLng: 'ar',
-    resources: languageResources
-  })
-}
-if (Platform.OS === 'android') {
-  getStoredLanguage()
-}
-if (Platform.OS === 'ios') {
-  i18next.locale = Localization.locale
-  i18next.use(initReactI18next).init({
-    compatibilityJSON: 'v3',
-    lng: i18next.locale || 'ar',
-    fallbackLng: 'ar',
-    resources: languageResources
-  })
-
-  i18next.changeLanguage(i18next.locale)
 }
 
+export const initI18n = async () => {
+  const storedLanguage = await AsyncStorage.getItem('enatega-language')
+  const fallbackLang = storedLanguage || 'ar'
+
+  await i18next.use(initReactI18next).init({
+    compatibilityJSON: 'v3',
+    lng: fallbackLang,
+    fallbackLng: 'ar',
+    resources: languageResources,
+    interpolation: {
+      escapeValue: false
+    }
+  })
+}
+
+// ✅ Keep this line for use in other files
 export default i18next

@@ -31,7 +31,7 @@ const SelectLanguageScreen = ({ firstTime }) => {
     await AsyncStorage.setItem('enatega-language', lang)
     // setLanguage(lang)
     dispatch(setLanguage({ language: lang }))
-    i18next.changeLanguage(lang)
+    await i18next.changeLanguage(lang)
     if (!firstTime && navigation) {
       navigation.goBack()
     }

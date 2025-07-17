@@ -71,6 +71,7 @@ import i18next from 'i18next'
 import ErrorView from './src/components/ErrorView/ErrorView'
 import NetInfo from '@react-native-community/netinfo'
 import TrackingPermissionModal from './src/components/TrackingPermissionModal'
+import { initI18n } from './i18next'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -122,6 +123,14 @@ export default function App() {
 
   useEffect(() => {
     checkLang()
+  }, [])
+
+  useEffect(() => {
+    const setup = async () => {
+      await initI18n()
+      // setI18nReady(true)
+    }
+    setup()
   }, [])
 
   useEffect(() => {
