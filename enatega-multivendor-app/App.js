@@ -72,6 +72,7 @@ import ErrorView from './src/components/ErrorView/ErrorView'
 import NetInfo from '@react-native-community/netinfo'
 import TrackingPermissionModal from './src/components/TrackingPermissionModal'
 import { initI18n } from './i18next'
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -123,6 +124,16 @@ export default function App() {
 
   useEffect(() => {
     checkLang()
+  }, [])
+
+  useEffect(() => {
+    const requestPermission = async () => {
+      if (Platform.OS === 'ios') {
+        const { status } = await requestTrackingPermissionsAsync()
+        console.log('Tracking permission status:', status)
+      }
+    }
+    requestPermission()
   }, [])
 
   useEffect(() => {
@@ -415,7 +426,7 @@ export default function App() {
                       <UserProvider>
                         <OrdersProvider>
                           <AppContainer />
-                          <TrackingPermissionModal />
+                          {/* <TrackingPermissionModal /> */}
                           <ReviewModal
                             ref={reviewModalRef}
                             onOverlayPress={onOverlayPress}

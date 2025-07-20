@@ -48,17 +48,17 @@ export default function TrackingPermissionModal() {
     Linking.openURL('app-settings:')
   }
 
-  if (status === 'denied') {
-    // Optionally show a small reminder/toast/banner in your app
-    return (
-      <View style={styles.reminderContainer}>
-        <Text style={styles.reminderText}>
-          Enable tracking for better experience in Settings
-        </Text>
-        <Button title='Open Settings' onPress={openSettings} />
-      </View>
-    )
-  }
+  // if (status === 'denied') {
+  //   // Optionally show a small reminder/toast/banner in your app
+  //   return (
+  //     <View style={styles.reminderContainer}>
+  //       <Text style={styles.reminderText}>
+  //         Enable tracking for better experience in Settings
+  //       </Text>
+  //       <Button title='Open Settings' onPress={openSettings} />
+  //     </View>
+  //   )
+  // }
 
   return (
     <Modal visible={showModal} transparent animationType='slide'>
