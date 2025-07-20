@@ -53,7 +53,7 @@ const DropoffFromMap = () => {
         return (
           <TouchableOpacity
             onPress={handleCurrentPosition}
-            style={{ paddingHorizontal: 25 }}
+            style={{ paddingRight: 25 }}
           >
             <FontAwesome6 name='location-crosshairs' size={24} color='#fff' />
           </TouchableOpacity>
@@ -258,9 +258,13 @@ const DropoffFromMap = () => {
         </TouchableOpacity>
 
         {/* Send icon (left) */}
-        <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
-          <Ionicons name='send' size={24} color={colors.primary} />
+        <TouchableOpacity style={styles.fabSave} onPress={handleSave}>
+          <Ionicons name='checkmark-circle' size={28} color='#fff' />
+          <Text style={styles.fabText}>{t('save_location')}</Text>
         </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
+          <Ionicons name='send' size={24} color={colors.primary} />
+        </TouchableOpacity> */}
       </View>
     </View>
   )
@@ -300,5 +304,22 @@ const styles = StyleSheet.create({
     top: height / 2 - 50, // Adjust based on marker size
     left: width / 2 - 24, // Adjust based on marker size
     zIndex: 999
+  },
+  fabSave: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    backgroundColor: colors.primary,
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 5
+  },
+  fabText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 8
   }
 })

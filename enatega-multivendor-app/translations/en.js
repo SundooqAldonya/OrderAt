@@ -699,5 +699,6 @@ export const en = {
   select_from_addressbook: 'Select from my address book',
   select_dropoff_location: 'Select Drop-off Location',
   choose_area_in: 'Choose area in',
-  choose_city: 'Choose City'
+  choose_city: 'Choose City',
+  save_location: 'Save Location'
 }

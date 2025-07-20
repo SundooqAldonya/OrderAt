@@ -688,5 +688,6 @@ export const ar = {
   select_from_addressbook: 'اختر من عناويني المحفوظة',
   select_dropoff_location: 'حدد موقع التوصيل',
   choose_area_in: 'اختر منطقة داخل',
-  choose_city: 'اختر المدينة'
+  choose_city: 'اختر المدينة',
+  save_location: 'تم'
 }
