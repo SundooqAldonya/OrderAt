@@ -284,6 +284,7 @@ export const phoneExist = `
       userType
       _id
       phone
+      firstTimeLogin
     }
   }`
 

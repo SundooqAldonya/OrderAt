@@ -22,7 +22,11 @@ import { colors } from '../../../utils/colors'
 import { useSelector } from 'react-redux'
 import CustomOtpInput from '../../../components/CustomOTP'
 import { useMutation } from '@apollo/client'
-import { validatePhone, verifyPhoneOTP } from '../../../apollo/mutations'
+import {
+  validatePhone,
+  validatePhoneUnauth,
+  verifyPhoneOTP
+} from '../../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import usePhoneNumber from '../../PhoneNumber/usePhoneNumber'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -94,7 +98,7 @@ function PhoneOtp(props) {
   })
 
   const [mutateValidate, { loading: loadingValidate }] = useMutation(
-    validatePhone,
+    validatePhoneUnauth,
     {
       onCompleted: (res) => {
         console.log({ res })
@@ -133,7 +137,7 @@ function PhoneOtp(props) {
   const handleResend = () => {
     mutateValidate({
       variables: {
-        phone: `+${country.callingCode[0]}${phone}`
+        phone: `+2${phone}`
       }
     })
   }

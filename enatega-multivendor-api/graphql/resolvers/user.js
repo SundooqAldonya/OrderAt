@@ -404,8 +404,11 @@ module.exports = {
         if (!phone) throw new Error('wrong_credentials')
         const phoneExist = await User.findOne({ phone })
         console.log({ phoneExist })
-        if (phoneExist) {
+
+        if (phoneExist && !phoneExist.firstTimeLogin) {
           return phoneExist
+        } else if (phoneExist && phoneExist.firstTimeLogin) {
+          throw new Error('user_first_time_login')
         } else {
           throw new Error('phone_doesnt_exist')
         }

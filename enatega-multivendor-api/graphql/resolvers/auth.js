@@ -422,6 +422,7 @@ module.exports = {
         throw new Error('User is not found!')
       }
       if (user) {
+        user.firstTimeLogin = false
         await user.setPassword(password)
         await user.save()
       }
@@ -442,7 +443,7 @@ module.exports = {
         if (!result.user) {
           throw new Error('old_password_wrong')
         }
-
+        user.firstTimeLogin = false
         // Set new password
         await user.setPassword(newPassword)
         await user.save()

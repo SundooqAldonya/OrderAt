@@ -380,6 +380,7 @@ const typeDefs = gql`
     favourite: [String!]
     userType: String
     area: String
+    firstTimeLogin: Boolean
   }
 
   type Configuration {

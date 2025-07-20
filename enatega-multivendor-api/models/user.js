@@ -32,10 +32,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false
     },
-    password: {
-      type: String,
-      default: ''
-    },
+    // password: {
+    //   type: String,
+    //   default: ''
+    // },
     appleId: { type: String },
     userType: { type: String },
     isActive: {
@@ -84,6 +84,10 @@ const userSchema = new Schema(
     isOnline: {
       type: Boolean,
       default: false
+    },
+    firstTimeLogin: {
+      type: Boolean,
+      default: true
     }
   },
   { timestamps: true }

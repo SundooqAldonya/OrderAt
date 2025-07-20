@@ -5,7 +5,12 @@ import * as Device from 'expo-device'
 import Constants from 'expo-constants'
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
-import { login, emailExist, phoneExist } from '../../apollo/mutations'
+import {
+  login,
+  emailExist,
+  phoneExist,
+  validatePhoneUnauth
+} from '../../apollo/mutations'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import * as Notifications from 'expo-notifications'
@@ -101,9 +106,34 @@ export const useLogin = () => {
     }
   }
 
+  const [mutateValidate, { loading: loadingValidate }] = useMutation(
+    validatePhoneUnauth,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        navigation.navigate('PhoneOtp', {
+          forgotPassword: true
+        })
+      },
+      onError: (error) => {
+        console.log({ error })
+      }
+    }
+  )
+
   function onError(error) {
     console.log({ error })
+    const firstTimeLogin = JSON.stringify(error).includes(
+      'user_first_time_login'
+    )
     const phoneNotExist = JSON.stringify(error).includes('phone_doesnt_exist')
+    if (firstTimeLogin) {
+      mutateValidate({
+        variables: {
+          phone: `+2${phone}`
+        }
+      })
+    }
     if (phoneNotExist) {
       navigation.navigate('Register')
       return
@@ -125,17 +155,6 @@ export const useLogin = () => {
       FlashMessage({ message: t('accountDeactivated') })
     } else {
       try {
-        await Analytics.identify(
-          {
-            userId: data.login.userId
-          },
-          data.login.userId
-        )
-        await Analytics.track(Analytics.events.USER_LOGGED_IN, {
-          userId: data.login.userId,
-          name: data.login.name,
-          email: data.login.email
-        })
         setTokenAsync(data.login.token)
         navigation.navigate({
           name: 'Main',
