@@ -1129,12 +1129,12 @@ function Checkout(props) {
                         >
                           {t('your_address')}
                         </TextDefault>
-                        <TextDefault
+                        {/* <TextDefault
                           bolder
                           style={{ fontSize: 12, color: '#000' }}
                         >
                           {`(${location.label})`}
-                        </TextDefault>
+                        </TextDefault> */}
                       </View>
                       <View
                         style={{
@@ -1164,7 +1164,8 @@ function Checkout(props) {
                           textAlign: isArabic ? 'right' : 'left'
                         }}
                       >
-                        {translatedAddress}
+                        {/* {translatedAddress} */}
+                        {location.label}
                       </TextDefault>
                     </View>
                   </TouchableOpacity>

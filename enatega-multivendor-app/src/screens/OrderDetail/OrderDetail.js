@@ -134,6 +134,8 @@ function OrderDetail(props) {
     // pickupLocation
   } = order
 
+  console.log({ deliveryAddress })
+
   const pickupLocation = order?.pickupLocation || null
 
   function taxCalculation() {
@@ -357,6 +359,7 @@ function OrderDetail(props) {
           orderStatus={order.orderStatus}
           restaurant={order?.restaurant ? order.restaurant : null}
           pickupAddress={order?.pickupAddress ? order.pickupAddress : null}
+          pickupLabel={order?.pickupLabel ? order.pickupLabel : null}
           pickupLocation={
             order?.restaurant?._id
               ? order.restaurant.location

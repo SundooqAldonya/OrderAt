@@ -4,9 +4,17 @@ const Zone = require('../../models/zone')
 const { transformZone } = require('./merge')
 module.exports = {
   Query: {
-    async cities(_, args, { req, res }) {
+    async citiesAdmin(_, args, { req, res }) {
       try {
         const cities = await City.find()
+        return cities
+      } catch (err) {
+        throw new Error('Something went wrong', err)
+      }
+    },
+    async cities(_, args, { req, res }) {
+      try {
+        const cities = await City.find({ isActive: true })
         return cities
       } catch (err) {
         throw new Error('Something went wrong', err)

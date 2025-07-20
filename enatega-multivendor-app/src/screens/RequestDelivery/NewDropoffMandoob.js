@@ -68,16 +68,13 @@ const NewDropoffMandoob = () => {
     selectedCityAndAreaTo,
     selectedAreaTo
   } = state
-  console.log({ chooseFromMapTo })
+
   const route = useRoute()
   const modalRef = useRef()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  // const [chooseFromMap, setChooseFromMap] = useState(false)
-  // const [chooseFromAddressBook, setChooseFromAddressBook] = useState(false)
-  console.log({ chooseFromAddressBookTo })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
   const { isLoggedIn, profile } = useContext(UserContext)
@@ -90,9 +87,7 @@ const NewDropoffMandoob = () => {
   })
   const [areasModalVisible, setAreasModalVisible] = useState(false)
   const [citiesModalVisible, setCitiesModalVisible] = useState(false)
-  // const { selectedCityAndAreaFrom, selectedAreaFrom } = state
 
-  // console.log({ selectedCityAndAreaFrom })
   const addressIcons = {
     House: CustomHomeIcon,
     Office: CustomWorkIcon,
@@ -100,13 +95,14 @@ const NewDropoffMandoob = () => {
     Other: CustomOtherIcon
   }
 
-  const { data, loading, error } = useQuery(GET_CITIES)
+  const { data, loading, error } = useQuery(GET_CITIES, {
+    fetchPolicy: 'network-only' // or 'no-cache'
+  })
+
   const [
     fetchAreas,
     { data: dataAreas, loading: loadingAreas, error: errorAreas }
   ] = useLazyQuery(GET_CITIES_AREAS)
-
-  console.log({ dataAreas })
 
   const cities = data?.cities || null
   const areasList = dataAreas?.areasByCity || null

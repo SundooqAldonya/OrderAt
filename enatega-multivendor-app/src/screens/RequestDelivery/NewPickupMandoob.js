@@ -98,7 +98,9 @@ const NewPickupMandoob = () => {
     Other: CustomOtherIcon
   }
 
-  const { data, loading, error } = useQuery(GET_CITIES)
+  const { data, loading, error } = useQuery(GET_CITIES, {
+    fetchPolicy: 'network-only' // or 'no-cache'
+  })
   const [
     fetchAreas,
     { data: dataAreas, loading: loadingAreas, error: errorAreas }

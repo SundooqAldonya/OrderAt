@@ -68,14 +68,11 @@ const OrderCard = ({ item, activeOrders }) => {
             </TextDefault>
           </View>
           {/* status text */}
-          <View>
+          <View style={{ width: 200 }}>
             <TextDefault
               style={{
                 ...styles.text,
-                // backgroundColor: 'green',
                 textAlign: isArabic ? 'right' : 'left'
-                // width: '90%',
-                // marginLeft: isArabic ? 10 : 0
               }}
             >
               {orderStatus === 'PENDING'
@@ -136,7 +133,8 @@ const OrderCard = ({ item, activeOrders }) => {
           <View
             style={{
               ...styles.imageContainer,
-              paddingRight: isArabic ? 10 : 0
+              paddingRight: isArabic ? 10 : 0,
+              backgroundColor: 'black'
             }}
           >
             {restaurant?._id && restaurant?.image ? (

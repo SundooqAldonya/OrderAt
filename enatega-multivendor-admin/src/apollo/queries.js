@@ -859,7 +859,7 @@ export const getUsers = `query{
   }`
 
 export const getCities = `query {
-    cities {
+    citiesAdmin {
       _id
       title    
       isActive  

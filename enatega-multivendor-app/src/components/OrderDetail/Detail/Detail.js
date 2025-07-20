@@ -39,6 +39,7 @@ export default function Detail({
   type,
   mandoobSpecialInstructions,
   pickupAddress,
+  pickupLabel,
   pickupLocation,
   restaurant
 }) {
@@ -239,7 +240,7 @@ export default function Detail({
                 textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              {restaurant?._id ? restaurant.address : pickupAddress}
+              {restaurant?._id ? restaurant.address : pickupLabel}
             </TextDefault>
           </View>
           <Feather name='external-link' size={22} color='black' />
@@ -275,7 +276,7 @@ export default function Detail({
                 textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              {deliveryAddress.deliveryAddress}
+              {deliveryAddress.label}
             </TextDefault>
           </View>
           <Feather name='external-link' size={22} color='black' />

@@ -1058,6 +1058,7 @@ export const singleOrder = `query SingleOrder($id: String!){
     deliveryAddress{
       location{coordinates}
       deliveryAddress
+      label
     }
     items{
       _id
@@ -1120,6 +1121,7 @@ export const singleOrder = `query SingleOrder($id: String!){
       coordinates
     }
     pickupAddress
+    pickupLabel
     type
     mandoobSpecialInstructions
   }

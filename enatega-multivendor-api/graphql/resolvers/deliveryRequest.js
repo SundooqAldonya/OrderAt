@@ -46,10 +46,12 @@ module.exports = {
         pickup_lng: input.pickupLng,
         pickup_address_text: input.pickupAddressText,
         pickup_address_free_text: input.pickupAddressFreeText,
+        pickup_label: input.pickupLabel ? input.pickupLabel : 'Home',
         dropoff_lat: input.dropoffLat,
         dropoff_lng: input.dropoffLng,
         dropoff_address_text: input.dropoffAddressText,
         dropoff_address_free_text: input.dropoffAddressFreeText,
+        dropoff_label: input.dropoffLabel ? input.dropoffLabel : 'Home',
         notes: input.notes,
         fare: input.deliveryFee,
         estimated_time: estimatedTime,
@@ -65,7 +67,7 @@ module.exports = {
       let address = {}
       address['deliveryAddress'] = delivery.dropoff_address_text
       address['details'] = delivery.dropoff_address_free_text
-      address['label'] = 'Home'
+      address['label'] = delivery.dropoff_label
       address['location'] = {
         type: 'Point',
         coordinates: [delivery.dropoff_lng, delivery.dropoff_lat]
@@ -107,13 +109,13 @@ module.exports = {
         updatedAt: new Date().toISOString(),
         zone: zone._id,
         completionTime: new Date(Date.now() + 20 * 60 * 1000),
-        preparationTime: new Date(Date.now() + 20 * 60 * 1000),
+        preparationTime: new Date(Date.now() + 10 * 60 * 1000),
         pickupLocation,
         pickupAddress: delivery.pickup_address_text
           ? delivery.pickup_address_text
           : delivery.pickup_address_free_text,
         pickupAddressFreeText: delivery.pickup_address_free_text,
-        // pickupLabel:
+        pickupLabel: delivery.pickup_label,
         type: 'delivery_request',
         mandoobSpecialInstructions: delivery.notes
       })

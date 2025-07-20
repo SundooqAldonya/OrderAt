@@ -60,8 +60,6 @@ const Cities = () => {
     awaitRefetchQueries: true,
     onCompleted: ({ toggleCityActive }) => {
       console.log({ toggleCityActive })
-      // setMessage(toggleCityActive.message)
-      // setSuccess(true)
     },
     onError: err => {
       console.log({ err })
@@ -77,7 +75,7 @@ const Cities = () => {
   const closeEditModal = () => {
     setOpenEdit(false)
   }
-  const cities = data?.cities || null
+  const cities = data?.citiesAdmin || null
   const columns = [
     {
       name: t('Title'),

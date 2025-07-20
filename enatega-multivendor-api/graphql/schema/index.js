@@ -500,6 +500,7 @@ const typeDefs = gql`
     originalSubtotal: Float
     originalPrice: Float
     cancellation: Cancellation
+    pickupLabel: String
   }
 
   scalar Date
@@ -1620,6 +1621,7 @@ const typeDefs = gql`
     areasByCity(id: String!): [Area!]
     areas: [Area!]
     cities: [CityArea!]
+    citiesAdmin: [CityArea!]
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]
@@ -1918,10 +1920,12 @@ const typeDefs = gql`
     pickupLng: Float!
     pickupAddressText: String!
     pickupAddressFreeText: String
+    pickupLabel: String
     dropoffLat: Float!
     dropoffLng: Float!
     dropoffAddressText: String!
     dropoffAddressFreeText: String
+    dropoffLabel: String
     deliveryFee: Float!
     requestChannel: RequestChannel!
     is_urgent: Boolean
