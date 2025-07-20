@@ -5,12 +5,20 @@ import { withTranslation } from 'react-i18next'
 import CustomLoader from '../components/Loader/CustomLoader'
 // core components
 import Header from '../components/Headers/Header'
-import { restaurants, deleteRestaurant } from '../apollo'
+import { restaurants, deleteRestaurant, makeRestaurantVisible } from '../apollo'
 import DataTable from 'react-data-table-component'
 import orderBy from 'lodash/orderBy'
 import Loader from 'react-loader-spinner'
 import SearchBar from '../components/TableHeader/SearchBar'
-import { Container, Button, Box, useTheme, Snackbar } from '@mui/material'
+import {
+  Container,
+  Button,
+  Box,
+  useTheme,
+  Snackbar,
+  FormControlLabel,
+  Switch
+} from '@mui/material'
 import { customStyles } from '../utils/tableCustomStyles'
 import useGlobalStyles from '../utils/globalStyles'
 import { ReactComponent as RestIcon } from '../assets/svg/svg/Restaurant.svg'
@@ -140,10 +148,45 @@ const Restaurants = props => {
       )
     },
     {
+      name: t('Visibility'),
+      cell: row => (
+        <Box>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={row.isVisible}
+                onChange={e => handleVisiblity(row._id)}
+                color="primary"
+              />
+            }
+          />
+        </Box>
+      )
+    },
+    {
       name: t('Action'),
       cell: row => <>{actionButtons(row)}</>
     }
   ]
+
+  const [mutateVisiblity] = useMutation(makeRestaurantVisible, {
+    refetchQueries: [{ query: GET_RESTAURANTS }],
+    onCompleted: res => {
+      console.log({ res })
+    },
+    onError: err => {
+      console.log({ err })
+    }
+  })
+
+  const handleVisiblity = rowId => {
+    mutateVisiblity({
+      variables: {
+        id: rowId
+      }
+    })
+  }
+
   const theme = useTheme()
   const actionButtons = row => {
     return (

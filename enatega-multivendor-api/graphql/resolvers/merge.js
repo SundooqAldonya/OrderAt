@@ -297,7 +297,8 @@ const transformRestaurant = async restaurant => {
     zone: null, // remove this when zone revamp is done all the queries in apps, web are updated
     owner: restaurant.owner ? populateOwner.bind(this, restaurant.owner) : null,
     shopType: restaurant.shopType || SHOP_TYPE.RESTAURANT,
-    _id: restaurant.id
+    _id: restaurant.id,
+    isVisible: restaurant.isVisible ? restaurant.isVisible : false
   }
 }
 

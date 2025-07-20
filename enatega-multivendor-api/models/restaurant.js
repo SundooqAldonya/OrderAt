@@ -148,6 +148,10 @@ const restaurantSchema = new Schema(
     },
     contactNumber: {
       type: String
+    },
+    isVisible: {
+      type: Boolean,
+      default: false
     }
   },
 

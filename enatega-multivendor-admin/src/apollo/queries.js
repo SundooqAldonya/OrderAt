@@ -691,6 +691,7 @@ export const restaurants = `query Restaurants{
       title
     }
     createdAt
+    isVisible
   }
 }
 `
@@ -750,6 +751,7 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       salesPersonName
       responsiblePersonName
       contactNumber
+      isVisible
     }
 }`
 

@@ -26,7 +26,9 @@ import {
   Select,
   OutlinedInput,
   MenuItem,
-  ListItemText
+  ListItemText,
+  FormControlLabel,
+  Switch
 } from '@mui/material'
 import { Container } from '@mui/system'
 import CustomLoader from '../components/Loader/CustomLoader'
@@ -109,6 +111,7 @@ const VendorProfile = () => {
   const [salesPersonName, setSalesPersonName] = useState('')
   const [responsiblePersonName, setResponsiblePersonName] = useState('')
   const [contactNumber, setContactNumber] = useState('')
+  const [isVisible, setIsVisible] = useState(false)
 
   const onCompleted = data => {
     setNameError(null)
@@ -191,6 +194,9 @@ const VendorProfile = () => {
     }
     if (data?.restaurant?.contactNumber) {
       setContactNumber(data?.restaurant.contactNumber)
+    }
+    if (data?.restaurant?.isVisible) {
+      setIsVisible(data?.restaurant?.isVisible)
     }
   }, [data?.restaurant])
 
@@ -397,7 +403,8 @@ const VendorProfile = () => {
             city,
             salesPersonName,
             responsiblePersonName,
-            contactNumber
+            contactNumber,
+            isVisible
           }
         }
       })
@@ -819,6 +826,31 @@ const VendorProfile = () => {
                           </MenuItem>
                         ))}
                       </Select>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('Visibility')}
+                      </Typography>
+                      <Box
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          marginInlineStart: 20
+                        }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={isVisible}
+                              onChange={e => setIsVisible(e.target.checked)}
+                              color="primary"
+                            />
+                          }
+                          label="Restaurant Visible"
+                        />
+                      </Box>
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={6}>

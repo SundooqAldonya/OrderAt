@@ -145,6 +145,7 @@ module.exports = {
         const query = {
           isActive: true,
           isAvailable: true,
+          isVisible: true,
           deliveryBounds: {
             $geoIntersects: {
               $geometry: {
@@ -452,6 +453,7 @@ module.exports = {
           {
             isActive: true,
             isAvailable: true,
+            isVisible: true,
             deliveryBounds: {
               $geoIntersects: {
                 $geometry: {
@@ -474,6 +476,7 @@ module.exports = {
           $match: {
             isActive: true,
             isAvailable: true,
+            isVisible: true,
             deliveryBounds: {
               $geoIntersects: {
                 $geometry: {
@@ -516,58 +519,63 @@ module.exports = {
     },
     mostOrderedRestaurantsPreview: async (_, args, { req }) => {
       console.log('mostOrderedRestaurantsPreview', args)
-      const { longitude, latitude } = args
-      const restaurants = await Restaurant.aggregate([
-        {
-          $match: {
-            isActive: true,
-            isAvailable: true,
-            deliveryBounds: {
-              $geoIntersects: {
-                $geometry: {
-                  type: 'Point',
-                  coordinates: [Number(longitude), Number(latitude)]
+      try {
+        const { longitude, latitude } = args
+        const restaurants = await Restaurant.aggregate([
+          {
+            $match: {
+              isActive: true,
+              isAvailable: true,
+              isVisible: true,
+              deliveryBounds: {
+                $geoIntersects: {
+                  $geometry: {
+                    type: 'Point',
+                    coordinates: [Number(longitude), Number(latitude)]
+                  }
                 }
               }
             }
-          }
-        },
-        {
-          $lookup: {
-            from: 'orders',
-            localField: '_id',
-            foreignField: 'restaurant',
-            pipeline: [
-              {
-                $match: {
-                  createdAt: { $gte: getThirtyDaysAgo() }
+          },
+          {
+            $lookup: {
+              from: 'orders',
+              localField: '_id',
+              foreignField: 'restaurant',
+              pipeline: [
+                {
+                  $match: {
+                    createdAt: { $gte: getThirtyDaysAgo() }
+                  }
                 }
-              }
-            ],
-            as: 'orders'
+              ],
+              as: 'orders'
+            }
+          },
+          {
+            $addFields: {
+              orderCount: { $size: '$orders' }
+            }
+          },
+          {
+            $sort: { orderCount: -1 }
+          },
+          {
+            $limit: 20
+          },
+          {
+            $lookup: {
+              from: 'businesscategories', // must match actual collection name (usually lowercase plural)
+              localField: 'businessCategories', // assumed to be an array of ObjectIds in Restaurant
+              foreignField: '_id',
+              as: 'businessCategories'
+            }
           }
-        },
-        {
-          $addFields: {
-            orderCount: { $size: '$orders' }
-          }
-        },
-        {
-          $sort: { orderCount: -1 }
-        },
-        {
-          $limit: 20
-        },
-        {
-          $lookup: {
-            from: 'businesscategories', // must match actual collection name (usually lowercase plural)
-            localField: 'businessCategories', // assumed to be an array of ObjectIds in Restaurant
-            foreignField: '_id',
-            as: 'businessCategories'
-          }
-        }
-      ]).exec()
-      return restaurants
+        ]).exec()
+        return restaurants
+      } catch (err) {
+        throw err
+      }
     },
     relatedItems: async (_, args, { req }) => {
       console.log('relatedItems', args, req.userId)
@@ -673,6 +681,7 @@ module.exports = {
         const { longitude, latitude } = args
 
         const restaurants = await Restaurant.find({
+          isVisible: true,
           reviewCount: { $gt: 0 },
           deliveryBounds: {
             $geoIntersects: {
@@ -694,6 +703,7 @@ module.exports = {
         const { longitude, latitude } = args
 
         const restaurants = await Restaurant.find({
+          isVisible: true,
           deliveryBounds: {
             $geoIntersects: {
               $geometry: { type: 'Point', coordinates: [longitude, latitude] }
@@ -769,6 +779,7 @@ module.exports = {
             $match: {
               isActive: true,
               isAvailable: true,
+              isVisible: true,
               deliveryBounds: {
                 $geoIntersects: {
                   $geometry: {
@@ -873,7 +884,8 @@ module.exports = {
           businessCategories: args.restaurant.businessCategories,
           salesPersonName: args.restaurant.salesPersonName,
           responsiblePersonName: args.restaurant.responsiblePersonName,
-          contactNumber: args.restaurant.contactNumber
+          contactNumber: args.restaurant.contactNumber,
+          isVisible: args.restaurant.isVisible
         })
         console.log('New Restaurant: ', restaurant)
 
@@ -951,6 +963,7 @@ module.exports = {
         restaurant.salesPersonName = args.restaurant.salesPersonName
         restaurant.responsiblePersonName = args.restaurant.responsiblePersonName
         restaurant.contactNumber = args.restaurant.contactNumber
+        restaurant.isVisible = args.restaurant.isVisible
         await restaurant.save()
         const result = await restaurant.populate('city')
         return transformRestaurant(result)
@@ -1371,6 +1384,21 @@ module.exports = {
         return { message: 'default_timings' }
       } catch (err) {
         throw new Error(err)
+      }
+    },
+
+    async makeRestaurantVisible(_, args) {
+      try {
+        const restaurant = await Restaurant.findById(args.id)
+        if (restaurant.isVisible) {
+          restaurant.isVisible = false
+        } else {
+          restaurant.isVisible = true
+        }
+        await restaurant.save()
+        return { message: 'updated_visibility' }
+      } catch (err) {
+        throw err
       }
     }
   }

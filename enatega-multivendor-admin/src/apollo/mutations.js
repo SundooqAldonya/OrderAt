@@ -1005,3 +1005,10 @@ export const createFoodByFile = gql`
     }
   }
 `
+export const makeRestaurantVisible = gql`
+  mutation MakeRestaurantVisible($id: String!) {
+    makeRestaurantVisible(id: $id) {
+      message
+    }
+  }
+`

@@ -169,6 +169,7 @@ const typeDefs = gql`
     salesPersonName: String
     responsiblePersonName: String
     contactNumber: String
+    isVisible: Boolean
   }
 
   type RestaurantCustomer {
@@ -1080,6 +1081,7 @@ const typeDefs = gql`
     salesPersonName: String
     responsiblePersonName: String
     contactNumber: String
+    isVisible: Boolean
   }
 
   input OptionInput {
@@ -1991,6 +1993,7 @@ const typeDefs = gql`
   union CancelledBy = User | Owner | Restaurant
 
   type Mutation {
+    makeRestaurantVisible(id: String!): Message
     createBusinessMenu(file: Upload, restaurantId: String!): Message
     acknowledgeNotification(notificationId: String): Message
     markContactusResponded(id: String): Message
