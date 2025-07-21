@@ -84,6 +84,7 @@ import i18next from 'i18next'
 import SelectLanguageScreen from '../screens/ChooseLanguageLanding'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
+import CityListScreen from '../screens/SelectLocation/CityListScreen'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -405,12 +406,13 @@ function LocationStack() {
   }
 
   return (
-    <Location.Navigator initialRouteName='SelectLocation'>
+    <Location.Navigator initialRouteName='CityListScreen'>
       <Location.Screen
         name='CurrentLocation'
         component={CurrentLocation}
         options={{ header: () => null }}
       />
+      <Location.Screen name='CityListScreen' component={CityListScreen} />
       <Location.Screen name='SelectLocation' component={SelectLocation} />
       <Location.Screen name='AddNewAddress' component={AddNewAddress} />
       <Location.Screen name='Main' component={Main} />

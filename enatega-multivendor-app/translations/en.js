@@ -700,5 +700,7 @@ export const en = {
   select_dropoff_location: 'Select Drop-off Location',
   choose_area_in: 'Choose area in',
   choose_city: 'Choose City',
-  save_location: 'Save Location'
+  save_location: 'Save Location',
+  select_city: 'Select a city',
+  confirm_address: 'Confirm address'
 }

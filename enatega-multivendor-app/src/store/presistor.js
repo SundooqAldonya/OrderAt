@@ -7,6 +7,7 @@ import restaurantReducer from './restaurantSlice'
 import deliveryAmountReducer from './deliveryAmountSlice'
 import addNewAddressReducer from './addNewAddressSlice'
 import languageReducer from './languageSlice'
+import cityReducer from './citySelectSlice'
 
 const rootReducer = combineReducers({
   requestDelivery: requestDeliveryReducer,
@@ -14,13 +15,14 @@ const rootReducer = combineReducers({
   phone: phoneReducer,
   restaurant: restaurantReducer,
   deliveryAmount: deliveryAmountReducer,
-  language: languageReducer
+  language: languageReducer,
+  city: cityReducer
 })
 
 const persistConfig = {
   key: 'root', // Root key for AsyncStorage
   storage: AsyncStorage, // Use AsyncStorage
-  whitelist: ['requestDelivery', 'phone', 'language'] // Reducers to persist
+  whitelist: ['requestDelivery', 'phone', 'language', 'city'] // Reducers to persist
   // blacklist: ['phone', 'deliveryAmount']
 }
 

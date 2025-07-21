@@ -326,7 +326,12 @@ export const cities = `query GetCountryByIso($iso: String!) {
 export const getCities = `query {
   cities {
     _id
-    title      
+    title  
+    location {
+      location {
+        coordinates
+      }
+    }    
   }
 }`
 

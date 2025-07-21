@@ -55,6 +55,7 @@ import { Image } from 'react-native'
 import useEnvVars from '../../../environment'
 import { getCityAreas } from '../../apollo/queries'
 import { alignment } from '../../utils/alignment'
+import { useSelector } from 'react-redux'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -72,7 +73,7 @@ export default function SelectLocation(props) {
   const { i18n, t } = useTranslation()
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   console.log({ GOOGLE_MAPS_KEY })
-
+  const city = useSelector((state) => state.city.city)
   const isArabic = i18n.language === 'ar'
 
   const { longitude, latitude, areaCoords } = props.route.params || {}
@@ -126,7 +127,23 @@ export default function SelectLocation(props) {
     navigation.setOptions({
       title: t('set_your_delivery_address'),
       setCurrentLocation: getCurrentPosition,
-
+      headerLeft: () => {
+        // if (isLoggedIn) {
+        return (
+          <HeaderBackButton
+            truncatedLabel=''
+            backImage={() => (
+              <View>
+                <MaterialIcons name='arrow-back' size={30} color={'black'} />
+              </View>
+            )}
+            onPress={() => {
+              navigationService.goBack()
+            }}
+          />
+        )
+        // }
+      },
       headerRight: () => {
         return (
           <View style={{ flexDirection: 'row', marginRight: 10 }}>
@@ -134,7 +151,7 @@ export default function SelectLocation(props) {
               onPress={getCurrentPosition}
               style={{ marginRight: 15 }}
             >
-              <FontAwesome name='location-arrow' size={22} color='black' />
+              <MaterialIcons name='my-location' size={24} color='black' />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -160,53 +177,50 @@ export default function SelectLocation(props) {
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
         elevation: 0
-      },
-      headerLeft: () => {
-        if (isLoggedIn) {
-          return (
-            <HeaderBackButton
-              truncatedLabel=''
-              backImage={() => (
-                <View>
-                  <MaterialIcons
-                    name='arrow-back'
-                    size={30}
-                    color={currentTheme.newIconColor}
-                  />
-                </View>
-              )}
-              onPress={() => {
-                navigationService.goBack()
-              }}
-            />
-          )
-        }
       }
     })
   }, [])
 
   console.log({ areaCoords })
 
+  // useEffect(() => {
+  //   if (areaCoords && mapRef?.current) {
+  //     const newRegion = {
+  //       latitude: areaCoords[1],
+  //       longitude: areaCoords[0],
+  //       latitudeDelta: 0.01,
+  //       longitudeDelta: 0.01
+  //     }
+
+  //     // Animate the map
+  //     mapRef.current.animateToRegion(newRegion, 1000)
+
+  //     // Update state to match the animated region
+  //     setCoordinates(newRegion)
+  //   }
+  // }, [areaCoords])
+
   useEffect(() => {
-    if (areaCoords && mapRef?.current) {
+    if (city && mapRef?.current) {
       const newRegion = {
-        latitude: areaCoords[1],
-        longitude: areaCoords[0],
+        latitude: city.location.location.coordinates[1],
+        longitude: city.location.location.coordinates[0],
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
       }
-
+      setCoordinates({
+        ...coordinates,
+        latitude: newRegion.latitude,
+        longitude: newRegion.longitude
+      })
       // Animate the map
       mapRef.current.animateToRegion(newRegion, 1000)
-
-      // Update state to match the animated region
-      setCoordinates(newRegion)
     }
-  }, [areaCoords])
+  }, [city, mapRef?.current])
 
-  useEffect(() => {
-    mapRef.current.animateToRegion(coordinates, 1000)
-  }, [])
+  // useEffect(() => {
+  //   mapRef.current.animateToRegion(coordinates, 1000)
+  // }, [])
 
   useEffect(() => {
     if (!coordinates.latitude) {
@@ -414,7 +428,7 @@ export default function SelectLocation(props) {
           style={[
             styles().mapView,
             {
-              height: '70%'
+              height: '85%'
             }
           ]}
         >
@@ -506,7 +520,7 @@ export default function SelectLocation(props) {
         <SafeAreaView>
           <ScrollView>
             <View style={styles(currentTheme).container}>
-              <TextDefault
+              {/* <TextDefault
                 textColor={currentTheme.newFontcolor}
                 H3
                 bolder
@@ -515,7 +529,7 @@ export default function SelectLocation(props) {
               >
                 {t('choose_delivery_address')}
               </TextDefault>
-              <View style={styles(currentTheme).line} />
+              <View style={styles(currentTheme).line} /> */}
 
               {!isLoggedIn ? (
                 <TouchableOpacity
@@ -530,13 +544,13 @@ export default function SelectLocation(props) {
                     <EvilIcons name='location' size={18} color='#fff' />
                   </View>
                   <TextDefault textColor={'#fff'} H5 bold>
-                    {t('use_this_location')}
+                    {t('confirm_address')}
                   </TextDefault>
                 </TouchableOpacity>
               ) : null}
               <View style={styles(currentTheme).line} />
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 activeOpacity={0.7}
                 style={[
                   styles(currentTheme).solidButton,
@@ -551,8 +565,8 @@ export default function SelectLocation(props) {
                 <TextDefault textColor={'#fff'} H5 bold>
                   {t('browse_available_cities')}
                 </TextDefault>
-              </TouchableOpacity>
-              <View style={styles(currentTheme).line} />
+              </TouchableOpacity> */}
+              {/* <View style={styles(currentTheme).line} /> */}
             </View>
             <View style={{ paddingBottom: inset.bottom }} />
           </ScrollView>

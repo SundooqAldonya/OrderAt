@@ -689,5 +689,7 @@ export const ar = {
   select_dropoff_location: 'حدد موقع التوصيل',
   choose_area_in: 'اختر منطقة داخل',
   choose_city: 'اختر المدينة',
-  save_location: 'تم'
+  save_location: 'تم',
+  select_city: 'أختر مدينة',
+  confirm_address: 'قم بتأكيد العنوان'
 }

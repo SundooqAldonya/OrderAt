@@ -15,7 +15,7 @@ module.exports = {
     },
     async cities(_, args, { req, res }) {
       try {
-        const cities = await City.find({ isActive: true })
+        const cities = await City.find({ isActive: true }).populate('location')
         return cities
       } catch (err) {
         throw new Error('Something went wrong', err)

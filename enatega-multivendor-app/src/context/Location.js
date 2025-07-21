@@ -64,7 +64,9 @@ export const LocationProvider = ({ children }) => {
     fetchCountry()
   }, [])
 
-  const { loading, error, data } = useQuery(GET_CITIES)
+  const { data, loading, error } = useQuery(GET_CITIES)
+  const cities = data?.cities || []
+  // console.log({ city: cities.length ? cities[0].location.location : null })
   // const { loading, error, data } = useQuery(GET_CITIES, {
   //   variables: { iso: 'EG' }
   // })
@@ -74,7 +76,7 @@ export const LocationProvider = ({ children }) => {
       value={{
         location,
         setLocation,
-        cities: data?.cities || []
+        cities
       }}
     >
       {children}
