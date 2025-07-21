@@ -110,19 +110,6 @@ export default function SelectLocation(props) {
   console.log({ dataAreas })
   const areasList = dataAreas?.areasByCity || null
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions(
-  //     screenOptions({
-  //       title: t('setLocation'),
-  //       fontColor: currentTheme.newFontcolor,
-  //       backColor: currentTheme.newheaderBG,
-  //       iconColor: currentTheme.newIconColor,
-  //       lineColor: currentTheme.newIconColor,
-  //       setCurrentLocation: getCurrentPosition
-
-  //     })
-  //   )
-  // })
   useLayoutEffect(() => {
     navigation.setOptions({
       title: t('set_your_delivery_address'),

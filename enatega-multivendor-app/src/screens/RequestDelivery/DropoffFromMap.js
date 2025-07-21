@@ -36,6 +36,7 @@ const DropoffFromMap = () => {
   const { t } = useTranslation()
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const { getAddress } = useGeocoding()
+  const city = useSelector((state) => state.city.city)
 
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
@@ -84,10 +85,35 @@ const DropoffFromMap = () => {
         }
       })
     } else {
-      handleCurrentPosition()
+      // handleCurrentPosition()
+      getLocationFromSelectedCity()
     }
-    // handleCurrentPosition()
   }, [])
+
+  const getLocationFromSelectedCity = () => {
+    if (city) {
+      getAddress(
+        city.location.location.coordinates[1],
+        city.location.location.coordinates[0]
+      ).then((res) => {
+        const newCoordinates = {
+          latitude: city.location.location.coordinates[1],
+          longitude: city.location.location.coordinates[0],
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        }
+
+        setLocation({ ...newCoordinates })
+        animateToLocation({
+          lat: newCoordinates.latitude,
+          lng: newCoordinates.longitude
+        })
+        if (res.formattedAddress) {
+          searchRef.current?.setAddressText(res.formattedAddress)
+        }
+      })
+    }
+  }
 
   const handleCurrentPosition = async () => {
     try {

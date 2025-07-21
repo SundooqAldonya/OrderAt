@@ -347,7 +347,7 @@ const AddressNewVersion = () => {
           justifyContent: 'space-between'
         }}
         onPress={() => {
-          dispatch(setChooseFromMap({ status: true }))
+          // dispatch(setChooseFromMap({ status: true }))
           navigation.navigate('AddressFromMap')
         }}
       >
@@ -370,34 +370,6 @@ const AddressNewVersion = () => {
           <AntDesign name='checkcircleo' size={24} color='green' />
         )}
       </TouchableOpacity>
-
-      {/* <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: chooseFromAddressBook ? 'green' : '#eee',
-          justifyContent: 'space-between'
-        }}
-        onPress={handleChooseAddress}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <Feather
-            name='bookmark'
-            size={22}
-            color={chooseFromAddressBook ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: chooseFromAddressBook ? 'green' : '#000'
-            }}
-          >
-            اختر من عناويني المحفوظة
-          </Text>
-        </View>
-        {chooseFromAddressBook && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
-        )}
-      </TouchableOpacity> */}
 
       <TouchableOpacity
         style={{

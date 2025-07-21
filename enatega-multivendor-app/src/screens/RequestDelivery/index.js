@@ -59,6 +59,7 @@ const RequestDelivery = () => {
 
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
+  const city = useSelector((state) => state.city.city)
   const isArabic = i18n.language === 'ar'
   const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
   const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
@@ -78,8 +79,6 @@ const RequestDelivery = () => {
   const currentTheme = theme[themeContext.ThemeValue]
 
   useEffect(() => {
-    console.log({ mapRef })
-
     let timeout = setTimeout(() => {
       if (mapRef?.current && pickupCoords && dropOffCoords) {
         mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
@@ -92,11 +91,42 @@ const RequestDelivery = () => {
   }, [mapRef?.current])
 
   useEffect(() => {
-    if (addressInfo.regionFrom && addressInfo.regionTo) {
-      setPickupCoords({ ...addressInfo.regionFrom })
-      setDropOffCoords({ ...addressInfo.regionTo })
-    }
-  }, [addressInfo])
+    const timer = setTimeout(() => {
+      if (mapRef.current) {
+        const hasPickup = !!addressInfo.regionFrom
+        const hasDropoff = !!addressInfo.regionTo
+
+        if (hasPickup && hasDropoff) {
+          const from = addressInfo.regionFrom
+          const to = addressInfo.regionTo
+
+          setPickupCoords(from)
+          setDropOffCoords(to)
+
+          mapRef.current.fitToCoordinates([from, to], {
+            edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+            animated: true
+          })
+        } else if (
+          !hasPickup &&
+          !hasDropoff &&
+          city?.location?.location?.coordinates
+        ) {
+          const [lng, lat] = city.location.location.coordinates
+          const region = {
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1
+          }
+
+          mapRef.current.animateToRegion(region, 1000)
+        }
+      }
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [addressInfo, city])
 
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
