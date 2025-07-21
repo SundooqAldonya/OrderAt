@@ -327,34 +327,6 @@ const NewPickupMandoob = () => {
       <Text style={styles.title}>{t('select_pickup_location')}</Text>
 
       {/* Location options */}
-      {/* <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: currentPosSelected ? 'green' : '#eee',
-          justifyContent: 'space-between'
-        }}
-        onPress={handleCurrentPosition}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <Feather
-            name='navigation'
-            size={22}
-            color={currentPosSelected ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: currentPosSelected ? 'green' : '#000'
-            }}
-          >
-            استخدم موقعي الحالي
-          </Text>
-        </View>
-        {currentPosSelected && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
-        )}
-      </TouchableOpacity> */}
-
       <TouchableOpacity
         style={{
           ...styles.option,
@@ -363,7 +335,7 @@ const NewPickupMandoob = () => {
           flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={() => {
-          dispatch(setChooseFromMapFrom({ status: true }))
+          // dispatch(setChooseFromMapFrom({ status: true }))
           navigation.navigate('PickupFromMap')
         }}
       >
