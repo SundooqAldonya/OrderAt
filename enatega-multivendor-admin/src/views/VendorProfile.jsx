@@ -171,7 +171,7 @@ const VendorProfile = () => {
     loading: loadingCities
   } = useQuery(GET_CITIES)
 
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
   const restaurantImage = data?.restaurant?.image
   const restaurantLogo = data?.restaurant?.logo
   const shopCategories = dataCategories?.getShopCategories || null

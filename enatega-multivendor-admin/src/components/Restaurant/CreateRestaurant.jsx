@@ -130,7 +130,8 @@ const CreateRestaurant = props => {
   const businessCategories =
     businessCategoriesData?.getBusinessCategories || null
 
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
+  console.log({ cities })
   const shopCategories = dataCategories?.getShopCategories || null
 
   const onCompleted = async data => {
