@@ -65,7 +65,7 @@ const AreaCreate = ({ onClose, area }) => {
     }
   }, [area])
 
-  const cities = data?.cities || null
+  const cities = data?.citiesAdmin || null
 
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
