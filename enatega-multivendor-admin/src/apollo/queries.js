@@ -862,7 +862,13 @@ export const getCities = `query {
     citiesAdmin {
       _id
       title    
-      isActive  
+      isActive
+      location {
+        _id
+        location {
+          coordinates
+        }
+     }
     }
   }`
 

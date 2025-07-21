@@ -6,7 +6,11 @@ const citySchema = new Schema(
       type: String,
       required: true
     },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    location: {
+      type: Schema.Types.ObjectId,
+      ref: 'Location'
+    }
   },
   { timestamps: true }
 )

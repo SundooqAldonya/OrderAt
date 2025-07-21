@@ -641,14 +641,14 @@ export const deleteZone = `mutation DeleteZone($id:String!){
   }
 }`
 
-export const createCity = `mutation CreateCity($title:String!){
-  createCity(title:$title){
+export const createCity = `mutation CreateCity($title:String!, $coordinates: [Float]){
+  createCity(title:$title, coordinates: $coordinates){
     message
   }
 }`
 
-export const editCity = `mutation EditCity($id: String!, $title: String!){
-  editCity(id: $id, title: $title){
+export const editCity = `mutation EditCity($id: String!, $title: String!, $coordinates: [Float], $locationId: String){
+  editCity(id: $id, title: $title, coordinates: $coordinates, locationId: $locationId){
     message
   }
 }`
