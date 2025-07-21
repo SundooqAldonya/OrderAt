@@ -66,7 +66,7 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
     GET_CITIES
   )
 
-  const cities = data?.cities || null
+  const cities = data?.citiesAdmin || null
 
   console.log({ cities: data })
 
