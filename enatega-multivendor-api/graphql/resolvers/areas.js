@@ -107,6 +107,13 @@ module.exports = {
               )
             }
 
+            if (
+              parseFloat(amount) <= configuration.minimumDeliveryFee ||
+              distance <= 0.25 + Number.EPSILON
+            ) {
+              amount = configuration.minimumDeliveryFee
+            }
+
             const obj = {
               ...area._doc,
               distance,
