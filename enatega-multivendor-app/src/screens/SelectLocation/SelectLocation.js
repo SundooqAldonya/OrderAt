@@ -76,7 +76,9 @@ export default function SelectLocation(props) {
   const city = useSelector((state) => state.city.city)
   const isArabic = i18n.language === 'ar'
 
-  const { longitude, latitude, areaCoords } = props.route.params || {}
+  // const { longitude, latitude, areaCoords } = props.route.params || {}
+  const params = props?.route?.params || {}
+  const { longitude, latitude } = params
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const navigation = useNavigation()
@@ -107,13 +109,13 @@ export default function SelectLocation(props) {
     { data: dataAreas, loading: loadingAreas, error: errorAreas }
   ] = useLazyQuery(GET_CITIES_AREAS)
 
-  console.log({ dataAreas })
+  // console.log({ dataAreas })
   const areasList = dataAreas?.areasByCity || null
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: t('set_your_delivery_address'),
-      setCurrentLocation: getCurrentPosition,
+      // setCurrentLocation: getCurrentPosition,
       headerLeft: () => {
         // if (isLoggedIn) {
         return (
@@ -125,7 +127,7 @@ export default function SelectLocation(props) {
               </View>
             )}
             onPress={() => {
-              navigationService.goBack()
+              navigation.goBack()
             }}
           />
         )
@@ -168,7 +170,7 @@ export default function SelectLocation(props) {
     })
   }, [])
 
-  console.log({ areaCoords })
+  // console.log({ areaCoords })
 
   // useEffect(() => {
   //   if (areaCoords && mapRef?.current) {
@@ -188,26 +190,25 @@ export default function SelectLocation(props) {
   // }, [areaCoords])
 
   useEffect(() => {
-    if (city && mapRef?.current) {
+    if (!mapRef.current) return
+    const lat = city?.location?.location?.coordinates?.[1]
+    const lng = city?.location?.location?.coordinates?.[0]
+    if (lat && lng && mapRef.current) {
       const newRegion = {
-        latitude: city.location.location.coordinates[1],
-        longitude: city.location.location.coordinates[0],
+        latitude: lat,
+        longitude: lng,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
       }
-      setCoordinates({
-        ...coordinates,
-        latitude: newRegion.latitude,
-        longitude: newRegion.longitude
-      })
-      // Animate the map
       mapRef.current.animateToRegion(newRegion, 1000)
+      setCoordinates((prev) => ({ ...prev, latitude: lat, longitude: lng }))
     }
-  }, [city, mapRef?.current])
+  }, [city])
 
-  // useEffect(() => {
-  //   mapRef.current.animateToRegion(coordinates, 1000)
-  // }, [])
+  useEffect(() => {
+    StatusBar.setBackgroundColor(colors.primary)
+    StatusBar.setBarStyle('light-content')
+  }, [])
 
   useEffect(() => {
     if (!coordinates.latitude) {
@@ -219,9 +220,6 @@ export default function SelectLocation(props) {
     const timeout = setTimeout(() => setMapLoaded(true), 3000) // fallback
     return () => clearTimeout(timeout)
   }, [])
-
-  StatusBar.setBackgroundColor(colors.primary)
-  StatusBar.setBarStyle('light-content')
 
   const getCurrentPosition = async () => {
     try {
@@ -299,55 +297,62 @@ export default function SelectLocation(props) {
     }
     setLoading(false)
     // setCoordinates({ latitude: coords.latitude, longitude: coords.longitude })
-    getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
-      console.log({ res })
-      if (isLoggedIn) {
-        // save the location
-        const addressInput = {
-          _id: '',
-          label: 'Home',
-          latitude: String(coordinates.latitude),
-          longitude: String(coordinates.longitude),
-          deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
+    try {
+      getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+        console.log({ res })
+        if (isLoggedIn) {
+          // save the location
+          const addressInput = {
+            _id: '',
+            label: 'Home',
+            latitude: String(coordinates.latitude),
+            longitude: String(coordinates.longitude),
+            deliveryAddress: res.formattedAddress,
+            details: res.formattedAddress
+          }
+          mutate({ variables: { addressInput } })
+          // set location
+          setLocation({
+            _id: '',
+            label: 'Home',
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+            deliveryAddress: res.formattedAddress,
+            details: res.formattedAddress
+          })
+        } else {
+          setLocation({
+            _id: '',
+            label: 'Home',
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+            deliveryAddress: res.formattedAddress,
+            details: res.formattedAddress
+          })
         }
-        mutate({ variables: { addressInput } })
-        // set location
-        setLocation({
-          _id: '',
-          label: 'Home',
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-          deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
-        })
-      } else {
-        setLocation({
-          _id: '',
-          label: 'Home',
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-          deliveryAddress: res.formattedAddress,
-          details: res.formattedAddress
-        })
-      }
-    })
+      })
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   const setAreaLocation = async () => {
     setLoading(true)
-
-    getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
-      console.log({ res })
-      setLocation({
-        _id: '',
-        label: 'Home',
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-        deliveryAddress: res.formattedAddress,
-        details: res.formattedAddress
+    try {
+      getAddress(coordinates.latitude, coordinates.longitude).then((res) => {
+        console.log({ res })
+        setLocation({
+          _id: '',
+          label: 'Home',
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        })
       })
-    })
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   const onRegionChangeComplete = (coords) => {
@@ -406,7 +411,7 @@ export default function SelectLocation(props) {
     setAreasModalVisible(false)
   }
 
-  console.log({ selectedArea: selectedArea?.location.location })
+  // console.log({ selectedArea: selectedArea?.location.location })
 
   return (
     <Fragment>

@@ -50,7 +50,7 @@ const CityListScreen = () => {
       </Text>
       <FlatList
         data={cities}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
           <TouchableOpacity
