@@ -92,22 +92,21 @@ const PickupFromMap = () => {
   }, [])
 
   const getLocationFromSelectedCity = () => {
-    if (city) {
-      getAddress(
-        city.location.location.coordinates[1],
-        city.location.location.coordinates[0]
-      ).then((res) => {
+    const lat = city?.location?.location?.coordinates?.[1]
+    const lng = city?.location?.location?.coordinates?.[0]
+    if (lat && lng) {
+      getAddress(lat, lng).then((res) => {
         const newCoordinates = {
-          latitude: city.location.location.coordinates[1],
-          longitude: city.location.location.coordinates[0],
+          latitude: lat,
+          longitude: lng,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01
         }
 
         setLocation({ ...newCoordinates })
         animateToLocation({
-          lat: newCoordinates.latitude,
-          lng: newCoordinates.longitude
+          lat,
+          lng
         })
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)

@@ -69,6 +69,8 @@ const NewDropoffMandoob = () => {
     selectedAreaTo
   } = state
 
+  const city = useSelector((state) => state.city.city)
+
   const route = useRoute()
   const modalRef = useRef()
   const [name, setName] = useState('')
@@ -99,10 +101,21 @@ const NewDropoffMandoob = () => {
     fetchPolicy: 'network-only' // or 'no-cache'
   })
 
-  const [
-    fetchAreas,
-    { data: dataAreas, loading: loadingAreas, error: errorAreas }
-  ] = useLazyQuery(GET_CITIES_AREAS)
+  // const [
+  //   fetchAreas,
+  //   { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  // ] = useLazyQuery(GET_CITIES_AREAS)
+
+  const {
+    data: dataAreas,
+    loading: loadingAreas,
+    error: errorAreas
+  } = useQuery(GET_CITIES_AREAS, {
+    variables: {
+      id: city._id
+    },
+    skip: !city
+  })
 
   const cities = data?.cities || null
   const areasList = dataAreas?.areasByCity || null
@@ -280,7 +293,8 @@ const NewDropoffMandoob = () => {
   }
 
   const handleNearestArea = () => {
-    setCitiesModalVisible(true)
+    // setCitiesModalVisible(true)
+    setAreasModalVisible(true)
   }
 
   const onModalClose = () => {
@@ -463,7 +477,7 @@ const NewDropoffMandoob = () => {
                   key={city._id}
                   onPress={() => {
                     dispatch(setSelectedCityTo(city))
-                    fetchAreas({ variables: { id: city._id } })
+                    // fetchAreas({ variables: { id: city._id } })
                     setCitiesModalVisible(false)
                     setAreasModalVisible(true)
                   }}

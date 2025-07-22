@@ -76,7 +76,8 @@ const NewPickupMandoob = () => {
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-
+  const city = useSelector((state) => state.city.city)
+  console.log({ city })
   console.log({ chooseFromAddressBookFrom })
   const [formattedAddress, setFormattedAddress] = useState('')
   const { getAddress } = useGeocoding()
@@ -101,10 +102,21 @@ const NewPickupMandoob = () => {
   const { data, loading, error } = useQuery(GET_CITIES, {
     fetchPolicy: 'network-only' // or 'no-cache'
   })
-  const [
-    fetchAreas,
-    { data: dataAreas, loading: loadingAreas, error: errorAreas }
-  ] = useLazyQuery(GET_CITIES_AREAS)
+  // const [
+  //   fetchAreas,
+  //   { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  // ] = useLazyQuery(GET_CITIES_AREAS)
+
+  const {
+    data: dataAreas,
+    loading: loadingAreas,
+    error: errorAreas
+  } = useQuery(GET_CITIES_AREAS, {
+    variables: {
+      id: city._id
+    },
+    skip: !city
+  })
 
   console.log({ dataAreas })
 
@@ -286,7 +298,8 @@ const NewPickupMandoob = () => {
   }
 
   const handleNearestArea = () => {
-    setCitiesModalVisible(true)
+    // setCitiesModalVisible(true)
+    setAreasModalVisible(true)
   }
 
   const onModalClose = () => {
@@ -472,7 +485,7 @@ const NewPickupMandoob = () => {
                   key={city._id}
                   onPress={() => {
                     dispatch(setSelectedCityFrom(city))
-                    fetchAreas({ variables: { id: city._id } })
+                    // fetchAreas({ variables: { id: city._id } })
                     setCitiesModalVisible(false)
                     setAreasModalVisible(true)
                   }}
