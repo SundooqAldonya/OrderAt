@@ -646,7 +646,7 @@ module.exports = {
           longDest
         )
 
-        // console.log({ distance })
+        console.log({ distance })
 
         let configuration = await Configuration.findOne()
         const costType = configuration.costType
@@ -707,7 +707,10 @@ module.exports = {
 
         let deliveryCharges = amount
 
-        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.5 + Number.EPSILON
+        ) {
           deliveryCharges = configuration.minimumDeliveryFee
         }
 
@@ -1230,7 +1233,10 @@ module.exports = {
         }
 
         let DELIVERY_CHARGES = amount
-        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.5 + Number.EPSILON
+        ) {
           DELIVERY_CHARGES = configuration.minimumDeliveryFee
         }
 
