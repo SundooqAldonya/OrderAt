@@ -141,7 +141,7 @@ const RequestDelivery = () => {
           mapRef.current.animateToRegion(region, 1000)
         }
       }
-    }, 1000)
+    }, 2000)
 
     return () => clearTimeout(timer)
   }, [addressInfo, city, regionFrom, regionTo])
@@ -365,45 +365,49 @@ const RequestDelivery = () => {
         contentContainerStyle={{ flexGrow: 1 }}
       >
         {/* {addressInfo.regionFrom ? ( */}
-        <View>
-          <MapView
-            key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}
-            ref={mapRef}
-            style={{ height: 300 }}
-            region={{
-              latitude: pickupCoords?.latitude || 31.111667,
-              longitude: pickupCoords?.longitude || 30.945833,
-              latitudeDelta: 0.02,
-              longitudeDelta: 0.02
-            }}
-            onMapReady={() => {
-              if (pickupCoords && dropOffCoords && mapRef.current) {
-                mapRef.current.fitToCoordinates([pickupCoords, dropOffCoords], {
-                  edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-                  animated: true
-                })
-              }
-            }}
-          >
-            {pickupCoords && (
-              <Marker coordinate={pickupCoords} title='Pickup'>
-                <Image
-                  source={FromIcon}
-                  style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-                />
-              </Marker>
-            )}
-            {dropOffCoords && (
-              <Fragment>
-                <Marker coordinate={dropOffCoords} title='Dropoff'>
+        {regionFrom && regionTo ? (
+          <View>
+            <MapView
+              key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}
+              ref={mapRef}
+              style={{ height: 300 }}
+              region={{
+                latitude: pickupCoords?.latitude || 31.111667,
+                longitude: pickupCoords?.longitude || 30.945833,
+                latitudeDelta: 0.02,
+                longitudeDelta: 0.02
+              }}
+              onMapReady={() => {
+                if (pickupCoords && dropOffCoords && mapRef.current) {
+                  mapRef.current.fitToCoordinates(
+                    [pickupCoords, dropOffCoords],
+                    {
+                      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+                      animated: true
+                    }
+                  )
+                }
+              }}
+            >
+              {pickupCoords && (
+                <Marker coordinate={pickupCoords} title='Pickup'>
                   <Image
-                    source={ToIcon}
+                    source={FromIcon}
                     style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
                   />
                 </Marker>
-              </Fragment>
-            )}
-            {/* {pickupCoords && dropOffCoords && (
+              )}
+              {dropOffCoords && (
+                <Fragment>
+                  <Marker coordinate={dropOffCoords} title='Dropoff'>
+                    <Image
+                      source={ToIcon}
+                      style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                    />
+                  </Marker>
+                </Fragment>
+              )}
+              {/* {pickupCoords && dropOffCoords && (
             <MapViewDirections
               origin={pickupCoords}
               destination={dropOffCoords}
@@ -422,8 +426,9 @@ const RequestDelivery = () => {
               }}
             />
           )} */}
-          </MapView>
-        </View>
+            </MapView>
+          </View>
+        ) : null}
         {/* ) : null} */}
         <View style={styles.wrapper}>
           {/* <View style={styles.inputContainer}> */}

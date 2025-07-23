@@ -706,5 +706,6 @@ export const en = {
   browse_available_areas: 'Browse Available Areas',
   citySelect: 'Select a City',
   city_location_no_deliveryzone:
-    'We’re not serving this area yet, but we’re expanding!'
+    'We’re not serving this area yet, but we’re expanding!',
+  required: 'Required *'
 }

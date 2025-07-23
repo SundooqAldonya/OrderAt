@@ -113,7 +113,7 @@ export const ar = {
   delivered: 'تم التوصيل',
   rateAndReview: 'قيم وأكتب تقييمًا',
   reviewPlaceholder: 'التقييمات المفصلة تحصل على مزيد من الرؤية...',
-  submit: 'إرسال',
+  submit: 'إرسال الطلب',
   noWorriesText: 'لا تقلق، دعنا نساعدك!',
   yourEmail: 'بريدك الإلكتروني',
   send: 'إرسال',
@@ -695,5 +695,6 @@ export const ar = {
   browse_available_areas: 'تصفح المناطق المتاحة',
   citySelect: 'قم بتغيير المدينة',
   city_location_no_deliveryzone:
-    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع !'
+    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع !',
+  required: 'مطلوب *'
 }

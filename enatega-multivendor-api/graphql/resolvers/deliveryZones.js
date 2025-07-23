@@ -88,6 +88,10 @@ module.exports = {
           console.log({ distance, amount })
         }
 
+        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+          amount = configuration.minimumDeliveryFee
+        }
+
         let deliveryDiscount = 0
         let originalDiscount = amount
         const coupon = await Coupon.findOne({ code })
@@ -105,9 +109,7 @@ module.exports = {
           }
         }
         amount -= deliveryDiscount
-        // if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
-        //   amount = configuration.minimumDeliveryFee
-        // }
+
         console.log({ amount, originalDiscount, deliveryDiscount })
 
         return { amount, originalDiscount }

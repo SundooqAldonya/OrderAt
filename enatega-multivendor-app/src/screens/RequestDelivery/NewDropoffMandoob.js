@@ -326,37 +326,6 @@ const NewDropoffMandoob = () => {
       <Text style={styles.title}>{t('select_dropoff_location')}</Text>
 
       {/* Location options */}
-      <TouchableOpacity
-        style={{
-          ...styles.option,
-          borderColor: chooseFromMapTo ? 'green' : '#eee',
-          justifyContent: 'space-between',
-          flexDirection: isArabic ? 'row' : 'row-reverse'
-        }}
-        onPress={() => {
-          dispatch(setResetBooleansTo())
-          navigation.navigate('DropoffFromMap')
-        }}
-      >
-        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
-          <Entypo
-            name='location-pin'
-            size={22}
-            color={chooseFromMapTo ? 'green' : '#000'}
-          />
-          <Text
-            style={{
-              ...styles.optionText,
-              color: chooseFromMapTo ? 'green' : '#000'
-            }}
-          >
-            {t('locate_on_map')}
-          </Text>
-        </View>
-        {chooseFromMapTo && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
-        )}
-      </TouchableOpacity>
 
       <TouchableOpacity
         style={{
@@ -417,9 +386,41 @@ const NewDropoffMandoob = () => {
         )}
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          ...styles.option,
+          borderColor: chooseFromMapTo ? 'green' : '#eee',
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
+        }}
+        onPress={() => {
+          dispatch(setResetBooleansTo())
+          navigation.navigate('DropoffFromMap')
+        }}
+      >
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
+          <Entypo
+            name='location-pin'
+            size={22}
+            color={chooseFromMapTo ? 'green' : '#000'}
+          />
+          <Text
+            style={{
+              ...styles.optionText,
+              color: chooseFromMapTo ? 'green' : '#000'
+            }}
+          >
+            {t('locate_on_map')}
+          </Text>
+        </View>
+        {chooseFromMapTo && (
+          <AntDesign name='checkcircleo' size={24} color='green' />
+        )}
+      </TouchableOpacity>
+
       {/* Inputs */}
       <Text style={{ ...styles.label, textAlign: isArabic ? 'left' : 'right' }}>
-        {t('address_label')}
+        {t('address_label')} {`(${t('required')})`}
       </Text>
       <TextInput
         style={styles.input}
