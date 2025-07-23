@@ -16,7 +16,8 @@ import {
   ScrollView,
   Text,
   Modal,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
@@ -56,6 +57,8 @@ import useEnvVars from '../../../environment'
 import { getCityAreas } from '../../apollo/queries'
 import { alignment } from '../../utils/alignment'
 import { useSelector } from 'react-redux'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+import { v4 as uuidv4 } from 'uuid'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -86,6 +89,9 @@ export default function SelectLocation(props) {
   const [loading, setLoading] = useState(false)
   const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef()
+  const searchRef = useRef()
+  const [sessionToken, setSessionToken] = useState(uuidv4())
+
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { setLocation } = useContext(LocationContext)
   const { getAddress } = useGeocoding()
@@ -109,7 +115,6 @@ export default function SelectLocation(props) {
     { data: dataAreas, loading: loadingAreas, error: errorAreas }
   ] = useLazyQuery(GET_CITIES_AREAS)
 
-  // console.log({ dataAreas })
   const areasList = dataAreas?.areasByCity || null
 
   useLayoutEffect(() => {
@@ -442,6 +447,54 @@ export default function SelectLocation(props) {
               }}
               // cacheEnabled={true}
             />
+            <View style={styles.searchContainer}>
+              <GooglePlacesAutocomplete
+                ref={searchRef}
+                placeholder='ابحث عن مكان...'
+                onPress={(data, details = null) => {
+                  const lat = details?.geometry?.location?.lat
+                  const lng = details?.geometry?.location?.lng
+
+                  if (lat && lng) {
+                    const newLocation = { latitude: lat, longitude: lng }
+                    setLocation(newLocation)
+                    mapRef.current.animateToRegion({
+                      ...newLocation,
+                      latitudeDelta: 0.01,
+                      longitudeDelta: 0.01
+                    })
+                  }
+                }}
+                query={{
+                  key: GOOGLE_MAPS_KEY,
+                  language: 'ar',
+                  sessiontoken: sessionToken,
+                  region: 'EG',
+                  components: 'country:eg'
+                }}
+                fetchDetails={true}
+                enablePoweredByContainer={false}
+                styles={{
+                  textInputContainer: {
+                    backgroundColor: '#fff',
+                    borderRadius: 10,
+                    paddingHorizontal: 40,
+                    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOpacity: 0.2,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowRadius: 5
+                  },
+                  textInput: {
+                    height: 44,
+                    color: '#000',
+                    fontSize: 16,
+                    textAlign: 'right'
+                  }
+                }}
+              />
+            </View>
             {!mapLoaded && (
               <View
                 style={{
@@ -469,6 +522,7 @@ export default function SelectLocation(props) {
                 />
               </View>
             )}
+
             <View
               pointerEvents='none'
               style={{
