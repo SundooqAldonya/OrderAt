@@ -357,6 +357,9 @@ export default function SelectLocation(props) {
           details: res.formattedAddress
         })
       })
+      if (isLoggedIn) {
+        navigation.navigate('Main')
+      }
     } catch (err) {
       console.log({ err })
     }

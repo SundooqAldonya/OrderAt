@@ -692,5 +692,6 @@ export const ar = {
   save_location: 'تم',
   select_city: 'أختر مدينة',
   confirm_address: 'قم بتأكيد العنوان',
-  browse_available_areas: 'تصفح المناطق المتاحة'
+  browse_available_areas: 'تصفح المناطق المتاحة',
+  citySelect: 'قم بتغيير المدينة'
 }

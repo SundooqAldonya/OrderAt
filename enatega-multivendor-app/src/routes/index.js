@@ -357,13 +357,6 @@ function NoDrawer() {
       />
       <NavigationStack.Screen
         name='AddressNewVersion'
-        // options={{
-        //   headerTitle: t('add_new_address'),
-        //   headerRight: false,
-        //   headerStyle: {
-        //     backgroundColor: colors.primary
-        //   }
-        // }}
         component={AddressNewVersion}
       />
       <NavigationStack.Screen
@@ -372,18 +365,15 @@ function NoDrawer() {
       />
       <NavigationStack.Screen
         name='EditAddressNewVersion'
-        // options={{
-        //   headerTitle: t('edit_address'),
-        //   headerRight: false,
-        //   headerStyle: {
-        //     backgroundColor: colors.primary
-        //   }
-        // }}
         component={EditAddressNewVersion}
       />
       <NavigationStack.Screen
         name='EditAddressFromMap'
         component={EditAddressFromMap}
+      />
+      <NavigationStack.Screen
+        name='CityListScreen'
+        component={CityListScreen}
       />
     </NavigationStack.Navigator>
   )

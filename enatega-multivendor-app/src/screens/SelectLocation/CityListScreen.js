@@ -14,22 +14,16 @@ import { LocationContext } from '../../context/Location'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { setCity } from '../../store/citySelectSlice'
+import { AntDesign } from '@expo/vector-icons'
+import UserContext from '../../context/User'
 
-// const cities = [
-//   { id: '1', name: 'Cairo' },
-//   { id: '2', name: 'Alexandria' },
-//   { id: '3', name: 'Giza' },
-//   { id: '4', name: 'Luxor' },
-//   { id: '5', name: 'Aswan' },
-//   { id: '6', name: 'Hurghada' },
-//   { id: '7', name: 'Sharm El Sheikh' }
-// ]
 const CityListScreen = () => {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const dispatch = useDispatch()
   const isArabic = i18n.language === 'ar'
   const { cities } = useContext(LocationContext)
+  const { isLoggedIn } = useContext(UserContext)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -45,9 +39,24 @@ const CityListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ ...styles.title, textAlign: isArabic ? 'right' : 'left' }}>
-        {t('select_city')}
-      </Text>
+      <View
+        style={{
+          flexDirection: isArabic ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Text
+          style={{ ...styles.title, textAlign: isArabic ? 'right' : 'left' }}
+        >
+          {t('select_city')}
+        </Text>
+        {isLoggedIn ? (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name='arrowleft' size={24} color='black' />
+          </TouchableOpacity>
+        ) : null}
+      </View>
       <FlatList
         data={cities}
         keyExtractor={(item) => item._id}

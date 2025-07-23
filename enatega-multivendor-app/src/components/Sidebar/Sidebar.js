@@ -17,7 +17,11 @@ import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import { colors } from '../../utils/colors'
 import TextDefault from '../Text/TextDefault/TextDefault'
-import { SimpleLineIcons } from '@expo/vector-icons'
+import {
+  FontAwesome5,
+  MaterialIcons,
+  SimpleLineIcons
+} from '@expo/vector-icons'
 import { verticalScale } from '../../utils/scaling'
 import MandoobImg from '../../assets/delivery_dark.png'
 import { Image } from 'react-native'
@@ -94,6 +98,12 @@ function SidebBar(props) {
       isAuth: true
     },
     {
+      title: 'citySelect',
+      icon: <MaterialIcons name='location-city' size={24} color='black' />,
+      navigateTo: 'CityListScreen',
+      isAuth: true
+    },
+    {
       title: 'titleSettings',
       icon: (
         <SimpleLineIcons
@@ -118,6 +128,7 @@ function SidebBar(props) {
       isAuth: true
     }
   ]
+
   const inset = useSafeAreaInsets()
   const { isLoggedIn, logout } = useContext(UserContext)
 
@@ -130,7 +141,6 @@ function SidebBar(props) {
     setModalVisible(false)
     logout()
     props.navigation.closeDrawer()
-    // FlashMessage({ message: t('logoutMessage') })
     Toast.show({
       type: 'success',
       text1: t('success'),

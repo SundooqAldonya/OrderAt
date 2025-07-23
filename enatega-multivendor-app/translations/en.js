@@ -703,5 +703,6 @@ export const en = {
   save_location: 'Save Location',
   select_city: 'Select a city',
   confirm_address: 'Confirm address',
-  browse_available_areas: 'Browse Available Areas'
+  browse_available_areas: 'Browse Available Areas',
+  citySelect: 'Select a City'
 }
