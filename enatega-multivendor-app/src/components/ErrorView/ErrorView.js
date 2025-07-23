@@ -9,7 +9,7 @@ import styles from './styles'
 import { useTranslation } from 'react-i18next'
 import ErrorSvg from '../../assets/SVG/error'
 
-const ErrorView = () => {
+const ErrorView = ({ wentWrong, message }) => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { t } = useTranslation()
@@ -18,10 +18,10 @@ const ErrorView = () => {
     <View style={styles(currentTheme).errorViewContainer}>
       <ErrorSvg fill={'#000'} />
       <TextDefault center H3 bolder textColor={'#000'}>
-        {t('somethingWentWrong')}
+        {wentWrong}
       </TextDefault>
       <TextDefault center H4 textColor={'#000'}>
-        {t('checkInternet')}
+        {message}
       </TextDefault>
     </View>
   )

@@ -704,5 +704,7 @@ export const en = {
   select_city: 'Select a city',
   confirm_address: 'Confirm address',
   browse_available_areas: 'Browse Available Areas',
-  citySelect: 'Select a City'
+  citySelect: 'Select a City',
+  city_location_no_deliveryzone:
+    'We’re not serving this area yet, but we’re expanding!'
 }

@@ -20,13 +20,14 @@ import {
   FlatList
 } from 'react-native'
 import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, useQuery, gql, useLazyQuery } from '@apollo/client'
 import { useCollapsibleSubHeader } from 'react-navigation-collapsible'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import { useLocation } from '../../ui/hooks'
 import Search from '../../components/Main/Search/Search'
 import UserContext from '../../context/User'
 import {
+  checkDeliveryZone,
   getBusinessCategoriesCustomer,
   highestRatingRestaurant,
   nearestRestaurants,
@@ -135,6 +136,20 @@ function Main(props) {
     },
     fetchPolicy: 'no-cache'
   })
+
+  // console.log({ location })
+
+  const { loading: loadingZone, error: errorZone } = useQuery(
+    checkDeliveryZone,
+    {
+      variables: {
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+    }
+  )
+
+  console.log({ errorZone })
 
   const [selectedType, setSelectedType] = useState('restaurant')
 
@@ -462,7 +477,21 @@ function Main(props) {
     return restaurants.filter((restaurant) => regex.test(restaurant.name))
   }
 
-  if (error) return <ErrorView />
+  if (error)
+    return (
+      <ErrorView
+        wentWrong={t('somethingWentWrong')}
+        message={t('checkInternet')}
+      />
+    )
+
+  if (errorZone)
+    return (
+      <ErrorView
+        wentWrong={t('somethingWentWrong')}
+        message={t('city_location_no_deliveryzone')}
+      />
+    )
 
   const onModalClose = () => {
     setIsVisible(false)

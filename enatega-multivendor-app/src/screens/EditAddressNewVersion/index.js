@@ -77,6 +77,7 @@ const EditAddressNewVersion = () => {
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
+  const city = useSelector((state) => state.city.city)
   // const [currentPosSelected, setCurrentPosSelected] = useState(false)
 
   console.log({ chooseFromAddressBook })
@@ -231,7 +232,8 @@ const EditAddressNewVersion = () => {
   }
 
   const handleNearestArea = () => {
-    setCitiesModalVisible(true)
+    setAreasModalVisible(true)
+    fetchAreas({ variables: { id: city._id } })
   }
 
   return (
@@ -361,10 +363,11 @@ const EditAddressNewVersion = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
             <Text style={styles.modalTitle}>
-              اختر المنطقة داخل {selectedCity?.title}
+              اختر المنطقة داخل {city?.title}
             </Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {loadingAreas ? <TextDefault>Loading...</TextDefault> : null}
               {areasList?.map((area) => (
                 <TouchableOpacity
                   key={area._id}

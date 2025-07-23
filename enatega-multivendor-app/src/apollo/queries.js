@@ -1442,3 +1442,10 @@ export const checkoutCalculatePrice = gql`
     }
   }
 `
+export const checkDeliveryZone = gql`
+  query CheckDeliveryZone($latitude: Float!, $longitude: Float!) {
+    checkDeliveryZone(latitude: $latitude, longitude: $longitude) {
+      message
+    }
+  }
+`

@@ -12,6 +12,27 @@ module.exports = {
       if (!zone) throw new Error('Zone does not exist')
 
       return transformZone(zone)
+    },
+    async checkDeliveryZone(_, args) {
+      console.log('checkDeliveryZone', { args })
+      try {
+        const location = {
+          type: 'Point',
+          coordinates: [args.longitude, args.latitude]
+        }
+        console.log('Location: ', location)
+        const zone = await Zone.findOne({
+          location: { $geoIntersects: { $geometry: location } },
+          isActive: true
+        })
+        console.log('Zone: ', zone)
+        if (!zone) {
+          throw new Error('city_location_no_deliveryzone')
+        }
+        return { message: 'within_true_delivery_zone' }
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {

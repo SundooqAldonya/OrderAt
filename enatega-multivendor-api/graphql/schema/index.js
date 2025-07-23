@@ -1582,6 +1582,7 @@ const typeDefs = gql`
   union RecipientItem = User | Rider | Restaurant
 
   type Query {
+    checkDeliveryZone(latitude: Float!, longitude: Float!): Message
     getAllNotifications(page: Int, limit: Int): PaginatedNotification
     getAllContactus(page: Int, limit: Int): PaginatedContactus
     getStockEnumValues: [String]

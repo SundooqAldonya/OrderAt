@@ -693,5 +693,7 @@ export const ar = {
   select_city: 'أختر مدينة',
   confirm_address: 'قم بتأكيد العنوان',
   browse_available_areas: 'تصفح المناطق المتاحة',
-  citySelect: 'قم بتغيير المدينة'
+  citySelect: 'قم بتغيير المدينة',
+  city_location_no_deliveryzone:
+    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع !'
 }
