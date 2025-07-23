@@ -134,10 +134,10 @@ function Checkout(props) {
   const [coupon, setCoupon] = useState(0)
   const [tip, setTip] = useState(null)
   const [tipAmount, setTipAmount] = useState(null)
-  const [nameFormAppear, setNameFormAppear] = useState(null)
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
   const [deliveryDiscount, setDeliveryDiscount] = useState(0)
+  const [nameFormAppear, setNameFormAppear] = useState(null)
   const [customerName, setCustomerName] = useState('')
   const deliveryAmount = useSelector(
     (state) => state.deliveryAmount.deliveryAmount

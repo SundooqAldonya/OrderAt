@@ -29,7 +29,8 @@ import ToIcon from '../../assets/delivery_to.png'
 import {
   applyCoupon,
   applyCouponMandoob,
-  createDeliveryRequest
+  createDeliveryRequest,
+  updateUserName
 } from '../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 import { Image } from 'react-native'
@@ -45,6 +46,8 @@ import Spinner from '../../components/Spinner/Spinner'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { colors } from '../../utils/colors'
 import { resetRequestDelivery } from '../../store/requestDeliverySlice'
+import Modal from 'react-native-modal'
+import UserContext from '../../context/User'
 
 const ORDERS = gql`
   ${myOrders}
@@ -56,7 +59,7 @@ const RequestDelivery = () => {
   const voucherModalRef = useRef(null)
   const inputRef = useRef()
   const configuration = useContext(ConfigurationContext)
-
+  const { profile, refetchProfile } = useContext(UserContext)
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
   const regionFrom = useSelector((state) => state.requestDelivery.regionFrom)
@@ -70,6 +73,8 @@ const RequestDelivery = () => {
   const [notes, setNotes] = useState('')
   const [disabled, setDisabled] = useState(false)
   const [notesError, setNotesError] = useState(false)
+  const [nameFormAppear, setNameFormAppear] = useState(null)
+  const [customerName, setCustomerName] = useState('')
 
   console.log({ regionFrom: addressInfo.regionFrom })
   console.log({ pickupCoords })
@@ -79,6 +84,41 @@ const RequestDelivery = () => {
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
+  const [mutateUserName, { loading: usernameLoading, error: usernameError }] =
+    useMutation(updateUserName, {
+      onCompleted: (res) => {
+        console.log({ res })
+        refetchProfile()
+        Toast.show({
+          type: 'success',
+          text1: t('success'),
+          text2: t('name_updated'),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+        setNameFormAppear(false)
+        setCustomerName('')
+      },
+      onError: (err) => {
+        console.log({ err })
+        Toast.show({
+          type: 'error',
+          text1: t('error'),
+          text2: 'Something went wrong!',
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+      }
+    })
 
   useEffect(() => {
     let timeout = setTimeout(() => {
@@ -252,6 +292,10 @@ const RequestDelivery = () => {
   )
 
   const validate = () => {
+    if (profile.name === 'N/A') {
+      setNameFormAppear(true)
+      return false
+    }
     if (!addressInfo.regionTo || !addressInfo.regionFrom) {
       Toast.show({
         type: 'error',
@@ -353,6 +397,19 @@ const RequestDelivery = () => {
   }
 
   console.log({ pickupCoords })
+
+  const onClose = () => {
+    setNameFormAppear(false)
+  }
+
+  const handleSubmitCustomerName = () => {
+    mutateUserName({
+      variables: {
+        id: profile._id,
+        name: customerName
+      }
+    })
+  }
 
   return (
     <KeyboardAvoidingView
@@ -702,6 +759,49 @@ const RequestDelivery = () => {
             <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
           </TouchableOpacity>
         </View>
+
+        <Modal
+          isVisible={nameFormAppear}
+          onBackdropPress={onClose}
+          onBackButtonPress={onClose}
+          backdropOpacity={0.4}
+          style={styleNameModal.modal}
+          swipeDirection='down'
+          onSwipeComplete={onClose}
+          useNativeDriver
+        >
+          <View style={styleNameModal.modalContent}>
+            <Text
+              style={{
+                ...styleNameModal.title,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {t('enter_your_name')}
+            </Text>
+            <TextInput
+              value={customerName}
+              onChangeText={setCustomerName}
+              placeholder={t('your_name')}
+              style={styleNameModal.input}
+              placeholderTextColor='#999'
+            />
+            <View style={styleNameModal.buttonsContainer}>
+              <TouchableOpacity
+                onPress={onClose}
+                style={styleNameModal.cancelButton}
+              >
+                <Text style={styleNameModal.cancelText}>{t('Cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSubmitCustomerName}
+                style={styleNameModal.submitButton}
+              >
+                <Text style={styleNameModal.submitText}>{t('send')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <Modalize
           ref={voucherModalRef}
           onOpened={() => {
@@ -983,5 +1083,59 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     resizeMode: 'contain'
+  }
+})
+
+const styleNameModal = StyleSheet.create({
+  modal: {
+    justifyContent: 'center',
+    margin: 0
+  },
+  modalContent: {
+    backgroundColor: theme?.background || '#fff',
+    padding: 20,
+    borderRadius: 16,
+    marginHorizontal: 20
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: theme?.text || '#000'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    color: theme?.text || '#000',
+    backgroundColor: theme?.inputBackground || '#f8f8f8'
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16
+  },
+  cancelButton: {
+    marginRight: 12
+  },
+  cancelText: {
+    color: '#000',
+    textAlign: 'center',
+    // backgroundColor: 'red',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+  submitButton: {
+    backgroundColor: '#28a745',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+  submitText: {
+    color: '#fff',
+    fontWeight: 'bold'
   }
 })
