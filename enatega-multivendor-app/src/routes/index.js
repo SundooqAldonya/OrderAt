@@ -310,13 +310,6 @@ function NoDrawer() {
       />
       <NavigationStack.Screen
         name='NewPickupMandoob'
-        options={{
-          headerTitle: t('pickup'),
-          headerRight: false,
-          headerStyle: {
-            backgroundColor: colors.primary
-          }
-        }}
         component={NewPickupMandoob}
       />
       <NavigationStack.Screen

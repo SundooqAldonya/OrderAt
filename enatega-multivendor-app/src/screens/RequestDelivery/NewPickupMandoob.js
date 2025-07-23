@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -37,6 +37,7 @@ import {
   setAddressFrom,
   setChooseFromAddressBookFrom,
   setChooseFromMapFrom,
+  setResetBooleansFrom,
   setSelectedAreaFrom,
   setSelectedCityFrom
 } from '../../store/requestDeliverySlice'
@@ -127,6 +128,16 @@ const NewPickupMandoob = () => {
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('pickup'),
+      headerRight: false,
+      headerStyle: {
+        backgroundColor: colors.primary
+      }
+    })
+  })
+
   useEffect(() => {
     if (chooseFromMapFrom) {
       // dispatch(setChooseFromMapFrom())
@@ -157,17 +168,8 @@ const NewPickupMandoob = () => {
 
   const setAddressLocation = async (address) => {
     console.log({ address })
-    // setChooseFromAddressBook(true)
+    dispatch(setResetBooleansFrom())
     dispatch(setChooseFromAddressBookFrom({ status: true }))
-    // setLocation({
-    //   _id: address._id,
-    //   label: address.label,
-    //   latitude: Number(address.location.coordinates[1]),
-    //   longitude: Number(address.location.coordinates[0]),
-    //   deliveryAddress: address.deliveryAddress,
-    //   details: address.details
-    // })
-    // mutate({ variables: { id: address._id } })
     setCoordinates({
       ...coordinates,
       latitude: +address.location.coordinates[1],
@@ -262,7 +264,7 @@ const NewPickupMandoob = () => {
       dispatch(
         setAddressFrom({
           addressFrom: currentInput,
-          regionFrom: locationMap,
+          regionFrom: { ...locationMap },
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -278,7 +280,7 @@ const NewPickupMandoob = () => {
       dispatch(
         setAddressFrom({
           addressFrom: selectedAreaFrom.address,
-          regionFrom: locationMap,
+          regionFrom: { ...locationMap },
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -287,7 +289,7 @@ const NewPickupMandoob = () => {
       dispatch(
         setAddressFrom({
           addressFrom: formattedAddress,
-          regionFrom: coordinates,
+          regionFrom: { ...coordinates },
           addressFreeTextFrom: details,
           labelFrom: name
         })
@@ -348,7 +350,7 @@ const NewPickupMandoob = () => {
           flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={() => {
-          // dispatch(setChooseFromMapFrom({ status: true }))
+          dispatch(setResetBooleansFrom())
           navigation.navigate('PickupFromMap')
         }}
       >
@@ -519,6 +521,7 @@ const NewPickupMandoob = () => {
                 <TouchableOpacity
                   key={area._id}
                   onPress={() => {
+                    dispatch(setResetBooleansFrom())
                     dispatch(setSelectedAreaFrom(area))
                     setAreasModalVisible(false)
                     navigation.navigate('PickupFromMap')

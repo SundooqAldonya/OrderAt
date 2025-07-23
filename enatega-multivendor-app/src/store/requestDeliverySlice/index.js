@@ -30,15 +30,17 @@ const requestDeliverySlice = createSlice({
   reducers: {
     setAddressFrom: (state, action) => {
       console.log({ action })
+      const regionFrom = { ...action.payload.regionFrom }
       state.addressFrom = action.payload.addressFrom
-      state.regionFrom = action.payload.regionFrom
+      state.regionFrom = regionFrom
       state.addressFreeTextFrom = action.payload.addressFreeTextFrom
       state.labelFrom = action.payload.labelFrom
     },
     setAddressTo: (state, action) => {
       console.log({ action })
+      const regionTo = { ...action.payload.regionTo }
       state.addressTo = action.payload.addressTo
-      state.regionTo = action.payload.regionTo
+      state.regionTo = regionTo
       state.addressFreeTextTo = action.payload.addressFreeTextTo
       state.labelTo = action.payload.labelTo
     },
@@ -65,6 +67,17 @@ const requestDeliverySlice = createSlice({
         state.chooseFromAddressBookFrom = false
         state.selectedCityAndAreaFrom = false
       }
+    },
+
+    setResetBooleansFrom: (state, action) => {
+      state.chooseFromMapFrom = false
+      state.chooseFromAddressBookFrom = false
+      state.selectedCityAndAreaFrom = false
+    },
+    setResetBooleansTo: (state, action) => {
+      state.chooseFromMapTo = false
+      state.chooseFromAddressBookTo = false
+      state.selectedCityAndAreaTo = false
     },
 
     setChooseFromAddressBookFrom: (state, action) => {
@@ -104,6 +117,8 @@ export const {
   setAddressFrom,
   setAddressTo,
   setChooseFromMapFrom,
+  setResetBooleansFrom,
+  setResetBooleansTo,
   setChooseFromMapTo,
   setChooseFromAddressBookFrom,
   setChooseFromAddressBookTo,

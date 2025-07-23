@@ -37,6 +37,7 @@ import {
   setAddressTo,
   setChooseFromAddressBookTo,
   setChooseFromMapTo,
+  setResetBooleansTo,
   setSelectedAreaTo,
   setSelectedCityTo
 } from '../../store/requestDeliverySlice'
@@ -155,18 +156,8 @@ const NewDropoffMandoob = () => {
 
   const setAddressLocation = async (address) => {
     console.log({ address })
-    // setChooseFromAddressBook(true)
+    dispatch(setResetBooleansTo())
     dispatch(setChooseFromAddressBookTo({ status: true }))
-
-    // setLocation({
-    //   _id: address._id,
-    //   label: address.label,
-    //   latitude: Number(address.location.coordinates[1]),
-    //   longitude: Number(address.location.coordinates[0]),
-    //   deliveryAddress: address.deliveryAddress,
-    //   details: address.details
-    // })
-    // mutate({ variables: { id: address._id } })
     setCoordinates({
       ...coordinates,
       latitude: +address.location.coordinates[1],
@@ -343,7 +334,7 @@ const NewDropoffMandoob = () => {
           flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={() => {
-          // dispatch(setChooseFromMapTo({ status: true }))
+          dispatch(setResetBooleansTo())
           navigation.navigate('DropoffFromMap')
         }}
       >
@@ -511,6 +502,7 @@ const NewDropoffMandoob = () => {
                 <TouchableOpacity
                   key={area._id}
                   onPress={() => {
+                    dispatch(setResetBooleansTo())
                     dispatch(setSelectedAreaTo(area))
                     setAreasModalVisible(false)
                     navigation.navigate('DropoffFromMap')

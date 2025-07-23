@@ -59,6 +59,8 @@ const RequestDelivery = () => {
 
   const navigation = useNavigation()
   const addressInfo = useSelector((state) => state.requestDelivery)
+  const regionFrom = useSelector((state) => state.requestDelivery.regionFrom)
+  const regionTo = useSelector((state) => state.requestDelivery.regionTo)
   const city = useSelector((state) => state.city.city)
   const isArabic = i18n.language === 'ar'
   const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
@@ -88,7 +90,7 @@ const RequestDelivery = () => {
       }
     }, 1000)
     return () => clearTimeout(timeout)
-  }, [mapRef?.current])
+  }, [mapRef?.current, regionFrom, regionTo])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -107,11 +109,27 @@ const RequestDelivery = () => {
             edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
             animated: true
           })
-        } else if (
-          !hasPickup &&
-          !hasDropoff &&
-          city?.location?.location?.coordinates
-        ) {
+        } else if (hasPickup) {
+          setPickupCoords(addressInfo.regionFrom)
+          mapRef.current.animateToRegion(
+            {
+              ...addressInfo.regionFrom,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01
+            },
+            1000
+          )
+        } else if (hasDropoff) {
+          setDropOffCoords(addressInfo.regionTo)
+          mapRef.current.animateToRegion(
+            {
+              ...addressInfo.regionTo,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01
+            },
+            1000
+          )
+        } else if (city?.location?.location?.coordinates) {
           const [lng, lat] = city.location.location.coordinates
           const region = {
             latitude: lat,
@@ -126,11 +144,10 @@ const RequestDelivery = () => {
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [addressInfo, city])
+  }, [addressInfo, city, regionFrom, regionTo])
 
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
-
     onCompleted: (res) => {
       console.log({ res })
       Toast.show({
@@ -347,8 +364,10 @@ const RequestDelivery = () => {
         keyboardShouldPersistTaps='handled'
         contentContainerStyle={{ flexGrow: 1 }}
       >
+        {/* {addressInfo.regionFrom ? ( */}
         <View>
           <MapView
+            key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}
             ref={mapRef}
             style={{ height: 300 }}
             region={{
@@ -405,6 +424,7 @@ const RequestDelivery = () => {
           )} */}
           </MapView>
         </View>
+        {/* ) : null} */}
         <View style={styles.wrapper}>
           {/* <View style={styles.inputContainer}> */}
           {/* <TextDefault

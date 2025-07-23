@@ -205,7 +205,7 @@ const PickupFromMap = () => {
       dispatch(
         setAddressFrom({
           addressFrom: selectedAreaFrom.address,
-          regionFrom: newCoordinates
+          regionFrom: { ...newCoordinates }
           // addressFreeTextFrom: details,
           // labelFrom: name
         })
