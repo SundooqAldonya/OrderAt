@@ -707,5 +707,8 @@ export const en = {
   citySelect: 'Select a City',
   city_location_no_deliveryzone:
     'We’re not serving this area yet, but we’re expanding!',
-  required: 'Required *'
+  required: 'Required *',
+  enter_your_name: 'Enter your name',
+  your_name: 'Your name',
+  name_updated: 'Your name updated successfully!'
 }

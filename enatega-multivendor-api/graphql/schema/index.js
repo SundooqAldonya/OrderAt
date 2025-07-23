@@ -2000,6 +2000,7 @@ const typeDefs = gql`
   union CancelledBy = User | Owner | Restaurant
 
   type Mutation {
+    updateUserName(id: String!, name: String!): Message
     makeRestaurantVisible(id: String!): Message
     createBusinessMenu(file: Upload, restaurantId: String!): Message
     acknowledgeNotification(notificationId: String): Message

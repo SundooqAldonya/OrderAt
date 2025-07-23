@@ -696,5 +696,8 @@ export const ar = {
   citySelect: 'قم بتغيير المدينة',
   city_location_no_deliveryzone:
     'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع !',
-  required: 'مطلوب *'
+  required: 'مطلوب *',
+  enter_your_name: 'قم بإدخال اسمك',
+  your_name: 'اسمك',
+  name_updated: 'تم تحديث اسمك بنجاح!'
 }

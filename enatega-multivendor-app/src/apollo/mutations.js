@@ -525,3 +525,10 @@ export const updateEmail = gql`
     }
   }
 `
+export const updateUserName = gql`
+  mutation UpdateUserName($id: String!, $name: String!) {
+    updateUserName(id: $id, name: $name) {
+      message
+    }
+  }
+`

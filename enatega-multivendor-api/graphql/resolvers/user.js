@@ -814,6 +814,17 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+    async updateUserName(_, args) {
+      console.log('updateUserName', { args })
+      try {
+        const user = await User.findById(args.id)
+        user.name = args.name
+        await user.save()
+        return { message: 'name_updated' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

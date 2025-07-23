@@ -9,7 +9,8 @@ import {
   Alert,
   Text,
   TextInput,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from 'react-native'
 import { useMutation, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
@@ -36,7 +37,8 @@ import {
   applyCoupon,
   getCoupon,
   phoneIsVerified,
-  placeOrder
+  placeOrder,
+  updateUserName
 } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
@@ -79,6 +81,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setDeliveryAmount } from '../../store/deliveryAmountSlice'
 import { useMemo } from 'react'
 import { Fragment } from 'react'
+import Modal from 'react-native-modal'
+import Toast from 'react-native-toast-message'
 
 // Constants
 const PLACEORDER = gql`
@@ -108,7 +112,8 @@ function Checkout(props) {
     updateCart,
     isPickup,
     setIsPickup,
-    instructions
+    instructions,
+    refetchProfile
   } = useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const { location } = useContext(LocationContext)
@@ -129,9 +134,11 @@ function Checkout(props) {
   const [coupon, setCoupon] = useState(0)
   const [tip, setTip] = useState(null)
   const [tipAmount, setTipAmount] = useState(null)
+  const [nameFormAppear, setNameFormAppear] = useState(null)
   const modalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
   const [deliveryDiscount, setDeliveryDiscount] = useState(0)
+  const [customerName, setCustomerName] = useState('')
   const deliveryAmount = useSelector(
     (state) => state.deliveryAmount.deliveryAmount
   )
@@ -213,7 +220,40 @@ function Checkout(props) {
     nextFetchPolicy: 'no-cache'
   })
 
-  console.log({ dataCalculatePrice, errorCalculatePrice, coupon })
+  const [mutateUserName, { loading: usernameLoading, error: usernameError }] =
+    useMutation(updateUserName, {
+      onCompleted: (res) => {
+        console.log({ res })
+        refetchProfile()
+        Toast.show({
+          type: 'success',
+          text1: t('success'),
+          text2: t('name_updated'),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+        setNameFormAppear(false)
+        setCustomerName('')
+      },
+      onError: (err) => {
+        console.log({ err })
+        Toast.show({
+          type: 'error',
+          text1: t('error'),
+          text2: 'Something went wrong!',
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
+      }
+    })
 
   const calculatedPrice = dataCalculatePrice?.checkoutCalculatePrice || null
 
@@ -715,7 +755,7 @@ function Checkout(props) {
       })
       return false
     }
-    const couponDiscount = coupon?.discount || 0
+    // const couponDiscount = coupon?.discount || 0
     // if (
     //   calculatePrice(deliveryCharges, true).itemTotal <
     //   minimumOrder - couponDiscount
@@ -730,6 +770,10 @@ function Checkout(props) {
     //   })
     //   return false
     // }
+    if (profile.name === 'N/A') {
+      setNameFormAppear(true)
+      return false
+    }
     if (!location.deliveryAddress) {
       props.navigation.navigate('CartAddress')
       return false
@@ -935,6 +979,19 @@ function Checkout(props) {
             location: coordinates
           }
         }
+      }
+    })
+  }
+
+  const onClose = () => {
+    setNameFormAppear(false)
+  }
+
+  const handleSubmitCustomerName = () => {
+    mutateUserName({
+      variables: {
+        id: profile._id,
+        name: customerName
       }
     })
   }
@@ -1987,6 +2044,49 @@ function Checkout(props) {
           </>
         )}
 
+        <Modal
+          isVisible={nameFormAppear}
+          onBackdropPress={onClose}
+          onBackButtonPress={onClose}
+          backdropOpacity={0.4}
+          style={styleNameModal.modal}
+          swipeDirection='down'
+          onSwipeComplete={onClose}
+          useNativeDriver
+        >
+          <View style={styleNameModal.modalContent}>
+            <Text
+              style={{
+                ...styleNameModal.title,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {t('enter_your_name')}
+            </Text>
+            <TextInput
+              value={customerName}
+              onChangeText={setCustomerName}
+              placeholder={t('your_name')}
+              style={styleNameModal.input}
+              placeholderTextColor='#999'
+            />
+            <View style={styleNameModal.buttonsContainer}>
+              <TouchableOpacity
+                onPress={onClose}
+                style={styleNameModal.cancelButton}
+              >
+                <Text style={styleNameModal.cancelText}>{t('Cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSubmitCustomerName}
+                style={styleNameModal.submitButton}
+              >
+                <Text style={styleNameModal.submitText}>{t('send')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         {/* Tip Modal */}
         <Modalize
           ref={tipModalRef}
@@ -2203,5 +2303,59 @@ function Checkout(props) {
     </>
   )
 }
+
+const styleNameModal = StyleSheet.create({
+  modal: {
+    justifyContent: 'center',
+    margin: 0
+  },
+  modalContent: {
+    backgroundColor: theme?.background || '#fff',
+    padding: 20,
+    borderRadius: 16,
+    marginHorizontal: 20
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: theme?.text || '#000'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    color: theme?.text || '#000',
+    backgroundColor: theme?.inputBackground || '#f8f8f8'
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16
+  },
+  cancelButton: {
+    marginRight: 12
+  },
+  cancelText: {
+    color: '#000',
+    textAlign: 'center',
+    // backgroundColor: 'red',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+  submitButton: {
+    backgroundColor: '#28a745',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+  submitText: {
+    color: '#fff',
+    fontWeight: 'bold'
+  }
+})
 
 export default Checkout
