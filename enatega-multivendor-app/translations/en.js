@@ -702,5 +702,6 @@ export const en = {
   choose_city: 'Choose City',
   save_location: 'Save Location',
   select_city: 'Select a city',
-  confirm_address: 'Confirm address'
+  confirm_address: 'Confirm address',
+  browse_available_areas: 'Browse Available Areas'
 }

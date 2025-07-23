@@ -115,6 +115,8 @@ export default function SelectLocation(props) {
     { data: dataAreas, loading: loadingAreas, error: errorAreas }
   ] = useLazyQuery(GET_CITIES_AREAS)
 
+  console.log({ dataAreas })
+
   const areasList = dataAreas?.areasByCity || null
 
   useLayoutEffect(() => {
@@ -368,6 +370,7 @@ export default function SelectLocation(props) {
       latitude: coords.latitude
     })
   }
+
   // when press map
   const handleMapPress = (e) => {
     const newCoords = e.nativeEvent.coordinate
@@ -377,10 +380,13 @@ export default function SelectLocation(props) {
       longitude: newCoords.longitude
     })
   }
-  const onItemPress = (city) => {
+
+  console.log()
+
+  const onItemPress = () => {
     setModalVisible(false)
     console.log({ city })
-    setSelectedCity(city)
+    // setSelectedCity(city)
     fetchAreas({ variables: { id: city._id } })
     setAreasModalVisible(true)
     // navigation.navigate('AddNewAddress', {
@@ -417,6 +423,11 @@ export default function SelectLocation(props) {
   }
 
   // console.log({ selectedArea: selectedArea?.location.location })
+
+  // const handleShowAreas = () => {
+  //   setAreasModalVisible(true)
+  //   fetchAreas({ variables: { id: city._id } })
+  // }
 
   return (
     <Fragment>
@@ -585,43 +596,41 @@ export default function SelectLocation(props) {
                 {t('choose_delivery_address')}
               </TextDefault>
               <View style={styles(currentTheme).line} /> */}
-
-              {!isLoggedIn ? (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={[
-                    styles(currentTheme).solidButton,
-                    { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 0 }
-                  ]}
-                  onPress={handleSaveLocation}
-                >
-                  <View style={[styles(currentTheme).icon]}>
-                    <EvilIcons name='location' size={18} color='#fff' />
-                  </View>
-                  <TextDefault textColor={'#fff'} H5 bold>
-                    {t('confirm_address')}
-                  </TextDefault>
-                </TouchableOpacity>
-              ) : null}
-              <View style={styles(currentTheme).line} />
-
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 activeOpacity={0.7}
                 style={[
                   styles(currentTheme).solidButton,
                   { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 5 }
                 ]}
-                onPress={() => setModalVisible(true)}
+                onPress={onItemPress}
               >
                 <View style={[styles(currentTheme).icon]}>
                   <Feather name='list' size={18} color='#fff' />
                 </View>
 
                 <TextDefault textColor={'#fff'} H5 bold>
-                  {t('browse_available_cities')}
+                  {t('browse_available_areas')}
                 </TextDefault>
-              </TouchableOpacity> */}
-              {/* <View style={styles(currentTheme).line} /> */}
+              </TouchableOpacity>
+              <View style={styles(currentTheme).line} />
+              {/* {!isLoggedIn ? ( */}
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[
+                  styles(currentTheme).solidButton,
+                  { flexDirection: isArabic ? 'row-reverse' : 'row', gap: 0 }
+                ]}
+                onPress={handleSaveLocation}
+              >
+                <View style={[styles(currentTheme).icon]}>
+                  <EvilIcons name='location' size={18} color='#fff' />
+                </View>
+                <TextDefault textColor={'#fff'} H5 bold>
+                  {t('confirm_address')}
+                </TextDefault>
+              </TouchableOpacity>
+              {/* ) : null} */}
+              <View style={styles(currentTheme).line} />
             </View>
             <View style={{ paddingBottom: inset.bottom }} />
           </ScrollView>
@@ -641,7 +650,7 @@ export default function SelectLocation(props) {
         <View style={styles1.modalOverlay}>
           <View style={styles1.halfModal}>
             <Text style={styles1.modalTitle}>
-              {t('choose_area_in')} {selectedCity?.title}
+              {t('choose_area_in')} {city?.title}
             </Text>
 
             <ScrollView contentContainerStyle={styles1.scrollContainer}>
