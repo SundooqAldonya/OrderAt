@@ -431,98 +431,107 @@ export default function SelectLocation(props) {
         >
           {/* {coordinates.latitude ? ( */}
           <Fragment>
-            <MapView
-              ref={mapRef}
-              initialRegion={coordinates}
-              style={{ flex: 1 }}
-              provider={PROVIDER_GOOGLE}
-              onRegionChangeComplete={onRegionChangeComplete}
-              onPress={handleMapPress}
-              zoomEnabled
-              maxZoomLevel={50}
-              bounce
-              onMapReady={() => {
-                console.log('Map is ready')
-                setMapLoaded(true)
-              }}
-              // cacheEnabled={true}
-            />
-            <View style={styles.searchContainer}>
-              <GooglePlacesAutocomplete
-                ref={searchRef}
-                placeholder='ابحث عن مكان...'
-                onPress={(data, details = null) => {
-                  const lat = details?.geometry?.location?.lat
-                  const lng = details?.geometry?.location?.lng
+            <View style={{ flex: 1 }}>
+              <View style={styles1.searchContainer}>
+                <GooglePlacesAutocomplete
+                  ref={searchRef}
+                  placeholder='ابحث عن مكان...'
+                  onPress={(data, details = null) => {
+                    const lat = details?.geometry?.location?.lat
+                    const lng = details?.geometry?.location?.lng
 
-                  if (lat && lng) {
-                    const newLocation = { latitude: lat, longitude: lng }
-                    setLocation(newLocation)
-                    mapRef.current.animateToRegion({
-                      ...newLocation,
-                      latitudeDelta: 0.01,
-                      longitudeDelta: 0.01
-                    })
-                  }
-                }}
-                query={{
-                  key: GOOGLE_MAPS_KEY,
-                  language: 'ar',
-                  sessiontoken: sessionToken,
-                  region: 'EG',
-                  components: 'country:eg'
-                }}
-                fetchDetails={true}
-                enablePoweredByContainer={false}
-                styles={{
-                  textInputContainer: {
-                    backgroundColor: '#fff',
-                    borderRadius: 10,
-                    paddingHorizontal: 40,
-                    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
-                    elevation: 5,
-                    shadowColor: '#000',
-                    shadowOpacity: 0.2,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowRadius: 5
-                  },
-                  textInput: {
-                    height: 44,
-                    color: '#000',
-                    fontSize: 16,
-                    textAlign: 'right'
-                  }
-                }}
-              />
-            </View>
-            {!mapLoaded && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                  zIndex: 1
-                }}
-              >
-                {/* <TextDefault style={{ color: '#000' }}>
-                  Loading map...
-                </TextDefault> */}
-                <Image
-                  source={{
-                    uri: `https://maps.googleapis.com/maps/api/staticmap?center=30.033333,31.233334&zoom=10&size=600x300&maptype=roadmap%7C30.033333,31.233334&key=AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY
-`
-                  }} // use Google Static Maps API
-                  style={{ width: '100%', height: '100%' }}
-                  resizeMode='cover'
+                    if (lat && lng) {
+                      const newLocation = { latitude: lat, longitude: lng }
+                      // setLocation(newLocation)
+                      setCoordinates({ ...coordinates, ...newLocation })
+                      mapRef.current.animateToRegion({
+                        ...newLocation,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01
+                      })
+                    }
+                  }}
+                  query={{
+                    key: GOOGLE_MAPS_KEY,
+                    language: 'ar',
+                    sessiontoken: sessionToken,
+                    region: 'EG',
+                    components: 'country:eg'
+                  }}
+                  fetchDetails={true}
+                  enablePoweredByContainer={false}
+                  styles={{
+                    textInputContainer: {
+                      backgroundColor: '#fff',
+                      borderRadius: 10,
+                      paddingHorizontal: 40,
+                      paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                      elevation: 5,
+                      shadowColor: '#000',
+                      shadowOpacity: 0.2,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 5,
+                      zIndex: 999999999
+                    },
+                    textInput: {
+                      height: 44,
+                      color: '#000',
+                      fontSize: 16,
+                      textAlign: 'right'
+                    },
+                    listView: {
+                      backgroundColor: '#fff',
+                      zIndex: 9999, // crucial
+                      elevation: 10
+                    }
+                  }}
                 />
               </View>
-            )}
+              <MapView
+                ref={mapRef}
+                initialRegion={coordinates}
+                style={StyleSheet.absoluteFillObject}
+                provider={PROVIDER_GOOGLE}
+                onRegionChangeComplete={onRegionChangeComplete}
+                onPress={handleMapPress}
+                zoomEnabled
+                maxZoomLevel={50}
+                bounce
+                onMapReady={() => {
+                  console.log('Map is ready')
+                  setMapLoaded(true)
+                }}
+                // cacheEnabled={true}
+              />
 
+              {!mapLoaded && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    zIndex: 1
+                  }}
+                >
+                  {/* <TextDefault style={{ color: '#000' }}>
+                  Loading map...
+                </TextDefault> */}
+                  <Image
+                    source={{
+                      uri: `https://maps.googleapis.com/maps/api/staticmap?center=30.033333,31.233334&zoom=10&size=600x300&maptype=roadmap%7C30.033333,31.233334&key=AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY
+`
+                    }} // use Google Static Maps API
+                    style={{ width: '100%', height: '100%' }}
+                    resizeMode='cover'
+                  />
+                </View>
+              )}
+            </View>
             <View
               pointerEvents='none'
               style={{
@@ -795,5 +804,12 @@ const styles1 = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     color: '#333'
+  },
+  searchContainer: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 30,
+    left: 20,
+    right: 20,
+    zIndex: 999999999 // ensure it appears on top of the map
   }
 })
