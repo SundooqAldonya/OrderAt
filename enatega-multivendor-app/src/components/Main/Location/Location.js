@@ -21,7 +21,8 @@ function Location({
   forwardIcon = false,
   screenName
 }) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { location } = useContext(LocationContext)
@@ -64,11 +65,11 @@ function Location({
       <View style={styles(currentTheme).headerTitleContainer}>
         <View
           style={{
-            flexDirection: 'row',
+            flexDirection: isArabic ? 'row-reverse' : 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            marginLeft: scale(10),
-            gap: 5
+            marginInlineStart: scale(10),
+            gap: 8
           }}
         >
           <View
@@ -80,11 +81,19 @@ function Location({
           >
             <EvilIcons
               name='location'
-              size={scale(20)}
+              size={scale(25)}
               color={currentTheme.secondaryText}
             />
           </View>
           <View style={styles(currentTheme).headerContainer}>
+            <TextDefault
+              textColor={colors?.white}
+              left
+              bolder
+              style={{ textAlign: isArabic ? 'right' : 'left' }}
+            >
+              ({t(translatedLabel)})
+            </TextDefault>
             <View style={styles.textContainer}>
               <TextDefault
                 textColor={colors?.white}
@@ -92,15 +101,12 @@ function Location({
                 numberOfLines={1}
                 H5
                 bolder
+                style={{ textAlign: isArabic ? 'right' : 'left' }}
               >
                 {/* {translatedAddress?.slice(0, 40)}... */}
                 {translatedAddress}
               </TextDefault>
             </View>
-            <TextDefault textColor={colors?.white} left>
-              {''}
-              {t(translatedLabel)}
-            </TextDefault>
           </View>
           {forwardIcon && (
             <Feather name='chevron-right' size={20} color={colors.white} />

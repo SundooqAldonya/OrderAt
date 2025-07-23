@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { scale, verticalScale } from '../../../utils/scaling'
+import { colors } from '../../../utils/colors'
 
 const styles = (props = null) => {
   return StyleSheet.create({
@@ -10,7 +11,7 @@ const styles = (props = null) => {
       paddingBottom: scale(8)
     },
     locationIcon: {
-      backgroundColor: props != null ? props.iconBackground : '#E5E7EB',
+      backgroundColor: props != null ? props.iconBackground : colors.primary,
       width: scale(24),
       height: scale(24),
       borderRadius: scale(24),
