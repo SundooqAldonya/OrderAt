@@ -2,7 +2,9 @@ import React, { useMemo, useState } from 'react'
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -304,89 +306,107 @@ const AddNewOrder = ({ navigation }) => {
             backgroundColor: '#00000080' // darker overlay
           }}
         />
-
-        <View
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={{
             position: 'absolute',
             bottom: 0,
             width: '100%',
-            maxHeight: '70%',
-            backgroundColor: colors.green,
-            padding: 20,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: -3 },
-            shadowOpacity: 0.2,
-            shadowRadius: 6,
-            elevation: 10
+            maxHeight: '70%'
           }}>
-          <TextDefault bolder style={{ fontSize: 16, marginBottom: 16 }}>
-            أختر المنطقة
-          </TextDefault>
-          <TextInput
-            placeholder="ابحث عن المنطقة..."
-            value={search}
-            onChangeText={setSearch}
+          <View
             style={{
-              backgroundColor: '#fff',
-              borderRadius: 8,
-              paddingVertical: 10,
-              paddingHorizontal: 16,
-              fontSize: 14,
-              marginBottom: 16
-            }}
-          />
-          <ScrollView
-            contentContainerStyle={{
-              flexDirection: 'column', // vertical list
-              gap: 12
-            }}
-            showsVerticalScrollIndicator={false}>
-            {filteredAreas?.map(area => (
-              <TouchableOpacity
-                key={area._id}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                  paddingVertical: 14,
-                  paddingHorizontal: 20,
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: '#ccc',
-                  elevation: 2,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 3
-                }}
-                onPress={() => {
-                  if (selectedArea?._id === area._id) {
-                    setSelectedArea(null)
-                    setSelectedLocation(null)
-                  } else {
-                    setSelectedArea(area)
-                    setSelectedLocation(area.location.location)
-                    setAreaIsVisible(false)
-                  }
-                }}>
-                <TextDefault
+              backgroundColor: colors.green,
+              padding: 20,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: -3 },
+              shadowOpacity: 0.2,
+              shadowRadius: 6,
+              elevation: 10,
+              flex: 1
+              // position: 'absolute',
+              // bottom: 0,
+              // width: '100%',
+              // maxHeight: '70%',
+              // backgroundColor: colors.green,
+              // padding: 20,
+              // borderTopLeftRadius: 20,
+              // borderTopRightRadius: 20,
+              // shadowColor: '#000',
+              // shadowOffset: { width: 0, height: -3 },
+              // shadowOpacity: 0.2,
+              // shadowRadius: 6,
+              // elevation: 10
+            }}>
+            <TextDefault bolder style={{ fontSize: 16, marginBottom: 16 }}>
+              أختر المنطقة
+            </TextDefault>
+            <TextInput
+              placeholder="ابحث عن المنطقة..."
+              value={search}
+              onChangeText={setSearch}
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                paddingVertical: 10,
+                paddingHorizontal: 16,
+                fontSize: 14,
+                marginBottom: 16
+              }}
+            />
+            <ScrollView
+              contentContainerStyle={{
+                flexDirection: 'column', // vertical list
+                gap: 12
+              }}
+              showsVerticalScrollIndicator={false}>
+              {filteredAreas?.map(area => (
+                <TouchableOpacity
+                  key={area._id}
                   style={{
-                    color: '#000',
-                    fontSize: 16,
-                    textTransform: 'capitalize'
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    paddingVertical: 14,
+                    paddingHorizontal: 20,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    elevation: 2,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 3
+                  }}
+                  onPress={() => {
+                    if (selectedArea?._id === area._id) {
+                      setSelectedArea(null)
+                      setSelectedLocation(null)
+                    } else {
+                      setSelectedArea(area)
+                      setSelectedLocation(area.location.location)
+                      setAreaIsVisible(false)
+                    }
                   }}>
-                  {area.title}
-                </TextDefault>
-                {selectedArea?._id === area._id && (
-                  <Feather name="check" size={20} color="green" />
-                )}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+                  <TextDefault
+                    style={{
+                      color: '#000',
+                      fontSize: 16,
+                      textTransform: 'capitalize'
+                    }}>
+                    {area.title}
+                  </TextDefault>
+                  {selectedArea?._id === area._id && (
+                    <Feather name="check" size={20} color="green" />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   )
