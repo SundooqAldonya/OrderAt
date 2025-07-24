@@ -308,12 +308,8 @@ const AddNewOrder = ({ navigation }) => {
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            maxHeight: '70%'
-          }}>
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
           <View
             style={{
               backgroundColor: colors.green,
