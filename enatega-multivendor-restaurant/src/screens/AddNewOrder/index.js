@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Alert,
   Image,
@@ -23,10 +23,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
   getCityAreas,
   getDeliveryCalculation,
+  getRestaurantCity,
   muteRingOrder,
   newCheckoutPlaceOrder
 } from '../../apollo'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { useSelector } from 'react-redux'
 import OverlayCreateOrder from '../../components/Overlay/OverlayCreateOrder'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -63,12 +64,8 @@ const AddNewOrder = ({ navigation }) => {
   const { data: restaurantData } = useAccount()
   const { currencySymbol } = useContext(Configuration.Context)
 
-  const { cityId } = useSelector(state => state.city)
-  console.log({ cityId })
-
   const [mutateCreateOrder] = useMutation(newCheckoutPlaceOrder, {
     onCompleted: data => {
-      console.log({ data })
       acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
       muteRing(data.newCheckoutPlaceOrder.orderId)
       navigation.navigate('Orders')
@@ -82,18 +79,16 @@ const AddNewOrder = ({ navigation }) => {
     }
   })
 
-  const {
-    data: dataAreas,
-    loading: loadingAreas,
-    error: errorAreas
-  } = useQuery(GET_CITY_AREAS, {
-    skip: !cityId,
-    variables: { id: cityId }
-  })
+  const [
+    fetchAreas,
+    { data: dataAreas, loading: loadingAreas, error: errorAreas }
+  ] = useLazyQuery(GET_CITY_AREAS)
 
-  // console.log({ dataAreas: dataAreas?.areasByCity[0].location.location })
-
-  console.log({ selectedLocation })
+  useEffect(() => {
+    if (restaurantData?.restaurant) {
+      fetchAreas({ variables: { id: restaurantData?.restaurant?.city?._id } })
+    }
+  }, [restaurantData])
 
   // const addressInfo = null
   const shouldSkip =
@@ -121,13 +116,9 @@ const AddNewOrder = ({ navigation }) => {
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || null
 
-  console.log({ deliveryFee })
-
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible)
   }
-
-  console.log({ selectedArea })
 
   const handleOrderSubmit = async () => {
     if (!userData.phone) {
@@ -363,6 +354,7 @@ const AddNewOrder = ({ navigation }) => {
                 gap: 12
               }}
               showsVerticalScrollIndicator={false}>
+              {loadingAreas ? <TextDefault>Loading....</TextDefault> : null}
               {filteredAreas?.map(area => (
                 <TouchableOpacity
                   key={area._id}

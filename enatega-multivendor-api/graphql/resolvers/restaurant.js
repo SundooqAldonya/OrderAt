@@ -1057,7 +1057,7 @@ module.exports = {
       console.log('restaurantLogin', args)
       try {
         const restaurant = await Restaurant.findOne({
-          username: args.username,
+          username: args.username.replace(' ', ''),
           password: args.password
         })
         if (!restaurant) throw new Error('Invalid credentials')

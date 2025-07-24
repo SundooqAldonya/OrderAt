@@ -122,6 +122,9 @@ export const restaurantInfo = `query Restaurant($id:String){
     _id
     name
   }
+  city {
+    _id
+  }
 }}
 `
 export const defaultRestaurantCreds = `query LastOrderCreds {
@@ -171,6 +174,14 @@ export const getDeliveryCalculation = gql`
       destLat: $destLat
     ) {
       amount
+    }
+  }
+`
+
+export const getRestaurantCity = gql`
+  query GetRestaurantCity($id: String!) {
+    getRestaurantCity(id: $id) {
+      _id
     }
   }
 `
