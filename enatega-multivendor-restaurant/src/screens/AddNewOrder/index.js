@@ -177,7 +177,12 @@ const AddNewOrder = ({ navigation }) => {
       <Image
         source={require('../../assets/orders.png')}
         resizeMode="center"
-        style={{ height: scale(100), width: scale(200), alignSelf: 'center' }}
+        style={{
+          height: scale(100),
+          width: scale(200),
+          alignSelf: 'center',
+          marginTop: -30
+        }}
       />
 
       <View style={{ flex: 1 }}>
@@ -186,9 +191,9 @@ const AddNewOrder = ({ navigation }) => {
             H5
             bold
             style={{
-              marginHorizontal: 10,
               textAlign: 'center',
-              marginHorizontal: scale(30)
+              marginHorizontal: scale(30),
+              marginVertical: 10
             }}
             textColor={'#000'}>
             {t('saveuserdetailsandcontinuetocompletetheorder')}
