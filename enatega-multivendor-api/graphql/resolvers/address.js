@@ -123,6 +123,24 @@ module.exports = {
       } catch (e) {
         throw e
       }
+    },
+    async bulkAddUserAddresses(_, args) {
+      console.log('bulkAddUserAddresses', { args })
+      console.log({ addresses: args.addresses })
+      try {
+        const user = await User.findById(args.userId)
+        if (!user) throw new Error('User not found')
+
+        // Push addresses
+        for (const address of args.addresses) {
+          user.addresses.push(address)
+        }
+
+        await user.save()
+        return { message: 'addresses_saved' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

@@ -1999,7 +1999,21 @@ const typeDefs = gql`
 
   union CancelledBy = User | Owner | Restaurant
 
+  input LocationInputAddress {
+    type: String!
+    coordinates: [Float!]!
+  }
+
+  input AddressInput {
+    deliveryAddress: String
+    details: String
+    label: String
+    isActive: Boolean
+    location: LocationInputAddress!
+  }
+
   type Mutation {
+    bulkAddUserAddresses(userId: String!, addresses: [AddressInput!]!): Message
     updateUserName(id: String!, name: String!): Message
     makeRestaurantVisible(id: String!): Message
     createBusinessMenu(file: Upload, restaurantId: String!): Message

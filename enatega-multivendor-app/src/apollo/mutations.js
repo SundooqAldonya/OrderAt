@@ -532,3 +532,13 @@ export const updateUserName = gql`
     }
   }
 `
+export const bulkAddUserAddresses = gql`
+  mutation BulkAddUserAddresses(
+    $userId: String!
+    $addresses: [AddressInput!]!
+  ) {
+    bulkAddUserAddresses(userId: $userId, addresses: $addresses) {
+      message
+    }
+  }
+`

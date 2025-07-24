@@ -699,5 +699,6 @@ export const ar = {
   required: 'مطلوب *',
   enter_your_name: 'قم بإدخال اسمك',
   your_name: 'اسمك',
-  name_updated: 'تم تحديث اسمك بنجاح!'
+  name_updated: 'تم تحديث اسمك بنجاح!',
+  addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة'
 }

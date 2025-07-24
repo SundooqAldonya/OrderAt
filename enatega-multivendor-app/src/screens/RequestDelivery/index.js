@@ -29,6 +29,7 @@ import ToIcon from '../../assets/delivery_to.png'
 import {
   applyCoupon,
   applyCouponMandoob,
+  bulkAddUserAddresses,
   createDeliveryRequest,
   updateUserName
 } from '../../apollo/mutations'
@@ -186,6 +187,28 @@ const RequestDelivery = () => {
     return () => clearTimeout(timer)
   }, [addressInfo, city, regionFrom, regionTo])
 
+  const [mutateBulkAddress] = useMutation(bulkAddUserAddresses, {
+    onCompleted: (res) => {
+      // Toast.show({
+      //   type: 'success',
+      //   text1: t('success'),
+      //   text2: t(res.bulkAddUserAddresses.message),
+      //   text1Style: {
+      //     textAlign: isArabic ? 'right' : 'left'
+      //   },
+      //   text2Style: {
+      //     textAlign: isArabic ? 'right' : 'left'
+      //   }
+      // })
+      FlashMessage({
+        message: t(res.bulkAddUserAddresses.message),
+        duration: 5000
+      })
+      dispatch(resetRequestDelivery())
+      refetchProfile()
+    }
+  })
+
   const [mutate] = useMutation(createDeliveryRequest, {
     refetchQueries: [{ query: ORDERS }],
     onCompleted: (res) => {
@@ -201,7 +224,34 @@ const RequestDelivery = () => {
           textAlign: isArabic ? 'right' : 'left'
         }
       })
-      dispatch(resetRequestDelivery())
+      const from = {
+        deliveryAddress: addressInfo.addressFrom,
+        details: addressInfo.addressFreeTextFrom,
+        label: addressInfo.labelFrom,
+        isActive: true,
+        location: {
+          type: 'Point',
+          coordinates: [regionFrom.longitude, regionFrom.latitude]
+        }
+      }
+      const to = {
+        deliveryAddress: addressInfo.addressTo,
+        details: addressInfo.addressFreeTextTo,
+        label: addressInfo.labelTo,
+        isActive: true,
+        location: {
+          type: 'Point',
+          coordinates: [regionTo.longitude, regionTo.latitude]
+        }
+      }
+      const addresses = [from, to]
+      mutateBulkAddress({
+        variables: {
+          userId: profile._id,
+          addresses
+        }
+      })
+      // dispatch(resetRequestDelivery())
       navigation.navigate('Main')
     },
     onError: (err) => {
@@ -380,8 +430,6 @@ const RequestDelivery = () => {
 
   const handleApplyCoupon = () => {
     const coordinates = {
-      // latitude: location.latitude,
-      // longitude: location.longitude
       latitude: +location.latitude,
       longitude: +location.longitude
     }
@@ -421,7 +469,6 @@ const RequestDelivery = () => {
         keyboardShouldPersistTaps='handled'
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        {/* {addressInfo.regionFrom ? ( */}
         {regionFrom && regionTo ? (
           <View>
             <MapView
@@ -486,18 +533,7 @@ const RequestDelivery = () => {
             </MapView>
           </View>
         ) : null}
-        {/* ) : null} */}
         <View style={styles.wrapper}>
-          {/* <View style={styles.inputContainer}> */}
-          {/* <TextDefault
-            bolder
-            style={{
-              ...styles.title,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            {t('pick_up_location')}
-          </TextDefault> */}
           <TouchableOpacity
             onPress={() => navigation.navigate('NewPickupMandoob')}
             style={[styles.addressCard]}

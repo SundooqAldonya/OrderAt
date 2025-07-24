@@ -710,5 +710,6 @@ export const en = {
   required: 'Required *',
   enter_your_name: 'Enter your name',
   your_name: 'Your name',
-  name_updated: 'Your name updated successfully!'
+  name_updated: 'Your name updated successfully!',
+  addresses_saved: 'Your addresses are saved!'
 }
