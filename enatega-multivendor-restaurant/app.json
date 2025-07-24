@@ -2,7 +2,7 @@
   "expo": {
     "name": "Orderat Business",
     "slug": "enatega-restaurant-app-latest",
-    "version": "1.0.72",
+    "version": "1.0.73",
     "orientation": "portrait",
     "icon": "./assets/logo_2.png",
     "splash": {
@@ -12,11 +12,15 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "buildNumber": "5",
       "supportsTablet": true,
       "bundleIdentifier": "com.orderatbusiness.app",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
-      }
+        "UIBackgroundModes": ["remote-notification", "remote-notification"],
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to printer."
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "versionCode": 67,
@@ -45,6 +49,8 @@
           "sounds": ["./assets/beep1.wav"]
         }
       ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
       "expo-localization",
       "expo-secure-store",
       "sentry-expo",
@@ -58,6 +64,9 @@
             "manifestApplication": {
               "usesCleartextTraffic": true
             }
+          },
+          "ios": {
+            "useFrameworks": "static"
           }
         }
       ]
