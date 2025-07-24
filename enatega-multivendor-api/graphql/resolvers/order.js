@@ -579,7 +579,7 @@ module.exports = {
           phone: normalizeAndValidatePhoneNumber(phone)
         })
         // console.log({ user })
-        if (user && !user.name) {
+        if (user && !user.name && name) {
           user.name = name
           await user.save()
         }
@@ -611,7 +611,8 @@ module.exports = {
             emailIsVerified: true,
             phoneIsVerified: false,
             isActive: true,
-            area: area || null
+            area: area || null,
+            firstTimeLogin: true
           })
           await user.save()
         }

@@ -34,7 +34,7 @@ import {
   restaurantList,
   restaurantListPreview
 } from '../../apollo/queries'
-import { selectAddress } from '../../apollo/mutations'
+import { createAddress, selectAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import styles from './styles'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
@@ -73,6 +73,11 @@ const RESTAURANTS = gql`
 const SELECT_ADDRESS = gql`
   ${selectAddress}
 `
+
+const CREATE_ADDRESS = gql`
+  ${createAddress}
+`
+
 function Main(props) {
   const Analytics = analytics()
 
@@ -196,6 +201,7 @@ function Main(props) {
     }
     Track()
   }, [])
+
   useLayoutEffect(() => {
     navigation.setOptions(
       navigationOptions({
@@ -207,6 +213,8 @@ function Main(props) {
       })
     )
   }, [navigation, currentTheme])
+
+  console.log({ profile })
 
   const onOpen = () => {
     setIsVisible(true)
@@ -233,17 +241,37 @@ function Main(props) {
     scrollIndicatorInsetTop /* number */
   } = useCollapsibleSubHeader()
 
+  // const [mutateCreateAddress] = useMutation(CREATE_ADDRESS, {
+  //   onCompleted: (data) => {
+  //     console.log({ data })
+  //     refetchProfile()
+  //     dispatch(resetAddNewAddress())
+  //     navigation.navigate('Main')
+  //   },
+  //   onError: (err) => {
+  //     console.log({ err })
+  //   }
+  // })
+
+  // useEffect(() => {
+  //   if (profile?.firstTimeLogin) {
+  //     saveFirstLoginAddress()
+  //   }
+  // }, [])
+
+  // const saveFirstLoginAddress = () => {
+  //   const addressInput = {
+  //     _id: '',
+  //     label: location.label,
+  //     latitude: String(location.latitude),
+  //     longitude: String(location.longitude),
+  //     deliveryAddress: location.deliveryAddress,
+  //     details: location.details
+  //   }
+  //   mutateCreateAddress({ variables: { addressInput } })
+  // }
+
   const setAddressLocation = async (address) => {
-    // setLocation({
-    //   _id: address._id,
-    //   label: address.label,
-    //   latitude: Number(address.location.coordinates[1]),
-    //   longitude: Number(address.location.coordinates[0]),
-    //   deliveryAddress: address.deliveryAddress,
-    //   details: address.details
-    // })
-    // mutate({ variables: { id: address._id } })
-    // modalRef.current.close()
     console.log('Selected address:', address)
 
     // Optional: show loading or disable button
@@ -262,14 +290,8 @@ function Main(props) {
 
       // Trigger any side-effects if needed (optional)
       await mutate({ variables: { id: address._id } })
-
-      // Delay modal close after updates
-      // requestAnimationFrame(() => {
-      //   modalRef.current?.close()
-      // })
     } catch (error) {
       console.error('Address select failed:', error)
-      // Optional: show error message
     }
   }
   // async function getAddress(lat, lon) {
@@ -477,6 +499,10 @@ function Main(props) {
     return restaurants.filter((restaurant) => regex.test(restaurant.name))
   }
 
+  const onModalClose = () => {
+    setIsVisible(false)
+  }
+
   if (error)
     return (
       <ErrorView
@@ -490,12 +516,23 @@ function Main(props) {
       <ErrorView
         wentWrong={t('somethingWentWrong')}
         message={t('city_location_no_deliveryzone')}
-      />
+      >
+        <MainModalize
+          isVisible={isVisible}
+          // currentTheme={currentTheme}
+          isLoggedIn={isLoggedIn}
+          addressIcons={addressIcons}
+          modalHeader={modalHeader}
+          modalFooter={modalFooter}
+          setAddressLocation={setAddressLocation}
+          profile={profile}
+          location={location}
+          loading={loadingAddress}
+          onClose={onModalClose}
+          otlobMandoob={false}
+        />
+      </ErrorView>
     )
-
-  const onModalClose = () => {
-    setIsVisible(false)
-  }
 
   return (
     <>

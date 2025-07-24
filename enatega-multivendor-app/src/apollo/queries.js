@@ -288,29 +288,30 @@ export const restaurantPreviewFragment = gql`
   }
 `
 export const profile = `
-        query{
-          profile{
-            _id
-            name
-            phone
-            phoneIsVerified
-            email
-            emailIsVerified
-            notificationToken
-            isActive
-            isOrderNotification
-            isOfferNotification
-            addresses{
-              _id
-              label
-              deliveryAddress
-              details
-              location{coordinates}
-              selected
-            }
-            favourite
-          }
-        }`
+  query{
+    profile{
+      _id
+      name
+      phone
+      phoneIsVerified
+      email
+      emailIsVerified
+      notificationToken
+      isActive
+      isOrderNotification
+      isOfferNotification
+      addresses{
+        _id
+        label
+        deliveryAddress
+        details
+        location{coordinates}
+        selected
+      }
+      favourite
+      firstTimeLogin
+    }
+  }`
 
 export const cities = `query GetCountryByIso($iso: String!) {
   getCountryByIso(iso: $iso) {

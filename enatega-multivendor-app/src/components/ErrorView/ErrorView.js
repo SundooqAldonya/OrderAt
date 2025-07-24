@@ -9,7 +9,7 @@ import styles from './styles'
 import { useTranslation } from 'react-i18next'
 import ErrorSvg from '../../assets/SVG/error'
 
-const ErrorView = ({ wentWrong, message }) => {
+const ErrorView = ({ wentWrong, message, children }) => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { t } = useTranslation()
@@ -23,6 +23,7 @@ const ErrorView = ({ wentWrong, message }) => {
       <TextDefault center H4 textColor={'#000'}>
         {message}
       </TextDefault>
+      {children ? children : null}
     </View>
   )
 }
