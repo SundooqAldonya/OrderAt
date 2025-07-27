@@ -326,6 +326,7 @@ module.exports = {
         const rider = await Rider.findOne({ token: args.token })
         rider.isOnline = false
         rider.token = null
+        rider.notificationToken = null
         await rider.save()
         return { message: 'Rider logged out' }
       } catch (err) {
