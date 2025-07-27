@@ -50,7 +50,7 @@ import RNRestart from 'react-native-restart'
 import { restaurantLogout } from './src/apollo'
 import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
-import { NetPrinter } from 'react-native-thermal-receipt-printer-image-qr'
+import NetInfo from '@react-native-community/netinfo'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -61,6 +61,8 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 
 export default function App() {
   useKeepAwake()
+  const [isConnected, setIsConnected] = useState(true)
+
   // const [isAppReady, setIsAppReady] = useState(false)
   // const { isAppReady } = useContext(AuthContext)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -126,6 +128,14 @@ export default function App() {
     }
 
     reconnectLastPrinter()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected && state.isInternetReachable !== false)
+    })
+
+    return () => unsubscribe()
   }, [])
 
   const [fontLoaded] = useFonts({
