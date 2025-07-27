@@ -95,7 +95,7 @@ function Rider({ rider, onClose }) {
     loading: loadingCities,
     error: errorCities
   } = useQuery(GET_CITIES)
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
 
   const onCompleted = data => {
     if (!rider) clearFields()

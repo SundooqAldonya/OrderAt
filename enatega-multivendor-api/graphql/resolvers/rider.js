@@ -221,11 +221,11 @@ module.exports = {
     async getRidersLocation(_, args) {
       console.log('getRidersLocation', { args })
       try {
-        const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000)
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
         const match = {
-          available: true,
-          lastUpdatedLocationDate: { $gte: ONE_HOUR_AGO }
+          available: true
+          // lastUpdatedLocationDate: { $gte: twentyFourHoursAgo }
         }
 
         if (args.cityId) {

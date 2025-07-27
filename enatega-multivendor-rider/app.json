@@ -54,7 +54,6 @@
       }
     },
     "android": {
-      "versionCode": 42,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "ACCESS_COARSE_LOCATION",

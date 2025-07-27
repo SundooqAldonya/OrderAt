@@ -17,7 +17,8 @@
       }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "autoIncrement": true
     }
   },
   "submit": {
@@ -34,6 +35,6 @@
     }
   },
   "cli": {
-    "version": ">= 0.43.0"
+    "appVersionSource": "remote"
   }
 }

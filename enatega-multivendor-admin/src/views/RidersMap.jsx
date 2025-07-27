@@ -51,7 +51,7 @@ const RidersMap = () => {
   } = useQuery(GET_CITIES)
 
   const riders = data?.getRidersLocation || null
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
 
   console.log({ dataCities })
 
