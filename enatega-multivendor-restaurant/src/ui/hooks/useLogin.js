@@ -6,9 +6,11 @@ import { validateLogin } from '../validate'
 import { AuthContext } from '../context'
 import { useDispatch } from 'react-redux'
 import { setCity } from '../../../store/citySlice'
+import { useTranslation } from 'react-i18next'
 
 export default function useLogin() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const [errors, setErrors] = useState()
   const { login } = useContext(AuthContext)
   const [username, setUserName] = useState('')
@@ -66,7 +68,15 @@ export default function useLogin() {
 
   function onError(error) {
     console.log('error', error)
-    FlashMessage({ message: error ? 'Server Error' : 'Server Error' })
+    console.log(
+      'includes wrong_credentials',
+      error.message.includes('wrong_credentials')
+    )
+    if (error.message.includes('wrong_credentials')) {
+      FlashMessage({ message: t('wrong_credentials') })
+    } else {
+      FlashMessage({ message: 'Server Error' })
+    }
   }
 
   const isValid = async () => {

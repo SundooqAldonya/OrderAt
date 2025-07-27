@@ -106,5 +106,6 @@ export const ar = {
   city: 'المدينة',
   distance: 'المسافة',
   delivery_fee: 'سعر التوصيل',
-  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا'
+  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا',
+  wrong_credentials: 'اسم المستخدم أو كلمة المرور غير صحيحة'
 }

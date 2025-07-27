@@ -105,5 +105,6 @@ export const en = {
   city: 'City',
   distance: 'Distance',
   delivery_fee: 'Delivery Fee',
-  eleven_digits_number: 'Should not exceed 11 digits'
+  eleven_digits_number: 'Should not exceed 11 digits',
+  wrong_credentials: 'Username or password is incorrect'
 }

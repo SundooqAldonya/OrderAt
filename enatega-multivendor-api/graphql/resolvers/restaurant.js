@@ -1060,7 +1060,7 @@ module.exports = {
           username: args.username.replace(' ', ''),
           password: args.password
         })
-        if (!restaurant) throw new Error('Invalid credentials')
+        if (!restaurant) throw new Error('wrong_credentials')
         const token = jwt.sign(
           { restaurantId: restaurant._id },
           process.env.SECRETKEY
