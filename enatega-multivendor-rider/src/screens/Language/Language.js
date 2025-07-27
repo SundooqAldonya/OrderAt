@@ -56,8 +56,8 @@ function Language() {
     i18next.changeLanguage(lang)
     console.log(lang)
     if (Platform.OS === 'android') {
-      const localization = await Localization.getLocalizationAsync()
-      localization.locale = languageTypes[languageInd].code
+      // const localization = await Localization.getLocalizationAsync()
+      // localization.locale = languageTypes[languageInd].code
       await AsyncStorage.setItem(
         'enatega-language',
         languageTypes[languageInd].code

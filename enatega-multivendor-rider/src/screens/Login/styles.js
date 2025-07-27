@@ -45,37 +45,47 @@ export default {
     marginBottom: 50
   },
   textInput: {
-    width: '80%',
+    width: '90%',
     alignSelf: 'center',
-    padding: 15,
-    backgroundColor: colors.borderColor,
-    borderColor: "#66666610",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: colors.backgroundGray || '#F9F9F9',
+    borderColor: '#CCC',
     borderWidth: 1,
-    borderRadius: 10,
-    shadowColor: colors.fontSecondColor,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 4,
+    borderRadius: 12,
+
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+
+    // Android elevation
+    elevation: 2,
+
+    fontSize: 16,
+    color: colors.textPrimary || '#000',
+
+    // marginTop or external spacing
     ...alignment.MTlarge
   },
   passwordField: {
-    display: 'flex',
     flexDirection: 'row',
-    width: '100%',
-    marginLeft: '10%'
+    alignItems: 'center',
+    width: '90%',
+    marginTop: 12,
+    alignSelf: 'center'
+  },
+  passwordInput: {
+    flex: 1,
+    paddingRight: 40
   },
   eyeBtn: {
-    position: 'relative',
-    display: 'flex',
-    zIndex: 1,
-    elevation: 999,
-    marginTop: Platform.OS === 'ios' ? 33 : 40,
-    marginLeft: -40,
-    color: colors.primary
+    position: 'absolute',
+    right: 10,
+    top: Platform.OS === 'ios' ? 20 : 30, // adjust based on your TextInput padding
+    color: colors.primary,
+    padding: 5
   },
   btn: {
     width: '70%',

@@ -5,7 +5,9 @@ import {
   StatusBar,
   StyleSheet,
   LogBox,
-  I18nManager
+  I18nManager,
+  Alert,
+  BackHandler
 } from 'react-native'
 import * as Font from 'expo-font'
 import { ApolloProvider } from '@apollo/client'
