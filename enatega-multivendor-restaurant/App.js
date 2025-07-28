@@ -51,6 +51,7 @@ import { restaurantLogout } from './src/apollo'
 import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
+import NoInternetConnection from './src/components/NoInternetConnection'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -144,6 +145,10 @@ export default function App() {
     MuseoSans700: require('./assets/font/MuseoSans/MuseoSans700.ttf')
   })
 
+  // if (!isConnected) {
+  //   return <NoInternetConnection />
+  // }
+
   if (isUpdating) {
     return (
       <View
@@ -169,6 +174,7 @@ export default function App() {
             <Configuration.Provider>
               <AuthProvider>
                 <SafeAreaProvider>
+                  {!isConnected && <NoInternetConnection />}
                   <AppContainer />
                 </SafeAreaProvider>
               </AuthProvider>

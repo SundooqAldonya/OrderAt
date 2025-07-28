@@ -1,25 +1,23 @@
 // App.js
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, StyleSheet, StatusBar } from 'react-native'
+import { colors } from '../../utilities'
 
-export default function App() {
+export default function NoInternetConnection() {
+  const { t } = useTranslation()
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar barStyle="light-content" />
-
-      {/* {!isConnected && ( */}
+    <View>
       <View style={styles.banner}>
-        <Text style={styles.bannerText}>No Internet Connection</Text>
+        <Text style={styles.bannerText}>{t('no_internet')}</Text>
       </View>
-      {/* )} */}
-
-      {/* Your main app content */}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   banner: {
+    // marginTop: 20,
     backgroundColor: '#ff4d4d',
     paddingVertical: 8,
     paddingHorizontal: 16,
