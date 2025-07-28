@@ -1630,8 +1630,8 @@ const typeDefs = gql`
       destLong: Float!
       destLat: Float!
       code: String
-      restaurantId: String
-    ): Amount
+    ): # restaurantId: String
+    Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]
