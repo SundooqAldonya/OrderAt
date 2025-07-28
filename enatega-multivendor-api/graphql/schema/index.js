@@ -1456,6 +1456,7 @@ const typeDefs = gql`
   type Amount {
     amount: Float
     originalDiscount: Float
+    isPrepaid: Boolean
   }
 
   type Image {
@@ -1581,7 +1582,22 @@ const typeDefs = gql`
 
   union RecipientItem = User | Rider | Restaurant
 
+  type PrepaidDeliveryPackage {
+    _id: String!
+    business: Restaurant
+    totalDeliveries: Int!
+    usedDeliveries: Int!
+    price: Float!
+    isActive: Boolean!
+    expiresAt: String
+    createdBy: String
+    createdAt: String
+    updatedAt: String
+    remainingDeliveries: Int
+  }
+
   type Query {
+    getPrepaidDeliveryPackages: [PrepaidDeliveryPackage!]
     checkDeliveryZone(latitude: Float!, longitude: Float!): Message
     getAllNotifications(page: Int, limit: Int): PaginatedNotification
     getAllContactus(page: Int, limit: Int): PaginatedContactus
@@ -1614,6 +1630,7 @@ const typeDefs = gql`
       destLong: Float!
       destLat: Float!
       code: String
+      restaurantId: String
     ): Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
@@ -2012,7 +2029,23 @@ const typeDefs = gql`
     location: LocationInputAddress!
   }
 
+  input PrepaidDeliveryPackageInput {
+    business: String!
+    totalDeliveries: Int!
+    usedDeliveries: Int
+    price: Float!
+    isActive: Boolean
+    expiresAt: String
+    # createdBy: String
+  }
+
   type Mutation {
+    removePrepaidDeliveryPackage(id: String!): Message
+    updatePrepaidDeliveryPackage(
+      id: String!
+      input: PrepaidDeliveryPackageInput!
+    ): Message
+    createPrepaidDeliveryPackage(input: PrepaidDeliveryPackageInput!): Message
     bulkAddUserAddresses(userId: String!, addresses: [AddressInput!]!): Message
     updateUserName(id: String!, name: String!): Message
     makeRestaurantVisible(id: String!): Message

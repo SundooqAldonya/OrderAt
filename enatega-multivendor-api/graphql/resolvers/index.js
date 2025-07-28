@@ -41,6 +41,7 @@ const stock = require('./stock')
 const contactus = require('./contactus')
 const notifications = require('./notifications')
 const xlsx = require('./xlsx')
+const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
 
 const rootResolver = {
   Query: {
@@ -81,7 +82,8 @@ const rootResolver = {
     ...stock.Query,
     ...contactus.Query,
     ...notifications.Query,
-    ...xlsx.Query
+    ...xlsx.Query,
+    ...prepaidDeliveryPackage.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -124,7 +126,8 @@ const rootResolver = {
     ...stock.Mutation,
     ...contactus.Mutation,
     ...notifications.Mutation,
-    ...xlsx.Mutation
+    ...xlsx.Mutation,
+    ...prepaidDeliveryPackage.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

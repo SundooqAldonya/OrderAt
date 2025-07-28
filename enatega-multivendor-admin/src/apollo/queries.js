@@ -1363,3 +1363,24 @@ export const getDeliveryCalculation = gql`
     }
   }
 `
+
+export const getPrepaidDeliveryPackages = gql`
+  query GetPrepaidDeliveryPackages {
+    getPrepaidDeliveryPackages {
+      _id
+      business {
+        _id
+        name
+      }
+      totalDeliveries
+      usedDeliveries
+      remainingDeliveries
+      price
+      isActive
+      expiresAt
+      createdBy
+      createdAt
+      updatedAt
+    }
+  }
+`

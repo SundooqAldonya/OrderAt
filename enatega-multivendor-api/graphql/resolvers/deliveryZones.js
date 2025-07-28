@@ -6,6 +6,7 @@ const Configuration = require('../../models/configuration')
 const Coupon = require('../../models/coupon')
 const DeliveryPrice = require('../../models/DeliveryPrice')
 const DeliveryZone = require('../../models/deliveryZone')
+const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
 
 module.exports = {
   Query: {
@@ -22,9 +23,36 @@ module.exports = {
     async getDeliveryCalculation(_, args) {
       console.log({ deliveryCalcArgs: args })
       try {
-        const { originLong, originLat, destLong, destLat, code } = args
-        // get zone charges from delivery prices
+        const {
+          originLong,
+          originLat,
+          destLong,
+          destLat,
+          code,
+          restaurantId
+        } = args
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        // let isPrepaid = false
+        // if (restaurantId) {
+        //   const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+        //     business: restaurantId,
+        //     isActive: true,
+        //     expiresAt: { $gte: new Date() },
+        //     $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+        //   })
 
+        //   if (prepaidPackage) {
+        //     isPrepaid = true
+        //     console.log('✅ Prepaid package found. Delivery is free.')
+        //     return {
+        //       amount: 0,
+        //       originalDiscount: amount,
+        //       isPrepaid: true
+        //     }
+        //   }
+        // }
+
+        // get zone charges from delivery prices
         const distance = calculateDistance(
           originLat,
           originLong,

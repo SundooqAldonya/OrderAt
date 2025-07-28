@@ -1012,3 +1012,28 @@ export const makeRestaurantVisible = gql`
     }
   }
 `
+
+export const createPrepaidDeliveryPackage = gql`
+  mutation CreatePrepaidDeliveryPackage($input: PrepaidDeliveryPackageInput!) {
+    createPrepaidDeliveryPackage(input: $input) {
+      message
+    }
+  }
+`
+export const updatePrepaidDeliveryPackage = gql`
+  mutation UpdatePrepaidDeliveryPackage(
+    $id: String!
+    $input: PrepaidDeliveryPackageInput!
+  ) {
+    updatePrepaidDeliveryPackage(id: $id, input: $input) {
+      message
+    }
+  }
+`
+export const removePrepaidDeliveryPackage = gql`
+  mutation RemovePrepaidDeliveryPackage($id: String!) {
+    removePrepaidDeliveryPackage(id: $id) {
+      message
+    }
+  }
+`

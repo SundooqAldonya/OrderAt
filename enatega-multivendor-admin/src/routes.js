@@ -55,6 +55,7 @@ import { ReactComponent as RestaurantSectionIcon } from './assets/svg/restSectio
 import TravelExploreIcon from '@mui/icons-material/TravelExplore'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact'
 import SuperAdminDashboard from './views/SuperAdminDashboard'
 import Cuisines from './views/Cuisines'
 import Banners from './views/Banners'
@@ -73,6 +74,7 @@ import RidersMap from './views/RidersMap'
 import ContactUs from './views/Contactus'
 import NotificationsScreen from './views/NotificationsScreen'
 import OtlobMandoob from './views/OtlobMandoob'
+import PrepaidDeliveryPackages from './views/PrepaidDeliveryPackages'
 
 var routes = [
   {
@@ -170,6 +172,15 @@ var routes = [
     name: 'Contact us',
     icon: CouponsIcon,
     component: ContactUs,
+    layout: '/super_admin',
+    appearInSidebar: true,
+    admin: true
+  },
+  {
+    path: '/delivery-packages',
+    name: 'Delivery Packages',
+    icon: ConnectWithoutContactIcon,
+    component: PrepaidDeliveryPackages,
     layout: '/super_admin',
     appearInSidebar: true,
     admin: true
