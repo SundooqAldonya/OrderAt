@@ -57,6 +57,7 @@ const {
 const dateScalar = require('../../helpers/dateScalar')
 const Variation = require('../../models/variation')
 const { GraphQLError } = require('graphql')
+const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -428,134 +429,136 @@ module.exports = {
         // variation: items[0].variation,
         // addons: items[0].addons
       })
-      // try {
-      let originalSubtotal = 0
-      let originalTotal = 0
-      let subtotal = 0
-      let deliveryDiscount = 0
-      let finalDeliveryCharges = args.isPickedUp ? 0 : deliveryCharges
-      let subtotalDiscount = 0
+      try {
+        let originalSubtotal = 0
+        let originalTotal = 0
+        let subtotal = 0
+        let deliveryDiscount = 0
+        let finalDeliveryCharges = args.isPickedUp ? 0 : deliveryCharges
+        let subtotalDiscount = 0
 
-      const food = await Food.find({ _id: { $in: [...items] } })
-      console.log({ food })
+        const food = await Food.find({ _id: { $in: [...items] } })
+        console.log({ food })
 
-      let coupon = null
-      if (code) {
-        coupon = await Coupon.findOne({ code }).lean()
-      }
+        let coupon = null
+        if (code) {
+          coupon = await Coupon.findOne({ code }).lean()
+        }
 
-      for (const item of items) {
-        const quantity = item.quantity || 1
-        const variation = await Variation.findById(item.variation._id).lean()
-        if (!variation) continue
+        for (const item of items) {
+          const quantity = item.quantity || 1
+          const variation = await Variation.findById(item.variation._id).lean()
+          if (!variation) continue
 
-        let originalPrice = variation.price || 0
-        originalSubtotal += variation.price
-        // Add add-on prices
-        if (item.addons?.length > 0) {
-          for (const addon of item.addons) {
-            for (const optionSingle of addon.options) {
-              const option = await Option.findById(optionSingle._id)
-              console.log({ option })
-              originalPrice += option?.price || 0
-              originalSubtotal += option?.price || 0
+          let originalPrice = variation.price || 0
+          originalSubtotal += variation.price
+          // Add add-on prices
+          if (item.addons?.length > 0) {
+            for (const addon of item.addons) {
+              for (const optionSingle of addon.options) {
+                const option = await Option.findById(optionSingle._id)
+                console.log({ option })
+                originalPrice += option?.price || 0
+                originalSubtotal += option?.price || 0
+              }
             }
           }
+          originalSubtotal *= quantity
+          console.log({ originalSubtotal })
+          let discountedPrice = originalPrice
+
+          // Apply item-level discount
+          const isItemEligible =
+            coupon?.rules?.applies_to?.includes('items') &&
+            coupon?.target?.foods?.some(
+              f => f.toString() === item._id.toString()
+            )
+
+          if (coupon && isItemEligible) {
+            const {
+              discount_type,
+              discount_value,
+              max_discount = 0
+            } = coupon.rules
+            if (discount_type === 'percent') {
+              const discount = (discount_value / 100) * originalPrice
+              const appliedDiscount =
+                max_discount > 0 ? Math.min(discount, max_discount) : discount
+              subtotalDiscount = appliedDiscount
+              discountedPrice = originalPrice - appliedDiscount
+            } else if (discount_type === 'flat') {
+              const appliedDiscount =
+                max_discount > 0
+                  ? Math.min(discount_value, max_discount)
+                  : discount_value
+              subtotalDiscount = appliedDiscount
+              discountedPrice = originalPrice - appliedDiscount
+            }
+          }
+
+          subtotal += discountedPrice * quantity
         }
-        originalSubtotal *= quantity
-        console.log({ originalSubtotal })
-        let discountedPrice = originalPrice
-
-        // Apply item-level discount
-        const isItemEligible =
-          coupon?.rules?.applies_to?.includes('items') &&
-          coupon?.target?.foods?.some(f => f.toString() === item._id.toString())
-
-        if (coupon && isItemEligible) {
-          const {
-            discount_type,
-            discount_value,
-            max_discount = 0
-          } = coupon.rules
+        console.log({
+          subtotal,
+          coupon,
+          applies_to: coupon?.rules?.applies_to[0]
+        })
+        // Apply subtotal-level discount
+        if (coupon?.rules?.applies_to?.includes('subtotal')) {
+          console.log('inside_subtotal')
+          const { discount_type, discount_value, max_discount } = coupon.rules
           if (discount_type === 'percent') {
-            const discount = (discount_value / 100) * originalPrice
-            const appliedDiscount =
-              max_discount > 0 ? Math.min(discount, max_discount) : discount
+            console.log('inside_percent')
+            const discount = (discount_value / 100) * subtotal
+            const appliedDiscount = Math.min(discount, max_discount || discount)
             subtotalDiscount = appliedDiscount
-            discountedPrice = originalPrice - appliedDiscount
+            subtotal -= appliedDiscount
           } else if (discount_type === 'flat') {
-            const appliedDiscount =
-              max_discount > 0
-                ? Math.min(discount_value, max_discount)
-                : discount_value
+            console.log('inside_flat')
+            const appliedDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+            console.log({ appliedDiscount })
             subtotalDiscount = appliedDiscount
-            discountedPrice = originalPrice - appliedDiscount
+            subtotal -= appliedDiscount
           }
         }
 
-        subtotal += discountedPrice * quantity
-      }
-      console.log({
-        subtotal,
-        coupon,
-        applies_to: coupon?.rules?.applies_to[0]
-      })
-      // Apply subtotal-level discount
-      if (coupon?.rules?.applies_to?.includes('subtotal')) {
-        console.log('inside_subtotal')
-        const { discount_type, discount_value, max_discount } = coupon.rules
-        if (discount_type === 'percent') {
-          console.log('inside_percent')
-          const discount = (discount_value / 100) * subtotal
-          const appliedDiscount = Math.min(discount, max_discount || discount)
-          subtotalDiscount = appliedDiscount
-          subtotal -= appliedDiscount
-        } else if (discount_type === 'flat') {
-          console.log('inside_flat')
-          const appliedDiscount = Math.min(
-            discount_value,
-            max_discount || discount_value
-          )
-          console.log({ appliedDiscount })
-          subtotalDiscount = appliedDiscount
-          subtotal -= appliedDiscount
+        // Apply delivery discount
+        if (coupon?.rules?.applies_to?.includes('delivery')) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * finalDeliveryCharges
+            deliveryDiscount = Math.min(discount, max_discount || discount)
+          } else if (discount_type === 'flat') {
+            deliveryDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+          }
+          finalDeliveryCharges -= deliveryDiscount
         }
-      }
+        console.log({ subtotal })
 
-      // Apply delivery discount
-      if (coupon?.rules?.applies_to?.includes('delivery')) {
-        const { discount_type, discount_value, max_discount } = coupon.rules
-        if (discount_type === 'percent') {
-          const discount = (discount_value / 100) * finalDeliveryCharges
-          deliveryDiscount = Math.min(discount, max_discount || discount)
-        } else if (discount_type === 'flat') {
-          deliveryDiscount = Math.min(
-            discount_value,
-            max_discount || discount_value
-          )
+        const total = subtotal + finalDeliveryCharges + tax
+        originalTotal = originalSubtotal + deliveryCharges + tax
+        console.log({ total, subtotalDiscount, originalTotal })
+
+        return {
+          originalSubtotal,
+          subtotal,
+          total,
+          originalTotal,
+          originalDeliveryCharges: deliveryCharges,
+          finalDeliveryCharges,
+          deliveryDiscount,
+          subtotalDiscount,
+          tax
         }
-        finalDeliveryCharges -= deliveryDiscount
+      } catch (err) {
+        throw err
       }
-      console.log({ subtotal })
-
-      const total = subtotal + finalDeliveryCharges + tax
-      originalTotal = originalSubtotal + deliveryCharges + tax
-      console.log({ total, subtotalDiscount, originalTotal })
-
-      return {
-        originalSubtotal,
-        subtotal,
-        total,
-        originalTotal,
-        originalDeliveryCharges: deliveryCharges,
-        finalDeliveryCharges,
-        deliveryDiscount,
-        subtotalDiscount,
-        tax
-      }
-      // } catch (err) {
-      //   throw err
-      // }
     }
   },
   Mutation: {
@@ -569,7 +572,8 @@ module.exports = {
           restaurantId,
           addressDetails,
           preparationTime,
-          name
+          name,
+          deliveryFee
         } = args.input
 
         const phoneNumber = normalizeAndValidatePhoneNumber(phone)
@@ -630,99 +634,99 @@ module.exports = {
         const zone = await Zone.findOne({
           location: { $geoIntersects: { $geometry: restaurant.location } }
         })
-        const latOrigin = +restaurant.location.coordinates[1]
-        const lonOrigin = +restaurant.location.coordinates[0]
+        // const latOrigin = +restaurant.location.coordinates[1]
+        // const lonOrigin = +restaurant.location.coordinates[0]
 
-        const latDest = address['location']
-          ? +address?.location.coordinates[1]
-          : +area.location.location.coordinates[1]
-        const longDest = address['location']
-          ? +address?.location.coordinates[0]
-          : +area.location.location.coordinates[0]
+        // const latDest = address['location']
+        //   ? +address?.location.coordinates[1]
+        //   : +area.location.location.coordinates[1]
+        // const longDest = address['location']
+        //   ? +address?.location.coordinates[0]
+        //   : +area.location.location.coordinates[0]
 
-        const distance = calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        )
+        // const distance = calculateDistance(
+        //   latOrigin,
+        //   lonOrigin,
+        //   latDest,
+        //   longDest
+        // )
 
-        console.log({ distance })
+        // console.log({ distance })
 
-        let configuration = await Configuration.findOne()
-        const costType = configuration.costType
+        // let configuration = await Configuration.findOne()
+        // const costType = configuration.costType
 
-        // get zone charges from delivery prices
-        const originZone = await DeliveryZone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: {
-                type: 'Point',
-                coordinates: restaurant.location.coordinates
-              }
-            }
-          }
-        })
+        // // get zone charges from delivery prices
+        // const originZone = await DeliveryZone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: {
+        //         type: 'Point',
+        //         coordinates: restaurant.location.coordinates
+        //       }
+        //     }
+        //   }
+        // })
 
-        const destinationZone = await DeliveryZone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: {
-                type: 'Point',
-                coordinates: address.location.coordinates
-              }
-            }
-          }
-        })
+        // const destinationZone = await DeliveryZone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: {
+        //         type: 'Point',
+        //         coordinates: address.location.coordinates
+        //       }
+        //     }
+        //   }
+        // })
 
-        console.log({ originZone, destinationZone })
-        let deliveryPrice
-        if (originZone && destinationZone) {
-          deliveryPrice = await DeliveryPrice.findOne({
-            $or: [
-              {
-                originZone: originZone._id,
-                destinationZone: destinationZone._id
-              },
-              {
-                originZone: destinationZone._id,
-                destinationZone: originZone._id
-              }
-            ]
-          })
-        }
+        // console.log({ originZone, destinationZone })
+        // let deliveryPrice
+        // if (originZone && destinationZone) {
+        //   deliveryPrice = await DeliveryPrice.findOne({
+        //     $or: [
+        //       {
+        //         originZone: originZone._id,
+        //         destinationZone: destinationZone._id
+        //       },
+        //       {
+        //         originZone: destinationZone._id,
+        //         destinationZone: originZone._id
+        //       }
+        //     ]
+        //   })
+        // }
 
-        console.log({ deliveryPrice })
+        // console.log({ deliveryPrice })
 
-        let amount
-        if (deliveryPrice) {
-          amount = deliveryPrice.cost
-        } else {
-          amount = calculateAmount(
-            costType,
-            configuration.deliveryRate,
-            distance
-          )
-          console.log({ amount, distance })
-        }
+        // let amount
+        // if (deliveryPrice) {
+        //   amount = deliveryPrice.cost
+        // } else {
+        //   amount = calculateAmount(
+        //     costType,
+        //     configuration.deliveryRate,
+        //     distance
+        //   )
+        //   console.log({ amount, distance })
+        // }
 
-        let deliveryCharges = amount
+        // let deliveryCharges = amount
 
-        if (
-          parseFloat(amount) <= configuration.minimumDeliveryFee ||
-          distance <= 0.25 + Number.EPSILON
-        ) {
-          deliveryCharges = configuration.minimumDeliveryFee
-        }
+        // if (
+        //   parseFloat(amount) <= configuration.minimumDeliveryFee ||
+        //   distance <= 0.25 + Number.EPSILON
+        // ) {
+        //   deliveryCharges = configuration.minimumDeliveryFee
+        // }
 
         let taxationAmount = 0
         const taxRate = restaurant.tax / 100 || 0
-        taxationAmount = (orderAmount + deliveryCharges) * taxRate
+        taxationAmount = (orderAmount + deliveryFee) * taxRate
         let tipping = 0
         let totalOrderAmount = 0
         if (orderAmount) {
           totalOrderAmount =
-            orderAmount + deliveryCharges + taxationAmount + tipping
+            orderAmount + deliveryFee + taxationAmount + tipping
         }
 
         console.log({ zone: zone?._id })
@@ -734,18 +738,35 @@ module.exports = {
           ]
         }
 
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        if (restaurantId) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurantId,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+
+          if (prepaidPackage) {
+            prepaidPackage.usedDeliveries += 1
+            await prepaidPackage.save()
+            console.log('✅ Used prepaid delivery package.')
+            console.log('✅ Prepaid package found. Delivery is free.')
+          }
+        }
+
         const order = new Order({
           orderId: newOrderId,
           user: user._id,
           resId: restaurantId,
           orderStatus: 'PENDING',
-          orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
+          orderAmount: orderAmount ? totalOrderAmount : deliveryFee,
           deliveryAddress: { ...address },
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: 0, // Store tipping amount
           taxationAmount: 0, // Store taxation amount
-          deliveryCharges, // Store delivery charges
+          deliveryCharges: deliveryFee, // Store delivery charges
           //totalAmount: totalOrderAmount, // The final total amount including all fees
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -1244,41 +1265,6 @@ module.exports = {
         console.log(`Delivery Charges: ${DELIVERY_CHARGES}`)
         let price = 0.0
 
-        // ItemsData.forEach(async item => {
-        //   let itemPrice = item.variation.price
-        //   if (item.addons && item.addons.length > 0) {
-        //     const addonDetails = []
-        //     item.addons.forEach(({ options }) => {
-        //       options.forEach(option => {
-        //         itemPrice = itemPrice + option.price
-        //         addonDetails.push(
-        //           `${option.title}	${configuration.currencySymbol}${option.price}`
-        //         )
-        //       })
-        //     })
-        //   }
-        //   price += itemPrice * item.quantity
-        // })
-        // for (const item of ItemsData) {
-        //   let itemPrice = item.variation.price
-
-        //   if (item.addons && item.addons.length > 0) {
-        //     for (const addon of item.addons) {
-        //       for (const option of addon.options) {
-        //         itemPrice += option.price
-        //       }
-        //     }
-        //   }
-
-        //   price += itemPrice * item.quantity
-        // }
-        // let coupon = null
-        // if (args.couponCode) {
-        //   coupon = await Coupon.findOne({ code: args.couponCode })
-        //   if (coupon) {
-        //     price = price - (coupon.discount / 100) * price
-        //   }
-        // }
         let itemTotal = 0
         let deliveryDiscount = 0
         let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
@@ -1371,6 +1357,7 @@ module.exports = {
           }
           finalDeliveryCharges -= deliveryDiscount
         }
+
         const couponCode = await Coupon.findById(coupon?._id)
         if (couponCode) {
           if (!couponCode.tracking.user_usage) {
@@ -1404,6 +1391,28 @@ module.exports = {
             restaurant.location.coordinates[0],
             restaurant.location.coordinates[1]
           ]
+        }
+
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        if (restaurant?._id) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurant._id,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+
+          if (prepaidPackage) {
+            isPrepaid = true
+            finalDeliveryCharges = 0
+            console.log('✅ Prepaid package found. Delivery is free.')
+          }
+          // reduce the amount of used prepaid deliveries
+          if (isPrepaid) {
+            prepaidPackage.usedDeliveries += 1
+            await prepaidPackage.save()
+            console.log('✅ Used prepaid delivery package.')
+          }
         }
 
         const orderObj = {

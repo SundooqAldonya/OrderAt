@@ -1344,20 +1344,8 @@ export const getAllNotifications = gql`
 `
 
 export const getDeliveryCalculation = gql`
-  query GetDeliveryCalculation(
-    $originLong: Float!
-    $originLat: Float!
-    $destLong: Float!
-    $destLat: Float!
-    $code: String
-  ) {
-    getDeliveryCalculation(
-      originLong: $originLong
-      originLat: $originLat
-      destLong: $destLong
-      destLat: $destLat
-      code: $code
-    ) {
+  query GetDeliveryCalculation($input: DeliveryCalculationInput!) {
+    getDeliveryCalculation(input: $input) {
       amount
       originalDiscount
     }

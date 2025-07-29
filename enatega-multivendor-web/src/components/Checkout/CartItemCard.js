@@ -188,7 +188,7 @@ function CartItemsCard({
                 {`${configuration.currencySymbol} ${calculatePrice(0)}`}
               </Typography>
             </Box>
-            {!isPickUp && deliveryCharges > 0 && (
+            {!isPickUp && (
               <Box
                 style={{
                   display: "flex",
@@ -202,9 +202,8 @@ function CartItemsCard({
                 </Typography>
 
                 <Typography className={classes.subtotalText}>
-                  {`${configuration.currencySymbol} ${deliveryCharges.toFixed(
-                    2
-                  )}`}
+                  {deliveryCharges ? configuration.currencySymbol : null}{" "}
+                  {`${deliveryCharges ? deliveryCharges.toFixed(2) : "Free"}`}
                 </Typography>
               </Box>
             )}

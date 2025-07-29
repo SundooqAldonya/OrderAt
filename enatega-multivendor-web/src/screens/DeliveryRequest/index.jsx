@@ -21,27 +21,7 @@ import { Header, LoginHeader } from "../../components/Header";
 import UserContext from "../../context/User";
 import { useNavigate } from "react-router-dom";
 import { useRequestDelivery } from "../../context/requestDelivery";
-
-const GET_DELIVERY_CALCULATION = gql`
-  query GetDeliveryCalculation(
-    $code: String
-    $originLat: Float!
-    $originLong: Float!
-    $destLat: Float!
-    $destLong: Float!
-  ) {
-    getDeliveryCalculation(
-      code: $code
-      originLat: $originLat
-      originLong: $originLong
-      destLat: $destLat
-      destLong: $destLong
-    ) {
-      amount
-      originalDiscount
-    }
-  }
-`;
+import { getDeliveryCalculation } from "../../apollo/server";
 
 const CREATE_DELIVERY_REQUEST = gql`
   mutation CreateDeliveryRequest($input: CreateDeliveryRequestInput!) {
@@ -78,13 +58,15 @@ const DeliveryRequest = () => {
 
   const mapRef = useRef();
 
-  const { data, loading, refetch } = useQuery(GET_DELIVERY_CALCULATION, {
+  const { data, loading, refetch } = useQuery(getDeliveryCalculation, {
     variables: {
-      code: coupon?.code || "",
-      originLat: pickupCoords.lat,
-      originLong: pickupCoords.lng,
-      destLat: dropoffCoords.lat,
-      destLong: dropoffCoords.lng,
+      input: {
+        code: coupon?.code || "",
+        originLat: pickupCoords.lat,
+        originLong: pickupCoords.lng,
+        destLat: dropoffCoords.lat,
+        destLong: dropoffCoords.lng,
+      },
     },
     skip: !pickupCoords || !dropoffCoords,
   });

@@ -1224,18 +1224,8 @@ export const getCityAreas = gql`
 `;
 
 export const getDeliveryCalculation = gql`
-  query GetDeliveryCalculation(
-    $originLong: Float!
-    $originLat: Float!
-    $destLong: Float!
-    $destLat: Float!
-  ) {
-    getDeliveryCalculation(
-      originLong: $originLong
-      originLat: $originLat
-      destLong: $destLong
-      destLat: $destLat
-    ) {
+  query GetDeliveryCalculation($input: DeliveryCalculationInput!) {
+    getDeliveryCalculation(input: $input) {
       amount
     }
   }

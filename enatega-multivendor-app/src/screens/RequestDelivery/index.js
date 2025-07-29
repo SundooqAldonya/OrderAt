@@ -295,11 +295,13 @@ const RequestDelivery = () => {
     if (addressInfo.regionTo && addressInfo.regionFrom) {
       fetchCalculateDelivery({
         variables: {
-          code: coupon?.code.replace(' ', ''),
-          destLong: Number(addressInfo.regionTo.longitude),
-          destLat: Number(addressInfo.regionTo.latitude),
-          originLong: Number(addressInfo.regionFrom.longitude),
-          originLat: Number(addressInfo.regionFrom.latitude)
+          input: {
+            code: coupon?.code.replace(' ', ''),
+            destLong: Number(addressInfo.regionTo.longitude),
+            destLat: Number(addressInfo.regionTo.latitude),
+            originLong: Number(addressInfo.regionFrom.longitude),
+            originLat: Number(addressInfo.regionFrom.latitude)
+          }
         }
       })
     }

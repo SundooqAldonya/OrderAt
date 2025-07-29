@@ -50,10 +50,13 @@ function MRestaurantCart(props) {
   } = useQuery(getDeliveryCalculation, {
     skip: !restaurantData,
     variables: {
-      destLong: Number(location.longitude),
-      destLat: Number(location.latitude),
-      originLong: Number(restaurantData?.location.coordinates[0]),
-      originLat: Number(restaurantData?.location.coordinates[1]),
+      input: {
+        destLong: Number(location.longitude),
+        destLat: Number(location.latitude),
+        originLong: Number(restaurantData?.location.coordinates[0]),
+        originLat: Number(restaurantData?.location.coordinates[1]),
+        restaurantId: restaurantData?._id,
+      },
     },
   });
 
@@ -66,11 +69,12 @@ function MRestaurantCart(props) {
   useEffect(() => {
     if (calcData) {
       const amount = calcData.getDeliveryCalculation.amount;
-      setDeliveryCharges(
-        amount >= configuration.minimumDeliveryFee
-          ? amount
-          : configuration.minimumDeliveryFee
-      );
+      setDeliveryCharges(amount);
+      // setDeliveryCharges(
+      //   amount >= configuration.minimumDeliveryFee
+      //     ? amount
+      //     : configuration.minimumDeliveryFee
+      // );
     }
   }, [calcData]);
 

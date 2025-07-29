@@ -68,10 +68,12 @@ const AddNewOrder = ({
   ] = useLazyQuery(getDeliveryCalculation, {
     onCompleted: res => {
       setLoaded(true)
-    }
+    },
+    nextFetchPolicy: 'network-only',
+    pollInterval: 10000
   })
 
-  const deliveryAmount = calcData?.getDeliveryCalculation?.amount || null
+  const deliveryAmount = calcData?.getDeliveryCalculation?.amount || 0
 
   console.log({ deliveryAmount })
 
@@ -81,18 +83,21 @@ const AddNewOrder = ({
       console.log({ foundArea })
       fetchDeliveryCost({
         variables: {
-          destLong: foundArea?.location?.location?.coordinates
-            ? Number(foundArea?.location?.location?.coordinates[0])
-            : null,
-          destLat: foundArea?.location?.location?.coordinates
-            ? Number(foundArea?.location?.location?.coordinates[1])
-            : null,
-          originLong: restaurantData?.location?.coordinates
-            ? Number(restaurantData?.location?.coordinates[0])
-            : null,
-          originLat: restaurantData?.location?.coordinates
-            ? Number(restaurantData?.location?.coordinates[1])
-            : null
+          input: {
+            destLong: foundArea?.location?.location?.coordinates
+              ? Number(foundArea?.location?.location?.coordinates[0])
+              : null,
+            destLat: foundArea?.location?.location?.coordinates
+              ? Number(foundArea?.location?.location?.coordinates[1])
+              : null,
+            originLong: restaurantData?.location?.coordinates
+              ? Number(restaurantData?.location?.coordinates[0])
+              : null,
+            originLat: restaurantData?.location?.coordinates
+              ? Number(restaurantData?.location?.coordinates[1])
+              : null,
+            restaurantId: restaurantData?._id
+          }
         }
       })
     }
@@ -147,7 +152,8 @@ const AddNewOrder = ({
           addressDetails,
           areaId: selectedArea,
           preparationTime: selectedTime,
-          orderAmount: parseFloat(cost) ? parseFloat(cost) : 0
+          orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
+          deliveryFee: parseFloat(deliveryAmount)
         }
       }
     })
@@ -335,9 +341,12 @@ const AddNewOrder = ({
           <Typography>Calculating delivery amount...</Typography>
         </Grid>
       )}
-      {deliveryAmount && loaded ? (
+      {loaded ? (
         <Grid item xs={12}>
-          <Typography>Delivery Amount: {deliveryAmount} EGP</Typography>
+          <Typography>
+            Delivery Amount: {deliveryAmount ? deliveryAmount : 'Free'}{' '}
+            {deliveryAmount ? 'EGP' : null}
+          </Typography>
           <Typography>Total: {deliveryAmount + Number(cost)} EGP</Typography>
         </Grid>
       ) : null}

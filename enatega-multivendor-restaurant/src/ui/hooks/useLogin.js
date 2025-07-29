@@ -7,6 +7,8 @@ import { AuthContext } from '../context'
 import { useDispatch } from 'react-redux'
 import { setCity } from '../../../store/citySlice'
 import { useTranslation } from 'react-i18next'
+import useNotification from './useNotification'
+import { Linking, Platform } from 'react-native'
 
 export default function useLogin() {
   const dispatch = useDispatch()
@@ -17,13 +19,48 @@ export default function useLogin() {
   const [password, setPassword] = useState('')
   const usernameRef = useRef()
   const passwordRef = useRef()
+
+  const {
+    // restaurantData,
+    getPermission,
+    getDevicePushTokenAsync,
+    requestPermission,
+    sendTokenToBackend
+  } = useNotification()
+
   const [mutate, { loading, error }] = useMutation(
     gql`
       ${loginQuery}
     `,
     {
-      onCompleted: data => {
+      onCompleted: async data => {
         console.log('Mutation Success:', data)
+        // const permissionStatus = await getPermission()
+        // if (permissionStatus.granted) {
+        //   // setNotificationStatus(true)
+        //   const token = (
+        //     await getDevicePushTokenAsync({
+        //       projectId: Constants.expoConfig.extra.eas.projectId
+        //     })
+        //   ).data
+        //   sendTokenToBackend({ variables: { token, isEnabled: true } })
+        // } else if (permissionStatus.canAskAgain) {
+        //   const result = await requestPermission()
+        //   if (result.granted) {
+        //     // setNotificationStatus(true)
+        //     const token = (
+        //       await getDevicePushTokenAsync({
+        //         projectId: Constants.expoConfig.extra.eas.projectId
+        //       })
+        //     ).data
+        //     sendTokenToBackend({ variables: { token, isEnabled: true } })
+        //   }
+        // } else {
+        //   // openSettingsRef.current = true
+        //   Platform.OS === 'ios'
+        //     ? Linking.openURL('app-settings:')
+        //     : Linking.openSettings()
+        // }
         onCompleted(data)
       },
       // Call onError when the mutation fails

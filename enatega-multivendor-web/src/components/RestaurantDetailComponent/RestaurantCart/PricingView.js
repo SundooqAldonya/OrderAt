@@ -31,10 +31,13 @@ function PricingView(props) {
   } = useQuery(getDeliveryCalculation, {
     skip: !restaurantData,
     variables: {
-      destLong: Number(location.longitude),
-      destLat: Number(location.latitude),
-      originLong: Number(restaurantData?.location.coordinates[0]),
-      originLat: Number(restaurantData?.location.coordinates[1]),
+      input: {
+        destLong: Number(location.longitude),
+        destLat: Number(location.latitude),
+        originLong: Number(restaurantData?.location.coordinates[0]),
+        originLat: Number(restaurantData?.location.coordinates[1]),
+        restaurantId: restaurantData?._id,
+      },
     },
   });
 
@@ -47,11 +50,12 @@ function PricingView(props) {
   useEffect(() => {
     if (calcData) {
       const amount = calcData.getDeliveryCalculation.amount;
-      setDeliveryCharges(
-        amount >= configuration.minimumDeliveryFee
-          ? amount
-          : configuration.minimumDeliveryFee
-      );
+      setDeliveryCharges(amount);
+      // setDeliveryCharges(
+      //   amount >= configuration.minimumDeliveryFee
+      //     ? amount
+      //     : configuration.minimumDeliveryFee
+      // );
     }
   }, [calcData]);
 
@@ -144,23 +148,22 @@ function PricingView(props) {
           {`${configuration.currencySymbol} ${calculatePrice(0)}`}
         </Typography>
       </Box>
-      {deliveryCharges > 0 && (
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: theme.spacing(1),
-          }}
-          className={classes.border}
-        >
-          <Typography className={classes.subtotalText}>
-            {t("deliveryFee")}
-          </Typography>
-          <Typography className={classes.subtotalText}>
-            {`${configuration.currencySymbol} ${deliveryCharges.toFixed(2)}`}
-          </Typography>
-        </Box>
-      )}
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: theme.spacing(1),
+        }}
+        className={classes.border}
+      >
+        <Typography className={classes.subtotalText}>
+          {t("deliveryFee")}
+        </Typography>
+        <Typography className={classes.subtotalText}>
+          {deliveryCharges ? configuration.currencySymbol : null}{" "}
+          {`${deliveryCharges ? deliveryCharges.toFixed(2) : "Free"}`}
+        </Typography>
+      </Box>
       {taxCalculation() > 0 && (
         <Box
           style={{

@@ -1596,6 +1596,15 @@ const typeDefs = gql`
     remainingDeliveries: Int
   }
 
+  input DeliveryCalculationInput {
+    originLong: Float!
+    originLat: Float!
+    destLong: Float!
+    destLat: Float!
+    code: String
+    restaurantId: String
+  }
+
   type Query {
     getPrepaidDeliveryPackages: [PrepaidDeliveryPackage!]
     checkDeliveryZone(latitude: Float!, longitude: Float!): Message
@@ -1624,14 +1633,7 @@ const typeDefs = gql`
     ): [RestaurantCustomer!]
     getBusinessCategoriesCustomer: [BusinessCategory!]
     getBusinessCategories: [BusinessCategory!]
-    getDeliveryCalculation(
-      originLong: Float!
-      originLat: Float!
-      destLong: Float!
-      destLat: Float!
-      code: String
-    ): # restaurantId: String
-    Amount
+    getDeliveryCalculation(input: DeliveryCalculationInput!): Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]
@@ -1831,6 +1833,7 @@ const typeDefs = gql`
     orderAmount: Int
     restaurantId: String
     preparationTime: Int
+    deliveryFee: Float
   }
 
   input DeliveryPriceInput {
@@ -2021,7 +2024,7 @@ const typeDefs = gql`
     coordinates: [Float!]!
   }
 
-  input AddressInput {
+  input AddressInputBulk {
     deliveryAddress: String
     details: String
     label: String
@@ -2046,7 +2049,10 @@ const typeDefs = gql`
       input: PrepaidDeliveryPackageInput!
     ): Message
     createPrepaidDeliveryPackage(input: PrepaidDeliveryPackageInput!): Message
-    bulkAddUserAddresses(userId: String!, addresses: [AddressInput!]!): Message
+    bulkAddUserAddresses(
+      userId: String!
+      addresses: [AddressInputBulk!]!
+    ): Message
     updateUserName(id: String!, name: String!): Message
     makeRestaurantVisible(id: String!): Message
     createBusinessMenu(file: Upload, restaurantId: String!): Message

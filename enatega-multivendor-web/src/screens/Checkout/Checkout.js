@@ -136,10 +136,13 @@ function Checkout() {
   } = useQuery(getDeliveryCalculation, {
     skip: !data,
     variables: {
-      destLong: Number(location.longitude),
-      destLat: Number(location.latitude),
-      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
-      originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
+      input: {
+        destLong: Number(location.longitude),
+        destLat: Number(location.latitude),
+        originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+        originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
+        restaurantId,
+      },
     },
   });
 
@@ -156,11 +159,12 @@ function Checkout() {
   useEffect(() => {
     if (calcData) {
       const amount = calcData.getDeliveryCalculation.amount;
-      setDeliveryCharges(
-        amount >= configuration.minimumDeliveryFee
-          ? amount
-          : configuration.minimumDeliveryFee
-      );
+      setDeliveryCharges(amount);
+      // setDeliveryCharges(
+      //   amount >= configuration.minimumDeliveryFee
+      //     ? amount
+      //     : configuration.minimumDeliveryFee
+      // );
     }
   }, [calcData]);
 

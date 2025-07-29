@@ -96,25 +96,32 @@ const AddNewOrder = ({ navigation }) => {
     !restaurantData?.restaurant?.location?.coordinates?.[0] ||
     !restaurantData?.restaurant?.location?.coordinates?.[1]
 
+  console.log({ selectedLocation: restaurantData?.restaurant?.location })
+
   const { data, loading, error } = useQuery(getDeliveryCalculation, {
     variables: {
-      destLong: selectedLocation?.coordinates
-        ? Number(selectedLocation?.coordinates[0])
-        : null,
-      destLat: selectedLocation?.coordinates
-        ? Number(selectedLocation?.coordinates[1])
-        : null,
-      originLong: restaurantData?.restaurant?.location?.coordinates
-        ? Number(restaurantData?.restaurant?.location?.coordinates[0])
-        : null,
-      originLat: restaurantData?.restaurant?.location?.coordinates
-        ? Number(restaurantData?.restaurant?.location?.coordinates[1])
-        : null
+      input: {
+        destLong: selectedLocation?.coordinates
+          ? Number(selectedLocation?.coordinates[0])
+          : null,
+        destLat: selectedLocation?.coordinates
+          ? Number(selectedLocation?.coordinates[1])
+          : null,
+        originLong: restaurantData?.restaurant?.location?.coordinates
+          ? Number(restaurantData?.restaurant?.location?.coordinates[0])
+          : null,
+        originLat: restaurantData?.restaurant?.location?.coordinates
+          ? Number(restaurantData?.restaurant?.location?.coordinates[1])
+          : null,
+        restaurantId: restaurantData?.restaurant?._id
+      }
     },
-    skip: shouldSkip
+    skip: shouldSkip,
+    // pollInterval: 10000,
+    fetchPolicy: 'network-only'
   })
 
-  const deliveryFee = data?.getDeliveryCalculation?.amount || null
+  const deliveryFee = data?.getDeliveryCalculation?.amount || 0
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible)
@@ -142,7 +149,8 @@ const AddNewOrder = ({ navigation }) => {
           addressDetails: userData?.addressDetails,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
           restaurantId,
-          preparationTime: selectedTime
+          preparationTime: selectedTime,
+          deliveryFee: parseFloat(deliveryFee)
         }
       }
     })
@@ -260,7 +268,9 @@ const AddNewOrder = ({ navigation }) => {
                         textAlign: isArabic ? 'right' : 'left',
                         color: 'grey'
                       }}>
-                      {t('delivery_fee')}: {deliveryFee} {currencySymbol}
+                      {t('delivery_fee')}:{' '}
+                      {deliveryFee ? deliveryFee : t('free')}{' '}
+                      {deliveryFee ? currencySymbol : null}
                     </Text>
                   )}
                 </View>

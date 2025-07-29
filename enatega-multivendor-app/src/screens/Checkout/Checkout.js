@@ -182,16 +182,20 @@ function Checkout(props) {
   } = useQuery(getDeliveryCalculation, {
     skip: !data,
     variables: {
-      destLong: Number(location.longitude),
-      destLat: Number(location.latitude),
-      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
-      originLat: Number(data?.restaurantCustomer.location.coordinates[1])
-    }
+      input: {
+        destLong: Number(location.longitude),
+        destLat: Number(location.latitude),
+        originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+        originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
+        restaurantId: data?.restaurantCustomer._id
+      }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const restaurant = data?.restaurantCustomer || null
-  const amount = calcData?.getDeliveryCalculation.amount || null
-
+  const amount = calcData?.getDeliveryCalculation.amount || 0
+  console.log({ amount })
   const {
     data: dataCalculatePrice,
     loading: loadingCalculatePrice,
@@ -211,10 +215,11 @@ function Checkout(props) {
             addons: item.addons
           }
         }),
-        deliveryCharges:
-          amount >= configuration.minimumDeliveryFee
-            ? amount
-            : configuration.minimumDeliveryFee
+        deliveryCharges: amount
+        // deliveryCharges:
+        //   amount >= configuration.minimumDeliveryFee
+        //     ? amount
+        //     : configuration.minimumDeliveryFee
       }
     },
     nextFetchPolicy: 'no-cache'
@@ -824,6 +829,9 @@ function Checkout(props) {
       }
     })
   }
+
+  console.log({ location })
+
   async function onPayment() {
     if (checkPaymentMethod(configuration.currency)) {
       const items = transformOrder(cart)
@@ -838,6 +846,7 @@ function Checkout(props) {
           orderDate: orderDate,
           isPickedUp: isPickup,
           deliveryCharges: isPickup ? 0 : deliveryCharges,
+          // deliveryCharges: isPickup ? 0 : amount,
           address: {
             label: location.label,
             deliveryAddress: location.deliveryAddress,

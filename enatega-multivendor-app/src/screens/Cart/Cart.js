@@ -95,10 +95,12 @@ function Cart(props) {
   } = useQuery(getDeliveryCalculation, {
     skip: !data,
     variables: {
-      destLong: Number(location.longitude),
-      destLat: Number(location.latitude),
-      originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
-      originLat: Number(data?.restaurantCustomer.location.coordinates[1])
+      input: {
+        destLong: Number(location.longitude),
+        destLat: Number(location.latitude),
+        originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
+        originLat: Number(data?.restaurantCustomer.location.coordinates[1])
+      }
     }
   })
 
@@ -614,8 +616,7 @@ function Cart(props) {
                       bolder
                       H2
                     >
-                      {calcLoading ? t('calculating') : calculateTotal()}{' '}
-                      {configuration.currencySymbol}
+                      {calculateTotal()} {configuration.currencySymbol}
                     </TextDefault>
                   ) : (
                     <TextDefault
@@ -625,7 +626,7 @@ function Cart(props) {
                       H2
                     >
                       {configuration.currencySymbol}
-                      {calcLoading ? t('calculating') : calculateTotal()}
+                      {calculateTotal()}
                     </TextDefault>
                   )}
                 </View>

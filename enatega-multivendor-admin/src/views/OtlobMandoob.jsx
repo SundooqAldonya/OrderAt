@@ -108,16 +108,18 @@ const OtlobMandoob = () => {
       console.log({ foundArea1, foundArea2 })
       fetchDeliveryCost({
         variables: {
-          destLong: Number(foundArea1.location.location.coordinates[0]),
-          destLat: Number(foundArea1.location.location.coordinates[1]),
-          originLong: Number(foundArea2.location.location.coordinates[0]),
-          originLat: Number(foundArea2.location.location.coordinates[1])
+          input: {
+            destLong: Number(foundArea1.location.location.coordinates[0]),
+            destLat: Number(foundArea1.location.location.coordinates[1]),
+            originLong: Number(foundArea2.location.location.coordinates[0]),
+            originLat: Number(foundArea2.location.location.coordinates[1])
+          }
         }
       })
     }
   }, [from, to])
 
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
   console.log({ dataAreas1, dataAreas2 })
 
   // const handleMapClick = e => {
