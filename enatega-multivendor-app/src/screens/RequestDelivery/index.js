@@ -469,7 +469,10 @@ const RequestDelivery = () => {
         keyboardShouldPersistTaps='handled'
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        {regionFrom && regionTo ? (
+        {regionFrom?.latitude &&
+        regionFrom?.longitude &&
+        regionTo?.latitude &&
+        regionTo?.longitude ? (
           <View>
             <MapView
               key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}

@@ -15,11 +15,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons'
 import {
   setAddressFrom,
-  setChooseFromMapTo
+  setAddressTo,
+  setChooseFromMapTo,
+  setSelectedAreaTo
 } from '../../store/requestDeliverySlice'
 import { useDispatch, useSelector } from 'react-redux'
 import useGeocoding from '../../ui/hooks/useGeocoding'
@@ -37,6 +39,8 @@ const DropoffFromMap = () => {
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const { getAddress } = useGeocoding()
   const city = useSelector((state) => state.city.city)
+  const route = useRoute()
+  const { area = null } = route.params || {}
 
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
@@ -71,14 +75,14 @@ const DropoffFromMap = () => {
   // }, [])
 
   useEffect(() => {
-    if (selectedCityAndAreaTo) {
+    if (area) {
       animateToLocation({
-        lat: selectedAreaTo.location.location.coordinates[1],
-        lng: selectedAreaTo.location.location.coordinates[0]
+        lat: area.location.location.coordinates[1],
+        lng: area.location.location.coordinates[0]
       })
       getAddress(
-        selectedAreaTo.location.location.coordinates[1],
-        selectedAreaTo.location.location.coordinates[0]
+        area.location.location.coordinates[1],
+        area.location.location.coordinates[0]
       ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
@@ -187,7 +191,20 @@ const DropoffFromMap = () => {
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
     console.log({ currentInput, location })
-    if (!selectedCityAndAreaTo) {
+    const newCoordinates = {
+      ...location,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+    }
+    if (area) {
+      dispatch(setSelectedAreaTo(area))
+      dispatch(
+        setAddressTo({
+          addressFrom: area.address,
+          regionFrom: { ...newCoordinates }
+        })
+      )
+    } else {
       dispatch(setChooseFromMapTo({ status: true }))
     }
     navigation.navigate('NewDropoffMandoob', {
