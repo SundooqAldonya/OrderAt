@@ -634,6 +634,90 @@ module.exports = {
         const zone = await Zone.findOne({
           location: { $geoIntersects: { $geometry: restaurant.location } }
         })
+        // const latOrigin = +restaurant.location.coordinates[1]
+        // const lonOrigin = +restaurant.location.coordinates[0]
+
+        // const latDest = address['location']
+        //   ? +address?.location.coordinates[1]
+        //   : +area.location.location.coordinates[1]
+        // const longDest = address['location']
+        //   ? +address?.location.coordinates[0]
+        //   : +area.location.location.coordinates[0]
+
+        // const distance = calculateDistance(
+        //   latOrigin,
+        //   lonOrigin,
+        //   latDest,
+        //   longDest
+        // )
+
+        // console.log({ distance })
+
+        // let configuration = await Configuration.findOne()
+        // const costType = configuration.costType
+
+        // // get zone charges from delivery prices
+        // const originZone = await DeliveryZone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: {
+        //         type: 'Point',
+        //         coordinates: restaurant.location.coordinates
+        //       }
+        //     }
+        //   }
+        // })
+
+        // const destinationZone = await DeliveryZone.findOne({
+        //   location: {
+        //     $geoIntersects: {
+        //       $geometry: {
+        //         type: 'Point',
+        //         coordinates: address.location.coordinates
+        //       }
+        //     }
+        //   }
+        // })
+
+        // console.log({ originZone, destinationZone })
+        // let deliveryPrice
+        // if (originZone && destinationZone) {
+        //   deliveryPrice = await DeliveryPrice.findOne({
+        //     $or: [
+        //       {
+        //         originZone: originZone._id,
+        //         destinationZone: destinationZone._id
+        //       },
+        //       {
+        //         originZone: destinationZone._id,
+        //         destinationZone: originZone._id
+        //       }
+        //     ]
+        //   })
+        // }
+
+        // console.log({ deliveryPrice })
+
+        // let amount
+        // if (deliveryPrice) {
+        //   amount = deliveryPrice.cost
+        // } else {
+        //   amount = calculateAmount(
+        //     costType,
+        //     configuration.deliveryRate,
+        //     distance
+        //   )
+        //   console.log({ amount, distance })
+        // }
+
+        // let deliveryCharges = amount
+
+        // if (
+        //   parseFloat(amount) <= configuration.minimumDeliveryFee ||
+        //   distance <= 0.25 + Number.EPSILON
+        // ) {
+        //   deliveryCharges = configuration.minimumDeliveryFee
+        // }
 
         let taxationAmount = 0
         const taxRate = restaurant.tax / 100 || 0
