@@ -112,8 +112,8 @@ const AddNewOrder = ({ navigation }) => {
           : null,
         originLat: restaurantData?.restaurant?.location?.coordinates
           ? Number(restaurantData?.restaurant?.location?.coordinates[1])
-          : null,
-        restaurantId: restaurantData?.restaurant?._id
+          : null
+        // restaurantId: restaurantData?.restaurant?._id
       }
     },
     skip: shouldSkip,

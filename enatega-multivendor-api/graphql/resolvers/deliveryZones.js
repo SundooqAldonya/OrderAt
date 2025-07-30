@@ -20,8 +20,11 @@ module.exports = {
       }
     },
 
-    async getDeliveryCalculation(_, args) {
-      console.log({ deliveryCalcArgs: args })
+    async getDeliveryCalculation(_, args, { req }) {
+      console.log({
+        getDeliveryCalculationArgs: args,
+        restaurantId: req.restaurantId
+      })
       try {
         const {
           originLong,
@@ -121,9 +124,9 @@ module.exports = {
         console.log({ amount, originalDiscount, deliveryDiscount })
         // ===== CHECK PREPAID DELIVERY PACKAGE =====
         let isPrepaid = false
-        if (restaurantId) {
+        if (restaurantId || req.restaurantId) {
           const prepaidPackage = await PrepaidDeliveryPackage.findOne({
-            business: restaurantId,
+            business: restaurantId || req.restaurantId,
             isActive: true,
             expiresAt: { $gte: new Date() },
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }

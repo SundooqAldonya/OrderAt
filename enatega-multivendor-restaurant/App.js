@@ -100,10 +100,15 @@ export default function App() {
   }, [I18nManager.isRTL])
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
     if (__DEV__) return
-    ;(async () => {
+    checkAppUpdate()
+  }, [])
+
+  const checkAppUpdate = async () => {
+    try {
+      console.log('Checking for OTA update...')
       const { isAvailable } = await Updates.checkForUpdateAsync()
+      console.log('Update check:', isAvailable)
       if (isAvailable) {
         setIsUpdating(true)
         const { isNew } = await Updates.fetchUpdateAsync()
@@ -112,8 +117,10 @@ export default function App() {
         }
         setIsUpdating(false)
       }
-    })()
-  }, [])
+    } catch (error) {
+      console.error('Error checking for updates:', error)
+    }
+  }
 
   useEffect(() => {
     const reconnectLastPrinter = async () => {
