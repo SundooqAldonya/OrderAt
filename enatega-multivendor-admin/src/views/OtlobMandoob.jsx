@@ -117,7 +117,7 @@ const OtlobMandoob = () => {
     }
   }, [from, to])
 
-  const cities = dataCities?.cities || null
+  const cities = dataCities?.citiesAdmin || null
   console.log({ dataAreas1, dataAreas2 })
 
   // const handleMapClick = e => {
