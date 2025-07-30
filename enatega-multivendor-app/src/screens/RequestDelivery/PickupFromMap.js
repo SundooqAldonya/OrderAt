@@ -52,7 +52,7 @@ const PickupFromMap = () => {
   const state = useSelector((state) => state.requestDelivery)
   const { selectedCityAndAreaFrom, selectedAreaFrom } = state
 
-  console.log({ selectedCityAndAreaFrom })
+  // console.log({ selectedCityAndAreaFrom })
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -75,14 +75,14 @@ const PickupFromMap = () => {
 
   useEffect(() => {
     // animateToLocation({ lat: location.latitude, lng: location.longitude })
-    if (selectedCityAndAreaFrom) {
+    if (area) {
       animateToLocation({
-        lat: selectedAreaFrom.location.location.coordinates[1],
-        lng: selectedAreaFrom.location.location.coordinates[0]
+        lat: area.location.location.coordinates[1],
+        lng: area.location.location.coordinates[0]
       })
       getAddress(
-        selectedAreaFrom.location.location.coordinates[1],
-        selectedAreaFrom.location.location.coordinates[0]
+        area.location.location.coordinates[1],
+        area.location.location.coordinates[0]
       ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
