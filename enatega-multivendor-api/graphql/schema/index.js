@@ -1633,7 +1633,14 @@ const typeDefs = gql`
     ): [RestaurantCustomer!]
     getBusinessCategoriesCustomer: [BusinessCategory!]
     getBusinessCategories: [BusinessCategory!]
-    getDeliveryCalculation(input: DeliveryCalculationInput!): Amount
+    getDeliveryCalculation(
+      originLong: Float!
+      originLat: Float!
+      destLong: Float!
+      destLat: Float!
+      code: String
+    ): Amount
+    getDeliveryCalculationV2(input: DeliveryCalculationInput!): Amount
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]

@@ -100,21 +100,18 @@ const AddNewOrder = ({ navigation }) => {
 
   const { data, loading, error } = useQuery(getDeliveryCalculation, {
     variables: {
-      input: {
-        destLong: selectedLocation?.coordinates
-          ? Number(selectedLocation?.coordinates[0])
-          : null,
-        destLat: selectedLocation?.coordinates
-          ? Number(selectedLocation?.coordinates[1])
-          : null,
-        originLong: restaurantData?.restaurant?.location?.coordinates
-          ? Number(restaurantData?.restaurant?.location?.coordinates[0])
-          : null,
-        originLat: restaurantData?.restaurant?.location?.coordinates
-          ? Number(restaurantData?.restaurant?.location?.coordinates[1])
-          : null
-        // restaurantId: restaurantData?.restaurant?._id
-      }
+      destLong: selectedLocation?.coordinates
+        ? Number(selectedLocation?.coordinates[0])
+        : null,
+      destLat: selectedLocation?.coordinates
+        ? Number(selectedLocation?.coordinates[1])
+        : null,
+      originLong: restaurantData?.restaurant?.location?.coordinates
+        ? Number(restaurantData?.restaurant?.location?.coordinates[0])
+        : null,
+      originLat: restaurantData?.restaurant?.location?.coordinates
+        ? Number(restaurantData?.restaurant?.location?.coordinates[1])
+        : null
     },
     skip: shouldSkip,
     // pollInterval: 10000,

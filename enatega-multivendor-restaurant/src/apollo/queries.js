@@ -161,8 +161,27 @@ export const areasCalculatedList = gql`
 `
 
 export const getDeliveryCalculation = gql`
-  query GetDeliveryCalculation($input: DeliveryCalculationInput!) {
-    getDeliveryCalculation(input: $input) {
+  query GetDeliveryCalculation(
+    $originLong: Float!
+    $originLat: Float!
+    $destLong: Float!
+    $destLat: Float!
+    $code: String
+  ) {
+    getDeliveryCalculation(
+      originLong: $originLong
+      originLat: $originLat
+      destLong: $destLong
+      destLat: $destLat
+      code: $code
+    ) {
+      amount
+    }
+  }
+`
+export const getDeliveryCalculationV2 = gql`
+  query GetDeliveryCalculationV2($input: DeliveryCalculationInput!) {
+    getDeliveryCalculationV2(input: $input) {
       amount
     }
   }
