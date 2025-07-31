@@ -1350,6 +1350,7 @@ export const getDeliveryCalculation = gql`
     $destLong: Float!
     $destLat: Float!
     $code: String
+    $restaurantId: String
   ) {
     getDeliveryCalculation(
       originLong: $originLong
@@ -1357,6 +1358,7 @@ export const getDeliveryCalculation = gql`
       destLong: $destLong
       destLat: $destLat
       code: $code
+      restaurantId: $restaurantId
     ) {
       amount
       originalDiscount

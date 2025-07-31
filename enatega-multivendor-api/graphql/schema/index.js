@@ -1639,6 +1639,7 @@ const typeDefs = gql`
       destLong: Float!
       destLat: Float!
       code: String
+      restaurantId: String
     ): Amount
     getDeliveryCalculationV2(input: DeliveryCalculationInput!): Amount
     getAllDeliveryZones: [DeliveryZone!]
