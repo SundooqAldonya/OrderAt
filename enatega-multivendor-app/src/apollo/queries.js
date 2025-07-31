@@ -1223,9 +1223,9 @@ export const popularItems = `query PopularItems($restaurantId: String!) {
 // }
 // `
 
-export const getDeliveryCalculation = gql`
-  query GetDeliveryCalculation($input: DeliveryCalculationInput!) {
-    getDeliveryCalculation(input: $input) {
+export const getDeliveryCalculationV2 = gql`
+  query GetDeliveryCalculationV2($input: DeliveryCalculationInput!) {
+    getDeliveryCalculationV2(input: $input) {
       amount
       originalDiscount
     }

@@ -19,7 +19,7 @@ import gql from 'graphql-tag'
 import { AntDesign } from '@expo/vector-icons'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import CartItem from '../../components/CartItem/CartItem'
-import { getDeliveryCalculation, getTipping } from '../../apollo/queries'
+import { getDeliveryCalculationV2, getTipping } from '../../apollo/queries'
 import { scale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import { alignment } from '../../utils/alignment'
@@ -92,7 +92,7 @@ function Cart(props) {
     data: calcData,
     loading: calcLoading,
     error: errorCalc
-  } = useQuery(getDeliveryCalculation, {
+  } = useQuery(getDeliveryCalculationV2, {
     skip: !data,
     variables: {
       input: {
@@ -125,7 +125,7 @@ function Cart(props) {
 
   useEffect(() => {
     if (calcData) {
-      const amount = calcData.getDeliveryCalculation.amount
+      const amount = calcData.getDeliveryCalculationV2.amount
       setDeliveryCharges(
         amount >= configuration.minimumDeliveryFee
           ? amount
