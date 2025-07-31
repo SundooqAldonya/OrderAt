@@ -22,7 +22,7 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
-import { getDeliveryCalculation, myOrders } from '../../apollo/queries'
+import { getDeliveryCalculationV2, myOrders } from '../../apollo/queries'
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
 import ToIcon from '../../assets/delivery_to.png'
@@ -289,7 +289,7 @@ const RequestDelivery = () => {
   })
 
   const [fetchCalculateDelivery, { data, loading, error, refetch }] =
-    useLazyQuery(getDeliveryCalculation)
+    useLazyQuery(getDeliveryCalculationV2)
 
   useEffect(() => {
     if (addressInfo.regionTo && addressInfo.regionFrom) {
@@ -307,9 +307,9 @@ const RequestDelivery = () => {
     }
   }, [addressInfo, coupon])
 
-  const deliveryFee = data?.getDeliveryCalculation?.amount || null
+  const deliveryFee = data?.getDeliveryCalculationV2?.amount || null
   const originalDiscount =
-    data?.getDeliveryCalculation?.originalDiscount || null
+    data?.getDeliveryCalculationV2?.originalDiscount || null
 
   console.log({ deliveryFee })
   console.log({ addressInfo })
