@@ -2050,6 +2050,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    updateActivePrepaidDeliveryPackage(id: String!): Message
     removePrepaidDeliveryPackage(id: String!): Message
     updatePrepaidDeliveryPackage(
       id: String!

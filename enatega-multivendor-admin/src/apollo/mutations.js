@@ -1037,3 +1037,10 @@ export const removePrepaidDeliveryPackage = gql`
     }
   }
 `
+export const updateActivePrepaidDeliveryPackage = gql`
+  mutation UpdateActivePrepaidDeliveryPackage($id: String!) {
+    updateActivePrepaidDeliveryPackage(id: $id) {
+      message
+    }
+  }
+`

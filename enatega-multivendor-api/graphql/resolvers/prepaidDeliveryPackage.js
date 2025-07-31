@@ -53,6 +53,20 @@ module.exports = {
         throw err
       }
     },
+    async updateActivePrepaidDeliveryPackage(_, { id, input }) {
+      try {
+        const updatedPackage = await PrepaidDeliveryPackage.findById(id)
+        if (updatedPackage.isActive) {
+          updatedPackage.isActive = false
+        } else {
+          updatedPackage.isActive = true
+        }
+        await updatedPackage.save()
+        return { message: 'Delivery package updated successfully!' }
+      } catch (err) {
+        throw err
+      }
+    },
     async removePrepaidDeliveryPackage(_, { id }) {
       try {
         const removedPackage = await PrepaidDeliveryPackage.findByIdAndDelete(

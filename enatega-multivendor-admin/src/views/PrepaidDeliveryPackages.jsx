@@ -17,7 +17,8 @@ import { useMutation, useQuery } from '@apollo/client'
 import {
   getPrepaidDeliveryPackages,
   removePrepaidDeliveryPackage,
-  toggleCityActive
+  toggleCityActive,
+  updateActivePrepaidDeliveryPackage
 } from '../apollo'
 import CustomLoader from '../components/Loader/CustomLoader'
 import DataTable from 'react-data-table-component'
@@ -57,11 +58,11 @@ const PrepaidDeliveryPackages = () => {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }]
   })
 
-  const [mutateActive] = useMutation(toggleCityActive, {
+  const [mutateActive] = useMutation(updateActivePrepaidDeliveryPackage, {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }],
     awaitRefetchQueries: true,
-    onCompleted: ({ toggleCityActive }) => {
-      console.log({ toggleCityActive })
+    onCompleted: ({ updateActivePrepaidDeliveryPackage }) => {
+      console.log({ updateActivePrepaidDeliveryPackage })
     },
     onError: err => {
       console.log({ err })

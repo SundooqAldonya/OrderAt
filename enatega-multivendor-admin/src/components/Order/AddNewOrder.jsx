@@ -83,21 +83,21 @@ const AddNewOrder = ({
       console.log({ foundArea })
       fetchDeliveryCost({
         variables: {
-          input: {
-            destLong: foundArea?.location?.location?.coordinates
-              ? Number(foundArea?.location?.location?.coordinates[0])
-              : null,
-            destLat: foundArea?.location?.location?.coordinates
-              ? Number(foundArea?.location?.location?.coordinates[1])
-              : null,
-            originLong: restaurantData?.location?.coordinates
-              ? Number(restaurantData?.location?.coordinates[0])
-              : null,
-            originLat: restaurantData?.location?.coordinates
-              ? Number(restaurantData?.location?.coordinates[1])
-              : null,
-            restaurantId: restaurantData?._id
-          }
+          // input: {
+          destLong: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[0])
+            : null,
+          destLat: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[1])
+            : null,
+          originLong: restaurantData?.location?.coordinates
+            ? Number(restaurantData?.location?.coordinates[0])
+            : null,
+          originLat: restaurantData?.location?.coordinates
+            ? Number(restaurantData?.location?.coordinates[1])
+            : null,
+          restaurantId: restaurantData?._id
+          // }
         }
       })
     }
@@ -152,8 +152,8 @@ const AddNewOrder = ({
           addressDetails,
           areaId: selectedArea,
           preparationTime: selectedTime,
-          orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
-          deliveryFee: parseFloat(deliveryAmount)
+          orderAmount: parseFloat(cost) ? parseFloat(cost) : 0
+          // deliveryFee: parseFloat(deliveryAmount)
         }
       }
     })
