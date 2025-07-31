@@ -146,8 +146,8 @@ const AddNewOrder = ({ navigation }) => {
           addressDetails: userData?.addressDetails,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
           restaurantId,
-          preparationTime: selectedTime,
-          deliveryFee: parseFloat(deliveryFee)
+          preparationTime: selectedTime
+          // deliveryFee: parseFloat(deliveryFee)
         }
       }
     })

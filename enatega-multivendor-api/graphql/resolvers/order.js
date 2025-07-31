@@ -562,7 +562,7 @@ module.exports = {
     }
   },
   Mutation: {
-    async newCheckoutPlaceOrder(_, args) {
+    async newCheckoutPlaceOrder(_, args, { req }) {
       console.log('newCheckoutPlaceOrder', { args })
       try {
         const {
@@ -634,99 +634,118 @@ module.exports = {
         const zone = await Zone.findOne({
           location: { $geoIntersects: { $geometry: restaurant.location } }
         })
-        // const latOrigin = +restaurant.location.coordinates[1]
-        // const lonOrigin = +restaurant.location.coordinates[0]
+        const latOrigin = +restaurant.location.coordinates[1]
+        const lonOrigin = +restaurant.location.coordinates[0]
 
-        // const latDest = address['location']
-        //   ? +address?.location.coordinates[1]
-        //   : +area.location.location.coordinates[1]
-        // const longDest = address['location']
-        //   ? +address?.location.coordinates[0]
-        //   : +area.location.location.coordinates[0]
+        const latDest = address['location']
+          ? +address?.location.coordinates[1]
+          : +area.location.location.coordinates[1]
+        const longDest = address['location']
+          ? +address?.location.coordinates[0]
+          : +area.location.location.coordinates[0]
 
-        // const distance = calculateDistance(
-        //   latOrigin,
-        //   lonOrigin,
-        //   latDest,
-        //   longDest
-        // )
+        const distance = calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
 
-        // console.log({ distance })
+        console.log({ distance })
 
-        // let configuration = await Configuration.findOne()
-        // const costType = configuration.costType
+        let configuration = await Configuration.findOne()
+        const costType = configuration.costType
 
-        // // get zone charges from delivery prices
-        // const originZone = await DeliveryZone.findOne({
-        //   location: {
-        //     $geoIntersects: {
-        //       $geometry: {
-        //         type: 'Point',
-        //         coordinates: restaurant.location.coordinates
-        //       }
-        //     }
-        //   }
-        // })
+        // get zone charges from delivery prices
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: restaurant.location.coordinates
+              }
+            }
+          }
+        })
 
-        // const destinationZone = await DeliveryZone.findOne({
-        //   location: {
-        //     $geoIntersects: {
-        //       $geometry: {
-        //         type: 'Point',
-        //         coordinates: address.location.coordinates
-        //       }
-        //     }
-        //   }
-        // })
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: address.location.coordinates
+              }
+            }
+          }
+        })
 
-        // console.log({ originZone, destinationZone })
-        // let deliveryPrice
-        // if (originZone && destinationZone) {
-        //   deliveryPrice = await DeliveryPrice.findOne({
-        //     $or: [
-        //       {
-        //         originZone: originZone._id,
-        //         destinationZone: destinationZone._id
-        //       },
-        //       {
-        //         originZone: destinationZone._id,
-        //         destinationZone: originZone._id
-        //       }
-        //     ]
-        //   })
-        // }
+        console.log({ originZone, destinationZone })
+        let deliveryPrice
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPrice.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
 
-        // console.log({ deliveryPrice })
+        console.log({ deliveryPrice })
 
-        // let amount
-        // if (deliveryPrice) {
-        //   amount = deliveryPrice.cost
-        // } else {
-        //   amount = calculateAmount(
-        //     costType,
-        //     configuration.deliveryRate,
-        //     distance
-        //   )
-        //   console.log({ amount, distance })
-        // }
+        let amount
+        if (deliveryPrice) {
+          amount = deliveryPrice.cost
+        } else {
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          )
+          console.log({ amount, distance })
+        }
 
-        // let deliveryCharges = amount
+        let deliveryCharges = amount
 
-        // if (
-        //   parseFloat(amount) <= configuration.minimumDeliveryFee ||
-        //   distance <= 0.25 + Number.EPSILON
-        // ) {
-        //   deliveryCharges = configuration.minimumDeliveryFee
-        // }
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.25 + Number.EPSILON
+        ) {
+          deliveryCharges = configuration.minimumDeliveryFee
+        }
+
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        console.log({ restaurantId: req.restaurantId })
+        if (restaurantId || req.restaurantId) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurantId || req.restaurantId,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+
+          if (prepaidPackage) {
+            deliveryCharges = 0 // Delivery is free with prepaid package
+            prepaidPackage.usedDeliveries += 1
+            await prepaidPackage.save()
+            console.log('✅ Used prepaid delivery package.')
+            console.log('✅ Prepaid package found. Delivery is free.')
+          }
+        }
 
         let taxationAmount = 0
         const taxRate = restaurant.tax / 100 || 0
-        taxationAmount = (orderAmount + deliveryFee) * taxRate
+        taxationAmount = (orderAmount + deliveryCharges) * taxRate
         let tipping = 0
         let totalOrderAmount = 0
         if (orderAmount) {
           totalOrderAmount =
-            orderAmount + deliveryFee + taxationAmount + tipping
+            orderAmount + deliveryCharges + taxationAmount + tipping
         }
 
         console.log({ zone: zone?._id })
@@ -738,35 +757,20 @@ module.exports = {
           ]
         }
 
-        // ===== CHECK PREPAID DELIVERY PACKAGE =====
-        if (restaurantId) {
-          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
-            business: restaurantId,
-            isActive: true,
-            expiresAt: { $gte: new Date() },
-            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
-          })
-
-          if (prepaidPackage) {
-            prepaidPackage.usedDeliveries += 1
-            await prepaidPackage.save()
-            console.log('✅ Used prepaid delivery package.')
-            console.log('✅ Prepaid package found. Delivery is free.')
-          }
-        }
+        console.log({ totalOrderAmount, deliveryCharges })
 
         const order = new Order({
           orderId: newOrderId,
           user: user._id,
           resId: restaurantId,
           orderStatus: 'PENDING',
-          orderAmount: orderAmount ? totalOrderAmount : deliveryFee,
+          orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
           deliveryAddress: { ...address },
           items: [], // Add items logic if applicable
           isActive: true,
           tipping: 0, // Store tipping amount
           taxationAmount: 0, // Store taxation amount
-          deliveryCharges: deliveryFee, // Store delivery charges
+          deliveryCharges: deliveryCharges, // Store delivery charges
           //totalAmount: totalOrderAmount, // The final total amount including all fees
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
