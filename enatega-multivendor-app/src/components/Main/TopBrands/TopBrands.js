@@ -79,45 +79,41 @@ function TopBrands(props) {
 
   return (
     <View style={styles().topbrandsSec}>
-      <TouchableOpacity
-        style={{
-          flexDirection: isArabic ? 'row-reverse' : 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-        onPress={() =>
-          navigation.navigate('TopBrandsScreen', {
-            topRatedVendorsPreview: data?.topRatedVendorsPreview
-          })
-        }
-      >
-        <TextDefault
-          numberOfLines={1}
-          textColor={currentTheme.fontFourthColor}
-          bolder
-          H4
+      {data?.topRatedVendorsPreview?.length ? (
+        <TouchableOpacity
           style={{
-            textAlign: isArabic ? 'right' : 'left',
-            paddingHorizontal: 16,
-            marginBottom: 10
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
+          onPress={() =>
+            navigation.navigate('TopBrandsScreen', {
+              topRatedVendorsPreview: data?.topRatedVendorsPreview
+            })
+          }
         >
-          {t('topBrands')}
-        </TextDefault>
-        <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
-          <AntDesign
-            name={isArabic ? 'arrowleft' : 'arrowright'}
-            size={20}
-            color='black'
-          />
-          {/* <Ionicons
-            name={isArabic ? 'arrow-back' : 'arrow-forward'}
-            size={scale(24)}
-            style={styles().image1}
-            color={colors.dark}
-          /> */}
-        </View>
-      </TouchableOpacity>
+          <TextDefault
+            numberOfLines={1}
+            textColor={currentTheme.fontFourthColor}
+            bolder
+            H4
+            style={{
+              textAlign: isArabic ? 'right' : 'left',
+              paddingHorizontal: 16,
+              marginBottom: 10
+            }}
+          >
+            {t('topBrands')}
+          </TextDefault>
+          <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+            <AntDesign
+              name={isArabic ? 'arrowleft' : 'arrowright'}
+              size={20}
+              color='black'
+            />
+          </View>
+        </TouchableOpacity>
+      ) : null}
       <View style={{ ...alignment.PRsmall }}>
         {data.topRatedVendorsPreview &&
         data.topRatedVendorsPreview.length > 0 ? (
@@ -139,6 +135,14 @@ function TopBrands(props) {
           <View style={styles().noDataTextWrapper}>
             <Icon name='warning' size={30} color={colors.secondaryOrange} />
             <Text style={styles().noDataText}>{t('no_data')}</Text>
+            <Text
+              style={[
+                styles().noDataText,
+                { fontSize: 14, color: colors.secondaryOrange }
+              ]}
+            >
+              {t('city_location_no_deliveryzone')}
+            </Text>
             <Text
               style={[
                 styles().noDataText,

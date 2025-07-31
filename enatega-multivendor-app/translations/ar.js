@@ -597,7 +597,7 @@ export const ar = {
   helpful_information: 'تفاصيل إضافية للعنوان',
   better_place_description: 'تفاصيل العنوان: مثال: عمارة 5 بجوار بنك مصر',
   no_data: 'لا توجد بيانات',
-  try_change_location: 'جرب تغير الموقع',
+  try_change_location: 'جرب تغيير الموقع',
   order_from_anywhere: 'أطلب من أي مكان',
   pickup: 'مكان الاستلام',
   dropoff: 'مكان التسليم',
@@ -695,7 +695,7 @@ export const ar = {
   browse_available_areas: 'تصفح المناطق المتاحة',
   citySelect: 'قم بتغيير المدينة',
   city_location_no_deliveryzone:
-    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع !',
+    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع!',
   required: 'مطلوب *',
   enter_your_name: 'قم بإدخال اسمك',
   your_name: 'اسمك',
