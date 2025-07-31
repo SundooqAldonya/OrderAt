@@ -25,124 +25,128 @@ module.exports = {
         getDeliveryCalculationArgs: args,
         restaurantId: req.restaurantId
       })
-      // try {
-      const {
-        originLong,
-        originLat,
-        destLong,
-        destLat,
-        code,
-        restaurantId
-      } = args
+      try {
+        const {
+          originLong,
+          originLat,
+          destLong,
+          destLat,
+          code,
+          restaurantId
+        } = args
 
-      // get zone charges from delivery prices
-      const distance = calculateDistance(
-        originLat,
-        originLong,
-        destLat,
-        destLong
-      )
+        // get zone charges from delivery prices
+        const distance = calculateDistance(
+          originLat,
+          originLong,
+          destLat,
+          destLong
+        )
 
-      const configuration = await Configuration.findOne()
-      const costType = configuration.costType
+        const configuration = await Configuration.findOne()
+        const costType = configuration.costType
 
-      const originZone = await DeliveryZone.findOne({
-        location: {
-          $geoIntersects: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [originLong, originLat]
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [originLong, originLat]
+              }
             }
           }
-        }
-      })
-
-      const destinationZone = await DeliveryZone.findOne({
-        location: {
-          $geoIntersects: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [destLong, destLat]
-            }
-          }
-        }
-      })
-
-      console.log({ originZone, destinationZone })
-      let deliveryPrice
-      if (originZone && destinationZone) {
-        deliveryPrice = await DeliveryPrice.findOne({
-          $or: [
-            {
-              originZone: originZone._id,
-              destinationZone: destinationZone._id
-            },
-            {
-              originZone: destinationZone._id,
-              destinationZone: originZone._id
-            }
-          ]
         })
-      }
 
-      console.log({ deliveryPrice })
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [destLong, destLat]
+              }
+            }
+          }
+        })
 
-      let amount
-      if (deliveryPrice) {
-        amount = deliveryPrice.cost
-      } else {
-        amount = calculateAmount(costType, configuration.deliveryRate, distance)
-        console.log({ distance, amount })
-      }
+        console.log({ originZone, destinationZone })
+        let deliveryPrice
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPrice.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
 
-      if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
-        amount = configuration.minimumDeliveryFee
-      }
+        console.log({ deliveryPrice })
 
-      let deliveryDiscount = 0
-      let originalDiscount = amount
-      const coupon = await Coupon.findOne({ code })
-      console.log({ coupon })
-      if (coupon) {
-        const { discount_type, discount_value, max_discount } = coupon.rules
-        if (discount_type === 'percent') {
-          const discount = (discount_value / 100) * amount
-          deliveryDiscount = Math.min(discount, max_discount || discount)
-        } else if (discount_type === 'flat') {
-          deliveryDiscount = Math.min(
-            discount_value,
-            max_discount || discount_value
+        let amount
+        if (deliveryPrice) {
+          amount = deliveryPrice.cost
+        } else {
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
           )
+          console.log({ distance, amount })
         }
-      }
-      amount -= deliveryDiscount
 
-      console.log({ amount, originalDiscount, deliveryDiscount })
-      // ===== CHECK PREPAID DELIVERY PACKAGE =====
-      let isPrepaid = false
-      if (restaurantId || req.restaurantId) {
-        const prepaidPackage = await PrepaidDeliveryPackage.findOne({
-          business: restaurantId || req.restaurantId,
-          isActive: true,
-          expiresAt: { $gte: new Date() },
-          $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
-        })
+        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+          amount = configuration.minimumDeliveryFee
+        }
 
-        if (prepaidPackage) {
-          isPrepaid = true
-          console.log('✅ Prepaid package found. Delivery is free.')
-          return {
-            amount: 0,
-            originalDiscount,
-            isPrepaid: true
+        let deliveryDiscount = 0
+        let originalDiscount = amount
+        const coupon = await Coupon.findOne({ code })
+        console.log({ coupon })
+        if (coupon) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * amount
+            deliveryDiscount = Math.min(discount, max_discount || discount)
+          } else if (discount_type === 'flat') {
+            deliveryDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
           }
         }
-      }
+        amount -= deliveryDiscount
 
-      return { amount, originalDiscount }
-      // } catch (err) {
-      //   throw new Error(err)
-      // }
+        console.log({ amount, originalDiscount, deliveryDiscount })
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        let isPrepaid = false
+        if (restaurantId || req.restaurantId) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurantId || req.restaurantId,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+
+          if (prepaidPackage) {
+            isPrepaid = true
+            console.log('✅ Prepaid package found. Delivery is free.')
+            return {
+              amount: 0,
+              originalDiscount,
+              isPrepaid: true
+            }
+          }
+        }
+
+        return { amount, originalDiscount }
+      } catch (err) {
+        throw new Error(err)
+      }
     },
     async getDeliveryCalculationV2(_, args, { req }) {
       console.log({
