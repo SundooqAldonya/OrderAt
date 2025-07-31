@@ -2004,7 +2004,7 @@ const typeDefs = gql`
     coordinates: [Float!]!
   }
 
-  input AddressInput {
+  input AddressInputBulk {
     deliveryAddress: String
     details: String
     label: String
@@ -2013,7 +2013,10 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    bulkAddUserAddresses(userId: String!, addresses: [AddressInput!]!): Message
+    bulkAddUserAddresses(
+      userId: String!
+      addresses: [AddressInputBulk!]!
+    ): Message
     updateUserName(id: String!, name: String!): Message
     makeRestaurantVisible(id: String!): Message
     createBusinessMenu(file: Upload, restaurantId: String!): Message
