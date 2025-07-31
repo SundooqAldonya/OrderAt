@@ -28,7 +28,7 @@ import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
 import {
   checkoutCalculatePrice,
-  getDeliveryCalculation,
+  getDeliveryCalculationV2,
   getTipping,
   myOrders,
   orderFragment
@@ -179,7 +179,7 @@ function Checkout(props) {
     data: calcData,
     loading: calcLoading,
     error: errorCalc
-  } = useQuery(getDeliveryCalculation, {
+  } = useQuery(getDeliveryCalculationV2, {
     skip: !data,
     variables: {
       input: {
@@ -194,7 +194,7 @@ function Checkout(props) {
   })
 
   const restaurant = data?.restaurantCustomer || null
-  const amount = calcData?.getDeliveryCalculation.amount || 0
+  const amount = calcData?.getDeliveryCalculationV2.amount || 0
   console.log({ amount })
   const {
     data: dataCalculatePrice,

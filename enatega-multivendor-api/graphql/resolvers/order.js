@@ -1405,7 +1405,7 @@ module.exports = {
             expiresAt: { $gte: new Date() },
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
           })
-
+          let isPrepaid = false
           if (prepaidPackage) {
             isPrepaid = true
             finalDeliveryCharges = 0
