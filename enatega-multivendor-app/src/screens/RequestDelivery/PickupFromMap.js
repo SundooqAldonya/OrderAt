@@ -16,11 +16,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons'
 import {
   setAddressFrom,
-  setChooseFromMapFrom
+  setChooseFromMapFrom,
+  setSelectedAreaFrom
 } from '../../store/requestDeliverySlice'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Location from 'expo-location'
@@ -39,6 +40,8 @@ const PickupFromMap = () => {
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const { getAddress } = useGeocoding()
   const city = useSelector((state) => state.city.city)
+  const route = useRoute()
+  const { area = null } = route.params || {}
 
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
@@ -49,7 +52,7 @@ const PickupFromMap = () => {
   const state = useSelector((state) => state.requestDelivery)
   const { selectedCityAndAreaFrom, selectedAreaFrom } = state
 
-  console.log({ selectedCityAndAreaFrom })
+  // console.log({ selectedCityAndAreaFrom })
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -72,14 +75,14 @@ const PickupFromMap = () => {
 
   useEffect(() => {
     // animateToLocation({ lat: location.latitude, lng: location.longitude })
-    if (selectedCityAndAreaFrom) {
+    if (area) {
       animateToLocation({
-        lat: selectedAreaFrom.location.location.coordinates[1],
-        lng: selectedAreaFrom.location.location.coordinates[0]
+        lat: area.location.location.coordinates[1],
+        lng: area.location.location.coordinates[0]
       })
       getAddress(
-        selectedAreaFrom.location.location.coordinates[1],
-        selectedAreaFrom.location.location.coordinates[0]
+        area.location.location.coordinates[1],
+        area.location.location.coordinates[0]
       ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
@@ -187,27 +190,19 @@ const PickupFromMap = () => {
     const currentInput = searchRef.current?.getAddressText?.()
     console.log({ location })
     console.log({ currentInput })
-    // dispatch(
-    //   setAddressFrom({
-    //     addressFrom: currentInput,
-    //     regionFrom: location
-    //     // addressFreeTextFrom: addressFreeText,
-    //     // labelFrom: label
-    //   })
-    // )
+
     const newCoordinates = {
       ...location,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01
     }
 
-    if (selectedCityAndAreaFrom) {
+    if (area) {
+      dispatch(setSelectedAreaFrom(area))
       dispatch(
         setAddressFrom({
-          addressFrom: selectedAreaFrom.address,
+          addressFrom: area.address,
           regionFrom: { ...newCoordinates }
-          // addressFreeTextFrom: details,
-          // labelFrom: name
         })
       )
     } else {
@@ -215,7 +210,7 @@ const PickupFromMap = () => {
     }
     navigation.navigate('NewPickupMandoob', {
       chooseMap: true,
-      selectedAreaFromMap: selectedCityAndAreaFrom,
+      // selectedAreaFromMap: area ? true : false,
       currentInput,
       locationMap: location
     })
@@ -224,94 +219,94 @@ const PickupFromMap = () => {
   return (
     <View style={styles.container}>
       {/* Map View */}
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        initialRegion={{
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01
-        }}
-        onRegionChangeComplete={(region) => {
-          const { latitude, longitude } = region
-          setLocation({ latitude, longitude })
-
-          // Optionally reverse geocode
-          getAddress(latitude, longitude).then((res) => {
-            if (res.formattedAddress) {
-              searchRef.current?.setAddressText(res.formattedAddress)
-            }
-          })
-        }}
-      />
-      <View style={styles.markerFixed}>
-        <Ionicons name='location-sharp' size={36} color='red' />
-      </View>
-      {/* <Marker coordinate={location} />
-      </MapView> */}
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <GooglePlacesAutocomplete
-          ref={searchRef}
-          placeholder='ابحث عن مكان...'
-          onPress={(data, details = null) => {
-            const lat = details?.geometry?.location?.lat
-            const lng = details?.geometry?.location?.lng
-
-            if (lat && lng) {
-              const newLocation = { latitude: lat, longitude: lng }
-              setLocation(newLocation)
-              mapRef.current.animateToRegion({
-                ...newLocation,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              })
-            }
+      <View style={styles.mapContainer}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
           }}
-          query={{
-            key: GOOGLE_MAPS_KEY,
-            language: 'ar',
-            sessiontoken: sessionToken,
-            region: 'EG',
-            components: 'country:eg'
-          }}
-          fetchDetails={true}
-          enablePoweredByContainer={false}
-          styles={{
-            textInputContainer: {
-              backgroundColor: '#fff',
-              borderRadius: 10,
-              paddingHorizontal: 40,
-              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
-              elevation: 5,
-              shadowColor: '#000',
-              shadowOpacity: 0.2,
-              shadowOffset: { width: 0, height: 2 },
-              shadowRadius: 5
-            },
-            textInput: {
-              height: 44,
-              color: '#000',
-              fontSize: 16,
-              textAlign: 'right'
-            }
+          onRegionChangeComplete={(region) => {
+            const { latitude, longitude } = region
+            setLocation({ latitude, longitude })
+
+            // Optionally reverse geocode
+            getAddress(latitude, longitude).then((res) => {
+              if (res.formattedAddress) {
+                searchRef.current?.setAddressText(res.formattedAddress)
+              }
+            })
           }}
         />
-        {/* Clear icon (right) */}
-        <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
-          <Ionicons name='close-circle' size={24} color='#888' />
-        </TouchableOpacity>
+        <View style={styles.markerFixed}>
+          <Ionicons name='location-sharp' size={36} color='red' />
+        </View>
+        {/* <Marker coordinate={location} />
+      </MapView> */}
 
-        {/* Send icon (left) */}
-        <TouchableOpacity style={styles.fabSave} onPress={handleSave}>
-          <Ionicons name='checkmark-circle' size={28} color='#fff' />
-          <Text style={styles.fabText}>{t('save_location')}</Text>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <GooglePlacesAutocomplete
+            ref={searchRef}
+            placeholder='ابحث عن مكان...'
+            onPress={(data, details = null) => {
+              const lat = details?.geometry?.location?.lat
+              const lng = details?.geometry?.location?.lng
+
+              if (lat && lng) {
+                const newLocation = { latitude: lat, longitude: lng }
+                setLocation(newLocation)
+                mapRef.current.animateToRegion({
+                  ...newLocation,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01
+                })
+              }
+            }}
+            query={{
+              key: GOOGLE_MAPS_KEY,
+              language: 'ar',
+              sessiontoken: sessionToken,
+              region: 'EG',
+              components: 'country:eg'
+            }}
+            fetchDetails={true}
+            enablePoweredByContainer={false}
+            styles={{
+              textInputContainer: {
+                backgroundColor: '#fff',
+                borderRadius: 10,
+                paddingHorizontal: 40,
+                paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                elevation: 5,
+                shadowColor: '#000',
+                shadowOpacity: 0.2,
+                shadowOffset: { width: 0, height: 2 },
+                shadowRadius: 5
+              },
+              textInput: {
+                height: 44,
+                color: '#000',
+                fontSize: 16,
+                textAlign: 'right'
+              }
+            }}
+          />
+          {/* Clear icon (right) */}
+          <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
+            <Ionicons name='close-circle' size={24} color='#888' />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <Ionicons name='checkmark-circle' size={24} color='#fff' />
+          <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
-          <Ionicons name='send' size={24} color={colors.primary} />
-        </TouchableOpacity> */}
       </View>
     </View>
   )
@@ -322,6 +317,13 @@ export default PickupFromMap
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  mapContainer: {
+    height: height - (Platform.OS === 'ios' ? 60 : 140) // Adjust for header height
+  },
+  bottomButtonContainer: {
+    padding: 16,
+    backgroundColor: '#fff'
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -352,19 +354,15 @@ const styles = StyleSheet.create({
     left: width / 2 - 24, // Adjust based on marker size
     zIndex: 999
   },
-  fabSave: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
+  button: {
     backgroundColor: colors.primary,
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 8,
     flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 5
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  fabText: {
+  buttonText: {
     color: '#fff',
     fontSize: 16,
     marginLeft: 8

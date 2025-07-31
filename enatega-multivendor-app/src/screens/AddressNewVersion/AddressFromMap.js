@@ -223,90 +223,93 @@ const AddressFromMap = () => {
   return (
     <View style={styles.container}>
       {/* Map View */}
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        initialRegion={{
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01
-        }}
-        onRegionChangeComplete={(region) => {
-          const { latitude, longitude } = region
-          setLocation({ latitude, longitude })
-
-          // Optionally reverse geocode
-          getAddress(latitude, longitude).then((res) => {
-            if (res.formattedAddress) {
-              searchRef.current?.setAddressText(res.formattedAddress)
-            }
-          })
-        }}
-      />
-      <View style={styles.markerFixed}>
-        <Ionicons name='location-sharp' size={36} color='red' />
-      </View>
-      {/* <Marker coordinate={location} />
-      </MapView> */}
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <GooglePlacesAutocomplete
-          ref={searchRef}
-          placeholder='ابحث عن مكان...'
-          onPress={(data, details = null) => {
-            const lat = details?.geometry?.location?.lat
-            const lng = details?.geometry?.location?.lng
-
-            if (lat && lng) {
-              const newLocation = { latitude: lat, longitude: lng }
-              setLocation(newLocation)
-              mapRef.current.animateToRegion({
-                ...newLocation,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              })
-            }
+      <View style={styles.mapContainer}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
           }}
-          query={{
-            key: GOOGLE_MAPS_KEY,
-            language: 'ar',
-            sessiontoken: sessionToken,
-            region: 'EG',
-            components: 'country:eg'
-          }}
-          fetchDetails={true}
-          enablePoweredByContainer={false}
-          styles={{
-            textInputContainer: {
-              backgroundColor: '#fff',
-              borderRadius: 10,
-              paddingHorizontal: 40,
-              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
-              elevation: 5,
-              shadowColor: '#000',
-              shadowOpacity: 0.2,
-              shadowOffset: { width: 0, height: 2 },
-              shadowRadius: 5
-            },
-            textInput: {
-              height: 44,
-              color: '#000',
-              fontSize: 16,
-              textAlign: 'right'
-            }
+          onRegionChangeComplete={(region) => {
+            const { latitude, longitude } = region
+            setLocation({ latitude, longitude })
+
+            // Optionally reverse geocode
+            getAddress(latitude, longitude).then((res) => {
+              if (res.formattedAddress) {
+                searchRef.current?.setAddressText(res.formattedAddress)
+              }
+            })
           }}
         />
-        {/* Clear icon (right) */}
-        <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
-          <Ionicons name='close-circle' size={24} color='#888' />
-        </TouchableOpacity>
+        <View style={styles.markerFixed}>
+          <Ionicons name='location-sharp' size={36} color='red' />
+        </View>
+        {/* <Marker coordinate={location} />
+      </MapView> */}
 
-        {/* Send icon (left) */}
-        <TouchableOpacity style={styles.sendIcon} onPress={handleSave}>
-          <Ionicons name='send' size={24} color={colors.primary} />
-          {/* <TextDefault style={{color: '#000'}}>تم</TextDefault> */}
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <GooglePlacesAutocomplete
+            ref={searchRef}
+            placeholder='ابحث عن مكان...'
+            onPress={(data, details = null) => {
+              const lat = details?.geometry?.location?.lat
+              const lng = details?.geometry?.location?.lng
+
+              if (lat && lng) {
+                const newLocation = { latitude: lat, longitude: lng }
+                setLocation(newLocation)
+                mapRef.current.animateToRegion({
+                  ...newLocation,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01
+                })
+              }
+            }}
+            query={{
+              key: GOOGLE_MAPS_KEY,
+              language: 'ar',
+              sessiontoken: sessionToken,
+              region: 'EG',
+              components: 'country:eg'
+            }}
+            fetchDetails={true}
+            enablePoweredByContainer={false}
+            styles={{
+              textInputContainer: {
+                backgroundColor: '#fff',
+                borderRadius: 10,
+                paddingHorizontal: 40,
+                paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                elevation: 5,
+                shadowColor: '#000',
+                shadowOpacity: 0.2,
+                shadowOffset: { width: 0, height: 2 },
+                shadowRadius: 5
+              },
+              textInput: {
+                height: 44,
+                color: '#000',
+                fontSize: 16,
+                textAlign: 'right'
+              }
+            }}
+          />
+          {/* Clear icon (right) */}
+          <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
+            <Ionicons name='close-circle' size={24} color='#888' />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <Ionicons name='checkmark-circle' size={24} color='#fff' />
+          <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -318,6 +321,9 @@ export default AddressFromMap
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  mapContainer: {
+    height: height - (Platform.OS === 'ios' ? 60 : 140) // Adjust for header height
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -344,8 +350,21 @@ const styles = StyleSheet.create({
   },
   markerFixed: {
     position: 'absolute',
-    top: height / 2 - 50, // Adjust based on marker size
+    top: height / 2 - 100, // Adjust based on marker size
     left: width / 2 - 24, // Adjust based on marker size
     zIndex: 999
+  },
+  button: {
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 8
   }
 })

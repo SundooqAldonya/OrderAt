@@ -511,28 +511,27 @@ function Main(props) {
       />
     )
 
-  if (errorZone)
-    return (
-      <ErrorView
-        wentWrong={t('somethingWentWrong')}
-        message={t('city_location_no_deliveryzone')}
-      >
-        <MainModalize
-          isVisible={isVisible}
-          // currentTheme={currentTheme}
-          isLoggedIn={isLoggedIn}
-          addressIcons={addressIcons}
-          modalHeader={modalHeader}
-          modalFooter={modalFooter}
-          setAddressLocation={setAddressLocation}
-          profile={profile}
-          location={location}
-          loading={loadingAddress}
-          onClose={onModalClose}
-          otlobMandoob={false}
-        />
-      </ErrorView>
-    )
+  // if (errorZone)
+  //   return (
+  //     <ErrorView
+  //       // wentWrong={t('somethingWentWrong')}
+  //       message={t('city_location_no_deliveryzone')}
+  //     >
+  //       <MainModalize
+  //         isVisible={isVisible}
+  //         isLoggedIn={isLoggedIn}
+  //         addressIcons={addressIcons}
+  //         modalHeader={modalHeader}
+  //         modalFooter={modalFooter}
+  //         setAddressLocation={setAddressLocation}
+  //         profile={profile}
+  //         location={location}
+  //         loading={loadingAddress}
+  //         onClose={onModalClose}
+  //         otlobMandoob={false}
+  //       />
+  //     </ErrorView>
+  //   )
 
   return (
     <>

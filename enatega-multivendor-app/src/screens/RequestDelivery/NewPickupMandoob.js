@@ -44,6 +44,7 @@ import {
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Toast from 'react-native-toast-message'
+import JSONTree from 'react-native-json-tree'
 
 const SELECT_ADDRESS = gql`
   ${selectAddress}
@@ -92,6 +93,7 @@ const NewPickupMandoob = () => {
   })
   const [areasModalVisible, setAreasModalVisible] = useState(false)
   const [citiesModalVisible, setCitiesModalVisible] = useState(false)
+  const [area, setArea] = useState(null)
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -306,6 +308,18 @@ const NewPickupMandoob = () => {
 
   const onModalClose = () => {
     setIsVisible(false)
+  }
+
+  const debug = false // Set to true to debug the area object
+
+  if (debug && area) {
+    return (
+      <View style={{ margin: 10 }}>
+        <View style={{ maxHeight: 300 }}>
+          <JSONTree data={area} theme='monokai' invertTheme={false} />
+        </View>
+      </View>
+    )
   }
 
   const modalFooter = () => (
@@ -523,9 +537,10 @@ const NewPickupMandoob = () => {
                   key={area._id}
                   onPress={() => {
                     dispatch(setResetBooleansFrom())
-                    dispatch(setSelectedAreaFrom(area))
+                    // dispatch(setSelectedAreaFrom(area))
+                    setArea(area)
                     setAreasModalVisible(false)
-                    navigation.navigate('PickupFromMap')
+                    navigation.navigate('PickupFromMap', { area })
                   }}
                   style={styles.modalItem}
                 >

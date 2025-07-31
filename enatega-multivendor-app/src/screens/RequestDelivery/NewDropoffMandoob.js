@@ -227,7 +227,7 @@ const NewDropoffMandoob = () => {
     setIsVisible(true)
   }
 
-  const handleNext = () => {
+  const handleSave = () => {
     console.log({ locationMap })
     if (!name) {
       Toast.show({
@@ -442,7 +442,7 @@ const NewDropoffMandoob = () => {
       />
 
       {/* Save button */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleNext}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>{t('continue')}</Text>
       </TouchableOpacity>
       <MainModalize
@@ -504,9 +504,9 @@ const NewDropoffMandoob = () => {
                   key={area._id}
                   onPress={() => {
                     dispatch(setResetBooleansTo())
-                    dispatch(setSelectedAreaTo(area))
+                    // dispatch(setSelectedAreaTo(area))
                     setAreasModalVisible(false)
-                    navigation.navigate('DropoffFromMap')
+                    navigation.navigate('DropoffFromMap', { area })
                   }}
                   style={styles.modalItem}
                 >
