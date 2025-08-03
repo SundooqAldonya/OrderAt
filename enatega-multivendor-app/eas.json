@@ -15,8 +15,8 @@
       "ios": {
         "simulator": true,
         "env": {
-            "GOOGLE_SERVICES_FILE": "./GoogleService-Info.plist"
-          }
+          "GOOGLE_SERVICES_FILE": "./GoogleService-Info.plist"
+        }
       }
     },
     "staging": {
@@ -45,6 +45,6 @@
     }
   },
   "cli": {
-    "version": ">= 0.43.0"
+    "appVersionSource": "remote"
   }
 }

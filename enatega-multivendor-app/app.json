@@ -20,7 +20,6 @@
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "74",
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.orderatcustomer.app",
@@ -52,7 +51,6 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 69,
       "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
@@ -72,13 +70,21 @@
     },
     "plugins": [
       [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "note": "Use SENTRY_AUTH_TOKEN env to authenticate with Sentry.",
+          "project": "orderatcustomer",
+          "organization": "orderat"
+        }
+      ],
+      [
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.808523856739-46u2pjdsfl0tjmplj580os4gntbb5410"
         }
       ],
       "expo-localization",
-      "sentry-expo",
       [
         "expo-tracking-transparency",
         {
@@ -127,7 +133,8 @@
       ],
       "@react-native-firebase/app",
       "@react-native-firebase/messaging",
-      "./app.plugin.js"
+      "./app.plugin.js",
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

@@ -49,7 +49,7 @@ const MainModalize = ({
         style={styles(currentTheme).modal}
         swipeDirection='down'
         onSwipeComplete={onClose}
-        useNativeDriver
+        useNativeDriver={false}
       >
         <View style={styles(currentTheme).modalContent}>
           {modalHeader ? <Fragment>{modalHeader?.()}</Fragment> : null}

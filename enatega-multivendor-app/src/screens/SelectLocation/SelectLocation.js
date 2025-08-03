@@ -449,6 +449,8 @@ export default function SelectLocation(props) {
               <View style={styles1.searchContainer}>
                 <GooglePlacesAutocomplete
                   ref={searchRef}
+                  predefinedPlaces={[]}
+                  predefinedPlacesAlwaysVisible={false}
                   placeholder='ابحث عن مكان...'
                   onPress={(data, details = null) => {
                     const lat = details?.geometry?.location?.lat
@@ -474,6 +476,9 @@ export default function SelectLocation(props) {
                   }}
                   fetchDetails={true}
                   enablePoweredByContainer={false}
+                  textInputProps={{
+                    placeholderTextColor: '#999'
+                  }}
                   styles={{
                     textInputContainer: {
                       backgroundColor: '#fff',

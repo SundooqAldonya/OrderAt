@@ -302,7 +302,6 @@ const NewPickupMandoob = () => {
   }
 
   const handleNearestArea = () => {
-    // setCitiesModalVisible(true)
     setAreasModalVisible(true)
   }
 
@@ -493,7 +492,7 @@ const NewPickupMandoob = () => {
       />
 
       {/* cities modal */}
-      <Modal visible={citiesModalVisible} transparent animationType='slide'>
+      {/* <Modal visible={citiesModalVisible} transparent animationType='slide'>
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
             <Text style={styles.modalTitle}>{t('choose_city')}</Text>
@@ -523,7 +522,7 @@ const NewPickupMandoob = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
 
       {/* areas modal */}
       <Modal visible={areasModalVisible} transparent animationType='slide'>

@@ -12,7 +12,7 @@ import {
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import useEnvVars from '../../../environment'
 import MapView, { Marker, Polyline } from 'react-native-maps'
 import { LocationContext } from '../../context/Location'
@@ -613,6 +613,7 @@ const RequestDelivery = () => {
           </TextDefault>
           <TextInput
             placeholder={t('item_description_notes')}
+            placeholderTextColor='#888'
             style={[
               styles.textArea,
               notesError && { borderColor: 'red', borderWidth: 1 }
@@ -972,7 +973,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 120, // adjust height as needed
     textAlignVertical: 'top',
-    backgroundColor: '#fff`'
+    backgroundColor: '#fff',
+    color: '#000'
   },
   label: { fontWeight: '600', marginTop: 10 },
   picker: { backgroundColor: '#f0f0f0', borderRadius: 8, marginBottom: 10 },
