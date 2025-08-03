@@ -494,9 +494,32 @@ const NewDropoffMandoob = () => {
       <Modal visible={areasModalVisible} transparent animationType='slide'>
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
-            <Text style={styles.modalTitle}>
-              {t('choose_area_in')} {selectedCityTo?.title}
-            </Text>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row' : 'row-reverse',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Text style={styles.modalTitle}>
+                {t('choose_area_in')} {city?.title}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setAreasModalVisible(false)
+                  navigation.navigate('CityListScreen')
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.primary, // or '#007bff' if you're not using a theme
+                    textDecorationLine: 'underline',
+                    fontSize: 14
+                  }}
+                >
+                  {t('change_city')}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               {areasList?.map((area) => (

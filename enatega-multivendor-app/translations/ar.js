@@ -700,5 +700,6 @@ export const ar = {
   enter_your_name: 'قم بإدخال اسمك',
   your_name: 'اسمك',
   name_updated: 'تم تحديث اسمك بنجاح!',
-  addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة'
+  addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة',
+  change_city: 'تغيير المدينة'
 }
