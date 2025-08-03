@@ -6,9 +6,10 @@ import {
   Platform,
   TouchableOpacity,
   Text,
-  Linking
+  Linking,
+  SafeAreaView
 } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { useEffect } from 'react'
 import useEnvVars from '../../../environment'
@@ -77,9 +78,9 @@ const EditAddressFromMap = () => {
         return (
           <TouchableOpacity
             onPress={handleCurrentPosition}
-            style={{ paddingHorizontal: 25 }}
+            style={{ paddingRight: 25 }}
           >
-            <FontAwesome6 name='location-crosshairs' size={24} color='#fff' />
+            <FontAwesome6 name='location-crosshairs' size={20} color='#fff' />
           </TouchableOpacity>
         )
       },
@@ -221,11 +222,12 @@ const EditAddressFromMap = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Map View */}
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
+          provider={PROVIDER_GOOGLE}
           style={styles.map}
           initialRegion={{
             latitude: location.latitude,
@@ -312,7 +314,7 @@ const EditAddressFromMap = () => {
           <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -323,7 +325,15 @@ const styles = StyleSheet.create({
     flex: 1
   },
   mapContainer: {
-    height: height - (Platform.OS === 'ios' ? 60 : 140) // Adjust for header height
+    // height: height - (Platform.OS === 'ios' ? 60 : 140) // Adjust for header height
+    flex: 1, // 🔥 fix here (instead of height)
+    position: 'relative'
+  },
+  bottomButtonContainer: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#eee'
   },
   map: {
     ...StyleSheet.absoluteFillObject

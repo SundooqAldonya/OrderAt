@@ -251,7 +251,7 @@ const RequestDelivery = () => {
           addresses
         }
       })
-      // dispatch(resetRequestDelivery())
+      dispatch(resetRequestDelivery())
       navigation.navigate('Main')
     },
     onError: (err) => {

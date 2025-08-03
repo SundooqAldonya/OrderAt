@@ -3,7 +3,7 @@ import { View, StatusBar, Platform, ScrollView } from 'react-native'
 import SideDrawerItems from '../Drawer/Items/DrawerItems'
 import SideDrawerProfile from '../Drawer/Profile/DrawerProfile'
 import { theme } from '../../utils/themeColors'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import UserContext from '../../context/User'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -31,7 +31,7 @@ import { TouchableOpacity } from 'react-native'
 
 function SidebBar(props) {
   const Analytics = analytics()
-
+  const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
@@ -94,7 +94,7 @@ function SidebBar(props) {
           <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
         </View>
       ),
-      navigateTo: 'FromPlace',
+      navigateTo: 'RequestDelivery',
       isAuth: true
     },
     {
@@ -140,7 +140,7 @@ function SidebBar(props) {
   const handleLogout = async () => {
     setModalVisible(false)
     logout()
-    props.navigation.closeDrawer()
+    navigation.closeDrawer()
     Toast.show({
       type: 'success',
       text1: t('success'),

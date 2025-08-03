@@ -21,7 +21,7 @@ function DrawerProfile(props) {
     <View
       style={[
         styles(currentTheme).mainContainer,
-        { backgroundColor: colors.white, borderWidth: 0 }
+        { backgroundColor: colors.white, borderWidth: 0, paddingTop: 20 }
       ]}
     >
       <View style={styles().loggedInContainer}>
@@ -30,9 +30,9 @@ function DrawerProfile(props) {
             <TextDefault textColor={colors.dark} bolder H3>
               {profile?.name ? profile?.name : 'Guest'}
             </TextDefault>
-            <TextDefault textColor={colors.dark}>
+            {/* <TextDefault textColor={colors.dark}>
               {profile?.email ? profile?.email : null}
-            </TextDefault>
+            </TextDefault> */}
           </View>
 
           <View style={styles(currentTheme).imgContainer}>

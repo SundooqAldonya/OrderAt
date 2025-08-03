@@ -41,7 +41,7 @@ const CityListScreen = () => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          flexDirection: isArabic ? 'row-reverse' : 'row',
+          flexDirection: 'row-reverse',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}

@@ -70,7 +70,8 @@ const AddressNewVersion = () => {
   const route = useRoute()
   const modalRef = useRef()
   const city = useSelector((state) => state.city.city)
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const [name, setName] = useState('')
   const [details, setDetails] = useState('')
   const [currentPosSelected, setCurrentPosSelected] = useState(false)
@@ -346,14 +347,15 @@ const AddressNewVersion = () => {
         style={{
           ...styles.option,
           borderColor: chooseFromMap ? 'green' : '#eee',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={() => {
           // dispatch(setChooseFromMap({ status: true }))
           navigation.navigate('AddressFromMap')
         }}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Entypo
             name='location-pin'
             size={22}
@@ -365,7 +367,7 @@ const AddressNewVersion = () => {
               color: chooseFromMap ? 'green' : '#000'
             }}
           >
-            حدد الموقع على الخريطة
+            {t('locate_on_map')}
           </Text>
         </View>
         {chooseFromMap && (
@@ -377,11 +379,12 @@ const AddressNewVersion = () => {
         style={{
           ...styles.option,
           borderColor: selectedCityAndArea ? 'green' : '#eee',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexDirection: isArabic ? 'row' : 'row-reverse'
         }}
         onPress={handleNearestArea}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <MaterialIcons
             name='location-city'
             size={22}
@@ -393,7 +396,8 @@ const AddressNewVersion = () => {
               color: selectedCityAndArea ? 'green' : '#000'
             }}
           >
-            اختر أقرب منطقة {selectedArea ? `- (${selectedArea.title})` : null}
+            {t('choose_nearest_area')}{' '}
+            {selectedArea ? `- (${selectedArea.title})` : null}
           </Text>
         </View>
         {selectedCityAndArea && (
@@ -402,19 +406,23 @@ const AddressNewVersion = () => {
       </TouchableOpacity>
 
       {/* Inputs */}
-      <Text style={styles.label}>اسم المكان</Text>
+      <Text style={{ ...styles.label, textAlign: isArabic ? 'left' : 'right' }}>
+        {t('address_label')} {`(${t('required')})`}
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder='مثلاً: المنزل، العمل، إلخ'
+        placeholder={t('address_label_placeholder')}
         placeholderTextColor='#aaa'
         value={name}
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>تفاصيل العنوان (اختياري)</Text>
+      <Text style={{ ...styles.label, textAlign: isArabic ? 'left' : 'right' }}>
+        {t('address_details')} {`(${t('optional')})`}
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder='عمارة بجوار بنك مصر...'
+        placeholder={t('better_place_description')}
         placeholderTextColor='#aaa'
         value={details}
         onChangeText={setDetails}
@@ -442,7 +450,7 @@ const AddressNewVersion = () => {
       <Modal visible={citiesModalVisible} transparent animationType='slide'>
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
-            <Text style={styles.modalTitle}>اختر المدينة</Text>
+            <Text style={styles.modalTitle}>{t('choose_city')}</Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               {cities?.map((city) => (
@@ -465,7 +473,7 @@ const AddressNewVersion = () => {
               onPress={() => setCitiesModalVisible(false)}
               style={styles.cancelButton}
             >
-              <Text style={styles.cancelText}>إلغاء</Text>
+              <Text style={styles.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -476,7 +484,7 @@ const AddressNewVersion = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.halfModal}>
             <Text style={styles.modalTitle}>
-              اختر المنطقة داخل {city?.title}
+              {t('choose_area_in')} {city?.title}
             </Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -502,7 +510,7 @@ const AddressNewVersion = () => {
               onPress={() => setAreasModalVisible(false)}
               style={styles.cancelButton}
             >
-              <Text style={styles.cancelText}>إلغاء</Text>
+              <Text style={styles.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
