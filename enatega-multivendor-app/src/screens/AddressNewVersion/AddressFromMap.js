@@ -16,9 +16,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons'
-import { setAddress, setChooseFromMap } from '../../store/addNewAddressSlice'
+import {
+  setAddress,
+  setChooseFromMap,
+  setSelectedArea
+} from '../../store/addNewAddressSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -36,6 +40,8 @@ const AddressFromMap = () => {
   const { GOOGLE_MAPS_KEY } = useEnvVars()
   const { getAddress } = useGeocoding()
   const city = useSelector((state) => state.city.city)
+  const route = useRoute()
+  const { area = null } = route.params || {}
 
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
@@ -46,7 +52,7 @@ const AddressFromMap = () => {
   const state = useSelector((state) => state.addNewAddress)
   const { selectedCityAndArea, selectedArea } = state
 
-  console.log({ selectedCityAndArea })
+  // console.log({ selectedCityAndArea })
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -68,14 +74,14 @@ const AddressFromMap = () => {
   }, [navigation, t, colors.primary])
 
   useEffect(() => {
-    if (selectedCityAndArea) {
+    if (area) {
       animateToLocation({
-        lat: selectedArea.location.location.coordinates[1],
-        lng: selectedArea.location.location.coordinates[0]
+        lat: area.location.location.coordinates[1],
+        lng: area.location.location.coordinates[0]
       })
       getAddress(
-        selectedArea.location.location.coordinates[1],
-        selectedArea.location.location.coordinates[0]
+        area.location.location.coordinates[1],
+        area.location.location.coordinates[0]
       ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
@@ -200,10 +206,11 @@ const AddressFromMap = () => {
       longitudeDelta: 0.01
     }
 
-    if (selectedCityAndArea) {
+    if (area) {
+      dispatch(setSelectedArea(area))
       dispatch(
         setAddress({
-          addressFrom: selectedArea.address,
+          addressFrom: area.address,
           regionFrom: newCoordinates
           // addressFreeTextFrom: details,
           // labelFrom: name
@@ -214,7 +221,7 @@ const AddressFromMap = () => {
     }
     navigation.navigate('AddressNewVersion', {
       chooseMap: true,
-      selectedAreaMap: selectedCityAndArea,
+      selectedAreaMap: area,
       currentInput,
       locationMap: location
     })

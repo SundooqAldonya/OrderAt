@@ -485,9 +485,11 @@ const AddressNewVersion = () => {
                 <TouchableOpacity
                   key={area._id}
                   onPress={() => {
-                    dispatch(setSelectedArea(area))
+                    // dispatch(setSelectedArea(area))
                     setAreasModalVisible(false)
-                    navigation.navigate('AddressFromMap')
+                    navigation.navigate('AddressFromMap', {
+                      area
+                    })
                   }}
                   style={styles.modalItem}
                 >

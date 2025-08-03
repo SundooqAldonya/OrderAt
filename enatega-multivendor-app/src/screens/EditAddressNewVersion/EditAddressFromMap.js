@@ -18,7 +18,11 @@ import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { FontAwesome6, Ionicons } from '@expo/vector-icons'
-import { setAddress, setChooseFromMap } from '../../store/addNewAddressSlice'
+import {
+  setAddress,
+  setChooseFromMap,
+  setSelectedArea
+} from '../../store/addNewAddressSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -49,10 +53,11 @@ const EditAddressFromMap = () => {
   console.log({ region })
 
   const { id, address, prevScreen } = route.params || {}
+  const { area = null } = route.params || {}
 
   useEffect(() => {
     if (region) {
-      setLocation({ latitude: region.latitude, longitude: region.longitude })
+      // setLocation({ latitude: region.latitude, longitude: region.longitude })
       animateToLocation({
         lat: region.latitude,
         lng: region.longitude
@@ -85,14 +90,14 @@ const EditAddressFromMap = () => {
   }, [navigation, t, colors.primary])
 
   useEffect(() => {
-    if (selectedCityAndArea) {
+    if (area) {
       animateToLocation({
-        lat: selectedArea.location.location.coordinates[1],
-        lng: selectedArea.location.location.coordinates[0]
+        lat: area.location.location.coordinates[1],
+        lng: area.location.location.coordinates[0]
       })
       getAddress(
-        selectedArea.location.location.coordinates[1],
-        selectedArea.location.location.coordinates[0]
+        area.location.location.coordinates[1],
+        area.location.location.coordinates[0]
       ).then((res) => {
         if (res.formattedAddress) {
           searchRef.current?.setAddressText(res.formattedAddress)
@@ -191,10 +196,11 @@ const EditAddressFromMap = () => {
       longitudeDelta: 0.01
     }
 
-    if (selectedCityAndArea) {
+    if (area) {
+      dispatch(setSelectedArea(area))
       dispatch(
         setAddress({
-          addressFrom: selectedArea.address,
+          addressFrom: area.address,
           regionFrom: newCoordinates
           // addressFreeTextFrom: details,
           // labelFrom: name
@@ -205,7 +211,7 @@ const EditAddressFromMap = () => {
     }
     navigation.navigate('EditAddressNewVersion', {
       chooseMap: true,
-      selectedAreaMap: selectedCityAndArea,
+      selectedAreaMap: area,
       currentInput,
       locationMap: location,
       id,

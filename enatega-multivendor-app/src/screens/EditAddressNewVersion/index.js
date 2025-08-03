@@ -225,7 +225,7 @@ const EditAddressNewVersion = () => {
       label: name,
       latitude: String(coordinates.latitude),
       longitude: String(coordinates.longitude),
-      deliveryAddress: currentInput,
+      deliveryAddress: currentInput ? currentInput : address.deliveryAddress,
       details: details
     }
     mutate({ variables: { addressInput } })
@@ -245,7 +245,7 @@ const EditAddressNewVersion = () => {
           justifyContent: 'space-between'
         }}
         onPress={() => {
-          dispatch(setChooseFromMap({ status: true }))
+          // dispatch(setChooseFromMap({ status: true }))
           navigation.navigate('EditAddressFromMap', {
             address,
             id: address._id,
@@ -372,12 +372,13 @@ const EditAddressNewVersion = () => {
                 <TouchableOpacity
                   key={area._id}
                   onPress={() => {
-                    dispatch(setSelectedArea(area))
+                    // dispatch(setSelectedArea(area))
                     setAreasModalVisible(false)
                     navigation.navigate('EditAddressFromMap', {
                       address,
                       id: address._id,
-                      prevScreen
+                      prevScreen,
+                      area
                     })
                   }}
                   style={styles.modalItem}
