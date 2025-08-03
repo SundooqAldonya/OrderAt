@@ -87,16 +87,16 @@ function SidebBar(props) {
       isAuth: true
     },
 
-    {
-      title: 'requestDeliveryTitle',
-      icon: (
-        <View>
-          <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
-        </View>
-      ),
-      navigateTo: 'RequestDelivery',
-      isAuth: true
-    },
+    // {
+    //   title: 'requestDeliveryTitle',
+    //   icon: (
+    //     <View>
+    //       <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
+    //     </View>
+    //   ),
+    //   navigateTo: 'RequestDelivery',
+    //   isAuth: true
+    // },
     {
       title: 'citySelect',
       icon: <MaterialIcons name='location-city' size={24} color='black' />,
