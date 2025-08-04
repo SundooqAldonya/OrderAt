@@ -191,6 +191,7 @@ const AddNewAddress = () => {
                 numberOfLines={4}
                 placeholder={`${t('address_details')}`}
                 style={styles.inputs}
+                placeholderTextColor="#999"
               />
               <View
                 style={{

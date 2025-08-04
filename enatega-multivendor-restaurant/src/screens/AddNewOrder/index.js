@@ -204,12 +204,14 @@ const AddNewOrder = ({ navigation }) => {
                 placeholder={`${t('enterphone')} *`}
                 style={styles.inputs}
                 keyboardType="number-pad"
+                placeholderTextColor="#999"
               />
               <TextInput
                 value={userData.name}
                 onChangeText={text => setUserData({ ...userData, name: text })}
                 placeholder={t('fullname')}
                 style={styles.inputs}
+                placeholderTextColor="#999"
               />
 
               <TouchableOpacity
@@ -243,8 +245,7 @@ const AddNewOrder = ({ navigation }) => {
                 onChangeText={text =>
                   setUserData({ ...userData, addressDetails: text })
                 }
-                // multiline
-                // numberOfLines={4}
+                placeholderTextColor="#999"
                 placeholder={`${t('address_details')}`}
                 style={styles.inputs}
               />
@@ -254,6 +255,7 @@ const AddNewOrder = ({ navigation }) => {
                 placeholder={t('entercost')}
                 style={styles.inputs}
                 keyboardType="number-pad"
+                placeholderTextColor="#999"
               />
               {selectedArea ? (
                 <View style={styles.fareBox}>
@@ -344,6 +346,7 @@ const AddNewOrder = ({ navigation }) => {
             </TextDefault>
             <TextInput
               placeholder="ابحث عن المنطقة..."
+              placeholderTextColor="#999"
               value={search}
               onChangeText={setSearch}
               style={{

@@ -256,6 +256,7 @@ const Checkout = () => {
               fontFamily: 'Montserrat_500Medium',
               height: 55
             }}
+            placeholderTextColor="#999"
           />
         </View>
       </ScrollView>

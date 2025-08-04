@@ -163,12 +163,14 @@ const RegisterUser = () => {
           <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <View>
               <TextInput
+                placeholderTextColor="#999"
                 value={userData.phone}
                 onChangeText={text => setUserData({ ...userData, phone: text })}
                 placeholder={t('enterphone')}
                 style={styles.inputs}
               />
               <TextInput
+                placeholderTextColor="#999"
                 value={userData.name}
                 onChangeText={text => setUserData({ ...userData, name: text })}
                 placeholder={t('fullname')}
@@ -201,6 +203,7 @@ const RegisterUser = () => {
                 </TextDefault>
               </TouchableOpacity>
               <TextInput
+                placeholderTextColor="#999"
                 value={userData.address}
                 onChangeText={text =>
                   setUserData({ ...userData, address: text })
