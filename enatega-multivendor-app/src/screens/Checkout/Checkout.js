@@ -2061,7 +2061,7 @@ function Checkout(props) {
           style={styleNameModal.modal}
           swipeDirection='down'
           onSwipeComplete={onClose}
-          useNativeDriver
+          useNativeDriver={false}
         >
           <View style={styleNameModal.modalContent}>
             <Text
