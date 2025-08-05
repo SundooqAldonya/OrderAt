@@ -27,12 +27,8 @@ const navigationOptions = (props) => ({
     ...alignment.MLxSmall
   },
   headerTitleAlign: 'left',
-  headerLeft: () => (
-    <LeftButton icon={props.icon} iconColor={colors?.white} />
-  ),
-  headerRight: () => (
-    <RightButton icon={'cart'} iconColor={colors?.white} />
-  ),
+  headerLeft: () => <LeftButton icon={props.icon} iconColor={colors?.white} />,
+  headerRight: () => <RightButton icon={'cart'} iconColor={colors?.white} />,
   headerTitle: (headerProp) => (
     <SelectedLocation
       {...headerProp}

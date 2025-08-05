@@ -62,9 +62,7 @@ function BackButton(props) {
       />
     )
   } else if (props.icon === 'fav') {
-    return (
-      <AntDesign name='hearto' size={scale(20)} color={colors?.white} />
-    )
+    return <AntDesign name='hearto' size={scale(20)} color={colors?.white} />
   } else {
     return (
       <EvilIcons
@@ -147,8 +145,8 @@ function LeftButton(props) {
 
 function RightButton(props) {
   // const { t } = props
-    const { t } = useTranslation()
-  
+  const { t } = useTranslation()
+
   const [password, setPassword] = useState(false)
   const navigation = useNavigation()
   const route = useRoute()
@@ -170,11 +168,7 @@ function RightButton(props) {
   function cartIcon() {
     return (
       <View style={styles().rightContainer}>
-        <SimpleLineIcons
-          name='handbag'
-          size={scale(20)}
-          color={colors.white}
-        />
+        <SimpleLineIcons name='handbag' size={scale(20)} color={colors.white} />
         <View
           style={[
             styles(route.name === 'Main' ? 'black' : currentTheme.white)

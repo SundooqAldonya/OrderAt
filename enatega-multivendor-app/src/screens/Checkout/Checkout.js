@@ -1122,6 +1122,7 @@ function Checkout(props) {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={[styles().flex]}
+              contentContainerStyle={{ paddingBottom: 20 }}
             >
               <View>
                 {/* {isPickup ? (
