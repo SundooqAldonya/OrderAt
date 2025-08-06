@@ -4,7 +4,7 @@ import SideDrawerItems from '../Drawer/Items/DrawerItems'
 import SideDrawerProfile from '../Drawer/Profile/DrawerProfile'
 import { theme } from '../../utils/themeColors'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import UserContext from '../../context/User'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import styles from './styles'
@@ -22,7 +22,7 @@ import {
   MaterialIcons,
   SimpleLineIcons
 } from '@expo/vector-icons'
-import { verticalScale } from '../../utils/scaling'
+import { moderateScale, verticalScale } from '../../utils/scaling'
 import MandoobImg from '../../assets/delivery_dark.png'
 import { Image } from 'react-native'
 import Toast from 'react-native-toast-message'
@@ -167,9 +167,9 @@ function SidebBar(props) {
         backgroundColor: currentTheme.themeBackground
       }}
     >
-      <View style={{ height: 100, paddingTop: 30 }}>
+      <SafeAreaView edges={['top']}>
         <SideDrawerProfile navigation={props.navigation} />
-      </View>
+      </SafeAreaView>
 
       <View style={styles(currentTheme).botContainer}>
         {isLoggedIn &&
@@ -209,7 +209,7 @@ function SidebBar(props) {
                 icon={
                   <SimpleLineIcons
                     name={'info'}
-                    size={verticalScale(18)}
+                    size={moderateScale(18)}
                     color={currentTheme.darkBgFont}
                   />
                 }
@@ -228,7 +228,7 @@ function SidebBar(props) {
                 icon={
                   <SimpleLineIcons
                     name={'logout'}
-                    size={verticalScale(18)}
+                    size={moderateScale(18)}
                     color={currentTheme.darkBgFont}
                   />
                 }
@@ -240,7 +240,7 @@ function SidebBar(props) {
           <View
             style={[
               styles().item,
-              { borderBottomWidth: 0, marginVertical: 10, height: 50 }
+              { borderBottomWidth: 0, marginVertical: 10 }
             ]}
           >
             <SideDrawerItems
@@ -248,7 +248,7 @@ function SidebBar(props) {
               icon={
                 <SimpleLineIcons
                   name={'login'}
-                  size={verticalScale(18)}
+                  size={moderateScale(18)}
                   color={currentTheme.darkBgFont}
                 />
               }

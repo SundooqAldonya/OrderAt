@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'
+import { moderateScale } from '../../utils/scaling'
 
 const navigationOptions = props => {
   return {
@@ -15,7 +16,7 @@ const navigationOptions = props => {
           })
         }
         name='closecircleo'
-        size={24}
+        size={moderateScale(20)}
         color={props.iconColor}
         style={styles().headerRightIcon}
       />
@@ -25,7 +26,7 @@ const navigationOptions = props => {
       <AntDesign
         onPress={() => props.navigation.goBack()}
         name='arrowleft'
-        size={24}
+        size={moderateScale(20)}
         color={props.iconColor}
         style={styles().headerLeftIcon}
       />

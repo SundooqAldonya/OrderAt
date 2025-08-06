@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const windowWidth = Dimensions.get('window').width
 import { alignment } from '../../utils/alignment'
@@ -29,9 +29,9 @@ const styles = (props = null, hasActiveOrders = false) =>
       justifyContent: 'space-between'
     },
     popularMenuImg: {
-      width: '100%',
+       width: moderateScale(100),
       // aspectRatio: 15 / 8
-      height: scale(90)
+      height: moderateScale(100),
     },
 
     screenBackground: {

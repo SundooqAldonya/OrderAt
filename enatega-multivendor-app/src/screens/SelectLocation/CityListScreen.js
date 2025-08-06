@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux'
 import { setCity } from '../../store/citySelectSlice'
 import { AntDesign } from '@expo/vector-icons'
 import UserContext from '../../context/User'
+import { moderateScale } from '../../utils/scaling'
 
 const CityListScreen = () => {
   const navigation = useNavigation()
@@ -41,21 +42,21 @@ const CityListScreen = () => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          flexDirection: 'row-reverse',
+          flexDirection: isArabic ? 'row-reverse' : 'row',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          paddingHorizontal: 20,
         }}
       >
+        {isLoggedIn ? (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name={'arrowleft'} size={moderateScale(20)} color='black' />
+          </TouchableOpacity>
+        ) : null}
         <Text
           style={{ ...styles.title, textAlign: isArabic ? 'right' : 'left' }}
         >
           {t('select_city')}
         </Text>
-        {isLoggedIn ? (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name='arrowleft' size={24} color='black' />
-          </TouchableOpacity>
-        ) : null}
       </View>
       <FlatList
         data={cities}
@@ -86,15 +87,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 10
+    paddingTop: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
-    marginVertical: 20
+    marginVertical: 20,
+    marginLeft: 15
   },
   list: {
-    paddingBottom: 20
+    paddingBottom: 20,
+     paddingHorizontal: 20,
   },
   cityItem: {
     paddingVertical: 15,

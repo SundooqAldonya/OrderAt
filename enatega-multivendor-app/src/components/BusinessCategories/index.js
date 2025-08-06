@@ -11,6 +11,7 @@ import { useQuery } from '@apollo/client'
 import { PlaceholderLine } from 'rn-placeholder'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useNavigation } from '@react-navigation/native'
+import { moderateScale } from '../../utils/scaling'
 
 const BusinessCategories = () => {
   const navigation = useNavigation()
@@ -97,8 +98,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   },
   item: {
-    width: 50,
-    height: 50,
+    width: moderateScale(60),
+    height: moderateScale(60),
     borderRadius: 50,
     overflow: 'hidden',
     marginHorizontal: 7

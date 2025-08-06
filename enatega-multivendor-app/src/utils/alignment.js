@@ -1,4 +1,4 @@
-import { scale } from './scaling'
+import { moderateScale, scale } from './scaling'
 
 const XSMALL = 5
 const SMALL = 10
@@ -29,13 +29,13 @@ export const alignment = {
     marginBottom: scale(SMALL)
   },
   MTsmall: {
-    marginTop: scale(SMALL)
+    marginTop: moderateScale(SMALL)
   },
   MRsmall: {
     marginRight: scale(SMALL)
   },
   MLsmall: {
-    marginLeft: scale(SMALL)
+    marginLeft: moderateScale(SMALL)
   },
 
   Mmedium: {
@@ -57,10 +57,10 @@ export const alignment = {
     margin: scale(LARGE)
   },
   MBlarge: {
-    marginBottom: scale(LARGE)
+    marginBottom: moderateScale(LARGE)
   },
   MTlarge: {
-    marginTop: scale(LARGE)
+    marginTop: moderateScale(LARGE)
   },
   MRlarge: {
     marginRight: scale(LARGE)
@@ -82,7 +82,7 @@ export const alignment = {
     paddingBottom: scale(XSMALL)
   },
   PTxSmall: {
-    paddingTop: scale(XSMALL)
+    paddingTop: moderateScale(XSMALL)
   },
   PRxSmall: {
     paddingRight: scale(XSMALL)
@@ -95,16 +95,16 @@ export const alignment = {
     padding: scale(SMALL)
   },
   PBsmall: {
-    paddingBottom: scale(SMALL)
+    paddingBottom: moderateScale(SMALL)
   },
   PTsmall: {
-    paddingTop: scale(SMALL)
+    paddingTop: moderateScale(SMALL)
   },
   PRsmall: {
-    paddingRight: scale(SMALL)
+    paddingRight: moderateScale(SMALL)
   },
   PLsmall: {
-    paddingLeft: scale(SMALL)
+    paddingLeft: moderateScale(SMALL)
   },
 
   Pmedium: {
@@ -117,10 +117,10 @@ export const alignment = {
     paddingTop: scale(MEDIUM)
   },
   PRmedium: {
-    paddingRight: scale(MEDIUM)
+    paddingRight: moderateScale(MEDIUM)
   },
   PLmedium: {
-    paddingLeft: scale(MEDIUM)
+    paddingLeft: moderateScale(MEDIUM)
   },
 
   Plarge: {
@@ -133,9 +133,9 @@ export const alignment = {
     paddingTop: scale(LARGE)
   },
   PRlarge: {
-    paddingRight: scale(LARGE)
+    paddingRight: moderateScale(LARGE)
   },
   PLlarge: {
-    paddingLeft: scale(LARGE)
+    paddingLeft: moderateScale(LARGE)
   }
 }

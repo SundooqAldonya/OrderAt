@@ -4,7 +4,7 @@ import TextDefault from '../../Text/TextDefault/TextDefault'
 import styles from './styles'
 import { useTranslation } from 'react-i18next'
 import { alignment } from '../../../utils/alignment'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { ChatButton } from './ChatButton'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'
 import { formatNumber } from '../../../utils/formatNumber'
@@ -359,9 +359,9 @@ const ItemRow = ({
       <View>
         <Image
           style={{
-            width: scale(48),
-            height: scale(64),
-            borderRadius: scale(8)
+            width: moderateScale(48),
+            height: moderateScale(64),
+            borderRadius: moderateScale(8)
           }}
           source={
             image

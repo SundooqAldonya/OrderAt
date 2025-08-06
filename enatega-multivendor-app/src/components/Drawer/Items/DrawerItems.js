@@ -5,7 +5,7 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext.js'
 import { theme } from '../../../utils/themeColors.js'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { SimpleLineIcons } from '@expo/vector-icons'
-import { scale, verticalScale } from '../../../utils/scaling.js'
+import { moderateScale, scale, verticalScale } from '../../../utils/scaling.js'
 import { colors } from '../../../utils/colors.js'
 
 function DrawerItems(props) {
@@ -31,7 +31,7 @@ function DrawerItems(props) {
             style={[
               styles().drawerContainer,
               {
-                fontSize: scale(12),
+                fontSize: moderateScale(12),
                 fontWeight: '600',
                 color: themeContext.ThemeValue === 'Dark' ? '#fff' : colors.dark
               }

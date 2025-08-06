@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
-import { verticalScale, scale } from '../../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../../utils/scaling'
 
 const styles = (backColor) =>
   StyleSheet.create({
@@ -11,13 +11,12 @@ const styles = (backColor) =>
     },
     rightContainer: {
       position: 'relative',
-      height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
-      ...alignment.PRsmall
+      marginRight: 10,
+      padding: 5
     },
     favContainer: {
-      height: '100%',
       justifyContent: 'center',
       marginRight: Platform.OS === 'ios' && scale(15)
     },
@@ -33,8 +32,8 @@ const styles = (backColor) =>
       alignItems: 'center',
       borderRadius: scale(15),
       position: 'absolute',
-      right: scale(5),
-      bottom: scale(2)
+      right: -5,
+      bottom: 0
     },
     touchAreaPassword: {
       width: '40%',
@@ -62,8 +61,8 @@ const styles = (backColor) =>
       ...alignment.PBxSmall
     },
     rightButtonContainer: {
-      padding: scale(5),
-      width: scale(60)
+      padding: moderateScale(5),
+      width: moderateScale(60)
     }
   })
 
