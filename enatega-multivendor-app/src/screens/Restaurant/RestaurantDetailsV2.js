@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -21,16 +21,58 @@ import Entypo from '@expo/vector-icons/Entypo'
 import EvilIcons from '@expo/vector-icons/EvilIcons'
 import Categories from '../../components/RestaurantComponents/Categories'
 import { colors } from '../../utils/colors'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { useRestaurant } from '../../ui/hooks'
+import ConfigurationContext from '../../context/Configuration'
+import { useTranslation } from 'react-i18next'
+import { food, popularItems } from '../../apollo/queries'
+import { StarRatingDisplay } from 'react-native-star-rating-widget'
+import gql from 'graphql-tag'
+import { useQuery } from '@apollo/client'
 
+const POPULAR_ITEMS = gql`
+  ${popularItems}
+`
 const ITEM_HEIGHT = 150
 const CATEGORY_HEADER_HEIGHT = 50
 const CATEGORY_PADDING = 10
 
 const RestaurantDetailsV2 = () => {
+  const navigation = useNavigation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const scrollY = new Animated.Value(0)
   const stickyHeaderAnim = useRef(new Animated.Value(0)).current
-  const sectionRefs = useRef({})
   const scrollViewRef = useRef({})
+  const route = useRoute()
+  const { _id: restaurantId } = route.params
+
+  const [businessCategories, setBusinessCategories] = useState(null)
+  const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
+  const configuration = useContext(ConfigurationContext)
+
+  const { data, refetch, networkStatus, loading, error } =
+    useRestaurant(restaurantId)
+  const restaurant = data?.restaurantCustomer || null
+
+  const { data: dataPopularItems } = useQuery(POPULAR_ITEMS, {
+    variables: { restaurantId },
+    skip: !restaurantId
+  })
+
+  const popularFood = dataPopularItems?.popularItems || null
+
+  useEffect(() => {
+    if (data?.restaurantCustomer?.businessCategories?.length) {
+      setBusinessCategories(data?.restaurantCustomer?.businessCategories)
+      const string = data?.restaurantCustomer?.businessCategories
+        ?.map((item) => item.name)
+        .join(', ')
+      setBusinessCategoriesNames(string)
+    }
+  }, [data])
+
+  // console.log({ businessCategoriesNames })
 
   const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
@@ -90,17 +132,20 @@ const RestaurantDetailsV2 = () => {
     }
   ]
 
+  const restaurantCategories = restaurant?.categories || []
+
   const categories = [
     {
       _id: 'picks',
       icon: '🔥',
-      title: 'Picks for you',
+      title: t('picks_for_you'),
       desceription: "Trending items we think you'll love"
     },
-    { _id: 'burgers', title: 'Burgers' },
-    { _id: 'chicken', title: 'Chicken' },
-    { _id: 'pasta', title: 'Pasta' },
-    { _id: 'cheese', title: 'Cheese' }
+    ...restaurantCategories.map((cat) => ({
+      _id: cat._id,
+      title: cat.title,
+      food: cat.foods || []
+    }))
   ]
 
   const itemsByCategory = useMemo(() => {
@@ -174,47 +219,73 @@ const RestaurantDetailsV2 = () => {
       />
 
       {showStickyHeader && (
-        <RestaurantHeader title='El Haty' stickyHeaderAnim={stickyHeaderAnim} />
+        <RestaurantHeader
+          title={restaurant?.name}
+          stickyHeaderAnim={stickyHeaderAnim}
+        />
       )}
       <View style={styles.topHeader}>
-        <View style={styles.backIconContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backIconContainer}
+        >
           <AntDesign name='arrowleft' size={18} color='black' />
-        </View>
+        </TouchableOpacity>
         <View style={styles.iconsWrapper}>
-          <View style={styles.backIconContainer}>
+          <TouchableOpacity style={styles.backIconContainer}>
             <MaterialIcons name='favorite-border' size={18} color='black' />
-          </View>
-          <View style={styles.backIconContainer}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.backIconContainer}>
             <Entypo name='share-alternative' size={18} color='black' />
-          </View>
-          <View style={styles.backIconContainer}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.backIconContainer}>
             <EvilIcons name='search' size={18} color='black' />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ paddingBottom: 1000 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
         <Image
-          source={require('../../assets/restaurant/header_kebab.jpg')}
+          source={
+            restaurant?.image
+              ? { uri: restaurant?.image }
+              : require('../../assets/restaurant/header_kebab.jpg')
+          }
           style={styles.headerImage}
         />
 
         <View style={styles.restaurantInfo}>
-          <Text style={styles.restaurantTitle}>El Haty</Text>
-          <Text style={styles.restaurantSubtitle}>
-            Grills, Pasta, Chicken, Egyptian
+          <Text style={styles.restaurantTitle}>
+            {restaurant?.name ? restaurant.name : null}
           </Text>
-          <Text style={styles.deliveryInfo}>🚲 EGP 35.00 • 60 mins</Text>
-          <TouchableOpacity style={styles.proButton}>
+          {businessCategories?.length ? (
+            <Text style={styles.restaurantSubtitle}>
+              {businessCategoriesNames ? businessCategoriesNames : ''}
+            </Text>
+          ) : null}
+          <Text style={styles.deliveryInfo}>
+            🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
+            {t('minimum')} •{' '}
+            {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} mins
+          </Text>
+          <View style={{ marginTop: 12 }}>
+            <StarRatingDisplay
+              rating={restaurant?.reviewCount || 0}
+              color={'orange'}
+              emptyColor='orange'
+              enableHalfStar={true}
+            />
+          </View>
+          {/* <TouchableOpacity style={styles.proButton}>
             <Text style={styles.proButtonText}>Get free delivery with pro</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.discountBanner}>
             <Text>15% off selected items</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* food categories */}
@@ -234,7 +305,6 @@ const RestaurantDetailsV2 = () => {
           {categories?.map((cat) => (
             <View
               key={cat._id}
-              // ref={(ref) => (sectionRefs.current[cat._id] = ref)}
               onLayout={(event) => {
                 const y = event.nativeEvent.layout.y
                 setSectionPositions((prev) => ({ ...prev, [cat._id]: y }))
@@ -249,7 +319,7 @@ const RestaurantDetailsV2 = () => {
               ) : null}
               {/* render items for that section */}
               <FlatList
-                data={itemsByCategory[cat._id] || []}
+                data={cat.food}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
                 numColumns={2}
@@ -262,7 +332,8 @@ const RestaurantDetailsV2 = () => {
 
       <View style={styles.bottomBanner}>
         <Text style={styles.bottomText}>
-          Add EGP 200.00 to start your order
+          Add EGP {parseFloat(restaurant?.minimumOrder).toFixed(2)} to start
+          your order
         </Text>
       </View>
     </SafeAreaView>

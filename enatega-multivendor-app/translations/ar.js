@@ -701,5 +701,6 @@ export const ar = {
   your_name: 'اسمك',
   name_updated: 'تم تحديث اسمك بنجاح!',
   addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة',
-  change_city: 'تغيير المدينة'
+  change_city: 'تغيير المدينة',
+  picks_for_you: 'اختيارات لك'
 }

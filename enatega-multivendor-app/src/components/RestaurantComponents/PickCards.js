@@ -1,13 +1,26 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
+import ConfigurationContext from '../../context/Configuration'
 
 const PickCards = ({ item }) => {
+  console.log('Item:', item.image)
+  const configuration = useContext(ConfigurationContext)
   return (
     <View style={styles.itemContainer}>
-      <Image source={item.image} style={styles.foodImage} />
+      <Image
+        source={
+          item.image?.trim()
+            ? { uri: item.image }
+            : require('../../assets/food_placeholder.jpeg')
+        }
+        style={styles.foodImage}
+      />
       {item.topRated && <Text style={styles.topRated}>Top rated</Text>}
       <Text style={styles.foodTitle}>{item.title}</Text>
-      <Text style={styles.foodPrice}>{item.price}</Text>
+      <Text style={styles.foodPrice}>
+        {parseFloat(item.variations[0].price).toFixed(2)}{' '}
+        {configuration.currency}
+      </Text>
     </View>
   )
 }

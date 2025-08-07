@@ -712,5 +712,6 @@ export const en = {
   your_name: 'Your name',
   name_updated: 'Your name updated successfully!',
   addresses_saved: 'Your addresses are saved!',
-  change_city: 'Change City'
+  change_city: 'Change City',
+  picks_for_you: 'Picks for you'
 }
