@@ -27,10 +27,10 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { useRestaurant } from '../../ui/hooks'
 import ConfigurationContext from '../../context/Configuration'
 import { useTranslation } from 'react-i18next'
-import { food, popularItems } from '../../apollo/queries'
+import { food, popularItems, profile } from '../../apollo/queries'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import gql from 'graphql-tag'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import SkeletonBox from '../../components/SkeletonBox'
 import RestaurantLoading from '../../components/RestaurantComponents/RestaurantLoading'
 import UserContext from '../../context/User'
@@ -46,9 +46,18 @@ import { Feather } from '@expo/vector-icons'
 import SearchModal from '../../components/RestaurantComponents/SearchModal'
 import ReviewsModal from '../../components/RestaurantComponents/ReviewsModal'
 import JSONTree from 'react-native-json-tree'
+import { addFavouriteRestaurant } from '../../apollo/mutations'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
+`
+
+const ADD_FAVOURITE = gql`
+  ${addFavouriteRestaurant}
+`
+
+const PROFILE = gql`
+  ${profile}
 `
 const ITEM_HEIGHT = 150
 const CATEGORY_HEADER_HEIGHT = 50
@@ -64,7 +73,7 @@ const RestaurantDetailsV2 = () => {
   const scrollViewRef = useRef({})
   const route = useRoute()
   const { _id: restaurantId } = route.params
-  const { cartCount } = useContext(UserContext)
+  const { cartCount, profile } = useContext(UserContext)
   const [businessCategories, setBusinessCategories] = useState(null)
   // const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
@@ -73,6 +82,11 @@ const RestaurantDetailsV2 = () => {
 
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false)
   const categoriesLayoutY = useRef(0)
+
+  // const heart = profile ? profile.favourite.includes(restaurantId) : false
+  const [heart, setHeart] = useState(
+    profile ? profile.favourite.includes(restaurantId) : false
+  )
 
   const { data, refetch, networkStatus, loading, error } =
     useRestaurant(restaurantId)
@@ -195,11 +209,25 @@ const RestaurantDetailsV2 = () => {
     setActiveCategory(current)
   }
 
-  // let debug = true
-  // if (debug) {
-  //   console.log('Restaurant Data:', restaurant?.reviewData)
-  //   return <JSONTree data={restaurant?.reviewData} />
-  // }
+  const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
+    ADD_FAVOURITE,
+    {
+      refetchQueries: [{ query: PROFILE }],
+      onCompleted: (res) => {
+        console.log('Added to favorites:', res)
+      },
+      onError: (err) => {
+        console.error('Error adding to favorites:', err)
+      }
+    }
+  )
+
+  const handleAddToFavorites = () => {
+    if (restaurant) {
+      setHeart((prev) => !prev)
+      mutateAddToFavorites({ variables: { id: restaurantId } })
+    }
+  }
 
   if (loading) {
     return <RestaurantLoading />
@@ -247,8 +275,15 @@ const RestaurantDetailsV2 = () => {
           <AntDesign name='arrowleft' size={18} color='black' />
         </TouchableOpacity>
         <View style={styles.iconsWrapper}>
-          <TouchableOpacity style={styles.backIconContainer}>
-            <MaterialIcons name='favorite-border' size={18} color='black' />
+          <TouchableOpacity
+            style={styles.backIconContainer}
+            onPress={handleAddToFavorites}
+          >
+            <MaterialIcons
+              name={heart ? 'favorite' : 'favorite-border'}
+              size={18}
+              color={heart ? 'red' : 'black'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.backIconContainer}
