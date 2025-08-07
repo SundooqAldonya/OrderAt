@@ -703,5 +703,9 @@ export const ar = {
   addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة',
   change_city: 'تغيير المدينة',
   picks_for_you: 'اختيارات لك',
-  no_items_in_category: 'لا توجد عناصر في هذه الفئة'
+  no_items_in_category: 'لا توجد عناصر في هذه الفئة',
+  searchForFood: 'ابحث عن الطعام',
+  see_all_reviews: 'رؤية جميع التقييمات',
+  customerReviews: 'تقييمات العملاء',
+  noReviewsYet: 'لا توجد تقييمات حتى الآن'
 }

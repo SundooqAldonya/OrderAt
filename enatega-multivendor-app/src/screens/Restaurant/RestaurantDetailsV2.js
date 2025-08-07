@@ -10,7 +10,8 @@ import {
   Animated,
   StatusBar,
   findNodeHandle,
-  Platform
+  Platform,
+  Touchable
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RestaurantHeader from '../../components/RestaurantComponents/RestaurantHeader'
@@ -42,6 +43,9 @@ import { scale } from '../../utils/scaling'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import ViewCart from '../../components/RestaurantComponents/ViewCart'
 import { Feather } from '@expo/vector-icons'
+import SearchModal from '../../components/RestaurantComponents/SearchModal'
+import ReviewsModal from '../../components/RestaurantComponents/ReviewsModal'
+import JSONTree from 'react-native-json-tree'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -51,6 +55,7 @@ const CATEGORY_HEADER_HEIGHT = 50
 const CATEGORY_PADDING = 10
 
 const RestaurantDetailsV2 = () => {
+  const configuration = useContext(ConfigurationContext)
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
@@ -61,8 +66,11 @@ const RestaurantDetailsV2 = () => {
   const { _id: restaurantId } = route.params
   const { cartCount } = useContext(UserContext)
   const [businessCategories, setBusinessCategories] = useState(null)
-  const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
-  const configuration = useContext(ConfigurationContext)
+  // const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
+  const [searchModalVisible, setSearchModalVisible] = useState(false)
+  const [showReviewsModal, setShowReviewsModal] = useState(false)
+  const [allFoods, setAllFoods] = useState([])
+
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false)
   const categoriesLayoutY = useRef(0)
 
@@ -70,6 +78,11 @@ const RestaurantDetailsV2 = () => {
     useRestaurant(restaurantId)
 
   const restaurant = data?.restaurantCustomer || null
+  const businessCategoriesNames =
+    (restaurant?.businessCategories || [])
+      .map((cat) => cat.name)
+      .filter(Boolean)
+      .join(', ') || 'غير مصنف'
 
   const { data: dataPopularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId },
@@ -78,17 +91,6 @@ const RestaurantDetailsV2 = () => {
   })
 
   const popularFood = dataPopularItems?.popularItems || null
-  console.log('Popular Food:', dataPopularItems?.popularItems)
-
-  useEffect(() => {
-    if (data?.restaurantCustomer?.businessCategories?.length) {
-      setBusinessCategories(data?.restaurantCustomer?.businessCategories)
-      const string = data?.restaurantCustomer?.businessCategories
-        ?.map((item) => item.name)
-        .join(', ')
-      setBusinessCategoriesNames(string)
-    }
-  }, [data])
 
   const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
@@ -140,13 +142,19 @@ const RestaurantDetailsV2 = () => {
     }))
   ]
 
+  useEffect(() => {
+    if (data && categories?.length) {
+      const flattened = categories.flatMap((cat) => cat.food)
+      setAllFoods(flattened)
+    }
+  }, [data])
+
   const getScrollOffsetForCategory = (targetCategoryId) => {
     let offset = 0
 
     for (let i = 0; i < categories.length; i++) {
       const cat = categories[i]
       const itemsInThisCategory = categories[cat._id]?.length || 0
-      console.log(`Category: ${cat._id}, Items: ${itemsInThisCategory}`)
 
       offset += CATEGORY_HEADER_HEIGHT
       offset += itemsInThisCategory * ITEM_HEIGHT
@@ -186,6 +194,12 @@ const RestaurantDetailsV2 = () => {
     }
     setActiveCategory(current)
   }
+
+  // let debug = true
+  // if (debug) {
+  //   console.log('Restaurant Data:', restaurant?.reviewData)
+  //   return <JSONTree data={restaurant?.reviewData} />
+  // }
 
   if (loading) {
     return <RestaurantLoading />
@@ -236,7 +250,10 @@ const RestaurantDetailsV2 = () => {
           <TouchableOpacity style={styles.backIconContainer}>
             <MaterialIcons name='favorite-border' size={18} color='black' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.backIconContainer}>
+          <TouchableOpacity
+            style={styles.backIconContainer}
+            onPress={() => setSearchModalVisible(true)}
+          >
             <Feather name='search' size={18} color='black' />
           </TouchableOpacity>
         </View>
@@ -260,7 +277,7 @@ const RestaurantDetailsV2 = () => {
           <Text style={styles.restaurantTitle}>
             {restaurant?.name ? restaurant.name : null}
           </Text>
-          {businessCategories?.length ? (
+          {restaurant?.businessCategories ? (
             <Text style={styles.restaurantSubtitle}>
               {businessCategoriesNames ? businessCategoriesNames : ''}
             </Text>
@@ -270,20 +287,28 @@ const RestaurantDetailsV2 = () => {
             {t('minimum')} •{' '}
             {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} mins
           </Text>
-          <View style={{ marginTop: 12 }}>
-            <StarRatingDisplay
-              rating={restaurant?.reviewCount || 0}
-              color={'orange'}
-              emptyColor='orange'
-              enableHalfStar={true}
-            />
+          <View
+            style={{
+              marginTop: 12,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <View>
+              <StarRatingDisplay
+                rating={restaurant?.reviewCount || 0}
+                color={'orange'}
+                emptyColor='orange'
+                enableHalfStar={true}
+              />
+            </View>
+            <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
+              <Text style={{ color: colors.primary }}>
+                {t('see_all_reviews')}
+              </Text>
+            </TouchableOpacity>
           </View>
-          {/* <TouchableOpacity style={styles.proButton}>
-            <Text style={styles.proButtonText}>Get free delivery with pro</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.discountBanner}>
-            <Text>15% off selected items</Text>
-          </TouchableOpacity> */}
         </View>
 
         {/* food categories */}
@@ -343,6 +368,21 @@ const RestaurantDetailsV2 = () => {
       </Animated.ScrollView>
       {cartCount > 0 && <ViewCart cartCount={cartCount} />}
 
+      {/* search modal */}
+      <SearchModal
+        searchModalVisible={searchModalVisible}
+        setSearchModalVisible={setSearchModalVisible}
+        restaurant={restaurant}
+        allFoods={allFoods}
+      />
+
+      {/* reviews modal */}
+      <ReviewsModal
+        reviewModalVisible={showReviewsModal}
+        setReviewModalVisible={setShowReviewsModal}
+        restaurantId={restaurant?._id}
+      />
+
       <View style={styles.bottomBanner}>
         <Text style={styles.bottomText}>
           Add EGP {parseFloat(restaurant?.minimumOrder).toFixed(2)} to start
@@ -361,7 +401,7 @@ const styles = StyleSheet.create({
   topHeader: {
     position: 'absolute',
     zIndex: 20,
-    top: 30,
+    top: 35,
     left: 15,
     flexDirection: 'row',
     width: '90%',

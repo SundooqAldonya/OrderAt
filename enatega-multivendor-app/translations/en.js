@@ -714,5 +714,9 @@ export const en = {
   addresses_saved: 'Your addresses are saved!',
   change_city: 'Change City',
   picks_for_you: 'Picks for you',
-  no_items_in_category: 'No items in this category'
+  no_items_in_category: 'No items in this category',
+  searchForFood: 'Search for food',
+  see_all_reviews: 'See all reviews',
+  customerReviews: 'Customer Reviews',
+  noReviewsYet: 'No reviews yet'
 }
