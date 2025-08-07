@@ -1,12 +1,142 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import React, { useContext } from 'react'
 import ConfigurationContext from '../../context/Configuration'
+import { useNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
+import { DAYS } from '../../utils/enums'
+import UserContext from '../../context/User'
+import { useSharedValue, withRepeat } from 'react-native-reanimated'
 
-const PickCards = ({ item }) => {
-  console.log('Item:', item.image)
+const PickCards = ({ item, restaurantCustomer }) => {
+  const navigation = useNavigation()
+  const { t } = useTranslation()
   const configuration = useContext(ConfigurationContext)
+  const {
+    restaurant: restaurantCart,
+    setCartRestaurant,
+    cartCount,
+    addCartItem,
+    addQuantity,
+    clearCart,
+    checkItemCart
+  } = useContext(UserContext)
+
+  const scaleValue = useSharedValue(1)
+
+  function animate() {
+    scaleValue.value = withRepeat(withTiming(1.5, { duration: 250 }), 2, true)
+  }
+
+  const isOpen = () => {
+    if (data) {
+      if (restaurantCustomer?.openingTimes?.length < 1) return false
+      const date = new Date()
+      const day = date.getDay()
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      const todaysTimings = restaurantCustomer?.openingTimes?.find(
+        (o) => o.day === DAYS[day]
+      )
+      if (todaysTimings === undefined) return false
+      const times = todaysTimings.times.filter(
+        (t) =>
+          hours >= Number(t.startTime[0]) &&
+          minutes >= Number(t.startTime[1]) &&
+          hours <= Number(t.endTime[0]) &&
+          minutes <= Number(t.endTime[1])
+      )
+
+      return times?.length > 0
+    } else {
+      return false
+    }
+  }
+
+  const addToCart = async (food, clearFlag) => {
+    if (
+      food?.variations?.length === 1 &&
+      food?.variations[0].addons?.length === 0
+    ) {
+      await setCartRestaurant(food.restaurant)
+      const result = checkItemCart(food._id)
+      if (result.exist) await addQuantity(result.key)
+      else await addCartItem(food._id, food.variations[0]._id, 1, [], clearFlag)
+      animate()
+    } else {
+      if (clearFlag) await clearCart()
+      navigation.navigate('ItemDetail', {
+        food,
+        addons: restaurant.addons,
+        options: restaurant.options,
+        restaurant: restaurant._id
+      })
+    }
+  }
+
+  const onPressItem = async (food) => {
+    if (!restaurantCustomer.isAvailable || !isOpen()) {
+      Alert.alert(
+        '',
+        t('restaurantClosed'),
+        [
+          {
+            text: t('backToRestaurants'),
+            onPress: () => {
+              navigation.goBack()
+            },
+            style: 'cancel'
+          },
+          {
+            text: t('seeMenu'),
+            onPress: () => console.log('see menu')
+          }
+        ],
+        { cancelable: false }
+      )
+      return
+    }
+    if (!restaurantCart || food.restaurant === restaurantCart) {
+      await addToCart(food, food.restaurant !== restaurantCart)
+    } else if (food.restaurant !== restaurantCart) {
+      Alert.alert(
+        '',
+        t('clearCartText'),
+        [
+          {
+            text: t('Cancel'),
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          {
+            text: t('okText'),
+            onPress: async () => {
+              await addToCart(food, true)
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    }
+  }
+
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        onPressItem({
+          ...item,
+          restaurant: restaurant?._id,
+          restaurantName: restaurant.name
+        })
+      }}
+      style={styles.itemContainer}
+    >
       <Image
         source={
           item.image?.trim()
@@ -21,7 +151,7 @@ const PickCards = ({ item }) => {
         {parseFloat(item.variations[0].price).toFixed(2)}{' '}
         {configuration.currency}
       </Text>
-    </View>
+    </TouchableOpacity>
   )
 }
 

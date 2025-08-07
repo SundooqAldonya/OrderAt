@@ -713,5 +713,6 @@ export const en = {
   name_updated: 'Your name updated successfully!',
   addresses_saved: 'Your addresses are saved!',
   change_city: 'Change City',
-  picks_for_you: 'Picks for you'
+  picks_for_you: 'Picks for you',
+  no_items_in_category: 'No items in this category'
 }

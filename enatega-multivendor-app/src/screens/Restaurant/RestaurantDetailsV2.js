@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Animated,
   StatusBar,
-  findNodeHandle
+  findNodeHandle,
+  Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RestaurantHeader from '../../components/RestaurantComponents/RestaurantHeader'
@@ -29,6 +30,17 @@ import { food, popularItems } from '../../apollo/queries'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/client'
+import SkeletonBox from '../../components/SkeletonBox'
+import RestaurantLoading from '../../components/RestaurantComponents/RestaurantLoading'
+import UserContext from '../../context/User'
+import {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle
+} from 'react-native-reanimated'
+import { scale } from '../../utils/scaling'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import ViewCart from '../../components/RestaurantComponents/ViewCart'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -46,10 +58,12 @@ const RestaurantDetailsV2 = () => {
   const scrollViewRef = useRef({})
   const route = useRoute()
   const { _id: restaurantId } = route.params
-
+  const { cartCount } = useContext(UserContext)
   const [businessCategories, setBusinessCategories] = useState(null)
   const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
   const configuration = useContext(ConfigurationContext)
+  const [isCategoriesSticky, setIsCategoriesSticky] = useState(false)
+  const categoriesLayoutY = useRef(0)
 
   const { data, refetch, networkStatus, loading, error } =
     useRestaurant(restaurantId)
@@ -57,10 +71,12 @@ const RestaurantDetailsV2 = () => {
 
   const { data: dataPopularItems } = useQuery(POPULAR_ITEMS, {
     variables: { restaurantId },
+    nextFetchPolicy: 'network-only',
     skip: !restaurantId
   })
 
   const popularFood = dataPopularItems?.popularItems || null
+  console.log('Popular Food:', dataPopularItems?.popularItems)
 
   useEffect(() => {
     if (data?.restaurantCustomer?.businessCategories?.length) {
@@ -95,6 +111,14 @@ const RestaurantDetailsV2 = () => {
           duration: 250,
           useNativeDriver: true
         }).start()
+        // Check if the categories section is sticky
+        if (categoriesLayoutY.current) {
+          if (y >= categoriesLayoutY.current - 60) {
+            setIsCategoriesSticky(true)
+          } else {
+            setIsCategoriesSticky(false)
+          }
+        }
       }
     }
   )
@@ -139,7 +163,8 @@ const RestaurantDetailsV2 = () => {
       _id: 'picks',
       icon: '🔥',
       title: t('picks_for_you'),
-      desceription: "Trending items we think you'll love"
+      desceription: "Trending items we think you'll love",
+      food: popularFood || []
     },
     ...restaurantCategories.map((cat) => ({
       _id: cat._id,
@@ -206,8 +231,12 @@ const RestaurantDetailsV2 = () => {
     setActiveCategory(current)
   }
 
+  if (loading) {
+    return <RestaurantLoading />
+  }
+
   const renderItem = ({ item }) => {
-    return <PickCards item={item} />
+    return <PickCards item={item} restaurantCustomer={restaurant} />
   }
 
   return (
@@ -223,6 +252,22 @@ const RestaurantDetailsV2 = () => {
           title={restaurant?.name}
           stickyHeaderAnim={stickyHeaderAnim}
         />
+      )}
+      {/* Sticky version – appears on top when isCategoriesSticky is true */}
+      {isCategoriesSticky && (
+        <Animated.View
+          style={[
+            styles.stickyCategories,
+            { opacity: stickyHeaderAnim, top: HEADER_COLLAPSED_HEIGHT }
+          ]}
+        >
+          <Categories
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryPress={handleCategoryPress}
+            sectionPositions={sectionPositions}
+          />
+        </Animated.View>
       )}
       <View style={styles.topHeader}>
         <TouchableOpacity
@@ -289,12 +334,20 @@ const RestaurantDetailsV2 = () => {
         </View>
 
         {/* food categories */}
-        <Categories
-          categories={categories}
-          activeCategory={activeCategory}
-          onCategoryPress={handleCategoryPress}
-          sectionPositions={sectionPositions}
-        />
+
+        {/* Normal scrollable version of categories */}
+        <View
+          onLayout={(event) => {
+            categoriesLayoutY.current = event.nativeEvent.layout.y
+          }}
+        >
+          <Categories
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryPress={handleCategoryPress}
+            sectionPositions={sectionPositions}
+          />
+        </View>
 
         {/* scroll view for included food categories */}
         <ScrollView
@@ -318,17 +371,24 @@ const RestaurantDetailsV2 = () => {
                 <Text style={styles.sectionSubtitle}>{cat.desceription}</Text>
               ) : null}
               {/* render items for that section */}
-              <FlatList
-                data={cat.food}
-                renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                numColumns={2}
-                scrollEnabled={false}
-              />
+              {cat?.food?.length ? (
+                <FlatList
+                  data={cat.food}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item._id}
+                  numColumns={2}
+                  scrollEnabled={false}
+                />
+              ) : (
+                <Text style={{ color: '#999', marginTop: 10 }}>
+                  {t('no_items_in_category')}
+                </Text>
+              )}
             </View>
           ))}
         </ScrollView>
       </Animated.ScrollView>
+      {cartCount > 0 && <ViewCart cartCount={cartCount} />}
 
       <View style={styles.bottomBanner}>
         <Text style={styles.bottomText}>
@@ -429,6 +489,20 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     fontWeight: '500'
+  },
+  stickyCategories: {
+    position: 'absolute',
+    top: HEADER_COLLAPSED_HEIGHT,
+    left: 0,
+    right: 0,
+    zIndex: 999,
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4
   }
 })
 
