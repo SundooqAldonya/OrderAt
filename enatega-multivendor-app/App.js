@@ -207,6 +207,7 @@ export default function App() {
   useWatchLocation()
 
   useEffect(() => {
+    let subscription = null
     const loadAppData = async () => {
       try {
         await SplashScreen.preventAutoHideAsync()
@@ -233,7 +234,10 @@ export default function App() {
       })
       // await permissionForPushNotificationsAsync()
       await getActiveLocation()
-      BackHandler.addEventListener('hardwareBackPress', exitAlert)
+      subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        exitAlert
+      )
 
       setAppIsReady(true)
     }
@@ -241,7 +245,7 @@ export default function App() {
     loadAppData()
 
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', exitAlert)
+      subscription.remove()
     }
   }, [])
 

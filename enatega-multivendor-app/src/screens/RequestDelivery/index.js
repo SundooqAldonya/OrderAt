@@ -12,7 +12,7 @@ import {
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import useEnvVars from '../../../environment'
 import MapView, { Marker, Polyline } from 'react-native-maps'
 import { LocationContext } from '../../context/Location'
@@ -76,6 +76,8 @@ const RequestDelivery = () => {
   const [notesError, setNotesError] = useState(false)
   const [nameFormAppear, setNameFormAppear] = useState(null)
   const [customerName, setCustomerName] = useState('')
+  const [layoutReset, setLayoutReset] = useState(false) // Used to reset layout when coupon modal closed
+  const [couponOpen, setCouponOpen] = useState(false)
 
   console.log({ regionFrom: addressInfo.regionFrom })
   console.log({ pickupCoords })
@@ -329,7 +331,7 @@ const RequestDelivery = () => {
         console.log({ res })
         setCoupon({ ...res.applyCouponMandoob })
         setVoucherCode('')
-        onModalClose(voucherModalRef)
+        setCouponOpen(false)
         setTimeout(() => {
           refetch()
         }, 2000)
@@ -450,6 +452,7 @@ const RequestDelivery = () => {
 
   const onClose = () => {
     setNameFormAppear(false)
+    setCouponOpen(false)
   }
 
   const handleSubmitCustomerName = () => {
@@ -613,6 +616,7 @@ const RequestDelivery = () => {
           </TextDefault>
           <TextInput
             placeholder={t('item_description_notes')}
+            placeholderTextColor='#888'
             style={[
               styles.textArea,
               notesError && { borderColor: 'red', borderWidth: 1 }
@@ -643,7 +647,7 @@ const RequestDelivery = () => {
                   ...styles.voucherSecInner,
                   flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}
-                onPress={() => onModalOpen(voucherModalRef)}
+                onPress={() => setCouponOpen(true)}
               >
                 <MaterialCommunityIcons
                   name='ticket-confirmation-outline'
@@ -760,7 +764,8 @@ const RequestDelivery = () => {
               <View
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 10
+                  gap: 10,
+                  marginTop: 20
                 }}
               >
                 <Text
@@ -785,8 +790,6 @@ const RequestDelivery = () => {
                 )}
               </View>
             )}
-
-            {/* <Text>ETA: 25 mins</Text> */}
           </View>
 
           <TouchableOpacity
@@ -809,7 +812,7 @@ const RequestDelivery = () => {
           style={styleNameModal.modal}
           swipeDirection='down'
           onSwipeComplete={onClose}
-          useNativeDriver
+          useNativeDriver={false}
         >
           <View style={styleNameModal.modalContent}>
             <Text
@@ -843,42 +846,27 @@ const RequestDelivery = () => {
             </View>
           </View>
         </Modal>
-        <Modalize
-          ref={voucherModalRef}
-          onOpened={() => {
-            setTimeout(() => {
-              inputRef.current?.focus()
-            }, 100) // slight delay to ensure animation settles
-          }}
-          modalStyle={[styles.modal]}
-          overlayStyle={styles.overlay}
-          handleStyle={styles.handle}
-          modalHeight={550}
-          handlePosition='inside'
-          openAnimationConfig={{
-            timing: { duration: 400 },
-            spring: { speed: 20, bounciness: 10 }
-          }}
-          closeAnimationConfig={{
-            timing: { duration: 400 },
-            spring: { speed: 20, bounciness: 10 }
-          }}
-          keyboardAvoidingBehavior='padding'
-          scrollViewProps={{
-            keyboardShouldPersistTaps: 'handled'
-          }}
+        <Modal
+          isVisible={couponOpen}
+          onBackdropPress={onClose}
+          onBackButtonPress={onClose}
+          backdropOpacity={0.4}
+          style={couponStyles.modalWrapper}
+          swipeDirection='down'
+          onSwipeComplete={onClose}
+          useNativeDriver={false}
         >
-          <View style={styles.modalContainer}>
+          <View style={couponStyles.modalContainer}>
             <View
               style={{
-                ...styles.modalHeader,
+                ...couponStyles.modalHeader,
                 flexDirection: isArabic ? 'row-reverse' : 'row'
               }}
             >
               <View
                 activeOpacity={0.7}
                 style={{
-                  ...styles.modalheading,
+                  ...couponStyles.modalheading,
                   flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}
               >
@@ -910,23 +898,23 @@ const RequestDelivery = () => {
                 placeholder={t('inputCode')}
                 value={voucherCode}
                 onChangeText={(text) => setVoucherCode(text)}
-                style={styles.modalInput}
+                style={couponStyles.modalInput}
               />
             </View>
             <TouchableOpacity
               disabled={!voucherCode || couponLoading}
               onPress={handleApplyCoupon}
               style={[
-                styles.button,
-                !voucherCode && styles.buttonDisabled,
-                { height: scale(40) },
+                couponStyles.applyButton,
+                !voucherCode && couponStyles.buttonDisabled,
+                { height: scale(40), marginTop: scale(20) },
                 { opacity: couponLoading ? 0.5 : 1 }
               ]}
             >
               {!couponLoading && (
                 <TextDefault
                   textColor={currentTheme.black}
-                  style={styles.checkoutBtn}
+                  style={couponStyles.checkoutBtn}
                   bold
                   H4
                 >
@@ -936,7 +924,7 @@ const RequestDelivery = () => {
               {couponLoading && <Spinner backColor={'transparent'} />}
             </TouchableOpacity>
           </View>
-        </Modalize>
+        </Modal>
       </ScrollView>
     </KeyboardAvoidingView>
   )
@@ -972,7 +960,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 120, // adjust height as needed
     textAlignVertical: 'top',
-    backgroundColor: '#fff`'
+    backgroundColor: '#fff',
+    color: '#000'
   },
   label: { fontWeight: '600', marginTop: 10 },
   picker: { backgroundColor: '#f0f0f0', borderRadius: 8, marginBottom: 10 },
@@ -983,7 +972,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   fareBox: {
-    padding: 10,
+    // padding: 10,
     backgroundColor: '#f5f5f5',
     borderRadius: 8,
     marginBottom: 20
@@ -1124,6 +1113,52 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     resizeMode: 'contain'
+  }
+})
+
+const couponStyles = StyleSheet.create({
+  modalWrapper: {
+    justifyContent: 'flex-end',
+    margin: 0
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    minHeight: 250
+  },
+  modalHeader: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16
+  },
+  modalHeading: {
+    alignItems: 'center',
+    gap: 8
+  },
+  inputWrapper: {
+    marginBottom: 24
+  },
+  modalInput: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    color: '#000',
+    backgroundColor: '#fff',
+    fontSize: 16
+  },
+  applyButton: {
+    backgroundColor: colors.primary,
+    height: 48,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc'
   }
 })
 

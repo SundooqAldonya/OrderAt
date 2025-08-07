@@ -192,7 +192,6 @@ const Profile = () => {
   return (
     <SafeAreaView
       style={{
-        marginBlock: 50,
         paddingHorizontal: 20,
         backgroundColor: colors.primary,
         height: '100%',
@@ -206,7 +205,7 @@ const Profile = () => {
             <AntDesign name="arrowleft" size={30} />
           </TouchableOpacity>
           {data ? (
-            <View style={{ marginTop: 50 }}>
+            <View style={style.profileContainer}>
               <Image
                 source={{ uri: restaurant.image }}
                 style={{ width: 100, height: 100, marginHorizontal: 'auto' }}
@@ -220,7 +219,7 @@ const Profile = () => {
               </View>
             </View>
           ) : null}
-          <View>
+          <View style={style.inputGroup}>
             <TextDefault bolder style={{ marginBottom: -10 }}>
               Printer IP
             </TextDefault>
@@ -230,18 +229,13 @@ const Profile = () => {
               value={printerIP}
               onChangeText={e => setPrinterIP(e)}
               autoCapitalize={'none'}
+              placeholderTextColor="#999"
             />
           </View>
 
           {/* Printer Management Section */}
-          <View style={{ marginTop: 20 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 10
-              }}>
+          <View style={style.card}>
+            <View style={style.cardHeader}>
               <TextDefault bolder>Available Printers</TextDefault>
               <TouchableOpacity
                 style={printerButtonStyle.scanButton}
@@ -381,21 +375,48 @@ const Profile = () => {
 }
 
 const style = StyleSheet.create({
+  profileContainer: {
+    alignItems: 'center',
+    marginTop: 40
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10
+  },
+  restaurantName: {
+    fontSize: 22,
+    textAlign: 'center'
+  },
+  inputGroup: {
+    marginTop: 20
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 6
+  },
+  input: {
+    height: 45,
+    borderRadius: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff'
+  },
   deleteAccountBtn: {
-    borderColor: 'red',
-    borderWidth: 3,
-    borderRadius: 5,
-    padding: 20,
-    marginTop: 150
+    marginTop: 40,
+    alignSelf: 'center'
   },
   deleteAccountText: {
-    color: 'red'
+    color: 'red',
+    fontSize: 16
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: 'rgba(0,0,0,0.4)',
     filter: 'blur(10)'
   },
   modalView: {
@@ -417,6 +438,37 @@ const style = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5
+  },
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 4,
+    marginTop: 30
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  scanText: {
+    color: '#fff'
+  },
+  saveBtn: {
+    backgroundColor: colors.primary,
+    marginTop: 30,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    alignSelf: 'center'
+  },
+  saveBtnText: {
+    color: '#fff',
+    fontSize: 16
   }
 })
 

@@ -16,7 +16,7 @@ const RESTAURANT = gql`
 export default function useRestaurant(id) {
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANT,
-    { variables: { id }, fetchPolicy: 'network-only' }
+    { variables: { id }, fetchPolicy: 'network-only', skip: !id }
   )
   return { data, refetch, networkStatus, loading, error }
 }

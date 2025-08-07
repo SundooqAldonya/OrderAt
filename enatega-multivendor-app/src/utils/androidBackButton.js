@@ -3,16 +3,25 @@ import { useTranslation } from 'react-i18next'
 import { BackHandler, Alert, StyleSheet } from 'react-native'
 
 // const { t } = useTranslation()
-
+let backHandlerSubscription = null
 const handleAndroidBackButton = (callback) => {
-  BackHandler.addEventListener('hardwareBackPress', () => {
-    callback()
-    return true
-  })
+  backHandlerSubscription = BackHandler.addEventListener(
+    'hardwareBackPress',
+    () => {
+      callback()
+      return true
+    }
+  )
 }
 
 const removeAndroidBackButtonHandler = () => {
-  BackHandler.removeEventListener('hardwareBackPress')
+  if (
+    backHandlerSubscription &&
+    typeof backHandlerSubscription.remove === 'function'
+  ) {
+    backHandlerSubscription.remove()
+    backHandlerSubscription = null
+  }
 }
 // const exitAlert = () => {
 //   Alert.alert('Confirm exit', 'Do you want to quit the app?', [
@@ -27,30 +36,29 @@ const removeAndroidBackButtonHandler = () => {
 //   return true
 // }
 const exitAlert = () => {
-
   Alert.alert(
-      'Confirm exit',
-      'Do you want to quit the app',
-      [
-          {
-              text: 'Cancel',
-              style: 'cancel',
-              style: styles.cancelButton
-          },
-          {
-              text: 'okText',
-              onPress: () => BackHandler.exitApp(),
-              style: styles.confirmButton
-          }
-      ],
+    'Confirm exit',
+    'Do you want to quit the app',
+    [
       {
-          cancelable: false,
-          containerStyle: styles.alertContainer,
-          titleStyle: styles.titleStyle,
-          messageStyle: styles.messageStyle
+        text: 'Cancel',
+        style: 'cancel',
+        style: styles.cancelButton
+      },
+      {
+        text: 'okText',
+        onPress: () => BackHandler.exitApp(),
+        style: styles.confirmButton
       }
-  );
-  return true;
+    ],
+    {
+      cancelable: false,
+      containerStyle: styles.alertContainer,
+      titleStyle: styles.titleStyle,
+      messageStyle: styles.messageStyle
+    }
+  )
+  return true
 }
 const styles = StyleSheet.create({
   alertContainer: {

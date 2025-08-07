@@ -200,6 +200,8 @@ export const UserProvider = (props) => {
     await AsyncStorage.setItem('restaurant', id)
   }
 
+  console.log({ restaurant })
+
   return (
     <UserContext.Provider
       value={{

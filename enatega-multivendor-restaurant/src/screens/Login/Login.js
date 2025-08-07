@@ -74,6 +74,7 @@ export default function Login() {
                 value={username}
                 onChangeText={e => setUserName(e)}
                 autoCapitalize={'none'}
+                placeholderTextColor="#999"
               />
               <View
                 style={{
@@ -87,6 +88,7 @@ export default function Login() {
                   value={password}
                   onChangeText={e => setPassword(e)}
                   autoCapitalize={'none'}
+                  placeholderTextColor="#999"
                 />
                 {/* <FontAwesome
                   onPress={() => setShowPassword(!showPassword)}

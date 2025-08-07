@@ -147,8 +147,8 @@ function LeftButton(props) {
 
 function RightButton(props) {
   // const { t } = props
-    const { t } = useTranslation()
-  
+  const { t } = useTranslation()
+
   const [password, setPassword] = useState(false)
   const navigation = useNavigation()
   const route = useRoute()

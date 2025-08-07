@@ -187,16 +187,17 @@ const styles = StyleSheet.create({
   textInput: {
     padding: 15,
     width: '100%',
-    backgroundColor: colors.borderColor,
+    backgroundColor: '#fff',
     borderColor: '#66666610',
     borderWidth: 1,
     borderRadius: 10,
-    zIndex: 999999999999999,
+    zIndex: 999,
     shadowColor: colors.fontSecondColor,
     shadowOffset: {
       width: 0,
       height: 2
     },
+    color: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 4,

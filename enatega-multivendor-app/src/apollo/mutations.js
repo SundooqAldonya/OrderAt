@@ -535,7 +535,7 @@ export const updateUserName = gql`
 export const bulkAddUserAddresses = gql`
   mutation BulkAddUserAddresses(
     $userId: String!
-    $addresses: [AddressInput!]!
+    $addresses: [AddressInputBulk!]!
   ) {
     bulkAddUserAddresses(userId: $userId, addresses: $addresses) {
       message

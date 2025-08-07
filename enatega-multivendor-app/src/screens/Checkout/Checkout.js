@@ -1122,6 +1122,7 @@ function Checkout(props) {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={[styles().flex]}
+              contentContainerStyle={{ paddingBottom: 20 }}
             >
               <View>
                 {/* {isPickup ? (
@@ -2061,7 +2062,7 @@ function Checkout(props) {
           style={styleNameModal.modal}
           swipeDirection='down'
           onSwipeComplete={onClose}
-          useNativeDriver
+          useNativeDriver={false}
         >
           <View style={styleNameModal.modalContent}>
             <Text

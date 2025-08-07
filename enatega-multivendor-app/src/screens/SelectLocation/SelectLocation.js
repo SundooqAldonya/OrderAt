@@ -445,6 +445,8 @@ export default function SelectLocation(props) {
                 <GooglePlacesAutocomplete
                   ref={searchRef}
                   placeholder={t('find_place')}
+                  predefinedPlaces={[]}
+                  predefinedPlacesAlwaysVisible={false}
                   onPress={(data, details = null) => {
                     const lat = details?.geometry?.location?.lat
                     const lng = details?.geometry?.location?.lng
@@ -469,6 +471,9 @@ export default function SelectLocation(props) {
                   }}
                   fetchDetails={true}
                   enablePoweredByContainer={false}
+                  textInputProps={{
+                    placeholderTextColor: '#999'
+                  }}
                   styles={{
                     textInputContainer: {
                       backgroundColor: '#fff',

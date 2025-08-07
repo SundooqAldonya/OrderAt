@@ -424,9 +424,9 @@ function Main(props) {
                   color={currentTheme.white}
                 />
                 <View style={styles().mL5p} />
-                <TextDefault bold H4>
+                {/* <TextDefault bold H4>
                   {t('currentLocation')}
-                </TextDefault>
+                </TextDefault> */}
               </>
             )}
           </View>

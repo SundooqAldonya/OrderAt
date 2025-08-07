@@ -288,6 +288,11 @@ const AddressFromMap = () => {
             }}
             fetchDetails={true}
             enablePoweredByContainer={false}
+            predefinedPlaces={[]}
+            predefinedPlacesAlwaysVisible={false}
+            textInputProps={{
+              placeholderTextColor: '#999'
+            }}
             styles={{
               textInputContainer: {
                 backgroundColor: '#fff',

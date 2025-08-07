@@ -550,8 +550,6 @@ function Profile(props) {
                     </View>
                   )}
                 </View>
-                {/* <<<<<<< HEAD
-======= */}
                 {/* <View style={styles().headingLink}>
                   <TouchableOpacity
                     activeOpacity={0.3}
