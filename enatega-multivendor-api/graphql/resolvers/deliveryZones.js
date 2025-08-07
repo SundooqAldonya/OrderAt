@@ -99,7 +99,10 @@ module.exports = {
           console.log({ distance, amount })
         }
 
-        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.1
+        ) {
           amount = configuration.minimumDeliveryFee
         }
 
@@ -227,7 +230,10 @@ module.exports = {
           console.log({ distance, amount })
         }
 
-        if (parseFloat(amount) <= configuration.minimumDeliveryFee) {
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.1
+        ) {
           amount = configuration.minimumDeliveryFee
         }
 
