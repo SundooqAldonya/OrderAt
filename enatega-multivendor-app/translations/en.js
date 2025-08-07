@@ -719,5 +719,6 @@ export const en = {
   see_all_reviews: 'See all reviews',
   customerReviews: 'Customer Reviews',
   noReviewsYet: 'No reviews yet',
-  trending_description: "Trending items we think you'll love"
+  trending_description: "Trending items we think you'll love",
+  to_start_your_order: 'To start your order'
 }

@@ -520,8 +520,9 @@ const RestaurantDetailsV2 = () => {
 
       <View style={styles.bottomBanner}>
         <Text style={styles.bottomText}>
-          Add EGP {parseFloat(restaurant?.minimumOrder).toFixed(2)} to start
-          your order
+          {t('add')} {configuration?.currency}{' '}
+          {parseFloat(restaurant?.minimumOrder).toFixed(2)}{' '}
+          {t('to_start_your_order')}
         </Text>
       </View>
     </SafeAreaView>

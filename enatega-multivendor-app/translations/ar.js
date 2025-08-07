@@ -708,5 +708,6 @@ export const ar = {
   see_all_reviews: 'رؤية جميع التقييمات',
   customerReviews: 'تقييمات العملاء',
   noReviewsYet: 'لا توجد تقييمات حتى الآن',
-  trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها'
+  trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها',
+  to_start_your_order: 'لبدأ الطلب'
 }
