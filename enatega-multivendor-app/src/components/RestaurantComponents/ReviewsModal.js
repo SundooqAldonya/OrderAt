@@ -21,7 +21,6 @@ const ReviewsModal = ({
   restaurantId
 }) => {
   const { t } = useTranslation()
-  const [searchQuery, setSearchQuery] = useState('')
 
   const { data, loading, error } = useQuery(getReviews, {
     variables: {
@@ -65,15 +64,6 @@ const ReviewsModal = ({
               <AntDesign name='close' size={24} color='black' />
             </TouchableOpacity>
           </View>
-
-          {/* Search Bar */}
-          <TextInput
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={`${t('searchReviews')}...`}
-            placeholderTextColor='#888'
-            style={styles.searchInput}
-          />
 
           {/* List of Reviews */}
           <FlatList
