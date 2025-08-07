@@ -330,13 +330,27 @@ const RestaurantDetailsV2 = () => {
               alignItems: 'center'
             }}
           >
-            <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
               <StarRatingDisplay
                 rating={restaurant?.reviewCount || 0}
                 color={'orange'}
                 emptyColor='orange'
                 enableHalfStar={true}
+                starSize={20}
               />
+              <Text style={{ color: '#000' }}>
+                (
+                {restaurant?.reviewCount
+                  ? `${restaurant?.reviewCount} ${t('titleReviews')}`
+                  : null}
+                )
+              </Text>
             </View>
             <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
               <Text style={{ color: colors.primary }}>

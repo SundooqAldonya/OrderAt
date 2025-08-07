@@ -53,7 +53,7 @@ const ReviewsModal = ({
       onRequestClose={() => setReviewModalVisible(false)}
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{ padding: 16, paddingBottom: 25 }}>
+        <View style={{ padding: 16 }}>
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>{t('customerReviews')}</Text>
@@ -71,6 +71,7 @@ const ReviewsModal = ({
             keyExtractor={(item) => item._id}
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+            contentContainerStyle={{ paddingBottom: 100 }}
           />
         </View>
       </SafeAreaView>
