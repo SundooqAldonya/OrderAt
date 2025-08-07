@@ -82,6 +82,8 @@ const RestaurantDetailsV2 = () => {
 
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false)
   const categoriesLayoutY = useRef(0)
+  const [categoryOffsets, setCategoryOffsets] = useState({})
+  const sectionRefs = useRef({})
 
   // const heart = profile ? profile.favourite.includes(restaurantId) : false
   const [heart, setHeart] = useState(
@@ -166,51 +168,104 @@ const RestaurantDetailsV2 = () => {
     }
   }, [data])
 
-  const getScrollOffsetForCategory = (targetCategoryId) => {
+  useEffect(() => {
+    if (!scrollViewRef.current || !categories?.length) return
+
+    const newOffsets = {}
+    let measuredCount = 0
+
+    categories.forEach((cat) => {
+      const ref = sectionRefs.current[cat._id]
+      if (ref) {
+        ref.measureLayout(
+          scrollViewRef.current,
+          (x, y) => {
+            newOffsets[cat._id] = y
+            measuredCount += 1
+            if (measuredCount === categories.length) {
+              setCategoryOffsets(newOffsets)
+            }
+          },
+          (error) => {
+            console.warn('Measure failed for', cat._id, error)
+          }
+        )
+      }
+    })
+  }, [data])
+
+  const getScrollOffsetForCategory = () => {
     let offset = 0
+    const map = {}
 
-    for (let i = 0; i < categories.length; i++) {
-      const cat = categories[i]
-      const itemsInThisCategory = categories[cat._id]?.length || 0
+    categories.forEach((cat) => {
+      map[cat._id] = offset
 
-      offset += CATEGORY_HEADER_HEIGHT
-      offset += itemsInThisCategory * ITEM_HEIGHT
-      offset += CATEGORY_PADDING
-      if (cat._id === targetCategoryId) break
-    }
+      const itemCount = cat.food?.length || 0
+      offset +=
+        CATEGORY_HEADER_HEIGHT + itemCount * ITEM_HEIGHT + CATEGORY_PADDING
+    })
 
-    return offset
+    return map
   }
 
   const handleCategoryPress = (categoryId) => {
     setActiveCategory(categoryId)
-    const y = getScrollOffsetForCategory(categoryId)
-    // Scroll to the section of the selected category
-
-    scrollViewRef.current?.scrollTo({
-      // y: sectionPositions[categoryId] + y,
-      y: y,
-      animated: true
-    })
+    const yOffset = categoryOffsets[categoryId]
+    console.log({ yOffset })
+    if (yOffset !== undefined) {
+      scrollViewRef.current?.scrollTo({
+        y: yOffset - HEADER_COLLAPSED_HEIGHT - 40,
+        animated: true
+      })
+    }
   }
-
   const handleScroll = (event) => {
-    const yOffset = event.nativeEvent.contentOffset.y
+    const scrollY = event.nativeEvent.contentOffset.y
 
-    let current = categories[0]._id
-    for (let i = 0; i < categories.length; i++) {
-      const _id = categories[i]._id
-      const nextId = categories[i + 1]?._id
-      const currentY = sectionPositions[_id]
-      const nextY = sectionPositions[nextId] ?? Infinity
+    // Adjust for sticky header height
+    const adjustedScrollY = scrollY + stickyHeaderHeight
 
-      if (yOffset >= currentY && yOffset < nextY) {
-        current = _id
+    let newActiveCategory = activeCategory
+
+    const sortedCategories = Object.entries(categoryOffsets).sort(
+      (a, b) => a[1] - b[1]
+    )
+
+    for (let i = 0; i < sortedCategories.length; i++) {
+      const [categoryId, offset] = sortedCategories[i]
+      const nextOffset = sortedCategories[i + 1]?.[1] ?? Infinity
+
+      if (adjustedScrollY >= offset && adjustedScrollY < nextOffset) {
+        newActiveCategory = categoryId
         break
       }
     }
-    setActiveCategory(current)
+
+    if (newActiveCategory !== activeCategory) {
+      setActiveCategory(newActiveCategory)
+      console.log({ activeCategory: newActiveCategory })
+    }
   }
+  console.log({ activeCategory, categoryOffsets })
+
+  // const handleScroll = (event) => {
+  //   const yOffset = event.nativeEvent.contentOffset.y
+
+  //   let current = categories[0]._id
+  //   for (let i = 0; i < categories.length; i++) {
+  //     const _id = categories[i]._id
+  //     const nextId = categories[i + 1]?._id
+  //     const currentY = sectionPositions[_id]
+  //     const nextY = sectionPositions[nextId] ?? Infinity
+
+  //     if (yOffset >= currentY && yOffset < nextY) {
+  //       current = _id
+  //       break
+  //     }
+  //   }
+  //   setActiveCategory(current)
+  // }
 
   const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
     ADD_FAVOURITE,
@@ -298,7 +353,7 @@ const RestaurantDetailsV2 = () => {
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 1000 }}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
@@ -403,9 +458,8 @@ const RestaurantDetailsV2 = () => {
           {categories?.map((cat) => (
             <View
               key={cat._id}
-              onLayout={(event) => {
-                const y = event.nativeEvent.layout.y
-                setSectionPositions((prev) => ({ ...prev, [cat._id]: y }))
+              ref={(ref) => {
+                if (ref) sectionRefs.current[cat._id] = ref
               }}
               style={styles.menuSection}
             >

@@ -33,8 +33,6 @@ const ReviewsModal = ({
 
   const reviews = data?.reviews || []
 
-  console.log('Reviews Data:', reviews)
-
   const renderItem = ({ item }) => {
     return <ReviewCard key={item._id} review={item} />
   }
