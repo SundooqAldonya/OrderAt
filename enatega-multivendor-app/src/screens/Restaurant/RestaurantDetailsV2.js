@@ -68,6 +68,7 @@ const RestaurantDetailsV2 = () => {
 
   const { data, refetch, networkStatus, loading, error } =
     useRestaurant(restaurantId)
+
   const restaurant = data?.restaurantCustomer || null
 
   const { data: dataPopularItems } = useQuery(POPULAR_ITEMS, {
@@ -88,8 +89,6 @@ const RestaurantDetailsV2 = () => {
       setBusinessCategoriesNames(string)
     }
   }, [data])
-
-  // console.log({ businessCategoriesNames })
 
   const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
@@ -124,39 +123,6 @@ const RestaurantDetailsV2 = () => {
     }
   )
 
-  const menuItems = [
-    {
-      _id: '1',
-      title: 'Half Grilled Chicken',
-      price: 'EGP 190.00',
-      topRated: true,
-      image: require('../../assets/restaurant/half_grilled_chicken.jpg'),
-      category: 'chicken'
-    },
-    {
-      _id: '2',
-      title: 'Grilled Fillet Chicken',
-      price: 'EGP 181.00',
-      image: require('../../assets/restaurant/grilled_fillet.jpg'),
-      category: 'chicken'
-    },
-    {
-      _id: '3',
-      title: 'Chicken with Fries',
-      price: 'EGP 175.00',
-      topRated: true,
-      image: require('../../assets/restaurant/chicken_with_fries.jpg'),
-      category: 'chicken'
-    },
-    {
-      _id: '4',
-      title: 'Bechamel Pasta',
-      price: 'EGP 76.50',
-      image: require('../../assets/restaurant/bechamel_pasta.jpg'),
-      category: 'pasta'
-    }
-  ]
-
   const restaurantCategories = restaurant?.categories || []
 
   const categories = [
@@ -174,23 +140,12 @@ const RestaurantDetailsV2 = () => {
     }))
   ]
 
-  const itemsByCategory = useMemo(() => {
-    const map = {}
-    menuItems.forEach((item) => {
-      if (!map[item.category]) map[item.category] = []
-      map[item.category].push(item)
-    })
-    return map
-  }, [menuItems])
-
-  console.log('Items by category:', itemsByCategory)
-
   const getScrollOffsetForCategory = (targetCategoryId) => {
     let offset = 0
 
     for (let i = 0; i < categories.length; i++) {
       const cat = categories[i]
-      const itemsInThisCategory = itemsByCategory[cat._id]?.length || 0
+      const itemsInThisCategory = categories[cat._id]?.length || 0
       console.log(`Category: ${cat._id}, Items: ${itemsInThisCategory}`)
 
       offset += CATEGORY_HEADER_HEIGHT
@@ -281,9 +236,6 @@ const RestaurantDetailsV2 = () => {
           <TouchableOpacity style={styles.backIconContainer}>
             <MaterialIcons name='favorite-border' size={18} color='black' />
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.backIconContainer}>
-            <Entypo name='share-alternative' size={18} color='black' />
-          </TouchableOpacity> */}
           <TouchableOpacity style={styles.backIconContainer}>
             <Feather name='search' size={18} color='black' />
           </TouchableOpacity>
