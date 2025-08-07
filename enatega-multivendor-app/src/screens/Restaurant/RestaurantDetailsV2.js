@@ -41,6 +41,7 @@ import {
 import { scale } from '../../utils/scaling'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import ViewCart from '../../components/RestaurantComponents/ViewCart'
+import { Feather } from '@expo/vector-icons'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -280,11 +281,11 @@ const RestaurantDetailsV2 = () => {
           <TouchableOpacity style={styles.backIconContainer}>
             <MaterialIcons name='favorite-border' size={18} color='black' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.backIconContainer}>
+          {/* <TouchableOpacity style={styles.backIconContainer}>
             <Entypo name='share-alternative' size={18} color='black' />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={styles.backIconContainer}>
-            <EvilIcons name='search' size={18} color='black' />
+            <Feather name='search' size={18} color='black' />
           </TouchableOpacity>
         </View>
       </View>
@@ -422,16 +423,24 @@ const styles = StyleSheet.create({
   },
   iconsWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 15,
     width: 110
   },
   headerImage: {
     width: '100%',
-    height: HEADER_EXPANDED_HEIGHT,
+    height: HEADER_EXPANDED_HEIGHT + 40,
     resizeMode: 'cover'
   },
+
   restaurantInfo: {
-    padding: 16
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    zIndex: 10,
+    overflow: 'hidden',
+    marginTop: -50
   },
   restaurantTitle: {
     fontSize: 22,

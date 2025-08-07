@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { DAYS } from '../../utils/enums'
 import UserContext from '../../context/User'
-import { useSharedValue, withRepeat } from 'react-native-reanimated'
+import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 
 const PickCards = ({ item, restaurantCustomer }) => {
   const navigation = useNavigation()
@@ -35,7 +35,7 @@ const PickCards = ({ item, restaurantCustomer }) => {
   }
 
   const isOpen = () => {
-    if (data) {
+    if (restaurantCustomer) {
       if (restaurantCustomer?.openingTimes?.length < 1) return false
       const date = new Date()
       const day = date.getDay()
@@ -73,14 +73,19 @@ const PickCards = ({ item, restaurantCustomer }) => {
       if (clearFlag) await clearCart()
       navigation.navigate('ItemDetail', {
         food,
-        addons: restaurant.addons,
-        options: restaurant.options,
-        restaurant: restaurant._id
+        addons: restaurantCustomer.addons,
+        options: restaurantCustomer.options,
+        restaurant: restaurantCustomer._id
       })
     }
   }
 
   const onPressItem = async (food) => {
+    console.log('onPressItem', food)
+    if (!restaurantCustomer) {
+      Alert.alert(t('error'), t('restaurantNotFound'))
+      return
+    }
     if (!restaurantCustomer.isAvailable || !isOpen()) {
       Alert.alert(
         '',
@@ -131,8 +136,8 @@ const PickCards = ({ item, restaurantCustomer }) => {
       onPress={() => {
         onPressItem({
           ...item,
-          restaurant: restaurant?._id,
-          restaurantName: restaurant.name
+          restaurant: restaurantCustomer?._id,
+          restaurantName: restaurantCustomer?.name
         })
       }}
       style={styles.itemContainer}

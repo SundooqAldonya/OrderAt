@@ -1,4 +1,5 @@
 import {
+  Animated,
   Platform,
   StyleSheet,
   Text,
@@ -9,13 +10,20 @@ import React, { useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import ConfigurationContext from '../../context/Configuration'
-import { Extrapolation, interpolate } from 'react-native-reanimated'
+import {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue
+} from 'react-native-reanimated'
 import { scale } from '../../utils/scaling'
+import TextDefault from '../Text/TextDefault/TextDefault'
+import { colors } from '../../utils/colors'
+import Feather from '@expo/vector-icons/Feather'
 
 const ViewCart = ({ cartCount }) => {
   const navigation = useNavigation()
   const { t } = useTranslation()
-  const configuration = useContext(ConfigurationContext)
 
   const circle = useSharedValue(0)
 
@@ -32,17 +40,6 @@ const ViewCart = ({ cartCount }) => {
     Extrapolation.CLAMP
   )
 
-  const fontStyles = useAnimatedStyle(() => {
-    return {
-      fontSize: interpolate(
-        circle.value,
-        [0, 0.5, 1],
-        [8, 12, 8],
-        Extrapolation.CLAMP
-      )
-    }
-  })
-
   const scaleValue = useSharedValue(1)
 
   const scaleStyles = useAnimatedStyle(() => ({
@@ -50,12 +47,13 @@ const ViewCart = ({ cartCount }) => {
   }))
 
   return (
-    <View
+    <TouchableOpacity
       style={[styles.container, Platform.OS === 'ios' && { marginBottom: 70 }]}
+      onPress={() => navigation.navigate('Cart')}
     >
-      <TouchableOpacity
+      <View
         activeOpacity={0.7}
-        onPress={() => navigation.navigate('Cart')}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
       >
         <View>
           <Animated.View
@@ -68,18 +66,48 @@ const ViewCart = ({ cartCount }) => {
               scaleStyles
             ]}
           >
-            <Animated.Text style={[fontStyles]}>{cartCount}</Animated.Text>
+            <Animated.Text
+              style={[
+                {
+                  color: '#fff',
+                  fontSize: 18,
+                  marginTop: -5,
+                  // backgroundColor: 'red',
+                  textAlign: 'center'
+                }
+              ]}
+            >
+              {cartCount}
+            </Animated.Text>
           </Animated.View>
         </View>
         <TextDefault textColor={'#fff'} uppercase center bolder small H5>
           {t('viewCart')}
         </TextDefault>
-        <View style={styles.buttonTextRight} />
-      </TouchableOpacity>
-    </View>
+        <View>
+          <Feather name='shopping-cart' size={24} color='#fff' />
+        </View>
+      </View>
+    </TouchableOpacity>
   )
 }
 
 export default ViewCart
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 20 : 10,
+    bottom: 40,
+    left: 0,
+    right: 0,
+    padding: 12,
+    paddingVertical: 20,
+    backgroundColor: colors.primary, // or your primary color
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    zIndex: 1000
+  }
+})
