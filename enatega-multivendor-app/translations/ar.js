@@ -703,4 +703,12 @@ export const ar = {
   addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة',
   change_city: 'تغيير المدينة',
   find_place: 'ابحث عن مكان...',
+  picks_for_you: 'اختيارات لك',
+  no_items_in_category: 'لا توجد عناصر في هذه الفئة',
+  searchForFood: 'ابحث عن الطعام',
+  see_all_reviews: 'رؤية جميع التقييمات',
+  customerReviews: 'تقييمات العملاء',
+  noReviewsYet: 'لا توجد تقييمات حتى الآن',
+  trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها',
+  to_start_your_order: 'لبدأ الطلب'
 }

@@ -714,4 +714,12 @@ export const en = {
   addresses_saved: 'Your addresses are saved!',
   change_city: 'Change City',
   find_place: 'Find a place...',
+  picks_for_you: 'Picks for you',
+  no_items_in_category: 'No items in this category',
+  searchForFood: 'Search for food',
+  see_all_reviews: 'See all reviews',
+  customerReviews: 'Customer Reviews',
+  noReviewsYet: 'No reviews yet',
+  trending_description: "Trending items we think you'll love",
+  to_start_your_order: 'To start your order'
 }

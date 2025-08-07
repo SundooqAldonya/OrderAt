@@ -7,7 +7,9 @@ module.exports = {
     reviews: async (_, args, context) => {
       console.log('reviews')
       try {
-        const reviews = await Review.find({ restaurant: args.restaurant })
+        const reviews = await Review.find({
+          restaurant: args.restaurant
+        }).sort({ _id: -1 })
         console.log({ reviews })
         return reviews.map(review => {
           return transformReview(review)

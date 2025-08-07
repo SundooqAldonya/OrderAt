@@ -86,6 +86,7 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import CityListScreen from '../screens/SelectLocation/CityListScreen'
 import { moderateScale } from '../utils/scaling'
+import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -210,7 +211,7 @@ function NoDrawer() {
 
       <NavigationStack.Screen
         name='Restaurant'
-        component={Restaurant}
+        component={RestaurantDetailsV2}
         options={{ header: () => null }}
       />
 

@@ -161,7 +161,7 @@ const transformOrder = async order => {
       : '',
     pickupLocation: order?.pickupLocation ? order.pickupLocation : null,
     type: order?.type ? order.type : null,
-    riderInteractions: order.riderInteractions?.length
+    riderInteractions: order?.riderInteractions?.length
       ? order.riderInteractions
       : [],
     originalDeliveryCharges: order?.originalDeliveryCharges
@@ -172,11 +172,11 @@ const transformOrder = async order => {
     mandoobSpecialInstructions: order?.mandoobSpecialInstructions
       ? order?.mandoobSpecialInstructions
       : null,
-    cancellation: order.cancellation ? order.cancellation : null,
-    isPickedUp: order.isPickedUp,
-    paymentStatus: order.paymentStatus,
-    tipping: order.tipping,
-    taxationAmount: order.taxationAmount
+    cancellation: order?.cancellation ? order?.cancellation : null,
+    isPickedUp: order?.isPickedUp,
+    paymentStatus: order?.paymentStatus,
+    tipping: order?.tipping,
+    taxationAmount: order?.taxationAmount
   }
 }
 

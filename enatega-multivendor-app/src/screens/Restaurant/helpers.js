@@ -1,0 +1,2 @@
+export const HEADER_EXPANDED_HEIGHT = 160
+export const HEADER_COLLAPSED_HEIGHT = 80
