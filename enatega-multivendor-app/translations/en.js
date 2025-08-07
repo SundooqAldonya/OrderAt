@@ -718,5 +718,6 @@ export const en = {
   searchForFood: 'Search for food',
   see_all_reviews: 'See all reviews',
   customerReviews: 'Customer Reviews',
-  noReviewsYet: 'No reviews yet'
+  noReviewsYet: 'No reviews yet',
+  trending_description: "Trending items we think you'll love"
 }

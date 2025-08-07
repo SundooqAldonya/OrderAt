@@ -1,15 +1,30 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, StyleSheet } from 'react-native'
 
 const ReviewCard = ({ review }) => {
+  const { i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const userName = review?.order?.user?.name || 'Anonymous'
   const date = new Date(Number(review.createdAt)).toLocaleDateString()
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{userName || 'Anonymous'}</Text>
-      <Text style={styles.rating}>⭐ {review.rating}/5</Text>
-      <Text style={styles.comment}>{review.description}</Text>
-      <Text style={styles.date}>{date}</Text>
+      <Text style={{ ...styles.name, textAlign: isArabic ? 'right' : 'left' }}>
+        {userName || 'Anonymous'}
+      </Text>
+      <Text
+        style={{ ...styles.rating, textAlign: isArabic ? 'right' : 'left' }}
+      >
+        ⭐ {review.rating}/5
+      </Text>
+      <Text
+        style={{ ...styles.comment, textAlign: isArabic ? 'right' : 'left' }}
+      >
+        {review.description}
+      </Text>
+      <Text style={{ ...styles.date, textAlign: isArabic ? 'right' : 'left' }}>
+        {date}
+      </Text>
     </View>
   )
 }

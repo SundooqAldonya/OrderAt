@@ -36,7 +36,7 @@ const SearchModal = ({
         <View style={{ padding: 16 }}>
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
               marginVertical: 10

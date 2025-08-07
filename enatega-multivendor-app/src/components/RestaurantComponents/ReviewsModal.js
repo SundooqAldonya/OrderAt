@@ -20,7 +20,8 @@ const ReviewsModal = ({
   setReviewModalVisible,
   restaurantId
 }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const { data, loading, error } = useQuery(getReviews, {
     variables: {
@@ -55,7 +56,12 @@ const ReviewsModal = ({
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={{ padding: 16 }}>
           {/* Header */}
-          <View style={styles.header}>
+          <View
+            style={{
+              ...styles.header,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
             <Text style={styles.title}>{t('customerReviews')}</Text>
             <TouchableOpacity
               onPress={() => setReviewModalVisible(false)}

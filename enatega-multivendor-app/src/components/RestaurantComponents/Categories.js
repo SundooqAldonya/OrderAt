@@ -7,13 +7,23 @@ import {
 } from 'react-native'
 import React from 'react'
 import { colors } from '../../utils/colors'
+import { useTranslation } from 'react-i18next'
 
 const Categories = ({ categories, activeCategory, onCategoryPress }) => {
+  const { i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={styles.categoryBar}
+      contentContainerStyle={{
+        flexDirection: isArabic ? 'row-reverse' : 'row',
+        justifyContent: 'flex-start'
+      }}
+      style={{
+        ...styles.categoryBar,
+        flexDirection: isArabic ? 'row-reverse' : 'row'
+      }}
     >
       {categories?.map((cat, index) => (
         <TouchableOpacity
@@ -42,7 +52,6 @@ const Categories = ({ categories, activeCategory, onCategoryPress }) => {
 export default Categories
 const styles = StyleSheet.create({
   categoryBar: {
-    flexDirection: 'row',
     paddingVertical: 10,
     backgroundColor: '#fff'
   },

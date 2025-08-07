@@ -146,7 +146,7 @@ const RestaurantDetailsV2 = () => {
       _id: 'picks',
       icon: '🔥',
       title: t('picks_for_you'),
-      desceription: "Trending items we think you'll love",
+      desceription: t('trending_description'),
       food: popularFood || []
     },
     ...restaurantCategories.map((cat) => ({
@@ -159,7 +159,10 @@ const RestaurantDetailsV2 = () => {
   useEffect(() => {
     if (data && categories?.length) {
       const flattened = categories.flatMap((cat) => cat.food)
-      setAllFoods(flattened)
+      const unique = Array.from(
+        new Map(flattened.map((item) => [item._id, item])).values()
+      )
+      setAllFoods(unique)
     }
   }, [data])
 
@@ -309,15 +312,30 @@ const RestaurantDetailsV2 = () => {
         />
 
         <View style={styles.restaurantInfo}>
-          <Text style={styles.restaurantTitle}>
+          <Text
+            style={{
+              ...styles.restaurantTitle,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
             {restaurant?.name ? restaurant.name : null}
           </Text>
           {restaurant?.businessCategories ? (
-            <Text style={styles.restaurantSubtitle}>
+            <Text
+              style={{
+                ...styles.restaurantSubtitle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
               {businessCategoriesNames ? businessCategoriesNames : ''}
             </Text>
           ) : null}
-          <Text style={styles.deliveryInfo}>
+          <Text
+            style={{
+              ...styles.deliveryInfo,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
             🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
             {t('minimum')} •{' '}
             {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} mins
@@ -325,14 +343,14 @@ const RestaurantDetailsV2 = () => {
           <View
             style={{
               marginTop: 12,
-              flexDirection: 'row',
+              flexDirection: isArabic ? 'row-reverse' : 'row',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}
           >
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: isArabic ? 'row-reverse' : 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}
@@ -391,11 +409,23 @@ const RestaurantDetailsV2 = () => {
               }}
               style={styles.menuSection}
             >
-              <Text style={styles.sectionTitle}>
+              <Text
+                style={{
+                  ...styles.sectionTitle,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
                 {cat.title} {cat.icon ? cat.icon : null}
               </Text>
               {cat.desceription ? (
-                <Text style={styles.sectionSubtitle}>{cat.desceription}</Text>
+                <Text
+                  style={{
+                    ...styles.sectionSubtitle,
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
+                  {cat.desceription}
+                </Text>
               ) : null}
               {/* render items for that section */}
               {cat?.food?.length ? (
@@ -407,7 +437,9 @@ const RestaurantDetailsV2 = () => {
                   scrollEnabled={false}
                 />
               ) : (
-                <Text style={{ color: '#999', marginTop: 10 }}>
+                <Text
+                  style={{ color: '#999', marginTop: 10, textAlign: 'center' }}
+                >
                   {t('no_items_in_category')}
                 </Text>
               )}

@@ -707,5 +707,6 @@ export const ar = {
   searchForFood: 'ابحث عن الطعام',
   see_all_reviews: 'رؤية جميع التقييمات',
   customerReviews: 'تقييمات العملاء',
-  noReviewsYet: 'لا توجد تقييمات حتى الآن'
+  noReviewsYet: 'لا توجد تقييمات حتى الآن',
+  trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها'
 }
