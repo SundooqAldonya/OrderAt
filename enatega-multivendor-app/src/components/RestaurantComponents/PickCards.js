@@ -18,7 +18,8 @@ import { colors } from '../../utils/colors'
 
 const PickCards = ({ item, restaurantCustomer, cat }) => {
   const navigation = useNavigation()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const configuration = useContext(ConfigurationContext)
   const {
     restaurant: restaurantCart,
@@ -144,10 +145,17 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
       }}
       style={[
         styles.card,
-        cat === 'picks' ? styles.cardVertical : styles.cardHorizontal
+        cat === 'picks'
+          ? styles.cardVertical
+          : {
+              ...styles.cardHorizontal,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }
       ]}
     >
-      <View style={styles.cartIcon}>
+      <View
+        style={isArabic ? { ...styles.cartIconArabic } : { ...styles.cartIcon }}
+      >
         <FontAwesome5 name='cart-plus' size={24} color={colors.primary} />
       </View>
       <Image
@@ -159,10 +167,31 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
         style={cat === 'picks' ? styles.imageVertical : styles.imageHorizontal}
       />
       <View style={styles.cardContent}>
-        <Text style={styles.foodName}>{item?.title}</Text>
-        <Text style={styles.foodDescription}>{item?.description}</Text>
-        <View style={styles.priceContainer}>
-          <Text style={styles.foodPrice}>{configuration.currency}</Text>
+        <Text
+          style={{ ...styles.foodName, textAlign: isArabic ? 'right' : 'left' }}
+        >
+          {item?.title}
+        </Text>
+        {item.description ? (
+          <Text
+            style={{
+              ...styles.foodDescription,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {item?.description?.substring(0, 19)}...
+          </Text>
+        ) : (
+          <Text style={styles.foodDescription}></Text>
+        )}
+        <View
+          style={{
+            ...styles.priceContainer
+          }}
+        >
+          <Text style={styles.foodPrice}>
+            {isArabic ? configuration.currencySymbol : configuration.currency}
+          </Text>
           <Text style={styles.foodPrice}>
             {parseFloat(item.variations[0].price).toFixed(2)}
           </Text>
@@ -183,8 +212,17 @@ const styles = StyleSheet.create({
   },
   cartIcon: {
     position: 'absolute',
-    top: 8,
+    top: 25,
     right: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
+  },
+  cartIconArabic: {
+    position: 'absolute',
+    top: 25,
+    left: 8,
     backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 20,
     padding: 4,
@@ -207,7 +245,7 @@ const styles = StyleSheet.create({
   imageHorizontal: {
     width: 100,
     height: 100,
-    marginRight: 12
+    marginInlineStart: 12
   },
   cardContent: {
     padding: 8
