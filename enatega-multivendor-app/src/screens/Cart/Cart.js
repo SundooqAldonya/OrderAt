@@ -43,6 +43,7 @@ import WouldYouLikeToAddThese from './Section'
 import { SpecialInstructions } from '../../components/Cart/SpecialInstructions'
 import { colors } from '../../utils/colors'
 import { Fragment } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 // Constants
 const TIPPING = gql`
@@ -51,6 +52,8 @@ const TIPPING = gql`
 
 function Cart(props) {
   const Analytics = analytics()
+  const insets = useSafeAreaInsets()
+  const FOOTER_HEIGHT = scale(70)
   const navigation = useNavigation()
   const configuration = useContext(ConfigurationContext)
   const {
@@ -528,6 +531,9 @@ function Cart(props) {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={[styles().flex, styles().cartItems]}
+              contentContainerStyle={{
+                paddingBottom: FOOTER_HEIGHT + insets.bottom + scale(16)
+              }}
             >
               <View
                 style={{
@@ -603,7 +609,21 @@ function Cart(props) {
               </View>
             </ScrollView>
 
-            <View style={styles().totalBillContainer}>
+            <View
+              // style={styles().totalBillContainer}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: FOOTER_HEIGHT + insets?.bottom + 50,
+                paddingBottom: insets.bottom,
+                backgroundColor: currentTheme.newheaderColor, // or your prop
+                paddingHorizontal: scale(16),
+                justifyContent: 'center',
+                zIndex: 20
+              }}
+            >
               <View style={styles(currentTheme).buttonContainer}>
                 <View style={styles().cartAmount}>
                   {isArabic ? (

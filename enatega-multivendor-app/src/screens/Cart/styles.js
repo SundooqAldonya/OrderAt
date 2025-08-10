@@ -148,7 +148,8 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingTop: scale(28)
+      marginBottom: scale(16)
+      // paddingTop: scale(28)
     },
     button: {
       backgroundColor: '#111827',

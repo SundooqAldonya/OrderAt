@@ -10,7 +10,8 @@ import {
   Text,
   TextInput,
   Dimensions,
-  StyleSheet
+  StyleSheet,
+  SafeAreaView
 } from 'react-native'
 import { useMutation, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
@@ -1115,7 +1116,7 @@ function Checkout(props) {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles(currentTheme).mainContainer}>
         {!!cart.length && (
           <>
@@ -2310,7 +2311,7 @@ function Checkout(props) {
           <Text style={styles(currentTheme).applyButton}>{t('apply')}</Text>
         </TouchableOpacity>
       </Modalize>
-    </>
+    </SafeAreaView>
   )
 }
 
