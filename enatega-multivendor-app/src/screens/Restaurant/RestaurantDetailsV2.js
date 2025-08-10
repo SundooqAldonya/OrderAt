@@ -31,14 +31,8 @@ import { food, popularItems, profile } from '../../apollo/queries'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import gql from 'graphql-tag'
 import { useMutation, useQuery } from '@apollo/client'
-import SkeletonBox from '../../components/SkeletonBox'
 import RestaurantLoading from '../../components/RestaurantComponents/RestaurantLoading'
 import UserContext from '../../context/User'
-import {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle
-} from 'react-native-reanimated'
 import { scale } from '../../utils/scaling'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import ViewCart from '../../components/RestaurantComponents/ViewCart'
@@ -47,6 +41,10 @@ import SearchModal from '../../components/RestaurantComponents/SearchModal'
 import ReviewsModal from '../../components/RestaurantComponents/ReviewsModal'
 import JSONTree from 'react-native-json-tree'
 import { addFavouriteRestaurant } from '../../apollo/mutations'
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel
+} from 'react-native-reanimated'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -59,9 +57,10 @@ const ADD_FAVOURITE = gql`
 const PROFILE = gql`
   ${profile}
 `
-const ITEM_HEIGHT = 150
-const CATEGORY_HEADER_HEIGHT = 50
-const CATEGORY_PADDING = 10
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false // Reanimated runs in strict mode by default
+})
 
 const RestaurantDetailsV2 = () => {
   const configuration = useContext(ConfigurationContext)
@@ -316,7 +315,7 @@ const RestaurantDetailsV2 = () => {
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, flexGrow: 1 }}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
