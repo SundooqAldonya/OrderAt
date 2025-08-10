@@ -72,7 +72,8 @@ const RestaurantDetailsV2 = () => {
   const scrollViewRef = useRef({})
   const route = useRoute()
   const { _id: restaurantId } = route.params
-  const { cartCount, profile } = useContext(UserContext)
+  const { cartCount, profile, calculatePrice } = useContext(UserContext)
+  // console.log({ calculatePrice: calculatePrice() })
   const [businessCategories, setBusinessCategories] = useState(null)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [showReviewsModal, setShowReviewsModal] = useState(false)
@@ -520,7 +521,13 @@ const RestaurantDetailsV2 = () => {
           })}
         </ScrollView>
       </Animated.ScrollView>
-      {cartCount > 0 ? <ViewCart cartCount={cartCount} /> : null}
+      {cartCount > 0 ? (
+        <ViewCart
+          cartCount={cartCount}
+          calculatePrice={calculatePrice}
+          minimumOrder={restaurant.minimumOrder}
+        />
+      ) : null}
 
       {/* search modal */}
       <SearchModal
@@ -537,13 +544,15 @@ const RestaurantDetailsV2 = () => {
         restaurantId={restaurant?._id}
       />
 
-      <View style={styles.bottomBanner}>
-        <Text style={styles.bottomText}>
-          {t('add')} {configuration?.currency}{' '}
-          {parseFloat(restaurant?.minimumOrder).toFixed(2)}{' '}
-          {t('to_start_your_order')}
-        </Text>
-      </View>
+      {restaurant && restaurant.minimumOrder > calculatePrice() ? (
+        <View style={styles.bottomBanner}>
+          <Text style={styles.bottomText}>
+            {t('add')} {configuration?.currency}{' '}
+            {parseFloat(restaurant?.minimumOrder).toFixed(2)}{' '}
+            {t('to_start_your_order')}
+          </Text>
+        </View>
+      ) : null}
     </SafeAreaView>
   )
 }

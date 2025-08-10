@@ -92,7 +92,7 @@ function Cart(props) {
   })
 
   const {
-    data: calcData,
+    data: calcDeliveryData,
     loading: calcLoading,
     error: errorCalc
   } = useQuery(getDeliveryCalculationV2, {
@@ -107,12 +107,6 @@ function Cart(props) {
     }
   })
 
-  console.log({
-    calcData,
-    originLong: data?.restaurantCustomer.location.coordinates[0],
-    originLat: data?.restaurantCustomer.location.coordinates[1]
-  })
-
   const coupon =
     props.route.params && props.route.params.coupon
       ? props.route.params.coupon
@@ -124,18 +118,17 @@ function Cart(props) {
       : null
 
   const [selectedTip, setSelectedTip] = useState()
-  const modalRef = useRef(null)
 
   useEffect(() => {
-    if (calcData) {
-      const amount = calcData.getDeliveryCalculationV2.amount
+    if (calcDeliveryData) {
+      const amount = calcDeliveryData.getDeliveryCalculationV2.amount
       setDeliveryCharges(
         amount >= configuration.minimumDeliveryFee
           ? amount
           : configuration.minimumDeliveryFee
       )
     }
-  }, [calcData])
+  }, [calcDeliveryData])
 
   useEffect(() => {
     if (tip) {
@@ -466,13 +459,7 @@ function Cart(props) {
       </View>
     )
   }
-  const onModalOpen = (modalRef) => {
-    const modal = modalRef.current
-    if (modal) {
-      modal.open()
-    }
-  }
-  //here
+
   if (loading || loadingData || loadingTip) return loadginScreen()
 
   const restaurant = data?.restaurantCustomer
@@ -518,6 +505,7 @@ function Cart(props) {
       addons: populateAddons
     }
   }
+
   let deliveryTime = Math.floor((orderDate - Date.now()) / 1000 / 60)
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
 
