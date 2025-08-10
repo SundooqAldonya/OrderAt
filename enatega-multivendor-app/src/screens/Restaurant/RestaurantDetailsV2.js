@@ -108,6 +108,20 @@ const RestaurantDetailsV2 = () => {
   const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
   const [showStickyHeader, setShowStickyHeader] = useState(false)
+  const STICKY_ADJUST = HEADER_COLLAPSED_HEIGHT + 100 // tweak if needed
+  const sortedCategoryOffsetsRef = useRef([]) // precomputed sorted array [[id, y], ...]
+  const activeCategoryRef = useRef(activeCategory)
+
+  useEffect(() => {
+    activeCategoryRef.current = activeCategory
+  }, [activeCategory])
+
+  useEffect(() => {
+    const entries = Object.entries(categoryOffsets || {})
+    // sort by Y position
+    entries.sort((a, b) => a[1] - b[1])
+    sortedCategoryOffsetsRef.current = entries
+  }, [categoryOffsets])
 
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -115,23 +129,39 @@ const RestaurantDetailsV2 = () => {
       useNativeDriver: true,
       listener: (event) => {
         const y = event.nativeEvent.contentOffset.y
+
+        // ---- existing sticky header animation logic ----
         setShowStickyHeader(
           y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
         )
         const shouldShow = y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
-        // Animate the sticky header visibility
         Animated.timing(stickyHeaderAnim, {
-          // Animate the sticky header visibility
           toValue: shouldShow ? 1 : 0,
           duration: 250,
           useNativeDriver: true
         }).start()
-        // Check if the categories section is sticky
+
         if (categoriesLayoutY.current) {
-          if (y >= categoriesLayoutY.current - 60) {
-            setIsCategoriesSticky(true)
-          } else {
-            setIsCategoriesSticky(false)
+          setIsCategoriesSticky(y >= categoriesLayoutY.current - 60)
+        }
+
+        // ---- NEW: active-category detection ----
+        const adjustedY = y + STICKY_ADJUST
+        const sorted = sortedCategoryOffsetsRef.current
+        if (sorted && sorted.length) {
+          let newActive = activeCategoryRef.current // start from last known
+          for (let i = 0; i < sorted.length; i++) {
+            const [id, offset] = sorted[i]
+            const nextOffset = sorted[i + 1]?.[1] ?? Number.POSITIVE_INFINITY
+            if (adjustedY >= offset && adjustedY < nextOffset) {
+              newActive = id
+              break
+            }
+          }
+          if (newActive !== activeCategoryRef.current) {
+            // update both ref and state (state triggers UI update)
+            activeCategoryRef.current = newActive
+            setActiveCategory(newActive)
           }
         }
       }
@@ -271,7 +301,7 @@ const RestaurantDetailsV2 = () => {
           stickyHeaderAnim={stickyHeaderAnim}
         />
       )}
-      {/* Sticky version – appears on top when isCategoriesSticky is true */}
+      {/* Sticky version of categories – appears on top when isCategoriesSticky is true */}
       {isCategoriesSticky && (
         <Animated.View
           style={[
