@@ -179,7 +179,9 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
               textAlign: isArabic ? 'right' : 'left'
             }}
           >
-            {item?.description?.substring(0, 19)}...
+            {isArabic
+              ? `...${item?.description?.substring(0, 19)}`
+              : `${item?.description?.substring(0, 19)}...`}
           </Text>
         ) : (
           <Text style={styles.foodDescription}></Text>
