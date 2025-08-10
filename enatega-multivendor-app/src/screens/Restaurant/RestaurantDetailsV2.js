@@ -353,7 +353,7 @@ const RestaurantDetailsV2 = () => {
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ paddingBottom: 1000 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
@@ -385,16 +385,31 @@ const RestaurantDetailsV2 = () => {
               {businessCategoriesNames ? businessCategoriesNames : ''}
             </Text>
           ) : null}
-          <Text
-            style={{
-              ...styles.deliveryInfo,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
-            {t('minimum')} •{' '}
-            {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} mins
-          </Text>
+          {!isArabic ? (
+            <Text
+              style={{
+                ...styles.deliveryInfo,
+                textAlign: 'left'
+              }}
+            >
+              🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
+              {t('minimum')} •{' '}
+              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
+              {t('minutes')}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                ...styles.deliveryInfo,
+                textAlign: 'right'
+              }}
+            >
+              🚲 {t('minimum')} {configuration?.minimumDeliveryFee}{' '}
+              {configuration?.currencySymbol} •{' '}
+              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
+              {t('minutes')}
+            </Text>
+          )}
           <View
             style={{
               marginTop: 12,
@@ -417,19 +432,25 @@ const RestaurantDetailsV2 = () => {
                 enableHalfStar={true}
                 starSize={20}
               />
-              <Text style={{ color: '#000' }}>
-                (
-                {restaurant?.reviewCount
-                  ? `${restaurant?.reviewCount} ${t('titleReviews')}`
-                  : null}
-                )
-              </Text>
+              {restaurant.reviewCount ? (
+                <Text style={{ color: '#000' }}>
+                  (
+                  {restaurant?.reviewCount
+                    ? `${restaurant?.reviewCount} ${t('titleReviews')}`
+                    : null}
+                  )
+                </Text>
+              ) : null}
             </View>
-            <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
-              <Text style={{ color: colors.primary }}>
-                {t('see_all_reviews')}
-              </Text>
-            </TouchableOpacity>
+            {restaurant?.reviewCount ? (
+              <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
+                <Text style={{ color: colors.primary }}>
+                  {t('see_all_reviews')}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={{ color: colors.primary }}>{t('no_reviews')}</Text>
+            )}
           </View>
         </View>
 

@@ -709,5 +709,7 @@ export const ar = {
   customerReviews: 'تقييمات العملاء',
   noReviewsYet: 'لا توجد تقييمات حتى الآن',
   trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها',
-  to_start_your_order: 'لبدأ الطلب'
+  to_start_your_order: 'لبدأ الطلب',
+  minutes: 'دقائق',
+  no_reviews: 'لا يوجد تقييمات'
 }
