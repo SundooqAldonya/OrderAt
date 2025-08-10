@@ -75,7 +75,6 @@ const RestaurantDetailsV2 = () => {
   const { _id: restaurantId } = route.params
   const { cartCount, profile } = useContext(UserContext)
   const [businessCategories, setBusinessCategories] = useState(null)
-  // const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [showReviewsModal, setShowReviewsModal] = useState(false)
   const [allFoods, setAllFoods] = useState([])
@@ -85,7 +84,6 @@ const RestaurantDetailsV2 = () => {
   const [categoryOffsets, setCategoryOffsets] = useState({})
   const sectionRefs = useRef({})
 
-  // const heart = profile ? profile.favourite.includes(restaurantId) : false
   const [heart, setHeart] = useState(
     profile ? profile.favourite.includes(restaurantId) : false
   )
@@ -194,21 +192,6 @@ const RestaurantDetailsV2 = () => {
     })
   }, [data])
 
-  const getScrollOffsetForCategory = () => {
-    let offset = 0
-    const map = {}
-
-    categories.forEach((cat) => {
-      map[cat._id] = offset
-
-      const itemCount = cat.food?.length || 0
-      offset +=
-        CATEGORY_HEADER_HEIGHT + itemCount * ITEM_HEIGHT + CATEGORY_PADDING
-    })
-
-    return map
-  }
-
   const handleCategoryPress = (categoryId) => {
     setActiveCategory(categoryId)
     const yOffset = categoryOffsets[categoryId]
@@ -244,28 +227,8 @@ const RestaurantDetailsV2 = () => {
 
     if (newActiveCategory !== activeCategory) {
       setActiveCategory(newActiveCategory)
-      console.log({ activeCategory: newActiveCategory })
     }
   }
-  console.log({ activeCategory, categoryOffsets })
-
-  // const handleScroll = (event) => {
-  //   const yOffset = event.nativeEvent.contentOffset.y
-
-  //   let current = categories[0]._id
-  //   for (let i = 0; i < categories.length; i++) {
-  //     const _id = categories[i]._id
-  //     const nextId = categories[i + 1]?._id
-  //     const currentY = sectionPositions[_id]
-  //     const nextY = sectionPositions[nextId] ?? Infinity
-
-  //     if (yOffset >= currentY && yOffset < nextY) {
-  //       current = _id
-  //       break
-  //     }
-  //   }
-  //   setActiveCategory(current)
-  // }
 
   const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
     ADD_FAVOURITE,
@@ -291,8 +254,8 @@ const RestaurantDetailsV2 = () => {
     return <RestaurantLoading />
   }
 
-  const renderItem = ({ item }) => {
-    return <PickCards item={item} restaurantCustomer={restaurant} />
+  const renderItem = ({ item, cat }) => {
+    return <PickCards item={item} restaurantCustomer={restaurant} cat={cat} />
   }
 
   return (
@@ -476,53 +439,59 @@ const RestaurantDetailsV2 = () => {
           scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: 20 }}
         >
-          {categories?.map((cat) => (
-            <View
-              key={cat._id}
-              ref={(ref) => {
-                if (ref) sectionRefs.current[cat._id] = ref
-              }}
-              style={styles.menuSection}
-            >
-              <Text
-                style={{
-                  ...styles.sectionTitle,
-                  textAlign: isArabic ? 'right' : 'left'
+          {categories?.map((cat) => {
+            return (
+              <View
+                key={cat._id}
+                ref={(ref) => {
+                  if (ref) sectionRefs.current[cat._id] = ref
                 }}
+                style={styles.menuSection}
               >
-                {cat.title} {cat.icon ? cat.icon : null}
-              </Text>
-              {cat.desceription ? (
                 <Text
                   style={{
-                    ...styles.sectionSubtitle,
+                    ...styles.sectionTitle,
                     textAlign: isArabic ? 'right' : 'left'
                   }}
                 >
-                  {cat.desceription}
+                  {cat.title} {cat.icon ? cat.icon : null}
                 </Text>
-              ) : null}
-              {/* render items for that section */}
-              {cat?.food?.length ? (
-                <FlatList
-                  data={cat.food}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item._id}
-                  numColumns={2}
-                  scrollEnabled={false}
-                />
-              ) : (
-                <Text
-                  style={{ color: '#999', marginTop: 10, textAlign: 'center' }}
-                >
-                  {t('no_items_in_category')}
-                </Text>
-              )}
-            </View>
-          ))}
+                {cat.desceription ? (
+                  <Text
+                    style={{
+                      ...styles.sectionSubtitle,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}
+                  >
+                    {cat.desceription}
+                  </Text>
+                ) : null}
+                {/* render items for that section */}
+                {cat?.food?.length ? (
+                  <FlatList
+                    data={cat.food}
+                    renderItem={({ item }) => renderItem({ item, cat })}
+                    keyExtractor={(item) => item._id}
+                    numColumns={cat === 'picks' ? 2 : 1}
+                    scrollEnabled={false}
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      color: '#999',
+                      marginTop: 10,
+                      textAlign: 'center'
+                    }}
+                  >
+                    {t('no_items_in_category')}
+                  </Text>
+                )}
+              </View>
+            )
+          })}
         </ScrollView>
       </Animated.ScrollView>
-      {cartCount > 0 && <ViewCart cartCount={cartCount} />}
+      {cartCount > 0 ? <ViewCart cartCount={cartCount} /> : null}
 
       {/* search modal */}
       <SearchModal

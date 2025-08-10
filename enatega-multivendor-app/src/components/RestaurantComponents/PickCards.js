@@ -13,8 +13,10 @@ import { useTranslation } from 'react-i18next'
 import { DAYS } from '../../utils/enums'
 import UserContext from '../../context/User'
 import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
+import { colors } from '../../utils/colors'
 
-const PickCards = ({ item, restaurantCustomer }) => {
+const PickCards = ({ item, restaurantCustomer, cat }) => {
   const navigation = useNavigation()
   const { t } = useTranslation()
   const configuration = useContext(ConfigurationContext)
@@ -140,22 +142,32 @@ const PickCards = ({ item, restaurantCustomer }) => {
           restaurantName: restaurantCustomer?.name
         })
       }}
-      style={styles.itemContainer}
+      style={[
+        styles.card,
+        cat === 'picks' ? styles.cardVertical : styles.cardHorizontal
+      ]}
     >
+      <View style={styles.cartIcon}>
+        <FontAwesome5 name='cart-plus' size={24} color={colors.primary} />
+      </View>
       <Image
         source={
           item.image?.trim()
             ? { uri: item.image }
             : require('../../assets/food_placeholder.jpeg')
         }
-        style={styles.foodImage}
+        style={cat === 'picks' ? styles.imageVertical : styles.imageHorizontal}
       />
-      {item.topRated && <Text style={styles.topRated}>Top rated</Text>}
-      <Text style={styles.foodTitle}>{item.title}</Text>
-      <Text style={styles.foodPrice}>
-        {parseFloat(item.variations[0].price).toFixed(2)}{' '}
-        {configuration.currency}
-      </Text>
+      <View style={styles.cardContent}>
+        <Text style={styles.foodName}>{item?.title}</Text>
+        <Text style={styles.foodDescription}>{item?.description}</Text>
+        <View style={styles.priceContainer}>
+          <Text style={styles.foodPrice}>{configuration.currency}</Text>
+          <Text style={styles.foodPrice}>
+            {parseFloat(item.variations[0].price).toFixed(2)}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -163,33 +175,54 @@ const PickCards = ({ item, restaurantCustomer }) => {
 export default PickCards
 
 const styles = StyleSheet.create({
-  itemContainer: {
-    flex: 1,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     margin: 8,
+    overflow: 'hidden'
+  },
+  cartIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
+  },
+  cardVertical: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '48%' // so 2 fit side by side
+  },
+  cardHorizontal: {
+    flexDirection: 'row',
     alignItems: 'center'
   },
-  foodImage: {
-    width: 150,
+  imageVertical: {
+    width: '100%',
+    height: 120
+  },
+  imageHorizontal: {
+    width: 100,
     height: 100,
-    borderRadius: 8
+    marginRight: 12
   },
-  foodTitle: {
-    fontWeight: '600',
-    marginTop: 8
+  cardContent: {
+    padding: 8
   },
-  foodPrice: {
-    color: '#555',
-    marginTop: 4
+  foodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.primary
   },
-  topRated: {
-    position: 'absolute',
-    top: 5,
-    left: 5,
-    backgroundColor: '#ffa726',
-    color: 'white',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    fontSize: 12
+  foodDescription: {
+    fontSize: 14,
+    color: '#555'
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    gap: 5
   }
 })
