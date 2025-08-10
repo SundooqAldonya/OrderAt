@@ -25,9 +25,8 @@ const CartItem = (props) => {
   const currentTheme = theme[themeContext.ThemeValue]
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const imageUrl =
-    props?.itemImage && props?.itemImage.trim() !== ''
-      ? props.itemImage
-      : IMAGE_LINK
+    props?.itemImage && props?.itemImage.trim() !== '' && props.itemImage
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
@@ -50,7 +49,11 @@ const CartItem = (props) => {
       >
         <View style={styles().suggestItemImgContainer}>
           <Image
-            source={{ uri: imageUrl }}
+            source={
+              props.itemImage
+                ? { uri: imageUrl }
+                : require('../../assets/food_placeholder.jpeg')
+            }
             style={styles().suggestItemImg}
             resizeMode='contain'
           />

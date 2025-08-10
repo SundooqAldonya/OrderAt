@@ -575,10 +575,7 @@ function Cart(props) {
                           quantity={food.quantity}
                           dealName={food.title}
                           optionsTitle={food.optionsTitle}
-                          itemImage={
-                            food.image ||
-                            'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
-                          }
+                          itemImage={food.image}
                           itemAddons={food.addons}
                           cartRestaurant={cartRestaurant}
                           dealPrice={(

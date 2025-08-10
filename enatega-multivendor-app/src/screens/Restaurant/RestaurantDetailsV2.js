@@ -472,7 +472,7 @@ const RestaurantDetailsV2 = () => {
                     data={cat.food}
                     renderItem={({ item }) => renderItem({ item, cat })}
                     keyExtractor={(item) => item._id}
-                    numColumns={cat === 'picks' ? 2 : 1}
+                    numColumns={cat._id === 'picks' ? 2 : 1}
                     scrollEnabled={false}
                   />
                 ) : (

@@ -145,7 +145,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
       }}
       style={[
         styles.card,
-        cat === 'picks'
+        cat._id === 'picks'
           ? styles.cardVertical
           : {
               ...styles.cardHorizontal,
@@ -154,7 +154,13 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
       ]}
     >
       <View
-        style={isArabic ? { ...styles.cartIconArabic } : { ...styles.cartIcon }}
+        style={
+          cat._id === 'picks'
+            ? styles.cartTop
+            : isArabic
+              ? { ...styles.cartIconArabic }
+              : { ...styles.cartIcon }
+        }
       >
         <FontAwesome5 name='cart-plus' size={24} color={colors.primary} />
       </View>
@@ -211,6 +217,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 8,
     overflow: 'hidden'
+  },
+  cartTop: {
+    position: 'absolute',
+    top: 5,
+    right: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
   },
   cartIcon: {
     position: 'absolute',
