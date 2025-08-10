@@ -290,7 +290,8 @@ export const UserProvider = (props) => {
         setIsPickup,
         instructions,
         setInstructions,
-        calculatePrice
+        calculatePrice,
+        populateFood
       }}
     >
       {props.children}

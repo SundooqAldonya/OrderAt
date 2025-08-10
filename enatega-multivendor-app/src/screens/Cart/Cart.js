@@ -67,7 +67,8 @@ function Cart(props) {
     isPickup,
     setIsPickup,
     instructions,
-    setInstructions
+    setInstructions,
+    populateFood
   } = useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const { location } = useContext(LocationContext)
@@ -84,7 +85,9 @@ function Cart(props) {
   const isCartEmpty = cart?.length === 0
   const cartLength = !isCartEmpty ? cart?.length : 0
   const { loading, data } = useRestaurant(cartRestaurant)
+  const restaurant = data?.restaurantCustomer || null
 
+  const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
   // console.log({ dataHere: data })
 
   const { loading: loadingTip, data: dataTip } = useQuery(TIPPING, {
@@ -462,49 +465,48 @@ function Cart(props) {
 
   if (loading || loadingData || loadingTip) return loadginScreen()
 
-  const restaurant = data?.restaurantCustomer
-  const addons = restaurant?.addons
-  const options = restaurant?.options
+  // const addons = restaurant?.addons
+  // const options = restaurant?.options
 
-  const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
+  // const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
 
-  function populateFood(cartItem) {
-    const food = foods?.find((food) => food._id === cartItem._id)
-    if (!food) return null
-    const variation = food.variations.find(
-      (variation) => variation._id === cartItem.variation._id
-    )
-    if (!variation) return null
+  // function populateFood(cartItem) {
+  //   const food = foods?.find((food) => food._id === cartItem._id)
+  //   if (!food) return null
+  //   const variation = food.variations.find(
+  //     (variation) => variation._id === cartItem.variation._id
+  //   )
+  //   if (!variation) return null
 
-    const title = `${food.title}${
-      variation.title ? `(${variation.title})` : ''
-    }`
-    let price = variation.price
-    const optionsTitle = []
-    if (cartItem.addons) {
-      cartItem.addons.forEach((addon) => {
-        const cartAddon = addons.find((add) => add._id === addon._id)
-        if (!cartAddon) return null
-        addon.options.forEach((option) => {
-          const cartOption = options.find((opt) => opt._id === option._id)
-          if (!cartOption) return null
-          price += cartOption.price
-          optionsTitle.push(cartOption.title)
-        })
-      })
-    }
-    const populateAddons = addons.filter((addon) =>
-      food?.variations[0]?.addons?.includes(addon._id)
-    )
-    return {
-      ...cartItem,
-      optionsTitle,
-      title: title,
-      price: price.toFixed(2),
-      image: food?.image,
-      addons: populateAddons
-    }
-  }
+  //   const title = `${food.title}${
+  //     variation.title ? `(${variation.title})` : ''
+  //   }`
+  //   let price = variation.price
+  //   const optionsTitle = []
+  //   if (cartItem.addons) {
+  //     cartItem.addons.forEach((addon) => {
+  //       const cartAddon = addons.find((add) => add._id === addon._id)
+  //       if (!cartAddon) return null
+  //       addon.options.forEach((option) => {
+  //         const cartOption = options.find((opt) => opt._id === option._id)
+  //         if (!cartOption) return null
+  //         price += cartOption.price
+  //         optionsTitle.push(cartOption.title)
+  //       })
+  //     })
+  //   }
+  //   const populateAddons = addons.filter((addon) =>
+  //     food?.variations[0]?.addons?.includes(addon._id)
+  //   )
+  //   return {
+  //     ...cartItem,
+  //     optionsTitle,
+  //     title: title,
+  //     price: price.toFixed(2),
+  //     image: food?.image,
+  //     addons: populateAddons
+  //   }
+  // }
 
   let deliveryTime = Math.floor((orderDate - Date.now()) / 1000 / 60)
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
