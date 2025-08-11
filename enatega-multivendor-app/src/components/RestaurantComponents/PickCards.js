@@ -162,7 +162,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
               : { ...styles.cartIcon }
         }
       >
-        <FontAwesome5 name='cart-plus' size={24} color={colors.primary} />
+        <FontAwesome5 name='cart-plus' size={18} color={colors.primary} />
       </View>
       <Image
         source={
