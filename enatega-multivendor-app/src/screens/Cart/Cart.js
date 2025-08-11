@@ -43,7 +43,7 @@ import WouldYouLikeToAddThese from './Section'
 import { SpecialInstructions } from '../../components/Cart/SpecialInstructions'
 import { colors } from '../../utils/colors'
 import { Fragment } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 // Constants
 const TIPPING = gql`
@@ -140,38 +140,6 @@ function Cart(props) {
       setSelectedTip(dataTip.tips.tipVariations[1])
     }
   }, [tip, data])
-
-  // useEffect(() => {
-  //   let isSubscribed = true
-  //   ;(async () => {
-  //     if (data && data?.restaurantCustomer) {
-  //       const latOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[1]
-  //       )
-  //       const lonOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[0]
-  //       )
-  //       const latDest = Number(location.latitude)
-  //       const longDest = Number(location.longitude)
-  //       const distance = await calculateDistance(
-  //         latOrigin,
-  //         lonOrigin,
-  //         latDest,
-  //         longDest
-  //       )
-  //       const amount = Math.ceil(distance) * configuration.deliveryRate
-  //       isSubscribed &&
-  //         setDeliveryCharges(
-  //           amount >= configuration.minimumDeliveryFee
-  //             ? amount
-  //             : configuration.minimumDeliveryFee
-  //         )
-  //     }
-  //   })()
-  //   return () => {
-  //     isSubscribed = false
-  //   }
-  // }, [data, location])
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
@@ -512,7 +480,7 @@ function Cart(props) {
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       <View style={styles(currentTheme).mainContainer}>
         {!cart?.length ? (
           emptyCart()
@@ -690,7 +658,7 @@ function Cart(props) {
           </>
         )}
       </View>
-    </>
+    </SafeAreaView>
   )
 }
 

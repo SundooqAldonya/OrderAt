@@ -10,12 +10,11 @@ import {
   Text,
   TextInput,
   Dimensions,
-  StyleSheet,
-  SafeAreaView
+  StyleSheet
 } from 'react-native'
 import { useMutation, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   AntDesign,
   EvilIcons,
@@ -1116,7 +1115,7 @@ function Checkout(props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       <View style={styles(currentTheme).mainContainer}>
         {!!cart.length && (
           <>
