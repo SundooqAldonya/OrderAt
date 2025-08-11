@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import ConfigurationContext from '../../context/Configuration'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,8 @@ import UserContext from '../../context/User'
 import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import { colors } from '../../utils/colors'
+import { formatNumber } from '../../utils/formatNumber'
+import { scale } from '../../utils/scaling'
 
 const PickCards = ({ item, restaurantCustomer, cat }) => {
   const navigation = useNavigation()
@@ -194,15 +196,47 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
         )}
         <View
           style={{
-            ...styles.priceContainer
+            flexDirection: 'row',
+            gap: 5
           }}
         >
-          <Text style={styles.foodPrice}>
-            {isArabic ? configuration.currencySymbol : configuration.currency}
-          </Text>
-          <Text style={styles.foodPrice}>
-            {parseFloat(item.variations[0].price).toFixed(2)}
-          </Text>
+          {item?.variations[0]?.discounted > 0 && (
+            <Fragment>
+              {isArabic ? (
+                <Text
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: scale(12),
+                    textDecorationLine: 'line-through'
+                  }}
+                >
+                  {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
+                </Text>
+              ) : (
+                <Text
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: scale(12),
+                    textDecorationLine: 'line-through'
+                  }}
+                >
+                  {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
+                </Text>
+              )}
+            </Fragment>
+          )}
+          <View
+            style={{
+              ...styles.priceContainer
+            }}
+          >
+            <Text style={styles.foodPrice}>
+              {isArabic ? configuration.currencySymbol : configuration.currency}
+            </Text>
+            <Text style={styles.foodPrice}>
+              {parseFloat(item.variations[0].price).toFixed(2)}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -279,5 +313,8 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'row',
     gap: 5
+  },
+  foodPrice: {
+    fontSize: scale(12)
   }
 })
