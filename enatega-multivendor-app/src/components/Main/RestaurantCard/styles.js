@@ -14,11 +14,12 @@ const styles = (theme) =>
       shadowOpacity: 0.08,
       shadowRadius: 8,
       elevation: 3,
-      width: 200
+      width: 240,
+      height: '70%'
     },
     imageContainer: {
       width: '100%',
-      height: scale(160),
+      height: scale(120),
       backgroundColor: '#f5f5f5'
     },
     restaurantImage: {

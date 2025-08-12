@@ -264,14 +264,13 @@ function NewRestaurantCard(props) {
           </View>
         ) : null}
 
-        <View
+        {/* <View
           style={{
             ...styles().deliveryInfo,
             flexDirection: isArabic ? 'row-reverse' : 'row',
             justifyContent: 'space-between'
           }}
         >
-          {/* deliveryTime */}
           <View
             style={[
               styles().deliveryTime,
@@ -296,7 +295,7 @@ function NewRestaurantCard(props) {
               {t('min')}
             </TextDefault>
           </View>
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   )
