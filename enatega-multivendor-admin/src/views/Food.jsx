@@ -30,6 +30,7 @@ import Alert from '../components/Alert'
 import ConfigurableValues from '../config/constants'
 import { Fragment } from 'react'
 import MenuFileUpload from '../components/MenuFileUpload'
+import foodPlaceholder from '../assets/food_placeholder.jpeg'
 
 const GET_FOODS = gql`
   ${getFoodListByRestaurant}
@@ -112,10 +113,7 @@ const Food = props => {
           <img
             className="img-responsive"
             style={{ width: 30, height: 30, borderRadius: 15 }}
-            src={
-              row.image ||
-              'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
-            }
+            src={row.image || foodPlaceholder}
             alt={row.image ? 'img menu' : 'Default Image'}
           />
         </>

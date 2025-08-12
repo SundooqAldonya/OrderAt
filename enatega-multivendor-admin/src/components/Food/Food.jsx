@@ -31,6 +31,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
+import foodPlaceholder from '../../assets/food_placeholder.jpeg'
 
 const GET_FOODS = gql`
   ${getFoodListByRestaurant}
@@ -510,10 +511,7 @@ function Food(props) {
               <img
                 className={classes.image}
                 alt="..."
-                src={
-                  imgMenu ||
-                  'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
-                }
+                src={imgMenu || foodPlaceholder}
               />
               <label
                 htmlFor={props.food ? 'edit-food-image' : 'add-food-image'}
