@@ -73,8 +73,7 @@ const RestaurantDetailsV2 = () => {
   const route = useRoute()
   const { _id: restaurantId } = route.params
   const { cartCount, profile, calculatePrice } = useContext(UserContext)
-  // console.log({ calculatePrice: calculatePrice() })
-  const [businessCategories, setBusinessCategories] = useState(null)
+
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [showReviewsModal, setShowReviewsModal] = useState(false)
   const [allFoods, setAllFoods] = useState([])
@@ -106,7 +105,6 @@ const RestaurantDetailsV2 = () => {
 
   const popularFood = dataPopularItems?.popularItems || null
 
-  const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
   const [showStickyHeader, setShowStickyHeader] = useState(false)
   const STICKY_ADJUST = HEADER_COLLAPSED_HEIGHT + 100 // tweak if needed
@@ -314,7 +312,6 @@ const RestaurantDetailsV2 = () => {
             categories={categories}
             activeCategory={activeCategory}
             onCategoryPress={handleCategoryPress}
-            sectionPositions={sectionPositions}
           />
         </Animated.View>
       )}
@@ -459,7 +456,6 @@ const RestaurantDetailsV2 = () => {
             categories={categories}
             activeCategory={activeCategory}
             onCategoryPress={handleCategoryPress}
-            sectionPositions={sectionPositions}
           />
         </View>
 
