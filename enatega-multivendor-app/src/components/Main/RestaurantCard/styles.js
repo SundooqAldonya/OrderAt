@@ -1,138 +1,81 @@
-import { verticalScale, scale } from '../../../utils/scaling'
-import { Dimensions, StyleSheet } from 'react-native'
-import { alignment } from '../../../utils/alignment'
-import { theme } from '../../../utils/themeColors'
-import { colors } from '../../../utils/colors'
-const { height } = Dimensions.get('window')
+import { StyleSheet } from 'react-native'
+import { scale } from '../../../utils/scaling'
 
-const styles = (props = null) =>
+const styles = (theme) =>
   StyleSheet.create({
-    // ML20: {
-    //   ...alignment.MLlarge
-    // },
-    // offerScroll: {
-    //   height: scale(220),
-    //   width: '100%',
-    //   ...alignment.MLlarge,
-    // },
     offerContainer: {
-      borderRadius: 16,
-      width: scale(220),
-      height: '70%',
+      backgroundColor: theme?.cardBackground || '#fff',
+      borderRadius: scale(14),
       overflow: 'hidden',
-      // height: '100%',
-      ...alignment.MRsmall
-    },
-
-    overlayContainer: {
-      position: 'absolute',
-      top: 0,
-      height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      width: scale(220)
-    },
-    favouriteOverlay: {
-      position: 'absolute',
-      top: 10,
-      right: 10,
-      width: scale(40),
-      height: scale(30),
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1,
-      borderRadius: scale(12),
-      backgroundColor: props != null ? props.menuBar : 'white',
-      borderWidth: 1,
-      borderColor: props != null ? props.newBorderColor : '#F3F4F6'
-    },
-    // featureOverlay: {
-    //   height: '90%',
-    //   position: 'absolute',
-    //   left: 0,
-    //   top: 10,
-    //   backgroundColor: 'rgba(0, 0, 0, 0)'
-    // },
-    // featureText: {
-    //   alignSelf: 'flex-start',
-    //   maxWidth: '100%',
-    //   fontSize: scale(9),
-    //   ...alignment.MTxSmall,
-    //   ...alignment.PLsmall,
-    //   ...alignment.PRsmall,
-    //   ...alignment.PTxSmall,
-    //   ...alignment.PBxSmall,
-    //   backgroundColor: props != null ? props.iconColorPink : 'red'
-    // },
-    descriptionContainer: {
-      // paddingTop: verticalScale(12),
-      // paddingBottom: verticalScale(12),
-      // marginTop: scale(5),
-      paddingLeft: scale(10),
-      paddingRight: scale(10),
-      width: '100%',
-      borderColor: props != null ? props.iconBackground : '#E5E7EB',
-      borderWidth: 1,
-      borderBottomLeftRadius: 16,
-      borderBottomRightRadius: 16,
-      height: '40%',
-      justifyContent: 'center'
-    },
-    aboutRestaurant: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      gap: scale(2)
-    },
-    offerCategoty: {
-      width: '100%',
-      paddingBottom: scale(7),
-      paddingTop: scale(7)
-    },
-    mainContainer: {
-      paddingTop: scale(15),
-      marginBottom: scale(15),
-      borderTopLeftRadius: scale(20),
-      borderTopRightRadius: scale(20),
-      borderTopColor: '#ebebeb',
-      borderTopWidth: scale(3)
-    },
-    restaurantImage: {
-      // width: scale(200),
-      width: '100%',
-      height: '100%',
-      borderTopLeftRadius: scale(16),
-      borderTopRightRadius: scale(16),
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0
-      // borderRadius: scale(16)
+      marginVertical: scale(8),
+      marginHorizontal: scale(8),
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 3,
+      width: 200
     },
     imageContainer: {
-      position: 'relative',
+      width: '100%',
+      height: scale(160),
+      backgroundColor: '#f5f5f5'
+    },
+    restaurantImage: {
+      width: '100%',
+      height: '100%'
+    },
+    overlayContainer: {
+      position: 'absolute',
+      top: scale(10),
+      right: scale(10)
+    },
+    favouriteOverlay: {
+      backgroundColor: 'rgba(255,255,255,0.9)',
+      borderRadius: 50,
+      padding: scale(6),
+      justifyContent: 'center',
       alignItems: 'center',
-      height: '60%',
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      borderTopLeftRadius: scale(16),
-      borderTopRightRadius: scale(16),
-      // borderRadius: scale(16),
-      borderColor: colors.lightGray
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3
     },
-    restaurantTotalRating: {
-      paddingLeft: scale(5)
+    descriptionContainer: {
+      paddingHorizontal: scale(12),
+      paddingVertical: scale(10)
     },
-    restaurantPriceContainer: {
-      marginTop: scale(3),
-      fontSize: 15
-    },
-    deliveryInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: scale(20)
-    },
-    deliveryTime: {
-      flexDirection: 'row',
+    aboutRestaurant: {
       alignItems: 'center',
       gap: scale(4)
+    },
+    restaurantRatingContainer: {
+      marginLeft: scale(4)
+    },
+    restaurantTotalRating: {
+      fontSize: 12
+    },
+    deliveryInfo: {
+      marginTop: scale(8),
+      alignItems: 'center'
+    },
+    deliveryTime: {
+      alignItems: 'center',
+      gap: scale(4)
+    },
+    offerBadge: {
+      backgroundColor: theme?.primary || '#FFCC00',
+      borderRadius: scale(6),
+      paddingHorizontal: scale(6),
+      paddingVertical: scale(2),
+      alignSelf: 'flex-start',
+      marginTop: scale(6)
+    },
+    offerBadgeText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: '#000'
     }
   })
 

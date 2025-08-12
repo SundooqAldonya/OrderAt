@@ -713,5 +713,6 @@ export const ar = {
   minutes: 'دقائق',
   no_reviews: 'لا يوجد تقييمات',
   offers: 'عروض',
-  businesses_with_offers: 'العروض'
+  businesses_with_offers: 'عروض وخصومات 💰',
+  discounts_until: 'خصومات تصل إلى '
 }

@@ -1407,6 +1407,16 @@ export const restaurantsWithOffers = gql`
         name
         isActive
       }
+      categories {
+        _id
+        foods {
+          _id
+          variations {
+            _id
+            discounted
+          }
+        }
+      }
     }
   }
 `

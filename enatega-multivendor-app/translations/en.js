@@ -724,5 +724,6 @@ export const en = {
   minutes: 'Minutes',
   no_reviews: 'No reviews',
   offers: 'Offers',
-  businesses_with_offers: 'Businesses with offers'
+  businesses_with_offers: 'Offers & discounts 💰',
+  discounts_until: 'Discount until '
 }

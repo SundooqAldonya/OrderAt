@@ -47,15 +47,17 @@ function NewRestaurantCard(props) {
   const currentTheme = theme[themeContext.ThemeValue]
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props._id) : false
-  const businessCategoriesNames = props.businessCategories
-    ?.map((item) => item.name)
-    .join('، ')
+  const businessCategoriesNames =
+    (props?.businessCategories || [])
+      .map((cat) => cat.name)
+      .filter(Boolean)
+      .join(', ') || null
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
   })
 
-  console.log({ businessCategories: props.businessCategories })
+  console.log({ categories: props.categories })
 
   const { data, loading, error } = useQuery(isRestaurantOpenNow, {
     variables: {
@@ -76,6 +78,28 @@ function NewRestaurantCard(props) {
       mutate({ variables: { id: props._id } })
     }
   }
+
+  function getCategoriesWithHighestDiscount() {
+    let highest = 0
+
+    if (props?.categories) {
+      props?.categories?.forEach((category) => {
+        category.foods?.forEach((food) => {
+          food.variations?.forEach((variation) => {
+            if (variation.discounted && variation.discounted > highest) {
+              highest = variation.discounted
+            }
+          })
+        })
+        console.log({ highest })
+      })
+    }
+    return highest
+  }
+
+  const highestOffer = getCategoriesWithHighestDiscount() || null
+
+  console.log({ highestOffer: getCategoriesWithHighestDiscount() })
 
   return (
     <TouchableOpacity
@@ -212,26 +236,33 @@ function NewRestaurantCard(props) {
           )}
         </View>
         {/* tags */}
-        {props.businessCategories?.length ? (
+        {businessCategoriesNames?.length ? (
           <View>
             <TextDefault
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
-              {businessCategoriesNames.substring(0, 20)}...
+              {businessCategoriesNames?.substring(0, 20)}...
             </TextDefault>
           </View>
         ) : null}
-        {/* {props?.tags?.length ? (
-          <TextDefault
-            textColor={currentTheme.fontNewColor}
-            numberOfLines={1}
-            bold
-            Normal
-            style={styles().offerCategoty}
+        {highestOffer ? (
+          <View
+            style={{
+              backgroundColor: colors.primary,
+              width: '90%',
+              borderRadius: 4,
+              paddingInlineEnd: 10,
+              paddingVertical: 4,
+              alignSelf: isArabic ? 'flex-end' : 'flex-start'
+            }}
           >
-            {props?.tags?.join(',')}
-          </TextDefault>
-        ) : null} */}
+            <TextDefault
+              style={{ color: '#fff', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
+            </TextDefault>
+          </View>
+        ) : null}
 
         <View
           style={{
@@ -265,27 +296,6 @@ function NewRestaurantCard(props) {
               {t('min')}
             </TextDefault>
           </View>
-
-          {/* {props.tax > 0 ? (
-            <View style={styles().deliveryTime}>
-              <MaterialCommunityIcons
-                name='bike'
-                size={16}
-                color={currentTheme.fontNewColor}
-              />
-
-              <TextDefault
-                textColor={currentTheme.fontNewColor}
-                numberOfLines={1}
-                bold
-                Normal
-              >
-                {configuration.currency} {props.tax}
-              </TextDefault>
-            </View>
-          ) : (
-            <></>
-          )} */}
         </View>
       </View>
     </TouchableOpacity>

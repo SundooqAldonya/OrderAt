@@ -97,6 +97,7 @@ function MainRestaurantCard(props) {
               data={props?.orders}
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => {
+                console.log({ item })
                 return <NewRestaurantCard {...item} />
               }}
             />
