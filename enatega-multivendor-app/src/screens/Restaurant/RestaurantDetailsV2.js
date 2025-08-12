@@ -177,7 +177,21 @@ const RestaurantDetailsV2 = () => {
       desceription: t('trending_description'),
       food: popularFood || []
     },
-    ...restaurantCategories.map((cat) => ({
+    {
+      _id: 'offers',
+      icon: '💰',
+      title: t('offers'),
+      description: t('discounted_items'),
+      food:
+        restaurantCategories
+          ?.flatMap((cat) => cat.foods || [])
+          .filter((food) =>
+            food?.variations?.some(
+              (variation) => variation.discounted && variation.discounted > 0
+            )
+          ) || []
+    },
+    ...restaurantCategories?.map((cat) => ({
       _id: cat._id,
       title: cat.title,
       food: cat.foods || []

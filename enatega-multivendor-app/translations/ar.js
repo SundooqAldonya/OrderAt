@@ -711,5 +711,7 @@ export const ar = {
   trending_description: 'العناصر الرائجة التي نعتقد أنك ستحبها',
   to_start_your_order: 'لبدأ الطلب',
   minutes: 'دقائق',
-  no_reviews: 'لا يوجد تقييمات'
+  no_reviews: 'لا يوجد تقييمات',
+  offers: 'عروض',
+  businesses_with_offers: 'العروض'
 }

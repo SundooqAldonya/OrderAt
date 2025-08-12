@@ -1627,6 +1627,10 @@ const typeDefs = gql`
       longitude: Float!
       latitude: Float!
     ): [RestaurantCustomer!]
+    restaurantsWithOffers(
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
     highestRatingRestaurant(
       longitude: Float!
       latitude: Float!

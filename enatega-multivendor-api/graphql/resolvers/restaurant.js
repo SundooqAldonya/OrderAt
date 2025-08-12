@@ -698,6 +698,74 @@ module.exports = {
       }
     },
 
+    async restaurantsWithOffers(_, args) {
+      console.log('restaurantsWithOffers', { args })
+      try {
+        const { longitude, latitude } = args
+
+        const discountedRestaurantIds = await Restaurant.aggregate([
+          {
+            $match: {
+              isVisible: true,
+              deliveryBounds: {
+                $geoIntersects: {
+                  $geometry: {
+                    type: 'Point',
+                    coordinates: [longitude, latitude]
+                  }
+                }
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: 'categories',
+              localField: '_id', // Restaurant._id
+              foreignField: 'restaurant',
+              as: 'categories'
+            }
+          },
+          { $unwind: '$categories' },
+          {
+            $lookup: {
+              from: 'foods',
+              localField: 'categories._id',
+              foreignField: 'category',
+              as: 'foods'
+            }
+          },
+          { $unwind: '$foods' },
+          {
+            $lookup: {
+              from: 'variations',
+              localField: 'foods.variations',
+              foreignField: '_id',
+              as: 'variationDocs'
+            }
+          },
+          { $unwind: '$variationDocs' },
+          {
+            $match: {
+              'variationDocs.discounted': { $gt: 0 }
+            }
+          },
+          {
+            $group: {
+              _id: '$_id', // group by restaurant ID
+              doc: { $first: '$$ROOT' } // keep the restaurant doc
+            }
+          },
+          { $replaceRoot: { newRoot: '$doc' } }
+        ])
+
+        console.log({ discountedRestaurantIds })
+
+        return discountedRestaurantIds
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     async nearestRestaurants(_, args) {
       try {
         const { longitude, latitude } = args

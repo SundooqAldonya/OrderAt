@@ -32,7 +32,8 @@ import {
   highestRatingRestaurant,
   nearestRestaurants,
   restaurantList,
-  restaurantListPreview
+  restaurantListPreview,
+  restaurantsWithOffers
 } from '../../apollo/queries'
 import { createAddress, selectAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
@@ -69,6 +70,10 @@ import BusinessCategories from '../../components/BusinessCategories'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
+`
+
+const RESTAURANTS_OFFERS = gql`
+  ${restaurantsWithOffers}
 `
 const SELECT_ADDRESS = gql`
   ${selectAddress}
@@ -117,6 +122,22 @@ function Main(props) {
   console.log({ location })
 
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
+
+  const {
+    data: dataWithOffers,
+    loading: loadingWithOffers,
+    error: errorWithOffers
+  } = useQuery(RESTAURANTS_OFFERS, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    },
+    fetchPolicy: 'no-cache'
+  })
+
+  console.log({ dataWithOffers })
+
+  const restaurantsWithOffers = dataWithOffers?.restaurantsWithOffers || []
 
   const {
     data: dataHighRating,
@@ -707,6 +728,25 @@ function Main(props) {
                               ) : (
                                 <MainRestaurantCard
                                   orders={mostOrderedRestaurantsVar}
+                                  loading={orderLoading}
+                                  error={orderError}
+                                  title={'businesses_with_offers'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    <View style={{ marginTop: 20 }}>
+                      <View>
+                        {restaurantsWithOffers &&
+                          restaurantsWithOffers.length > 0 && (
+                            <>
+                              {orderLoading ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={restaurantsWithOffers}
                                   loading={orderLoading}
                                   error={orderError}
                                   title={'mostOrderedNow'}

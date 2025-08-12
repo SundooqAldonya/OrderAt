@@ -722,5 +722,7 @@ export const en = {
   trending_description: "Trending items we think you'll love",
   to_start_your_order: 'To start your order',
   minutes: 'Minutes',
-  no_reviews: 'No reviews'
+  no_reviews: 'No reviews',
+  offers: 'Offers',
+  businesses_with_offers: 'Businesses with offers'
 }
