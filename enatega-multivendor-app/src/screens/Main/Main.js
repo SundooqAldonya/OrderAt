@@ -717,7 +717,7 @@ function Main(props) {
                     </View>
                     {/* the second section */}
 
-                    <View style={{ marginTop: 50 }}>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {restaurantsWithOffersData &&
                           restaurantsWithOffersData.length > 0 && (
@@ -736,7 +736,7 @@ function Main(props) {
                           )}
                       </View>
                     </View>
-                    <View style={{ marginTop: 50 }}>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {mostOrderedRestaurantsVar &&
                           mostOrderedRestaurantsVar.length > 0 && (
@@ -756,7 +756,7 @@ function Main(props) {
                       </View>
                     </View>
                     {/* heighest rating */}
-                    <View style={{ marginTop: 50 }}>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {highestRatingRestaurantData &&
                           highestRatingRestaurantData.length > 0 && (
@@ -776,7 +776,7 @@ function Main(props) {
                       </View>
                     </View>
                     {/* nearest restaurants */}
-                    <View style={{ marginTop: 50 }}>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {nearestRestaurantsData &&
                           nearestRestaurantsData.length > 0 && (
@@ -801,7 +801,7 @@ function Main(props) {
                       style={{
                         ...styles(currentTheme, hasActiveOrders)
                           .topBrandsMargin,
-                        marginTop: 50
+                        marginTop: 20
                       }}
                     >
                       {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />}

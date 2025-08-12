@@ -518,7 +518,11 @@ function ItemDetail(props) {
           style={[styles(currentTheme).titleContainer, animatedTitleStyle]}
           // style={[styles(currentTheme).titleContainer]}
         >
-          <HeadingComponent title={food.title} price={calculatePrice()} />
+          <HeadingComponent
+            title={food.title}
+            price={calculatePrice()}
+            description={food.description}
+          />
         </Animated.View>
         <View style={{ backgroundColor: currentTheme.themeBackground }}>
           <CartComponent

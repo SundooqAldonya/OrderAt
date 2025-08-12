@@ -25,14 +25,21 @@ function HeadingComponent(props) {
             {props.title}
           </TextDefault>
         </View>
-        <View style={styles.priceContainer}>
+        <View style={styles.titleContainer}>
           <TextDefault
-            textColor={currentTheme.fontMainColor}
+            numberOfLines={2}
+            textColor={'#aaa'}
             H4
             bolder
-          >{`${formatNumber(props.price)} ${configuration.currencySymbol}`}
-          
-           </TextDefault>
+            style={{}}
+          >
+            {props.description}
+          </TextDefault>
+        </View>
+        <View style={styles.priceContainer}>
+          <TextDefault textColor={currentTheme.fontMainColor} H4 bolder>
+            {`${formatNumber(props.price)} ${configuration.currencySymbol}`}
+          </TextDefault>
         </View>
       </View>
       <View style={styles.descContainer}>
