@@ -81,11 +81,11 @@ export const FILTER_VALUES = {
     values: ['Relevance (Default)', 'Fast Delivery', 'Distance'],
     selected: []
   },
-  Offers: {
-    selected: [],
-    type: FILTER_TYPE.CHECKBOX,
-    values: ['Free Delivery', 'Accept Vouchers', 'Deal']
-  },
+  // Offers: {
+  //   selected: [],
+  //   type: FILTER_TYPE.CHECKBOX,
+  //   values: ['Free Delivery', 'Accept Vouchers', 'Deal']
+  // },
   Rating: {
     selected: [],
     type: FILTER_TYPE.CHECKBOX,
@@ -453,7 +453,7 @@ function Menu({ route, props }) {
 
     const ratings = filters.Rating
     const sort = filters.Sort
-    const offers = filters.Offers
+    // const offers = filters.Offers
     const cuisines = filters.Cuisines
     const businessCategories = filters.categories
     console.log({ businessCategories: businessCategories[0] })
@@ -480,14 +480,14 @@ function Menu({ route, props }) {
     }
 
     // Offers filter
-    if (offers?.selected?.length > 0) {
-      if (offers.selected.includes('Free Delivery')) {
-        filteredData = filteredData.filter((item) => item?.freeDelivery)
-      }
-      if (offers.selected.includes('Accept Vouchers')) {
-        filteredData = filteredData.filter((item) => item?.acceptVouchers)
-      }
-    }
+    // if (offers?.selected?.length > 0) {
+    //   if (offers.selected.includes('Free Delivery')) {
+    //     filteredData = filteredData.filter((item) => item?.freeDelivery)
+    //   }
+    //   if (offers.selected.includes('Accept Vouchers')) {
+    //     filteredData = filteredData.filter((item) => item?.acceptVouchers)
+    //   }
+    // }
 
     // Cuisine filter
     if (cuisines?.selected?.length > 0) {
