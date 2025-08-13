@@ -31,7 +31,7 @@ function TitleComponent(props) {
         <TextDefault
           numberOfLines={1}
           textColor={currentTheme.fontMainColor}
-          style={{ textAlign: isArabic ? 'right' : 'left' }}
+          style={{ textAlign: isArabic ? 'right' : 'left', fontSize: 16 }}
           H6
           bolder
         >
@@ -47,7 +47,12 @@ function TitleComponent(props) {
         </TextDefault>
       </View>
       <View style={styles.rightContainer}>
-        <TextDefault textColor={currentTheme.color2} H6 center>
+        <TextDefault
+          textColor={currentTheme.color2}
+          H6
+          center
+          // style={{ fontSize: 14 }}
+        >
           {props.status}
         </TextDefault>
       </View>

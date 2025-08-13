@@ -412,13 +412,7 @@ function ItemDetail(props) {
               </TouchableOpacity>
             </View>
 
-            <View
-              style={
-                {
-                  // marginHorizontal: 'auto'
-                }
-              }
-            >
+            <View>
               <Text
                 style={{
                   textAlign: 'center',
