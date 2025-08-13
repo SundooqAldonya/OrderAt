@@ -309,7 +309,6 @@ const styles = StyleSheet.create({
   foodDescription: {
     fontSize: 14,
     color: '#555',
-    backgroundColor: 'red',
     width: '100%'
   },
   priceContainer: {
