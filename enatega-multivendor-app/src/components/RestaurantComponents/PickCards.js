@@ -180,23 +180,25 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
         >
           {item?.title}
         </Text>
-        {item.description ? (
-          <Text
-            style={{
-              ...styles.foodDescription,
-              textAlign: isArabic ? 'right' : 'left'
-            }}
-          >
-            {isArabic
-              ? `...${item?.description?.substring(0, 60)}`
-              : `${item?.description?.substring(0, 60)}...`}
-          </Text>
-        ) : (
-          <Text style={styles.foodDescription}></Text>
-        )}
+        <View style={{ maxWidth: 200 }}>
+          {item.description ? (
+            <Text
+              style={{
+                ...styles.foodDescription,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {isArabic
+                ? `...${item?.description?.substring(0, 60)}`
+                : `${item?.description?.substring(0, 60)}...`}
+            </Text>
+          ) : (
+            <Text style={styles.foodDescription}></Text>
+          )}
+        </View>
         <View
           style={{
-            flexDirection: 'row',
+            flexDirection: isArabic ? 'row-reverse' : 'row',
             gap: 5
           }}
         >
@@ -207,7 +209,8 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
                   style={{
                     color: '#9CA3AF',
                     fontSize: scale(12),
-                    textDecorationLine: 'line-through'
+                    textDecorationLine: 'line-through',
+                    textAlign: 'right'
                   }}
                 >
                   {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
@@ -217,7 +220,8 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
                   style={{
                     color: '#9CA3AF',
                     fontSize: scale(12),
-                    textDecorationLine: 'line-through'
+                    textDecorationLine: 'line-through',
+                    textAlign: 'left'
                   }}
                 >
                   {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
@@ -230,10 +234,10 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
               ...styles.priceContainer
             }}
           >
-            <Text style={styles.foodPrice}>
+            <Text style={{ ...styles.foodPrice }}>
               {isArabic ? configuration.currencySymbol : configuration.currency}
             </Text>
-            <Text style={styles.foodPrice}>
+            <Text style={{ ...styles.foodPrice }}>
               {parseFloat(item.variations[0].price).toFixed(2)}
             </Text>
           </View>
@@ -273,7 +277,7 @@ const styles = StyleSheet.create({
   cartIconArabic: {
     position: 'absolute',
     top: 25,
-    left: 8,
+    left: 0,
     backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 20,
     padding: 4,
@@ -309,7 +313,7 @@ const styles = StyleSheet.create({
   foodDescription: {
     fontSize: 14,
     color: '#555',
-    width: '100%'
+    flexWrap: 'wrap'
   },
   priceContainer: {
     flexDirection: 'row',
