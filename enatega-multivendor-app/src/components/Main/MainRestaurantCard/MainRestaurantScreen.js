@@ -14,13 +14,12 @@ import navigationService from '../../../routes/navigationService'
 import PopulerRestaurantCard from '../PopulerRestaurantCard'
 
 const MainRestaurantScreen = () => {
+  const { t } = useTranslation()
   const route = useRoute()
   const navigation = useNavigation()
 
   const { restaurantData, title } = route.params || {}
 
-  const { i18n, t } = useTranslation()
-  const { language } = i18n
   useLayoutEffect(() => {
     navigation.setOptions({
       title: t(title),

@@ -99,7 +99,7 @@ function NewRestaurantCard(props) {
 
   const highestOffer = getCategoriesWithHighestDiscount() || null
 
-  console.log({ highestOffer: getCategoriesWithHighestDiscount() })
+  // console.log({ highestOffer: getCategoriesWithHighestDiscount() })
 
   return (
     <TouchableOpacity

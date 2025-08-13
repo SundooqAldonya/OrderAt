@@ -21,7 +21,6 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const navigation = useNavigation()
-  const [hasActiveOrders, setHasActiveOrders] = useState(false)
 
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -61,7 +60,6 @@ function MainRestaurantCard(props) {
                 }}
               >
                 {t(props?.title)}
-                {/* {t('mostOrderedNow')} */}
               </TextDefault>
               <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
                 <AntDesign
@@ -69,25 +67,8 @@ function MainRestaurantCard(props) {
                   size={20}
                   color='black'
                 />
-                {/* <Ionicons
-                  name={isArabic ? 'arrow-back' : 'arrow-forward'}
-                  size={scale(24)}
-                  style={styles().image1}
-                  color={colors.dark}
-                /> */}
               </View>
             </TouchableOpacity>
-
-            {/* <TextDefault
-              Normal
-              textColor={currentTheme.fontSecondColor}
-              style={{
-                ...styles().ItemDescription,
-                textAlign: isArabic ? 'right' : 'left'
-              }}
-            >
-              {t('mostOrderedNow')}
-            </TextDefault> */}
 
             <FlatList
               style={styles().offerScroll}
@@ -103,13 +84,6 @@ function MainRestaurantCard(props) {
               }}
             />
           </View>
-          {/* <View
-            style={{
-              ...styles(currentTheme, hasActiveOrders).topBrandsMargin
-            }}
-          >
-            <TopBrands />
-          </View> */}
         </>
       ) : (
         <View style={styles().noDataTextWrapper}>
