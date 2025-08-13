@@ -6,6 +6,7 @@ import { theme } from '../../../utils/themeColors'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { formatNumber } from '../../../utils/formatNumber'
+import { useTranslation } from 'react-i18next'
 
 function HeadingComponent(props) {
   const configuration = useContext(ConfigurationContext)
@@ -25,17 +26,17 @@ function HeadingComponent(props) {
             {props.title}
           </TextDefault>
         </View>
-        <View style={styles.titleContainer}>
+        {/* <View style={styles.titleContainer}>
           <TextDefault
             numberOfLines={2}
             textColor={'#aaa'}
             H4
             bolder
-            style={{}}
+            style={{ fontSize: 12 }}
           >
             {props.description}
           </TextDefault>
-        </View>
+        </View> */}
         <View style={styles.priceContainer}>
           <TextDefault textColor={currentTheme.fontMainColor} H4 bolder>
             {`${formatNumber(props.price)} ${configuration.currencySymbol}`}
@@ -48,8 +49,9 @@ function HeadingComponent(props) {
           textColor={currentTheme.fontSecondColor}
           H4
           bold
+          style={{ textAlign: 'center' }}
         >
-          {props.desc}
+          {props.description}
         </TextDefault>
       </View>
     </View>

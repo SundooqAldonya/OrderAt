@@ -188,8 +188,8 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
             }}
           >
             {isArabic
-              ? `...${item?.description?.substring(0, 19)}`
-              : `${item?.description?.substring(0, 19)}...`}
+              ? `...${item?.description?.substring(0, 60)}`
+              : `${item?.description?.substring(0, 60)}...`}
           </Text>
         ) : (
           <Text style={styles.foodDescription}></Text>
@@ -308,7 +308,9 @@ const styles = StyleSheet.create({
   },
   foodDescription: {
     fontSize: 14,
-    color: '#555'
+    color: '#555',
+    backgroundColor: 'red',
+    width: '100%'
   },
   priceContainer: {
     flexDirection: 'row',

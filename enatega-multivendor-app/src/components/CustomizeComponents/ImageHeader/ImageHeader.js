@@ -8,9 +8,13 @@ function ImageHeader(props) {
     <ImageBackground
       style={styles.backgroundImage}
       borderRadius={scale(12)}
-      resizeMode="cover"
-      source={{ uri: props.image }}
-      defaultSource={require('../../../assets/images/food_placeholder.png')}
+      resizeMode='cover'
+      source={
+        props.image
+          ? { uri: props.image }
+          : require('../../../assets/food_placeholder.jpeg')
+      }
+      defaultSource={require('../../../assets/food_placeholder.jpeg')}
     />
   )
 }

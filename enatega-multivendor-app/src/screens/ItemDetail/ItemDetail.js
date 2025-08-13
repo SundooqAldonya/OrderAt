@@ -73,8 +73,7 @@ function ItemDetail(props) {
     })
   })
 
-  const imageUrl =
-    food?.image && food?.image.trim() !== '' ? food.image : IMAGE_LINK
+  const imageUrl = food?.image && food?.image.trim() !== '' && food.image
 
   const [selectedAddons, setSelectedAddons] = useState([])
   const [specialInstructions, setSpecialInstructions] = useState('')
@@ -414,16 +413,22 @@ function ItemDetail(props) {
             </View>
 
             <View
-              style={{
-                marginHorizontal: 'auto'
-              }}
+              style={
+                {
+                  // marginHorizontal: 'auto'
+                }
+              }
             >
               <Text
                 style={{
                   textAlign: 'center',
-                  color: '#fff',
+                  color: '#000',
                   fontSize: 20,
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  textShadowColor: 'rgba(0, 0, 0, 0.8)', // black with opacity
+                  textShadowOffset: { width: 1, height: 1 }, // horizontal & vertical shift
+                  textShadowRadius: 4, // blur,
+                  marginInlineEnd: 5
                 }}
               >
                 {food.restaurantName}
