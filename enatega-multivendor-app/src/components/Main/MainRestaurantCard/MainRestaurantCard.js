@@ -45,7 +45,8 @@ function MainRestaurantCard(props) {
               }}
               onPress={() =>
                 navigation.navigate('MainRestaurantScreen', {
-                  restaurantData: props?.orders
+                  restaurantData: props?.orders,
+                  title: props.title
                 })
               }
             >

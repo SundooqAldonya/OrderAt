@@ -17,13 +17,13 @@ const MainRestaurantScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
-  const { restaurantData } = route.params || {}
+  const { restaurantData, title } = route.params || {}
 
   const { i18n, t } = useTranslation()
   const { language } = i18n
-   useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
-      title: t('mostOrderedNow'),
+      title: t(title),
       headerRight: null,
       headerTitleAlign: 'center',
       headerTitleStyle: {
@@ -57,7 +57,7 @@ const MainRestaurantScreen = () => {
     })
   }, [])
   return (
-     <View
+    <View
       style={{
         flex: 1
       }}
