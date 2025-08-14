@@ -9,7 +9,8 @@ import {
   Dimensions,
   Keyboard,
   TouchableOpacity,
-  Text
+  Text,
+  TextInput
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './styles'
@@ -485,26 +486,24 @@ function ItemDetail(props) {
             </View>
 
             <View style={styles(currentTheme).line}></View>
-            <View style={styles(currentTheme).inputContainer}>
+            {/* <View style={styles(currentTheme).inputContainer}>
               <TitleComponent
                 title={t('specialInstructions')}
                 subTitle={t('anySpecificPreferences')}
                 status={t('optional')}
               />
-              {/* <TextField
+              <TextInput
                 style={styles(currentTheme).input}
                 placeholder={t('noMayo')}
-                textAlignVertical='center'
+                placeholderTextColor={currentTheme.fontGrayNew}
+                textAlignVertical='top'
                 value={specialInstructions}
                 onChangeText={setSpecialInstructions}
                 maxLength={144}
-                textColor={currentTheme.fontMainColor}
-                baseColor={currentTheme.lightHorizontalLine}
-                errorColor={currentTheme.textErrorColor}
-                tintColor={currentTheme.themeBackground}
-                placeholderTextColor={currentTheme.fontGrayNew}
-              /> */}
-            </View>
+                multiline={true}
+                numberOfLines={4}
+              />
+            </View> */}
             {/** frequently bought together */}
             <FrequentlyBoughtTogether
               itemId={food._id}
