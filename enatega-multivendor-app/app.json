@@ -20,7 +20,7 @@
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "77",
+      "buildNumber": "78",
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.orderatcustomer.app",
@@ -135,7 +135,8 @@
       "@react-native-firebase/app",
       "@react-native-firebase/messaging",
       "./app.plugin.js",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withFirebaseAppDelegate"
     ],
     "extra": {
       "eas": {

@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { DAYS } from '../../utils/enums'
 import UserContext from '../../context/User'
 import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import { moderateScale } from '../../utils/scaling'
 
 const PickCards = ({ item, restaurantCustomer }) => {
   const navigation = useNavigation()
@@ -151,8 +152,8 @@ const PickCards = ({ item, restaurantCustomer }) => {
         style={styles.foodImage}
       />
       {item.topRated && <Text style={styles.topRated}>Top rated</Text>}
-      <Text style={styles.foodTitle}>{item.title}</Text>
-      <Text style={styles.foodPrice}>
+      <Text style={[styles.foodTitle, {fontSize: moderateScale(12)}]}>{item.title}</Text>
+      <Text style={[styles.foodPrice, {fontSize: moderateScale(12)}]}>
         {parseFloat(item.variations[0].price).toFixed(2)}{' '}
         {configuration.currency}
       </Text>
@@ -169,8 +170,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   foodImage: {
-    width: 150,
-    height: 100,
+    width: moderateScale(150),
+    height: moderateScale(100),
     borderRadius: 8
   },
   foodTitle: {

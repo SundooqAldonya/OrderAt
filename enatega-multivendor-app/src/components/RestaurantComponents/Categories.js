@@ -8,6 +8,7 @@ import {
 import React from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
+import { moderateScale } from '../../utils/scaling'
 
 const Categories = ({ categories, activeCategory, onCategoryPress }) => {
   const { i18n } = useTranslation()
@@ -35,11 +36,14 @@ const Categories = ({ categories, activeCategory, onCategoryPress }) => {
           ]}
         >
           <Text
-            style={
+            style={[
               activeCategory === cat._id
                 ? styles.activeText
-                : styles.inactiveText
-            }
+                : styles.inactiveText,
+                {
+                  fontSize: moderateScale(14)
+                }
+            ]}
           >
             {cat.title}
           </Text>
@@ -56,10 +60,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   categoryButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(6),
     marginHorizontal: 4,
-    borderRadius: 20,
+    borderRadius: moderateScale(20),
     borderWidth: 1,
     borderColor: '#ccc'
   },

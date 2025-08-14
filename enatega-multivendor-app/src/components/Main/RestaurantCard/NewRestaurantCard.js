@@ -4,7 +4,7 @@ import { TouchableOpacity, View, Image, Text, Alert } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { alignment } from '../../../utils/alignment'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { theme } from '../../../utils/themeColors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import styles from './styles'
@@ -134,7 +134,7 @@ function NewRestaurantCard(props) {
                 ) : (
                   <AntDesign
                     name={heart ? 'heart' : 'hearto'}
-                    size={scale(15)}
+                    size={moderateScale(15)}
                     color={heart ? 'red' : currentTheme.iconColor}
                   />
                 )}
@@ -175,13 +175,13 @@ function NewRestaurantCard(props) {
             >
               <FontAwesome5
                 name='star'
-                size={11}
+                size={moderateScale(11)}
                 color={currentTheme.newFontcolor}
               />
 
               <TextDefault
                 textColor={currentTheme.fontThirdColor}
-                style={{ fontSize: 12 }}
+                style={{ fontSize: moderateScale(12) }}
                 bolder
                 H4
               >
@@ -251,7 +251,7 @@ function NewRestaurantCard(props) {
           >
             <AntDesign
               name='clockcircleo'
-              size={16}
+              size={moderateScale(16)}
               color={currentTheme.fontNewColor}
             />
 

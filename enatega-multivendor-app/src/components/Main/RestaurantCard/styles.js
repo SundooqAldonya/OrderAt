@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
@@ -29,18 +29,18 @@ const styles = (props = null) =>
       top: 0,
       height: '100%',
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      width: scale(220)
+      width: '100%'
     },
     favouriteOverlay: {
       position: 'absolute',
       top: 10,
-      right: 10,
-      width: scale(40),
-      height: scale(30),
+      right: moderateScale(10),
+      width: moderateScale(40),
+      height: moderateScale(30),
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 1,
-      borderRadius: scale(12),
+      borderRadius: moderateScale(12),
       backgroundColor: props != null ? props.menuBar : 'white',
       borderWidth: 1,
       borderColor: props != null ? props.newBorderColor : '#F3F4F6'
@@ -100,8 +100,8 @@ const styles = (props = null) =>
       // width: scale(200),
       width: '100%',
       height: '100%',
-      borderTopLeftRadius: scale(16),
-      borderTopRightRadius: scale(16),
+      borderTopLeftRadius: moderateScale(16),
+      borderTopRightRadius: moderateScale(16),
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0
       // borderRadius: scale(16)
