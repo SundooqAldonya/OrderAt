@@ -1,4 +1,4 @@
-import { verticalScale, scale, moderateScale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const windowWidth = Dimensions.get('window').width
 import { alignment } from '../../utils/alignment'
@@ -16,9 +16,9 @@ const styles = (props = null, hasActiveOrders = false) =>
     mainItemsContainer: {
       // flexDirection: 'row',
       // justifyContent: 'center',
-      gap: scale(20),
-      marginTop: scale(16),
-      marginBottom: scale(15)
+      gap: moderateScale(20),
+      marginTop: moderateScale(16),
+      marginBottom: moderateScale(15)
     },
     mainItem: {
       padding: 12,
@@ -29,9 +29,11 @@ const styles = (props = null, hasActiveOrders = false) =>
       justifyContent: 'space-between'
     },
     popularMenuImg: {
-       width: moderateScale(100),
+       width: moderateScale(130),
       // aspectRatio: 15 / 8
-      height: moderateScale(100),
+      height: moderateScale(130),
+      marginTop: 15,
+      marginInline: 'auto'
     },
 
     screenBackground: {
@@ -50,21 +52,21 @@ const styles = (props = null, hasActiveOrders = false) =>
 
     addressbtn: {
       backgroundColor: props != null ? props.color8 : '#f0f0f0',
-      marginLeft: scale(10),
-      marginRight: scale(10),
-      marginBottom: scale(10),
-      borderRadius: scale(10),
+      marginLeft: moderateScale(10),
+      marginRight: moderateScale(10),
+      marginBottom: moderateScale(10),
+      borderRadius: moderateScale(10),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: scale(5),
+      padding: moderateScale(5),
       ...alignment.PLmedium,
       ...alignment.PRmedium,
-      borderWidth: scale(1),
+      borderWidth: moderateScale(1),
       borderColor: props != null ? props.color10 : '#FFF'
     },
     addNewAddressbtn: {
-      padding: scale(5),
+      padding: moderateScale(5),
       ...alignment.PLmedium,
       ...alignment.PRmedium
     },
@@ -77,7 +79,7 @@ const styles = (props = null, hasActiveOrders = false) =>
       backgroundColor: colors.primary,
       // backgroundColor: colors.dark,
       width: '100%',
-      height: scale(40),
+      height: moderateScale(40),
       borderRadius: 50,
       justifyContent: 'center',
       alignItems: 'center',
@@ -95,13 +97,13 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     modal: {
       backgroundColor: props != null ? props.themeBackground : '#FFF',
-      paddingTop: scale(10),
-      borderTopEndRadius: scale(20),
-      borderTopStartRadius: scale(20),
+      paddingTop: moderateScale(10),
+      borderTopEndRadius: moderateScale(20),
+      borderTopStartRadius: moderateScale(20),
       position: 'relative',
       zIndex: 999,
       shadowOpacity: 0,
-      borderWidth: scale(1),
+      borderWidth: moderateScale(1),
       borderColor: props != null ? props.color10 : '#FFF'
     },
     addressTextContainer: {
@@ -112,14 +114,14 @@ const styles = (props = null, hasActiveOrders = false) =>
       width: '10%',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      marginRight: scale(5)
+      marginRight: moderateScale(5)
     },
     overlay: {
       backgroundColor:
         props != null ? props.backgroundColor2 : 'rgba(0, 0, 0, 0.5)'
     },
     handle: {
-      width: scale(150),
+      width: moderateScale(150),
       backgroundColor: props != null ? props.backgroundColor : 'transparent'
     },
     relative: {
@@ -127,21 +129,21 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     placeHolderContainer: {
       backgroundColor: props != null ? props.cartContainer : '#B8B8B8',
-      borderRadius: scale(3),
-      elevation: scale(3),
-      marginBottom: scale(12),
-      padding: scale(12)
+      borderRadius: moderateScale(3),
+      elevation: moderateScale(3),
+      marginBottom: moderateScale(12),
+      padding: moderateScale(12)
     },
     brandsPlaceHolderContainer: {
       backgroundColor: props != null ? props.cartContainer : '#B8B8B8',
-      borderRadius: scale(3),
-      paddingHorizontal: scale(20)
+      borderRadius: moderateScale(3),
+      paddingHorizontal: moderateScale(20)
     },
     height200: {
-      height: scale(200)
+      height: moderateScale(200)
     },
     height80: {
-      height: scale(80)
+      height: moderateScale(80)
     },
     placeHolderFadeColor: {
       backgroundColor: props != null ? props.fontSecondColor : '#B8B8B8'
@@ -153,16 +155,16 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     emptyViewBox: {
       backgroundColor: props != null ? props.newBackground : '#f0f0f0',
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       width: '85%',
       height: verticalScale(130),
       justifyContent: 'center',
       alignItems: 'center',
-      padding: scale(15),
-      marginTop: scale(30),
+      padding: moderateScale(15),
+      marginTop: moderateScale(30),
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
-      borderWidth: scale(1),
-      borderRadius: scale(10)
+      borderWidth: moderateScale(1),
+      borderRadius: moderateScale(10)
     },
     searchList: {
       marginBottom: 70
@@ -184,16 +186,16 @@ const styles = (props = null, hasActiveOrders = false) =>
     },
     labelStyle: {
       textAlignVertical: 'bottom',
-      fontSize: scale(14),
+      fontSize: moderateScale(14),
       fontWeight: '700',
       textAlign: 'left'
     },
     addressDetail: {
       alignSelf: 'flex-end',
-      fontSize: scale(4),
+      fontSize: moderateScale(4),
       fontWeight: '300',
       textAlign: 'justify',
-      paddingLeft: scale(38)
+      paddingLeft: moderateScale(38)
     },
     topBrandsMargin: {
       marginBottom: hasActiveOrders ? MODAL_HEIGHT : 0

@@ -303,6 +303,10 @@ function NoDrawer() {
         name='RequestDelivery'
         options={{
           headerTitle: t('RequestDelivery'),
+          headerTitleStyle: {
+            fontSize: moderateScale(14),
+            color: "#fff"
+          },
           headerRight: false,
           headerStyle: {
             backgroundColor: colors.primary

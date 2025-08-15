@@ -8,7 +8,7 @@ import { theme } from '../../../utils/themeColors'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { alignment } from '../../../utils/alignment'
 import { AntDesign, Ionicons, MaterialIcons, Feather } from '@expo/vector-icons'
-import { scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import { DAYS } from '../../../utils/enums'
 import {
   profile,
@@ -80,7 +80,7 @@ function Item(props) {
   }
   return (
     <TouchableOpacity
-      style={{ padding: scale(10) }}
+      style={{ padding: moderateScale(10) }}
       activeOpacity={1}
       onPress={() => navigation.navigate('Restaurant', { ...item })}
     >
@@ -147,20 +147,20 @@ function Item(props) {
               >
                 <Feather
                   name='star'
-                  size={18}
+                  size={moderateScale(18)}
                   color={currentTheme.newIconColor}
                 />
                 <TextDefault
                   textColor={currentTheme.fontThirdColor}
                   H4
                   bolder
-                  style={{ marginLeft: scale(2), marginRight: scale(5) }}
+                  style={{ marginLeft: moderateScale(2), marginRight: moderateScale(5) }}
                 >
                   {item.reviewAverage}
                 </TextDefault>
                 <TextDefault
                   textColor={currentTheme.fontNewColor}
-                  style={{ marginLeft: scale(2) }}
+                  style={{ marginLeft: moderateScale(2) }}
                   H5
                 >
                   ({item.reviewCount})
@@ -193,7 +193,7 @@ function Item(props) {
               >
                 <AntDesign
                   name='clockcircleo'
-                  size={16}
+                  size={moderateScale(16)}
                   color={currentTheme.fontNewColor}
                 />
                 <TextDefault
@@ -217,7 +217,7 @@ function Item(props) {
               >
                 <MaterialIcons
                   name='directions-bike'
-                  size={16}
+                  size={moderateScale(16)}
                   color={currentTheme.fontNewColor}
                 />
                 <TextDefault
@@ -252,7 +252,7 @@ function Item(props) {
               ) : (
                 <AntDesign
                   name={heart ? 'heart' : 'hearto'}
-                  size={scale(15)}
+                  size={moderateScale(15)}
                   color={heart ? 'red' : 'black'}
                 />
               )}
