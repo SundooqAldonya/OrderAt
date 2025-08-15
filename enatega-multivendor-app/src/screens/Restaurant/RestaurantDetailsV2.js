@@ -31,15 +31,9 @@ import { food, popularItems, profile } from '../../apollo/queries'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import gql from 'graphql-tag'
 import { useMutation, useQuery } from '@apollo/client'
-import SkeletonBox from '../../components/SkeletonBox'
 import RestaurantLoading from '../../components/RestaurantComponents/RestaurantLoading'
 import UserContext from '../../context/User'
-import {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle
-} from 'react-native-reanimated'
-import { moderateScale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import ViewCart from '../../components/RestaurantComponents/ViewCart'
 import { Feather } from '@expo/vector-icons'
@@ -47,6 +41,10 @@ import SearchModal from '../../components/RestaurantComponents/SearchModal'
 import ReviewsModal from '../../components/RestaurantComponents/ReviewsModal'
 import JSONTree from 'react-native-json-tree'
 import { addFavouriteRestaurant } from '../../apollo/mutations'
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel
+} from 'react-native-reanimated'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -59,9 +57,10 @@ const ADD_FAVOURITE = gql`
 const PROFILE = gql`
   ${profile}
 `
-const ITEM_HEIGHT = 150
-const CATEGORY_HEADER_HEIGHT = 50
-const CATEGORY_PADDING = 10
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false // Reanimated runs in strict mode by default
+})
 
 const RestaurantDetailsV2 = () => {
   const configuration = useContext(ConfigurationContext)
@@ -73,9 +72,8 @@ const RestaurantDetailsV2 = () => {
   const scrollViewRef = useRef({})
   const route = useRoute()
   const { _id: restaurantId } = route.params
-  const { cartCount, profile } = useContext(UserContext)
-  const [businessCategories, setBusinessCategories] = useState(null)
-  // const [businessCategoriesNames, setBusinessCategoriesNames] = useState(null)
+  const { cartCount, profile, calculatePrice } = useContext(UserContext)
+
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [showReviewsModal, setShowReviewsModal] = useState(false)
   const [allFoods, setAllFoods] = useState([])
@@ -85,7 +83,6 @@ const RestaurantDetailsV2 = () => {
   const [categoryOffsets, setCategoryOffsets] = useState({})
   const sectionRefs = useRef({})
 
-  // const heart = profile ? profile.favourite.includes(restaurantId) : false
   const [heart, setHeart] = useState(
     profile ? profile.favourite.includes(restaurantId) : false
   )
@@ -108,9 +105,22 @@ const RestaurantDetailsV2 = () => {
 
   const popularFood = dataPopularItems?.popularItems || null
 
-  const [sectionPositions, setSectionPositions] = useState({})
   const [activeCategory, setActiveCategory] = useState('picks')
   const [showStickyHeader, setShowStickyHeader] = useState(false)
+  const STICKY_ADJUST = HEADER_COLLAPSED_HEIGHT + 100 // tweak if needed
+  const sortedCategoryOffsetsRef = useRef([]) // precomputed sorted array [[id, y], ...]
+  const activeCategoryRef = useRef(activeCategory)
+
+  useEffect(() => {
+    activeCategoryRef.current = activeCategory
+  }, [activeCategory])
+
+  useEffect(() => {
+    const entries = Object.entries(categoryOffsets || {})
+    // sort by Y position
+    entries.sort((a, b) => a[1] - b[1])
+    sortedCategoryOffsetsRef.current = entries
+  }, [categoryOffsets])
 
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -118,23 +128,39 @@ const RestaurantDetailsV2 = () => {
       useNativeDriver: true,
       listener: (event) => {
         const y = event.nativeEvent.contentOffset.y
+
+        // ---- existing sticky header animation logic ----
         setShowStickyHeader(
           y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
         )
         const shouldShow = y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
-        // Animate the sticky header visibility
         Animated.timing(stickyHeaderAnim, {
-          // Animate the sticky header visibility
           toValue: shouldShow ? 1 : 0,
           duration: 250,
           useNativeDriver: true
         }).start()
-        // Check if the categories section is sticky
+
         if (categoriesLayoutY.current) {
-          if (y >= categoriesLayoutY.current - 60) {
-            setIsCategoriesSticky(true)
-          } else {
-            setIsCategoriesSticky(false)
+          setIsCategoriesSticky(y >= categoriesLayoutY.current - 60)
+        }
+
+        // ---- NEW: active-category detection ----
+        const adjustedY = y + STICKY_ADJUST
+        const sorted = sortedCategoryOffsetsRef.current
+        if (sorted && sorted.length) {
+          let newActive = activeCategoryRef.current // start from last known
+          for (let i = 0; i < sorted.length; i++) {
+            const [id, offset] = sorted[i]
+            const nextOffset = sorted[i + 1]?.[1] ?? Number.POSITIVE_INFINITY
+            if (adjustedY >= offset && adjustedY < nextOffset) {
+              newActive = id
+              break
+            }
+          }
+          if (newActive !== activeCategoryRef.current) {
+            // update both ref and state (state triggers UI update)
+            activeCategoryRef.current = newActive
+            setActiveCategory(newActive)
           }
         }
       }
@@ -151,7 +177,21 @@ const RestaurantDetailsV2 = () => {
       desceription: t('trending_description'),
       food: popularFood || []
     },
-    ...restaurantCategories.map((cat) => ({
+    {
+      _id: 'offers',
+      icon: '💰',
+      title: t('offers'),
+      description: t('discounted_items'),
+      food:
+        restaurantCategories
+          ?.flatMap((cat) => cat.foods || [])
+          .filter((food) =>
+            food?.variations?.some(
+              (variation) => variation.discounted && variation.discounted > 0
+            )
+          ) || []
+    },
+    ...restaurantCategories?.map((cat) => ({
       _id: cat._id,
       title: cat.title,
       food: cat.foods || []
@@ -194,21 +234,6 @@ const RestaurantDetailsV2 = () => {
     })
   }, [data])
 
-  const getScrollOffsetForCategory = () => {
-    let offset = 0
-    const map = {}
-
-    categories.forEach((cat) => {
-      map[cat._id] = offset
-
-      const itemCount = cat.food?.length || 0
-      offset +=
-        CATEGORY_HEADER_HEIGHT + itemCount * ITEM_HEIGHT + CATEGORY_PADDING
-    })
-
-    return map
-  }
-
   const handleCategoryPress = (categoryId) => {
     setActiveCategory(categoryId)
     const yOffset = categoryOffsets[categoryId]
@@ -244,28 +269,8 @@ const RestaurantDetailsV2 = () => {
 
     if (newActiveCategory !== activeCategory) {
       setActiveCategory(newActiveCategory)
-      console.log({ activeCategory: newActiveCategory })
     }
   }
-  console.log({ activeCategory, categoryOffsets })
-
-  // const handleScroll = (event) => {
-  //   const yOffset = event.nativeEvent.contentOffset.y
-
-  //   let current = categories[0]._id
-  //   for (let i = 0; i < categories.length; i++) {
-  //     const _id = categories[i]._id
-  //     const nextId = categories[i + 1]?._id
-  //     const currentY = sectionPositions[_id]
-  //     const nextY = sectionPositions[nextId] ?? Infinity
-
-  //     if (yOffset >= currentY && yOffset < nextY) {
-  //       current = _id
-  //       break
-  //     }
-  //   }
-  //   setActiveCategory(current)
-  // }
 
   const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
     ADD_FAVOURITE,
@@ -291,8 +296,8 @@ const RestaurantDetailsV2 = () => {
     return <RestaurantLoading />
   }
 
-  const renderItem = ({ item }) => {
-    return <PickCards item={item} restaurantCustomer={restaurant} />
+  const renderItem = ({ item, cat }) => {
+    return <PickCards item={item} restaurantCustomer={restaurant} cat={cat} />
   }
 
   return (
@@ -309,7 +314,7 @@ const RestaurantDetailsV2 = () => {
           stickyHeaderAnim={stickyHeaderAnim}
         />
       )}
-      {/* Sticky version – appears on top when isCategoriesSticky is true */}
+      {/* Sticky version of categories – appears on top when isCategoriesSticky is true */}
       {isCategoriesSticky && (
         <Animated.View
           style={[
@@ -321,7 +326,6 @@ const RestaurantDetailsV2 = () => {
             categories={categories}
             activeCategory={activeCategory}
             onCategoryPress={handleCategoryPress}
-            sectionPositions={sectionPositions}
           />
         </Animated.View>
       )}
@@ -353,7 +357,7 @@ const RestaurantDetailsV2 = () => {
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ paddingBottom: 1000 }}
+        contentContainerStyle={{ paddingBottom: 100, flexGrow: 1 }}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
@@ -386,17 +390,31 @@ const RestaurantDetailsV2 = () => {
               {businessCategoriesNames ? businessCategoriesNames : ''}
             </Text>
           ) : null}
-          <Text
-            style={{
-              ...styles.deliveryInfo,
-              textAlign: isArabic ? 'right' : 'left',
-              fontSize: moderateScale(14)
-            }}
-          >
-            🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
-            {t('minimum')} •{' '}
-            {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} mins
-          </Text>
+          {!isArabic ? (
+            <Text
+              style={{
+                ...styles.deliveryInfo,
+                textAlign: 'left'
+              }}
+            >
+              🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
+              {t('minimum')} •{' '}
+              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
+              {t('minutes')}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                ...styles.deliveryInfo,
+                textAlign: 'right'
+              }}
+            >
+              🚲 {t('minimum')} {configuration?.minimumDeliveryFee}{' '}
+              {configuration?.currencySymbol} •{' '}
+              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
+              {t('minutes')}
+            </Text>
+          )}
           <View
             style={{
               marginTop: 12,
@@ -419,19 +437,25 @@ const RestaurantDetailsV2 = () => {
                 enableHalfStar={true}
                 starSize={moderateScale(20)}
               />
-              <Text style={{ color: '#000', fontSize: moderateScale(14) }}>
-                (
-                {restaurant?.reviewCount
-                  ? `${restaurant?.reviewCount} ${t('titleReviews')}`
-                  : null}
-                )
-              </Text>
+              {restaurant.reviewCount ? (
+                <Text style={{ color: '#000' }}>
+                  (
+                  {restaurant?.reviewCount
+                    ? `${restaurant?.reviewCount} ${t('titleReviews')}`
+                    : null}
+                  )
+                </Text>
+              ) : null}
             </View>
-            <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
-              <Text style={{ color: colors.primary, fontSize: moderateScale(14) }}>
-                {t('see_all_reviews')}
-              </Text>
-            </TouchableOpacity>
+            {restaurant?.reviewCount ? (
+              <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
+                <Text style={{ color: colors.primary }}>
+                  {t('see_all_reviews')}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={{ color: colors.primary }}>{t('no_reviews')}</Text>
+            )}
           </View>
         </View>
 
@@ -447,7 +471,6 @@ const RestaurantDetailsV2 = () => {
             categories={categories}
             activeCategory={activeCategory}
             onCategoryPress={handleCategoryPress}
-            sectionPositions={sectionPositions}
           />
         </View>
 
@@ -457,55 +480,65 @@ const RestaurantDetailsV2 = () => {
           scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: 20 }}
         >
-          {categories?.map((cat) => (
-            <View
-              key={cat._id}
-              ref={(ref) => {
-                if (ref) sectionRefs.current[cat._id] = ref
-              }}
-              style={styles.menuSection}
-            >
-              <Text
-                style={{
-                  ...styles.sectionTitle,
-                  textAlign: isArabic ? 'right' : 'left',
-                  fontSize: moderateScale(14)
+          {categories?.map((cat) => {
+            return (
+              <View
+                key={cat._id}
+                ref={(ref) => {
+                  if (ref) sectionRefs.current[cat._id] = ref
                 }}
+                style={styles.menuSection}
               >
-                {cat.title} {cat.icon ? cat.icon : null}
-              </Text>
-              {cat.desceription ? (
                 <Text
                   style={{
-                    ...styles.sectionSubtitle,
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: moderateScale(12)
+                    ...styles.sectionTitle,
+                    textAlign: isArabic ? 'right' : 'left'
                   }}
                 >
-                  {cat.desceription}
+                  {cat.title} {cat.icon ? cat.icon : null}
                 </Text>
-              ) : null}
-              {/* render items for that section */}
-              {cat?.food?.length ? (
-                <FlatList
-                  data={cat.food}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item._id}
-                  numColumns={2}
-                  scrollEnabled={false}
-                />
-              ) : (
-                <Text
-                  style={{ color: '#999', marginTop: 10, textAlign: 'center' }}
-                >
-                  {t('no_items_in_category')}
-                </Text>
-              )}
-            </View>
-          ))}
+                {cat.desceription ? (
+                  <Text
+                    style={{
+                      ...styles.sectionSubtitle,
+                      textAlign: isArabic ? 'right' : 'left'
+                    }}
+                  >
+                    {cat.desceription}
+                  </Text>
+                ) : null}
+                {/* render items for that section */}
+                {cat?.food?.length ? (
+                  <FlatList
+                    data={cat.food}
+                    renderItem={({ item }) => renderItem({ item, cat })}
+                    keyExtractor={(item) => item._id}
+                    numColumns={cat._id === 'picks' ? 2 : 1}
+                    scrollEnabled={false}
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      color: '#999',
+                      marginTop: 10,
+                      textAlign: 'center'
+                    }}
+                  >
+                    {t('no_items_in_category')}
+                  </Text>
+                )}
+              </View>
+            )
+          })}
         </ScrollView>
       </Animated.ScrollView>
-      {cartCount > 0 && <ViewCart cartCount={cartCount} />}
+      {cartCount > 0 ? (
+        <ViewCart
+          cartCount={cartCount}
+          calculatePrice={calculatePrice}
+          minimumOrder={restaurant.minimumOrder}
+        />
+      ) : null}
 
       {/* search modal */}
       <SearchModal
@@ -522,13 +555,15 @@ const RestaurantDetailsV2 = () => {
         restaurantId={restaurant?._id}
       />
 
-      <View style={styles.bottomBanner}>
-        <Text style={styles.bottomText}>
-          {t('add')} {configuration?.currency}{' '}
-          {parseFloat(restaurant?.minimumOrder).toFixed(2)}{' '}
-          {t('to_start_your_order')}
-        </Text>
-      </View>
+      {restaurant && restaurant.minimumOrder > calculatePrice() ? (
+        <View style={styles.bottomBanner}>
+          <Text style={styles.bottomText}>
+            {t('add')} {configuration?.currency}{' '}
+            {parseFloat(restaurant?.minimumOrder).toFixed(2)}{' '}
+            {t('to_start_your_order')}
+          </Text>
+        </View>
+      ) : null}
     </SafeAreaView>
   )
 }

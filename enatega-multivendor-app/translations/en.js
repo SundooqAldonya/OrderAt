@@ -721,5 +721,10 @@ export const en = {
   customerReviews: 'Customer Reviews',
   noReviewsYet: 'No reviews yet',
   trending_description: "Trending items we think you'll love",
-  to_start_your_order: 'To start your order'
+  to_start_your_order: 'To start your order',
+  minutes: 'Minutes',
+  no_reviews: 'No reviews',
+  offers: 'Offers',
+  businesses_with_offers: 'Offers & discounts 💰',
+  discounts_until: 'Discount until '
 }

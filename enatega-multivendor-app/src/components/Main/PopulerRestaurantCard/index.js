@@ -23,6 +23,7 @@ import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../Spinner/Spinner'
 import truncate from '../../../utils/helperFun'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { colors } from '../../../utils/colors'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -68,54 +69,55 @@ function PopulerRestaurantCard(props) {
     }
   }
 
+  function getCategoriesWithHighestDiscount() {
+    let highest = 0
+
+    if (props?.categories) {
+      props?.categories?.forEach((category) => {
+        category.foods?.forEach((food) => {
+          food.variations?.forEach((variation) => {
+            if (variation.discounted && variation.discounted > highest) {
+              highest = variation.discounted
+            }
+          })
+        })
+        console.log({ highest })
+      })
+    }
+    return highest
+  }
+
+  const highestOffer = getCategoriesWithHighestDiscount() || null
+
   return (
     <TouchableOpacity
       style={styles(currentTheme).offerContainer}
-      activeOpacity={1}
+      activeOpacity={0.85}
       onPress={() => navigation.navigate('Restaurant', { ...props })}
     >
-      <View style={styles().imageContainer}>
-        <View
-          style={{
-            width: '100%',
-            height: '100%'
-          }}
-        >
-          <Image
-            resizeMode='cover'
-            source={{ uri: props.image }}
-            style={styles().restaurantImage}
-          />
-          {!isOpenNow ? (
-            <View
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                gap: 5
-              }}
-            >
-              <TextDefault bolder style={{ fontSize: 18 }}>
-                {t('closed')}
-              </TextDefault>
-              <MaterialIcons name='info-outline' size={24} color='#fff' />
-            </View>
-          ) : null}
-        </View>
+      {/* Image Section */}
+      <View style={styles(currentTheme).imageContainer}>
+        <Image
+          resizeMode='cover'
+          source={{ uri: props.image }}
+          style={styles().restaurantImage}
+        />
+
+        {!isOpenNow && (
+          <View style={styles().closedOverlay}>
+            <MaterialIcons name='info-outline' size={20} color='#fff' />
+            <TextDefault bolder style={styles().closedText}>
+              {t('closed')}
+            </TextDefault>
+          </View>
+        )}
       </View>
 
-      <View
-        style={{
-          ...styles().descriptionContainer
-        }}
-      >
+      {/* Info Section */}
+      <View style={styles(currentTheme).descriptionContainer}>
         <View
           style={{
-            ...styles().aboutRestaurant,
+            ...styles().titleRow,
             flexDirection: isArabic ? 'row-reverse' : 'row'
           }}
         >
@@ -128,63 +130,49 @@ function PopulerRestaurantCard(props) {
             {truncate(props.name, 15)}
           </TextDefault>
 
-          <View style={styles().overlayContainer}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              disabled={loadingMutation}
-              onPress={handleAddToFavorites}
-            >
-              <View style={styles(currentTheme).favouriteOverlay}>
-                {loadingMutation ? (
-                  <Spinner
-                    size={'small'}
-                    backColor={'transparent'}
-                    spinnerColor={currentTheme.iconColorDark}
-                  />
-                ) : (
-                  <AntDesign
-                    name={heart ? 'heart' : 'hearto'}
-                    size={scale(15)}
-                    color={heart ? 'red' : currentTheme.iconColor}
-                  />
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            disabled={loadingMutation}
+            onPress={handleAddToFavorites}
+          >
+            <View style={styles(currentTheme).favouriteOverlay}>
+              {loadingMutation ? (
+                <Spinner
+                  size='small'
+                  backColor='transparent'
+                  spinnerColor={currentTheme.iconColorDark}
+                />
+              ) : (
+                <AntDesign
+                  name={heart ? 'heart' : 'hearto'}
+                  size={scale(16)}
+                  color={heart ? 'red' : currentTheme.iconColor}
+                />
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
+        {/* Tags & Rating */}
+        <View style={styles().tagsRow}>
           <TextDefault
             textColor={currentTheme.fontNewColor}
             numberOfLines={1}
             bold
             Normal
-            // style={styles().offerCategoty}
           >
             {props?.tags?.join(',')}
           </TextDefault>
 
-          <View
-            style={{
-              ...styles().aboutRestaurant,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
-            }}
-          >
+          <View style={styles().ratingContainer}>
             <FontAwesome5
               name='star'
-              size={18}
+              size={16}
               color={currentTheme.newFontcolor}
             />
-
             <TextDefault
               textColor={currentTheme.fontThirdColor}
-              style={styles().restaurantRatingContainer}
+              style={styles().ratingText}
               bolder
               H4
             >
@@ -192,55 +180,52 @@ function PopulerRestaurantCard(props) {
             </TextDefault>
             <TextDefault
               textColor={currentTheme.fontNewColor}
-              style={[
-                styles().restaurantRatingContainer,
-                styles().restaurantTotalRating
-              ]}
+              style={styles().ratingCount}
               H5
             >
               ({props.reviewCount})
             </TextDefault>
           </View>
         </View>
-        <View
-          style={{
-            ...styles().deliveryInfo,
-            flexDirection: isArabic ? 'row-reverse' : 'row'
-          }}
-        >
-          <View style={styles().deliveryTime}>
-            <AntDesign
-              name='clockcircleo'
-              size={16}
-              color={currentTheme.fontNewColor}
-            />
-
-            <TextDefault
-              textColor={currentTheme.fontNewColor}
-              numberOfLines={1}
-              bold
-              Normal
+        <View>
+          {highestOffer ? (
+            <View
+              style={{
+                backgroundColor: colors.primary,
+                width: 'auto',
+                borderRadius: 4,
+                paddingInline: 10,
+                paddingVertical: 4,
+                alignSelf: isArabic ? 'flex-end' : 'flex-start'
+              }}
             >
-              {props.deliveryTime + ' '}
-              {t('min')}
-            </TextDefault>
-          </View>
-          {/* <View style={styles().deliveryTime}>
-            <MaterialCommunityIcons
-              name='bike'
-              size={16}
-              color={currentTheme.fontNewColor}
-            />
-
-            <TextDefault
-              textColor={currentTheme.fontNewColor}
-              numberOfLines={1}
-              bold
-              Normal
-            >
-              {configuration.currency} {props.tax}
-            </TextDefault>
-          </View> */}
+              <TextDefault
+                style={{
+                  color: '#fff',
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
+              </TextDefault>
+            </View>
+          ) : null}
+        </View>
+        {/* Delivery Info */}
+        <View style={styles().deliveryRow}>
+          <AntDesign
+            name='clockcircleo'
+            size={14}
+            color={currentTheme.fontNewColor}
+          />
+          <TextDefault
+            textColor={currentTheme.fontNewColor}
+            numberOfLines={1}
+            bold
+            Normal
+          >
+            {props.deliveryTime + ' '}
+            {t('min')}
+          </TextDefault>
         </View>
       </View>
     </TouchableOpacity>

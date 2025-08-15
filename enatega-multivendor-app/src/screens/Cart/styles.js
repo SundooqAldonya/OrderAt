@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 
@@ -37,17 +37,17 @@ const styles = (props = null) =>
     dealContainer: {
       width: '100%',
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       ...alignment.PLsmall,
       ...alignment.PRsmall
     },
     totalOrder: {
-      marginBottom: scale(12)
+      marginBottom: moderateScale(12)
     },
     termsContainer: {
       width: '100%',
       backgroundColor: props !== null ? props.backgroundColor : 'transparent',
-      borderRadius: scale(5),
+      borderRadius: moderateScale(5),
       ...alignment.PLsmall,
       ...alignment.PRsmall
     },
@@ -57,7 +57,7 @@ const styles = (props = null) =>
     },
     priceContainer: {
       width: '100%',
-      borderRadius: scale(20),
+      borderRadius: moderateScale(20),
       borderBottomColor:
         props !== null ? props.lightHorizontalLine : 'transparent',
       ...alignment.PLsmall,
@@ -65,8 +65,8 @@ const styles = (props = null) =>
     },
     modal: {
       backgroundColor: props != null ? props.themeBackground : '#FFF',
-      borderTopEndRadius: scale(20),
-      borderTopStartRadius: scale(20),
+      borderTopEndRadius: moderateScale(20),
+      borderTopStartRadius: moderateScale(20),
       shadowOpacity: 0
     },
     overlay: {
@@ -94,7 +94,7 @@ const styles = (props = null) =>
       borderBottomWidth: StyleSheet.hairlineWidth
     },
     suggestedItems: {
-      paddingBottom: scale(30),
+      paddingBottom: moderateScale(30),
       ...alignment.PLlarge
     },
     suggestItemDesciption: {
@@ -103,33 +103,33 @@ const styles = (props = null) =>
     suggestItemImg: {
       width: '100%',
       // aspectRatio: 18/8,
-      height: scale(70)
+      height: moderateScale(70)
     },
     suggestItemContainer: {
       borderWidth: 1,
       borderColor: '#D1D5DB',
       borderRadius: 12,
-      padding: scale(8),
-      width: scale(120),
-      marginTop: scale(14)
+      padding: moderateScale(8),
+      width: moderateScale(120),
+      marginTop: moderateScale(14)
     },
     suggestItemImgContainer: {
       backgroundColor: '#F3F4F6',
       borderWidth: 1,
       borderColor: '#E5E7EB',
       borderRadius: 8,
-      padding: scale(4)
+      padding: moderateScale(4)
     },
     suggestItemName: {
-      marginVertical: scale(10)
+      marginVertical: moderateScale(10)
     },
     suggestItemPrice: {
-      marginTop: scale(5)
+      marginTop: moderateScale(5)
     },
     addToCart: {
-      width: scale(25),
-      height: scale(25),
-      borderRadius: scale(12.5),
+      width: moderateScale(25),
+      height: moderateScale(25),
+      borderRadius: moderateScale(12.5),
       backgroundColor: props !== null ? props.newFontcolor : '#f0f0f0',
       justifyContent: 'center',
       alignItems: 'center'
@@ -147,20 +147,20 @@ const styles = (props = null) =>
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingTop: scale(28)
+      alignItems: 'center'
+      // paddingTop: moderateScale(28)
     },
     button: {
       backgroundColor: '#111827',
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(140),
-      height: scale(40),
+      width: moderateScale(140),
+      height: moderateScale(40),
       borderRadius: 40
     },
 
     // totalBill:{
-    //   fontSize:scale(27)
+    //   fontSize:moderateScale(27)
     // },
     // buttontLeft: {
     //   width: '35%',
@@ -171,9 +171,9 @@ const styles = (props = null) =>
     //   backgroundColor: props != null ? props.black : 'black',
     //   justifyContent: 'center',
     //   alignItems: 'center',
-    //   width: scale(18),
-    //   height: scale(18),
-    //   borderRadius: scale(9)
+    //   width: moderateScale(18),
+    //   height: moderateScale(18),
+    //   borderRadius: moderateScale(9)
     // },
     // iconStyle: {
     //   height: verticalScale(18),
@@ -190,8 +190,8 @@ const styles = (props = null) =>
       ...alignment.MBlarge
     },
     image: {
-      width: scale(100),
-      height: scale(100)
+      width: moderateScale(100),
+      height: moderateScale(100)
     },
     descriptionEmpty: {
       justifyContent: 'center',
@@ -201,8 +201,8 @@ const styles = (props = null) =>
     emptyButton: {
       backgroundColor: props !== null ? props.newheaderColor : 'transparent',
       width: '70%',
-      height: scale(40),
-      borderRadius: scale(20),
+      height: moderateScale(40),
+      borderRadius: moderateScale(20),
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center'
@@ -248,23 +248,23 @@ const styles = (props = null) =>
     },
     labelButton: {
       marginRight: 10,
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       width: '22%',
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: props !== null ? props.horizontalLine : 'transparent',
       justifyContent: 'center',
-      height: scale(30)
+      height: moderateScale(30)
     },
     activeLabel: {
       marginRight: 10,
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       backgroundColor: props !== null ? props.main : 'transparent',
       width: '22%',
       //borderWidth: 2,
       justifyContent: 'center',
       color: props !== null ? props.tagColor : 'transparent',
       borderColor: props !== null ? props.tagColor : 'transparent',
-      height: scale(30)
+      height: moderateScale(30)
     },
     headerContainer: {
       backgroundColor: props !== null ? props.themeBackground : '#6FCF97',
@@ -296,19 +296,19 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     changeAddressBtn: {
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       backgroundColor: props != null ? props.main : '#B8B8B8',
       width: '40%',
       justifyContent: 'center',
       alignItems: 'center',
-      height: scale(30)
+      height: moderateScale(30)
     },
     addressAllignment: {
       // display: 'flex',
       // flexDirection: 'column',
       // // justifyContent: 'flex-end',
       width: '100%',
-      marginLeft: scale(15)
+      marginLeft: moderateScale(15)
     },
     addressDetailAllign: {
       width: '65%',
@@ -317,12 +317,12 @@ const styles = (props = null) =>
     },
     locationIcon: {
       backgroundColor: props != null ? props.newBorderColor : '#E5E7EB',
-      width: scale(30),
-      height: scale(30),
+      width: moderateScale(30),
+      height: moderateScale(30),
       borderRadius: 30,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: scale(10),
+      marginTop: moderateScale(10),
       borderWidth: 1,
       borderColor: props?.iconBackground || '#E5E7EB'
     },
@@ -331,7 +331,7 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
-      height: scale(40),
+      height: moderateScale(40),
       borderRadius: 40,
       borderWidth: 1,
       borderColor: props !== null ? props.borderColor : 'black',

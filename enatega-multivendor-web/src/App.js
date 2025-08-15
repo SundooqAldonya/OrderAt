@@ -44,6 +44,7 @@ import PickupMandoob from "./screens/DeliveryRequest/PickupMandoob";
 import DropoffMandoob from "./screens/DeliveryRequest/DropoffMandoob";
 import DeliveryRequest from "./screens/DeliveryRequest";
 import DownloadPage from "./screens/DownloadPage";
+import DownloadBusinessPage from "./screens/DownloadBusinessPage";
 const GoogleMapsLoader = ({
   children,
   LIBRARIES,
@@ -183,6 +184,7 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/pickup" element={<Pickup />} />
           <Route path="/download" element={<DownloadPage />} />
+          <Route path="/download-business" element={<DownloadBusinessPage />} />
           {/* <Route path="/otlob-mandoob" element={<DeliveryRequest />} />
           <Route path="/otlob-mandoob/pickup" element={<PickupMandoob />} />
           <Route path="/otlob-mandoob/dropoff" element={<DropoffMandoob />} /> */}

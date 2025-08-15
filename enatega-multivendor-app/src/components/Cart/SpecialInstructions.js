@@ -4,7 +4,7 @@ import InstructionMessageIcon from '../../assets/SVG/instructions-message-icon'
 import ArrowForwardIcon from '../../assets/SVG/arrow-forward-icon'
 import { useStyles } from './styles'
 import TextDefault from '../Text/TextDefault/TextDefault'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import { InstructionsModal } from './InstructionsModal'
 import { useTranslation } from 'react-i18next'
  import { colors } from '../../utils/colors'
@@ -36,7 +36,7 @@ export const SpecialInstructions = ({
     <TouchableOpacity
       onPress={showModal}
       style={{
-        height: 100,
+        height: moderateScale(100),
         flex: 1,
         flexDirection: 'row',
         backgroundColor: colors.lightGray,

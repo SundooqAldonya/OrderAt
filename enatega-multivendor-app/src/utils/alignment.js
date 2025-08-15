@@ -1,4 +1,4 @@
-import { moderateScale, scale } from './scaling'
+import { moderateScale } from './scaling'
 
 const XSMALL = 5
 const SMALL = 10
@@ -7,54 +7,54 @@ const LARGE = 20
 const XLARGE = 50
 export const alignment = {
   MxSmall: {
-    margin: scale(XSMALL)
+    margin: moderateScale(XSMALL)
   },
   MBxSmall: {
-    marginBottom: scale(XSMALL)
+    marginBottom: moderateScale(XSMALL)
   },
   MTxSmall: {
-    marginTop: scale(XSMALL)
+    marginTop: moderateScale(XSMALL)
   },
   MRxSmall: {
-    marginRight: scale(XSMALL)
+    marginRight: moderateScale(XSMALL)
   },
   MLxSmall: {
-    marginLeft: scale(XSMALL)
+    marginLeft: moderateScale(XSMALL)
   },
 
   Msmall: {
-    margin: scale(SMALL)
+    margin: moderateScale(SMALL)
   },
   MBsmall: {
-    marginBottom: scale(SMALL)
+    marginBottom: moderateScale(SMALL)
   },
   MTsmall: {
     marginTop: moderateScale(SMALL)
   },
   MRsmall: {
-    marginRight: scale(SMALL)
+    marginRight: moderateScale(SMALL)
   },
   MLsmall: {
     marginLeft: moderateScale(SMALL)
   },
 
   Mmedium: {
-    margin: scale(MEDIUM)
+    margin: moderateScale(MEDIUM)
   },
   MBmedium: {
-    marginBottom: scale(MEDIUM)
+    marginBottom: moderateScale(MEDIUM)
   },
   MTmedium: {
-    marginTop: scale(MEDIUM)
+    marginTop: moderateScale(MEDIUM)
   },
   MRmedium: {
-    marginRight: scale(MEDIUM)
+    marginRight: moderateScale(MEDIUM)
   },
   MLmedium: {
-    marginLeft: scale(MEDIUM)
+    marginLeft: moderateScale(MEDIUM)
   },
   Mlarge: {
-    margin: scale(LARGE)
+    margin: moderateScale(LARGE)
   },
   MBlarge: {
     marginBottom: moderateScale(LARGE)
@@ -63,36 +63,36 @@ export const alignment = {
     marginTop: moderateScale(LARGE)
   },
   MRlarge: {
-    marginRight: scale(LARGE)
+    marginRight: moderateScale(LARGE)
   },
   MLlarge: {
-    marginLeft: scale(LARGE)
+    marginLeft: moderateScale(LARGE)
   },
   MBxLarge: {
-    marginBottom: scale(XLARGE)
+    marginBottom: moderateScale(XLARGE)
   },
   MTxLarge: {
-    marginTop: scale(XLARGE)
+    marginTop: moderateScale(XLARGE)
   },
   // Padding
   PxSmall: {
-    padding: scale(XSMALL)
+    padding: moderateScale(XSMALL)
   },
   PBxSmall: {
-    paddingBottom: scale(XSMALL)
+    paddingBottom: moderateScale(XSMALL)
   },
   PTxSmall: {
     paddingTop: moderateScale(XSMALL)
   },
   PRxSmall: {
-    paddingRight: scale(XSMALL)
+    paddingRight: moderateScale(XSMALL)
   },
   PLxSmall: {
-    paddingLeft: scale(XSMALL)
+    paddingLeft: moderateScale(XSMALL)
   },
 
   Psmall: {
-    padding: scale(SMALL)
+    padding: moderateScale(SMALL)
   },
   PBsmall: {
     paddingBottom: moderateScale(SMALL)
@@ -108,13 +108,13 @@ export const alignment = {
   },
 
   Pmedium: {
-    padding: scale(MEDIUM)
+    padding: moderateScale(MEDIUM)
   },
   PBmedium: {
-    paddingBottom: scale(MEDIUM)
+    paddingBottom: moderateScale(MEDIUM)
   },
   PTmedium: {
-    paddingTop: scale(MEDIUM)
+    paddingTop: moderateScale(MEDIUM)
   },
   PRmedium: {
     paddingRight: moderateScale(MEDIUM)
@@ -124,13 +124,13 @@ export const alignment = {
   },
 
   Plarge: {
-    padding: scale(LARGE)
+    padding: moderateScale(LARGE)
   },
   PBlarge: {
-    paddingBottom: scale(LARGE)
+    paddingBottom: moderateScale(LARGE)
   },
   PTlarge: {
-    paddingTop: scale(LARGE)
+    paddingTop: moderateScale(LARGE)
   },
   PRlarge: {
     paddingRight: moderateScale(LARGE)

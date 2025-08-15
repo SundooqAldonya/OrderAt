@@ -21,7 +21,7 @@ import TextDefault from '../Text/TextDefault/TextDefault'
 import { colors } from '../../utils/colors'
 import Feather from '@expo/vector-icons/Feather'
 
-const ViewCart = ({ cartCount }) => {
+const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
   const navigation = useNavigation()
   const { t } = useTranslation()
 
@@ -48,12 +48,16 @@ const ViewCart = ({ cartCount }) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container, Platform.OS === 'ios' && { marginBottom: 70 }]}
+      style={[
+        styles.container,
+        Platform.OS === 'ios' && { marginBottom: 70 },
+        { bottom: calculatePrice() > minimumOrder ? 0 : 40 }
+      ]}
       onPress={() => navigation.navigate('Cart')}
     >
       <View
         activeOpacity={0.7}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: moderateScale(10) }}
       >
         <View>
           <Animated.View
@@ -70,8 +74,7 @@ const ViewCart = ({ cartCount }) => {
               style={[
                 {
                   color: '#fff',
-                  fontSize: moderateScale(18),
-                  marginTop: -5,
+                  fontSize: moderateScale(16),
 
                   // backgroundColor: 'red',
                   textAlign: 'center'

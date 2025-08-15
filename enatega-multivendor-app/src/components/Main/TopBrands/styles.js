@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
@@ -16,15 +16,15 @@ const styles = (props = null) =>
     brandImg: {
       width: '100%',
       // aspectRatio: 18/8,
-      height: scale(70),
+      height: moderateScale(70),
       borderRadius: 8,
       objectFit: 'cover'
     },
     topbrandsContainer: {
       flexGrow: 1,
-      width: scale(120),
-      marginTop: scale(7),
-      marginBottom: scale(10),
+      width: moderateScale(120),
+      marginTop: moderateScale(7),
+      marginBottom: moderateScale(10),
       ...alignment.MRmedium
       //  padding: 8
     },
@@ -39,8 +39,8 @@ const styles = (props = null) =>
       // padding:scale(8),
     },
     brandName: {
-      marginTop: scale(5),
-      marginBottom: scale(2)
+      marginTop: moderateScale(5),
+      marginBottom: moderateScale(2)
     },
     margin: {
       ...alignment.MLmedium,
@@ -55,11 +55,11 @@ const styles = (props = null) =>
     },
     brandsPlaceHolderContainer: {
       backgroundColor: props != null ? props.cartContainer : '#B8B8B8',
-      borderRadius: scale(3),
-      paddingHorizontal: scale(20)
+      borderRadius: moderateScale(3),
+      paddingHorizontal: moderateScale(20)
     },
     height80: {
-      height: scale(80)
+      height: moderateScale(80)
     },
     image: {
       backgroundColor: colors.lightGray,

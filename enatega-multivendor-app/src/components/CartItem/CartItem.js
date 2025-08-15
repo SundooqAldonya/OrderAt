@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { Alert, Image, TouchableOpacity, View } from 'react-native'
 import { AntDesign, Feather, EvilIcons } from '@expo/vector-icons'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import ConfigurationContext from '../../context/Configuration'
 import { theme } from '../../utils/themeColors'
@@ -25,9 +25,8 @@ const CartItem = (props) => {
   const currentTheme = theme[themeContext.ThemeValue]
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const imageUrl =
-    props?.itemImage && props?.itemImage.trim() !== ''
-      ? props.itemImage
-      : IMAGE_LINK
+    props?.itemImage && props?.itemImage.trim() !== '' && props.itemImage
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
@@ -45,12 +44,16 @@ const CartItem = (props) => {
           flexDirection: isArabic ? 'row-reverse' : 'row',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          gap: scale(7)
+          gap: moderateScale(7)
         }}
       >
         <View style={styles().suggestItemImgContainer}>
           <Image
-            source={{ uri: imageUrl }}
+            source={
+              props.itemImage
+                ? { uri: imageUrl }
+                : require('../../assets/food_placeholder.jpeg')
+            }
             style={styles().suggestItemImg}
             resizeMode='contain'
           />
@@ -77,7 +80,7 @@ const CartItem = (props) => {
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                 >
                   <TextDefault
-                    style={{ marginRight: scale(5) }}
+                    style={{ marginRight: moderateScale(5) }}
                     textColor={currentTheme.fontNewColor}
                     Normal
                   >
@@ -110,9 +113,9 @@ const CartItem = (props) => {
           <View
             style={{
               flexDirection: 'row',
-              gap: scale(8),
+              gap: moderateScale(8),
               alignItems: 'center',
-              marginTop: scale(4)
+              marginTop: moderateScale(4)
             }}
           >
             {isArabic ? (
@@ -172,13 +175,13 @@ const CartItem = (props) => {
           {props.quantity < 2 ? (
             <EvilIcons
               name='trash'
-              size={scale(25)}
+              size={moderateScale(25)}
               color={currentTheme.color4}
             />
           ) : (
             <AntDesign
               name='minus'
-              size={scale(18)}
+              size={moderateScale(18)}
               color={currentTheme.color4}
             />
           )}
@@ -197,7 +200,7 @@ const CartItem = (props) => {
           ]}
           onPress={props.addQuantity}
         >
-          <AntDesign name='plus' size={scale(18)} color={currentTheme.white} />
+          <AntDesign name='plus' size={moderateScale(18)} color={currentTheme.white} />
         </TouchableOpacity>
       </View>
     </View>

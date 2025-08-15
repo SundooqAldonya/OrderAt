@@ -1339,6 +1339,87 @@ export const highestRatingRestaurant = gql`
     }
   }
 `
+export const restaurantsWithOffers = gql`
+  query RestaurantsWithOffers($longitude: Float!, $latitude: Float!) {
+    restaurantsWithOffers(longitude: $longitude, latitude: $latitude) {
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData {
+        total
+        ratings
+        reviews {
+          _id
+          order {
+            user {
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+      reviewCount
+      reviewAverage
+      options {
+        _id
+        title
+        description
+        price
+      }
+      addons {
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone {
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes {
+        day
+        times {
+          startTime
+          endTime
+        }
+      }
+      businessCategories {
+        _id
+        name
+        isActive
+      }
+      categories {
+        _id
+        foods {
+          _id
+          variations {
+            _id
+            discounted
+          }
+        }
+      }
+    }
+  }
+`
 
 export const nearestRestaurants = gql`
   query NearestRestaurants($longitude: Float!, $latitude: Float!) {

@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
     ...alignment.MTsmall,
     ...alignment.MBsmall
   },
@@ -24,6 +23,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    // backgroundColor: 'red',
     ...alignment.MBsmall
   }
 })

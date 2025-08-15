@@ -32,7 +32,8 @@ import {
   highestRatingRestaurant,
   nearestRestaurants,
   restaurantList,
-  restaurantListPreview
+  restaurantListPreview,
+  restaurantsWithOffers
 } from '../../apollo/queries'
 import { createAddress, selectAddress } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
@@ -70,6 +71,10 @@ import BusinessCategories from '../../components/BusinessCategories'
 const RESTAURANTS = gql`
   ${restaurantListPreview}
 `
+
+// const RESTAURANTS_OFFERS = gql`
+//   ${restaurantsWithOffers}
+// `
 const SELECT_ADDRESS = gql`
   ${selectAddress}
 `
@@ -117,6 +122,21 @@ function Main(props) {
   console.log({ location })
 
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
+
+  const {
+    data: dataWithOffers,
+    loading: loadingWithOffers,
+    error: errorWithOffers
+  } = useQuery(restaurantsWithOffers, {
+    variables: {
+      longitude: location.longitude,
+      latitude: location.latitude
+    },
+    fetchPolicy: 'no-cache'
+  })
+
+  const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
+  console.log({ restaurantsWithOffersData })
 
   const {
     data: dataHighRating,
@@ -697,7 +717,26 @@ function Main(props) {
                     </View>
                     {/* the second section */}
 
-                    <View style={{ marginTop: 20 }}>
+                    <View style={{ marginTop: 0 }}>
+                      <View>
+                        {restaurantsWithOffersData &&
+                          restaurantsWithOffersData.length > 0 && (
+                            <>
+                              {orderLoading ? (
+                                <MainLoadingUI />
+                              ) : (
+                                <MainRestaurantCard
+                                  orders={[...restaurantsWithOffersData]}
+                                  loading={orderLoading}
+                                  error={orderError}
+                                  title={'businesses_with_offers'}
+                                />
+                              )}
+                            </>
+                          )}
+                      </View>
+                    </View>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {mostOrderedRestaurantsVar &&
                           mostOrderedRestaurantsVar.length > 0 && (
@@ -717,7 +756,7 @@ function Main(props) {
                       </View>
                     </View>
                     {/* heighest rating */}
-                    <View>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {highestRatingRestaurantData &&
                           highestRatingRestaurantData.length > 0 && (
@@ -737,7 +776,7 @@ function Main(props) {
                       </View>
                     </View>
                     {/* nearest restaurants */}
-                    <View>
+                    <View style={{ marginTop: 0 }}>
                       <View>
                         {nearestRestaurantsData &&
                           nearestRestaurantsData.length > 0 && (
@@ -759,9 +798,11 @@ function Main(props) {
 
                     {/* the therd section */}
                     <View
-                      style={
-                        styles(currentTheme, hasActiveOrders).topBrandsMargin
-                      }
+                      style={{
+                        ...styles(currentTheme, hasActiveOrders)
+                          .topBrandsMargin,
+                        marginTop: 20
+                      }}
                     >
                       {orderLoading ? <TopBrandsLoadingUI /> : <TopBrands />}
                     </View>

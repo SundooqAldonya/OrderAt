@@ -11,6 +11,7 @@ import AuthContext from './Auth'
 import analytics from '../utils/analytics'
 
 import { useTranslation } from 'react-i18next'
+import { useRestaurant } from '../ui/hooks'
 
 const v1options = {
   random: [
@@ -52,6 +53,9 @@ export const UserProvider = (props) => {
     skip: !token,
     pollInterval: 10000
   })
+
+  const { loading, data } = useRestaurant(restaurant)
+  const restaurantCustomer = data?.restaurantCustomer || null
 
   useEffect(() => {
     let isSubscribed = true
@@ -200,6 +204,64 @@ export const UserProvider = (props) => {
     await AsyncStorage.setItem('restaurant', id)
   }
 
+  function calculatePrice(delivery = 0, withDiscount) {
+    let itemTotal = 0
+    cart.forEach((cartItem) => {
+      const food = populateFood(cartItem)
+      if (!food) return
+      itemTotal += food.price * food.quantity
+    })
+    // if (withDiscount && coupon && coupon.discount) {
+    //   itemTotal = itemTotal - (coupon.discount / 100) * itemTotal
+    // }
+    return itemTotal.toFixed(2)
+  }
+
+  const foods = restaurantCustomer?.categories
+    ?.map((c) => c.foods.flat())
+    .flat()
+
+  const addons = restaurantCustomer?.addons
+  const options = restaurantCustomer?.options
+
+  function populateFood(cartItem) {
+    const food = foods?.find((food) => food._id === cartItem._id)
+    if (!food) return null
+    const variation = food.variations.find(
+      (variation) => variation._id === cartItem.variation._id
+    )
+    if (!variation) return null
+
+    const title = `${food.title}${
+      variation.title ? `(${variation.title})` : ''
+    }`
+    let price = variation.price
+    const optionsTitle = []
+    if (cartItem.addons) {
+      cartItem.addons.forEach((addon) => {
+        const cartAddon = addons.find((add) => add._id === addon._id)
+        if (!cartAddon) return null
+        addon.options.forEach((option) => {
+          const cartOption = options.find((opt) => opt._id === option._id)
+          if (!cartOption) return null
+          price += cartOption.price
+          optionsTitle.push(cartOption.title)
+        })
+      })
+    }
+    const populateAddons = addons.filter((addon) =>
+      food?.variations[0]?.addons?.includes(addon._id)
+    )
+    return {
+      ...cartItem,
+      optionsTitle,
+      title: title,
+      price: price.toFixed(2),
+      image: food?.image,
+      addons: populateAddons
+    }
+  }
+
   console.log({ restaurant })
 
   return (
@@ -227,7 +289,9 @@ export const UserProvider = (props) => {
         isPickup,
         setIsPickup,
         instructions,
-        setInstructions
+        setInstructions,
+        calculatePrice,
+        populateFood
       }}
     >
       {props.children}

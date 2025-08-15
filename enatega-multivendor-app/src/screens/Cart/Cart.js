@@ -20,7 +20,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import CartItem from '../../components/CartItem/CartItem'
 import { getDeliveryCalculationV2, getTipping } from '../../apollo/queries'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import { alignment } from '../../utils/alignment'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -43,6 +43,7 @@ import WouldYouLikeToAddThese from './Section'
 import { SpecialInstructions } from '../../components/Cart/SpecialInstructions'
 import { colors } from '../../utils/colors'
 import { Fragment } from 'react'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 // Constants
 const TIPPING = gql`
@@ -51,6 +52,8 @@ const TIPPING = gql`
 
 function Cart(props) {
   const Analytics = analytics()
+  const insets = useSafeAreaInsets()
+  const FOOTER_HEIGHT = moderateScale(70)
   const navigation = useNavigation()
   const configuration = useContext(ConfigurationContext)
   const {
@@ -64,7 +67,8 @@ function Cart(props) {
     isPickup,
     setIsPickup,
     instructions,
-    setInstructions
+    setInstructions,
+    populateFood
   } = useContext(UserContext)
   const themeContext = useContext(ThemeContext)
   const { location } = useContext(LocationContext)
@@ -81,7 +85,9 @@ function Cart(props) {
   const isCartEmpty = cart?.length === 0
   const cartLength = !isCartEmpty ? cart?.length : 0
   const { loading, data } = useRestaurant(cartRestaurant)
+  const restaurant = data?.restaurantCustomer || null
 
+  const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
   // console.log({ dataHere: data })
 
   const { loading: loadingTip, data: dataTip } = useQuery(TIPPING, {
@@ -89,7 +95,7 @@ function Cart(props) {
   })
 
   const {
-    data: calcData,
+    data: calcDeliveryData,
     loading: calcLoading,
     error: errorCalc
   } = useQuery(getDeliveryCalculationV2, {
@@ -104,12 +110,6 @@ function Cart(props) {
     }
   })
 
-  console.log({
-    calcData,
-    originLong: data?.restaurantCustomer.location.coordinates[0],
-    originLat: data?.restaurantCustomer.location.coordinates[1]
-  })
-
   const coupon =
     props.route.params && props.route.params.coupon
       ? props.route.params.coupon
@@ -121,18 +121,17 @@ function Cart(props) {
       : null
 
   const [selectedTip, setSelectedTip] = useState()
-  const modalRef = useRef(null)
 
   useEffect(() => {
-    if (calcData) {
-      const amount = calcData.getDeliveryCalculationV2.amount
+    if (calcDeliveryData) {
+      const amount = calcDeliveryData.getDeliveryCalculationV2.amount
       setDeliveryCharges(
         amount >= configuration.minimumDeliveryFee
           ? amount
           : configuration.minimumDeliveryFee
       )
     }
-  }, [calcData])
+  }, [calcDeliveryData])
 
   useEffect(() => {
     if (tip) {
@@ -141,38 +140,6 @@ function Cart(props) {
       setSelectedTip(dataTip.tips.tipVariations[1])
     }
   }, [tip, data])
-
-  // useEffect(() => {
-  //   let isSubscribed = true
-  //   ;(async () => {
-  //     if (data && data?.restaurantCustomer) {
-  //       const latOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[1]
-  //       )
-  //       const lonOrigin = Number(
-  //         data?.restaurantCustomer.location.coordinates[0]
-  //       )
-  //       const latDest = Number(location.latitude)
-  //       const longDest = Number(location.longitude)
-  //       const distance = await calculateDistance(
-  //         latOrigin,
-  //         lonOrigin,
-  //         latDest,
-  //         longDest
-  //       )
-  //       const amount = Math.ceil(distance) * configuration.deliveryRate
-  //       isSubscribed &&
-  //         setDeliveryCharges(
-  //           amount >= configuration.minimumDeliveryFee
-  //             ? amount
-  //             : configuration.minimumDeliveryFee
-  //         )
-  //     }
-  //   })()
-  //   return () => {
-  //     isSubscribed = false
-  //   }
-  // }, [data, location])
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
@@ -192,8 +159,8 @@ function Cart(props) {
         ...textStyles.Bolder
       },
       headerTitleContainerStyle: {
-        paddingLeft: scale(25),
-        paddingRight: scale(25)
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25)
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG
@@ -210,7 +177,7 @@ function Cart(props) {
             >
               <AntDesign
                 name='arrowleft'
-                size={22}
+                size={moderateScale(22)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -349,7 +316,7 @@ function Cart(props) {
     return (
       <View style={styles().subContainerImage}>
         <View style={styles().imageContainer}>
-          <EmptyCart width={scale(200)} height={scale(200)} />
+          <EmptyCart width={moderateScale(200)} height={moderateScale(200)} />
         </View>
         <View style={styles().descriptionEmpty}>
           <TextDefault textColor={currentTheme.fontMainColor} bolder center>
@@ -463,63 +430,57 @@ function Cart(props) {
       </View>
     )
   }
-  const onModalOpen = (modalRef) => {
-    const modal = modalRef.current
-    if (modal) {
-      modal.open()
-    }
-  }
-  //here
+
   if (loading || loadingData || loadingTip) return loadginScreen()
 
-  const restaurant = data?.restaurantCustomer
-  const addons = restaurant?.addons
-  const options = restaurant?.options
+  // const addons = restaurant?.addons
+  // const options = restaurant?.options
 
-  const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
+  // const foods = restaurant?.categories?.map((c) => c.foods.flat()).flat()
 
-  function populateFood(cartItem) {
-    const food = foods?.find((food) => food._id === cartItem._id)
-    if (!food) return null
-    const variation = food.variations.find(
-      (variation) => variation._id === cartItem.variation._id
-    )
-    if (!variation) return null
+  // function populateFood(cartItem) {
+  //   const food = foods?.find((food) => food._id === cartItem._id)
+  //   if (!food) return null
+  //   const variation = food.variations.find(
+  //     (variation) => variation._id === cartItem.variation._id
+  //   )
+  //   if (!variation) return null
 
-    const title = `${food.title}${
-      variation.title ? `(${variation.title})` : ''
-    }`
-    let price = variation.price
-    const optionsTitle = []
-    if (cartItem.addons) {
-      cartItem.addons.forEach((addon) => {
-        const cartAddon = addons.find((add) => add._id === addon._id)
-        if (!cartAddon) return null
-        addon.options.forEach((option) => {
-          const cartOption = options.find((opt) => opt._id === option._id)
-          if (!cartOption) return null
-          price += cartOption.price
-          optionsTitle.push(cartOption.title)
-        })
-      })
-    }
-    const populateAddons = addons.filter((addon) =>
-      food?.variations[0]?.addons?.includes(addon._id)
-    )
-    return {
-      ...cartItem,
-      optionsTitle,
-      title: title,
-      price: price.toFixed(2),
-      image: food?.image,
-      addons: populateAddons
-    }
-  }
+  //   const title = `${food.title}${
+  //     variation.title ? `(${variation.title})` : ''
+  //   }`
+  //   let price = variation.price
+  //   const optionsTitle = []
+  //   if (cartItem.addons) {
+  //     cartItem.addons.forEach((addon) => {
+  //       const cartAddon = addons.find((add) => add._id === addon._id)
+  //       if (!cartAddon) return null
+  //       addon.options.forEach((option) => {
+  //         const cartOption = options.find((opt) => opt._id === option._id)
+  //         if (!cartOption) return null
+  //         price += cartOption.price
+  //         optionsTitle.push(cartOption.title)
+  //       })
+  //     })
+  //   }
+  //   const populateAddons = addons.filter((addon) =>
+  //     food?.variations[0]?.addons?.includes(addon._id)
+  //   )
+  //   return {
+  //     ...cartItem,
+  //     optionsTitle,
+  //     title: title,
+  //     price: price.toFixed(2),
+  //     image: food?.image,
+  //     addons: populateAddons
+  //   }
+  // }
+
   let deliveryTime = Math.floor((orderDate - Date.now()) / 1000 / 60)
   if (deliveryTime < 1) deliveryTime += restaurant?.deliveryTime
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       <View style={styles(currentTheme).mainContainer}>
         {!cart?.length ? (
           emptyCart()
@@ -528,6 +489,9 @@ function Cart(props) {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={[styles().flex, styles().cartItems]}
+              contentContainerStyle={{
+                paddingBottom: FOOTER_HEIGHT + insets.bottom + moderateScale(16)
+              }}
             >
               <View
                 style={{
@@ -575,10 +539,7 @@ function Cart(props) {
                           quantity={food.quantity}
                           dealName={food.title}
                           optionsTitle={food.optionsTitle}
-                          itemImage={
-                            food.image ||
-                            'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
-                          }
+                          itemImage={food.image}
                           itemAddons={food.addons}
                           cartRestaurant={cartRestaurant}
                           dealPrice={(
@@ -606,7 +567,20 @@ function Cart(props) {
               </View>
             </ScrollView>
 
-            <View style={styles().totalBillContainer}>
+            <View
+              // style={styles().totalBillContainer}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: FOOTER_HEIGHT  + moderateScale(50),
+                backgroundColor: currentTheme.newheaderColor, // or your prop
+                paddingHorizontal: moderateScale(16),
+                justifyContent: 'center',
+                zIndex: 20
+              }}
+            >
               <View style={styles(currentTheme).buttonContainer}>
                 <View style={styles().cartAmount}>
                   {isArabic ? (
@@ -683,7 +657,7 @@ function Cart(props) {
           </>
         )}
       </View>
-    </>
+    </SafeAreaView>
   )
 }
 

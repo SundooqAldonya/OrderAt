@@ -49,7 +49,7 @@ module.exports = {
   Mutation: {
     createFood: async (_, args, context) => {
       console.log('createFood')
-      console.log({ createFoodAddons: args.foodInput.variations[0].addons })
+      // console.log({ createFoodAddons: args.foodInput.variations[0].addons })
       try {
         const food = new Food({
           title: args.foodInput.title,

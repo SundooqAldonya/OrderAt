@@ -9,7 +9,8 @@ import {
   Dimensions,
   Keyboard,
   TouchableOpacity,
-  Text
+  Text,
+  TextInput
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './styles'
@@ -73,8 +74,7 @@ function ItemDetail(props) {
     })
   })
 
-  const imageUrl =
-    food?.image && food?.image.trim() !== '' ? food.image : IMAGE_LINK
+  const imageUrl = food?.image && food?.image.trim() !== '' && food.image
 
   const [selectedAddons, setSelectedAddons] = useState([])
   const [specialInstructions, setSpecialInstructions] = useState('')
@@ -413,17 +413,17 @@ function ItemDetail(props) {
               </TouchableOpacity>
             </View>
 
-            <View
-              style={{
-                marginHorizontal: 'auto'
-              }}
-            >
+            <View>
               <Text
                 style={{
                   textAlign: 'center',
-                  color: '#fff',
+                  color: '#000',
                   fontSize: 20,
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  textShadowColor: 'rgba(0, 0, 0, 0.8)', // black with opacity
+                  textShadowOffset: { width: 1, height: 1 }, // horizontal & vertical shift
+                  textShadowRadius: 4, // blur,
+                  marginInlineEnd: 5
                 }}
               >
                 {food.restaurantName}
@@ -486,26 +486,24 @@ function ItemDetail(props) {
             </View>
 
             <View style={styles(currentTheme).line}></View>
-            <View style={styles(currentTheme).inputContainer}>
+            {/* <View style={styles(currentTheme).inputContainer}>
               <TitleComponent
                 title={t('specialInstructions')}
                 subTitle={t('anySpecificPreferences')}
                 status={t('optional')}
               />
-              {/* <TextField
+              <TextInput
                 style={styles(currentTheme).input}
                 placeholder={t('noMayo')}
-                textAlignVertical='center'
+                placeholderTextColor={currentTheme.fontGrayNew}
+                textAlignVertical='top'
                 value={specialInstructions}
                 onChangeText={setSpecialInstructions}
                 maxLength={144}
-                textColor={currentTheme.fontMainColor}
-                baseColor={currentTheme.lightHorizontalLine}
-                errorColor={currentTheme.textErrorColor}
-                tintColor={currentTheme.themeBackground}
-                placeholderTextColor={currentTheme.fontGrayNew}
-              /> */}
-            </View>
+                multiline={true}
+                numberOfLines={4}
+              />
+            </View> */}
             {/** frequently bought together */}
             <FrequentlyBoughtTogether
               itemId={food._id}
@@ -518,7 +516,11 @@ function ItemDetail(props) {
           style={[styles(currentTheme).titleContainer, animatedTitleStyle]}
           // style={[styles(currentTheme).titleContainer]}
         >
-          <HeadingComponent title={food.title} price={calculatePrice()} />
+          <HeadingComponent
+            title={food.title}
+            price={calculatePrice()}
+            description={food.description}
+          />
         </Animated.View>
         <View style={{ backgroundColor: currentTheme.themeBackground }}>
           <CartComponent

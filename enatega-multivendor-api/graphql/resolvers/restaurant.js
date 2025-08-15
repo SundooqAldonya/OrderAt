@@ -698,7 +698,147 @@ module.exports = {
       }
     },
 
+    async restaurantsWithOffers(_, args) {
+      console.log('restaurantsWithOffers', { args })
+      try {
+        const { longitude, latitude } = args
+        const discountedRestaurantIds = await Restaurant.aggregate([
+          {
+            $match: {
+              isVisible: true,
+              deliveryBounds: {
+                $geoIntersects: {
+                  $geometry: {
+                    type: 'Point',
+                    coordinates: [longitude, latitude]
+                  }
+                }
+              }
+            }
+          },
+          // Bring in categories for the restaurant
+          {
+            $lookup: {
+              from: 'categories',
+              localField: '_id',
+              foreignField: 'restaurant',
+              as: 'categories'
+            }
+          },
+          // Bring in foods for all categories
+          {
+            $lookup: {
+              from: 'foods',
+              localField: 'categories._id',
+              foreignField: 'category',
+              as: 'foods'
+            }
+          },
+          // Bring in all variations referenced by foods
+          {
+            $lookup: {
+              from: 'variations',
+              localField: 'foods.variations',
+              foreignField: '_id',
+              as: 'variations'
+            }
+          },
+          {
+            $addFields: {
+              categories: {
+                $map: {
+                  input: '$categories',
+                  as: 'cat',
+                  in: {
+                    $mergeObjects: [
+                      '$$cat',
+                      {
+                        foods: {
+                          $map: {
+                            input: {
+                              $filter: {
+                                input: '$foods',
+                                as: 'food',
+                                cond: { $eq: ['$$food.category', '$$cat._id'] }
+                              }
+                            },
+                            as: 'food',
+                            in: {
+                              $mergeObjects: [
+                                '$$food',
+                                {
+                                  variations: {
+                                    $filter: {
+                                      input: '$variations',
+                                      as: 'var',
+                                      cond: {
+                                        $and: [
+                                          {
+                                            $in: [
+                                              '$$var._id',
+                                              '$$food.variations'
+                                            ]
+                                          },
+                                          { $gt: ['$$var.discounted', 0] }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          // Remove categories that have no foods with discounted variations
+          {
+            $addFields: {
+              categories: {
+                $filter: {
+                  input: '$categories',
+                  as: 'cat',
+                  cond: {
+                    $gt: [
+                      {
+                        $size: {
+                          $filter: {
+                            input: '$$cat.foods',
+                            as: 'f',
+                            cond: { $gt: [{ $size: '$$f.variations' }, 0] }
+                          }
+                        }
+                      },
+                      0
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          // Only keep restaurants that have at least one category left
+          {
+            $match: {
+              'categories.0': { $exists: true }
+            }
+          }
+        ])
+
+        console.log({ discountedRestaurantIds })
+
+        return discountedRestaurantIds
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+
     async nearestRestaurants(_, args) {
+      console.log('nearestRestaurants', { args })
       try {
         const { longitude, latitude } = args
 
@@ -711,6 +851,7 @@ module.exports = {
             }
           }
         }).populate('businessCategories')
+        console.log({ nearestRestaurants: restaurants })
         return restaurants
       } catch (err) {
         throw new Error(err)

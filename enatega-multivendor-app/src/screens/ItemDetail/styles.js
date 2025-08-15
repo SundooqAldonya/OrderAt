@@ -51,11 +51,12 @@ const styles = (props = null) =>
     input: {
       backgroundColor: props !== null ? props.themeBackground : 'black',
       borderRadius: scale(10),
-      height: scale(50),
+      height: scale(100),
       paddingLeft: scale(10),
       textAlignVertical: 'center',
       borderWidth: 1,
       borderColor: props != null ? props.verticalLine : '#B8B8B8'
+      // color: '#000'
     },
     inputContainer: {
       width: '90%',
@@ -69,7 +70,7 @@ const styles = (props = null) =>
     },
     fixedViewNavigation: {
       height: scale(40),
-       width: '90%',
+      width: '90%',
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',

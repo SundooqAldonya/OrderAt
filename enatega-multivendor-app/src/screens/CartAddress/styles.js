@@ -1,4 +1,4 @@
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 
@@ -23,8 +23,8 @@ const styles = (props = null) =>
       justifyContent: 'center'
     },
     homeIconImg: {
-      width: scale(15),
-      height: scale(15)
+      width: moderateScale(15),
+      height: moderateScale(15)
     },
     cartAddress:{
       ...alignment.PBmedium,
@@ -34,7 +34,7 @@ const styles = (props = null) =>
     addressContainer: {
       width: '93%',
       alignSelf: 'center',
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       backgroundColor: props !== null ? props.gray100 : 'transparent',
       ...alignment.PTsmall,
       ...alignment.PBsmall,
@@ -60,9 +60,9 @@ const styles = (props = null) =>
     containerSpace: {
       backgroundColor: props !== null ? props.gray100 : 'transparent',
       width: '92%',
-      // margin: scale(10),
-      padding: scale(5),
-      borderRadius: scale(10),
+      // margin: moderateScale(10),
+      padding: moderateScale(10),
+      borderRadius: moderateScale(10),
       borderWidth: 1,
       alignSelf: 'center',
       borderColor: props !== null ? props.gray200 : '#E5E7EB',

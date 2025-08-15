@@ -31,6 +31,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
+import foodPlaceholder from '../../assets/food_placeholder.jpeg'
 
 const GET_FOODS = gql`
   ${getFoodListByRestaurant}
@@ -186,7 +187,6 @@ function Food(props) {
       id: restaurantId
     }
   })
-  console.log({ dataAddons })
 
   const onBlur = (setter, field, state) => {
     setter(!validateFunc({ [field]: state }, field))
@@ -361,17 +361,12 @@ function Food(props) {
     // if (addon < 0) variations[index].addons.push(id)
     // else variations[index].addons.splice(addon, 1)
   }
-  console.log({ variationAddon: variation[0].addons })
 
   const foundAddon = (index, id) => {
     const variations = variation
     const foundAddon = variations[index].addons.find(item => item === id)
     if (foundAddon) return true
     return false
-  }
-
-  const handleImageChange = e => {
-    setImage(e.target.files[0])
   }
 
   const closeEditModal = () => {
@@ -516,10 +511,7 @@ function Food(props) {
               <img
                 className={classes.image}
                 alt="..."
-                src={
-                  imgMenu ||
-                  'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
-                }
+                src={imgMenu || foodPlaceholder}
               />
               <label
                 htmlFor={props.food ? 'edit-food-image' : 'add-food-image'}
@@ -721,10 +713,6 @@ function Food(props) {
                         {loadingAddons && t('LoadingDots')}
                         {errorAddons && t('ErrorDots')}
                         {dataAddons?.getAddonsByRestaurant.map(addon => {
-                          console.log({ addon })
-                          // console.log({
-                          //   addons: variation[index].addons.includes(addon._id)
-                          // })
                           return (
                             <Grid
                               item
@@ -736,9 +724,6 @@ function Food(props) {
                                 control={
                                   <Checkbox
                                     value={addon._id}
-                                    // checked={variation[index]?.addons?.includes(
-                                    //   addon._id
-                                    // )}
                                     checked={foundAddon(index, addon._id)}
                                     onChange={() =>
                                       onSelectAddon(index, addon._id)
@@ -805,9 +790,7 @@ function Food(props) {
                       }
                     }
                   })
-                  // await uploadFoodImage({
-                  //   variables: { id: props.food._id, file: image }
-                  // })
+
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
                     props.onClose() // Close the modal

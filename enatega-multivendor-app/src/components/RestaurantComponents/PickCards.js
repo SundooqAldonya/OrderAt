@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import ConfigurationContext from '../../context/Configuration'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -14,10 +14,15 @@ import { DAYS } from '../../utils/enums'
 import UserContext from '../../context/User'
 import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import { moderateScale } from '../../utils/scaling'
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
+import { colors } from '../../utils/colors'
+import { formatNumber } from '../../utils/formatNumber'
+import { scale } from '../../utils/scaling'
 
-const PickCards = ({ item, restaurantCustomer }) => {
+const PickCards = ({ item, restaurantCustomer, cat }) => {
   const navigation = useNavigation()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const configuration = useContext(ConfigurationContext)
   const {
     restaurant: restaurantCart,
@@ -141,22 +146,104 @@ const PickCards = ({ item, restaurantCustomer }) => {
           restaurantName: restaurantCustomer?.name
         })
       }}
-      style={styles.itemContainer}
+      style={[
+        styles.card,
+        cat._id === 'picks'
+          ? styles.cardVertical
+          : {
+              ...styles.cardHorizontal,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }
+      ]}
     >
+      <View
+        style={
+          cat._id === 'picks'
+            ? styles.cartTop
+            : isArabic
+              ? { ...styles.cartIconArabic }
+              : { ...styles.cartIcon }
+        }
+      >
+        <FontAwesome5 name='cart-plus' size={moderateScale(18)} color={colors.primary} />
+      </View>
       <Image
         source={
           item.image?.trim()
             ? { uri: item.image }
             : require('../../assets/food_placeholder.jpeg')
         }
-        style={styles.foodImage}
+        style={cat === 'picks' ? styles.imageVertical : styles.imageHorizontal}
       />
-      {item.topRated && <Text style={styles.topRated}>Top rated</Text>}
-      <Text style={[styles.foodTitle, {fontSize: moderateScale(12)}]}>{item.title}</Text>
-      <Text style={[styles.foodPrice, {fontSize: moderateScale(12)}]}>
-        {parseFloat(item.variations[0].price).toFixed(2)}{' '}
-        {configuration.currency}
-      </Text>
+      <View style={styles.cardContent}>
+        <Text
+          style={{ ...styles.foodName, textAlign: isArabic ? 'right' : 'left' }}
+        >
+          {item?.title}
+        </Text>
+        <View style={{ maxWidth: 200 }}>
+          {item.description ? (
+            <Text
+              style={{
+                ...styles.foodDescription,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {isArabic
+                ? `...${item?.description?.substring(0, 60)}`
+                : `${item?.description?.substring(0, 60)}...`}
+            </Text>
+          ) : (
+            <Text style={styles.foodDescription}></Text>
+          )}
+        </View>
+        <View
+          style={{
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            gap: 5
+          }}
+        >
+          {item?.variations[0]?.discounted > 0 && (
+            <Fragment>
+              {isArabic ? (
+                <Text
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: moderateScale(12),
+                    textDecorationLine: 'line-through',
+                    textAlign: 'right'
+                  }}
+                >
+                  {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
+                </Text>
+              ) : (
+                <Text
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: moderateScale(12),
+                    textDecorationLine: 'line-through',
+                    textAlign: 'left'
+                  }}
+                >
+                  {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
+                </Text>
+              )}
+            </Fragment>
+          )}
+          <View
+            style={{
+              ...styles.priceContainer
+            }}
+          >
+            <Text style={{ ...styles.foodPrice }}>
+              {isArabic ? configuration.currencySymbol : configuration.currency}
+            </Text>
+            <Text style={{ ...styles.foodPrice }}>
+              {parseFloat(item.variations[0].price).toFixed(2)}
+            </Text>
+          </View>
+        </View>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -164,33 +251,76 @@ const PickCards = ({ item, restaurantCustomer }) => {
 export default PickCards
 
 const styles = StyleSheet.create({
-  itemContainer: {
-    flex: 1,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     margin: 8,
-    alignItems: 'center'
+    overflow: 'hidden'
   },
-  foodImage: {
-    width: moderateScale(150),
-    height: moderateScale(100),
-    borderRadius: 8
-  },
-  foodTitle: {
-    fontWeight: '600',
-    marginTop: 8
-  },
-  foodPrice: {
-    color: '#555',
-    marginTop: 4
-  },
-  topRated: {
+  cartTop: {
     position: 'absolute',
     top: 5,
-    left: 5,
-    backgroundColor: '#ffa726',
-    color: 'white',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    fontSize: 12
+    right: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
+  },
+  cartIcon: {
+    position: 'absolute',
+    top: 25,
+    right: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
+  },
+  cartIconArabic: {
+    position: 'absolute',
+    top: 25,
+    left: 0,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20,
+    padding: 4,
+    zIndex: 10
+  },
+  cardVertical: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '48%' // so 2 fit side by side
+  },
+  cardHorizontal: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  imageVertical: {
+    width: '100%',
+    height: moderateScale(120)
+  },
+  imageHorizontal: {
+    width: 100,
+    height: 100,
+    marginInlineStart: 12
+  },
+  cardContent: {
+    padding: 8
+  },
+  foodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.primary
+  },
+  foodDescription: {
+    fontSize: 14,
+    color: '#555',
+    flexWrap: 'wrap'
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    gap: 5
+  },
+  foodPrice: {
+    fontSize: moderateScale(12)
   }
 })
