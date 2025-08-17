@@ -487,9 +487,9 @@ export default function SelectLocation(props) {
                       zIndex: 999999999
                     },
                     textInput: {
-                      paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                      paddingVertical: Platform.OS === 'ios' ? moderateScale(16) : 0,
                       color: '#000',
-                      fontSize: 16,
+                      fontSize: moderateScale(16),
                       textAlign: isArabic ? 'right' : 'left',
                     },
                     listView: {
@@ -607,7 +607,7 @@ export default function SelectLocation(props) {
                 onPress={onItemPress}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <Feather name='list' size={18} color='#fff' />
+                  <Feather name='list' size={moderateScale(18)} color='#fff' />
                 </View>
 
                 <TextDefault textColor={'#fff'} H5 bold>
@@ -766,7 +766,7 @@ const styles1 = StyleSheet.create({
     paddingHorizontal: 20
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
@@ -776,7 +776,7 @@ const styles1 = StyleSheet.create({
     paddingBottom: 20
   },
   modalItem: {
-    paddingVertical: 14,
+    paddingVertical: moderateScale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   },
@@ -788,12 +788,12 @@ const styles1 = StyleSheet.create({
   cancelButton: {
     marginTop: 10,
     backgroundColor: '#f1f1f1',
-    borderRadius: 10,
-    paddingVertical: 12
+    borderRadius: moderateScale(10),
+    paddingVertical: moderateScale(12)
   },
   cancelText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#333'
   },
   searchContainer: {

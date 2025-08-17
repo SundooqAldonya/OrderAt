@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
@@ -13,28 +13,28 @@ const styles = (props = null) =>
       //backgroundColor: theme.Pink.deleteButton
     },
     shadow: {
-      shadowOffset: { width: 0, height: scale(2) },
+      shadowOffset: { width: 0, height: moderateScale(2) },
       shadowColor: theme.Pink.black,
       shadowOpacity: 0.3,
-      shadowRadius: scale(1),
+      shadowRadius: moderateScale(1),
       elevation: 5,
       borderWidth: 0.4,
       borderColor: '#e1e1e1'
     },
     backButton: {
       backgroundColor: theme.Pink.white,
-      borderRadius: scale(50),
-      width: scale(40),
+      borderRadius: moderateScale(50),
+      width: moderateScale(40),
       alignItems: 'flex-start',
-      marginLeft: scale(5)
+      marginLeft: moderateScale(5)
     },
     mainContainerArea: {
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
-      borderRadius: scale(30),
+      borderRadius: moderateScale(30),
       shadowOffset: { width: 0 },
       shadowColor: theme.Pink.black,
       shadowOpacity: 0.1,
-      marginTop: scale(20)
+      marginTop: moderateScale(20)
     },
     mainContainer: {
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
@@ -45,7 +45,7 @@ const styles = (props = null) =>
     languageContainer: {
       width: '100%',
       backgroundColor: props !== null ? props.gray100 : '#FFF',
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       borderWidth: 1,
       flexDirection: 'row',
       alignSelf: 'center',
@@ -94,13 +94,13 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: scale(10),
-      borderRadius: scale(6),
+      padding: moderateScale(10),
+      borderRadius: moderateScale(6),
       backgroundColor: theme.Pink.deleteButton
     },
     deleteButtonText: {
       color: 'white',
-      fontSize: scale(18),
+      fontSize: moderateScale(18),
       fontWeight: '600'
     },
     versionContainer: {
@@ -116,8 +116,8 @@ const styles = (props = null) =>
       borderRadius: verticalScale(4),
       ...alignment.Plarge,
       borderColor: props !== null ? props.gray200 : '#E5E7EB',
-      borderWidth: scale(1),
-      borderRadius: scale(10)
+      borderWidth: moderateScale(1),
+      borderRadius: moderateScale(10)
     },
     radioContainer: {
       width: '100%',
@@ -138,7 +138,7 @@ const styles = (props = null) =>
       ...alignment.PBxSmall
     },
     checkboxSettings: {
-      marginBottom: scale(10)
+      marginBottom: moderateScale(10)
     }
   })
 

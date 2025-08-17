@@ -115,7 +115,7 @@ function Item(props) {
                 <TextDefault bolder style={{ fontSize: 18 }}>
                   {t('closed')}
                 </TextDefault>
-                <MaterialIcons name='info-outline' size={24} color='#fff' />
+                <MaterialIcons name='info-outline' size={moderateScale(24)} color='#fff' />
               </View>
             ) : null}
           </View>
