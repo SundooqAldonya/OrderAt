@@ -112,6 +112,7 @@
     "react-native-restart": "^0.0.27",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-size-matters": "^0.4.2",
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-tab-view": "^2.16.0",
     "react-native-thermal-receipt-printer-image-qr": "^0.1.12",
