@@ -1,4 +1,5 @@
 import { View } from 'react-native'
+import { moderateScale } from '../../utils/scaling'
 
 const Status = ({
   first,
@@ -13,9 +14,10 @@ const Status = ({
       <View
         style={{
           backgroundColor: isEta ? (isActive ? secondCol : 'grey') : firstCol,
-          width: 20,
-          height: 20,
-          borderRadius: 10
+          width: moderateScale(20),
+          height: moderateScale(20),
+          borderRadius: moderateScale(10),
+          marginLeft: 2
         }}
       ></View>
       {!last && (

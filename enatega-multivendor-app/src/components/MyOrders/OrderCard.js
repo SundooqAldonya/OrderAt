@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import Status from './Status'
 import { useNavigation } from '@react-navigation/native'
 import deliveryImage from '../../assets/delivery_green.png'
+import { moderateScale } from '../../utils/scaling'
 
 const OrderCard = ({ item, activeOrders }) => {
   const { _id, restaurant, items, type, orderStatus } = item
@@ -68,7 +69,7 @@ const OrderCard = ({ item, activeOrders }) => {
             </TextDefault>
           </View>
           {/* status text */}
-          <View style={{ width: 200 }}>
+          <View style={{ width: moderateScale(200) }}>
             <TextDefault
               style={{
                 ...styles.text,
@@ -214,8 +215,8 @@ const styles = StyleSheet.create({
     // flexDirection: 'row'
   },
   imageContainer: {
-    width: 100,
-    height: 100,
+    width: moderateScale(100),
+    height: moderateScale(100),
     borderRadius: 5,
     overflow: 'hidden'
   },
@@ -231,8 +232,8 @@ const styles = StyleSheet.create({
   },
   statusBtn: {
     backgroundColor: '#fff',
-    width: 100,
-    height: 50,
+    width: moderateScale(100),
+    height: moderateScale(50),
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,

@@ -10,7 +10,7 @@ import { Modalize } from 'react-native-modalize'
 import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import TextDefault from '../../Text/TextDefault/TextDefault'
 import { alignment } from '../../../utils/alignment'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import styles from './styles'
 import { useTranslation } from 'react-i18next'
 import { theme } from '../../../utils/themeColors'
@@ -44,11 +44,8 @@ const MainModalize = ({
       <Modal
         isVisible={isVisible}
         onBackdropPress={onClose}
-        onBackButtonPress={onClose}
         backdropOpacity={0.4}
         style={styles(currentTheme).modal}
-        swipeDirection='down'
-        onSwipeComplete={onClose}
         useNativeDriver={false}
       >
         <View style={styles(currentTheme).modalContent}>
@@ -57,6 +54,7 @@ const MainModalize = ({
           <FlatList
             data={isLoggedIn && profile ? profile.addresses : []}
             keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={{flexGrow: 1}}
             renderItem={({ item: address }) => (
               <TouchableOpacity
                 style={[
@@ -67,13 +65,13 @@ const MainModalize = ({
                 activeOpacity={0.5}
               >
                 <View style={styles().addressSubContainer}>
-                  <View style={styles(currentTheme).homeIcon}>
+                  <View style={{width: moderateScale(24), height: moderateScale(24)}}>
                     {addressIcons[address.label]
                       ? React.createElement(addressIcons[address.label], {
-                          fill: currentTheme.darkBgFont
+                          fill: currentTheme.darkBgFont,
                         })
                       : React.createElement(addressIcons['Other'], {
-                          fill: currentTheme.darkBgFont
+                          fill: currentTheme.darkBgFont,
                         })}
                   </View>
 
@@ -90,7 +88,7 @@ const MainModalize = ({
                 <View style={styles(currentTheme).addressTextContainer}>
                   <View style={styles(currentTheme).addressDetail}>
                     <TextDefault
-                      style={{ ...alignment.PLlarge, paddingHorizontal: 25 }}
+                      style={{ paddingRight: 25 }}
                       textColor={currentTheme.fontSecondColor}
                       small
                     >
@@ -116,7 +114,7 @@ const MainModalize = ({
                             <View style={styles().addressTick}>
                               <MaterialIcons
                                 name='check'
-                                size={scale(25)}
+                                size={moderateScale(25)}
                                 color={currentTheme.iconColorPink}
                               />
                             </View>

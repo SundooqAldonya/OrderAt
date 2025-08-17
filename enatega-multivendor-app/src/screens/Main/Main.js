@@ -36,7 +36,7 @@ import {
   restaurantsWithOffers
 } from '../../apollo/queries'
 import { createAddress, selectAddress } from '../../apollo/mutations'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import styles from './styles'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -440,13 +440,13 @@ function Main(props) {
               <>
                 <SimpleLineIcons
                   name='target'
-                  size={scale(18)}
+                  size={moderateScale(18)}
                   color={currentTheme.white}
                 />
                 <View style={styles().mL5p} />
-                <TextDefault bold H4>
+                {/* <TextDefault bold H4>
                   {t('currentLocation')}
-                </TextDefault>
+                </TextDefault> */}
               </>
             )}
           </View>
@@ -494,7 +494,7 @@ function Main(props) {
           <View style={styles().addressSubContainer}>
             <AntDesign
               name='pluscircleo'
-              size={scale(20)}
+              size={moderateScale(20)}
               color={currentTheme.white}
             />
             <View style={styles().mL5p} />
@@ -708,9 +708,7 @@ function Main(props) {
                           source={DeliveryIcon}
                           style={{
                             ...styles().popularMenuImg,
-                            width: 100,
-                            height: 100,
-                            marginInline: 'auto'
+                            // marginInline: 'auto'
                           }}
                         />
                       </TouchableOpacity>

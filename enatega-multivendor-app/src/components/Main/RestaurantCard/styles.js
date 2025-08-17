@@ -1,25 +1,31 @@
-import { StyleSheet } from 'react-native'
-import { scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
+import { Dimensions, StyleSheet } from 'react-native'
+import { alignment } from '../../../utils/alignment'
+import { theme } from '../../../utils/themeColors'
+import { colors } from '../../../utils/colors'
+const { height } = Dimensions.get('window')
 
 const styles = (theme) =>
   StyleSheet.create({
     offerContainer: {
       backgroundColor: theme?.cardBackground || '#fff',
-      borderRadius: scale(14),
-      overflow: 'hidden',
-      marginVertical: scale(8),
-      marginHorizontal: scale(8),
+      borderRadius: moderateScale(14),
+      marginVertical: moderateScale(8),
+      marginHorizontal: moderateScale(8),
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.08,
       shadowRadius: 8,
       elevation: 3,
-      width: 240,
+      borderColor: '#000',
+      width: moderateScale(240),
       height: '70%'
     },
     imageContainer: {
       width: '100%',
-      height: scale(120),
+      borderTopLeftRadius: moderateScale(14),
+      borderTopRightRadius: moderateScale(14),
+      height: moderateScale(120),
       backgroundColor: '#f5f5f5'
     },
     restaurantImage: {
@@ -28,13 +34,13 @@ const styles = (theme) =>
     },
     overlayContainer: {
       position: 'absolute',
-      top: scale(10),
-      right: scale(10)
+      top: moderateScale(10),
+      right: moderateScale(10)
     },
     favouriteOverlay: {
       backgroundColor: 'rgba(255,255,255,0.9)',
       borderRadius: 50,
-      padding: scale(6),
+      padding:  moderateScale(6),
       justifyContent: 'center',
       alignItems: 'center',
       shadowColor: '#000',
@@ -44,34 +50,34 @@ const styles = (theme) =>
       elevation: 3
     },
     descriptionContainer: {
-      paddingHorizontal: scale(12),
-      paddingVertical: scale(10)
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(10)
     },
     aboutRestaurant: {
       alignItems: 'center',
-      gap: scale(4)
+      gap: moderateScale(4)
     },
     restaurantRatingContainer: {
-      marginLeft: scale(4)
+      marginLeft: moderateScale(4)
     },
     restaurantTotalRating: {
       fontSize: 12
     },
     deliveryInfo: {
-      marginTop: scale(8),
+      marginTop: moderateScale(8),
       alignItems: 'center'
     },
     deliveryTime: {
       alignItems: 'center',
-      gap: scale(4)
+      gap: moderateScale(4)
     },
     offerBadge: {
       backgroundColor: theme?.primary || '#FFCC00',
-      borderRadius: scale(6),
-      paddingHorizontal: scale(6),
-      paddingVertical: scale(2),
+      borderRadius: moderateScale(6),
+      paddingHorizontal: moderateScale(6),
+      paddingVertical: moderateScale(2),
       alignSelf: 'flex-start',
-      marginTop: scale(6)
+      marginTop: moderateScale(6)
     },
     offerBadgeText: {
       fontSize: 12,

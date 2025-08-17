@@ -40,7 +40,7 @@ import {
   placeOrder,
   updateUserName
 } from '../../apollo/mutations'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
 import { theme } from '../../utils/themeColors'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
@@ -387,7 +387,7 @@ function Checkout(props) {
   useEffect(() => {
     props.navigation.setOptions({
       headerTitle: () => (
-        <View style={{ alignItems: 'center', gap: scale(2) }}>
+        <View style={{ alignItems: 'center', gap: moderateScale(2) }}>
           <TextDefault
             style={{
               color: currentTheme.newFontcolor,
@@ -416,7 +416,7 @@ function Checkout(props) {
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
         ...textStyles.H4,
-        ...textStyles.Bolder
+        ...textStyles.Bolder,
       },
 
       headerStyle: {
@@ -426,10 +426,10 @@ function Checkout(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{ ...alignment.PLxSmall, width: scale(30) }}>
+            <View style={{ ...alignment.PLxSmall, width: moderateScale(30) }}>
               <AntDesign
                 name='arrowleft'
-                size={22}
+                size={moderateScale(22)}
                 color={currentTheme.fontFourthColor}
               />
             </View>
@@ -1182,17 +1182,18 @@ function Checkout(props) {
                         style={{
                           flexDirection: isArabic ? 'row-reverse' : 'row',
                           alignItems: 'center',
-                          gap: 8
+                          gap: 8,
+                          justifyContent: 'center'
                         }}
                       >
                         <EvilIcons
                           name='location'
-                          size={scale(22)}
+                          size={moderateScale(22)}
                           color='#333'
                         />
                         <TextDefault
                           bolder
-                          style={{ fontSize: 16, color: '#333' }}
+                          style={{ fontSize: moderateScale(16), color: '#333' }}
                         >
                           {t('your_address')}
                         </TextDefault>
@@ -1211,14 +1212,14 @@ function Checkout(props) {
                       >
                         <TextDefault
                           bolder
-                          style={{ fontSize: 16, color: '#333' }}
+                          style={{ fontSize: moderateScale(16), color: '#333' }}
                         >
                           {t('edit')}
                         </TextDefault>
 
                         <Feather
                           name={isArabic ? 'chevron-left' : 'chevron-right'}
-                          size={20}
+                          size={moderateScale(20)}
                           color='#999'
                         />
                       </View>
@@ -1226,7 +1227,7 @@ function Checkout(props) {
                     <View style={{ marginTop: 8 }}>
                       <TextDefault
                         style={{
-                          fontSize: 14,
+                          fontSize: moderateScale(14),
                           color: '#666',
                           textAlign: isArabic ? 'right' : 'left'
                         }}
@@ -1272,12 +1273,12 @@ function Checkout(props) {
                       >
                         <EvilIcons
                           name='location'
-                          size={scale(22)}
+                          size={moderateScale(22)}
                           color='#333'
                         />
                         <TextDefault
                           bolder
-                          style={{ fontSize: 16, color: '#333' }}
+                          style={{ fontSize: moderateScale(16), color: '#333' }}
                         >
                           {t('business_address')}
                         </TextDefault>
@@ -1290,7 +1291,7 @@ function Checkout(props) {
                       >
                         <Feather
                           name={isArabic ? 'chevron-left' : 'chevron-right'}
-                          size={20}
+                          size={moderateScale(20)}
                           color='#999'
                         />
                       </View>
@@ -1334,11 +1335,11 @@ function Checkout(props) {
                   >
                     <View style={[styles().iconContainer]}>
                       <View style={styles().icon}>
-                        <EvilIcons name='calendar' size={scale(20)} />
+                        <EvilIcons name='calendar' size={moderateScale(20)} />
                       </View>
                     </View>
                     <View style={styles(currentTheme).labelContainer}>
-                      <View style={{ marginInlineStart: scale(5) }}>
+                      <View style={{ marginInlineStart: moderateScale(5) }}>
                         <TextDefault
                           textColor={currentTheme.newFontcolor}
                           numberOfLines={1}
@@ -1438,7 +1439,7 @@ function Checkout(props) {
                     >
                       <MaterialCommunityIcons
                         name='ticket-confirmation-outline'
-                        size={24}
+                        size={moderateScale(24)}
                         color={currentTheme.lightBlue}
                       />
                       <TextDefault
@@ -1473,8 +1474,8 @@ function Checkout(props) {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            paddingTop: scale(8),
-                            gap: scale(5)
+                            paddingTop: moderateScale(8),
+                            gap: moderateScale(5)
                           }}
                         >
                           <View>
@@ -1487,7 +1488,7 @@ function Checkout(props) {
                             >
                               <AntDesign
                                 name='tags'
-                                size={24}
+                                size={moderateScale(24)}
                                 color={currentTheme.main}
                               />
                               <TextDefault
@@ -2103,7 +2104,7 @@ function Checkout(props) {
           modalStyle={[styles(currentTheme).modal]}
           overlayStyle={styles(currentTheme).overlay}
           handleStyle={styles(currentTheme).handle}
-          modalHeight={550}
+          modalHeight={moderateScale(550)}
           handlePosition='inside'
           openAnimationConfig={{
             timing: { duration: 400 },
@@ -2119,7 +2120,7 @@ function Checkout(props) {
               <View activeOpacity={0.7} style={styles().modalheading}>
                 <FontAwesome
                   name={paymentMethod?.icon}
-                  size={20}
+                  size={moderateScale(20)}
                   color={currentTheme.newIconColor}
                 />
                 <TextDefault
@@ -2133,7 +2134,7 @@ function Checkout(props) {
               </View>
               <Feather
                 name='x-circle'
-                size={24}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
                 onPress={() => onModalClose(tipModalRef)}
               />
@@ -2154,7 +2155,7 @@ function Checkout(props) {
               disabled={!tipAmount}
               activeOpacity={0.7}
               onPress={onTipping}
-              style={[styles(currentTheme).button, { height: scale(40) }]}
+              style={[styles(currentTheme).button, { height: moderateScale(40) }]}
             >
               <TextDefault
                 textColor={currentTheme.black}
@@ -2178,7 +2179,7 @@ function Checkout(props) {
           modalStyle={[styles(currentTheme).modal]}
           overlayStyle={styles(currentTheme).overlay}
           handleStyle={styles(currentTheme).handle}
-          modalHeight={550}
+          modalHeight={moderateScale(550)}
           handlePosition='inside'
           openAnimationConfig={{
             timing: { duration: 400 },
@@ -2209,7 +2210,7 @@ function Checkout(props) {
               >
                 <MaterialCommunityIcons
                   name='ticket-confirmation-outline'
-                  size={24}
+                  size={moderateScale(24)}
                   color={currentTheme.newIconColor}
                 />
                 <TextDefault
@@ -2223,7 +2224,7 @@ function Checkout(props) {
               </View>
               <Feather
                 name='x-circle'
-                size={34}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
                 onPress={() => onModalClose(voucherModalRef)}
               />
@@ -2252,7 +2253,7 @@ function Checkout(props) {
               style={[
                 styles(currentTheme).button,
                 !voucherCode && styles(currentTheme).buttonDisabled,
-                { height: scale(40) },
+                { height: moderateScale(40) },
                 { opacity: couponLoading ? 0.5 : 1 }
               ]}
             >

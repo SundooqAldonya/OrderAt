@@ -136,7 +136,8 @@
       "@react-native-firebase/app",
       "@react-native-firebase/messaging",
       "./app.plugin.js",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withFirebaseAppDelegate"
     ],
     "extra": {
       "eas": {

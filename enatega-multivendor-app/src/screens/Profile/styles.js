@@ -1,4 +1,4 @@
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { theme } from '../../utils/themeColors'
@@ -28,7 +28,7 @@ const styles = (props = null) =>
       marginBottom: 0
     },
     formSubContainer: {
-      borderRadius: scale(8),
+      borderRadius: moderateScale(8),
       flexDirection: 'row',
       width: '92%',
       // backgroundColor: props !== null ? props.color5 : 'transparent',
@@ -62,33 +62,33 @@ const styles = (props = null) =>
       alignItems: 'flex-end'
     },
     headingButton: {
-      marginLeft: scale(5),
+      marginLeft: moderateScale(5),
       justifyContent: 'center',
       ...alignment.PLmedium
     },
     saveContainer: {
       backgroundColor: props !== null ? props.main : '#90E36D',
-      padding: scale(8),
-      borderRadius: scale(16),
+      padding: moderateScale(8),
+      borderRadius: moderateScale(16),
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(120)
+      width: moderateScale(120)
     },
     bacKButton: {
       backgroundColor: 'white',
-      borderRadius: scale(50),
-      width: scale(40),
+      borderRadius: moderateScale(50),
+      width: moderateScale(40),
       alignItems: 'flex-start',
-      marginLeft: scale(5)
+      marginLeft: moderateScale(5)
     },
     verifiedButton: {
-      paddingVertical: scale(4),
-      paddingHorizontal: scale(3),
-      borderRadius: scale(16),
-      // marginTop: scale(10),
+      paddingVertical: moderateScale(4),
+      paddingHorizontal: moderateScale(3),
+      borderRadius: moderateScale(16),
+      // marginTop: moderateScale(10),
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(80)
+      width: moderateScale(80)
     },
 
     // Model for password changing
@@ -98,7 +98,7 @@ const styles = (props = null) =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       gap: 10,
-      borderRadius: scale(20),
+      borderRadius: moderateScale(20),
       shadowOpacity: 0,
       paddingTop: 24,
       paddingBottom: 24,
@@ -125,7 +125,7 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
-      height: scale(40),
+      height: moderateScale(40),
       borderRadius: 40,
       borderWidth: 1,
       borderColor: props !== null ? props.borderColor : 'black'
@@ -133,8 +133,8 @@ const styles = (props = null) =>
     titleContainer: {
       backgroundColor: props !== null ? props.themeBackground : 'white',
       color: props !== null ? props.darkBgFont : 'white',
-      paddingTop: scale(8),
-      fontSize: scale(20),
+      paddingTop: moderateScale(8),
+      fontSize: moderateScale(20),
       fontWeight: '600'
     },
     phoneDetailsContainer: {
@@ -155,7 +155,7 @@ const styles = (props = null) =>
       gap: 24,
       margin: 20,
       backgroundColor: props !== null ? props.themeBackground : 'white',
-      borderWidth: scale(1),
+      borderWidth: moderateScale(1),
       borderColor: props !== null ? props.color10 : 'white',
       borderRadius: 20,
       padding: 20,
@@ -174,7 +174,7 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'stretch',
-      height: scale(50),
+      height: moderateScale(50),
       borderRadius: 40
     },
     btnCancel: {
@@ -186,7 +186,7 @@ const styles = (props = null) =>
       backgroundColor: props !== null ? props.red600 : '#DC2626'
     },
     modalInput: {
-      height: scale(40),
+      height: moderateScale(40),
       borderWidth: 1,
       borderColor: props != null ? props.verticalLine : '#B8B8B8',
       padding: 5,
@@ -195,8 +195,8 @@ const styles = (props = null) =>
     },
     modal: {
       backgroundColor: props != null ? props.themeBackground : '#FFF',
-      borderTopEndRadius: scale(20),
-      borderTopStartRadius: scale(20),
+      borderTopEndRadius: moderateScale(20),
+      borderTopStartRadius: moderateScale(20),
       shadowOpacity: 0,
       paddingTop: 24,
       paddingBottom: 24,

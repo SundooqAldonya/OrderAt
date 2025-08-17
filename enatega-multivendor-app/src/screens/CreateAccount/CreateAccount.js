@@ -8,7 +8,7 @@ import * as AppleAuthentication from 'expo-apple-authentication'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useCreateAccount } from './useCreateAccount'
 import { useTranslation } from 'react-i18next'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 import { colors } from '../../utils/colors'
 import {
@@ -222,17 +222,17 @@ const CreateAccount = (props) => {
       <View style={styles().image}>
         <Image
           source={require('../../assets/images/loginHeader.png')}
-          resizeMode='cover'
+          resizeMode='contain'
           style={styles().image1}
         />
       </View>
       <View style={[styles(currentTheme).subContainer]}>
         <View style={[styles().signupContainer]}>
-          <View style={{ marginBottom: scale(2) }}>{renderEmailAction()}</View>
+          <View style={{ marginBottom: moderateScale(2) }}>{renderEmailAction()}</View>
           
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles(currentTheme).line} />
-            <View style={{ marginBottom: scale(2) }}>
+            <View style={{ marginBottom: moderateScale(2) }}>
               <TextDefault
                 H4
                 bolder

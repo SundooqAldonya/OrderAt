@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import { useSubscription } from '@apollo/client'
 import { subscriptionOrder } from '../../../apollo/subscriptions'
 import gql from 'graphql-tag'
@@ -82,11 +82,11 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
     }
   }, [subscriptionData, subscriptionError])
 
-  const defaultWidth = scale(50)
+  const defaultWidth = moderateScale(50)
   const width = customWidth !== undefined ? customWidth : defaultWidth
 
   return (
-    <View style={{ marginTop: scale(10) }}>
+    <View style={{ marginTop: moderateScale(10) }}>
       <View style={{ flexDirection: isArabic ? 'row-reverse' : 'row' }}>
         {Array(checkStatus(item.orderStatus).status)
           .fill(0)
@@ -94,10 +94,10 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
             <View
               key={index}
               style={{
-                height: scale(4),
+                height: moderateScale(4),
                 backgroundColor: currentTheme.primary,
                 width: width,
-                marginRight: scale(10)
+                marginRight: moderateScale(10)
               }}
             />
           ))}
@@ -107,10 +107,10 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
             <View
               key={index}
               style={{
-                height: scale(4),
+                height: moderateScale(4),
                 backgroundColor: currentTheme.gray200,
                 width: width,
-                marginRight: scale(10)
+                marginRight: moderateScale(10)
               }}
             />
           ))}

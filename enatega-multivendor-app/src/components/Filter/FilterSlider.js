@@ -18,6 +18,7 @@ import { theme } from '../../utils/themeColors'
 import { FILTER_TYPE } from '../../utils/enums'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
+import { moderateScale } from '../../utils/scaling'
 
 const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
   const themeContext = useContext(ThemeContext)
@@ -76,7 +77,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
         style={styles(currentTheme).filterButton}
         onPress={handleOptionsClick}
       >
-        <Ionicons name='options' size={24} color={currentTheme.black} />
+        <Ionicons name='options' size={moderateScale(22)} color={currentTheme.black} />
       </TouchableOpacity>
 
       {filters &&
@@ -97,7 +98,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
               >
                 {t(filter)}
               </TextDefault>
-              <AntDesign name='down' size={14} color={currentTheme.black} />
+              <AntDesign name='down' size={moderateScale(14)} color={currentTheme.black} />
             </SafeAreaView>
           </TouchableOpacity>
         ))}
@@ -107,7 +108,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <AntDesign
               name='arrowleft'
-              size={24}
+              size={moderateScale(24)}
               color={currentTheme.newIconColor}
             />
           </TouchableOpacity>
@@ -115,7 +116,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <AntDesign
               name='closecircleo'
-              size={24}
+              size={moderateScale(24)}
               color={currentTheme.newIconColor}
             />
           </TouchableOpacity>
@@ -169,7 +170,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
                               />
                             ) : (
                               <RadioButton
-                                size={12}
+                                size={moderateScale(12)}
                                 innerColor={currentTheme.main}
                                 outerColor={currentTheme.iconColorDark}
                                 isSelected={filters[

@@ -85,6 +85,7 @@ import SelectLanguageScreen from '../screens/ChooseLanguageLanding'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import CityListScreen from '../screens/SelectLocation/CityListScreen'
+import { moderateScale } from '../utils/scaling'
 import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
 
 const NavigationStack = createStackNavigator()
@@ -235,7 +236,7 @@ function NoDrawer() {
           headerBackImage: () =>
             DarkBackButton({
               iconColor: currentTheme.backIcon,
-              iconBackground: currentTheme.backIconBackground
+              iconBackground: currentTheme.backIconBackground,
             })
         }}
       />
@@ -302,6 +303,10 @@ function NoDrawer() {
         name='RequestDelivery'
         options={{
           headerTitle: t('RequestDelivery'),
+          headerTitleStyle: {
+            fontSize: moderateScale(14),
+            color: "#fff"
+          },
           headerRight: false,
           headerStyle: {
             backgroundColor: colors.primary
@@ -424,6 +429,7 @@ const BottomTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        tabBarLabelPosition: 'below-icon',
         tabBarIcon: ({ color, size }) => {
           let iconName
           if (route.name === 'Main') {
@@ -459,12 +465,14 @@ const BottomTabs = () => {
           // left: 20,
           // right: 20,
           borderTopLeftRadius: 16,
-          borderTopRightRadius: 16
+          borderTopRightRadius: 16,
           // paddingBottom: 10
         },
         tabBarLabelStyle: {
           fontWeight: 'bold',
-          marginBottom: 10
+          fontSize: moderateScale(8),
+          marginBottom: 10,
+          alignSelf: 'center',
         },
         tabBarInactiveTintColor: 'grey',
         tabBarActiveTintColor: '#000'

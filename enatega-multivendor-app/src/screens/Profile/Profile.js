@@ -19,7 +19,7 @@ import {
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 //import { TextField, OutlinedTextField } from 'react-native-material-textfield'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import {
   updateUser,
   login,
@@ -153,12 +153,12 @@ function Profile(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: colors.white,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
@@ -175,10 +175,10 @@ function Profile(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View  style={{paddingLeft: moderateScale(10)}}>
               <MaterialIcons
                 name='arrow-back'
-                size={25}
+                size={moderateScale(22)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -292,7 +292,7 @@ function Profile(props) {
       <View
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
-          height: 40
+          height: moderateScale(40)
         }}
       >
         <View
@@ -304,7 +304,7 @@ function Profile(props) {
           <TextDefault
             textColor={currentTheme.iconColor}
             style={{
-              fontSize: scale(13),
+              fontSize: moderateScale(13),
               textAlign: isArabic ? 'right' : 'left'
             }}
             bolder
@@ -334,7 +334,7 @@ function Profile(props) {
         <View style={styles(currentTheme).containerInfo}>
           <View style={styles(currentTheme).flexRow}>
             <TextDefault
-              style={{ fontSize: scale(13) }}
+              style={{ fontSize: moderateScale(13) }}
               textColor={currentTheme.iconColor}
               bolder
             >
@@ -368,7 +368,7 @@ function Profile(props) {
         <View style={styles(currentTheme).containerInfo}>
           <TextDefault
             textColor={colors.dark}
-            style={{ fontSize: scale(13) }}
+            style={{ fontSize: moderateScale(13) }}
             bolder
           >
             ***********
@@ -384,7 +384,7 @@ function Profile(props) {
         <View style={styles(currentTheme).containerInfo}>
           <View style={styles(currentTheme).flexRow}>
             <TextDefault
-              style={{ fontSize: scale(13) }}
+              style={{ fontSize: moderateScale(13) }}
               textColor={currentTheme.iconColor}
               bolder
             >
@@ -515,9 +515,10 @@ function Profile(props) {
                             backgroundColor: colors.white,
                             color: '#000',
                             width: '100%',
-                            height: 40,
+                            height: moderateScale(40),
                             paddingHorizontal: 5,
-                            borderRadius: 5
+                            borderRadius: 5,
+                            fontSize: moderateScale(14)
                           }}
                         />
                       </View>
@@ -550,8 +551,6 @@ function Profile(props) {
                     </View>
                   )}
                 </View>
-                {/* <<<<<<< HEAD
-======= */}
                 {/* <View style={styles().headingLink}>
                   <TouchableOpacity
                     activeOpacity={0.3}
@@ -590,7 +589,7 @@ function Profile(props) {
               </TextDefault>
               <View
                 style={{
-                  borderRadius: scale(8),
+                  borderRadius: moderateScale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
                   backgroundColor: colors.lightGray,
@@ -612,7 +611,8 @@ function Profile(props) {
                       flexDirection: isArabic ? 'row-reverse' : 'row',
                       justifyContent: 'space-between',
                       width: '100%',
-                      color: colors.dark
+                      color: colors.dark,
+                      alignItems: 'center'
                     }}
                   >
                     {/* <View > */}
@@ -664,9 +664,10 @@ function Profile(props) {
                           backgroundColor: colors.white,
                           color: '#000',
                           width: '100%',
-                          height: 40,
+                          height: moderateScale(40),
                           paddingHorizontal: 5,
-                          borderRadius: 5
+                          borderRadius: 5,
+                          fontSize: moderateScale(14)
                         }}
                       />
                     </View>
@@ -721,7 +722,7 @@ function Profile(props) {
               </TextDefault>
               <TouchableOpacity
                 style={{
-                  borderRadius: scale(8),
+                  borderRadius: moderateScale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   justifyContent: 'space-between',
                   width: '92%',
@@ -777,7 +778,7 @@ function Profile(props) {
               </TextDefault>
               <View
                 style={{
-                  borderRadius: scale(8),
+                  borderRadius: moderateScale(8),
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   width: '92%',
                   // backgroundColor: 'transparent',
@@ -936,25 +937,24 @@ function Profile(props) {
                   </TouchableOpacity>
                 </View>
               </View> */}
-              <View
+              <TouchableOpacity onPress={() => setDeleteModalVisible(true)}
                 // style={{ alignItems: 'center', padding: 10 }}
 
                 style={{
-                  borderRadius: scale(8),
+                  borderRadius: moderateScale(8),
                   width: '92%',
                   backgroundColor: colors.white,
                   alignSelf: 'center',
                   borderWidth: 1,
                   borderColor: currentTheme.deleteAccountBtn,
-                  marginVertical: scale(50),
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
+                  marginVertical: moderateScale(50),
+                  paddingHorizontal: moderateScale(10),
+                  paddingVertical: moderateScale(10),
                   alignItems: 'center',
                   display: 'flex',
                   justifyContent: 'flex-end'
                 }}
               >
-                <TouchableOpacity onPress={() => setDeleteModalVisible(true)}>
                   <TextDefault
                     bolder
                     H4
@@ -962,8 +962,7 @@ function Profile(props) {
                   >
                     {t('DeleteAccount')}
                   </TextDefault>
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -983,7 +982,7 @@ function Profile(props) {
                     gap: 24,
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    paddingHorizontal: scale(10)
+                    paddingHorizontal: moderateScale(10)
                   }}
                 >
                   <TextDefault bolder H3 textColor={currentTheme.newFontcolor}>
@@ -991,7 +990,7 @@ function Profile(props) {
                   </TextDefault>
                   <Feather
                     name='x-circle'
-                    size={24}
+                    size={moderateScale(24)}
                     color={currentTheme.newFontcolor}
                     onPress={() => setDeleteModalVisible(!deleteModalVisible)}
                   />
