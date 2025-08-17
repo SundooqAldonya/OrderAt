@@ -1588,6 +1588,7 @@ const typeDefs = gql`
     totalDeliveries: Int!
     usedDeliveries: Int!
     price: Float!
+    maxDeliveryAmount: Float
     isActive: Boolean!
     expiresAt: String
     createdBy: String
@@ -2051,6 +2052,7 @@ const typeDefs = gql`
     price: Float!
     isActive: Boolean
     expiresAt: String
+    maxDeliveryAmount: Float!
     # createdBy: String
   }
 

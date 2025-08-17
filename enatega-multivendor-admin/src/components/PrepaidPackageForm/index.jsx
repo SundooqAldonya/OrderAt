@@ -37,6 +37,9 @@ const PrepaidPackageForm = ({ onClose, item }) => {
     item?.totalDeliveries || ''
   )
   const [price, setPrice] = useState(item?.price || '')
+  const [maxDeliveryAmount, setMaxDeliveryAmount] = useState(
+    item?.maxDeliveryAmount || ''
+  )
   const [expiresAt, setExpiresAt] = useState(
     item?.expiresAt
       ? moment(Number(item.expiresAt)).format('YYYY-MM-DDTHH:mm')
@@ -105,6 +108,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             business: selectedRestaurant?._id,
             totalDeliveries: parseInt(totalDeliveries),
             price: parseFloat(price),
+            maxDeliveryAmount: parseFloat(maxDeliveryAmount),
             isActive,
             expiresAt: expiresAt || null
           }
@@ -118,6 +122,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             business: selectedRestaurant?._id,
             totalDeliveries: parseInt(totalDeliveries),
             price: parseFloat(price),
+            maxDeliveryAmount: parseFloat(maxDeliveryAmount),
             isActive,
             expiresAt: expiresAt || null
           }
@@ -220,6 +225,19 @@ const PrepaidPackageForm = ({ onClose, item }) => {
               value={price}
               onChange={e => setPrice(e.target.value)}
               placeholder="1500"
+              type="number"
+              disableUnderline
+              className={globalClasses.input}
+            />
+          </Box>
+          <Box mb={2}>
+            <Typography className={classes.labelText}>
+              Max Delivery Amount
+            </Typography>
+            <Input
+              value={maxDeliveryAmount}
+              onChange={e => setMaxDeliveryAmount(e.target.value)}
+              placeholder="25"
               type="number"
               disableUnderline
               className={globalClasses.input}

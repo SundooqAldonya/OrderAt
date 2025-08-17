@@ -28,7 +28,8 @@ module.exports = {
           price: input.price,
           isActive: input.isActive,
           expiresAt: input.expiresAt,
-          createdBy: input.createdBy
+          createdBy: input.createdBy,
+          maxDeliveryAmount: input.maxDeliveryAmount
         }
         const newPackage = await PrepaidDeliveryPackage.create({
           ...packageData

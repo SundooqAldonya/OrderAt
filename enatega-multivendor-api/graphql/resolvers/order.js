@@ -729,7 +729,10 @@ module.exports = {
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
           })
 
-          if (prepaidPackage) {
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            deliveryCharges <= prepaidPackage?.maxDeliveryAmount
+          ) {
             deliveryCharges = 0 // Delivery is free with prepaid package
             prepaidPackage.usedDeliveries += 1
             await prepaidPackage.save()
@@ -1406,7 +1409,10 @@ module.exports = {
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
           })
           let isPrepaid = false
-          if (prepaidPackage) {
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            finalDeliveryCharges <= prepaidPackage?.maxDeliveryAmount
+          ) {
             isPrepaid = true
             finalDeliveryCharges = 0
             console.log('✅ Prepaid package found. Delivery is free.')
