@@ -20,8 +20,8 @@ import { PRODUCT_URL, ABOUT_URL } from '../../utilities'
 import { useTranslation } from 'react-i18next'
 import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
-import SoundContext from '../../ui/context/sound'
 import IconVec from 'react-native-vector-icons/FontAwesome5'
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 
 export default function SideBar() {
   const { t, i18n } = useTranslation()
@@ -245,6 +245,29 @@ export default function SideBar() {
             />
           </View>
 
+          <TouchableOpacity
+            style={[
+              styles.logout,
+              isRtl && { flexDirection: 'row-reverse', gap: 10 }
+            ]}
+            activeOpacity={0.8}
+            onPress={() => navigator.navigate('FoodListing')}>
+            <View style={styles.icon}>
+              {/* <Icon
+                type="font-awesome-5"
+                color="white"
+                name="open-cart"
+                size={26}
+              /> */}
+              <FontAwesome5 name="shopping-cart" size={26} color="#fff" />
+            </View>
+            <TextDefault
+              H4
+              bolder
+              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+              {t('products')}
+            </TextDefault>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.logout,

@@ -194,3 +194,31 @@ export const getRestaurantCity = gql`
     }
   }
 `
+
+export const getFoodListByRestaurant = gql`
+  query FoodListByRestaurant($id: String!) {
+    foodListByRestaurant(id: $id) {
+      _id
+      title
+      description
+      image
+      restaurant
+      variations {
+        _id
+        title
+        price
+        discounted
+        addons
+        stock
+      }
+      category {
+        _id
+        title
+      }
+      isActive
+      stock
+      createdAt
+      updatedAt
+    }
+  }
+`

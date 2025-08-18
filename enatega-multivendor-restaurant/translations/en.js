@@ -108,5 +108,6 @@ export const en = {
   eleven_digits_number: 'Should not exceed 11 digits',
   wrong_credentials: 'Username or password is incorrect',
   no_internet: 'No Internet Connection',
-  free: 'Free'
+  free: 'Free',
+  products: 'Your Products'
 }
