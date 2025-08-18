@@ -20,7 +20,7 @@
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "80",
+      "buildNumber": "90",
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.orderatcustomer.app",
@@ -52,7 +52,7 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 80,
+      "versionCode": 90,
       "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
