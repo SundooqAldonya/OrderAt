@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   View,
   Text,
@@ -9,14 +9,16 @@ import {
   Dimensions
 } from 'react-native'
 import { useQuery } from '@apollo/client'
-import { useNavigation, useRoute } from '@react-navigation/native'
 import { getFoodListByRestaurant } from '../../apollo'
 import { useAccount } from '../../ui/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardItem from '../../components/CardItem'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
+import { AntDesign } from '@expo/vector-icons'
 
 const FoodListing = () => {
+  const navigation = useNavigation()
   const { data: dataRestaurant } = useAccount()
   const { t } = useTranslation()
 
@@ -35,15 +37,27 @@ const FoodListing = () => {
 
   return (
     <SafeAreaView>
-      <Text
-        style={{
-          fontSize: 18,
-          marginInlineStart: 18,
-          marginTop: 15,
-          fontWeight: 'bold'
-        }}>
-        {t('products')}
-      </Text>
+      <View style={styles.top}>
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              marginTop: 10,
+              marginInlineStart: 18
+            }}>
+            <AntDesign name="arrowleft" size={30} />
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={{
+            fontSize: 18,
+            marginInlineStart: 18,
+            marginTop: 15,
+            fontWeight: 'bold'
+          }}>
+          {dataRestaurant?.restaurant.name} {t('products')}
+        </Text>
+      </View>
       <FlatList
         data={data?.foodListByRestaurant}
         keyExtractor={item => item._id}
@@ -56,10 +70,13 @@ const FoodListing = () => {
 }
 
 const styles = StyleSheet.create({
+  top: {
+    flexDirection: 'row',
+    gap: 5
+  },
   list: {
     padding: 16
   },
-
   loader: {
     textAlign: 'center',
     marginTop: 50

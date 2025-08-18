@@ -2056,7 +2056,13 @@ const typeDefs = gql`
     # createdBy: String
   }
 
+  input FoodStockInput {
+    id: String!
+    stock: String
+  }
+
   type Mutation {
+    updateStockFood(input: FoodStockInput!): Message
     updateActivePrepaidDeliveryPackage(id: String!): Message
     removePrepaidDeliveryPackage(id: String!): Message
     updatePrepaidDeliveryPackage(
