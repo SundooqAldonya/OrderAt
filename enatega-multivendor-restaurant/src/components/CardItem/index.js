@@ -86,18 +86,16 @@ const CardItem = ({ item }) => {
             {cheapestVariation.discounted ? (
               <>
                 <Text style={styles.discounted}>
-                  {configuration.currency}
+                  {configuration.currency}{' '}
                   {cheapestVariation.discounted.toFixed(2)}
                 </Text>
                 <Text style={styles.original}>
-                  {configuration.currency}
-                  {cheapestVariation.price.toFixed(2)}
+                  {configuration.currency} {cheapestVariation.price.toFixed(2)}
                 </Text>
               </>
             ) : (
               <Text style={styles.price}>
-                {configuration.currency}
-                {cheapestVariation.price.toFixed(2)}
+                {configuration.currency} {cheapestVariation.price.toFixed(2)}
               </Text>
             )}
           </View>
