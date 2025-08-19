@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
   SectionList,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -14,39 +15,20 @@ import { AntDesign } from '@expo/vector-icons'
 import OrderHistoryCard from '../../components/OrderHistoryComponents/OrderHistoryCard'
 import { useOrders } from '../../ui/hooks'
 import moment from 'moment'
-
-// const orders = [
-//   {
-//     title: 'Delivery in progress',
-//     data: [
-//       {
-//         orderId: '77C3B',
-//         customer: 'Moataz E.',
-//         total: 145.45,
-//         items: 2,
-//         status: 'Delivery in progress',
-//         eta: 'Est. delivery 7:12 pm'
-//       }
-//     ]
-//   },
-//   {
-//     title: 'Completed',
-//     data: [
-//       {
-//         orderId: '1DB51',
-//         customer: 'Melissa M.',
-//         total: 26.0,
-//         items: 1,
-//         status: 'Delivered',
-//         date: '5 July 2025, 7:04 pm'
-//       }
-//     ]
-//   }
-// ]
+import { colors } from '../../utilities'
+import DateTimePicker, { useDefaultStyles } from 'react-native-ui-datepicker'
+import dayjs from 'dayjs'
 
 export default function OrderHistory() {
   const { t } = useTranslation()
   const navigation = useNavigation()
+  const [showPicker, setShowPicker] = useState(false)
+  const [dateRange, setDateRange] = useState({
+    startDate: dayjs(),
+    endDate: dayjs().add(5, 'day')
+  })
+  const defaultStyles = useDefaultStyles()
+
   const {
     loading,
     error,
@@ -119,16 +101,81 @@ export default function OrderHistory() {
         <Text style={styles.headerDate}>{t('orders_history')}</Text>
       </View>
       <View style={styles.headerRow}>
-        <Text style={styles.headerDate}>5 July 2025</Text>
+        {/* <Text style={styles.headerDate}>5 July 2025</Text> */}
+        <TouchableOpacity onPress={() => setShowPicker(true)}>
+          <Text style={{ fontSize: 16, fontWeight: '500' }}>
+            {dateRange.startDate && dateRange.endDate
+              ? `${moment(dateRange.startDate).format('D MMM YYYY')} - ${moment(
+                  dateRange.endDate
+                ).format('D MMM YYYY')}`
+              : 'Select Date Range'}
+          </Text>
+        </TouchableOpacity>
         <Text style={styles.headerFilter}>All orders</Text>
       </View>
+      <Modal visible={showPicker} animationType="slide" transparent>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)'
+          }}>
+          <View
+            style={{ backgroundColor: '#fff', padding: 20, borderRadius: 10 }}>
+            <DateTimePicker
+              mode="range"
+              startDate={dateRange.startDate}
+              endDate={dateRange.endDate}
+              selected={
+                dateRange.startDate && dateRange.endDate
+                  ? {
+                      startDate: dateRange.startDate,
+                      endDate: dateRange.endDate
+                    }
+                  : null
+              }
+              calendarTextStyle={{ color: '#222' }} // all labels (days/months/years)
+              weekDaysTextStyle={{ color: '#666' }} // Su Mo Tu...
+              headerTextStyle={{ color: '#111', fontWeight: '700' }} // Month/Year
+              dayContainerStyle={{ borderRadius: 8 }} // round day cells
+              todayContainerStyle={{
+                borderWidth: 1,
+                borderColor: '#2e7d32',
+                borderRadius: 8
+              }}
+              todayTextStyle={{ color: '#2e7d32' }}
+              selectedItemColor="#2e7d32" // start & end day background
+              selectedTextStyle={{ color: '#fff', fontWeight: '700' }}
+              selectedRangeBackgroundColor="#e8f5e9"
+              selectedRangeTextStyle={{ color: '#2e7d32' }}
+              disabledTextStyle={{ color: '#aaa' }}
+              onChange={({ startDate, endDate }) =>
+                setDateRange({ startDate, endDate })
+              }
+            />
 
+            <TouchableOpacity
+              onPress={() => setShowPicker(false)}
+              style={{
+                marginTop: 20,
+                backgroundColor: '#6200ee',
+                padding: 12,
+                borderRadius: 8,
+                alignItems: 'center'
+              }}>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       {/* Orders grouped by status */}
       <SectionList
         sections={orders}
         keyExtractor={item => item.orderId}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.sectionHeader}>{title}</Text>
+        renderSectionHeader={({ section: { title, data } }) => (
+          <Text style={styles.sectionHeader}>
+            {title} {data?.length}
+          </Text>
         )}
         renderItem={renderItems}
       />
