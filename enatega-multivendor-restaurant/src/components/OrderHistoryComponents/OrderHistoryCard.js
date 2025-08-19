@@ -15,7 +15,7 @@ const OrderHistoryCard = ({ item }) => {
       </View>
 
       <Text style={styles.meta}>
-        {item.id} • {item.items} {item.items > 1 ? 'items' : 'item'}
+        {item.orderId} • {item.items} {item.items > 1 ? 'items' : 'item'}
       </Text>
 
       <View style={styles.row}>
