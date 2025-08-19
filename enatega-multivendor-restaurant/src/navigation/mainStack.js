@@ -64,9 +64,10 @@ function DrawerNavigator() {
       screenOptions={{
         headerShown: false,
         overlayColor: 'transparent',
-        drawerType: 'slide',
+        drawerType: 'front', // makes it overlay instead of pushing screen
         drawerStyle: {
-          width: '60%'
+          maxWidth: 280, // your max width
+          width: '75%' // responsive width
         }
       }}
       drawerContent={props => <SideBar {...props} />}>

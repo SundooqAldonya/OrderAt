@@ -7,7 +7,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Linking,
-  AppState
+  AppState,
+  ScrollView
 } from 'react-native'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { colors } from '../../utilities/colors'
@@ -43,7 +44,6 @@ export default function SideBar() {
   useEffect(() => {
     const checkToken = async () => {
       if (restaurantData) {
-        console.log(restaurantData)
         setNotificationStatus(restaurantData.restaurant.enableNotification)
         if (
           restaurantData.restaurant.enableNotification &&
@@ -134,199 +134,184 @@ export default function SideBar() {
   const isRtl = i18n.language === 'ar'
 
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require('../../assets/restBackground.png')}
-        resizeMode="cover"
-        style={styles.image}>
-        <View style={styles.topContainer}>
-          <View style={{ ...styles.profileContainer, flexDirection: 'column' }}>
-            <View style={styles.avatar}>
-              <Image
-                source={{ uri: data && data.restaurant.image }}
-                containerStyle={styles.item}
-                style={{ borderRadius: 5 }}
-                PlaceholderContent={<ActivityIndicator />}
-              />
-            </View>
-            <View style={{ width: '50%' }}>
-              <TextDefault
-                H5
-                bolder
-                center
-                textColor="white"
-                style={{
-                  marginTop: 20,
-                  textAlign: 'center'
-                }}>
-                {data && data.restaurant.name}
-              </TextDefault>
-            </View>
+    <View style={{ flex: 1, backgroundColor: '#000' }}>
+      <View style={styles.topContainer}>
+        <View style={{ ...styles.profileContainer, flexDirection: 'column' }}>
+          <View style={styles.avatar}>
+            <Image
+              source={{ uri: data && data.restaurant.image }}
+              containerStyle={styles.item}
+              style={{ borderRadius: 5 }}
+              PlaceholderContent={<ActivityIndicator />}
+            />
+          </View>
+          <View style={{ width: '50%' }}>
+            <TextDefault
+              H5
+              bolder
+              center
+              textColor="white"
+              style={{
+                marginTop: 20,
+                textAlign: 'center'
+              }}>
+              {data && data.restaurant.name}
+            </TextDefault>
           </View>
         </View>
-        <View style={styles.middleContainer}>
+      </View>
+      <ScrollView style={styles.middleContainer}>
+        <View
+          style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
           <View
-            style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
-            <View
+            style={{
+              flexDirection: isRtl ? 'row-reverse' : 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            }}>
+            <TextDefault
+              H4
+              bolder
+              textColor="white"
+              style={{ textAlign: isRtl ? 'right' : 'left' }}>
+              {t('status')}
+            </TextDefault>
+            <TextDefault
+              textColor="white"
               style={{
-                flexDirection: isRtl ? 'row-reverse' : 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center'
+                marginRight: 5,
+                MarginLeft: 15,
+                textAlign: isRtl ? 'right' : 'left'
               }}>
-              <TextDefault
-                H4
-                bolder
-                textColor="white"
-                style={{ textAlign: isRtl ? 'right' : 'left' }}>
-                {t('status')}
-              </TextDefault>
-              <TextDefault
-                textColor="white"
-                style={{
-                  marginRight: 5,
-                  MarginLeft: 15,
-                  textAlign: isRtl ? 'right' : 'left'
-                }}>
-                {isAvailable ? t('online') : t('closed')}
-              </TextDefault>
-            </View>
-
-            <Switch
-              trackColor={{
-                false: colors.fontSecondColor,
-                true: colors.green
-              }}
-              thumbColor={isAvailable ? colors.headerBackground : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isAvailable}
-              style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
-            />
+              {isAvailable ? t('online') : t('closed')}
+            </TextDefault>
           </View>
 
-          <View
-            style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
-            <View
-              style={{
-                flexDirection: isRtl ? 'row-reverse' : 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              }}>
-              <TextDefault
-                H4
-                bolder
-                textColor="white"
-                style={{ textAlign: isRtl ? 'right' : 'left' }}>
-                {t('notifications')}
-              </TextDefault>
-              <TextDefault
-                textColor="white"
-                style={{
-                  marginRight: 5,
-                  MarginLeft: 15,
-                  textAlign: isRtl ? 'right' : 'left'
-                }}>
-                {notificationStatus ? t('onn') : t('off')}
-              </TextDefault>
-            </View>
+          <Switch
+            trackColor={{
+              false: colors.fontSecondColor,
+              true: colors.green
+            }}
+            thumbColor={isAvailable ? colors.headerBackground : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isAvailable}
+            style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
+          />
+        </View>
 
-            <Switch
-              trackColor={{
-                false: colors.fontSecondColor,
-                true: colors.green
-              }}
-              thumbColor={
-                notificationStatus ? colors.headerBackground : '#f4f3f4'
-              }
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={handleClick}
-              value={notificationStatus}
-              style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
-            />
+        <View
+          style={[styles.status, isRtl && { flexDirection: 'row-reverse' }]}>
+          <View
+            style={{
+              flexDirection: isRtl ? 'row-reverse' : 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            }}>
+            <TextDefault
+              H4
+              bolder
+              textColor="white"
+              style={{ textAlign: isRtl ? 'right' : 'left' }}>
+              {t('notifications')}
+            </TextDefault>
+            <TextDefault
+              textColor="white"
+              style={{
+                marginRight: 5,
+                MarginLeft: 15,
+                textAlign: isRtl ? 'right' : 'left'
+              }}>
+              {notificationStatus ? t('onn') : t('off')}
+            </TextDefault>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() => navigator.navigate('FoodListing')}>
-            <View style={styles.icon}>
-              {/* <Icon
-                type="font-awesome-5"
-                color="white"
-                name="open-cart"
-                size={26}
-              /> */}
-              <FontAwesome5 name="shopping-cart" size={26} color="#fff" />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('products')}
-            </TextDefault>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() => navigator.navigate('SelectLanguage')}>
-            <View style={styles.icon}>
-              <Icon
-                type="font-awesome"
-                color="white"
-                name="language"
-                size={26}
-              />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('language')}
-            </TextDefault>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() => navigator.navigate('AreasDeliveryCosts')}>
-            <View style={styles.icon}>
-              <IconVec color="white" name="map-marked-alt" size={26} />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('areas_cost')}
-            </TextDefault>
-          </TouchableOpacity>
+          <Switch
+            trackColor={{
+              false: colors.fontSecondColor,
+              true: colors.green
+            }}
+            thumbColor={
+              notificationStatus ? colors.headerBackground : '#f4f3f4'
+            }
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={handleClick}
+            value={notificationStatus}
+            style={{ marginTop: Platform.OS === 'android' ? -15 : -5 }}
+          />
+        </View>
 
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() => navigator.navigate('Profile')}>
-            <View style={styles.icon}>
-              <Icon type="font-awesome" color="white" name="user" size={26} />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('settings')}
-            </TextDefault>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('FoodListing')}>
+          <View style={styles.icon}>
+            <FontAwesome5 name="shopping-cart" size={26} color="#fff" />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('products')}
+          </TextDefault>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('SelectLanguage')}>
+          <View style={styles.icon}>
+            <Icon type="font-awesome" color="white" name="language" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('language')}
+          </TextDefault>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('AreasDeliveryCosts')}>
+          <View style={styles.icon}>
+            <IconVec color="white" name="map-marked-alt" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('areas_cost')}
+          </TextDefault>
+        </TouchableOpacity>
 
-          {/* <TouchableOpacity
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('Profile')}>
+          <View style={styles.icon}>
+            <Icon type="font-awesome" color="white" name="user" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('settings')}
+          </TextDefault>
+        </TouchableOpacity>
+
+        {/* <TouchableOpacity
             style={[
               styles.logout,
               isRtl && { flexDirection: 'row-reverse', gap: 10 }
@@ -353,75 +338,90 @@ export default function SideBar() {
             </TextDefault>
           </TouchableOpacity> */}
 
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() =>
-              Linking.canOpenURL('https://orderat.ai/#/privacy').then(() => {
-                Linking.openURL('https://orderat.ai/#/privacy')
-              })
-            }>
-            <View style={styles.icon}>
-              <Icon type="font-awesome" color="white" name="lock" size={26} />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('privacyPolicy')}
-            </TextDefault>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() =>
+            Linking.canOpenURL('https://orderat.ai/#/privacy').then(() => {
+              Linking.openURL('https://orderat.ai/#/privacy')
+            })
+          }>
+          <View style={styles.icon}>
+            <Icon type="font-awesome" color="white" name="lock" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('privacyPolicy')}
+          </TextDefault>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            activeOpacity={0.8}
-            onPress={() =>
-              Linking.canOpenURL(ABOUT_URL).then(() => {
-                Linking.openURL(ABOUT_URL)
-              })
-            }>
-            <View style={styles.icon}>
-              <Icon
-                type="font-awesome"
-                color="white"
-                name="info-circle"
-                size={26}
-              />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('aboutUs')}
-            </TextDefault>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() =>
+            Linking.canOpenURL(ABOUT_URL).then(() => {
+              Linking.openURL(ABOUT_URL)
+            })
+          }>
+          <View style={styles.icon}>
+            <Icon
+              type="font-awesome"
+              color="white"
+              name="info-circle"
+              size={26}
+            />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('aboutUs')}
+          </TextDefault>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          onPress={logout}>
+          <View style={styles.icon}>
+            <Icon type="entypo" color="white" name="log-out" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('titleLogout')}
+          </TextDefault>
+        </TouchableOpacity>
+      </ScrollView>
 
-        <View style={styles.lowerContainer}>
-          <TouchableOpacity
-            style={[
-              styles.logout,
-              isRtl && { flexDirection: 'row-reverse', gap: 10 }
-            ]}
-            onPress={logout}>
-            <View style={styles.icon}>
-              <Icon type="entypo" color="white" name="log-out" size={26} />
-            </View>
-            <TextDefault
-              H4
-              bolder
-              style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
-              {t('titleLogout')}
-            </TextDefault>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+      {/* <View style={styles.lowerContainer}>
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          onPress={logout}>
+          <View style={styles.icon}>
+            <Icon type="entypo" color="white" name="log-out" size={26} />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('titleLogout')}
+          </TextDefault>
+        </TouchableOpacity>
+      </View> */}
     </View>
   )
 }
