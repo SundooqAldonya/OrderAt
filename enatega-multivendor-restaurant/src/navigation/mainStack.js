@@ -33,6 +33,7 @@ import AddNewOrder from '../screens/AddNewOrder'
 import Profile from '../screens/Profile'
 import AreasDeliveryCosts from '../screens/AreasDeliveryCosts'
 import FoodListing from '../screens/FoodListing'
+import OrdersHistory from '../screens/OrdersHistory'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -175,6 +176,7 @@ function StackNavigator() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="AreasDeliveryCosts" component={AreasDeliveryCosts} />
       <Stack.Screen name="FoodListing" component={FoodListing} />
+      <Stack.Screen name="OrdersHistory" component={OrdersHistory} />
     </Stack.Navigator>
   )
 }

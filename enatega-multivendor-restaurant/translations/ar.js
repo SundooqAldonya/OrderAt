@@ -110,5 +110,6 @@ export const ar = {
   wrong_credentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
   no_internet: 'لا يوجد اتصال بالإنترنت',
   free: 'مجاني',
-  products: 'المنتجات'
+  products: 'المنتجات',
+  orders_history: 'الطلبات'
 }

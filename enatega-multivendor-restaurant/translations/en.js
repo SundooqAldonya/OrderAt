@@ -109,5 +109,6 @@ export const en = {
   wrong_credentials: 'Username or password is incorrect',
   no_internet: 'No Internet Connection',
   free: 'Free',
-  products: 'Products'
+  products: 'Products',
+  orders_history: 'Orders History'
 }

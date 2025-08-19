@@ -23,6 +23,7 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import IconVec from 'react-native-vector-icons/FontAwesome5'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 export default function SideBar() {
   const { t, i18n } = useTranslation()
@@ -241,6 +242,28 @@ export default function SideBar() {
           />
         </View>
 
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('OrdersHistory')}>
+          <View style={styles.icon}>
+            {/* <FontAwesome5 name="shopping-cart" size={26} color="#fff" /> */}
+            <MaterialCommunityIcons
+              name="progress-clock"
+              size={26}
+              color="#fff"
+            />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('orders_history')}
+          </TextDefault>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.logout,
