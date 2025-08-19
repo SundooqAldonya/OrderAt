@@ -16,12 +16,10 @@ import { useMutation } from '@apollo/client'
 import { updateStockFood } from '../../apollo'
 import { Configuration } from '../../ui/context'
 
-const { width, height } = Dimensions.get('window')
-const isPortrait = height >= width
-
 const CardItem = ({ item }) => {
   const navigation = useNavigation()
   const configuration = useContext(Configuration.Context)
+  const { width, height } = Dimensions.get('window')
 
   const [stockStatus, setStockStatus] = useState(item.stock || 'In Stock')
   const [modalVisible, setModalVisible] = useState(item.stock || 'In Stock')
@@ -66,7 +64,7 @@ const CardItem = ({ item }) => {
     })
   }
 
-  const styles = createStyle(orientation)
+  const styles = createStyle(orientation, width)
 
   return (
     <View style={styles.card}>
@@ -154,7 +152,7 @@ const CardItem = ({ item }) => {
 
 export default CardItem
 
-const createStyle = orientation =>
+const createStyle = (orientation, width) =>
   StyleSheet.create({
     card: {
       flexDirection: 'row',
