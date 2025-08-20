@@ -27,7 +27,21 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      [
+        "react-native-background-geolocation",
+        {
+          "license": "797594c0fcc1cd46f8630152c5af2a8db0e99394a5ba1b831067b6b0dfee4c79"
+        }
+      ],
+      [
+        "expo-gradle-ext-vars",
+        {
+          "googlePlayServicesLocationVersion": "21.1.0",
+          "appCompatVersion": "1.4.2"
+        }
+      ],
+      "react-native-background-fetch"
     ],
     "androidStatusBar": {
       "backgroundColor": "#000"

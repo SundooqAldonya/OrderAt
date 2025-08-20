@@ -41,6 +41,7 @@ import { useMutation } from '@apollo/client'
 import { refreshFirebaseToken } from '../apollo/mutations'
 import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
 import NotificationListener from '../components/NotificationListener'
+import { initBackgroundLocation } from '../utilities/transistorBackgroundTracking'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -204,76 +205,6 @@ function NoDrawer() {
 function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
-  // const { refetchAssigned } = useContext(UserContext)
-
-  // const [mutateRefreshToken] = useMutation(refreshFirebaseToken, {
-  //   onCompleted: res => {
-  //     console.log({ res })
-  //   },
-  //   onError: error => {
-  //     console.log({ error })
-  //   }
-  // })
-
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onTokenRefresh(token => {
-  //     // ✅ Send this new token to your backend
-  //     mutateRefreshToken({
-  //       variables: {
-  //         notificationToken: token
-  //       }
-  //     })
-  //     console.log('FCM Token refreshed:', token)
-  //   })
-
-  //   return unsubscribe
-  // }, [])
-
-  // useEffect(() => {
-  //   async function checkPermissions() {
-  //     const { status } = await Notifications.getPermissionsAsync()
-  //     console.log('🔍 Notification permission status:', status)
-
-  //     if (status !== 'granted') {
-  //       console.log(
-  //         '⚠️ Notifications are not enabled, requesting permission...'
-  //       )
-  //       const {
-  //         status: newStatus
-  //       } = await Notifications.requestPermissionsAsync()
-  //       console.log('🔍 New notification status:', newStatus)
-  //     }
-  //   }
-
-  //   checkPermissions()
-  // }, [])
-
-  // useEffect(() => {
-  //   setupNotificationChannel()
-  // }, [])
-
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
-  //     refetchAssigned()
-  //     Toast.info(remoteMessage.notification.body)
-  //     const sound = remoteMessage?.notification?.android?.sound
-  //       ? remoteMessage.notification.android.sound
-  //       : null
-  //     if (sound !== 'false') {
-  //       playCustomSound()
-  //     }
-  //   })
-
-  //   return unsubscribe
-  // }, [])
-
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
-  //     refetchAssigned()
-  //   })
-
-  //   return unsubscribe
-  // }, [])
 
   useEffect(() => {
     const dsn = configuration?.riderAppSentryUrl
@@ -290,11 +221,17 @@ function AppContainer() {
   }, [configuration?.riderAppSentryUrl])
 
   useEffect(() => {
-    // Optional: Start immediately
-    // if (token) {
-    startBackgroundUpdate().catch(console.warn)
-    // }
+    if (token) {
+      initBackgroundLocation()
+    }
   }, [])
+
+  // useEffect(() => {
+  //   // Optional: Start immediately
+  //   // if (token) {
+  //   startBackgroundUpdate().catch(console.warn)
+  //   // }
+  // }, [])
 
   return (
     <SafeAreaProvider>

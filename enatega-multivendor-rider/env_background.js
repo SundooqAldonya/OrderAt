@@ -11,9 +11,9 @@ export const getEnvVars = (env = Updates.channel) => {
     }
   }
   return {
-    GRAPHQL_URL: 'http://192.168.1.8:8001/graphql',
-    WS_GRAPHQL_URL: 'ws://192.168.1.8:8001/graphql',
-    SERVER_URL: 'http://192.168.1.8:8001/',
+    GRAPHQL_URL: 'http://192.168.1.3:8001/graphql',
+    WS_GRAPHQL_URL: 'ws://192.168.1.3:8001/graphql',
+    SERVER_URL: 'http://192.168.1.3:8001/',
     SENTRY_DSN: process.env.SENTRY_DSN,
     GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY
   }
