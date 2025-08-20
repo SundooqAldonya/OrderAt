@@ -38,7 +38,7 @@ import analytics from '../../utils/analytics'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
 import { MaterialIcons } from '@expo/vector-icons'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
@@ -123,10 +123,10 @@ function Settings(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View style={{paddingLeft: 10}}>
               <MaterialIcons
                 name='arrow-back'
-                size={25}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -140,12 +140,12 @@ function Settings(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
@@ -514,7 +514,7 @@ function Settings(props) {
             >
               <RadioButton
                 animation={'bounceIn'}
-                size={13}
+                size={moderateScale(13)}
                 outerColor={currentTheme.iconColorDark}
                 innerColor={currentTheme.main}
                 isSelected={activeRadio === item.index}

@@ -9,7 +9,7 @@ import TextDefault from '../Text/TextDefault/TextDefault'
 import TextError from '../Text/TextError/TextError'
 import { alignment } from '../../utils/alignment'
 import styles from './styles'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import ConfigurationContext from '../../context/Configuration'
 import { ProgressBar } from '../Main/ActiveOrders/ProgressBar'
@@ -128,7 +128,7 @@ const Item = ({ item, navigation, currentTheme, configuration }) => {
               currentTheme={currentTheme}
               item={item}
               navigation={navigation}
-              customWidth={scale(65)}
+              customWidth={moderateScale(65)}
             />
           </View>
           <View

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 
 const styles = (props = null) =>
@@ -9,24 +9,24 @@ const styles = (props = null) =>
       flexDirection: 'row',
       justifyContent:'space-between',
       alignItems: 'center',
-    gap:scale(4),
-      marginBottom:scale(15)
+    gap:moderateScale(4),
+      marginBottom:moderateScale(15)
     },
     suggestItemImg:{
       aspectRatio: 6/8,
-      height:scale(50) 
+      height:moderateScale(50) 
     },
     suggestItemImgContainer:{
       backgroundColor: '#F3F4F6',
       borderWidth:1,
       borderColor:'#E5E7EB',
       borderRadius:8,
-      padding:scale(4),
+      padding:moderateScale(4),
      
     },
     divider:{
-      width:scale(1),
-      height:scale(15),
+      width:moderateScale(1),
+      height:moderateScale(15),
       backgroundColor: props !== null ? props.verticalLine : '#D1D5DB'
     },
     actionContainer: {
@@ -40,9 +40,9 @@ const styles = (props = null) =>
       borderColor:props !== null ? props.iconBackground: '#fcfcfc',
     },
     actionContainerBtns: {
-      width: scale(30),
-      height:scale(30),
-      borderRadius: scale(20),
+      width: moderateScale(30),
+      height:moderateScale(30),
+      borderRadius: moderateScale(20),
       alignItems: 'center',
      justifyContent:'center'
     },
@@ -57,14 +57,14 @@ const styles = (props = null) =>
       alignItems: 'center',
     },
     additionalItem:{
-      marginTop:scale(4),
-      marginBottom:scale(2),
+      marginTop:moderateScale(4),
+      marginBottom:moderateScale(2),
     },
     itemsDropdown:{
       borderLeftWidth:2.5,
       borderColor:'#D1D5DB',
-      paddingLeft:scale(8),
-      marginVertical:scale(3)
+      paddingLeft:moderateScale(8),
+      marginVertical:moderateScale(3)
     }
   })
 export default styles

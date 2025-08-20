@@ -16,7 +16,7 @@ import {
 
 import gql from 'graphql-tag'
 
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { deleteAddress } from '../../apollo/mutations'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import UserContext from '../../context/User'
@@ -113,12 +113,12 @@ function Addresses() {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
@@ -130,10 +130,10 @@ function Addresses() {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View style={{paddingLeft: 10}}>
               <MaterialIcons
                 name='arrow-back'
-                size={30}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -156,7 +156,7 @@ function Addresses() {
   function emptyView() {
     return (
       <View style={styles().subContainerImage}>
-        <EmptyAddress width={scale(300)} height={scale(300)} />
+        <EmptyAddress width={moderateScale(300)} height={moderateScale(300)} />
         <View>
           <View style={styles().descriptionEmpty}>
             <View style={styles().viewTitle}>
@@ -190,7 +190,9 @@ function Addresses() {
             <View style={styles(currentTheme).line} />
           )}
           ListHeaderComponent={() => <View style={{ ...alignment.MTmedium }} />}
-          renderItem={({ item: address }) => (
+          renderItem={({ item: address }) => {
+            console.log('t(address.label)', t(address.label), addressIcons[address.label])
+            return(
             <TouchableOpacity
               activeOpacity={0.7}
               style={[styles(currentTheme).containerSpace]}
@@ -240,7 +242,7 @@ function Addresses() {
                   >
                     <SimpleLineIcons
                       name='pencil'
-                      size={scale(20)}
+                      size={moderateScale(18)}
                       color={currentTheme.darkBgFont}
                     />
                   </TouchableOpacity>
@@ -255,7 +257,7 @@ function Addresses() {
                   >
                     <EvilIcons
                       name='trash'
-                      size={scale(33)}
+                      size={moderateScale(28)}
                       // color={currentTheme.darkBgFont}
                       color={'red'}
                     />
@@ -275,7 +277,7 @@ function Addresses() {
                 </View>
               </View>
             </TouchableOpacity>
-          )}
+          )}}
         />
       ) : null}
       {/* </ScrollView> */}

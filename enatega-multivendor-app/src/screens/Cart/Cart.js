@@ -20,7 +20,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
 import CartItem from '../../components/CartItem/CartItem'
 import { getDeliveryCalculationV2, getTipping } from '../../apollo/queries'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import { alignment } from '../../utils/alignment'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -53,7 +53,7 @@ const TIPPING = gql`
 function Cart(props) {
   const Analytics = analytics()
   const insets = useSafeAreaInsets()
-  const FOOTER_HEIGHT = scale(70)
+  const FOOTER_HEIGHT = moderateScale(70)
   const navigation = useNavigation()
   const configuration = useContext(ConfigurationContext)
   const {
@@ -159,8 +159,8 @@ function Cart(props) {
         ...textStyles.Bolder
       },
       headerTitleContainerStyle: {
-        paddingLeft: scale(25),
-        paddingRight: scale(25)
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25)
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG
@@ -177,7 +177,7 @@ function Cart(props) {
             >
               <AntDesign
                 name='arrowleft'
-                size={22}
+                size={moderateScale(22)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -316,7 +316,7 @@ function Cart(props) {
     return (
       <View style={styles().subContainerImage}>
         <View style={styles().imageContainer}>
-          <EmptyCart width={scale(200)} height={scale(200)} />
+          <EmptyCart width={moderateScale(200)} height={moderateScale(200)} />
         </View>
         <View style={styles().descriptionEmpty}>
           <TextDefault textColor={currentTheme.fontMainColor} bolder center>
@@ -490,7 +490,7 @@ function Cart(props) {
               showsVerticalScrollIndicator={false}
               style={[styles().flex, styles().cartItems]}
               contentContainerStyle={{
-                paddingBottom: FOOTER_HEIGHT + insets.bottom + scale(16)
+                paddingBottom: FOOTER_HEIGHT + insets.bottom + moderateScale(16)
               }}
             >
               <View
@@ -574,10 +574,9 @@ function Cart(props) {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: FOOTER_HEIGHT + insets?.bottom + 50,
-                paddingBottom: insets.bottom,
+                height: FOOTER_HEIGHT  + moderateScale(50),
                 backgroundColor: currentTheme.newheaderColor, // or your prop
-                paddingHorizontal: scale(16),
+                paddingHorizontal: moderateScale(16),
                 justifyContent: 'center',
                 zIndex: 20
               }}

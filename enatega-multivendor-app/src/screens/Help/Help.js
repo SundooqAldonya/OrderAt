@@ -17,7 +17,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { MaterialIcons } from '@expo/vector-icons'
 import navigationService from '../../routes/navigationService'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import Accordion from '../../components/Accordion/Accordion'
 import { FontAwesome } from '@expo/vector-icons'
@@ -95,12 +95,12 @@ const Help = (props) => {
       headerRight: null,
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
@@ -112,10 +112,10 @@ const Help = (props) => {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View style={{paddingLeft: 10}}>
               <MaterialIcons
                 name='arrow-back'
-                size={25}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -140,7 +140,7 @@ const Help = (props) => {
         <FlatList
           data={FAQs}
           keyExtractor={(item) => 'Faq-' + item.id}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+          ItemSeparatorComponent={() => <View style={{ height: moderateScale(10) }} />}
           renderItem={({ item }) => (
             <Accordion heading={t(item.heading)}>
               <TextDefault textColor={currentTheme.newFontcolor}>
@@ -160,7 +160,7 @@ const Help = (props) => {
               <View style={styles(currentTheme).contentContainer}>
                 <FontAwesome
                   name='whatsapp'
-                  size={24}
+                  size={moderateScale(24)}
                   color={currentTheme.black}
                 />
                 <TextDefault bold H5 style={styles(currentTheme).whatsAppText}>

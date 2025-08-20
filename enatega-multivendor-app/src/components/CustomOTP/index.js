@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
+import { moderateScale } from '../../utils/scaling'
 
 const CustomOtpInput = ({ otp, setOtp, pinCount = 6, onCodeFilled }) => {
   const inputsRef = useRef([])
@@ -55,16 +56,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 50,
-    height: 50
+    height: moderateScale(50),
   },
   input: {
-    width: 40,
-    height: 50,
+    width: moderateScale(40),
+    height: moderateScale(50),
     marginHorizontal: 5,
     borderWidth: 2,
     borderColor: 'grey',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: moderateScale(20),
     borderRadius: 5,
     color: '#000'
   }

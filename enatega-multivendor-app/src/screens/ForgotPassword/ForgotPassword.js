@@ -16,7 +16,7 @@ import analytics from '../../utils/analytics'
 import { useForgotPassword } from './useForgotPassword'
 import { useTranslation } from 'react-i18next'
 import { Feather } from '@expo/vector-icons'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPhone } from '../../store/phoneSlice'
@@ -77,7 +77,7 @@ function ForgotPassword(props) {
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
-            <Feather name='lock' size={30} color={currentTheme.newIconColor} />
+            <Feather name='lock' size={moderateScale(30)} color={currentTheme.newIconColor} />
           </View>
           <View>
             <TextDefault

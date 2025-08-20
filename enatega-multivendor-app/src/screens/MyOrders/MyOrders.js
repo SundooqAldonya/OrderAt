@@ -10,13 +10,14 @@ import styles from './styles'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import Analytics from '../../utils/analytics'
 import OrdersContext from '../../context/Orders'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { useTranslation } from 'react-i18next'
 import ReviewModal from '../../components/Review'
 import { colors } from '../../utils/colors'
+import { getLoadedFonts } from 'expo-font'
 
 const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
 const orderStatusInactive = ['DELIVERED', 'COMPLETED']
@@ -68,7 +69,7 @@ function MyOrders(props) {
             <View style={styles().backButton}>
               <MaterialIcons
                 name='arrow-back'
-                size={25}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -82,14 +83,14 @@ function MyOrders(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
-        marginLeft: 0
+        marginLeft: 0,
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,

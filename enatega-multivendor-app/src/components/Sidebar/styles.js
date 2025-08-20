@@ -8,9 +8,9 @@ const styles = (props = null) => {
       flex: 1,
     },
     topContainer: {
-      height: '30%',
+      height: '35%',
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: props !== null ? props.horizontalLine : 'transparent'
+      borderBottomColor: props !== null ? props.horizontalLine : 'transparent',
     },
     botContainer: {
       ...alignment.MTsmall
@@ -20,7 +20,7 @@ const styles = (props = null) => {
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: props !== null ? props.horizontalLine : '#9B9A9A',
       ...alignment.PBxSmall,
-      ...alignment.MBxSmall
+      ...alignment.MBxSmall,
     },
     iconContainer: {
       backgroundColor: theme.Pink.deleteButton,

@@ -17,7 +17,7 @@ import { FontAwesome, SimpleLineIcons } from '@expo/vector-icons'
 import { useLogin } from './useLogin'
 import screenOptions from './screenOptions'
 import { useTranslation } from 'react-i18next'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { setPhone } from '../../store/phoneSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -166,13 +166,12 @@ function Login(props) {
             <View style={styles().subContainer}>
               <View
                 style={{
-                  ...styles().logoContainer,
                   flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}
               >
                 <SimpleLineIcons
                   name='envelope'
-                  size={30}
+                  size={moderateScale(30)}
                   color={currentTheme.newIconColor}
                 />
               </View>
@@ -257,8 +256,8 @@ function Login(props) {
                         />
                         <FontAwesome
                           onPress={() => setShowPassword(!showPassword)}
-                          name={showPassword ? 'eye' : 'eye-slash'}
-                          size={24}
+                          name={!showPassword ? 'eye' : 'eye-slash'}
+                          size={moderateScale(20)}
                           color={
                             passwordError === null
                               ? currentTheme.newFontcolor

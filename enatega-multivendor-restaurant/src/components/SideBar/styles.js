@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
+    marginTop: 80
   },
   profileContainer: {
     display: 'flex',
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   middleContainer: {
-    flex: 0.5,
+    paddingVertical: 10,
+    flex: 1,
     backgroundColor: '#000000'
   },
   lowerContainer: {

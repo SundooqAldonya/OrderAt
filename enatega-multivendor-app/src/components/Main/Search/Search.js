@@ -4,7 +4,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons'
 import styles from './styles'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../../utils/colors'
 
@@ -31,7 +31,7 @@ function Search(props) {
               {props.search?.length ? (
                 <AntDesign
                   name='closecircleo'
-                  size={scale(18)}
+                  size={moderateScale(18)}
                   color={currentTheme.fontSecondColor}
                 />
               ) : null}
@@ -56,7 +56,7 @@ function Search(props) {
             <Ionicons
               name='search'
               color={currentTheme.gray500}
-              size={scale(20)}
+              size={moderateScale(20)}
             />
           </View>
         </View>

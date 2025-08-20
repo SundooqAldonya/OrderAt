@@ -3,7 +3,7 @@
     "name": "Orderat Business",
     "slug": "enatega-restaurant-app-latest",
     "version": "1.0.72",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/logo_2.png",
     "splash": {
       "image": "./assets/logo_2.png",

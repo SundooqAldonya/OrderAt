@@ -33,7 +33,7 @@ import gql from 'graphql-tag'
 import { useMutation, useQuery } from '@apollo/client'
 import RestaurantLoading from '../../components/RestaurantComponents/RestaurantLoading'
 import UserContext from '../../context/User'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import ViewCart from '../../components/RestaurantComponents/ViewCart'
 import { Feather } from '@expo/vector-icons'
@@ -334,7 +334,7 @@ const RestaurantDetailsV2 = () => {
           onPress={() => navigation.goBack()}
           style={styles.backIconContainer}
         >
-          <AntDesign name='arrowleft' size={18} color='black' />
+          <AntDesign name='arrowleft' size={moderateScale(18)} color='black' />
         </TouchableOpacity>
         <View style={styles.iconsWrapper}>
           <TouchableOpacity
@@ -343,7 +343,7 @@ const RestaurantDetailsV2 = () => {
           >
             <MaterialIcons
               name={heart ? 'favorite' : 'favorite-border'}
-              size={18}
+              size={moderateScale(18)}
               color={heart ? 'red' : 'black'}
             />
           </TouchableOpacity>
@@ -351,7 +351,7 @@ const RestaurantDetailsV2 = () => {
             style={styles.backIconContainer}
             onPress={() => setSearchModalVisible(true)}
           >
-            <Feather name='search' size={18} color='black' />
+            <Feather name='search' size={moderateScale(18)} color='black' />
           </TouchableOpacity>
         </View>
       </View>
@@ -383,7 +383,8 @@ const RestaurantDetailsV2 = () => {
             <Text
               style={{
                 ...styles.restaurantSubtitle,
-                textAlign: isArabic ? 'right' : 'left'
+                textAlign: isArabic ? 'right' : 'left',
+                fontSize: moderateScale(14)
               }}
             >
               {businessCategoriesNames ? businessCategoriesNames : ''}
@@ -434,7 +435,7 @@ const RestaurantDetailsV2 = () => {
                 color={'orange'}
                 emptyColor='orange'
                 enableHalfStar={true}
-                starSize={20}
+                starSize={moderateScale(20)}
               />
               {restaurant.reviewCount ? (
                 <Text style={{ color: '#000' }}>
@@ -574,7 +575,6 @@ const styles = StyleSheet.create({
   },
   topHeader: {
     position: 'absolute',
-    zIndex: 20,
     top: 35,
     left: 15,
     flexDirection: 'row',
@@ -585,7 +585,8 @@ const styles = StyleSheet.create({
   backIconContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 50,
-    padding: 5
+    padding: 5,
+    zIndex: 100
   },
   iconsWrapper: {
     flexDirection: 'row',
@@ -595,8 +596,8 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: '100%',
-    height: HEADER_EXPANDED_HEIGHT + 40,
-    resizeMode: 'cover'
+    height: moderateScale(HEADER_EXPANDED_HEIGHT + 40),
+    resizeMode: 'cover',
   },
 
   restaurantInfo: {
@@ -609,12 +610,12 @@ const styles = StyleSheet.create({
     marginTop: -50
   },
   restaurantTitle: {
-    fontSize: 22,
+    fontSize: moderateScale(22),
     fontWeight: 'bold'
   },
   restaurantSubtitle: {
     color: '#666',
-    marginTop: 4
+    marginTop: moderateScale(4)
   },
   deliveryInfo: {
     marginTop: 8

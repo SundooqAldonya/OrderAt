@@ -13,7 +13,7 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import Toast from 'react-native-toast-message'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 
 const CHANGE_PASSWORD = gql`
   ${changePassword}
@@ -98,7 +98,7 @@ function ChangePassword(props) {
           </View>
           <Feather
             name='x-circle'
-            size={24}
+            size={moderateScale(24)}
             color={currentTheme.newIconColor}
             onPress={() => props.hideModal()}
           />
@@ -132,7 +132,8 @@ function ChangePassword(props) {
                   borderBottomColor: oldPasswordError
                     ? currentTheme.textErrorColor
                     : currentTheme.tagColor,
-                  borderBottomWidth: 1
+                  borderBottomWidth: 1,
+                  fontSize: moderateScale(14)
                 }
               ]}
               maxLength={20}
@@ -150,9 +151,9 @@ function ChangePassword(props) {
             <FontAwesome
               onPress={() => setShowOldPassword(!showOldPassword)}
               name={showOldPassword ? 'eye-slash' : 'eye'}
-              size={24}
+              size={moderateScale(20)}
               color={currentTheme.newFontcolor}
-              style={{ position: 'absolute', right: 7, top: 5 }}
+              style={{ position: 'absolute', right: 7, top: moderateScale(8) }}
             />
           </View>
           {oldPasswordError ? (
@@ -179,7 +180,8 @@ function ChangePassword(props) {
                   borderBottomColor: newPasswordError
                     ? currentTheme.textErrorColor
                     : currentTheme.tagColor,
-                  borderBottomWidth: 1
+                  borderBottomWidth: 1,
+                  fontSize: moderateScale(14)
                 }
               ]}
               maxLength={20}
@@ -196,9 +198,9 @@ function ChangePassword(props) {
             <FontAwesome
               onPress={() => setShowNewPassword(!showNewPassword)}
               name={showNewPassword ? 'eye-slash' : 'eye'}
-              size={24}
+              size={moderateScale(20)}
               color={currentTheme.newFontcolor}
-              style={{ position: 'absolute', right: 7, top: 5 }}
+              style={{ position: 'absolute', right: 7, top: moderateScale(8) }}
             />
           </View>
           {newPasswordError ? (

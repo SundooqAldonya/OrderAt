@@ -32,7 +32,7 @@ import {
   selectAddress
 } from '../../apollo/mutations'
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
@@ -124,6 +124,10 @@ const EditAddressNewVersion = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('edit_address'),
+      headerTitleStyle: {
+        fontSize: moderateScale(14),
+        color: "#fff"
+      },
       headerStyle: {
         backgroundColor: colors.primary
       },
@@ -135,7 +139,7 @@ const EditAddressNewVersion = () => {
           }}
           style={{ paddingHorizontal: 15 }}
         >
-          <Ionicons name='arrow-back' size={24} color='white' />
+          <Ionicons name='arrow-back' size={moderateScale(20)} color='white' />
         </TouchableOpacity>
       ),
       headerRight: () => null
@@ -258,7 +262,7 @@ const EditAddressNewVersion = () => {
         <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Entypo
             name='location-pin'
-            size={22}
+            size={moderateScale(22)}
             color={chooseFromMap ? 'green' : '#000'}
           />
           <Text
@@ -271,7 +275,7 @@ const EditAddressNewVersion = () => {
           </Text>
         </View>
         {chooseFromMap && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
+          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
         )}
       </TouchableOpacity>
 
@@ -287,7 +291,7 @@ const EditAddressNewVersion = () => {
         <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <MaterialIcons
             name='location-city'
-            size={22}
+            size={moderateScale(22)}
             color={selectedCityAndArea ? 'green' : '#000'}
           />
           <Text
@@ -301,7 +305,7 @@ const EditAddressNewVersion = () => {
           </Text>
         </View>
         {selectedCityAndArea && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
+          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
         )}
       </TouchableOpacity>
 
@@ -434,12 +438,12 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   optionText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     marginHorizontal: 10,
     color: '#000'
   },
   label: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#000',
     marginTop: 15,
     marginBottom: 5
@@ -449,22 +453,23 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     borderRadius: 12,
     padding: 12,
-    color: '#000'
+    color: '#000',
+    fontSize: moderateScale(14)
   },
   saveButton: {
     marginTop: 30,
     backgroundColor: '#2ecc71',
-    padding: 14,
-    borderRadius: 25,
+    padding: moderateScale(14),
+    borderRadius: moderateScale(25),
     alignItems: 'center'
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: 'bold'
   },
   addNewAddressbtn: {
-    padding: scale(5),
+    padding: moderateScale(5),
     ...alignment.PLmedium,
     ...alignment.PRmedium
   },
@@ -477,7 +482,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     // backgroundColor: colors.dark,
     width: '100%',
-    height: scale(40),
+    height: moderateScale(40),
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -517,7 +522,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
@@ -532,7 +537,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee'
   },
   modalItemText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#000',
     textAlign: 'right'
   },
@@ -540,11 +545,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#f1f1f1',
     borderRadius: 10,
-    paddingVertical: 12
+    paddingVertical: moderateScale(12)
   },
   cancelText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#333'
   }
 })

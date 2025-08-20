@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'
+import { moderateScale } from '../../utils/scaling'
 
 const navigationOptions = props => {
   return {
@@ -15,7 +16,7 @@ const navigationOptions = props => {
           })
         }
         name='closecircleo'
-        size={24}
+        size={moderateScale(24)}
         color={props.fontColor}
         style={styles().headerRightIcon}
       />
@@ -23,7 +24,7 @@ const navigationOptions = props => {
     // eslint-disable-next-line react/display-name
     headerLeft: null,
     headerStyle: {
-      backgroundColor: props.backColor
+      backgroundColor: props.backColor,
     }
   }
 }

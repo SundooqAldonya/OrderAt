@@ -13,7 +13,8 @@ const useEnvVars = (env = Updates.channel) => {
   if (
     env === 'production' ||
     env === 'staging' ||
-    process.env.NODE_ENV === 'production'
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'development'
   ) {
     return {
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',

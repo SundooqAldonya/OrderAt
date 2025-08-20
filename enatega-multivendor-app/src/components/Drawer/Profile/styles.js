@@ -1,4 +1,4 @@
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
@@ -7,7 +7,7 @@ const styles = (props = null) =>
   StyleSheet.create({
     mainContainer: {
       flex: 1,
-      backgroundColor: props !== null ? props.newheaderColor : 'transparent'
+      backgroundColor: props !== null ? props.newheaderColor : 'transparent',
     },
     logInContainer: {
       width: '100%',
@@ -30,11 +30,11 @@ const styles = (props = null) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 20,
-      ...alignment.MBlarge
+      // ...alignment.MBlarge
     },
     imgContainer: {
-      width: scale(50),
-      height: scale(50),
+      width: moderateScale(50),
+      height: moderateScale(50),
       borderRadius: scale(35),
       justifyContent: 'center',
       alignItems: 'center',

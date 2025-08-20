@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles'
 import { Ionicons } from '@expo/vector-icons'
+import { moderateScale } from '../../utils/scaling'
 
 const navigationOptions = props => {
   return {
@@ -15,7 +16,7 @@ const navigationOptions = props => {
           })
         }
         name="close"
-        size={24}
+        size={moderateScale(24)}
         color={props.iconColor}
         style={styles().headerRightIcon}
       />
@@ -25,7 +26,7 @@ const navigationOptions = props => {
       <Ionicons
         onPress={() => props.navigation.goBack()}
         name="chevron-back"
-        size={24}
+        size={moderateScale(24)}
         color={props.iconColor}
         style={styles().headerLeftIcon}
       />

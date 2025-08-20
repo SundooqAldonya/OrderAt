@@ -1,5 +1,5 @@
 import { fontStyles } from '../../../utils/fontStyles'
-import { scale, verticalScale } from '../../../utils/scaling'
+import { moderateScale, scale, verticalScale } from '../../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
@@ -8,7 +8,7 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
   StyleSheet.create({
     bodyStyleOne: {
       fontFamily: 'Montserrat_500Medium',
-      fontSize: scale(12),
+      fontSize: moderateScale(12),
       color: '#000',
       flex: 1,
       marginStart: 5
@@ -29,11 +29,11 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     },
     mainContainer: {
       width: '90%',
-      height: scale(36),
+      height: moderateScale(35),
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: scale(40),
+      borderRadius: moderateScale(40),
       backgroundColor: props != null ? props.color1 : 'black',
 
       shadowColor: props != null ? props.shadowColor : 'black',

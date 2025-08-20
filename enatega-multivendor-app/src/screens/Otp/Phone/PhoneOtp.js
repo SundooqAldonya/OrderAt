@@ -17,7 +17,7 @@ import OTPInputView from '@twotalltotems/react-native-otp-input'
 import usePhoneOtp from './usePhoneOtp'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import { useSelector } from 'react-redux'
 import CustomOtpInput from '../../../components/CustomOTP'
@@ -151,7 +151,7 @@ function PhoneOtp(props) {
           <View style={styles().logoContainer}>
             <Ionicons
               name='phone-portrait-outline'
-              size={30}
+              size={moderateScale(30)}
               color={currentTheme.newIconColor}
             />
           </View>

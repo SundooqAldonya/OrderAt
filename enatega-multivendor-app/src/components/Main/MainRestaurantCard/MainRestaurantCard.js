@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
 import MainLoadingUI from '../LoadingUI/MainLoadingUI'
 import { Ionicons } from '@expo/vector-icons'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
@@ -64,7 +64,7 @@ function MainRestaurantCard(props) {
               <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
                 <AntDesign
                   name={isArabic ? 'arrowleft' : 'arrowright'}
-                  size={20}
+                  size={moderateScale(20)}
                   color='black'
                 />
               </View>

@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 import TopBrandsLoadingUI from '../LoadingUI/TopBrandsLoadingUI'
 import truncate from '../../../utils/helperFun'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -108,7 +108,7 @@ function TopBrands(props) {
           <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
             <AntDesign
               name={isArabic ? 'arrowleft' : 'arrowright'}
-              size={20}
+              size={moderateScale(20)}
               color='black'
             />
           </View>

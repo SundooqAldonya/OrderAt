@@ -8,7 +8,7 @@ import {
   Feather,
   SimpleLineIcons
 } from '@expo/vector-icons'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import styles from './styles'
 import { Text, TouchableOpacity, View } from 'react-native'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -31,7 +31,7 @@ function BackButton(props) {
     return (
       <Ionicons
         name='arrow-back'
-        size={scale(18)}
+        size={moderateScale(18)}
         style={styles().leftIconPadding}
         color={colors.white}
       />
@@ -40,7 +40,7 @@ function BackButton(props) {
     return (
       <SimpleLineIcons
         name='menu'
-        size={scale(20)}
+        size={moderateScale(20)}
         color={colors.white}
         style={styles().leftIconPadding}
       />
@@ -49,7 +49,7 @@ function BackButton(props) {
     return (
       <MaterialCommunityIcons
         name='dots-vertical'
-        size={scale(25)}
+        size={moderateScale(25)}
         color={colors?.dark}
       />
     )
@@ -57,12 +57,14 @@ function BackButton(props) {
     return (
       <MaterialIcons
         name='my-location'
-        size={scale(16)}
+        size={moderateScale(10)}
         color={colors?.white}
       />
     )
   } else if (props.icon === 'fav') {
-    return <AntDesign name='hearto' size={scale(20)} color={colors?.white} />
+    return (
+      <AntDesign name='hearto' size={moderateScale(20)} color={colors?.white} />
+    )
   } else {
     return (
       <EvilIcons
@@ -135,7 +137,7 @@ function LeftButton(props) {
         pressColorAndroid={rippleColor}
         labelVisible={false}
         backImage={() =>
-          BackButton({ iconColor: colors?.background, icon: 'menu' })
+          BackButton({ iconColor: colors?.background, icon: 'menu',  })
         }
         onPress={() => navigation.toggleDrawer()}
       />
@@ -168,7 +170,11 @@ function RightButton(props) {
   function cartIcon() {
     return (
       <View style={styles().rightContainer}>
-        <SimpleLineIcons name='handbag' size={scale(20)} color={colors.white} />
+        <SimpleLineIcons
+          name='handbag'
+          size={moderateScale(20)}
+          color={colors.white}
+        />
         <View
           style={[
             styles(route.name === 'Main' ? 'black' : currentTheme.white)
@@ -178,7 +184,7 @@ function RightButton(props) {
         >
           <TextDefault
             textColor={colors.white}
-            style={{ fontSize: scale(10) }}
+            style={{ fontSize: moderateScale(10) }}
             center
             bolder
           >
@@ -293,7 +299,7 @@ function DarkBackButton(props) {
     >
       <Ionicons
         name='close-circle-outline'
-        size={20}
+        size={moderateScale(20)}
         style={{ ...styles().darkBackArrow, color: '#000' }}
         color={colors.white}
       />

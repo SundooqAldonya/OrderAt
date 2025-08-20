@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { fontStyles } from '../../utils/fontStyles'
@@ -45,7 +45,7 @@ const styles = (props = null) =>
     },
     totalOrder: {
       color: props != null ? props.fontNewColor : '#6B7280',
-      marginBottom: scale(12)
+      marginBottom: moderateScale(12)
     },
     termsContainer: {
       ...alignment.PLmedium,
@@ -54,13 +54,13 @@ const styles = (props = null) =>
     tipSec: {
       ...alignment.MLmedium,
       ...alignment.MRmedium,
-      marginVertical: scale(22)
+      marginVertical: moderateScale(22)
     },
     tipRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: scale(8)
+      marginBottom: moderateScale(8)
     },
     itemContainer: {
       width: '100%',
@@ -69,17 +69,17 @@ const styles = (props = null) =>
     priceContainer: {
       width: '100%',
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
-      borderRadius: scale(20),
+      borderRadius: moderateScale(20),
       borderBottomColor:
         props !== null ? props.lightHorizontalLine : 'transparent',
       ...alignment.PLmedium,
       ...alignment.PRmedium,
-      marginVertical: scale(13)
+      marginVertical: moderateScale(13)
     },
     modal: {
       backgroundColor: props != null ? props.themeBackground : '#FFF',
-      borderTopEndRadius: scale(20),
-      borderTopStartRadius: scale(20),
+      borderTopEndRadius: moderateScale(20),
+      borderTopStartRadius: moderateScale(20),
       shadowOpacity: 0,
       paddingTop: 24,
       paddingBottom: 24,
@@ -111,17 +111,17 @@ const styles = (props = null) =>
       borderColor: props !== null ? props.iconBackground : 'white'
     },
     horizontalLine2: {
-      marginVertical: scale(11)
+      marginVertical: moderateScale(11)
     },
     deliveryTime: {
       flexDirection: 'row',
       alignItems: 'center',
-      margin: scale(5),
+      margin: moderateScale(5),
       ...alignment.PLxSmall
     },
 
     suggestedItems: {
-      paddingBottom: scale(30),
+      paddingBottom: moderateScale(30),
       ...alignment.PLlarge
     },
     suggestItemDesciption: {
@@ -130,33 +130,33 @@ const styles = (props = null) =>
     suggestItemImg: {
       width: '100%',
       // aspectRatio: 18/8,
-      height: scale(70)
+      height: moderateScale(70)
     },
     suggestItemContainer: {
       borderWidth: 1,
       borderColor: '#D1D5DB',
       borderRadius: 12,
-      padding: scale(8),
-      width: scale(120),
-      marginTop: scale(14)
+      padding: moderateScale(8),
+      width: moderateScale(120),
+      marginTop: moderateScale(14)
     },
     suggestItemImgContainer: {
       backgroundColor: '#F3F4F6',
       borderWidth: 1,
       borderColor: '#E5E7EB',
       borderRadius: 8,
-      padding: scale(4)
+      padding: moderateScale(4)
     },
     suggestItemName: {
-      marginVertical: scale(5)
+      marginVertical: moderateScale(5)
     },
     suggestItemPrice: {
-      marginTop: scale(5)
+      marginTop: moderateScale(5)
     },
     addToCart: {
-      width: scale(25),
-      height: scale(25),
-      borderRadius: scale(12.5),
+      width: moderateScale(25),
+      height: moderateScale(25),
+      borderRadius: moderateScale(12.5),
       backgroundColor: '#000',
       justifyContent: 'center',
       alignItems: 'center'
@@ -166,15 +166,15 @@ const styles = (props = null) =>
       ...alignment.PLmedium,
       ...alignment.PRmedium,
       ...alignment.PBlarge,
-      paddingVertical: scale(10),
-      marginBottom: scale(15)
+      paddingVertical: moderateScale(10),
+      marginBottom: moderateScale(15)
     },
     changeBtn: {
       backgroundColor: props !== null ? props.main : 'gray',
       justifyContent: 'center',
       alignItems: 'center',
-      width: scale(100),
-      height: scale(30),
+      width: moderateScale(100),
+      height: moderateScale(30),
       borderRadius: 40
     },
     changeBtnInner: {
@@ -188,7 +188,7 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
-      height: scale(50),
+      height: moderateScale(50),
       borderRadius: 40
       // borderColor: props !== null ? props.black : 'black'
     },
@@ -199,7 +199,7 @@ const styles = (props = null) =>
     },
 
     // totalBill:{
-    //   fontSize:scale(27)
+    //   fontSize:moderateScale(27)
     // },
     // buttontLeft: {
     //   width: '35%',
@@ -210,9 +210,9 @@ const styles = (props = null) =>
     //   backgroundColor: props != null ? props.black : 'black',
     //   justifyContent: 'center',
     //   alignItems: 'center',
-    //   width: scale(18),
-    //   height: scale(18),
-    //   borderRadius: scale(9)
+    //   width: moderateScale(18),
+    //   height: moderateScale(18),
+    //   borderRadius: moderateScale(9)
     // },
     // iconStyle: {
     //   height: verticalScale(18),
@@ -229,8 +229,8 @@ const styles = (props = null) =>
       ...alignment.MBlarge
     },
     image: {
-      width: scale(100),
-      height: scale(100)
+      width: moderateScale(100),
+      height: moderateScale(100)
     },
     descriptionEmpty: {
       justifyContent: 'center',
@@ -240,8 +240,8 @@ const styles = (props = null) =>
     emptyButton: {
       backgroundColor: props !== null ? props.newheaderColor : 'transparent',
       width: '70%',
-      height: scale(40),
-      borderRadius: scale(20),
+      height: moderateScale(40),
+      borderRadius: moderateScale(20),
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center'
@@ -281,30 +281,30 @@ const styles = (props = null) =>
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between'
-      // gap:scale(8),
+      // gap:moderateScale(8),
     },
     labelButton: {
-      borderRadius: scale(40),
+      borderRadius: moderateScale(40),
       width: '23%',
       borderWidth: 1,
       borderColor: props !== null ? props.iconBackground : 'transparent',
       backgroundColor: props !== null ? props.color5 : 'transparent',
       justifyContent: 'center',
-      height: scale(37)
+      height: moderateScale(37)
     },
     activeLabel: {
-      borderRadius: scale(40),
+      borderRadius: moderateScale(40),
       backgroundColor: props !== null ? props.main : 'transparent',
       width: '23%',
       justifyContent: 'center',
       borderColor: props !== null ? props.main : 'transparent',
-      height: scale(37)
+      height: moderateScale(37)
     },
     headerContainer: {
       backgroundColor: props !== null ? props.themeBackground : '#6FCF97'
     },
     mapView: {
-      height: scale(119)
+      height: moderateScale(119)
     },
     marker: {
       width: 50,
@@ -327,14 +327,14 @@ const styles = (props = null) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      gap: scale(5),
-      marginTop: scale(10),
-      marginBottom: scale(10)
+      gap: moderateScale(5),
+      marginTop: moderateScale(10),
+      marginBottom: moderateScale(10)
     },
     paymentSec: {
       ...alignment.PLmedium,
       ...alignment.PRmedium,
-      marginTop: scale(13)
+      marginTop: moderateScale(13)
     },
 
     imageContainer: {
@@ -371,19 +371,19 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     changeAddressBtn: {
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       backgroundColor: props != null ? props.main : '#B8B8B8',
       width: '40%',
       justifyContent: 'center',
       alignItems: 'center',
-      height: scale(30)
+      height: moderateScale(30)
     },
     addressAllignment: {
       // display: 'flex',
       // flexDirection: 'column',
       // // justifyContent: 'flex-end',
       width: '100%',
-      marginLeft: scale(15)
+      marginLeft: moderateScale(15)
     },
     addressDetailAllign: {
       width: '65%',
@@ -409,11 +409,12 @@ const styles = (props = null) =>
       gap: 5
     },
     modalInput: {
-      height: scale(60),
+      height: moderateScale(60),
       borderWidth: 1,
       borderColor: props != null ? props.verticalLine : '#B8B8B8',
       padding: 10,
       borderRadius: 6,
+      fontSize: moderateScale(14),
       color: props !== null ? props.newFontcolor : '#f9f9f9'
     },
     labelContainer: {
@@ -421,13 +422,13 @@ const styles = (props = null) =>
     },
     iconContainer: {
       flex: 1,
-      padding: scale(2)
+      padding: moderateScale(2)
     },
     icon: {
       backgroundColor: props != null ? props.iconBackground : '#E5E7EB',
-      width: scale(24),
-      height: scale(24),
-      borderRadius: scale(24),
+      width: moderateScale(24),
+      height: moderateScale(24),
+      borderRadius: moderateScale(24),
       justifyContent: 'center',
       alignItems: 'center'
     },
@@ -436,7 +437,7 @@ const styles = (props = null) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
-      height: scale(40),
+      height: moderateScale(40),
       borderRadius: 40,
       borderWidth: 1,
       borderColor: props !== null ? props.borderColor : 'black',

@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
 import styles from './styles'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import ThemeContext from '../ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { colors } from '../../utils/colors'
@@ -23,7 +23,7 @@ function CheckboxBtn(props) {
       {props.checked ? (
         <FontAwesome
           name="check"
-          size={scale(13)}
+          size={moderateScale(13)}
           color={colors.white}
         />
       ) : null}

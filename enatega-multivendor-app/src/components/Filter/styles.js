@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -7,73 +7,73 @@ const styles = (props = null) =>
       // flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: props !== null ? props.themeBackground : '#fff',
-      padding: scale(10),
-      marginBottom: scale(10)
+      padding: moderateScale(10),
+      marginBottom: moderateScale(10)
     },
     filterButton: {
       paddingHorizontal: 15,
       paddingVertical: 10,
-      borderRadius: scale(20),
+      borderRadius: moderateScale(20),
       backgroundColor: props !== null ? props.filtersBg : '#f0f0f0',
-      marginRight: scale(10)
+      marginRight: moderateScale(10)
     },
     selectedFilterButton: {
       backgroundColor: props !== null ? props.main : '#90E36D'
     },
     filterText: {
-      fontSize: 20,
+      fontSize: moderateScale(20),
       fontWeight: 'bold',
       color: props !== null ? props.newFontcolor : '#90E36D',
-      marginRight: scale(10)
+      marginRight: moderateScale(10)
     },
     filterButtonText: {
-      fontSize: 14,
-      marginRight: scale(10)
+      fontSize: moderateScale(14),
+      marginRight: moderateScale(10)
     },
     itemContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: scale(2),
-      rowGap: scale(10)
+      paddingVertical: moderateScale(2),
+      rowGap: moderateScale(10)
     },
     modalContainer: {
       flex: 1,
       backgroundColor: props !== null ? props.themeBackground : '#fff',
-      paddingTop: scale(20),
-      paddingHorizontal: scale(20)
+      paddingTop: moderateScale(20),
+      paddingHorizontal: moderateScale(20)
     },
     modalHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingTop: scale(40),
-      paddingHorizontal: scale(18),
+      paddingTop: moderateScale(40),
+      paddingHorizontal: moderateScale(18),
       backgroundColor: props !== null ? props.themeBackground : '#fff'
     },
     modalTitle: {
-      fontSize: 18,
+      fontSize: moderateScale(18),
       fontWeight: 'bold',
-      marginBottom: scale(10),
-      marginTop: scale(10)
+      marginBottom: moderateScale(10),
+      marginTop: moderateScale(10)
     },
     modalItem: {
-      paddingVertical: scale(10),
+      paddingVertical: moderateScale(10),
       borderBottomWidth: 0.5,
       borderBottomColor: props !== null ? props.white : '#fff'
     },
     modalItemText: {
-      fontSize: 16
+      fontSize: moderateScale(16)
     },
     saveBtnContainer: {
       width: '100%',
-      height: verticalScale(60),
-      borderRadius: scale(30),
+      height: moderateScale(60),
+      borderRadius: moderateScale(30),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: props !== null ? props.main : '#90E36D',
       alignSelf: 'center',
-      marginTop: scale(20),
-      marginBottom: scale(40)
+      marginTop: moderateScale(20),
+      marginBottom: moderateScale(40)
     },
     selectedModalItem: {
       backgroundColor: props !== null ? props.borderColor : '#efefef'

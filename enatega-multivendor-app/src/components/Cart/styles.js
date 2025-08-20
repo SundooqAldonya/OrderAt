@@ -1,10 +1,10 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import { alignment } from '../../utils/alignment'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 const { height } = Dimensions.get('window')
 
-const BACKDROP_HEIGHT = Math.floor(scale(height / 5))
+const BACKDROP_HEIGHT = Math.floor(moderateScale(height / 5))
 
 export const useStyles = (theme) =>
   StyleSheet.create({
@@ -23,60 +23,60 @@ export const useStyles = (theme) =>
     container: {
       flex: 1,
       backgroundColor: theme.white,
-      borderTopLeftRadius: scale(15),
-      borderTopRightRadius: scale(15),
+      borderTopLeftRadius: moderateScale(15),
+      borderTopRightRadius: moderateScale(15),
       ...alignment.Psmall,
       flex: 1,
       justifyContent: 'space-around'
     },
     topContainer: {
       flex: 1,
-      maxHeight: scale(40),
+      maxHeight: moderateScale(40),
       alignItems: 'flex-end'
     },
     closeButton: {
       backgroundColor: colors.secondaryGreen,
-      paddingVertical: scale(8),
-      paddingHorizontal: scale(10),
-      borderRadius: scale(8),
+      paddingVertical: moderateScale(8),
+      paddingHorizontal: moderateScale(10),
+      borderRadius: moderateScale(8),
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 50,
+      height: moderateScale(50),
       justifyContent: 'space-evenly',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: scale(28)
-      // marginTop: scale(50)
+      borderRadius: moderateScale(28)
+      // marginTop: moderateScale(50)
     },
     disabledButton: {
       opacity: 0.4, // Optional: reduce opacity
       backgroundColor: colors.secondaryGreen,
-      paddingVertical: scale(8),
-      paddingHorizontal: scale(10),
-      borderRadius: scale(8),
+      paddingVertical: moderateScale(8),
+      paddingHorizontal: moderateScale(10),
+      borderRadius: moderateScale(8),
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      height: 50,
+      height: moderateScale(50),
       justifyContent: 'space-evenly',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: scale(28)
+      borderRadius: moderateScale(28)
     },
     secondaryText: {
-      lineHeight: scale(24),
-      marginTop: scale(8)
+      lineHeight: moderateScale(24),
+      marginTop: moderateScale(8)
     },
     ternaryText: {
-      lineHeight: scale(18),
-      marginTop: scale(10)
+      lineHeight: moderateScale(18),
+      marginTop: moderateScale(10)
     },
     inputContainer: {
       ...alignment.MTlarge,
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: theme.verticalLine,
-      borderRadius: scale(5),
+      borderRadius: moderateScale(5),
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 10

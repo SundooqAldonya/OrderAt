@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 
 import { alignment } from '../../../utils/alignment'
@@ -14,8 +14,8 @@ const styles = (props = null) =>
       flex: 1,
       alignItems: 'flex-end',
       padding: 10,
-      borderWidth: scale(1),
-      borderRadius: scale(8),
+      borderWidth: moderateScale(1),
+      borderRadius: moderateScale(8),
       backgroundColor: colors.white,
       marginHorizontal: 5,
       borderColor: colors.lightGray,
@@ -28,7 +28,7 @@ const styles = (props = null) =>
       width: '30%',
       // height: '60%',
       overflow: 'hidden',
-      borderRadius: scale(8)
+      borderRadius: moderateScale(8)
     },
     img: {
       width: '100%',
@@ -57,9 +57,9 @@ const styles = (props = null) =>
       position: 'absolute',
       top: 10,
       left: 10,
-      width: scale(30),
-      height: scale(30),
-      borderRadius: scale(15),
+      width: moderateScale(30),
+      height: moderateScale(30),
+      borderRadius: moderateScale(15),
       backgroundColor: colors.lightGray,
       zIndex: 10,
       justifyContent: 'center',
@@ -70,9 +70,9 @@ const styles = (props = null) =>
       position: 'absolute',
       bottom: 15,
       left: 10,
-      width: scale(45),
-      height: scale(20),
-      borderRadius: scale(10),
+      width: moderateScale(45),
+      height: moderateScale(20),
+      borderRadius: moderateScale(10),
       backgroundColor: props != null ? props.menuBar : 'white',
       zIndex: 1,
       justifyContent: 'center',
@@ -86,7 +86,7 @@ const styles = (props = null) =>
       // width: '100%',
       width: '60%',
       marginHorizontal: 5
-      // padding: scale(12)
+      // padding: moderateScale(12)
     },
     offerCategoty: {
       ...alignment.MTxSmall,

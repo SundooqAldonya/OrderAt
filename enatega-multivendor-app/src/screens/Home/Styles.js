@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 const windowWidth = Dimensions.get('window').width
 import { alignment } from '../../utils/alignment'
@@ -12,8 +12,8 @@ const styles = (props = null) =>
     mainItemsContainer:{
       flexDirection:'row',
       justifyContent:'center',
-      gap:scale(20),
-      marginTop:scale(16),   
+      gap:moderateScale(20),
+      marginTop:moderateScale(16),   
     },
     mainItem:{
       padding:12,
@@ -52,14 +52,14 @@ const styles = (props = null) =>
     },
     addressbtn: {
       backgroundColor: colors.primary,
-      marginLeft: scale(10),
-      marginRight: scale(10),
-      marginBottom: scale(10),
-      borderRadius: scale(10),
+      marginLeft: moderateScale(10),
+      marginRight: moderateScale(10),
+      marginBottom: moderateScale(10),
+      borderRadius: moderateScale(10),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: scale(5),
+      padding: moderateScale(5),
       ...alignment.PLmedium,
       ...alignment.PRmedium
     },
@@ -94,7 +94,7 @@ const styles = (props = null) =>
       width: '10%',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      marginRight: scale(5)
+      marginRight: moderateScale(5)
     },
     overlay: {
       backgroundColor:

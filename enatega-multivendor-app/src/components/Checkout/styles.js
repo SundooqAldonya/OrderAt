@@ -1,34 +1,34 @@
 import { StyleSheet } from 'react-native'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 
 export const useStyles = theme => (StyleSheet.create({
     container: {
-        height: scale(40),
+        height: moderateScale(40),
         flex: 1,
     },
     ovalContainer: {
         backgroundColor: theme?.gray200,
         flex: 1,
-        borderRadius: scale(40),
-        marginHorizontal: scale(10),
-        marginVertical: scale(5),
+        borderRadius: moderateScale(40),
+        marginHorizontal: moderateScale(10),
+        marginVertical: moderateScale(5),
         flexDirection: 'row',
     },
     ovalButton: {
         flex: 1,
-        borderRadius: scale(40),
-        marginHorizontal: scale(2),
-        marginVertical: scale(2),
+        borderRadius: moderateScale(40),
+        marginHorizontal: moderateScale(2),
+        marginVertical: moderateScale(2),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
     },
     instructionContainer: {
-        padding: scale(10),
+        padding: moderateScale(10),
         flexDirection: 'row',
-        margin: scale(10),
+        margin: moderateScale(10),
         borderWidth: StyleSheet.hairlineWidth,
-        borderRadius: scale(10),
+        borderRadius: moderateScale(10),
         borderColor: theme.gray500
     },
     leftContainer: {

@@ -702,6 +702,7 @@ export const ar = {
   name_updated: 'تم تحديث اسمك بنجاح!',
   addresses_saved: 'تم إضافة العناوين إلى عناوينك المحفوظة',
   change_city: 'تغيير المدينة',
+  find_place: 'ابحث عن مكان...',
   picks_for_you: 'اختيارات لك',
   no_items_in_category: 'لا توجد عناصر في هذه الفئة',
   searchForFood: 'ابحث عن الطعام',

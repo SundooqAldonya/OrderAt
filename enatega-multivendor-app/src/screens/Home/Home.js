@@ -38,7 +38,7 @@ import Item from '../../components/Main/Item/Item'
 import UserContext from '../../context/User'
 import { restaurantList } from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import styles from './styles'
 import TextError from '../../components/Text/TextError/TextError'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
@@ -199,7 +199,7 @@ function Main(props) {
         <View style={styles().addressSubContainer}>
           <MaterialCommunityIcons
             name='target'
-            size={scale(25)}
+            size={moderateScale(25)}
             color={currentTheme.black}
           />
           <View style={styles().mL5p} />
@@ -210,7 +210,7 @@ function Main(props) {
         {location.label === 'currentLocation' && (
           <MaterialIcons
             name='check'
-            size={scale(15)}
+            size={moderateScale(15)}
             color={currentTheme.iconColorPink}
           />
         )}
@@ -538,7 +538,7 @@ function Main(props) {
                     <View style={styles().addressSubContainer}>
                       <SimpleLineIcons
                         name={addressIcons[address.label]}
-                        size={scale(12)}
+                        size={moderateScale(12)}
                         color={currentTheme.black}
                       />
                       <View style={styles().mL5p} />

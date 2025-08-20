@@ -62,7 +62,8 @@ const styles = (props = null) =>
       ...alignment.PLsmall
     },
     headerRightIcon: {
-      ...alignment.PRsmall
+      ...alignment.PRsmall,
+      ...alignment.PBsmall,
     },
     btnContainer: {
       width: '100%',

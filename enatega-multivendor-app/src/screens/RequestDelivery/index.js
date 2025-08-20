@@ -41,7 +41,7 @@ import ConfigurationContext from '../../context/Configuration'
 import { Modalize } from 'react-native-modalize'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 import Spinner from '../../components/Spinner/Spinner'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -428,7 +428,8 @@ const RequestDelivery = () => {
   const onModalClose = (modalRef) => {
     const modal = modalRef.current
     if (modal) {
-      modal.close()
+      modal.close();
+      setCouponOpen(false)
     }
   }
 
@@ -555,7 +556,7 @@ const RequestDelivery = () => {
               </View>
 
               <View style={styles.editIconContainer(isArabic)}>
-                <Feather name='edit' size={20} color='black' />
+                <Feather name='edit' size={moderateScale(20)} color='black' />
               </View>
             </View>
             <View style={{ marginHorizontal: 35 }}>
@@ -585,7 +586,7 @@ const RequestDelivery = () => {
               </View>
 
               <View style={styles.editIconContainer(isArabic)}>
-                <Feather name='edit' size={20} color='black' />
+                <Feather name='edit' size={moderateScale(20)} color='black' />
               </View>
             </View>
             <View style={{ marginHorizontal: 35 }}>
@@ -651,7 +652,7 @@ const RequestDelivery = () => {
               >
                 <MaterialCommunityIcons
                   name='ticket-confirmation-outline'
-                  size={24}
+                  size={moderateScale(24)}
                   color={currentTheme.lightBlue}
                 />
                 <TextDefault
@@ -686,8 +687,8 @@ const RequestDelivery = () => {
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      paddingTop: scale(8),
-                      gap: scale(5)
+                      paddingTop: moderateScale(8),
+                      gap: moderateScale(5)
                     }}
                   >
                     <View>
@@ -847,6 +848,7 @@ const RequestDelivery = () => {
           </View>
         </Modal>
         <Modal
+          ref={voucherModalRef}
           isVisible={couponOpen}
           onBackdropPress={onClose}
           onBackButtonPress={onClose}
@@ -872,7 +874,7 @@ const RequestDelivery = () => {
               >
                 <MaterialCommunityIcons
                   name='ticket-confirmation-outline'
-                  size={24}
+                  size={moderateScale(24)}
                   color={currentTheme.newIconColor}
                 />
                 <TextDefault
@@ -886,7 +888,7 @@ const RequestDelivery = () => {
               </View>
               <Feather
                 name='x-circle'
-                size={34}
+                size={moderateScale(24)}
                 color={currentTheme.newIconColor}
                 onPress={() => onModalClose(voucherModalRef)}
               />
@@ -907,7 +909,7 @@ const RequestDelivery = () => {
               style={[
                 couponStyles.applyButton,
                 !voucherCode && couponStyles.buttonDisabled,
-                { height: scale(40), marginTop: scale(20) },
+                { height: moderateScale(40), marginTop: moderateScale(20) },
                 { opacity: couponLoading ? 0.5 : 1 }
               ]}
             >
@@ -939,7 +941,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#000',
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     marginBottom: 16
   },
@@ -957,7 +959,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 12,
-    fontSize: 16,
+    fontSize: moderateScale(16),
     height: 120, // adjust height as needed
     textAlignVertical: 'top',
     backgroundColor: '#fff',
@@ -993,7 +995,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
-    height: 40
+    height: moderateScale(40)
   },
   editContainer: {
     position: 'absolute',
@@ -1019,7 +1021,7 @@ const styles = StyleSheet.create({
     gap: 5
   },
   modalInput: {
-    height: scale(60),
+    height: moderateScale(60),
     borderWidth: 1,
     borderColor: '#B8B8B8',
     padding: 10,
@@ -1028,8 +1030,8 @@ const styles = StyleSheet.create({
   },
   modal: {
     backgroundColor: '#FFF',
-    borderTopEndRadius: scale(20),
-    borderTopStartRadius: scale(20),
+    borderTopEndRadius: moderateScale(20),
+    borderTopStartRadius: moderateScale(20),
     shadowOpacity: 0,
     paddingTop: 24,
     paddingBottom: 24,
@@ -1048,16 +1050,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: scale(5),
-    marginTop: scale(10),
-    marginBottom: scale(10)
+    gap: moderateScale(5),
+    marginTop: moderateScale(10),
+    marginBottom: moderateScale(10)
   },
   button: {
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    height: scale(50),
+    height: moderateScale(50),
     borderRadius: 40
   },
   buttonDisabled: {
@@ -1067,8 +1069,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    width: scale(100),
-    height: scale(30),
+    width: moderateScale(100),
+    height: moderateScale(30),
     borderRadius: 40
   },
   changeBtnInner: {
@@ -1106,12 +1108,12 @@ const styles = StyleSheet.create({
   addressText: (isArabic) => ({
     color: '#333',
     textAlign: isArabic ? 'right' : 'left',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '500'
   }),
   iconStyle: {
-    width: 34,
-    height: 34,
+    width: moderateScale(34),
+    height: moderateScale(34),
     resizeMode: 'contain'
   }
 })
@@ -1141,18 +1143,18 @@ const couponStyles = StyleSheet.create({
     marginBottom: 24
   },
   modalInput: {
-    height: 50,
+    height: moderateScale(50),
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 12,
     color: '#000',
     backgroundColor: '#fff',
-    fontSize: 16
+    fontSize: moderateScale(16)
   },
   applyButton: {
     backgroundColor: colors.primary,
-    height: 48,
+    height: moderateScale(48),
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center'
@@ -1174,7 +1176,7 @@ const styleNameModal = StyleSheet.create({
     marginHorizontal: 20
   },
   title: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     marginBottom: 12,
     color: theme?.text || '#000'
@@ -1206,8 +1208,8 @@ const styleNameModal = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#28a745',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: moderateScale(16),
+    paddingVertical: moderateScale(8),
     borderRadius: 8
   },
   submitText: {

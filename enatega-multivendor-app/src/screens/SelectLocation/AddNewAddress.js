@@ -27,7 +27,7 @@ import screenOptions from './screenOptions'
 import { useLocation } from '../../ui/hooks'
 import UserContext from '../../context/User'
 import useGeocoding from '../../ui/hooks/useGeocoding'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import gql from 'graphql-tag'
 import { getCityAreas } from '../../apollo/queries'
 import { useQuery } from '@apollo/client'
@@ -35,6 +35,7 @@ import AreasModal from './AreasModal'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
+import { textStyles } from '../../utils/textStyles'
 
 const LATITUDE = 33.699265
 const LONGITUDE = 72.974575
@@ -122,13 +123,12 @@ export default function AddNewAddress(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        ...textStyles.H4,
+        fontWeight: 'bold',
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
-        height: '75%',
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         marginLeft: 0
       },
       headerStyle: {
@@ -139,10 +139,10 @@ export default function AddNewAddress(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View style={{paddingLeft: 10}}>
               <MaterialIcons
                 name='arrow-back'
-                size={30}
+                size={moderateScale(20)}
                 color={currentTheme.newIconColor}
               />
             </View>
@@ -290,7 +290,6 @@ export default function AddNewAddress(props) {
             bolder
             Left
             style={{
-              ...styles().addressHeading,
               textAlign: isArabic ? 'right' : 'left'
             }}
           >
@@ -333,10 +332,10 @@ export default function AddNewAddress(props) {
               width: '95%',
               alignSelf: 'center',
               justifyContent: 'center',
-              marginTop: scale(5)
+              marginTop: moderateScale(5)
             }}
           >
-            <Text style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            <Text style={{ fontSize: 18, textAlign: isArabic ? 'right' : 'left' }}>
               {t('select_area')}
             </Text>
           </View>
@@ -353,7 +352,7 @@ export default function AddNewAddress(props) {
             <TextDefault
               style={{
                 color: selectedArea ? '#000' : 'red',
-                textAlign: isArabic ? 'right' : 'left'
+                textAlign: isArabic ? 'right' : 'left',
               }}
             >
               {selectedArea ? selectedArea.title : t('select_area')}

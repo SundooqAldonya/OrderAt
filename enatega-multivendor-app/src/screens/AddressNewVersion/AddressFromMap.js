@@ -29,6 +29,7 @@ import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import { moderateScale } from '../../utils/scaling'
 
 const { width, height } = Dimensions.get('window')
 
@@ -58,13 +59,17 @@ const AddressFromMap = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('choose_from_map'),
+      headerTitleStyle: {
+        fontSize: moderateScale(14),
+        color: "#fff",
+      },
       headerRight: () => {
         return (
           <TouchableOpacity
             onPress={handleCurrentPosition}
             style={{ paddingRight: 25 }}
           >
-            <FontAwesome6 name='location-crosshairs' size={20} color='#fff' />
+            <FontAwesome6 name='location-crosshairs' size={moderateScale(18)} color='#fff' />
           </TouchableOpacity>
         )
       },
@@ -255,7 +260,7 @@ const AddressFromMap = () => {
           }}
         />
         <View style={styles.markerFixed}>
-          <Ionicons name='location-sharp' size={36} color='red' />
+          <Ionicons name='location-sharp' size={moderateScale(36)} color='red' />
         </View>
         {/* <Marker coordinate={location} />
       </MapView> */}
@@ -297,7 +302,7 @@ const AddressFromMap = () => {
               textInputContainer: {
                 backgroundColor: '#fff',
                 borderRadius: 10,
-                paddingHorizontal: 40,
+                paddingHorizontal: moderateScale(40),
                 paddingVertical: Platform.OS === 'ios' ? 10 : 0,
                 elevation: 5,
                 shadowColor: '#000',
@@ -306,23 +311,23 @@ const AddressFromMap = () => {
                 shadowRadius: 5
               },
               textInput: {
-                height: 44,
+                height: moderateScale(44),
                 color: '#000',
-                fontSize: 16,
+                fontSize: moderateScale(16),
                 textAlign: 'right'
               }
             }}
           />
           {/* Clear icon (right) */}
           <TouchableOpacity style={styles.clearIcon} onPress={clearSearch}>
-            <Ionicons name='close-circle' size={24} color='#888' />
+            <Ionicons name='close-circle' size={moderateScale(24)} color='#888' />
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.bottomButtonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Ionicons name='checkmark-circle' size={24} color='#fff' />
+          <Ionicons name='checkmark-circle' size={moderateScale(24)} color='#fff' />
           <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
       </View>
@@ -360,7 +365,7 @@ const styles = StyleSheet.create({
   clearIcon: {
     position: 'absolute',
     right: 15,
-    top: Platform.OS === 'ios' ? 18 : 14,
+    top: Platform.OS === 'ios' ? moderateScale(18) : 14,
     zIndex: 999
   },
   sendIcon: {
@@ -386,7 +391,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     marginLeft: 8
   }
 })

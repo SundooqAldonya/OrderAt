@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { EvilIcons, MaterialIcons } from '@expo/vector-icons'
 import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
 import UserContext from '../../context/User'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -41,25 +41,25 @@ function CartAddresses(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
-        elevation: 0
+        elevation: 0,
       },
       headerLeft: () => (
         <HeaderBackButton
           truncatedLabel=""
           backImage={() => (
-            <View>
-              <MaterialIcons name="arrow-back" size={30} color={currentTheme.newIconColor} />
+            <View style={{paddingLeft: moderateScale(10)}}>
+              <MaterialIcons name="arrow-back" size={moderateScale(24)} color={currentTheme.newIconColor} />
             </View>
           )}
           onPress={() => {
@@ -117,7 +117,7 @@ function CartAddresses(props) {
                 <View style={[styles().titleAddress, styles().width100]}>
                   <View style={[styles().homeIcon]}>
                     <RadioButton
-                      size={13}
+                      size={moderateScale(13)}
                       outerColor={currentTheme.radioOuterColor}
                       innerColor={currentTheme.radioColor}
                       animation={'bounceIn'}
@@ -188,7 +188,7 @@ function CartAddresses(props) {
                   <View style={[styles().titleAddress, styles().width100]}>
                     <View style={[styles().homeIcon]}>
                       <RadioButton
-                        size={13}
+                        size={moderateScale(10)}
                         outerColor={currentTheme.darkBgFont}
                         innerColor={currentTheme.radioColor}
                         animation={'bounceIn'}
@@ -221,7 +221,7 @@ function CartAddresses(props) {
                     >
                       <EvilIcons
                         name='pencil'
-                        size={scale(25)}
+                        size={moderateScale(22)}
                         color={currentTheme.darkBgFont}
                         style={styles().width100}
                       />

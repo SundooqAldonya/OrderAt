@@ -28,7 +28,7 @@ import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmen
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import { selectAddress } from '../../apollo/mutations'
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
@@ -133,6 +133,10 @@ const NewPickupMandoob = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('pickup'),
+      headerTitleStyle: {
+        fontSize: moderateScale(14),
+        color: "#fff"
+      },
       headerRight: false,
       headerStyle: {
         backgroundColor: colors.primary
@@ -340,7 +344,7 @@ const NewPickupMandoob = () => {
           }}
         >
           <View style={{ ...styles.addressSubContainer, gap: 5 }}>
-            <AntDesign name='pluscircleo' size={scale(20)} color={'#fff'} />
+            <AntDesign name='pluscircleo' size={moderateScale(20)} color={'#fff'} />
             <View style={styles.mL5p} />
             <TextDefault bold H4>
               {t('addAddress')}
@@ -370,7 +374,7 @@ const NewPickupMandoob = () => {
         <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Feather
             name='bookmark'
-            size={22}
+            size={moderateScale(22)}
             color={chooseFromAddressBookFrom ? 'green' : '#000'}
           />
           <Text
@@ -383,7 +387,7 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {chooseFromAddressBookFrom && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
+          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
         )}
       </TouchableOpacity>
 
@@ -399,7 +403,7 @@ const NewPickupMandoob = () => {
         <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <MaterialIcons
             name='location-city'
-            size={22}
+            size={moderateScale(22)}
             color={selectedCityAndAreaFrom ? 'green' : '#000'}
           />
           <Text
@@ -413,7 +417,7 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {selectedCityAndAreaFrom && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
+          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
         )}
       </TouchableOpacity>
 
@@ -432,7 +436,7 @@ const NewPickupMandoob = () => {
         <View style={{ flexDirection: isArabic ? 'row' : 'row-reverse' }}>
           <Entypo
             name='location-pin'
-            size={22}
+            size={moderateScale(22)}
             color={chooseFromMapFrom ? 'green' : '#000'}
           />
           <Text
@@ -445,7 +449,7 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {chooseFromMapFrom && (
-          <AntDesign name='checkcircleo' size={24} color='green' />
+          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
         )}
       </TouchableOpacity>
 
@@ -547,7 +551,7 @@ const NewPickupMandoob = () => {
                   style={{
                     color: colors.primary, // or '#007bff' if you're not using a theme
                     textDecorationLine: 'underline',
-                    fontSize: 14
+                    fontSize: moderateScale(14)
                   }}
                 >
                   {t('change_city')}
@@ -611,12 +615,12 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   optionText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     marginHorizontal: 10,
     color: '#000'
   },
   label: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#000',
     marginTop: 15,
     marginBottom: 5
@@ -637,11 +641,11 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: 'bold'
   },
   addNewAddressbtn: {
-    padding: scale(5),
+    padding: moderateScale(5),
     ...alignment.PLmedium,
     ...alignment.PRmedium
   },
@@ -654,7 +658,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     // backgroundColor: colors.dark,
     width: '100%',
-    height: scale(40),
+    height: moderateScale(40),
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',

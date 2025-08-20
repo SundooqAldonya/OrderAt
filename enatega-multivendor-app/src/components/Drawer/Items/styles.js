@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { theme } from '../../../utils/themeColors'
 import { alignment } from '../../../utils/alignment'
 
@@ -16,8 +16,8 @@ const styles = (props = null) =>
       ...alignment.MLxSmall
     },
     leftContainer: {
-      height: scale(35),
-      width: scale(35),
+      height: moderateScale(35),
+      width: moderateScale(35),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: props !== null ? props.gray100 : 'transparent',

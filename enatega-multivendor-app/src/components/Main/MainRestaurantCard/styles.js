@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../../utils/scaling'
 import { Dimensions, StyleSheet } from 'react-native'
 import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
@@ -23,9 +23,9 @@ const styles = (props = null) =>
       ...alignment.MRmedium
     },
     orderAgainSec: {
-      marginBottom: scale(30),
+      marginBottom: moderateScale(30),
       flex: 1,
-      height: 270,
+      height: moderateScale(270),
       ...alignment.MLmedium
     },
     topPicksSec: {
