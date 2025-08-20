@@ -2,9 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { Configuration } from '../../ui/context'
+import { callNumber } from '../../utilities/callNumber'
 
 const OrderHistoryCard = ({ item }) => {
   const configuration = useContext(Configuration.Context)
+
   return (
     <TouchableOpacity style={styles.card}>
       <View style={styles.row}>
@@ -23,7 +25,9 @@ const OrderHistoryCard = ({ item }) => {
         <View style={styles.icons}>
           {item.eta && <Text style={styles.eta}>{item.eta}</Text>}
           {item.date && <Text style={styles.eta}>{item.date}</Text>}
-          <TouchableOpacity style={styles.iconBtn}>
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => callNumber(item.phone)}>
             <MaterialIcons name="phone" size={20} color="#000" />
           </TouchableOpacity>
         </View>
