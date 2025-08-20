@@ -16,42 +16,49 @@ import OrderHistoryCard from '../../components/OrderHistoryComponents/OrderHisto
 import { useOrders } from '../../ui/hooks'
 import moment from 'moment'
 import { colors } from '../../utilities'
-import DateTimePicker, { useDefaultStyles } from 'react-native-ui-datepicker'
-import dayjs from 'dayjs'
+import { Calendar } from 'react-native-calendars'
+import { eachDayOfInterval, format } from 'date-fns'
+import { useQuery } from '@apollo/client'
+import { restaurantOrdersHistory } from '../../apollo'
 
 export default function OrderHistory() {
   const { t } = useTranslation()
   const navigation = useNavigation()
-  const [showPicker, setShowPicker] = useState(false)
-  const [dateRange, setDateRange] = useState({
-    startDate: dayjs(),
-    endDate: dayjs().add(5, 'day')
+  let today = new Date()
+  const [showPicker1, setShowPicker1] = useState(false)
+  const [date1UI, setDate1UI] = useState(null)
+  const [date2UI, setDate2UI] = useState(null)
+
+  // const {
+  //   loading,
+  //   error,
+  //   data,
+  //   activeOrders,
+  //   processingOrders,
+  //   deliveredOrders,
+  //   active,
+  //   refetch,
+  //   setActive
+  // } = useOrders()
+
+  const { data, loading, error } = useQuery(restaurantOrdersHistory, {
+    variables: {
+      startDate: date1UI,
+      endDate: date2UI
+    }
   })
-  const defaultStyles = useDefaultStyles()
 
-  const {
-    loading,
-    error,
-    data,
-    activeOrders,
-    processingOrders,
-    deliveredOrders,
-    active,
-    refetch,
-    setActive
-  } = useOrders()
-
-  console.log({ activeOrders })
+  console.log({ data })
 
   const orders = React.useMemo(() => {
-    if (!data?.restaurantOrders) return []
+    if (!data?.restaurantOrdersHistory) return []
 
     // Group orders into sections
-    const inProgress = data?.restaurantOrders?.filter(order =>
+    const inProgress = data?.restaurantOrdersHistory?.filter(order =>
       ['ACCEPTED', 'ASSIGNED', 'PICKED'].includes(order.orderStatus)
     )
 
-    const completed = data.restaurantOrders.filter(
+    const completed = data?.restaurantOrdersHistory.filter(
       order => order.orderStatus === 'DELIVERED'
     )
 
@@ -87,6 +94,57 @@ export default function OrderHistory() {
     ]
   }, [data])
 
+  const getMarkedDates = () => {
+    let marked = {}
+
+    if (date1UI && date2UI) {
+      const range = eachDayOfInterval({
+        start: new Date(date1UI),
+        end: new Date(date2UI)
+      })
+
+      range.forEach((day, i) => {
+        const date = format(day, 'yyyy-MM-dd')
+        if (i === 0) {
+          marked[date] = {
+            startingDay: true,
+            color: 'blue',
+            textColor: 'white'
+          }
+        } else if (i === range.length - 1) {
+          marked[date] = {
+            endingDay: true,
+            color: 'blue',
+            textColor: 'white'
+          }
+        } else {
+          marked[date] = { color: '#a3c9f9', textColor: 'white' }
+        }
+      })
+    } else if (date1UI) {
+      marked[date1UI] = { selected: true, color: 'blue', textColor: 'white' }
+    }
+
+    return marked
+  }
+
+  const handleDayPress = day => {
+    if (!date1UI || (date1UI && date2UI)) {
+      // start a new range
+      setDate1UI(day.dateString)
+      setDate2UI(null)
+    } else if (!date2UI) {
+      // end date
+      if (new Date(day.dateString) < new Date(date1UI)) {
+        // if tapped before start date, swap
+        setDate2UI(date1UI)
+        setDate1UI(day.dateString)
+      } else {
+        setDate2UI(day.dateString)
+      }
+    }
+  }
+
   const renderItems = ({ item }) => {
     return <OrderHistoryCard item={item} />
   }
@@ -101,19 +159,30 @@ export default function OrderHistory() {
         <Text style={styles.headerDate}>{t('orders_history')}</Text>
       </View>
       <View style={styles.headerRow}>
-        {/* <Text style={styles.headerDate}>5 July 2025</Text> */}
-        <TouchableOpacity onPress={() => setShowPicker(true)}>
-          <Text style={{ fontSize: 16, fontWeight: '500' }}>
-            {dateRange.startDate && dateRange.endDate
-              ? `${moment(dateRange.startDate).format('D MMM YYYY')} - ${moment(
-                  dateRange.endDate
-                ).format('D MMM YYYY')}`
-              : 'Select Date Range'}
-          </Text>
-        </TouchableOpacity>
+        {!date1UI && !date2UI ? (
+          <TouchableOpacity onPress={() => setShowPicker1(true)}>
+            <Text style={styles.headerDate}>
+              {moment().format('D MMM YYYY')}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={() => setShowPicker1(true)}>
+              <Text style={{ fontSize: 16, fontWeight: '500' }}>
+                {`${moment(date1UI).format('D MMM YYYY')}`}
+              </Text>
+            </TouchableOpacity>
+            <Text> - </Text>
+            <TouchableOpacity onPress={() => setShowPicker1(true)}>
+              <Text style={{ fontSize: 16, fontWeight: '500' }}>
+                {`${moment(date2UI).format('D MMM YYYY')}`}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <Text style={styles.headerFilter}>All orders</Text>
       </View>
-      <Modal visible={showPicker} animationType="slide" transparent>
+      <Modal visible={showPicker1} animationType="slide" transparent>
         <View
           style={{
             flex: 1,
@@ -121,44 +190,24 @@ export default function OrderHistory() {
             backgroundColor: 'rgba(0,0,0,0.5)'
           }}>
           <View
-            style={{ backgroundColor: '#fff', padding: 20, borderRadius: 10 }}>
-            <DateTimePicker
-              mode="range"
-              startDate={dateRange.startDate}
-              endDate={dateRange.endDate}
-              selected={
-                dateRange.startDate && dateRange.endDate
-                  ? {
-                      startDate: dateRange.startDate,
-                      endDate: dateRange.endDate
-                    }
-                  : null
-              }
-              calendarTextStyle={{ color: '#222' }} // all labels (days/months/years)
-              weekDaysTextStyle={{ color: '#666' }} // Su Mo Tu...
-              headerTextStyle={{ color: '#111', fontWeight: '700' }} // Month/Year
-              dayContainerStyle={{ borderRadius: 8 }} // round day cells
-              todayContainerStyle={{
-                borderWidth: 1,
-                borderColor: '#2e7d32',
-                borderRadius: 8
-              }}
-              todayTextStyle={{ color: '#2e7d32' }}
-              selectedItemColor="#2e7d32" // start & end day background
-              selectedTextStyle={{ color: '#fff', fontWeight: '700' }}
-              selectedRangeBackgroundColor="#e8f5e9"
-              selectedRangeTextStyle={{ color: '#2e7d32' }}
-              disabledTextStyle={{ color: '#aaa' }}
-              onChange={({ startDate, endDate }) =>
-                setDateRange({ startDate, endDate })
-              }
+            style={{
+              backgroundColor: '#fff',
+              padding: 20,
+              borderRadius: 10,
+              marginHorizontal: 10
+            }}>
+            <Calendar
+              markingType="period"
+              onDayPress={handleDayPress}
+              markedDates={getMarkedDates()}
             />
-
             <TouchableOpacity
-              onPress={() => setShowPicker(false)}
+              onPress={() => {
+                setShowPicker1(false)
+              }}
               style={{
                 marginTop: 20,
-                backgroundColor: '#6200ee',
+                backgroundColor: colors.primary,
                 padding: 12,
                 borderRadius: 8,
                 alignItems: 'center'
