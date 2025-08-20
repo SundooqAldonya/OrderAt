@@ -45,7 +45,8 @@ export default function OrderHistory() {
     variables: {
       startDate: date1UI,
       endDate: date2UI
-    }
+    },
+    pollInterval: 10000
   })
 
   console.log({ data })
@@ -71,6 +72,7 @@ export default function OrderHistory() {
           total: o.paidAmount || o.orderAmount,
           items: o.items?.length || 0,
           status: 'Delivery in progress',
+          phone: o.user.phone || null,
           eta: o.preparationTime
             ? `Est. delivery ${moment(o.createdAt)
                 .add(o.preparationTime, 'minutes')
@@ -86,6 +88,7 @@ export default function OrderHistory() {
           total: o.paidAmount || o.orderAmount,
           items: o.items?.length ?? 0,
           status: 'Delivered',
+          phone: o.user.phone || null,
           date: moment(o.deliveredAt || o.orderDate).format(
             'D MMM YYYY, h:mm a'
           )
