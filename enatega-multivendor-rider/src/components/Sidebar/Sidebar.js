@@ -10,7 +10,8 @@ import useSidebar from './useSidebar'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import UserContext from '../../context/user'
-import { stopBackgroundUpdate } from '../../utilities/backgroundLocationTask'
+import { stopBackgroundLocation } from '../../utilities/transistorBackgroundTracking'
+// import { stopBackgroundUpdate } from '../../utilities/backgroundLocationTask'
 
 function SidebBar() {
   const navigation = useNavigation()
@@ -33,7 +34,8 @@ function SidebBar() {
 
   const handleLogout = () => {
     logout()
-    stopBackgroundUpdate()
+    // stopBackgroundUpdate()
+    stopBackgroundLocation()
   }
 
   return (
