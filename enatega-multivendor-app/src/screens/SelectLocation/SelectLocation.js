@@ -59,6 +59,7 @@ import { alignment } from '../../utils/alignment'
 import { useSelector } from 'react-redux'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { v4 as uuidv4 } from 'uuid'
+import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -447,7 +448,7 @@ export default function SelectLocation(props) {
           <Fragment>
             <View style={{ flex: 1 }}>
               <View style={styles1.searchContainer}>
-                <GooglePlacesAutocomplete
+                <CustomPlacesAutocomplete
                   ref={searchRef}
                   predefinedPlaces={[]}
                   predefinedPlacesAlwaysVisible={false}
