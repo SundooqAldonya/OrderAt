@@ -50,6 +50,8 @@ export async function initBackgroundLocation() {
 
   // Configure plugin
   BackgroundGeolocation.ready({
+    reset: true,
+    debug: true,
     desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
     distanceFilter: 20, // every 20 meters
     stopOnTerminate: false, // continue after app killed
@@ -58,7 +60,9 @@ export async function initBackgroundLocation() {
     notification: {
       title: 'Tracking location',
       text: 'Your location is being used',
-      color: '#229F48'
+      color: '#229F48',
+      priority: BackgroundGeolocation.NOTIFICATION_PRIORITY_MIN
+      // sticky: true
     }
   })
     .then(state => {

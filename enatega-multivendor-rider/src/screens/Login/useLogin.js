@@ -60,7 +60,7 @@ const useLogin = () => {
       FlashMessage({ message: t('loginFlashMsg') })
       await AsyncStorage.setItem('rider-id', riderLogin.userId)
       await setTokenAsync(riderLogin.token)
-      startBackgroundUpdate().catch(console.warn)
+      // startBackgroundUpdate().catch(console.warn)
       navigation.navigate('Home')
     } else {
       if (

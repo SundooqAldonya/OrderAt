@@ -80,7 +80,7 @@ const useSidebar = () => {
         setIsMuted(true)
         stopBackgroundUpdate()
       } else {
-        startBackgroundUpdate()
+        // startBackgroundUpdate()
       }
       setIsEnabled(previousState => !previousState)
     }
