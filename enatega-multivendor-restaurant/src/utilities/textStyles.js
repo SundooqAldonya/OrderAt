@@ -1,30 +1,31 @@
 import { scale } from './scaling'
 import { fontStyles } from './fontStyles'
+import { ScaledSheet, moderateScale } from 'react-native-size-matters'
 
 export const textStyles = {
   H1: {
-    fontSize: scale(35)
+    fontSize: moderateScale(35)
   },
   H2: {
-    fontSize: scale(24)
+    fontSize: moderateScale(24)
   },
   H3: {
-    fontSize: scale(20)
+    fontSize: moderateScale(20)
   },
   H4: {
-    fontSize: scale(16)
+    fontSize: moderateScale(16)
   },
   H5: {
-    fontSize: scale(14)
+    fontSize: moderateScale(14)
   },
   Normal: {
-    fontSize: scale(12)
+    fontSize: moderateScale(12)
   },
   Small: {
-    fontSize: scale(10)
+    fontSize: moderateScale(10)
   },
   xSmall: {
-    fontSize: scale(8)
+    fontSize: moderateScale(8)
   },
   Regular: {
     fontFamily: 'Montserrat_400Regular'

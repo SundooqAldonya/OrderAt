@@ -387,6 +387,36 @@ module.exports = {
       }).sort({ createdAt: 'descending' }) // today and yesterday instead of limit 50
       return orders.map(transformOrder)
     },
+    restaurantOrdersHistory: async (_, args, { req }) => {
+      console.log('restaurantOrdersHistory', req.restaurantId, { args })
+      try {
+        const { startDate, endDate } = args
+
+        // Convert to proper Date objects
+        let filter = {
+          restaurant: req.restaurantId
+        }
+
+        if (startDate && endDate) {
+          filter.createdAt = {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+          }
+        } else if (startDate) {
+          filter.createdAt = { $gte: new Date(startDate) }
+        } else if (endDate) {
+          filter.createdAt = { $lte: new Date(endDate) }
+        }
+
+        const orders = await Order.find({ ...filter }).sort({
+          createdAt: 'descending'
+        })
+        console.log({ orders })
+        return orders.map(transformOrder)
+      } catch (err) {
+        throw err
+      }
+    },
     recentOrderRestaurants: async (_, args, { req }) => {
       console.log('recentOrderRestaurants', args, req.userId)
       const { longitude, latitude } = args

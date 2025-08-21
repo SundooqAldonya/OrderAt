@@ -1,8 +1,8 @@
 import { Dimensions, Platform } from 'react-native'
 import { colors } from '../../utilities'
-const { height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
-const Styles = {
+const createStyles = isLandscape => ({
   topContainer: {
     backgroundColor: colors.white,
     flex: 0.3,
@@ -35,7 +35,7 @@ const Styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     position: 'absolute',
-    top: 80,
+    top: isLandscape ? 50 : 80,
     left: 30
   },
   line: {
@@ -43,6 +43,6 @@ const Styles = {
     backgroundColor: '#000',
     width: '100%'
   }
-}
+})
 
-export default Styles
+export default createStyles

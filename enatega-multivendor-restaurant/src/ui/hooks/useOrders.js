@@ -12,15 +12,18 @@ export default function useOrders() {
     networkStatus,
     subscribeToMoreOrders
   } = useContext(Restaurant.Context)
+
   const activeOrders =
     data &&
     data.restaurantOrders.filter(order => order.orderStatus === 'PENDING')
       .length
+
   const processingOrders =
     data &&
     data.restaurantOrders.filter(order =>
       ['ACCEPTED', 'ASSIGNED', 'PICKED'].includes(order.orderStatus)
     ).length
+
   const deliveredOrders =
     data &&
     data.restaurantOrders.filter(order => order.orderStatus === 'DELIVERED')

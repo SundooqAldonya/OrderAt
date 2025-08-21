@@ -194,3 +194,122 @@ export const getRestaurantCity = gql`
     }
   }
 `
+
+export const getFoodListByRestaurant = gql`
+  query FoodListByRestaurant($id: String!) {
+    foodListByRestaurant(id: $id) {
+      _id
+      title
+      description
+      image
+      restaurant
+      variations {
+        _id
+        title
+        price
+        discounted
+        addons
+        stock
+      }
+      category {
+        _id
+        title
+      }
+      isActive
+      stock
+      createdAt
+      updatedAt
+    }
+  }
+`
+export const restaurantOrdersHistory = gql`
+  query RestaurantOrdersHistory($startDate: String, $endDate: String) {
+    restaurantOrdersHistory(startDate: $startDate, endDate: $endDate) {
+      _id
+      orderId
+      restaurant {
+        _id
+        name
+        image
+        address
+        location {
+          coordinates
+        }
+      }
+      deliveryAddress {
+        location {
+          coordinates
+        }
+        deliveryAddress
+        details
+        label
+      }
+      items {
+        _id
+        title
+        description
+        image
+        quantity
+        variation {
+          _id
+          title
+          price
+          discounted
+        }
+        addons {
+          _id
+          options {
+            _id
+            title
+            description
+            price
+          }
+          description
+          title
+          quantityMinimum
+          quantityMaximum
+        }
+        specialInstructions
+        isActive
+        createdAt
+        updatedAt
+      }
+      user {
+        _id
+        name
+        phone
+        email
+      }
+      paymentMethod
+      paidAmount
+      orderAmount
+      orderStatus
+      tipping
+      taxationAmount
+      status
+      paymentStatus
+      reason
+      isActive
+      createdAt
+      orderDate
+      deliveryCharges
+      isPickedUp
+      preparationTime
+      deliveredAt
+      pickedAt
+      assignedAt
+      acceptedAt
+      isRinged
+      rider {
+        _id
+        name
+        username
+        available
+        phone
+      }
+      originalDeliveryCharges
+      originalSubtotal
+      originalPrice
+    }
+  }
+`
