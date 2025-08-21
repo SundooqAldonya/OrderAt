@@ -29,6 +29,7 @@ import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
 
 const { width, height } = Dimensions.get('window')
 
@@ -50,8 +51,8 @@ const PickupFromMap = () => {
     longitude: 30.9426
   })
 
-  const state = useSelector((state) => state.requestDelivery)
-  const { selectedCityAndAreaFrom, selectedAreaFrom } = state
+  // const state = useSelector((state) => state.requestDelivery)
+  // const { selectedCityAndAreaFrom, selectedAreaFrom } = state
 
   // console.log({ selectedCityAndAreaFrom })
 
@@ -185,7 +186,7 @@ const PickupFromMap = () => {
     searchRef.current?.clear()
   }
 
-  console.log({ location })
+  console.log({ area })
 
   const handleSave = () => {
     const currentInput = searchRef.current?.getAddressText?.()
@@ -216,6 +217,10 @@ const PickupFromMap = () => {
       locationMap: location
     })
   }
+  // let debug = true
+  // if (debug) {
+  //   return <GooglePlacesAutocompleteTest />
+  // }
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
@@ -249,7 +254,7 @@ const PickupFromMap = () => {
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <GooglePlacesAutocomplete
+          <CustomPlacesAutocomplete
             ref={searchRef}
             placeholder='ابحث عن مكان...'
             onPress={(data, details = null) => {
@@ -332,7 +337,8 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderColor: '#eee'
+    borderColor: '#eee',
+    zIndex: 999
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -347,7 +353,7 @@ const styles = StyleSheet.create({
   clearIcon: {
     position: 'absolute',
     right: 15,
-    top: Platform.OS === 'ios' ? 18 : 14,
+    top: Platform.OS === 'ios' ? 14 : 10,
     zIndex: 999
   },
   sendIcon: {
@@ -359,9 +365,9 @@ const styles = StyleSheet.create({
   },
   markerFixed: {
     position: 'absolute',
-    top: height / 2 - 50, // Adjust based on marker size
+    top: height / 2 - 100, // Adjust based on marker size
     left: width / 2 - 24, // Adjust based on marker size
-    zIndex: 999
+    zIndex: 99
   },
   button: {
     backgroundColor: colors.primary,

@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
 
 const { width, height } = Dimensions.get('window')
 
@@ -249,7 +250,7 @@ const DropoffFromMap = () => {
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <GooglePlacesAutocomplete
+          <CustomPlacesAutocomplete
             ref={searchRef}
             placeholder='ابحث عن مكان...'
             onPress={(data, details = null) => {
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
   clearIcon: {
     position: 'absolute',
     right: 15,
-    top: Platform.OS === 'ios' ? 18 : 14,
+    top: Platform.OS === 'ios' ? 14 : 10,
     zIndex: 999
   },
   sendIcon: {
@@ -361,7 +362,7 @@ const styles = StyleSheet.create({
   },
   markerFixed: {
     position: 'absolute',
-    top: height / 2 - 50, // Adjust based on marker size
+    top: height / 2 - 100, // Adjust based on marker size
     left: width / 2 - 24, // Adjust based on marker size
     zIndex: 999
   },

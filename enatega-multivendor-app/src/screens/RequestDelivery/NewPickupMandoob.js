@@ -272,13 +272,6 @@ const NewPickupMandoob = () => {
         })
       )
     } else if (selectedCityAndAreaFrom) {
-      // const newCoordinates = {
-      //   latitude: selectedAreaFrom.location.location.coordinates[1],
-      //   longitude: selectedAreaFrom.location.location.coordinates[0],
-      //   latitudeDelta: 0.01,
-      //   longitudeDelta: 0.01
-      // }
-
       dispatch(
         setAddressFrom({
           addressFrom: selectedAreaFrom.address,
