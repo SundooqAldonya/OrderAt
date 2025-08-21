@@ -29,6 +29,7 @@ import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
 
 const { width, height } = Dimensions.get('window')
 
@@ -262,7 +263,7 @@ const AddressFromMap = () => {
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <GooglePlacesAutocomplete
+          <CustomPlacesAutocomplete
             ref={searchRef}
             placeholder='ابحث عن مكان...'
             onPress={(data, details = null) => {
@@ -360,7 +361,7 @@ const styles = StyleSheet.create({
   clearIcon: {
     position: 'absolute',
     right: 15,
-    top: Platform.OS === 'ios' ? 18 : 14,
+    top: Platform.OS === 'ios' ? 14 : 10,
     zIndex: 999
   },
   sendIcon: {
