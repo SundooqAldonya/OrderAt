@@ -135,7 +135,10 @@ module.exports = {
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
           })
 
-          if (prepaidPackage) {
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            amount <= prepaidPackage?.maxDeliveryAmount
+          ) {
             isPrepaid = true
             console.log('✅ Prepaid package found. Delivery is free.')
             return {
@@ -165,6 +168,7 @@ module.exports = {
           code,
           restaurantId
         } = args.input
+        console.log('args.input', { restaurantId })
 
         // get zone charges from delivery prices
         const distance = calculateDistance(
@@ -265,8 +269,11 @@ module.exports = {
             expiresAt: { $gte: new Date() },
             $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
           })
-
-          if (prepaidPackage) {
+          console.log({ prepaidPackage })
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            amount <= prepaidPackage?.maxDeliveryAmount
+          ) {
             isPrepaid = true
             console.log('✅ Prepaid package found. Delivery is free.')
             return {

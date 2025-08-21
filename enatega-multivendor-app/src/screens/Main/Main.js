@@ -667,7 +667,7 @@ function Main(props) {
                           </TextDefault>
                         </View>
                         <Image
-                          source={require('../../assets/images/ItemsList/menu-new.png')}
+                          source={require('../../assets/images/ItemsList/menu_new.png')}
                           style={styles().popularMenuImg}
                         />
                       </TouchableOpacity>

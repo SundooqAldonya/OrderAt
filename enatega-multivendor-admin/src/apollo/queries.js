@@ -1378,6 +1378,7 @@ export const getPrepaidDeliveryPackages = gql`
       usedDeliveries
       remainingDeliveries
       price
+      maxDeliveryAmount
       isActive
       expiresAt
       createdBy
