@@ -188,3 +188,10 @@ export const acknowledgeNotification = gql`
     }
   }
 `
+export const updateStockFood = gql`
+  mutation UpdateStockFood($input: FoodStockInput!) {
+    updateStockFood(input: $input) {
+      message
+    }
+  }
+`

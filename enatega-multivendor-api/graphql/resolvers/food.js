@@ -186,6 +186,17 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+    async updateStockFood(_, args) {
+      console.log({ updateStockFoodArgs: { args } })
+      try {
+        const food = await Food.findById(args.input.id)
+        food.stock = args.input.stock
+        await food.save()
+        return { message: 'stock_updated' }
+      } catch (err) {
+        throw err
+      }
     }
     // editFood: async (_, args, context) => {
     //   // console.log('args: ', args)

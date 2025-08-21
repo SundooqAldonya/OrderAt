@@ -22,6 +22,10 @@ const PrepaidDeliveryPackageSchema = new Schema(
       type: Number,
       required: true // Total price for the whole package
     },
+    maxDeliveryAmount: {
+      type: Number,
+      required: true
+    },
     isActive: {
       type: Boolean,
       default: true

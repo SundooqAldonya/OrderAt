@@ -1588,6 +1588,7 @@ const typeDefs = gql`
     totalDeliveries: Int!
     usedDeliveries: Int!
     price: Float!
+    maxDeliveryAmount: Float
     isActive: Boolean!
     expiresAt: String
     createdBy: String
@@ -1606,6 +1607,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    restaurantOrdersHistory(startDate: String, endDate: String): [Order!]
     getPrepaidDeliveryPackages: [PrepaidDeliveryPackage!]
     checkDeliveryZone(latitude: Float!, longitude: Float!): Message
     getAllNotifications(page: Int, limit: Int): PaginatedNotification
@@ -2051,10 +2053,17 @@ const typeDefs = gql`
     price: Float!
     isActive: Boolean
     expiresAt: String
+    maxDeliveryAmount: Float!
     # createdBy: String
   }
 
+  input FoodStockInput {
+    id: String!
+    stock: String
+  }
+
   type Mutation {
+    updateStockFood(input: FoodStockInput!): Message
     updateActivePrepaidDeliveryPackage(id: String!): Message
     removePrepaidDeliveryPackage(id: String!): Message
     updatePrepaidDeliveryPackage(
