@@ -295,6 +295,10 @@ const Orders = props => {
     })
   }
 
+  const handleGoTo = row => {
+    window.open(`/#/admin/order-details/${row._id}`)
+  }
+
   return (
     <>
       <NotificationContainer />
@@ -326,6 +330,7 @@ const Orders = props => {
               title={<TableHeader title={t('Dispatch')} />}
               columns={columns}
               data={filtered}
+              onRowClicked={handleGoTo}
               progressPending={loadingOrders}
               pointerOnHover
               progressComponent={<CustomLoader />}
