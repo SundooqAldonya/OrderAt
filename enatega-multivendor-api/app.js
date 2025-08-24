@@ -240,7 +240,7 @@ async function startApolloServer() {
   )
 
   orderCheckUnassigned()
-  checkRidersOrders()
+  // checkRidersOrders()
   // populate countries data.
   // await populateCountries()
   //
