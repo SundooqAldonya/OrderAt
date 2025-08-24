@@ -408,9 +408,11 @@ module.exports = {
           if (rider.available) {
             rider.endAvailabilityDate = new Date()
             rider.available = false
+            rider.muted = true
           } else {
             rider.startAvailabilityDate = new Date()
             rider.available = true
+            rider.muted = false
           }
         }
         const result = await rider.save()

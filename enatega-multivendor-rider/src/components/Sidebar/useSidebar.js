@@ -10,6 +10,10 @@ import {
   startBackgroundUpdate,
   stopBackgroundUpdate
 } from '../../utilities/backgroundLocationTask'
+import {
+  initBackgroundLocation,
+  stopBackgroundLocation
+} from '../../utilities/transistorBackgroundTracking'
 
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
@@ -76,13 +80,6 @@ const useSidebar = () => {
   const toggleSwitch = () => {
     if (dataProfile?.rider?.isActive) {
       mutateToggle({ variables: { id: dataProfile.rider._id }, onCompleted })
-      if (isEnabled) {
-        setIsMuted(true)
-        stopBackgroundUpdate()
-      } else {
-        // startBackgroundUpdate()
-      }
-      setIsEnabled(previousState => !previousState)
     }
   }
 
@@ -103,8 +100,18 @@ const useSidebar = () => {
   function onCompleted({ toggleAvailability }) {
     if (toggleAvailability) {
       setIsEnabled(toggleAvailability.available)
+      setIsMuted(toggleAvailability.muted)
+
+      if (toggleAvailability.available) {
+        // Rider is online → start location tracking
+        initBackgroundLocation()
+      } else {
+        // Rider is offline → stop location tracking
+        stopBackgroundLocation()
+      }
     }
   }
+
   function completedMute({ toggleAvailability }) {
     if (toggleAvailability) {
       setIsMuted(toggleAvailability.muted)
