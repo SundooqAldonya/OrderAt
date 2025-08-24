@@ -215,14 +215,16 @@ function AppContainer() {
         environment: 'development',
         enableInExpoDevelopment: true,
         debug: true,
-        tracesSampleRate: 1.0 // to be changed to 0.2 in production
+        tracesSampleRate: 0 // to be changed to 0.2 in production
       })
     }
   }, [configuration?.riderAppSentryUrl])
 
   useEffect(() => {
-    initBackgroundLocation()
-  }, [])
+    if (token) {
+      initBackgroundLocation()
+    }
+  }, [token])
 
   // useEffect(() => {
   //   // Optional: Start immediately
