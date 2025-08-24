@@ -75,10 +75,14 @@ export async function initBackgroundLocation() {
   })
 }
 
-export function stopBackgroundLocation() {
+export async function stopBackgroundLocation() {
   BackgroundGeolocation.stop()
   BackgroundGeolocation.removeListeners()
-  BackgroundGeolocation.destroy()
+  // await BackgroundGeolocation.ready({
+  //   reset: true,
+  //   stopOnTerminate: true,
+  //   startOnBoot: false
+  // })
   initialized = false
   console.log('Stopped Transistor background tracking')
 }

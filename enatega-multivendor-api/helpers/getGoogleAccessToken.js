@@ -32,7 +32,8 @@ async function getAccessToken() {
     const client = await auth.getClient()
     const accessToken = await client.getAccessToken()
 
-    console.log('✅ Google Access Token:', accessToken.token)
+    // console.log('✅ Google Access Token:', accessToken.token)
+
     return accessToken.token
   } catch (error) {
     console.error('🚨 Error getting Google Access Token:', error)
@@ -42,7 +43,10 @@ async function getAccessToken() {
 
 // Test the function
 getAccessToken()
-  .then(token => console.log('🎉 Token received successfully!'))
+  .then(token => {
+    console.log('🎉 Token received successfully!')
+    console.log('Waiting for database connection...')
+  })
   .catch(err => console.error('❌ Failed to get token:', err))
 
 module.exports = { getAccessToken }

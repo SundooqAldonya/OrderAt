@@ -534,6 +534,10 @@ module.exports = {
         order.assignedAt = new Date()
         order.isRiderRinged = false
         const result = await order.save()
+        // check when last time assigned to order
+        await Rider.findByIdAndUpdate(req.userId, {
+          lastOrderAt: new Date()
+        })
         const transformedOrder = await transformOrder(result)
         const populatedOrder = await order.populate('restaurant')
         // sendNotificationToUser(order.user.toString(), transformedOrder)

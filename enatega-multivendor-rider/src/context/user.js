@@ -13,6 +13,10 @@ import {
   subscriptionAssignRider
 } from '../apollo/subscriptions'
 import { useLocationContext } from './location'
+import {
+  initBackgroundLocation,
+  stopBackgroundLocation
+} from '../utilities/transistorBackgroundTracking'
 
 const PROFILE = gql`
   ${profile}
@@ -78,6 +82,16 @@ export const UserProvider = props => {
     return () => {
       unsubscribeZoneOrder && unsubscribeZoneOrder()
       unsubscribeAssignOrder && unsubscribeAssignOrder()
+    }
+  }, [dataProfile])
+
+  useEffect(() => {
+    if (dataProfile) {
+      if (!dataProfile.rider?.available) {
+        stopBackgroundLocation()
+      } else {
+        initBackgroundLocation()
+      }
     }
   }, [dataProfile])
 

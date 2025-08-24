@@ -83,6 +83,10 @@ const riderSchema = new Schema(
     nationalIdImage: {
       url: String,
       publicId: String
+    },
+    lastOrderAt: {
+      type: Date,
+      default: null // updated whenever rider is assigned an order
     }
   },
   { timestamps: true }
