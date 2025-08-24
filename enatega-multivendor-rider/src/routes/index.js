@@ -221,10 +221,8 @@ function AppContainer() {
   }, [configuration?.riderAppSentryUrl])
 
   useEffect(() => {
-    if (token) {
-      initBackgroundLocation()
-    }
-  }, [token])
+    initBackgroundLocation()
+  }, [])
 
   // useEffect(() => {
   //   // Optional: Start immediately
