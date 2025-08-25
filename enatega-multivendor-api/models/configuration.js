@@ -186,13 +186,16 @@ const configurationSchema = new Schema(
       type: String,
       default: ''
     },
-    minimumDeliveryFee: {  
+    minimumDeliveryFee: {
       type: Number,
-      default: 0,
+      default: 0
     },
     vapidKey: {
       type: String,
       default: ''
+    },
+    availabilityPeriod: {
+      type: Number
     }
   },
   { timestamps: true }
