@@ -1044,3 +1044,10 @@ export const updateActivePrepaidDeliveryPackage = gql`
     }
   }
 `
+export const updateRiderAvailabilityPeriod = gql`
+  mutation UpdateRiderAvailabilityPeriod($period: Float!) {
+    updateRiderAvailabilityPeriod(period: $period) {
+      message
+    }
+  }
+`

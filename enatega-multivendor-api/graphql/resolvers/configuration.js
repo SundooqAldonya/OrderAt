@@ -2,7 +2,7 @@ const Configuration = require('../../models/configuration')
 
 module.exports = {
   Query: {
-    configuration: async() => {
+    configuration: async () => {
       console.log('configuration')
       const configuration = await Configuration.findOne()
       if (!configuration) {
@@ -59,7 +59,7 @@ module.exports = {
           skipMobileVerification: false,
           skipEmailVerification: false,
           costType: '',
-          minimumDeliveryFee: 0, 
+          minimumDeliveryFee: 0,
           vapidKey: ''
         }
       }
@@ -70,7 +70,7 @@ module.exports = {
     }
   },
   Mutation: {
-    saveEmailConfiguration: async(_, args, context) => {
+    saveEmailConfiguration: async (_, args, context) => {
       console.log('saveEmailConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -84,7 +84,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveFirebaseConfiguration: async(_, args, context) => {
+    saveFirebaseConfiguration: async (_, args, context) => {
       console.log('saveFirebaseConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -104,20 +104,20 @@ module.exports = {
         _id: result.id
       }
     },
-    saveDeliveryRateConfiguration: async(_, { configurationInput }) => {
-       console.log('saveDeliveryRateConfiguration', configurationInput);
+    saveDeliveryRateConfiguration: async (_, { configurationInput }) => {
+      console.log('saveDeliveryRateConfiguration', configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
       configuration.deliveryRate = configurationInput.deliveryRate
       configuration.costType = configurationInput.costType
-      configuration.minimumDeliveryFee = configurationInput.minimumDeliveryFee; 
+      configuration.minimumDeliveryFee = configurationInput.minimumDeliveryFee
       const result = await configuration.save()
       return {
         ...result._doc,
         _id: result.id
       }
     },
-    savePaypalConfiguration: async(_, args, context) => {
+    savePaypalConfiguration: async (_, args, context) => {
       console.log('savePaypalConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -130,7 +130,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveStripeConfiguration: async(_, args, context) => {
+    saveStripeConfiguration: async (_, args, context) => {
       console.log('saveStripeConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -142,7 +142,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveCurrencyConfiguration: async(_, args, context) => {
+    saveCurrencyConfiguration: async (_, args, context) => {
       console.log('saveCurrencyConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -156,7 +156,7 @@ module.exports = {
     },
 
     // New mutation resolver for TWILIO configuration
-    saveTwilioConfiguration: async(_, args, context) => {
+    saveTwilioConfiguration: async (_, args, context) => {
       console.log('saveTwilioConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -172,7 +172,7 @@ module.exports = {
       }
     },
 
-    saveFormEmailConfiguration: async(_, args, context) => {
+    saveFormEmailConfiguration: async (_, args, context) => {
       console.log('saveFormEmailConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -183,7 +183,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveSendGridConfiguration: async(_, args, context) => {
+    saveSendGridConfiguration: async (_, args, context) => {
       console.log('saveSendGridConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -202,7 +202,7 @@ module.exports = {
       }
     },
 
-    saveSentryConfiguration: async(_, args, context) => {
+    saveSentryConfiguration: async (_, args, context) => {
       console.log('saveSentryConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -224,7 +224,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveGoogleApiKeyConfiguration: async(_, args, context) => {
+    saveGoogleApiKeyConfiguration: async (_, args, context) => {
       console.log('saveGoogleApiKeyConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -238,7 +238,7 @@ module.exports = {
       }
     },
 
-    saveCloudinaryConfiguration: async(_, args, context) => {
+    saveCloudinaryConfiguration: async (_, args, context) => {
       console.log('saveCloudinaryConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -253,7 +253,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveAmplitudeApiKeyConfiguration: async(_, args, context) => {
+    saveAmplitudeApiKeyConfiguration: async (_, args, context) => {
       console.log('saveAmplitudeApiKeyConfiguration', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -270,7 +270,7 @@ module.exports = {
       }
     },
 
-    saveGoogleClientIDConfiguration: async(_, args, context) => {
+    saveGoogleClientIDConfiguration: async (_, args, context) => {
       console.log('saveGoogleClientIDConfiguration', args.configurationInput)
 
       let configuration = await Configuration.findOne()
@@ -286,7 +286,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveWebConfiguration: async(_, args, context) => {
+    saveWebConfiguration: async (_, args, context) => {
       console.log('saveWebConfiguration', args.configurationInput)
 
       let configuration = await Configuration.findOne()
@@ -302,7 +302,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveAppConfigurations: async(_, args, context) => {
+    saveAppConfigurations: async (_, args, context) => {
       console.log('saveAppConfigurations', args.configurationInput)
 
       let configuration = await Configuration.findOne()
@@ -319,7 +319,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveVerificationsToggle: async(_, args, context) => {
+    saveVerificationsToggle: async (_, args, context) => {
       console.log('saveVerificationsToggle', args.configurationInput)
       let configuration = await Configuration.findOne()
       if (!configuration) configuration = new Configuration()
@@ -333,7 +333,7 @@ module.exports = {
         _id: result.id
       }
     },
-    saveDemoConfiguration: async(_, args, context) => {
+    saveDemoConfiguration: async (_, args, context) => {
       console.log('saveDemoConfiguration', args)
       try {
         let configuration = await Configuration.findOne()
@@ -349,6 +349,17 @@ module.exports = {
         }
       } catch (error) {
         console.log('saveDemoConfiguration error', error.message)
+      }
+    },
+    async updateRiderAvailabilityPeriod(_, args) {
+      try {
+        let configuration = await Configuration.findOne()
+        if (!configuration) configuration = new Configuration()
+        configuration.availabilityPeriod = args.period
+        await configuration.save()
+        return { message: 'saved_period_rider_availability' }
+      } catch (err) {
+        throw err
       }
     }
   }

@@ -24,6 +24,7 @@ import WebConfiguration from '../components/Configuration/Web/Web'
 import AppConfigurations from '../components/Configuration/App/App'
 import FirebaseConfiguration from '../components/Configuration/FireBase/FireBase'
 import Configuration1 from './Configuration1'
+import RiderAvailabilityTime from '../components/Configuration/RiderAvailabilityTime'
 
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
@@ -34,15 +35,14 @@ const Configuration = props => {
   )
 
   const { t } = props
-  
+
   return (
     <>
       <Header />
       {errorQuery && t('Error')}
       {loadingQuery ? (
         t('LoadingDots')
-      ) : (
-        data.configuration.isPaidVersion?
+      ) : data.configuration.isPaidVersion ? (
         <Grid container ml={2} spacing={2}>
           <Grid item sx={12} md={7} lg={7}>
             <EmailConfiguration
@@ -50,6 +50,18 @@ const Configuration = props => {
               email={data && data.configuration.email}
               password={data && data.configuration.password}
               enabled={data && data.configuration.enableEmail}
+            />
+          </Grid>
+          <Grid
+            item
+            lg={5}
+            sx={{ display: { xs: 'none', lg: 'block' } }}
+            ml={-2}>
+            <ConfigIcon />
+          </Grid>
+          <Grid item sx={12} md={12} lg={5}>
+            <RiderAvailabilityTime
+              availabilityPeriod={data && data.configuration.availabilityPeriod}
             />
           </Grid>
           <Grid
@@ -79,11 +91,13 @@ const Configuration = props => {
             />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
-                <DeliveryRateConfiguration
-                  deliveryRate={data && data?.configuration?.deliveryRate}
-                  costType={data && data?.configuration?.costType}
-                  minimumDeliveryFee={data && data?.configuration?.minimumDeliveryFee}
-              />
+            <DeliveryRateConfiguration
+              deliveryRate={data && data?.configuration?.deliveryRate}
+              costType={data && data?.configuration?.costType}
+              minimumDeliveryFee={
+                data && data?.configuration?.minimumDeliveryFee
+              }
+            />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
             <TwilioConfiguration
@@ -173,13 +187,14 @@ const Configuration = props => {
             />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
-          <VerificationConfiguration
-          skipEmailVerification={data.configuration.skipEmailVerification}
-          skipMobileVerification={data.configuration.skipMobileVerification}
+            <VerificationConfiguration
+              skipEmailVerification={data.configuration.skipEmailVerification}
+              skipMobileVerification={data.configuration.skipMobileVerification}
             />
           </Grid>
-        </Grid>:
-        <Configuration1 t={t}/>
+        </Grid>
+      ) : (
+        <Configuration1 t={t} />
       )}
     </>
   )

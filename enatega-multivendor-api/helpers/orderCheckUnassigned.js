@@ -2,6 +2,7 @@ const cron = require('node-cron')
 const { sendSMS } = require('./sendSMS')
 const Order = require('../models/order')
 const Rider = require('../models/rider')
+const Configuration = require('../models/configuration')
 
 module.exports = {
   orderCheckUnassigned() {
@@ -60,8 +61,12 @@ module.exports = {
   },
   async checkRidersAvailability() {
     try {
+      const config = await Configuration.findOne()
+      const availabilityPeriod = config?.availabilityPeriod || 2 // fallback 2 hours
       cron.schedule('*/15 * * * *', async () => {
-        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
+        const twoHoursAgo = new Date(
+          Date.now() - availabilityPeriod * 60 * 60 * 1000
+        )
 
         try {
           const result = await Rider.updateMany(

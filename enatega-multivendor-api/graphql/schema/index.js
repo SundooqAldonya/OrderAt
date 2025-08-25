@@ -444,6 +444,7 @@ const typeDefs = gql`
     enableAdminDemo: Boolean
     costType: String
     vapidKey: String
+    availabilityPeriod: Float
   }
   type OrderStatus {
     pending: String!
@@ -2057,6 +2058,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    updateRiderAvailabilityPeriod(period: Float!): Message
     updateRiderStatus(available: Boolean!): Message
     updateActivePrepaidDeliveryPackage(id: String!): Message
     removePrepaidDeliveryPackage(id: String!): Message
