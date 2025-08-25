@@ -2057,6 +2057,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    updateRiderStatus(available: Boolean!): Message
     updateActivePrepaidDeliveryPackage(id: String!): Message
     removePrepaidDeliveryPackage(id: String!): Message
     updatePrepaidDeliveryPackage(

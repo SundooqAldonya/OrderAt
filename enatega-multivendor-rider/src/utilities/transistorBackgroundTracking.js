@@ -58,8 +58,8 @@ export async function initBackgroundLocation() {
     debug: false,
     desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
     distanceFilter: 5,
-    stopOnTerminate: false,
-    startOnBoot: true,
+    stopOnTerminate: true,
+    startOnBoot: false,
     foregroundService: true,
     notification: {
       title: 'Tracking location',
@@ -78,11 +78,11 @@ export async function initBackgroundLocation() {
 export async function stopBackgroundLocation() {
   BackgroundGeolocation.stop()
   BackgroundGeolocation.removeListeners()
-  await BackgroundGeolocation.ready({
-    reset: true,
-    stopOnTerminate: true,
-    startOnBoot: false
-  })
+  // await BackgroundGeolocation.ready({
+  //   reset: true,
+  //   stopOnTerminate: true,
+  //   startOnBoot: false
+  // })
   initialized = false
   console.log('Stopped Transistor background tracking')
 }

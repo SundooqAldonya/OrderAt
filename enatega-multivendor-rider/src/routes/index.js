@@ -42,6 +42,7 @@ import { refreshFirebaseToken } from '../apollo/mutations'
 import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
 import NotificationListener from '../components/NotificationListener'
 import { initBackgroundLocation } from '../utilities/transistorBackgroundTracking'
+import useRiderAppState from '../utilities/useRiderAppState'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -205,6 +206,7 @@ function NoDrawer() {
 function AppContainer() {
   const { token } = useContext(AuthContext)
   const configuration = useContext(ConfigurationContext)
+  const { assignedOrders } = useContext(UserContext)
 
   useEffect(() => {
     const dsn = configuration?.riderAppSentryUrl
@@ -223,6 +225,8 @@ function AppContainer() {
   useEffect(() => {
     initBackgroundLocation()
   }, [])
+
+  useRiderAppState(assignedOrders?.length)
 
   // useEffect(() => {
   //   // Optional: Start immediately

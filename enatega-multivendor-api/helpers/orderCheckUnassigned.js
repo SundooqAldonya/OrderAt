@@ -58,7 +58,7 @@ module.exports = {
       throw err
     }
   },
-  async checkRidersOrders() {
+  async checkRidersAvailability() {
     try {
       cron.schedule('*/15 * * * *', async () => {
         const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
@@ -68,8 +68,8 @@ module.exports = {
             {
               available: true,
               $or: [
-                { lastOrderAt: { $lt: twoHoursAgo } },
-                { lastOrderAt: null } // never got an order
+                { lastActiveAt: { $lt: twoHoursAgo } },
+                { lastActiveAt: null } // never used the app before
               ]
             },
             { $set: { available: false } }

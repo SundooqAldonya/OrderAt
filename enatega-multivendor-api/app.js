@@ -37,7 +37,7 @@ const EventEmitter = require('events')
 const { pubsub } = require('./helpers/pubsub.js')
 const {
   orderCheckUnassigned,
-  checkRidersOrders
+  checkRidersAvailability
 } = require('./helpers/orderCheckUnassigned.js')
 const emitter = new EventEmitter()
 
@@ -240,7 +240,7 @@ async function startApolloServer() {
   )
 
   orderCheckUnassigned()
-  // checkRidersOrders()
+  checkRidersAvailability()
   // populate countries data.
   // await populateCountries()
   //

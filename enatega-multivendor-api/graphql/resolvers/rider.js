@@ -396,6 +396,7 @@ module.exports = {
         throw err
       }
     },
+
     toggleAvailablity: async (_, args, { req }) => {
       console.log('toggleAvailablity')
       const userId = args.id || req.userId
@@ -590,6 +591,21 @@ module.exports = {
         await rider.save()
         console.log('rider notification has refreshed')
         return { message: 'Rider notification has refreshed' }
+      } catch (err) {
+        throw err
+      }
+    },
+
+    async updateRiderStatus(_, args, { req }) {
+      try {
+        // let updateData = { available: args.available }
+        let updateData
+        if (args.available) {
+          updateData.lastActiveAt = new Date() // update timestamp only when they come online
+        }
+
+        await Rider.findByIdAndUpdate(req.userId, updateData)
+        return { message: 'rider_availability_changed' }
       } catch (err) {
         throw err
       }

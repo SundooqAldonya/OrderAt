@@ -130,3 +130,11 @@ export const acknowledgeNotification = gql`
     }
   }
 `
+
+export const updateRiderStatus = gql`
+  mutation UpdateRiderStatus($available: Boolean!) {
+    updateRiderStatus(available: $available) {
+      message
+    }
+  }
+`

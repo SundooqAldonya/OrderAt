@@ -87,6 +87,10 @@ const riderSchema = new Schema(
     lastOrderAt: {
       type: Date,
       default: null // updated whenever rider is assigned an order
+    },
+    lastActiveAt: {
+      type: Date,
+      default: null // updated whenever rider is assigned an order
     }
   },
   { timestamps: true }
