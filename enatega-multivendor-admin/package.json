@@ -6,17 +6,16 @@
   "homepage": "https://multivendor-admin.ninjascode.com/",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider start",
+    "start:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider start",
+    "start:prod": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider start",
+    "build": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build",
+    "build:dev": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider build",
+    "build:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider build",
+    "build:production": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --write '**/*.{js,jsx}'",
-    "start:staging": "env-cmd -f .env.staging react-scripts start",
-    "start:dev": "SET PORT=3000 env-cmd -f .env.development react-scripts start",
-    "start:prod": "env-cmd -f .env.production react-scripts start",
-    "build:dev": "env-cmd -f .env.dev react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
-    "build:staging": "env-cmd -f .env.staging react-scripts build"
+    "format": "prettier --write '**/*.{js,jsx}'"
   },
   "husky": {
     "hooks": {
@@ -90,6 +89,7 @@
     "@types/googlemaps": "3.30.18",
     "@types/markerclustererplus": "2.1.33",
     "@types/react": "^17.0.0",
+    "cross-env": "^10.0.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.7",
     "prettier": "2.0.5",

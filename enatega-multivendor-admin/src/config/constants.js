@@ -3,16 +3,36 @@ import ConfigurationContext from '../context/Configuration'
 
 const ConfigurableValues = () => {
   const configuration = useContext(ConfigurationContext)
-
   let SERVER_URL, WS_SERVER_URL
-  console.log({ nodeEnv: process.env.NODE_ENV })
-  if (process.env.NODE_ENV === 'development') {
-    SERVER_URL = 'http://localhost:8001'
-    WS_SERVER_URL = 'ws://localhost:8001'
-  } else {
-    SERVER_URL = 'https://query.orderat.ai'
-    WS_SERVER_URL = 'wss://query.orderat.ai'
+
+  switch (process.env.REACT_APP_ENV) {
+    case 'staging':
+      SERVER_URL = 'https://query.orderat.ai'
+      WS_SERVER_URL = 'wss://query.orderat.ai'
+      break
+
+    case 'production':
+      SERVER_URL = 'https://service.orderatco.com'
+      WS_SERVER_URL = 'wss://service.orderatco.com'
+      break
+
+    default:
+      // development
+      SERVER_URL = 'http://localhost:8001'
+      WS_SERVER_URL = 'ws://localhost:8001'
   }
+
+  // let SERVER_URL, WS_SERVER_URL
+  // const SERVER_URL = process.env.REACT_APP_SERVER_URL
+  // const WS_SERVER_URL = process.env.REACT_APP_WS_SERVER_URL
+  console.log({ nodeEnv: process.env.NODE_ENV })
+  // if (process.env.NODE_ENV === 'development') {
+  //   SERVER_URL = 'http://localhost:8001'
+  //   WS_SERVER_URL = 'ws://localhost:8001'
+  // } else {
+  //   SERVER_URL = 'https://query.orderat.ai'
+  //   WS_SERVER_URL = 'wss://query.orderat.ai'
+  // }
   const GOOGLE_MAPS_KEY = configuration.googleApiKey ?? ''
   const FIREBASE_KEY = configuration.firebaseKey
   const APP_ID = configuration.appId
