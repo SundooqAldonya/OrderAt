@@ -597,14 +597,15 @@ module.exports = {
     },
 
     async updateRiderStatus(_, args, { req }) {
+      console.log('updateRiderStatus', { args })
       try {
         // let updateData = { available: args.available }
-        let updateData
-        if (args.available) {
-          updateData.lastActiveAt = new Date() // update timestamp only when they come online
-        }
+        // let updateData
+        // if (args.available) {
+        //   updateData['lastActiveAt'] = new Date() // update timestamp only when they come online
+        // }
 
-        await Rider.findByIdAndUpdate(req.userId, updateData)
+        await Rider.findByIdAndUpdate(req.userId, { lastActiveAt: new Date() })
         return { message: 'rider_availability_changed' }
       } catch (err) {
         throw err
