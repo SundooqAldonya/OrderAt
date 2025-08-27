@@ -51,7 +51,7 @@ import {
 import { PaperProvider } from 'react-native-paper'
 import Constants from 'expo-constants'
 
-moment.tz.setDefault('Asia/Karachi')
+moment.tz.setDefault('Africa/Cairo')
 LogBox.ignoreLogs([
   'Warning: ...',
   'Sentry Logger ',
@@ -72,7 +72,7 @@ Notifications.setNotificationHandler({
 })
 
 export default function App() {
-  // const { t } = useTranslation();
+  console.log('moment', moment().format())
   useKeepAwake()
   console.log({ projectId: Constants.expoConfig.extra.firebaseProjectId })
   const [appIsReady, setAppIsReady] = useState(false)
