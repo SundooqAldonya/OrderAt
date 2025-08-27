@@ -59,16 +59,15 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:staging": "env-cmd -f .env.staging react-scripts start",
-    "start:dev": "env-cmd -f .env.development react-scripts start",
-    "start:prod": "env-cmd -f .env.production react-scripts start",
-    "build:dev": "env-cmd -f .env.dev react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
-    "build:staging": "env-cmd -f .env.staging react-scripts build"
+    "start": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider start",
+    "start:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider start",
+    "start:prod": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider start",
+    "build": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build",
+    "build:dev": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider build",
+    "build:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider build",
+    "build:production": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build"
   },
   "eslintConfig": {
     "extends": [
@@ -90,6 +89,7 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-env": "^7.26.0"
+    "@babel/preset-env": "^7.26.0",
+    "cross-env": "^10.0.0"
   }
 }

@@ -12,13 +12,30 @@ const ConfigurableValues = () => {
   // const SERVER_URL = "https://query.orderat.ai/";
   // const WS_SERVER_URL = "wss://query.orderat.ai/";
   let SERVER_URL, WS_SERVER_URL;
-  console.log("NODE_ENV", process.env.NODE_ENV);
-  if (process.env.NODE_ENV === "development") {
-    SERVER_URL = "http://localhost:8001/";
-    WS_SERVER_URL = "ws://localhost:8001/";
-  } else {
-    SERVER_URL = "https://query.orderat.ai/";
-    WS_SERVER_URL = "wss://query.orderat.ai/";
+  // console.log("NODE_ENV", process.env.NODE_ENV);
+  // if (process.env.NODE_ENV === "development") {
+  //   SERVER_URL = "http://localhost:8001/";
+  //   WS_SERVER_URL = "ws://localhost:8001/";
+  // } else {
+  //   SERVER_URL = "https://query.orderat.ai/";
+  //   WS_SERVER_URL = "wss://query.orderat.ai/";
+  // }
+
+  switch (process.env.REACT_APP_ENV) {
+    case "staging":
+      SERVER_URL = "https://query.orderat.ai/";
+      WS_SERVER_URL = "wss://query.orderat.ai/";
+      break;
+
+    case "production":
+      SERVER_URL = "https://service.orderatco.com/";
+      WS_SERVER_URL = "wss://service.orderatco.com/";
+      break;
+
+    default:
+      // development
+      SERVER_URL = "http://localhost:8001/";
+      WS_SERVER_URL = "ws://localhost:8001/";
   }
 
   const GOOGLE_CLIENT_ID = configuration?.webClientID;
