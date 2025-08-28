@@ -49,7 +49,7 @@ import * as Location from 'expo-location'
 import UserContext from '../../context/User'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { createAddress } from '../../apollo/mutations'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import navigationService from '../../routes/navigationService'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { Image } from 'react-native'
@@ -131,9 +131,10 @@ export default function SelectLocation(props) {
             truncatedLabel=''
             backImage={() => (
               <View>
-                <MaterialIcons name='arrow-back' size={30} color={'black'} />
+                <MaterialIcons name='arrow-back' size={moderateScale(20)} color={'black'} />
               </View>
             )}
+            style={{ marginLeft: 10 }}
             onPress={() => {
               navigation.goBack()
             }}
@@ -148,13 +149,13 @@ export default function SelectLocation(props) {
               onPress={getCurrentPosition}
               style={{ marginRight: 15 }}
             >
-              <MaterialIcons name='my-location' size={24} color='black' />
+              <MaterialIcons name='my-location' size={moderateScale(20)} color='black' />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => navigation.navigate('SelectLanguageScreen')}
             >
-              <FontAwesome name='language' size={22} color='black' />
+              <FontAwesome name='language' size={moderateScale(20)} color='black' />
             </TouchableOpacity>
           </View>
         )
@@ -162,18 +163,12 @@ export default function SelectLocation(props) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
-      },
-      headerTitleContainerStyle: {
-        marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
-        height: '75%',
-        marginLeft: 0
+        fontWeight: 'bold',
+        fontSize: moderateScale(16),
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
-        elevation: 0
+        elevation: 0,
       }
     })
   }, [])
@@ -450,9 +445,9 @@ export default function SelectLocation(props) {
               <View style={styles1.searchContainer}>
                 <CustomPlacesAutocomplete
                   ref={searchRef}
+                  placeholder={t('find_place')}
                   predefinedPlaces={[]}
                   predefinedPlacesAlwaysVisible={false}
-                  placeholder='ابحث عن مكان...'
                   onPress={(data, details = null) => {
                     const lat = details?.geometry?.location?.lat
                     const lng = details?.geometry?.location?.lng
@@ -470,7 +465,7 @@ export default function SelectLocation(props) {
                   }}
                   query={{
                     key: GOOGLE_MAPS_KEY,
-                    language: 'ar',
+                    language: isArabic ? 'ar' : 'en',
                     sessiontoken: sessionToken,
                     region: 'EG',
                     components: 'country:eg'
@@ -484,8 +479,7 @@ export default function SelectLocation(props) {
                     textInputContainer: {
                       backgroundColor: '#fff',
                       borderRadius: 10,
-                      paddingHorizontal: 40,
-                      paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+                      paddingHorizontal: 10,
                       elevation: 5,
                       shadowColor: '#000',
                       shadowOpacity: 0.2,
@@ -494,10 +488,10 @@ export default function SelectLocation(props) {
                       zIndex: 999999999
                     },
                     textInput: {
-                      height: 44,
+                      paddingVertical: Platform.OS === 'ios' ? moderateScale(16) : 0,
                       color: '#000',
-                      fontSize: 16,
-                      textAlign: 'right'
+                      fontSize: moderateScale(16),
+                      textAlign: isArabic ? 'right' : 'left',
                     },
                     listView: {
                       backgroundColor: '#fff',
@@ -614,7 +608,7 @@ export default function SelectLocation(props) {
                 onPress={onItemPress}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <Feather name='list' size={18} color='#fff' />
+                  <Feather name='list' size={moderateScale(18)} color='#fff' />
                 </View>
 
                 <TextDefault textColor={'#fff'} H5 bold>
@@ -632,7 +626,7 @@ export default function SelectLocation(props) {
                 onPress={handleSaveLocation}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <EvilIcons name='location' size={18} color='#fff' />
+                  <EvilIcons name='location' size={moderateScale(20)} color='#fff' />
                 </View>
                 <TextDefault textColor={'#fff'} H5 bold>
                   {t('confirm_address')}
@@ -739,26 +733,6 @@ const styles1 = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold'
   },
-  addNewAddressbtn: {
-    padding: scale(5),
-    ...alignment.PLmedium,
-    ...alignment.PRmedium
-  },
-  addressContainer: {
-    width: '100%',
-    ...alignment.PTsmall,
-    ...alignment.PBsmall
-  },
-  addButton: {
-    backgroundColor: colors.primary,
-    // backgroundColor: colors.dark,
-    width: '100%',
-    height: scale(40),
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center'
-  },
   addressSubContainer: {
     width: '90%',
     alignSelf: 'center',
@@ -793,7 +767,7 @@ const styles1 = StyleSheet.create({
     paddingHorizontal: 20
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
@@ -803,7 +777,7 @@ const styles1 = StyleSheet.create({
     paddingBottom: 20
   },
   modalItem: {
-    paddingVertical: 14,
+    paddingVertical: moderateScale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   },
@@ -815,12 +789,12 @@ const styles1 = StyleSheet.create({
   cancelButton: {
     marginTop: 10,
     backgroundColor: '#f1f1f1',
-    borderRadius: 10,
-    paddingVertical: 12
+    borderRadius: moderateScale(10),
+    paddingVertical: moderateScale(12)
   },
   cancelText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#333'
   },
   searchContainer: {

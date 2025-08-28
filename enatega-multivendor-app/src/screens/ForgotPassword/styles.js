@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -41,16 +41,16 @@ const styles = (props = null) =>
       alignItems: 'center'
     },
     emailHeading: {
-      paddingBottom: scale(15)
+      paddingBottom: moderateScale(15)
     },
     textField: {
-      fontSize:scale(12),
+      fontSize:moderateScale(12),
 
       borderColor: props !== null ? props.borderColor : '#efefef',
-      borderWidth: scale(1),
-      borderRadius: scale(6),
+      borderWidth: moderateScale(1),
+      borderRadius: moderateScale(6),
       backgroundColor: props !== null ? props.themeBackground : 'white',
-      padding: scale(12),
+      padding: moderateScale(12),
       color: props !==null ? props.newFontcolor : 'red',
       shadowColor: props !== null ? props.fontSecondColor : '#545454'
     },

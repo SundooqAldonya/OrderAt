@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 
@@ -31,8 +31,8 @@ const styles = (props = null) =>
       ...alignment.MBxSmall
     },
     image: {
-      width: scale(130),
-      height: scale(130)
+      width: moderateScale(130),
+      height: moderateScale(130)
     },
     descriptionEmpty: {
       justifyContent: 'center',
@@ -41,17 +41,17 @@ const styles = (props = null) =>
     },
     emptyButton: {
       width: '85%',
-      padding: scale(10),
+      padding: moderateScale(10),
       backgroundColor: props !== null ? props.buttonBackground : 'grey',
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: scale(10)
+      borderRadius: moderateScale(10)
     },
     subContainer: {
       flex: 1,
       backgroundColor: props !== null ? props.cartContainer : '#FFF',
-      borderRadius: scale(10),
+      borderRadius: moderateScale(10),
       elevation: 3,
       shadowColor: 'black',
       shadowOffset: {
@@ -93,7 +93,7 @@ const styles = (props = null) =>
       backgroundColor: props !== null ? props.buttonBackground : 'grey',
       ...alignment.MTxSmall,
       borderRadius: 10,
-      width: scale(80),
+      width: moderateScale(80),
       height: verticalScale(25),
       alignItems: 'center',
       justifyContent: 'center'
@@ -102,7 +102,7 @@ const styles = (props = null) =>
       backgroundColor: props !== null ? props.secondaryBackground : 'grey',
       ...alignment.MTxSmall,
       borderRadius: 10,
-      width: scale(80),
+      width: moderateScale(80),
       height: verticalScale(25),
       alignItems: 'center',
       justifyContent: 'center'
@@ -110,21 +110,21 @@ const styles = (props = null) =>
     rateOrderContainer: {
       display: 'flex',
       flexDirection: 'row',
-      marginTop: scale(10),
-      marginBottom: scale(10),
+      marginTop: moderateScale(10),
+      marginBottom: moderateScale(10),
       justifyContent: 'space-around',
       alignItems: 'flex-end'
     },
     backBtnContainer: {
       backgroundColor: 'white',
-      borderRadius: scale(50),
-      marginLeft: scale(10),
-      width: scale(55),
+      borderRadius: moderateScale(50),
+      marginLeft: moderateScale(10),
+      width: moderateScale(55),
       alignItems: 'center'
     },
     tabContainer: {
       width: '100%',
-      height: scale(45),
+      height: moderateScale(45),
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center',

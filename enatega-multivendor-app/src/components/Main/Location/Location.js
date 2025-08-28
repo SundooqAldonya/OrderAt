@@ -8,7 +8,7 @@ import { theme } from '../../../utils/themeColors'
 import { useTranslation } from 'react-i18next'
 import { EvilIcons, Feather } from '@expo/vector-icons'
 import { alignment } from '../../../utils/alignment'
-import { scale } from '../../../utils/scaling'
+import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 
 function Location({
@@ -68,20 +68,20 @@ function Location({
             flexDirection: isArabic ? 'row-reverse' : 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            marginInlineStart: scale(10),
-            gap: 8
+            marginInlineStart: moderateScale(10),
+            gap: 8,
+            marginTop: moderateScale(10)
           }}
         >
           <View
             style={[
               styles().locationIcon,
-              locationIconGray,
-              { marginTop: scale(8) }
+              locationIconGray
             ]}
           >
             <EvilIcons
               name='location'
-              size={scale(25)}
+              size={moderateScale(25)}
               color={currentTheme.secondaryText}
             />
           </View>

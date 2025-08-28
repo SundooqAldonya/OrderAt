@@ -38,7 +38,7 @@ import {
   restaurantListPreview
 } from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import styles from './styles'
 import TextError from '../../components/Text/TextError/TextError'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
@@ -303,7 +303,7 @@ function Menu({ route, props }) {
               <>
                 <SimpleLineIcons
                   name='target'
-                  size={scale(18)}
+                  size={moderateScale(18)}
                   color={currentTheme.black}
                 />
                 <View style={styles().mL5p} />
@@ -353,7 +353,7 @@ function Menu({ route, props }) {
           <View style={styles().addressSubContainer}>
             <AntDesign
               name='pluscircleo'
-              size={scale(20)}
+              size={moderateScale(20)}
               color={currentTheme.black}
             />
             <View style={styles().mL5p} />

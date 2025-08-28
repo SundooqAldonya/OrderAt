@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
-import { scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import { useNavigation } from '@react-navigation/native'
 import TextError from '../../Text/TextError/TextError'
 import OrdersContext from '../../../context/Orders'
@@ -92,10 +92,10 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
           right: 10
         }}
       >
-        <Ionicons name='close' size={24} color='#333' />
+        <Ionicons name='close' size={moderateScale(24)} color='#333' />
       </TouchableOpacity>
       <TouchableOpacity
-        style={{ marginTop: scale(30), marginHorizontal: scale(10) }}
+        style={{ marginTop: moderateScale(30), marginHorizontal: moderateScale(10) }}
         onPress={() => onPressDetails(order)}
       >
         <View
@@ -115,7 +115,7 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
         </View>
         <View
           style={{
-            marginTop: scale(10),
+            marginTop: moderateScale(10),
             flexDirection: isArabic ? 'row-reverse' : 'row'
           }}
         >
@@ -140,7 +140,7 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
           </View>
           <View
             style={{
-              marginTop: scale(10)
+              marginTop: moderateScale(10)
             }}
           >
             <TextDefault

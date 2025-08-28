@@ -28,6 +28,7 @@ import { useNavigation } from '@react-navigation/native'
 import { auth_token, getAccessToken } from '../../utilities/apiServices'
 import { AuthContext, Configuration, Restaurant } from '../../ui/context'
 import { Icon } from 'react-native-elements'
+import createStyles from './styles'
 
 const { width, height } = Dimensions.get('window')
 
@@ -43,6 +44,17 @@ const Orders = props => {
     refetch,
     setActive
   } = useOrders()
+
+  const [isLandscape, setIsLandscape] = useState(
+    Dimensions.get('window').width > Dimensions.get('window').height
+  )
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setIsLandscape(window.width > window.height)
+    })
+    return () => subscription?.remove()
+  }, [])
 
   const navigation = useNavigation()
   const { loading: mutateLoading } = useAcceptOrder()
@@ -131,6 +143,8 @@ const Orders = props => {
 
   if (error) return <TextError text={error.message} />
 
+  const styles = createStyles(isLandscape)
+
   return (
     <>
       {mutateLoading ? (
@@ -145,11 +159,37 @@ const Orders = props => {
               <View style={styles.line}></View>
               <View style={styles.line}></View>
             </TouchableOpacity>
-            <Image
-              source={require('../../assets/orders.png')}
-              PlaceholderContent={<ActivityIndicator />}
-              style={{ width: 250, height: 100 }}
-            />
+            {!isLandscape ? (
+              <Image
+                source={require('../../assets/orders.png')}
+                PlaceholderContent={<ActivityIndicator />}
+                style={{
+                  width: isLandscape ? width * 0.4 : width * 0.7,
+                  height: isLandscape ? height * 0.25 : height * 0.15,
+                  resizeMode: 'contain'
+                }}
+              />
+            ) : (
+              <TouchableOpacity
+                // onPress={() => setIsVisible(true)}
+                onPress={() => navigation.navigate('AddNewOrder')}
+                style={{
+                  backgroundColor: '#000',
+                  marginHorizontal: 16,
+                  padding: 10,
+                  marginBlock: 10,
+                  borderRadius: 10,
+                  alignSelf: 'flex-end'
+                }}>
+                <TextDefault
+                  H4
+                  style={{ textAlign: 'center' }}
+                  bold
+                  textColor={colors.green}>
+                  {t('createneworder')}
+                </TextDefault>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View
@@ -177,24 +217,26 @@ const Orders = props => {
                 )
               }
             />
-            <TouchableOpacity
-              // onPress={() => setIsVisible(true)}
-              onPress={() => navigation.navigate('AddNewOrder')}
-              style={{
-                backgroundColor: '#000',
-                marginHorizontal: 16,
-                padding: 10,
-                marginTop: 10,
-                borderRadius: 10
-              }}>
-              <TextDefault
-                H4
-                style={{ textAlign: 'center' }}
-                bold
-                textColor={colors.green}>
-                {t('createneworder')}
-              </TextDefault>
-            </TouchableOpacity>
+            {!isLandscape ? (
+              <TouchableOpacity
+                // onPress={() => setIsVisible(true)}
+                onPress={() => navigation.navigate('AddNewOrder')}
+                style={{
+                  backgroundColor: '#000',
+                  marginHorizontal: 16,
+                  padding: 10,
+                  marginTop: 10,
+                  borderRadius: 10
+                }}>
+                <TextDefault
+                  H4
+                  style={{ textAlign: 'center' }}
+                  bold
+                  textColor={colors.green}>
+                  {t('createneworder')}
+                </TextDefault>
+              </TouchableOpacity>
+            ) : null}
             {loading ? (
               <View style={{ marginTop: height * 0.25 }}>
                 <Spinner spinnerColor={colors.fontSecondColor} />

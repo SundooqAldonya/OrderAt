@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { DAYS } from '../../utils/enums'
 import UserContext from '../../context/User'
 import { useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import { moderateScale } from '../../utils/scaling'
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import { colors } from '../../utils/colors'
 import { formatNumber } from '../../utils/formatNumber'
@@ -164,7 +165,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
               : { ...styles.cartIcon }
         }
       >
-        <FontAwesome5 name='cart-plus' size={18} color={colors.primary} />
+        <FontAwesome5 name='cart-plus' size={moderateScale(18)} color={colors.primary} />
       </View>
       <Image
         source={
@@ -208,7 +209,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
                 <Text
                   style={{
                     color: '#9CA3AF',
-                    fontSize: scale(12),
+                    fontSize: moderateScale(12),
                     textDecorationLine: 'line-through',
                     textAlign: 'right'
                   }}
@@ -219,7 +220,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
                 <Text
                   style={{
                     color: '#9CA3AF',
-                    fontSize: scale(12),
+                    fontSize: moderateScale(12),
                     textDecorationLine: 'line-through',
                     textAlign: 'left'
                   }}
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
   },
   imageVertical: {
     width: '100%',
-    height: 120
+    height: moderateScale(120)
   },
   imageHorizontal: {
     width: 100,
@@ -320,6 +321,6 @@ const styles = StyleSheet.create({
     gap: 5
   },
   foodPrice: {
-    fontSize: scale(12)
+    fontSize: moderateScale(12)
   }
 })

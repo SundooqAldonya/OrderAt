@@ -18,7 +18,7 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import TextError from '../../components/Text/TextError/TextError'
 import { LocationContext } from '../../context/Location'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import screenOptions from './screenOptions'
 import styles from './styles'
@@ -74,12 +74,13 @@ function Favourite() {
       headerRight: null,
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: moderateScale(14)
       },
       headerTitleContainerStyle: {
         marginTop: '2%',
-        paddingLeft: scale(25),
-        paddingRight: scale(25),
+        paddingLeft: moderateScale(25),
+        paddingRight: moderateScale(25),
         height: '75%',
         marginLeft: 0
       },
@@ -93,10 +94,10 @@ function Favourite() {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View>
+            <View style={{paddingLeft: 10}}>
               <MaterialIcons
                 name='arrow-back'
-                size={25}
+                size={moderateScale(22)}
                 color={currentTheme.newFontcolor}
               />
             </View>

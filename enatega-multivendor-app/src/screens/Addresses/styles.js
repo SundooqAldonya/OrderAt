@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
 import { colors } from '../../utils/colors'
@@ -14,9 +14,9 @@ const styles = (props = null) =>
       flex: 1,
       alignItems: 'center',
       backgroundColor: 'white',
-      marginTop: scale(20),
-      paddingBottom: scale(20),
-      borderRadius: scale(20)
+      marginTop: moderateScale(20),
+      paddingBottom: moderateScale(20),
+      borderRadius: moderateScale(20)
     },
     subContainerImage: {
       width: '100%',
@@ -31,13 +31,13 @@ const styles = (props = null) =>
       ...alignment.Msmall
     },
     mainView: {
-      paddingBottom: scale(100),
-      marginBottom: scale(65)
+      paddingBottom: moderateScale(100),
+      marginBottom: moderateScale(65)
     },
     containerButton: {
       backgroundColor: props !== null ? props.themeBackground : 'transparent',
       width: '90%',
-      height: scale(60),
+      height: moderateScale(60),
       bottom: verticalScale(0),
       justifyContent: 'center',
       alignItems: 'center',
@@ -47,7 +47,7 @@ const styles = (props = null) =>
     addButton: {
       backgroundColor: colors.secondaryOrange,
       width: '100%',
-      height: scale(40),
+      height: moderateScale(40),
       borderRadius: 50,
       justifyContent: 'center',
       alignItems: 'center',
@@ -56,9 +56,10 @@ const styles = (props = null) =>
     containerSpace: {
       backgroundColor: props !== null ? props.gray100 : 'transparent',
       width: '92%',
-      margin: scale(10),
-      padding: scale(5),
-      borderRadius: scale(10),
+      margin: moderateScale(10),
+      padding: moderateScale(5),
+      paddingHorizontal: moderateScale(15),
+      borderRadius: moderateScale(10),
       borderWidth: 1,
       alignSelf: 'center',
       borderColor: props !== null ? props.gray200 : '#E5E7EB'
@@ -70,13 +71,14 @@ const styles = (props = null) =>
       width: '10%'
     },
     titleAddress: {
-      width: '55%',
+      flexGrow: 1,
+       paddingLeft: moderateScale(20),
       justifyContent: 'center',
       marginTop: -4
     },
     labelStyle: {
       textAlignVertical: 'bottom',
-      fontSize: scale(14),
+      fontSize: moderateScale(14),
       fontWeight: '700',
       textAlign: 'left'
     },
@@ -86,18 +88,18 @@ const styles = (props = null) =>
     },
     homeIcon: {
       color: props !== null ? props.darkBgFont : '#000',
-      width: '15%',
+      width: moderateScale(24),
+      height: moderateScale(24),
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'center'
     },
     addressDetail: {
       width: '80%',
       alignSelf: 'flex-end',
-      fontSize: scale(4),
+      fontSize: moderateScale(4),
       fontWeight: '300',
       textAlign: 'justify',
-      paddingLeft: scale(45)
+      paddingHorizontal: moderateScale(45)
     },
     line: {
       width: '80%',
@@ -106,20 +108,20 @@ const styles = (props = null) =>
       borderBottomWidth: StyleSheet.hairlineWidth
     },
     buttonsAddress: {
-      width: '35%',
       display: 'flex',
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-end',
       justifyContent: 'center',
       gap: 20,
-      paddingBottom: scale(3),
+      alignSelf: 'flex-end',
+      paddingBottom: moderateScale(3),
       zIndex: 999
     },
     rowContainer: {
-      marginTop: scale(5),
+      marginTop: moderateScale(5),
       flexDirection: 'row',
       alignItems: 'center', // Adjust this as needed
-      justifyContent: 'space-between'
+      // justifyContent: 'space-between'
     },
     footer: {
       flex: 1,

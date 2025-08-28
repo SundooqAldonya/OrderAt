@@ -16,7 +16,7 @@ import {
   useAnimatedStyle,
   useSharedValue
 } from 'react-native-reanimated'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { colors } from '../../utils/colors'
 import Feather from '@expo/vector-icons/Feather'
@@ -30,13 +30,13 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
   const circleSize = interpolate(
     circle.value,
     [0, 0.5, 1],
-    [scale(18), scale(24), scale(18)],
+    [moderateScale(18), moderateScale(24), moderateScale(18)],
     Extrapolation.CLAMP
   )
   const radiusSize = interpolate(
     circle.value,
     [0, 0.5, 1],
-    [scale(9), scale(12), scale(9)],
+    [moderateScale(9), moderateScale(12), moderateScale(9)],
     Extrapolation.CLAMP
   )
 
@@ -57,7 +57,7 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
     >
       <View
         activeOpacity={0.7}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: moderateScale(10) }}
       >
         <View>
           <Animated.View
@@ -74,8 +74,8 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
               style={[
                 {
                   color: '#fff',
-                  fontSize: 18,
-                  marginTop: -5,
+                  fontSize: moderateScale(16),
+
                   // backgroundColor: 'red',
                   textAlign: 'center'
                 }
@@ -89,7 +89,7 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
           {t('viewCart')}
         </TextDefault>
         <View>
-          <Feather name='shopping-cart' size={24} color='#fff' />
+          <Feather name='shopping-cart' size={moderateScale(24)} color='#fff' />
         </View>
       </View>
     </TouchableOpacity>

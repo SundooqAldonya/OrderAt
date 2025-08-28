@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    gap: 16
+    gap: 16,
+    paddingHorizontal: 15
   },
   languageButton: {
     backgroundColor: colors.white,

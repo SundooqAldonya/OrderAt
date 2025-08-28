@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import styles from './styles'
-import { scale } from '../../../utils/scaling'
+import { moderateScale } from '../../../utils/scaling'
 import Spinner from '../../../components/Spinner/Spinner'
 import { theme } from '../../../utils/themeColors'
 import ThemeContext from '../../ThemeContext/ThemeContext'
@@ -28,7 +28,7 @@ const FdEmailBtn = (props) => {
         <Spinner backColor='rgba(0,0,0,0.1)' spinnerColor={currentTheme.main} />
       ) : (
         <>
-          <MaterialIcons name='phone' size={scale(18)} color={colors?.dark} />
+          <MaterialIcons name='phone' size={moderateScale(18)} color={colors?.dark} />
           <TextDefault
             H4
             textColor={colors?.dark}

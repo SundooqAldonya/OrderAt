@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useStyles } from './styles'
-import { scale } from '../../utils/scaling'
+import { moderateScale } from '../../utils/scaling'
 import { textStyles } from '../../utils/textStyles'
 import { alignment } from '../../utils/alignment'
 import { useTranslation } from 'react-i18next'
@@ -38,17 +38,17 @@ export const InstructionsModal = ({
             style={[
               {
                 position: 'absolute',
-                top: scale(10),
-                padding: scale(5),
+                top: moderateScale(10),
+                padding: moderateScale(5),
                 zIndex: 1
               },
-              isArabic ? { right: scale(10) } : { left: scale(10) }
+              isArabic ? { right: moderateScale(10) } : { left: moderateScale(10) }
             ]}
             onPress={hideModal}
           >
             <Ionicons
               name='close-circle-outline'
-              size={scale(34)}
+              size={moderateScale(34)}
               color={colors.red}
             />
           </TouchableOpacity>
@@ -88,7 +88,7 @@ export const InstructionsModal = ({
                 onSubmitEditing={onSubmit}
                 placeholder={t('specialInstructions')}
                 allowFontScaling
-                style={{ padding: scale(10), ...textStyles.H4, flex: 1 }}
+                style={{ padding: moderateScale(10), ...textStyles.H4, flex: 1 }}
                 maxLength={400}
                 multiline={true} // This makes it a textarea
                 numberOfLines={4} // Sets minimum visible lines
@@ -102,7 +102,7 @@ export const InstructionsModal = ({
               >
                 <Ionicons
                   name='close-circle-outline'
-                  size={scale(22)}
+                  size={moderateScale(22)}
                   color={colors.dark}
                 />
               </TouchableOpacity>

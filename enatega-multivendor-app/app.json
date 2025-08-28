@@ -32,7 +32,7 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use location to determine the delivery address for your orders.",
         "UIBackgroundModes": ["remote-notification"],
-        "NSUserTrackingUsageDescription": "Allow this app to collect app-related data that can be used for tracking you or your device.",
+        "NSUserTrackingUsageDescription": "We use your device’s identifier to show you personalized offers and measure app performance. For example, if you search for food, we may suggest nearby restaurants.",
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
@@ -90,7 +90,7 @@
       [
         "expo-tracking-transparency",
         {
-          "userTrackingPermission": "Allow this app to collect app-related data that can be used for tracking you or your device."
+          "userTrackingPermission": "We use your device’s identifier to show you personalized offers and measure app performance. For example, if you search for food, we may suggest nearby restaurants."
         }
       ],
       [
@@ -136,7 +136,8 @@
       "@react-native-firebase/app",
       "@react-native-firebase/messaging",
       "./app.plugin.js",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withFirebaseAppDelegate"
     ],
     "extra": {
       "eas": {

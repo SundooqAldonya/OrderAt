@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { alignment } from '../../utils/alignment'
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 
 const styles = (props = null) =>
   StyleSheet.create({
@@ -54,12 +54,12 @@ const styles = (props = null) =>
       justifyContent: 'space-between'
     },
     textField: {
-      fontSize:scale(12),
+      fontSize:moderateScale(12),
       borderColor: props !== null ? props.borderColor : '#efefef',
-      borderWidth: scale(1),
-      borderRadius: scale(6),
+      borderWidth: moderateScale(1),
+      borderRadius: moderateScale(6),
       backgroundColor: props !== null ? props.themeBackground : 'white',
-      padding: scale(12),
+      padding: moderateScale(12),
       color: props !==null ? props.newFontcolor : 'red'
     },
     errorInput: {
@@ -79,19 +79,19 @@ const styles = (props = null) =>
       width: '100%'
     },
     eyeBtn: {
-      marginLeft: scale(-40),
-      elevation: scale(999)
+      marginLeft: moderateScale(-40),
+      elevation: moderateScale(999)
     },
     btn: {
-      marginBottom: scale(20),
+      marginBottom: moderateScale(20),
       position: 'relative',
       // marginTop: '55%',
       width: '100%',
       alignItems: 'center',
       backgroundColor: props !== null ? props.main : '#000',
       alignSelf: 'center',
-      padding: scale(15),
-      borderRadius: scale(28)
+      padding: moderateScale(15),
+      borderRadius: moderateScale(28)
     },
     headerLeftIcon: {
       ...alignment.PLsmall

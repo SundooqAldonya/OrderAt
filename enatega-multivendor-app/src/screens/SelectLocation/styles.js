@@ -1,4 +1,4 @@
-import { scale } from '../../utils/scaling'
+import { moderateScale, scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 const { StyleSheet, I18nManager } = require('react-native')
 const styles = (props = null) =>
@@ -41,9 +41,6 @@ const styles = (props = null) =>
       ...alignment.MBlarge,
       ...alignment.MRmedium,
       textAlign: 'center'
-    },
-    addressHeading: {
-      // marginBottom: scale(30)
     },
     button: {
       width: '95%',
@@ -88,12 +85,12 @@ const styles = (props = null) =>
       height: 90, // Fixed height
       alignSelf: 'center',
       justifyContent: 'center',
-      paddingHorizontal: scale(10),
-      marginTop: scale(15),
-      marginBottom: scale(15),
+      paddingHorizontal: moderateScale(10),
+      marginTop: moderateScale(15),
+      marginBottom: moderateScale(15),
       borderWidth: 1,
       borderColor: props != null ? props.borderBottomColor : '#E5E7EB',
-      borderRadius: scale(8),
+      borderRadius: moderateScale(8),
       padding: 10,
       marginVertical: 10
     },
@@ -226,7 +223,7 @@ const styles = (props = null) =>
     },
     markerText: {
       color: '#fff',
-      fontSize: 12,
+      fontSize: moderateScale(10),
       fontWeight: 'bold',
       textAlign: 'center'
     },

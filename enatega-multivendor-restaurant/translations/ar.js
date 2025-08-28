@@ -109,5 +109,7 @@ export const ar = {
   eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا',
   wrong_credentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
   no_internet: 'لا يوجد اتصال بالإنترنت',
-  free: 'مجاني'
+  free: 'مجاني',
+  products: 'المنتجات',
+  orders_history: 'الطلبات'
 }

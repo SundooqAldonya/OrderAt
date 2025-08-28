@@ -32,6 +32,8 @@ import NewOrderScreenNotification from '../screens/NewOrderScreenNotification'
 import AddNewOrder from '../screens/AddNewOrder'
 import Profile from '../screens/Profile'
 import AreasDeliveryCosts from '../screens/AreasDeliveryCosts'
+import FoodListing from '../screens/FoodListing'
+import OrdersHistory from '../screens/OrdersHistory'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -63,9 +65,10 @@ function DrawerNavigator() {
       screenOptions={{
         headerShown: false,
         overlayColor: 'transparent',
-        drawerType: 'slide',
+        drawerType: 'front', // makes it overlay instead of pushing screen
         drawerStyle: {
-          width: '60%'
+          maxWidth: 280, // your max width
+          width: '75%' // responsive width
         }
       }}
       drawerContent={props => <SideBar {...props} />}>
@@ -172,6 +175,8 @@ function StackNavigator() {
       <Stack.Screen name="AddNewOrder" component={AddNewOrder} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="AreasDeliveryCosts" component={AreasDeliveryCosts} />
+      <Stack.Screen name="FoodListing" component={FoodListing} />
+      <Stack.Screen name="OrdersHistory" component={OrdersHistory} />
     </Stack.Navigator>
   )
 }
