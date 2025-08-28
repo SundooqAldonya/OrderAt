@@ -87,6 +87,7 @@ import { useSelector } from 'react-redux'
 import CityListScreen from '../screens/SelectLocation/CityListScreen'
 import { moderateScale } from '../utils/scaling'
 import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
+import MainV2 from '../screens/Main/MainV2'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -236,7 +237,7 @@ function NoDrawer() {
           headerBackImage: () =>
             DarkBackButton({
               iconColor: currentTheme.backIcon,
-              iconBackground: currentTheme.backIconBackground,
+              iconBackground: currentTheme.backIconBackground
             })
         }}
       />
@@ -305,7 +306,7 @@ function NoDrawer() {
           headerTitle: t('RequestDelivery'),
           headerTitleStyle: {
             fontSize: moderateScale(14),
-            color: "#fff"
+            color: '#fff'
           },
           headerRight: false,
           headerStyle: {
@@ -404,7 +405,7 @@ function LocationStack() {
       <Location.Screen name='CityListScreen' component={CityListScreen} />
       <Location.Screen name='SelectLocation' component={SelectLocation} />
       <Location.Screen name='AddNewAddress' component={AddNewAddress} />
-      <Location.Screen name='Main' component={Main} />
+      <Location.Screen name='Main' component={MainV2} />
       <Location.Screen
         name='SelectLanguageScreen'
         options={{
@@ -465,14 +466,14 @@ const BottomTabs = () => {
           // left: 20,
           // right: 20,
           borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
+          borderTopRightRadius: 16
           // paddingBottom: 10
         },
         tabBarLabelStyle: {
           fontWeight: 'bold',
           fontSize: moderateScale(8),
           marginBottom: 10,
-          alignSelf: 'center',
+          alignSelf: 'center'
         },
         tabBarInactiveTintColor: 'grey',
         tabBarActiveTintColor: '#000'
@@ -481,7 +482,7 @@ const BottomTabs = () => {
       <Tab.Screen
         name='Main'
         options={{ tabBarLabel: t('home') }}
-        component={Main}
+        component={MainV2}
       />
       {isLoggedIn && (
         <Tab.Screen

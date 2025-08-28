@@ -707,7 +707,7 @@ function Main(props) {
                         <Image
                           source={DeliveryIcon}
                           style={{
-                            ...styles().popularMenuImg,
+                            ...styles().popularMenuImg
                             // marginInline: 'auto'
                           }}
                         />

@@ -33,58 +33,56 @@ function MainRestaurantCard(props) {
   return (
     <View style={{ ...styles().orderAgainSec, marginBottom: 20 }}>
       {props.orders && props.orders.length > 0 ? (
-        <>
-          <View>
-            <TouchableOpacity
+        <View>
+          <TouchableOpacity
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10
+            }}
+            onPress={() =>
+              navigation.navigate('MainRestaurantScreen', {
+                restaurantData: props?.orders,
+                title: props.title
+              })
+            }
+          >
+            <TextDefault
+              numberOfLines={1}
+              textColor={currentTheme.fontFourthColor}
+              bolder
+              H4
               style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 10
+                ...styles().ItemTitle,
+                textAlign: isArabic ? 'right' : 'left'
               }}
-              onPress={() =>
-                navigation.navigate('MainRestaurantScreen', {
-                  restaurantData: props?.orders,
-                  title: props.title
-                })
-              }
             >
-              <TextDefault
-                numberOfLines={1}
-                textColor={currentTheme.fontFourthColor}
-                bolder
-                H4
-                style={{
-                  ...styles().ItemTitle,
-                  textAlign: isArabic ? 'right' : 'left'
-                }}
-              >
-                {t(props?.title)}
-              </TextDefault>
-              <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
-                <AntDesign
-                  name={isArabic ? 'arrowleft' : 'arrowright'}
-                  size={moderateScale(20)}
-                  color='black'
-                />
-              </View>
-            </TouchableOpacity>
+              {t(props?.title)}
+            </TextDefault>
+            <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+              <AntDesign
+                name={isArabic ? 'arrowleft' : 'arrowright'}
+                size={moderateScale(20)}
+                color='black'
+              />
+            </View>
+          </TouchableOpacity>
 
-            <FlatList
-              style={styles().offerScroll}
-              inverted={isArabic}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              horizontal={true}
-              data={props?.orders}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => {
-                console.log({ item })
-                return <NewRestaurantCard {...item} />
-              }}
-            />
-          </View>
-        </>
+          <FlatList
+            style={styles().offerScroll}
+            inverted={isArabic}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            data={props?.orders}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => {
+              console.log({ item })
+              return <NewRestaurantCard {...item} />
+            }}
+          />
+        </View>
       ) : (
         <View style={styles().noDataTextWrapper}>
           <Icon name='warning' size={30} color={colors.secondaryOrange} />

@@ -726,5 +726,10 @@ export const en = {
   no_reviews: 'No reviews',
   offers: 'Offers',
   businesses_with_offers: 'Offers & discounts 💰',
-  discounts_until: 'Discount until '
+  discounts_until: 'Discount until ',
+  deliver_to: 'Deliver to',
+  hey: 'Hey',
+  good_afternoon: 'Good Afternoon',
+  all_categories: 'All Categories',
+  see_all: 'See All'
 }

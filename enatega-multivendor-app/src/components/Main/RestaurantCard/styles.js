@@ -19,7 +19,8 @@ const styles = (theme) =>
       elevation: 3,
       borderColor: '#000',
       width: moderateScale(240),
-      height: '70%'
+      height: '70%',
+      overflow: 'hidden'
     },
     imageContainer: {
       width: '100%',
@@ -40,7 +41,7 @@ const styles = (theme) =>
     favouriteOverlay: {
       backgroundColor: 'rgba(255,255,255,0.9)',
       borderRadius: 50,
-      padding:  moderateScale(6),
+      padding: moderateScale(6),
       justifyContent: 'center',
       alignItems: 'center',
       shadowColor: '#000',

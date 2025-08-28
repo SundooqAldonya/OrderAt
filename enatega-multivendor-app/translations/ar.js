@@ -715,5 +715,10 @@ export const ar = {
   no_reviews: 'لا يوجد تقييمات',
   offers: 'عروض',
   businesses_with_offers: 'عروض وخصومات 💰',
-  discounts_until: 'خصومات تصل إلى '
+  discounts_until: 'خصومات تصل إلى ',
+  deliver_to: 'التوصيل إلى',
+  hey: 'أهلاً',
+  good_afternoon: 'مساء الخير',
+  all_categories: 'جميع التصنيفات',
+  see_all: 'رؤية الكل'
 }

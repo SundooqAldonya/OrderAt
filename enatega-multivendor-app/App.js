@@ -129,11 +129,13 @@ export default function App() {
   useEffect(() => {
     const requestPermission = async () => {
       if (Platform.OS === 'ios') {
-        const { status } = await TrackingTransparency.getTrackingPermissionsAsync()
-        console.log('Tracking permission status:', status);
+        const { status } =
+          await TrackingTransparency.getTrackingPermissionsAsync()
+        console.log('Tracking permission status:', status)
         if (status === 'undetermined') {
-          const { status: newStatus } = await TrackingTransparency.requestTrackingPermissionsAsync();
-          console.log('Tracking permission status:', newStatus);
+          const { status: newStatus } =
+            await TrackingTransparency.requestTrackingPermissionsAsync()
+          console.log('Tracking permission status:', newStatus)
         }
       }
     }
@@ -392,8 +394,9 @@ export default function App() {
                 value={{ ThemeValue: theme, dispatch: themeSetter }}
               >
                 <StatusBar
-                  backgroundColor={colors.primary}
-                  barStyle={'light-content'}
+                  // backgroundColor={colors.primary}
+                  backgroundColor={'#fff'}
+                  barStyle={'dark-content'}
                 />
                 <LocationProvider>
                   <ConfigurationProvider>

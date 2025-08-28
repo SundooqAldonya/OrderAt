@@ -153,12 +153,12 @@ function SidebBar(props) {
     setModalVisible(true)
   }
 
-  useFocusEffect(() => {
-    if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(colors.primary)
-    }
-    StatusBar.setBarStyle('light-content')
-  })
+  // useFocusEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     StatusBar.setBackgroundColor(colors.primary)
+  //   }
+  //   StatusBar.setBarStyle('light-content')
+  // })
 
   return (
     <ScrollView
