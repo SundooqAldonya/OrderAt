@@ -12,9 +12,12 @@ import { PlaceholderLine } from 'rn-placeholder'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useNavigation } from '@react-navigation/native'
 import { moderateScale } from '../../utils/scaling'
+import { useTranslation } from 'react-i18next'
 
 const BusinessCategories = () => {
   const navigation = useNavigation()
+  const { i18n } = useTranslation()
+  const isArabic = i18n.language === 'ar'
   const loadingArr = [1, 2, 3, 4, 5, 6, 7]
   const {
     data: dataBusinessCategories,
@@ -49,6 +52,7 @@ const BusinessCategories = () => {
     <View>
       <FlatList
         data={businessCategories}
+        inverted={isArabic}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity onPress={() => handlePress(item)}>
@@ -94,7 +98,7 @@ export default BusinessCategories
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    marginVertical: 10,
     paddingHorizontal: 15
   },
   item: {

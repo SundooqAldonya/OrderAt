@@ -731,5 +731,6 @@ export const en = {
   hey: 'Hey',
   good_afternoon: 'Good Afternoon',
   all_categories: 'All Categories',
-  see_all: 'See All'
+  see_all: 'See All',
+  search_for_restaurants: 'Search dishes, restaurants'
 }

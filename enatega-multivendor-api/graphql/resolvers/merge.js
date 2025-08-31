@@ -293,11 +293,11 @@ const transformRestaurant = async restaurant => {
     categories: populateCategories.bind(this, restaurant.categories),
     options: populateOptions.bind(this, restaurant.options),
     addons: populateAddons.bind(this, restaurant.addons),
-    reviewData: populateReviewsDetail.bind(this, restaurant.id),
+    reviewData: populateReviewsDetail.bind(this, restaurant._id),
     zone: null, // remove this when zone revamp is done all the queries in apps, web are updated
     owner: restaurant.owner ? populateOwner.bind(this, restaurant.owner) : null,
     shopType: restaurant.shopType || SHOP_TYPE.RESTAURANT,
-    _id: restaurant.id,
+    _id: restaurant._id,
     isVisible: restaurant.isVisible ? restaurant.isVisible : false
   }
 }
@@ -306,7 +306,8 @@ const transformMinimalRestaurantData = async restaurant => {
   return {
     ...restaurant._doc,
     shopType: restaurant.shopType || SHOP_TYPE.RESTAURANT,
-    _id: restaurant.id
+    _id: restaurant._id,
+    businessCategories: [...restaurant.businessCategories] || []
   }
 }
 

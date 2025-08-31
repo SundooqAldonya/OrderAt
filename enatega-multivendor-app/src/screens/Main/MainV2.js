@@ -10,7 +10,7 @@ import {
   StyleSheet,
   StatusBar
 } from 'react-native'
-import { AntDesign, Ionicons } from '@expo/vector-icons' // for icons
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons' // for icons
 import { useNavigation } from '@react-navigation/native'
 import MainLoadingUI from '../../components/Main/LoadingUI/MainLoadingUI'
 import {
@@ -18,28 +18,36 @@ import {
   highestRatingRestaurant,
   nearestRestaurants,
   restaurantListPreview,
-  restaurantsWithOffers
+  restaurantsWithOffers,
+  topRatedVendorsInfo
 } from '../../apollo/queries'
 import useHomeRestaurants from '../../ui/hooks/useRestaurantOrderInfo'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { LocationContext } from '../../context/Location'
 import MainRestaurantCard from '../../components/Main/MainRestaurantCard/MainRestaurantCard'
 import BusinessCategories from '../../components/BusinessCategories'
 import UserContext from '../../context/User'
 import { useTranslation } from 'react-i18next'
 import { moderateScale } from '../../utils/scaling'
+import MainModalize from '../../components/Main/Modalize/MainModalize'
+import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon'
+import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
+import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
+import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
+import { selectAddress } from '../../apollo/mutations'
+import { colors } from '../../utils/colors'
+import { alignment } from '../../utils/alignment'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import { StarRatingDisplay } from 'react-native-star-rating-widget'
+import JSONTree from 'react-native-json-tree'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
 `
 
-const categories = [
-  { id: '1', title: 'All', icon: '🔥' },
-  { id: '2', title: 'Hot Dog', icon: '🌭' },
-  { id: '3', title: 'Burger', icon: '🍔' },
-  { id: '4', title: 'Pizza', icon: '🍕' }
-]
-
+const SELECT_ADDRESS = gql`
+  ${selectAddress}
+`
 const restaurants = [
   {
     id: '1',
@@ -66,7 +74,17 @@ const restaurants = [
 export default function FoodTab() {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
+  const [isVisible, setIsVisible] = useState(false)
+  const [loadingAddress, setLoadingAddress] = useState(false)
+  const [busy, setBusy] = useState(false)
   const isArabic = i18n.language === 'ar'
+
+  const addressIcons = {
+    House: CustomHomeIcon,
+    Office: CustomWorkIcon,
+    Apartment: CustomApartmentIcon,
+    Other: CustomOtherIcon
+  }
   const { location, setLocation } = useContext(LocationContext)
   const { cartCount, isLoggedIn, profile } = useContext(UserContext)
 
@@ -83,8 +101,6 @@ export default function FoodTab() {
       errorPolicy: 'all'
     }
   )
-
-  console.log({ location })
 
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
 
@@ -135,6 +151,18 @@ export default function FoodTab() {
     fetchPolicy: 'no-cache'
   })
 
+  const {
+    data: dataTopRated,
+    loading: loadingTopRated,
+    error: errorTopRated
+  } = useQuery(topRatedVendorsInfo, {
+    variables: {
+      latitude: location?.latitude,
+      longitude: location?.longitude
+    },
+    fetchPolicy: 'network-only'
+  })
+
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
@@ -143,6 +171,21 @@ export default function FoodTab() {
     dataHighRating?.highestRatingRestaurant || null
   const nearestRestaurantsData =
     dataNearestRestaurants?.nearestRestaurants || null
+  const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
+
+  const [mutateAddress, { loading: mutationLoading }] = useMutation(
+    SELECT_ADDRESS,
+    {
+      onCompleted: (res) => {
+        console.log({ res })
+        setLoadingAddress(false)
+      },
+      onError: (err) => {
+        console.error('select_address_error', err)
+        setLoadingAddress(false)
+      }
+    }
+  )
 
   useLayoutEffect(() => {
     // Hide the header
@@ -151,33 +194,242 @@ export default function FoodTab() {
     })
   }, [])
 
-  const renderCategory = (item) => (
-    <TouchableOpacity style={styles.categoryChip}>
-      {/* <Text style={styles.categoryIcon}>{item.image}</Text> */}
-      <View>
-        <Image
-          source={{ uri: item.image.url }}
-          style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6 }}
-        />
-      </View>
-      <Text style={styles.categoryText}>{item.name}</Text>
-    </TouchableOpacity>
-  )
+  const setAddressLocation = async (address) => {
+    console.log('Selected address:', address)
 
-  const renderRestaurant = (item) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.cardImage} />
-      <View style={styles.cardInfo}>
-        <Text style={styles.cardTitle}>{item.name}</Text>
-        <Text style={styles.cardTags}>{item.tags}</Text>
-        <View style={styles.cardMeta}>
-          <Text style={styles.metaText}>⭐ {item.rating}</Text>
-          <Text style={styles.metaText}>🚚 {item.fee}</Text>
-          <Text style={styles.metaText}>⏱ {item.time}</Text>
-        </View>
+    // Optional: show loading or disable button
+    setLoadingAddress(true)
+    setIsVisible(false)
+    try {
+      // Update location context
+      setLocation({
+        _id: address._id,
+        label: address.label,
+        latitude: Number(address.location.coordinates[1]),
+        longitude: Number(address.location.coordinates[0]),
+        deliveryAddress: address.deliveryAddress,
+        details: address.details
+      })
+
+      // Trigger any side-effects if needed (optional)
+      await mutateAddress({ variables: { id: address._id } })
+    } catch (error) {
+      console.error('Address select failed:', error)
+    }
+  }
+
+  const onModalClose = () => {
+    setIsVisible(false)
+  }
+
+  const setCurrentLocation = async () => {
+    setBusy(true)
+    const { status, canAskAgain } = await getLocationPermission()
+    if (status !== 'granted' && !canAskAgain) {
+      FlashMessage({
+        message: t('locationPermissionMessage'),
+        onPress: async () => {
+          await Linking.openSettings()
+        }
+      })
+      setBusy(false)
+      return
+    }
+    const { error, coords, message } = await getCurrentLocation()
+    console.log({ coords })
+    if (error) {
+      FlashMessage({
+        message
+      })
+      setBusy(false)
+      return
+    }
+    setBusy(false)
+    getAddress(coords.latitude, coords.longitude).then((res) => {
+      console.log({ res })
+      if (isLoggedIn) {
+        // save the location
+        const addressInput = {
+          _id: '',
+          label: 'Home',
+          latitude: String(coords.latitude),
+          longitude: String(coords.longitude),
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        }
+        mutateAddress({ variables: { addressInput } })
+        // set location
+        setLocation({
+          _id: '',
+          label: 'Home',
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        })
+      } else {
+        setLocation({
+          _id: '',
+          label: 'Home',
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          deliveryAddress: res.formattedAddress,
+          details: res.formattedAddress
+        })
+      }
+      refetch()
+      setIsVisible(false)
+    })
+  }
+
+  const modalHeader = () => (
+    <View style={[styles.addNewAddressbtn]}>
+      <View style={styles.addressContainer}>
+        <TouchableOpacity
+          style={[styles.addButton]}
+          activeOpacity={0.7}
+          onPress={setCurrentLocation}
+          disabled={busy}
+        >
+          <View style={styles.addressSubContainer}>
+            {/* {busy ? (
+              <Spinner size='small' />
+            ) : ( */}
+            <>
+              <SimpleLineIcons
+                name='target'
+                size={moderateScale(18)}
+                color={'#fff'}
+              />
+              <View style={styles.mL5p} />
+              {/* <TextDefault bold H4>
+                  {t('currentLocation')}
+                </TextDefault> */}
+            </>
+            {/* )} */}
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   )
+
+  const modalFooter = () => (
+    <View style={styles.addNewAddressbtn}>
+      <View style={styles.addressContainer}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={styles.addButton}
+          onPress={() => {
+            if (isLoggedIn) {
+              // navigation.navigate('AddNewAddressUser')
+              navigation.navigate('AddressNewVersion')
+            } else {
+              navigation.navigate('Login')
+            }
+            setIsVisible(false)
+            // const modal = modalRef.current
+            // modal?.close()
+          }}
+        >
+          <View
+            style={{
+              ...styles.addressSubContainer,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+          >
+            <AntDesign
+              name='pluscircleo'
+              size={moderateScale(20)}
+              color={'#fff'}
+            />
+            <View style={styles.mL5p} />
+            <TextDefault bold H4>
+              {t('addAddress')}
+            </TextDefault>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.addressTick}></View>
+    </View>
+  )
+
+  // const renderCategory = (item) => (
+  //   <TouchableOpacity style={styles.categoryChip}>
+  //     {/* <Text style={styles.categoryIcon}>{item.image}</Text> */}
+  //     <View>
+  //       <Image
+  //         source={{ uri: item.image.url }}
+  //         style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6 }}
+  //       />
+  //     </View>
+  //     <Text style={styles.categoryText}>{item.name}</Text>
+  //   </TouchableOpacity>
+  // )
+
+  const renderTopRestaurants = (item) => {
+    console.log('businessCategories', item?.businessCategories)
+    const businessCategoriesNames =
+      (item?.businessCategories || [])
+        .map((cat) => cat.name)
+        .filter(Boolean)
+        .join(', ') || null
+    // const debug = true
+    // if (debug) {
+    //   return <JSONTree data={item?.businessCategories} />
+    // }
+    return (
+      <View style={styles.card}>
+        <Image source={{ uri: item.image }} style={styles.cardImage} />
+        <View style={styles.cardInfo}>
+          <Text
+            style={{
+              ...styles.cardTitle,
+              textAlign: isArabic ? 'right' : 'left'
+            }}
+          >
+            {item.name}
+          </Text>
+          {/* <Text style={styles.cardTags}>{item.tags}</Text> */}
+          {businessCategoriesNames?.length ? (
+            <View>
+              <TextDefault
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {businessCategoriesNames?.substring(0, 60)}...
+              </TextDefault>
+            </View>
+          ) : null}
+          <View
+            style={{
+              ...styles.cardMeta
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4
+              }}
+            >
+              <StarRatingDisplay
+                rating={item?.reviewAverage || 0}
+                color={'orange'}
+                emptyColor='orange'
+                enableHalfStar={true}
+                starSize={moderateScale(20)}
+              />
+              <Text style={styles.metaText}>{item.reviewAverage}</Text>
+            </View>
+            {/* <Text style={styles.metaText}>🚚 {item.fee}</Text> */}
+            <Text style={styles.metaText}>⏱ {item.deliveryTime}</Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -203,13 +455,18 @@ export default function FoodTab() {
           >
             <Image
               source={require('../../assets/hamburger_btn.png')}
-              style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'contain',
+                transform: [{ scaleX: isArabic ? -1 : 1 }]
+              }}
             />
           </TouchableOpacity>
-          <View>
+          <TouchableOpacity onPress={() => setIsVisible(true)}>
             <Text style={styles.headerSubtitle}>{t('deliver_to')}</Text>
             <Text style={styles.headerTitle}>{location?.label} ▼</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.cartWrapper}>
           <Ionicons name='cart-outline' size={24} color='black' />
@@ -235,39 +492,13 @@ export default function FoodTab() {
       <View style={styles.searchBar}>
         <Ionicons name='search-outline' size={18} color='gray' />
         <TextInput
-          placeholder='Search dishes, restaurants'
+          placeholder={t('search_for_restaurants')}
           style={styles.searchInput}
           placeholderTextColor='gray'
         />
       </View>
 
       {/* Categories */}
-      <TouchableOpacity
-        // onPress={() => navigation.navigate('SearchScreen')}
-        style={{
-          ...styles.sectionHeader,
-          flexDirection: isArabic ? 'row-reverse' : 'row'
-        }}
-      >
-        <Text style={styles.sectionTitle}>{t('all_categories')}</Text>
-        <View
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            alignItems: 'center',
-            gap: moderateScale(5)
-          }}
-        >
-          <Text style={styles.sectionLink}>
-            {i18n.language === 'en' && t('see_all')}
-          </Text>
-          {/* <Ionicons name='chevron-forward' size={16} color='gray' /> */}
-          <AntDesign
-            name={isArabic ? 'arrowleft' : 'arrowright'}
-            size={moderateScale(20)}
-            color='black'
-          />
-        </View>
-      </TouchableOpacity>
       <BusinessCategories />
       {/* <FlatList
         data={businessCategories}
@@ -278,7 +509,7 @@ export default function FoodTab() {
         contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
       /> */}
 
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 20 }}>
         <View>
           {restaurantsWithOffersData &&
             restaurantsWithOffersData.length > 0 && (
@@ -357,11 +588,44 @@ export default function FoodTab() {
       </View>
 
       {/* Restaurants */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Open Restaurants</Text>
-        <Text style={styles.sectionLink}>See All →</Text>
-      </View>
-      {restaurants.map((item) => renderRestaurant(item))}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('TopBrandsScreen', {
+            topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+          })
+        }
+        style={{
+          ...styles.sectionHeader,
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+      >
+        <Text style={styles.sectionTitle}>{t('highest_rated')}</Text>
+        <View
+          style={{
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            alignItems: 'center',
+            gap: 4
+          }}
+        >
+          <Text style={styles.sectionLink}>{t('see_all')} </Text>
+          <AntDesign name='arrowleft' size={18} color='black' />
+        </View>
+      </TouchableOpacity>
+      {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+
+      <MainModalize
+        isVisible={isVisible}
+        isLoggedIn={isLoggedIn}
+        addressIcons={addressIcons}
+        modalHeader={modalHeader}
+        modalFooter={modalFooter}
+        setAddressLocation={setAddressLocation}
+        profile={profile}
+        location={location}
+        loading={loadingAddress}
+        onClose={onModalClose}
+        otlobMandoob={false}
+      />
     </ScrollView>
   )
 }
@@ -411,7 +675,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     padding: 10,
     borderRadius: 12,
-    marginBottom: 20
+    marginBottom: 10
   },
   searchInput: {
     marginLeft: 8,
@@ -490,5 +754,33 @@ const styles = StyleSheet.create({
   metaText: {
     fontSize: 12,
     color: 'gray'
+  },
+  addNewAddressbtn: {
+    padding: moderateScale(5),
+    ...alignment.PLmedium,
+    ...alignment.PRmedium
+  },
+  addressContainer: {
+    width: '100%',
+    gap: 5,
+    ...alignment.PTsmall,
+    ...alignment.PBsmall
+  },
+  addButton: {
+    backgroundColor: colors.primary,
+    width: '100%',
+    height: moderateScale(40),
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  addressSubContainer: {
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5
   }
 })

@@ -378,7 +378,6 @@ function Main(props) {
       return
     }
     setBusy(false)
-    // setCoordinates({ latitude: coords.latitude, longitude: coords.longitude })
     getAddress(coords.latitude, coords.longitude).then((res) => {
       console.log({ res })
       if (isLoggedIn) {
@@ -414,14 +413,6 @@ function Main(props) {
       refetch()
       setIsVisible(false)
     })
-
-    // navigation.navigate('AddNewAddress', {
-    //   latitude: coords.latitude,
-    //   longitude: coords.longitude,
-    //   prevScreen: props?.route?.params?.prevScreen
-    //     ? props.route.params.prevScreen
-    //     : null
-    // })
   }
 
   const modalHeader = () => (

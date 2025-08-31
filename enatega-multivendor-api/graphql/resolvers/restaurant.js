@@ -907,6 +907,7 @@ module.exports = {
               }
             }
           },
+
           {
             $lookup: {
               from: 'reviews',
@@ -934,9 +935,7 @@ module.exports = {
             $limit: 20
           }
         ]).exec()
-        return restaurants.map(restaurant =>
-          transformRestaurant(new Restaurant(restaurant))
-        )
+        return restaurants
       } catch (error) {
         console.log('topRatedVendors error', error)
       }
@@ -963,6 +962,14 @@ module.exports = {
           },
           {
             $lookup: {
+              from: 'businesscategories', // 👈 collection name in Mongo (check actual name, usually lowercase plural)
+              localField: 'businessCategories',
+              foreignField: '_id',
+              as: 'businessCategories'
+            }
+          },
+          {
+            $lookup: {
               from: 'reviews',
               localField: '_id',
               foreignField: 'restaurant',
@@ -988,8 +995,15 @@ module.exports = {
             $limit: 20
           }
         ]).exec()
-        return restaurants.map(restaurant =>
-          transformMinimalRestaurantData(new Restaurant(restaurant))
+        console.log({
+          topRatedVendorsPreview: restaurants[0].businessCategories[0]
+        })
+        return Promise.all(
+          restaurants.map(async restaurant => {
+            const rest = new Restaurant(restaurant)
+            const populatedRest = await rest.populate('businessCategories')
+            return transformMinimalRestaurantData(populatedRest)
+          })
         )
       } catch (error) {
         console.log('topRatedVendors error', error)

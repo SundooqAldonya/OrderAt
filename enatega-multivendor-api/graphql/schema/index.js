@@ -1467,7 +1467,7 @@ const typeDefs = gql`
 
   type BusinessCategory {
     _id: String
-    name: String
+    name: String!
     description: String
     image: Image
     isActive: Boolean
