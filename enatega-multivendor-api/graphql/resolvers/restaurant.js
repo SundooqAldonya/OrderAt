@@ -995,9 +995,7 @@ module.exports = {
             $limit: 20
           }
         ]).exec()
-        console.log({
-          topRatedVendorsPreview: restaurants[0].businessCategories[0]
-        })
+
         return Promise.all(
           restaurants.map(async restaurant => {
             const rest = new Restaurant(restaurant)
