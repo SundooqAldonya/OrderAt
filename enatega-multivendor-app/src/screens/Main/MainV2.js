@@ -44,6 +44,7 @@ import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import JSONTree from 'react-native-json-tree'
 import { useLocation } from '../../ui/hooks'
 import useGeocoding from '../../ui/hooks/useGeocoding'
+import Spinner from '../../components/Spinner/Spinner'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}

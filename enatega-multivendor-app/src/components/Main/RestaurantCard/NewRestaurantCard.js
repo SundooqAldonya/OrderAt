@@ -221,7 +221,7 @@ function NewRestaurantCard(props) {
             <TextDefault
               style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
             >
-              {businessCategoriesNames?.substring(0, 60)}...
+              {businessCategoriesNames?.substring(0, 40)}...
             </TextDefault>
           </View>
         ) : null}
