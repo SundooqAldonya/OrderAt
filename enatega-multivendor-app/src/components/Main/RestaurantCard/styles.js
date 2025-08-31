@@ -19,7 +19,7 @@ const styles = (theme) =>
       elevation: 3,
       borderColor: '#000',
       width: moderateScale(240),
-      height: '70%',
+      height: '72%',
       overflow: 'hidden'
     },
     imageContainer: {

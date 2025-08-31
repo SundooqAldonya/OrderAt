@@ -189,7 +189,43 @@ function NewRestaurantCard(props) {
             {/* {props.name} */}
             {truncate(props.name, 15)}
           </TextDefault>
-
+        </View>
+        {/* tags */}
+        {businessCategoriesNames?.length ? (
+          <View>
+            <TextDefault
+              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {businessCategoriesNames?.substring(0, 60)}...
+            </TextDefault>
+          </View>
+        ) : null}
+        {highestOffer ? (
+          <View
+            style={{
+              backgroundColor: colors.primary,
+              width: '100%',
+              borderRadius: 6,
+              paddingHorizontal: 10,
+              paddingVertical: 6,
+              justifyContent: 'center',
+              alignSelf: isArabic ? 'flex-end' : 'flex-start'
+            }}
+          >
+            <TextDefault
+              style={{ color: '#fff', textAlign: isArabic ? 'right' : 'left' }}
+            >
+              {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
+            </TextDefault>
+          </View>
+        ) : null}
+        <View
+          style={{
+            flexDirection: isArabic ? 'row-reverse' : 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
           {props.reviewCount >= 5 ? (
             <View
               style={{
@@ -234,37 +270,8 @@ function NewRestaurantCard(props) {
               ({t('new')})
             </TextDefault>
           )}
+          <Text style={{ color: '#000' }}>⏱ {props.deliveryTime}</Text>
         </View>
-        {/* tags */}
-        {businessCategoriesNames?.length ? (
-          <View>
-            <TextDefault
-              style={{ color: '#000', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {businessCategoriesNames?.substring(0, 60)}...
-            </TextDefault>
-          </View>
-        ) : null}
-        {highestOffer ? (
-          <View
-            style={{
-              backgroundColor: colors.primary,
-              width: '100%',
-              borderRadius: 6,
-              paddingHorizontal: 10,
-              paddingVertical: 6,
-              justifyContent: 'center',
-              alignSelf: isArabic ? 'flex-end' : 'flex-start'
-            }}
-          >
-            <TextDefault
-              style={{ color: '#fff', textAlign: isArabic ? 'right' : 'left' }}
-            >
-              {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
-            </TextDefault>
-          </View>
-        ) : null}
-
         {/* <View
           style={{
             ...styles().deliveryInfo,

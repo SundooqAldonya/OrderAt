@@ -367,16 +367,12 @@ export default function FoodTab() {
   // )
 
   const renderTopRestaurants = (item) => {
-    console.log('businessCategories', item?.businessCategories)
     const businessCategoriesNames =
       (item?.businessCategories || [])
         .map((cat) => cat.name)
         .filter(Boolean)
         .join(', ') || null
-    // const debug = true
-    // if (debug) {
-    //   return <JSONTree data={item?.businessCategories} />
-    // }
+
     return (
       <View style={styles.card}>
         <Image source={{ uri: item.image }} style={styles.cardImage} />
