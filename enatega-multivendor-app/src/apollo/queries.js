@@ -1519,3 +1519,48 @@ export const checkDeliveryZone = gql`
     }
   }
 `
+export const searchRestaurants = gql`
+  query SearchRestaurants(
+    $search: String
+    $latitude: Float
+    $longitude: Float
+  ) {
+    searchRestaurants(
+      search: $search
+      latitude: $latitude
+      longitude: $longitude
+    ) {
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      address
+      username
+      password
+      deliveryTime
+      minimumOrder
+      sections
+      rating
+      isActive
+      isAvailable
+      slug
+      stripeDetailsSubmitted
+      commissionRate
+      tax
+      notificationToken
+      enableNotification
+      shopType
+      cuisines
+      keywords
+      tags
+      reviewCount
+      reviewAverage
+      businessCategories {
+        _id
+        name
+        isActive
+      }
+    }
+  }
+`

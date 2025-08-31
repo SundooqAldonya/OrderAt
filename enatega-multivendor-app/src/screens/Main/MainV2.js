@@ -8,7 +8,8 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  Modal
 } from 'react-native'
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons' // for icons
 import { useNavigation } from '@react-navigation/native'
@@ -19,6 +20,7 @@ import {
   nearestRestaurants,
   restaurantListPreview,
   restaurantsWithOffers,
+  searchRestaurants,
   topRatedVendorsInfo
 } from '../../apollo/queries'
 import useHomeRestaurants from '../../ui/hooks/useRestaurantOrderInfo'
@@ -40,6 +42,8 @@ import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import JSONTree from 'react-native-json-tree'
+import { useLocation } from '../../ui/hooks'
+import useGeocoding from '../../ui/hooks/useGeocoding'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -48,36 +52,17 @@ const RESTAURANTS = gql`
 const SELECT_ADDRESS = gql`
   ${selectAddress}
 `
-const restaurants = [
-  {
-    id: '1',
-    name: 'Rose Garden Restaurant',
-    tags: 'Burger • Chicken • Wings',
-    rating: 4.7,
-    fee: 'Free',
-    time: '20 min',
-    image:
-      'https://images.unsplash.com/photo-1560053608-13721e0d69e8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  },
-  {
-    id: '2',
-    name: 'Green Bowl',
-    tags: 'Healthy • Vegan • Salads',
-    rating: 4.5,
-    fee: '$2.99',
-    time: '15 min',
-    image:
-      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  }
-]
-
 export default function FoodTab() {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [loadingAddress, setLoadingAddress] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const isArabic = i18n.language === 'ar'
+  const { getCurrentLocation, getLocationPermission } = useLocation()
+  const { getAddress } = useGeocoding()
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -163,6 +148,19 @@ export default function FoodTab() {
     fetchPolicy: 'network-only'
   })
 
+  const {
+    data: dataSearch,
+    loading: loadingSearch,
+    error: errorSearch
+  } = useQuery(searchRestaurants, {
+    variables: {
+      search,
+      longitude: location.longitude,
+      latitude: location.latitude
+    },
+    fetchPolicy: 'network-only'
+  })
+
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
@@ -172,6 +170,7 @@ export default function FoodTab() {
   const nearestRestaurantsData =
     dataNearestRestaurants?.nearestRestaurants || null
   const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
+  const filteredRestaurants = dataSearch?.searchRestaurants || null
 
   const [mutateAddress, { loading: mutationLoading }] = useMutation(
     SELECT_ADDRESS,
@@ -428,7 +427,11 @@ export default function FoodTab() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <ScrollView
+      // stickyHeaderIndices={[1]} // 👈 index of the header child
+      // showsVerticalScrollIndicator={false}
+      style={{ flex: 1, backgroundColor: '#fff' }}
+    >
       {/* Header */}
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
       <View
@@ -485,13 +488,28 @@ export default function FoodTab() {
       ) : null}
 
       {/* Search */}
-      <View style={styles.searchBar}>
+      <View
+        style={{
+          ...styles.searchBar,
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+      >
         <Ionicons name='search-outline' size={18} color='gray' />
-        <TextInput
+        <TouchableOpacity
+          style={styles.inputLike}
+          onPress={() => setSearchOpen(true)}
+        >
+          <Text
+            style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
+          >
+            {t('search_for_restaurants')}
+          </Text>
+        </TouchableOpacity>
+        {/* <TextInput
           placeholder={t('search_for_restaurants')}
           style={styles.searchInput}
           placeholderTextColor='gray'
-        />
+        /> */}
       </View>
 
       {/* Categories */}
@@ -622,6 +640,34 @@ export default function FoodTab() {
         onClose={onModalClose}
         otlobMandoob={false}
       />
+
+      {/* Search Modal */}
+      <Modal visible={searchOpen} animationType='slide'>
+        <View style={styles.modalContainer}>
+          {/* Search Bar */}
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t('search_for_restaurants')}
+            placeholderTextColor={'#999'}
+            value={search}
+            onChangeText={setSearch}
+          />
+
+          {/* Restaurant List */}
+          <FlatList
+            data={filteredRestaurants}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => renderTopRestaurants(item)}
+          />
+
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setSearchOpen(false)}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </ScrollView>
   )
 }
@@ -631,7 +677,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16
+    padding: 16,
+    backgroundColor: '#fff'
   },
   headerSubtitle: {
     fontSize: 12,
@@ -778,5 +825,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5
+  },
+  inputLike: {
+    padding: 12,
+    justifyContent: 'center',
+    width: '100%'
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff'
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12
+  },
+  item: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  },
+  closeButton: {
+    backgroundColor: '#ff4d4d', // red background
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignSelf: 'flex-end',
+    margin: 10,
+    width: '100%'
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center'
   }
 })

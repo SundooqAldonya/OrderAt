@@ -1018,11 +1018,28 @@ module.exports = {
       }
     },
     async searchRestaurants(_, args) {
+      console.log('searchRestaurants', { args })
       try {
-        const regex = new RegExp(args.search, 'i')
-        const restaurants = await Restaurant.find({
-          name: regex
-        })
+        const { search, longitude, latitude } = args
+
+        const query = { isVisible: true }
+        if (search) {
+          const regex = new RegExp(search, 'i')
+          query.name = regex
+        }
+
+        if (longitude && latitude) {
+          query.deliveryBounds = {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [Number(longitude), Number(latitude)]
+              }
+            }
+          }
+        }
+
+        const restaurants = await Restaurant.find(query).limit(10)
         return restaurants
       } catch (err) {
         throw err

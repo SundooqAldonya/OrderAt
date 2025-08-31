@@ -1467,7 +1467,7 @@ const typeDefs = gql`
 
   type BusinessCategory {
     _id: String
-    name: String!
+    name: String
     description: String
     image: Image
     isActive: Boolean
@@ -1621,7 +1621,11 @@ const typeDefs = gql`
     getCouponEnums: [String]
     searchFood(search: String): [Food]
     searchUsers(search: String): [User]
-    searchRestaurants(search: String): [Restaurant]
+    searchRestaurants(
+      search: String
+      longitude: Float
+      latitude: Float
+    ): [Restaurant]
     getRidersLocation(cityId: String): [Rider]
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!

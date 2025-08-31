@@ -141,6 +141,31 @@ function NewRestaurantCard(props) {
               <MaterialIcons name='info-outline' size={24} color='#fff' />
             </View>
           ) : null}
+          {highestOffer ? (
+            <View
+              style={{
+                position: 'absolute',
+                top: 10,
+                ...(isArabic ? { left: 10 } : { right: 10 }),
+                backgroundColor: 'orangered',
+                // width: '100%',
+                borderRadius: 6,
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                justifyContent: 'center',
+                alignSelf: isArabic ? 'flex-end' : 'flex-start'
+              }}
+            >
+              <TextDefault
+                style={{
+                  color: '#fff',
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
+              </TextDefault>
+            </View>
+          ) : null}
           {/* AddToFavorites */}
           <View style={styles().overlayContainer}>
             <TouchableOpacity
@@ -200,7 +225,7 @@ function NewRestaurantCard(props) {
             </TextDefault>
           </View>
         ) : null}
-        {highestOffer ? (
+        {/* {highestOffer ? (
           <View
             style={{
               backgroundColor: colors.primary,
@@ -218,7 +243,7 @@ function NewRestaurantCard(props) {
               {`${t('discounts_until')} ${highestOffer} ${configuration?.currencySymbol} 💰`}
             </TextDefault>
           </View>
-        ) : null}
+        ) : null} */}
         <View
           style={{
             flexDirection: isArabic ? 'row-reverse' : 'row',
