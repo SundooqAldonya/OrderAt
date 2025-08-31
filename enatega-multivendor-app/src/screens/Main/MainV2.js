@@ -128,13 +128,13 @@ export default function FoodTab() {
     fetchPolicy: 'no-cache'
   })
 
-  const {
-    data: dataBusinessCategories,
-    loading: loadingBusinessCategories,
-    error: errorBusinessCategories
-  } = useQuery(getBusinessCategoriesCustomer, {
-    fetchPolicy: 'no-cache'
-  })
+  // const {
+  //   data: dataBusinessCategories,
+  //   loading: loadingBusinessCategories,
+  //   error: errorBusinessCategories
+  // } = useQuery(getBusinessCategoriesCustomer, {
+  //   fetchPolicy: 'no-cache'
+  // })
 
   const {
     data: dataTopRated,
@@ -161,8 +161,8 @@ export default function FoodTab() {
     fetchPolicy: 'network-only'
   })
 
-  const businessCategories =
-    dataBusinessCategories?.getBusinessCategoriesCustomer || null
+  // const businessCategories =
+  //   dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
   const highestRatingRestaurantData =
@@ -291,21 +291,21 @@ export default function FoodTab() {
           disabled={busy}
         >
           <View style={styles.addressSubContainer}>
-            {/* {busy ? (
+            {busy ? (
               <Spinner size='small' />
-            ) : ( */}
-            <>
-              <SimpleLineIcons
-                name='target'
-                size={moderateScale(18)}
-                color={'#fff'}
-              />
-              <View style={styles.mL5p} />
-              {/* <TextDefault bold H4>
+            ) : (
+              <>
+                <SimpleLineIcons
+                  name='target'
+                  size={moderateScale(18)}
+                  color={'#fff'}
+                />
+                <View style={styles.mL5p} />
+                {/* <TextDefault bold H4>
                   {t('currentLocation')}
                 </TextDefault> */}
-            </>
-            {/* )} */}
+              </>
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -384,7 +384,6 @@ export default function FoodTab() {
           >
             {item.name}
           </Text>
-          {/* <Text style={styles.cardTags}>{item.tags}</Text> */}
           {businessCategoriesNames?.length ? (
             <View>
               <TextDefault
@@ -418,7 +417,6 @@ export default function FoodTab() {
               />
               <Text style={styles.metaText}>{item.reviewAverage}</Text>
             </View>
-            {/* <Text style={styles.metaText}>🚚 {item.fee}</Text> */}
             <Text style={styles.metaText}>⏱ {item.deliveryTime}</Text>
           </View>
         </View>
@@ -854,7 +852,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     alignSelf: 'flex-end',
-    margin: 10,
+    // marginVetical: 10,
     width: '100%'
   },
   closeButtonText: {

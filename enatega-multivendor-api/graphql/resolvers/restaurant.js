@@ -746,6 +746,15 @@ module.exports = {
               }
             }
           },
+          // business categories
+          {
+            $lookup: {
+              from: 'businesscategories',
+              localField: 'businessCategories',
+              foreignField: '_id',
+              as: 'businessCategories'
+            }
+          },
           // Bring in categories for the restaurant
           {
             $lookup: {
@@ -859,7 +868,9 @@ module.exports = {
           }
         ])
 
-        console.log({ discountedRestaurantIds })
+        console.log({
+          discountedRestaurantIds: discountedRestaurantIds[0].businessCategories
+        })
 
         return discountedRestaurantIds
       } catch (err) {
