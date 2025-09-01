@@ -11,7 +11,13 @@ import {
   StatusBar,
   Modal
 } from 'react-native'
-import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons' // for icons
+import {
+  AntDesign,
+  FontAwesome,
+  Ionicons,
+  MaterialIcons,
+  SimpleLineIcons
+} from '@expo/vector-icons' // for icons
 import { useNavigation } from '@react-navigation/native'
 import MainLoadingUI from '../../components/Main/LoadingUI/MainLoadingUI'
 import {
@@ -435,13 +441,12 @@ export default function FoodTab() {
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
       <View
         style={{
-          ...styles.header,
-          flexDirection: isArabic ? 'row-reverse' : 'row'
+          ...styles.header
         }}
       >
         <View
           style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
+            flexDirection: 'row',
             alignItems: 'center',
             gap: 20
           }}
@@ -456,8 +461,7 @@ export default function FoodTab() {
               style={{
                 width: '100%',
                 height: '100%',
-                resizeMode: 'contain',
-                transform: [{ scaleX: isArabic ? -1 : 1 }]
+                resizeMode: 'contain'
               }}
             />
           </TouchableOpacity>
@@ -466,10 +470,30 @@ export default function FoodTab() {
             <Text style={styles.headerTitle}>{location?.label} ▼</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.cartWrapper}>
-          <Ionicons name='cart-outline' size={24} color='#fff' />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{cartCount}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SelectLanguageScreen')}
+          >
+            <MaterialIcons
+              name='favorite-outline'
+              size={moderateScale(24)}
+              color='black'
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SelectLanguageScreen')}
+          >
+            <FontAwesome
+              name='language'
+              size={moderateScale(24)}
+              color='black'
+            />
+          </TouchableOpacity>
+          <View style={styles.cartWrapper}>
+            <Ionicons name='cart-outline' size={24} color='#000' />
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{cartCount}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -693,9 +717,9 @@ const styles = StyleSheet.create({
   },
   cartWrapper: {
     position: 'relative',
-    backgroundColor: '#000',
-    borderRadius: 50,
-    padding: 8
+    // backgroundColor: '#000',
+    borderRadius: 50
+    // padding: 8
   },
   badge: {
     position: 'absolute',

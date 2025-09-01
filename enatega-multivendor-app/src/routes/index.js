@@ -59,7 +59,14 @@ import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 import messaging from '@react-native-firebase/messaging'
 import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
-import { Alert, Image, Platform, TouchableOpacity, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import Toast from 'react-native-toast-message'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -309,7 +316,6 @@ function NoDrawer() {
             fontSize: moderateScale(14),
             color: '#fff'
           },
-          headerRight: false,
           headerStyle: {
             backgroundColor: colors.primary
           }
@@ -382,6 +388,11 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='CityListScreen'
         component={CityListScreen}
+      />
+      <NavigationStack.Screen
+        name='SelectLanguageScreen'
+        options={{ headerShown: false }}
+        component={SelectLanguageScreen}
       />
     </NavigationStack.Navigator>
   )
@@ -535,7 +546,24 @@ const BottomTabs = () => {
             <Image source={MandoobImg} style={{ width: 50, height: 50 }} />
           ),
           tabBarButton: (props) => <CustomSearchButton {...props} />,
-          tabBarLabel: () => null
+          tabBarLabel: () => null,
+          headerTitle: t('RequestDelivery'),
+          tabBarStyle: { display: 'none' },
+          headerTitleStyle: {
+            fontSize: moderateScale(14),
+            color: '#000'
+          },
+          headerShown: false
+          // headerLeft: () => (
+          //   <TouchableOpacity onPress={() => navigationService.goBack()}>
+          //     <AntDesign
+          //       name='arrowleft'
+          //       size={20}
+          //       color='#000'
+          //       style={{ marginLeft: 15 }}
+          //     />
+          //   </TouchableOpacity>
+          // )
         }}
       />
 
