@@ -59,7 +59,7 @@ import AddNewAddressUser from '../screens/SelectLocation/AddNewAddressUser'
 import EditUserAddress from '../screens/SelectLocation/EditUserAddress'
 import messaging from '@react-native-firebase/messaging'
 import { playCustomSound, setupNotificationChannel } from '../utils/playSound'
-import { Alert, Platform, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Platform, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -88,6 +88,7 @@ import CityListScreen from '../screens/SelectLocation/CityListScreen'
 import { moderateScale } from '../utils/scaling'
 import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
 import MainV2 from '../screens/Main/MainV2'
+import MandoobImg from '../assets/tabs_request_delivery.png'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -422,6 +423,39 @@ function LocationStack() {
   )
 }
 
+const CustomSearchButton = ({ children, onPress }) => (
+  <TouchableOpacity
+    style={{
+      top: -30, // makes it float above tab bar
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5,
+      overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
+      backgroundColor: colors.primary,
+      borderRadius: 40,
+      paddingHorizontal: 4
+    }}
+    onPress={onPress}
+  >
+    <View
+      style={{
+        width: 65,
+        height: 65,
+        borderRadius: 65 / 2,
+        backgroundColor: colors.primary, // 👈 main color
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      {children}
+    </View>
+  </TouchableOpacity>
+)
+
 const BottomTabs = () => {
   const { t } = useTranslation()
   const Tab = createBottomTabNavigator()
@@ -476,7 +510,8 @@ const BottomTabs = () => {
           alignSelf: 'center'
         },
         tabBarInactiveTintColor: 'grey',
-        tabBarActiveTintColor: '#000'
+        tabBarActiveTintColor: colors.primary
+        // tabBarActiveTintColor: '#000'
       })}
     >
       <Tab.Screen
@@ -491,6 +526,19 @@ const BottomTabs = () => {
           component={MyOrders}
         />
       )}
+
+      <Tab.Screen
+        name='RequestDelivery'
+        component={RequestDelivery}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image source={MandoobImg} style={{ width: 50, height: 50 }} />
+          ),
+          tabBarButton: (props) => <CustomSearchButton {...props} />,
+          tabBarLabel: () => null
+        }}
+      />
+
       {isLoggedIn ? (
         <Tab.Screen
           name='Settings'
@@ -507,6 +555,7 @@ const BottomTabs = () => {
           component={CreateAccount}
         />
       )}
+
       {/* <Tab.Screen
         name='RequestDelivery'
         options={{ tabBarLabel: t('Request_delivery') }}

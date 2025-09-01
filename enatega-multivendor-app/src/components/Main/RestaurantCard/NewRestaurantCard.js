@@ -146,8 +146,8 @@ function NewRestaurantCard(props) {
               style={{
                 position: 'absolute',
                 top: 10,
-                ...(isArabic ? { left: 10 } : { right: 10 }),
-                backgroundColor: 'orangered',
+                left: 10,
+                backgroundColor: colors.primary,
                 // width: '100%',
                 borderRadius: 6,
                 paddingHorizontal: 10,

@@ -467,7 +467,7 @@ export default function FoodTab() {
           </TouchableOpacity>
         </View>
         <View style={styles.cartWrapper}>
-          <Ionicons name='cart-outline' size={24} color='black' />
+          <Ionicons name='cart-outline' size={24} color='#fff' />
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{cartCount}</Text>
           </View>
@@ -481,7 +481,9 @@ export default function FoodTab() {
         >
           {t('hey')} {profile?.name}
           {i18n.language === 'en' && (
-            <Text style={{ fontWeight: '700' }}>, {t('good_afternoon')}</Text>
+            <Text style={{ fontWeight: '700', color: colors.primary }}>
+              , {t('good_afternoon')}
+            </Text>
           )}
         </Text>
       ) : null}
@@ -681,7 +683,8 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    color: 'tomato',
+    // color: 'tomato',
+    color: colors.primary,
     fontWeight: '600'
   },
   headerTitle: {
@@ -689,13 +692,17 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   cartWrapper: {
-    position: 'relative'
+    position: 'relative',
+    backgroundColor: '#000',
+    borderRadius: 50,
+    padding: 8
   },
   badge: {
     position: 'absolute',
     right: -8,
     top: -5,
-    backgroundColor: 'tomato',
+    // backgroundColor: 'tomato',
+    backgroundColor: colors.primary,
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2
