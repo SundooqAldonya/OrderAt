@@ -38,6 +38,7 @@
     "@apollo/client": "^3.5.6",
     "@babel/plugin-transform-object-rest-spread": "^7.23.4",
     "@babel/plugin-transform-optional-catch-binding": "^7.23.4",
+    "@d11/react-native-fast-image": "^8.11.1",
     "@expo-google-fonts/montserrat": "^0.2.3",
     "@expo/config-plugins": "~10.1.1",
     "@expo/prebuild-config": "~9.0.0",

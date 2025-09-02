@@ -28,6 +28,7 @@ import { colors } from '../../../utils/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { setRestaurant } from '../../../store/restaurantSlice'
 import { useDispatch } from 'react-redux'
+import FastImage from '@d11/react-native-fast-image'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -57,17 +58,15 @@ function NewRestaurantCard(props) {
     refetchQueries: [{ query: PROFILE }]
   })
 
-  console.log({ categories: props.categories })
+  // const { data, loading, error } = useQuery(isRestaurantOpenNow, {
+  //   variables: {
+  //     id: props._id
+  //   }
+  // })
 
-  const { data, loading, error } = useQuery(isRestaurantOpenNow, {
-    variables: {
-      id: props._id
-    }
-  })
+  // console.log({ data })
 
-  console.log({ data })
-
-  const isOpenNow = data?.isRestaurantOpenNow
+  // const isOpenNow = data?.isRestaurantOpenNow
 
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
@@ -117,12 +116,13 @@ function NewRestaurantCard(props) {
             height: '100%'
           }}
         >
-          <Image
-            resizeMode='cover'
-            source={{ uri: props.image }}
+          <FastImage
+            // resizeMode='cover'
+            resizeMode={FastImage.resizeMode.cover}
+            source={{ uri: props.image, priority: FastImage.priority.normal }}
             style={styles().restaurantImage}
           />
-          {!isOpenNow ? (
+          {/* {!isOpenNow ? (
             <View
               style={{
                 position: 'absolute',
@@ -140,7 +140,7 @@ function NewRestaurantCard(props) {
               </TextDefault>
               <MaterialIcons name='info-outline' size={24} color='#fff' />
             </View>
-          ) : null}
+          ) : null} */}
           {highestOffer ? (
             <View
               style={{

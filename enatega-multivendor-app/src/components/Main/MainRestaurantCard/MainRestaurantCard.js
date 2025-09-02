@@ -81,6 +81,9 @@ function MainRestaurantCard(props) {
               console.log({ item })
               return <NewRestaurantCard {...item} />
             }}
+            initialNumToRender={8} // tune this
+            windowSize={5}
+            removeClippedSubviews={false}
           />
         </View>
       ) : (

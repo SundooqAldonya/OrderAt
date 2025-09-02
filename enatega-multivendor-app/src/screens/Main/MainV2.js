@@ -51,6 +51,7 @@ import JSONTree from 'react-native-json-tree'
 import { useLocation } from '../../ui/hooks'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import Spinner from '../../components/Spinner/Spinner'
+import ErrorView from '../../components/ErrorView/ErrorView'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -431,6 +432,15 @@ export default function FoodTab() {
     )
   }
 
+  if (error) {
+    return (
+      <ErrorView
+        wentWrong={t('somethingWentWrong')}
+        message={t('checkInternet')}
+      />
+    )
+  }
+
   return (
     <ScrollView
       // stickyHeaderIndices={[1]} // 👈 index of the header child
@@ -451,7 +461,6 @@ export default function FoodTab() {
             gap: 20
           }}
         >
-          {/* <Ionicons name='menu-outline' size={24} color='black' /> */}
           <TouchableOpacity
             onPress={() => navigation.toggleDrawer()}
             style={{ width: 40, height: 40 }}
@@ -471,9 +480,7 @@ export default function FoodTab() {
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SelectLanguageScreen')}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Favourite')}>
             <MaterialIcons
               name='favorite-outline'
               size={moderateScale(24)}
@@ -490,7 +497,11 @@ export default function FoodTab() {
             />
           </TouchableOpacity>
           <View style={styles.cartWrapper}>
-            <Ionicons name='cart-outline' size={24} color='#000' />
+            <Ionicons
+              name='cart-outline'
+              size={moderateScale(24)}
+              color='#000'
+            />
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{cartCount}</Text>
             </View>
