@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native'
 import UserContext from '../../../context/User'
 import styles from './styles'
@@ -17,18 +17,57 @@ import { useNavigation } from '@react-navigation/native'
 import { TopBrands } from '../TopBrands'
 import { useQuery } from '@apollo/client'
 import AntDesign from '@expo/vector-icons/AntDesign'
+import {
+  DataProvider,
+  LayoutProvider,
+  RecyclerListView
+} from 'recyclerlistview'
 
 function MainRestaurantCard(props) {
   const { i18n, t } = useTranslation()
   const navigation = useNavigation()
-
+  const cardWidth = moderateScale(360)
+  const cardHeight = moderateScale(300)
   const { language } = i18n
   const isArabic = language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
 
+  // DataProvider tells RecyclerListView how to track row changes
+  const dataProvider = useMemo(() => {
+    return new DataProvider((r1, r2) => r1._id !== r2._id).cloneWithRows(
+      props.orders || []
+    )
+  }, [props.orders])
+
+  // LayoutProvider tells RecyclerListView how to lay out each item
+  const layoutProvider = useMemo(() => {
+    return new LayoutProvider(
+      () => 'ORDER_ITEM', // All rows same type
+      (type, dim) => {
+        switch (type) {
+          case 'ORDER_ITEM':
+            dim.width = cardWidth * 0.8 // Adjust card width
+            dim.height = cardHeight // Adjust card height
+            break
+          default:
+            dim.width = 0
+            dim.height = 0
+        }
+      }
+    )
+  }, [])
+
   if (props?.loading) return <MainLoadingUI />
   if (props?.error) return <Text>Error: {props?.error?.message}</Text>
+
+  const rowRenderer = (type, item) => {
+    return (
+      <View style={isArabic && { transform: [{ scaleX: -1 }] }}>
+        <NewRestaurantCard {...item} />
+      </View>
+    )
+  }
 
   return (
     <View style={{ ...styles().orderAgainSec, marginBottom: 20 }}>
@@ -69,7 +108,22 @@ function MainRestaurantCard(props) {
             </View>
           </TouchableOpacity>
 
-          <FlatList
+          <RecyclerListView
+            style={[
+              styles().offerScroll,
+              isArabic && { transform: [{ scaleX: -1 }] }
+            ]}
+            isHorizontal={true} // horizontal scroll
+            rowRenderer={rowRenderer}
+            dataProvider={dataProvider}
+            layoutProvider={layoutProvider}
+            forceNonDeterministicRendering={true}
+            renderAheadOffset={300} // tune this for smoothness
+            canChangeSize={true}
+            // inverted={isArabic}
+          />
+
+          {/* <FlatList
             style={styles().offerScroll}
             inverted={isArabic}
             showsVerticalScrollIndicator={false}
@@ -84,7 +138,7 @@ function MainRestaurantCard(props) {
             initialNumToRender={8} // tune this
             windowSize={5}
             removeClippedSubviews={false}
-          />
+          /> */}
         </View>
       ) : (
         <View style={styles().noDataTextWrapper}>

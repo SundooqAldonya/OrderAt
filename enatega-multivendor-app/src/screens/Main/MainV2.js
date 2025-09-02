@@ -52,6 +52,8 @@ import { useLocation } from '../../ui/hooks'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import Spinner from '../../components/Spinner/Spinner'
 import ErrorView from '../../components/ErrorView/ErrorView'
+import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+import { Divider } from 'react-native-paper'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -496,7 +498,18 @@ export default function FoodTab() {
               color='black'
             />
           </TouchableOpacity>
-          <View style={styles.cartWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              if (cartCount > 0) {
+                navigation.navigate('Cart')
+              } else {
+                FlashMessage({
+                  message: t('cartIsEmpty')
+                })
+              }
+            }}
+            style={styles.cartWrapper}
+          >
             <Ionicons
               name='cart-outline'
               size={moderateScale(24)}
@@ -505,12 +518,12 @@ export default function FoodTab() {
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{cartCount}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
       {/* Greeting */}
-      {profile ? (
+      {/* {profile ? (
         <Text
           style={{ ...styles.greeting, textAlign: isArabic ? 'right' : 'left' }}
         >
@@ -521,7 +534,7 @@ export default function FoodTab() {
             </Text>
           )}
         </Text>
-      ) : null}
+      ) : null} */}
 
       {/* Search */}
       <View
@@ -578,6 +591,7 @@ export default function FoodTab() {
             )}
         </View>
       </View>
+      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
       <View style={{ marginTop: 0 }}>
         <View>
           {mostOrderedRestaurantsVar &&
@@ -597,6 +611,7 @@ export default function FoodTab() {
             )}
         </View>
       </View>
+      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
       {/* heighest rating */}
       <View style={{ marginTop: 0 }}>
         <View>
@@ -617,6 +632,7 @@ export default function FoodTab() {
             )}
         </View>
       </View>
+      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
       {/* nearest restaurants */}
       <View style={{ marginTop: 0 }}>
         <View>
@@ -636,7 +652,7 @@ export default function FoodTab() {
           )}
         </View>
       </View>
-
+      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
       {/* Restaurants */}
       <TouchableOpacity
         onPress={() =>

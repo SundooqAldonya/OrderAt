@@ -543,7 +543,7 @@ const BottomTabs = () => {
         component={RequestDelivery}
         options={{
           tabBarIcon: ({ color }) => (
-            <Image source={MandoobImg} style={{ width: 50, height: 50 }} />
+            <Image source={MandoobImg} style={{ width: 80, height: 80 }} />
           ),
           tabBarButton: (props) => <CustomSearchButton {...props} />,
           tabBarLabel: () => null,
