@@ -884,7 +884,8 @@ const styles = StyleSheet.create({
     gap: 5
   },
   inputLike: {
-    padding: 12,
+    // padding: 12,
+    paddingHorizontal: 12,
     justifyContent: 'center',
     width: '100%'
   },
