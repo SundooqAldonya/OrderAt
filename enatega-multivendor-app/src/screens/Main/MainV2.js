@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect, useState } from 'react'
+import React, { Fragment, useContext, useLayoutEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import MainLoadingUI from '../../components/Main/LoadingUI/MainLoadingUI'
 import {
+  checkDeliveryZone,
   getBusinessCategoriesCustomer,
   highestRatingRestaurant,
   nearestRestaurants,
@@ -54,6 +55,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import ErrorView from '../../components/ErrorView/ErrorView'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { Divider } from 'react-native-paper'
+import ActiveOrders from '../../components/Main/ActiveOrders/ActiveOrders'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -69,6 +71,8 @@ export default function FoodTab() {
   const [loadingAddress, setLoadingAddress] = useState(false)
   const [busy, setBusy] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [hasActiveOrders, setHasActiveOrders] = useState(false)
+
   const [search, setSearch] = useState('')
   const isArabic = i18n.language === 'ar'
   const { getCurrentLocation, getLocationPermission } = useLocation()
@@ -82,6 +86,18 @@ export default function FoodTab() {
   }
   const { location, setLocation } = useContext(LocationContext)
   const { cartCount, isLoggedIn, profile } = useContext(UserContext)
+
+  const { loading: loadingZone, error: errorZone } = useQuery(
+    checkDeliveryZone,
+    {
+      variables: {
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+    }
+  )
+
+  console.log({ errorZone })
 
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
@@ -291,6 +307,10 @@ export default function FoodTab() {
     })
   }
 
+  const handleActiveOrdersChange = (activeOrdersExist) => {
+    setHasActiveOrders(activeOrdersExist)
+  }
+
   const modalHeader = () => (
     <View style={[styles.addNewAddressbtn]}>
       <View style={styles.addressContainer}>
@@ -443,6 +463,28 @@ export default function FoodTab() {
     )
   }
 
+  // if (errorZone)
+  //   return (
+  //     <ErrorView
+  //       // wentWrong={t('somethingWentWrong')}
+  //       message={t('city_location_no_deliveryzone')}
+  //     >
+  //       <MainModalize
+  //         isVisible={isVisible}
+  //         isLoggedIn={isLoggedIn}
+  //         addressIcons={addressIcons}
+  //         modalHeader={modalHeader}
+  //         modalFooter={modalFooter}
+  //         setAddressLocation={setAddressLocation}
+  //         profile={profile}
+  //         location={location}
+  //         loading={loadingAddress}
+  //         onClose={onModalClose}
+  //         otlobMandoob={false}
+  //       />
+  //     </ErrorView>
+  //   )
+
   return (
     <ScrollView
       // stickyHeaderIndices={[1]} // 👈 index of the header child
@@ -571,155 +613,181 @@ export default function FoodTab() {
         renderItem={({ item }) => renderCategory(item)}
         contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
       /> */}
-
-      <View style={{ marginTop: 20 }}>
-        <View>
-          {restaurantsWithOffersData &&
-            restaurantsWithOffersData.length > 0 && (
-              <>
-                {orderLoading ? (
-                  <MainLoadingUI />
-                ) : (
-                  <MainRestaurantCard
-                    orders={[...restaurantsWithOffersData]}
-                    loading={orderLoading}
-                    error={orderError}
-                    title={'businesses_with_offers'}
-                  />
-                )}
-              </>
-            )}
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
-      <View style={{ marginTop: 0 }}>
-        <View>
-          {mostOrderedRestaurantsVar &&
-            mostOrderedRestaurantsVar.length > 0 && (
-              <>
-                {orderLoading ? (
-                  <MainLoadingUI />
-                ) : (
-                  <MainRestaurantCard
-                    orders={mostOrderedRestaurantsVar}
-                    loading={orderLoading}
-                    error={orderError}
-                    title={'mostOrderedNow'}
-                  />
-                )}
-              </>
-            )}
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
-      {/* heighest rating */}
-      <View style={{ marginTop: 0 }}>
-        <View>
-          {highestRatingRestaurantData &&
-            highestRatingRestaurantData.length > 0 && (
-              <>
-                {loadingHighRating ? (
-                  <MainLoadingUI />
-                ) : (
-                  <MainRestaurantCard
-                    orders={highestRatingRestaurantData}
-                    loading={loadingHighRating}
-                    error={errorHighRating}
-                    title={'highest_rated'}
-                  />
-                )}
-              </>
-            )}
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
-      {/* nearest restaurants */}
-      <View style={{ marginTop: 0 }}>
-        <View>
-          {nearestRestaurantsData && nearestRestaurantsData.length > 0 && (
-            <>
-              {loadingNearestRestaurants ? (
-                <MainLoadingUI />
-              ) : (
-                <MainRestaurantCard
-                  orders={nearestRestaurantsData}
-                  loading={loadingNearestRestaurants}
-                  error={errorNearestRestaurants}
-                  title={'nearest_to_you'}
-                />
-              )}
-            </>
-          )}
-        </View>
-      </View>
-      <Divider style={{ marginBottom: 10, marginTop: -10 }} />
-      {/* Restaurants */}
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('TopBrandsScreen', {
-            topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
-          })
-        }
-        style={{
-          ...styles.sectionHeader,
-          flexDirection: isArabic ? 'row-reverse' : 'row'
-        }}
-      >
-        <Text style={styles.sectionTitle}>{t('highest_rated')}</Text>
-        <View
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            alignItems: 'center',
-            gap: 4
-          }}
+      {errorZone ? (
+        <ErrorView
+          // wentWrong={t('somethingWentWrong')}
+          message={t('city_location_no_deliveryzone')}
         >
-          <Text style={styles.sectionLink}>{t('see_all')} </Text>
-          <AntDesign name='arrowleft' size={18} color='black' />
-        </View>
-      </TouchableOpacity>
-      {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
-
-      <MainModalize
-        isVisible={isVisible}
-        isLoggedIn={isLoggedIn}
-        addressIcons={addressIcons}
-        modalHeader={modalHeader}
-        modalFooter={modalFooter}
-        setAddressLocation={setAddressLocation}
-        profile={profile}
-        location={location}
-        loading={loadingAddress}
-        onClose={onModalClose}
-        otlobMandoob={false}
-      />
-
-      {/* Search Modal */}
-      <Modal visible={searchOpen} animationType='slide'>
-        <View style={styles.modalContainer}>
-          {/* Search Bar */}
-          <TextInput
-            style={styles.searchInput}
-            placeholder={t('search_for_restaurants')}
-            placeholderTextColor={'#999'}
-            value={search}
-            onChangeText={setSearch}
+          <MainModalize
+            isVisible={isVisible}
+            isLoggedIn={isLoggedIn}
+            addressIcons={addressIcons}
+            modalHeader={modalHeader}
+            modalFooter={modalFooter}
+            setAddressLocation={setAddressLocation}
+            profile={profile}
+            location={location}
+            loading={loadingAddress}
+            onClose={onModalClose}
+            otlobMandoob={false}
           />
-
-          {/* Restaurant List */}
-          <FlatList
-            data={filteredRestaurants}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => renderTopRestaurants(item)}
-          />
-
+        </ErrorView>
+      ) : (
+        <Fragment>
+          <View style={{ marginTop: 20 }}>
+            <View>
+              {restaurantsWithOffersData &&
+                restaurantsWithOffersData.length > 0 && (
+                  <>
+                    {orderLoading ? (
+                      <MainLoadingUI />
+                    ) : (
+                      <MainRestaurantCard
+                        orders={[...restaurantsWithOffersData]}
+                        loading={orderLoading}
+                        error={orderError}
+                        title={'businesses_with_offers'}
+                      />
+                    )}
+                  </>
+                )}
+            </View>
+          </View>
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          <View style={{ marginTop: 0 }}>
+            <View>
+              {mostOrderedRestaurantsVar &&
+                mostOrderedRestaurantsVar.length > 0 && (
+                  <>
+                    {orderLoading ? (
+                      <MainLoadingUI />
+                    ) : (
+                      <MainRestaurantCard
+                        orders={mostOrderedRestaurantsVar}
+                        loading={orderLoading}
+                        error={orderError}
+                        title={'mostOrderedNow'}
+                      />
+                    )}
+                  </>
+                )}
+            </View>
+          </View>
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          {/* heighest rating */}
+          <View style={{ marginTop: 0 }}>
+            <View>
+              {highestRatingRestaurantData &&
+                highestRatingRestaurantData.length > 0 && (
+                  <>
+                    {loadingHighRating ? (
+                      <MainLoadingUI />
+                    ) : (
+                      <MainRestaurantCard
+                        orders={highestRatingRestaurantData}
+                        loading={loadingHighRating}
+                        error={errorHighRating}
+                        title={'highest_rated'}
+                      />
+                    )}
+                  </>
+                )}
+            </View>
+          </View>
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          {/* nearest restaurants */}
+          <View style={{ marginTop: 0 }}>
+            <View>
+              {nearestRestaurantsData && nearestRestaurantsData.length > 0 && (
+                <>
+                  {loadingNearestRestaurants ? (
+                    <MainLoadingUI />
+                  ) : (
+                    <MainRestaurantCard
+                      orders={nearestRestaurantsData}
+                      loading={loadingNearestRestaurants}
+                      error={errorNearestRestaurants}
+                      title={'nearest_to_you'}
+                    />
+                  )}
+                </>
+              )}
+            </View>
+          </View>
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          {/* Restaurants */}
           <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setSearchOpen(false)}
+            onPress={() =>
+              navigation.navigate('TopBrandsScreen', {
+                topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+              })
+            }
+            style={{
+              ...styles.sectionHeader,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
           >
-            <Text style={styles.closeButtonText}>Close</Text>
+            <Text style={styles.sectionTitle}>{t('highest_rated')}</Text>
+            <View
+              style={{
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                gap: 4
+              }}
+            >
+              <Text style={styles.sectionLink}>{t('see_all')} </Text>
+              <AntDesign name='arrowleft' size={18} color='black' />
+            </View>
           </TouchableOpacity>
-        </View>
-      </Modal>
+          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+
+          {isLoggedIn && (
+            <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+          )}
+
+          <MainModalize
+            isVisible={isVisible}
+            isLoggedIn={isLoggedIn}
+            addressIcons={addressIcons}
+            modalHeader={modalHeader}
+            modalFooter={modalFooter}
+            setAddressLocation={setAddressLocation}
+            profile={profile}
+            location={location}
+            loading={loadingAddress}
+            onClose={onModalClose}
+            otlobMandoob={false}
+          />
+
+          {/* Search Modal */}
+          <Modal visible={searchOpen} animationType='slide'>
+            <View style={styles.modalContainer}>
+              {/* Search Bar */}
+              <TextInput
+                style={styles.searchInput}
+                placeholder={t('search_for_restaurants')}
+                placeholderTextColor={'#999'}
+                value={search}
+                onChangeText={setSearch}
+              />
+
+              {/* Restaurant List */}
+              <FlatList
+                data={filteredRestaurants}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => renderTopRestaurants(item)}
+              />
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setSearchOpen(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        </Fragment>
+      )}
     </ScrollView>
   )
 }

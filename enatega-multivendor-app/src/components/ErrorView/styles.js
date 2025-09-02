@@ -1,10 +1,12 @@
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import { verticalScale, scale } from '../../utils/scaling'
+
+const { height } = Dimensions.get('window')
 
 const useStyle = (props) => {
   return StyleSheet.create({
     errorViewContainer: {
-      flex:1,
+      flex: 1,
       backgroundColor: props != null ? props.themeBackground : 'white',
       // paddingTop: verticalScale(50),
       // paHorizontal: scale(10),
@@ -12,6 +14,7 @@ const useStyle = (props) => {
       alignItems: 'center',
       gap: 16,
       padding: 24,
+      height: height / 2
     }
   })
 }

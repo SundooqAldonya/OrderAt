@@ -530,13 +530,21 @@ const BottomTabs = () => {
         options={{ tabBarLabel: t('home') }}
         component={MainV2}
       />
-      {isLoggedIn && (
-        <Tab.Screen
-          name='MyOrders'
-          options={{ tabBarLabel: t('titleOrders') }}
-          component={MyOrders}
-        />
-      )}
+      {/* {isLoggedIn && ( */}
+      <Tab.Screen
+        name='MyOrders'
+        options={{ tabBarLabel: t('titleOrders') }}
+        component={MyOrders}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!isLoggedIn) {
+              e.preventDefault() // prevent tab from switching
+              navigation.navigate('CreateAccount') // redirect to Login screen
+            }
+          }
+        })}
+      />
+      {/* )} */}
 
       <Tab.Screen
         name='RequestDelivery'
