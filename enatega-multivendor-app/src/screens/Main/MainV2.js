@@ -56,6 +56,7 @@ import ErrorView from '../../components/ErrorView/ErrorView'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { Divider } from 'react-native-paper'
 import ActiveOrders from '../../components/Main/ActiveOrders/ActiveOrders'
+import MiddleRestaurantsSection from '../../components/Main/MiddleRestaurantsSection'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -128,7 +129,6 @@ export default function FoodTab() {
   })
 
   const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
-  console.log({ restaurantsWithOffersData })
 
   const {
     data: dataHighRating,
@@ -634,7 +634,8 @@ export default function FoodTab() {
         </ErrorView>
       ) : (
         <Fragment>
-          <View style={{ marginTop: 20 }}>
+          <MiddleRestaurantsSection />
+          {/* <View style={{ marginTop: 20 }}>
             <View>
               {restaurantsWithOffersData &&
                 restaurantsWithOffersData.length > 0 && (
@@ -652,8 +653,8 @@ export default function FoodTab() {
                   </>
                 )}
             </View>
-          </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          </View> */}
+          {/* <Divider style={{ marginBottom: 10, marginTop: -10 }} />
           <View style={{ marginTop: 0 }}>
             <View>
               {mostOrderedRestaurantsVar &&
@@ -673,9 +674,9 @@ export default function FoodTab() {
                 )}
             </View>
           </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
           {/* heighest rating */}
-          <View style={{ marginTop: 0 }}>
+          {/* <View style={{ marginTop: 0 }}>
             <View>
               {highestRatingRestaurantData &&
                 highestRatingRestaurantData.length > 0 && (
@@ -694,9 +695,9 @@ export default function FoodTab() {
                 )}
             </View>
           </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
           {/* nearest restaurants */}
-          <View style={{ marginTop: 0 }}>
+          {/* <View style={{ marginTop: 0 }}>
             <View>
               {nearestRestaurantsData && nearestRestaurantsData.length > 0 && (
                 <>
@@ -714,7 +715,7 @@ export default function FoodTab() {
               )}
             </View>
           </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} />
+          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
           {/* Restaurants */}
           <TouchableOpacity
             onPress={() =>
@@ -740,6 +741,10 @@ export default function FoodTab() {
             </View>
           </TouchableOpacity>
           {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+          {/* {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))} */}
 
           {isLoggedIn && (
             <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />

@@ -1,5 +1,12 @@
 import React, { useContext, useMemo, useState } from 'react'
-import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native'
+import {
+  View,
+  FlatList,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native'
 import UserContext from '../../../context/User'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -120,8 +127,14 @@ function MainRestaurantCard(props) {
             forceNonDeterministicRendering={true}
             renderAheadOffset={300} // tune this for smoothness
             canChangeSize={true}
-            // inverted={isArabic}
           />
+          {/* <ScrollView
+            style={isArabic && { transform: [{ scaleX: -1 }] }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {props?.orders.map((item) => rowRenderer(null, item))}
+          </ScrollView> */}
 
           {/* <FlatList
             style={styles().offerScroll}

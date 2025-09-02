@@ -18,7 +18,7 @@ const styles = (theme) =>
       // shadowRadius: 8,
       // elevation: 3,
       borderColor: '#000',
-      width: moderateScale(270),
+      width: moderateScale(180),
       height: '100%',
       overflow: 'hidden'
     },
