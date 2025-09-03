@@ -9,7 +9,14 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 // import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -122,6 +129,32 @@ const RequestDelivery = () => {
         })
       }
     })
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <TextDefault
+          bolder
+          style={{ color: '#000', fontSize: moderateScale(20) }}
+        >
+          {t('Request_delivery')}
+        </TextDefault>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            paddingHorizontal: 10,
+            marginLeft: 10
+          }}
+        >
+          <AntDesign name='arrowleft' size={24} color='black' />
+        </TouchableOpacity>
+      ),
+      headerTitleAlign: 'center',
+      headerShown: true
+    })
+  })
 
   useEffect(() => {
     let timeout = setTimeout(() => {
@@ -428,7 +461,7 @@ const RequestDelivery = () => {
   const onModalClose = (modalRef) => {
     const modal = modalRef.current
     if (modal) {
-      modal.close();
+      modal.close()
       setCouponOpen(false)
     }
   }

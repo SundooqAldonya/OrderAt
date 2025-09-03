@@ -310,16 +310,18 @@ function NoDrawer() {
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
       <NavigationStack.Screen
         name='RequestDelivery'
-        options={{
-          headerTitle: t('RequestDelivery'),
-          headerTitleStyle: {
-            fontSize: moderateScale(14),
-            color: '#fff'
-          },
-          headerStyle: {
-            backgroundColor: colors.primary
-          }
-        }}
+        // options={{
+        //   headerTitle: t('RequestDelivery'),
+        //   headerTitleAlign: 'center',
+        //   headerTitleStyle: {
+        //     fontSize: moderateScale(14),
+        //     color: '#000'
+        //   },
+        //   headerStyle: {
+        //     backgroundColor: '#fff'
+        //   },
+        //   headerShown: true
+        // }}
         component={RequestDelivery}
       />
       <NavigationStack.Screen
