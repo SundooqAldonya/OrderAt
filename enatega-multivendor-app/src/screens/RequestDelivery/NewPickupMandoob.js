@@ -130,19 +130,19 @@ const NewPickupMandoob = () => {
   const currentInput = params.currentInput || null
   const locationMap = params.locationMap || null
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: t('pickup'),
-      headerTitleStyle: {
-        fontSize: moderateScale(14),
-        color: "#fff"
-      },
-      headerRight: false,
-      headerStyle: {
-        backgroundColor: colors.primary
-      }
-    })
-  })
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitle: t('pickup'),
+  //     headerTitleStyle: {
+  //       fontSize: moderateScale(14),
+  //       color: "#fff"
+  //     },
+  //     headerRight: false,
+  //     headerStyle: {
+  //       backgroundColor: colors.primary
+  //     }
+  //   })
+  // })
 
   useEffect(() => {
     if (chooseFromMapFrom) {
@@ -337,7 +337,11 @@ const NewPickupMandoob = () => {
           }}
         >
           <View style={{ ...styles.addressSubContainer, gap: 5 }}>
-            <AntDesign name='pluscircleo' size={moderateScale(20)} color={'#fff'} />
+            <AntDesign
+              name='pluscircleo'
+              size={moderateScale(20)}
+              color={'#fff'}
+            />
             <View style={styles.mL5p} />
             <TextDefault bold H4>
               {t('addAddress')}
@@ -380,7 +384,11 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {chooseFromAddressBookFrom && (
-          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(24)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 
@@ -410,7 +418,11 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {selectedCityAndAreaFrom && (
-          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(24)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 
@@ -442,7 +454,11 @@ const NewPickupMandoob = () => {
           </Text>
         </View>
         {chooseFromMapFrom && (
-          <AntDesign name='checkcircleo' size={moderateScale(24)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(24)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 

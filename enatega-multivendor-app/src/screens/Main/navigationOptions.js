@@ -36,6 +36,7 @@ const navigationOptions = (props) => ({
       linkColor={colors.white}
       navigation={props.navigation}
     />
-  )
+  ),
+  headerShown: false
 })
 export default navigationOptions

@@ -18,7 +18,7 @@ import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { FontAwesome6, Ionicons } from '@expo/vector-icons'
+import { AntDesign, FontAwesome6, Ionicons } from '@expo/vector-icons'
 import {
   setAddressFrom,
   setChooseFromMapFrom,
@@ -69,9 +69,19 @@ const PickupFromMap = () => {
           </TouchableOpacity>
         )
       },
-      headerStyle: {
-        backgroundColor: colors.primary
-      }
+      headerLeft: ({ navigation }) => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            paddingHorizontal: 10,
+            marginLeft: 10
+          }}
+        >
+          <AntDesign name='arrowleft' size={24} color='black' />
+        </TouchableOpacity>
+      ),
+      headerTitleAlign: 'center',
+      headerShown: true
     })
   }, [navigation, t, colors.primary])
 

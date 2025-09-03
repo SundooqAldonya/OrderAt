@@ -17,7 +17,7 @@ import { useLayoutEffect } from 'react'
 import { colors } from '../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { FontAwesome6, Ionicons } from '@expo/vector-icons'
+import { AntDesign, FontAwesome6, Ionicons } from '@expo/vector-icons'
 import {
   setAddressFrom,
   setAddressTo,
@@ -29,6 +29,8 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
+import TextDefault from '../../components/Text/TextDefault/TextDefault'
+import { moderateScale } from '../../utils/scaling'
 
 const { width, height } = Dimensions.get('window')
 
@@ -66,9 +68,28 @@ const DropoffFromMap = () => {
           </TouchableOpacity>
         )
       },
-      headerStyle: {
-        backgroundColor: colors.primary
-      }
+      headerTitle: () => (
+        <TextDefault
+          bolder
+          style={{ color: '#000', fontSize: moderateScale(20) }}
+        >
+          {t('dropoff')}
+        </TextDefault>
+      ),
+      tabBarStyle: { display: 'none' },
+      headerLeft: ({ navigation }) => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            paddingHorizontal: 10,
+            marginLeft: 10
+          }}
+        >
+          <AntDesign name='arrowleft' size={24} color='black' />
+        </TouchableOpacity>
+      ),
+      headerTitleAlign: 'center',
+      headerShown: true
     })
   }, [navigation, t, colors.primary, handleSave])
 

@@ -130,31 +130,32 @@ const RequestDelivery = () => {
       }
     })
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <TextDefault
-          bolder
-          style={{ color: '#000', fontSize: moderateScale(20) }}
-        >
-          {t('Request_delivery')}
-        </TextDefault>
-      ),
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            paddingHorizontal: 10,
-            marginLeft: 10
-          }}
-        >
-          <AntDesign name='arrowleft' size={24} color='black' />
-        </TouchableOpacity>
-      ),
-      headerTitleAlign: 'center',
-      headerShown: true
-    })
-  })
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitle: () => (
+  //       <TextDefault
+  //         bolder
+  //         style={{ color: '#000', fontSize: moderateScale(20) }}
+  //       >
+  //         {t('Request_delivery')}
+  //       </TextDefault>
+  //     ),
+  //     tabBarStyle: { display: 'none' },
+  //     headerLeft: () => (
+  //       <TouchableOpacity
+  //         onPress={() => navigation.goBack()}
+  //         style={{
+  //           paddingHorizontal: 10,
+  //           marginLeft: 10
+  //         }}
+  //       >
+  //         <AntDesign name='arrowleft' size={24} color='black' />
+  //       </TouchableOpacity>
+  //     ),
+  //     headerTitleAlign: 'center',
+  //     headerShown: true
+  //   })
+  // })
 
   useEffect(() => {
     let timeout = setTimeout(() => {
@@ -799,13 +800,17 @@ const RequestDelivery = () => {
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   gap: 10,
-                  marginTop: 20
+                  marginTop: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%'
                 }}
               >
                 <Text
                   style={{
-                    textAlign: isArabic ? 'right' : 'left',
-                    fontSize: 20
+                    // textAlign: isArabic ? 'right' : 'left',
+                    textAlign: 'center',
+                    fontSize: 16
                   }}
                 >
                   {t('deliveryFee')}: {deliveryFee}{' '}
@@ -816,7 +821,7 @@ const RequestDelivery = () => {
                     style={{
                       textAlign: isArabic ? 'right' : 'left',
                       textDecorationLine: 'line-through',
-                      fontSize: 20
+                      fontSize: 16
                     }}
                   >
                     {originalDiscount} {configuration.currencySymbol}

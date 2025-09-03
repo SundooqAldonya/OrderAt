@@ -96,6 +96,7 @@ import { moderateScale } from '../utils/scaling'
 import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
 import MainV2 from '../screens/Main/MainV2'
 import MandoobImg from '../assets/tabs_request_delivery.png'
+import TextDefault from '../components/Text/TextDefault/TextDefault'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -191,14 +192,14 @@ function NoDrawer() {
 
   return (
     <NavigationStack.Navigator
-      screenOptions={screenOptions({
-        theme: themeContext.ThemeValue,
-        headerMenuBackground: currentTheme.headerMenuBackground,
-        backColor: currentTheme.headerBackground,
-        lineColor: currentTheme.horizontalLine,
-        textColor: currentTheme.headerText,
-        iconColor: currentTheme.iconColorPink
-      })}
+    // screenOptions={screenOptions({
+    //   theme: themeContext.ThemeValue,
+    //   headerMenuBackground: currentTheme.headerMenuBackground,
+    //   backColor: currentTheme.headerBackground,
+    //   lineColor: currentTheme.horizontalLine,
+    //   textColor: currentTheme.headerText,
+    //   iconColor: currentTheme.iconColorPink
+    // })}
     >
       <NavigationStack.Screen
         name='BottomTabs'
@@ -310,34 +311,87 @@ function NoDrawer() {
       <NavigationStack.Screen name='ChatWithRider' component={ChatScreen} />
       <NavigationStack.Screen
         name='RequestDelivery'
-        // options={{
-        //   headerTitle: t('RequestDelivery'),
-        //   headerTitleAlign: 'center',
-        //   headerTitleStyle: {
-        //     fontSize: moderateScale(14),
-        //     color: '#000'
-        //   },
-        //   headerStyle: {
-        //     backgroundColor: '#fff'
-        //   },
-        //   headerShown: true
-        // }}
+        options={{
+          headerTitle: () => (
+            <TextDefault
+              bolder
+              style={{ color: '#000', fontSize: moderateScale(20) }}
+            >
+              {t('Request_delivery')}
+            </TextDefault>
+          ),
+          tabBarStyle: { display: 'none' },
+          headerLeft: ({ navigation }) => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                paddingHorizontal: 10,
+                marginLeft: 10
+              }}
+            >
+              <AntDesign name='arrowleft' size={24} color='black' />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: 'center',
+          headerShown: true
+        }}
         component={RequestDelivery}
       />
       <NavigationStack.Screen
         name='NewPickupMandoob'
         component={NewPickupMandoob}
+        options={{
+          headerTitle: () => (
+            <TextDefault
+              bolder
+              style={{ color: '#000', fontSize: moderateScale(20) }}
+            >
+              {t('pickup')}
+            </TextDefault>
+          ),
+          tabBarStyle: { display: 'none' },
+          headerLeft: ({ navigation }) => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                paddingHorizontal: 10,
+                marginLeft: 10
+              }}
+            >
+              <AntDesign name='arrowleft' size={24} color='black' />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: 'center',
+          headerShown: true
+        }}
       />
       <NavigationStack.Screen
         name='NewDropoffMandoob'
-        options={{
-          headerTitle: t('dropoff'),
-          headerRight: false,
-          headerStyle: {
-            backgroundColor: colors.primary
-          }
-        }}
         component={NewDropoffMandoob}
+        options={{
+          headerTitle: () => (
+            <TextDefault
+              bolder
+              style={{ color: '#000', fontSize: moderateScale(20) }}
+            >
+              {t('dropoff')}
+            </TextDefault>
+          ),
+          tabBarStyle: { display: 'none' },
+          headerLeft: ({ navigation }) => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                paddingHorizontal: 10,
+                marginLeft: 10
+              }}
+            >
+              <AntDesign name='arrowleft' size={24} color='black' />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: 'center',
+          headerShown: true
+        }}
       />
 
       <NavigationStack.Screen name='PickupFromMap' component={PickupFromMap} />
@@ -551,29 +605,42 @@ const BottomTabs = () => {
       <Tab.Screen
         name='RequestDelivery'
         component={RequestDelivery}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!isLoggedIn) {
+              e.preventDefault() // prevent tab from switching
+              navigation.navigate('CreateAccount') // redirect to Login screen
+            }
+          }
+        })}
         options={{
           tabBarIcon: ({ color }) => (
             <Image source={MandoobImg} style={{ width: 80, height: 80 }} />
           ),
           tabBarButton: (props) => <CustomSearchButton {...props} />,
           tabBarLabel: () => null,
-          headerTitle: t('RequestDelivery'),
+          headerTitle: () => (
+            <TextDefault
+              bolder
+              style={{ color: '#000', fontSize: moderateScale(20) }}
+            >
+              {t('Request_delivery')}
+            </TextDefault>
+          ),
           tabBarStyle: { display: 'none' },
-          headerTitleStyle: {
-            fontSize: moderateScale(14),
-            color: '#000'
-          },
-          headerShown: false
-          // headerLeft: () => (
-          //   <TouchableOpacity onPress={() => navigationService.goBack()}>
-          //     <AntDesign
-          //       name='arrowleft'
-          //       size={20}
-          //       color='#000'
-          //       style={{ marginLeft: 15 }}
-          //     />
-          //   </TouchableOpacity>
-          // )
+          headerLeft: ({ navigation }) => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                paddingHorizontal: 10,
+                marginLeft: 10
+              }}
+            >
+              <AntDesign name='arrowleft' size={24} color='black' />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: 'center',
+          headerShown: true
         }}
       />
 
