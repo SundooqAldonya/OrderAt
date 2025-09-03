@@ -58,15 +58,15 @@ function NewRestaurantCard(props) {
     refetchQueries: [{ query: PROFILE }]
   })
 
-  // const { data, loading, error } = useQuery(isRestaurantOpenNow, {
-  //   variables: {
-  //     id: props._id
-  //   }
-  // })
+  const { data, loading, error } = useQuery(isRestaurantOpenNow, {
+    variables: {
+      id: props._id
+    }
+  })
 
-  // console.log({ data })
+  console.log({ data })
 
-  // const isOpenNow = data?.isRestaurantOpenNow
+  const isOpenNow = data?.isRestaurantOpenNow
 
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
@@ -122,7 +122,7 @@ function NewRestaurantCard(props) {
             source={{ uri: props.image, priority: FastImage.priority.normal }}
             style={styles().restaurantImage}
           />
-          {/* {!isOpenNow ? (
+          {!isOpenNow ? (
             <View
               style={{
                 position: 'absolute',
@@ -140,7 +140,7 @@ function NewRestaurantCard(props) {
               </TextDefault>
               <MaterialIcons name='info-outline' size={24} color='#fff' />
             </View>
-          ) : null} */}
+          ) : null}
           {highestOffer ? (
             <View
               style={{
@@ -195,8 +195,8 @@ function NewRestaurantCard(props) {
 
       <View
         style={{
-          ...styles().descriptionContainer,
-          gap: props.businessCategories?.length ? 10 : 30
+          ...styles().descriptionContainer
+          // gap: props.businessCategories?.length ? 10 : 30
         }}
       >
         <View

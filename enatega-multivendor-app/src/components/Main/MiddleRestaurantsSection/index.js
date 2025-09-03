@@ -97,8 +97,8 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
-            restaurantData: props?.orders,
-            title: props.title
+            restaurantData: restaurantsWithOffersData,
+            title: 'businesses_with_offers'
           })
         }
       >
@@ -148,8 +148,8 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
-            restaurantData: props?.orders,
-            title: props.title
+            restaurantData: mostOrderedRestaurantsVar,
+            title: 'mostOrderedNow'
           })
         }
       >
@@ -200,8 +200,8 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
-            restaurantData: props?.orders,
-            title: props.title
+            restaurantData: nearestRestaurantsData,
+            title: 'nearest_to_you'
           })
         }
       >
