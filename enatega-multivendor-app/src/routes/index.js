@@ -321,7 +321,7 @@ function NoDrawer() {
             </TextDefault>
           ),
           tabBarStyle: { display: 'none' },
-          headerLeft: ({ navigation }) => (
+          headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{
@@ -350,7 +350,7 @@ function NoDrawer() {
             </TextDefault>
           ),
           tabBarStyle: { display: 'none' },
-          headerLeft: ({ navigation }) => (
+          headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{
@@ -378,7 +378,7 @@ function NoDrawer() {
             </TextDefault>
           ),
           tabBarStyle: { display: 'none' },
-          headerLeft: ({ navigation }) => (
+          headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{
@@ -525,6 +525,7 @@ const CustomSearchButton = ({ children, onPress }) => (
 
 const BottomTabs = () => {
   const { t } = useTranslation()
+  const navigation = useNavigation()
   const Tab = createBottomTabNavigator()
   const { isLoggedIn } = useContext(UserContext)
 
@@ -605,7 +606,7 @@ const BottomTabs = () => {
       <Tab.Screen
         name='RequestDelivery'
         component={RequestDelivery}
-        listeners={({ navigation }) => ({
+        listeners={() => ({
           tabPress: (e) => {
             if (!isLoggedIn) {
               e.preventDefault() // prevent tab from switching
@@ -628,7 +629,7 @@ const BottomTabs = () => {
             </TextDefault>
           ),
           tabBarStyle: { display: 'none' },
-          headerLeft: ({ navigation }) => (
+          headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{

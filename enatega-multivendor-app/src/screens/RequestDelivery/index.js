@@ -130,33 +130,6 @@ const RequestDelivery = () => {
       }
     })
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerTitle: () => (
-  //       <TextDefault
-  //         bolder
-  //         style={{ color: '#000', fontSize: moderateScale(20) }}
-  //       >
-  //         {t('Request_delivery')}
-  //       </TextDefault>
-  //     ),
-  //     tabBarStyle: { display: 'none' },
-  //     headerLeft: () => (
-  //       <TouchableOpacity
-  //         onPress={() => navigation.goBack()}
-  //         style={{
-  //           paddingHorizontal: 10,
-  //           marginLeft: 10
-  //         }}
-  //       >
-  //         <AntDesign name='arrowleft' size={24} color='black' />
-  //       </TouchableOpacity>
-  //     ),
-  //     headerTitleAlign: 'center',
-  //     headerShown: true
-  //   })
-  // })
-
   useEffect(() => {
     let timeout = setTimeout(() => {
       if (mapRef?.current && pickupCoords && dropOffCoords) {
