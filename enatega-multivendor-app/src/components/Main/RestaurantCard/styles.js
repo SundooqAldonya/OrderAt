@@ -4,7 +4,7 @@ import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
 import { colors } from '../../../utils/colors'
 const { height } = Dimensions.get('window')
-
+export const CARD_WIDTH = moderateScale(280)
 const styles = (theme) =>
   StyleSheet.create({
     offerContainer: {
@@ -18,7 +18,7 @@ const styles = (theme) =>
       // shadowRadius: 8,
       // elevation: 3,
       borderColor: '#000',
-      width: moderateScale(180),
+      width: CARD_WIDTH,
       height: '100%',
       overflow: 'hidden'
     },

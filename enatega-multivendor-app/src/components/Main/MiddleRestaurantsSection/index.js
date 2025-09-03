@@ -73,6 +73,18 @@ const MiddleRestaurantsSection = () => {
     dataHighRating?.highestRatingRestaurant || null
   const nearestRestaurantsData =
     dataNearestRestaurants?.nearestRestaurants || null
+
+  const ITEM_HEIGHT = 65 // fixed height of item component
+  const getItemLayout = (data, index) => {
+    return {
+      length: ITEM_HEIGHT,
+      offset: ITEM_HEIGHT * index,
+      index
+    }
+  }
+
+  const renderItem = ({ item }) => <NewRestaurantCard {...item} />
+
   return (
     <View>
       <TouchableOpacity
@@ -80,7 +92,8 @@ const MiddleRestaurantsSection = () => {
           flexDirection: isArabic ? 'row-reverse' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 10
+          marginBottom: 10,
+          marginHorizontal: 10
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
@@ -110,18 +123,28 @@ const MiddleRestaurantsSection = () => {
         </View>
       </TouchableOpacity>
       <FlatList
-        data={restaurantsWithOffersData}
-        horizontal={false}
-        numColumns={2}
+        getItemLayout={getItemLayout}
+        data={
+          isArabic
+            ? restaurantsWithOffersData?.slice().reverse()
+            : restaurantsWithOffersData
+        }
+        contentContainerStyle={{
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+        horizontal={true}
+        // inverted={isArabic}
+        // numColumns={2}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <NewRestaurantCard {...item} />}
+        renderItem={renderItem}
       />
       <TouchableOpacity
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 10
+          marginBottom: 10,
+          marginHorizontal: 10
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
@@ -151,10 +174,20 @@ const MiddleRestaurantsSection = () => {
         </View>
       </TouchableOpacity>
       <FlatList
-        data={mostOrderedRestaurantsVar}
-        numColumns={2}
+        getItemLayout={getItemLayout}
+        data={
+          isArabic
+            ? mostOrderedRestaurantsVar?.slice().reverse()
+            : mostOrderedRestaurantsVar
+        }
+        contentContainerStyle={{
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+        horizontal={true}
+        // inverted={isArabic}
+        // numColumns={2}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <NewRestaurantCard {...item} />}
+        renderItem={renderItem}
       />
 
       <TouchableOpacity
@@ -162,7 +195,8 @@ const MiddleRestaurantsSection = () => {
           flexDirection: isArabic ? 'row-reverse' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 10
+          marginBottom: 10,
+          marginHorizontal: 10
         }}
         onPress={() =>
           navigation.navigate('MainRestaurantScreen', {
@@ -192,10 +226,20 @@ const MiddleRestaurantsSection = () => {
         </View>
       </TouchableOpacity>
       <FlatList
-        data={nearestRestaurantsData}
-        numColumns={2}
+        getItemLayout={getItemLayout}
+        data={
+          isArabic
+            ? nearestRestaurantsData?.slice().reverse()
+            : nearestRestaurantsData
+        }
+        contentContainerStyle={{
+          flexDirection: isArabic ? 'row-reverse' : 'row'
+        }}
+        horizontal={true}
+        // inverted={isArabic}
+        // numColumns={2}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <NewRestaurantCard {...item} />}
+        renderItem={renderItem}
       />
     </View>
   )
