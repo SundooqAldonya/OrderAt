@@ -773,16 +773,17 @@ const RequestDelivery = () => {
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   gap: 10,
-                  marginTop: 20,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  // marginTop: 20,
+                  // alignItems: 'center',
+                  // backgroundColor: 'red',
+                  // justifyContent: 'center',
                   width: '100%'
                 }}
               >
                 <Text
                   style={{
-                    // textAlign: isArabic ? 'right' : 'left',
-                    textAlign: 'center',
+                    textAlign: isArabic ? 'right' : 'left',
+                    // textAlign: 'center',
                     fontSize: 16
                   }}
                 >
@@ -987,8 +988,13 @@ const styles = StyleSheet.create({
   fareBox: {
     // padding: 10,
     backgroundColor: '#f5f5f5',
+    // backgroundColor: 'red',
     borderRadius: 8,
-    marginBottom: 20
+    marginBottom: 20,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   address: {
     backgroundColor: '#fff',

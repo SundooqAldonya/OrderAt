@@ -97,6 +97,7 @@ import RestaurantDetailsV2 from '../screens/Restaurant/RestaurantDetailsV2'
 import MainV2 from '../screens/Main/MainV2'
 import MandoobImg from '../assets/tabs_request_delivery.png'
 import TextDefault from '../components/Text/TextDefault/TextDefault'
+import SearchRestaurants from '../screens/SearchRestaurants'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -449,6 +450,11 @@ function NoDrawer() {
         name='SelectLanguageScreen'
         options={{ headerShown: false }}
         component={SelectLanguageScreen}
+      />
+      <NavigationStack.Screen
+        name='SearchRestaurants'
+        options={{ headerShown: false }}
+        component={SearchRestaurants}
       />
     </NavigationStack.Navigator>
   )

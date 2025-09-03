@@ -575,6 +575,7 @@ export default function FoodTab() {
         <TouchableOpacity
           style={styles.inputLike}
           onPress={() => setSearchOpen(true)}
+          // onPress={() => navigation.navigate('SearchRestaurants')}
         >
           <Text
             style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
