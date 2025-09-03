@@ -463,34 +463,8 @@ export default function FoodTab() {
     )
   }
 
-  // if (errorZone)
-  //   return (
-  //     <ErrorView
-  //       // wentWrong={t('somethingWentWrong')}
-  //       message={t('city_location_no_deliveryzone')}
-  //     >
-  //       <MainModalize
-  //         isVisible={isVisible}
-  //         isLoggedIn={isLoggedIn}
-  //         addressIcons={addressIcons}
-  //         modalHeader={modalHeader}
-  //         modalFooter={modalFooter}
-  //         setAddressLocation={setAddressLocation}
-  //         profile={profile}
-  //         location={location}
-  //         loading={loadingAddress}
-  //         onClose={onModalClose}
-  //         otlobMandoob={false}
-  //       />
-  //     </ErrorView>
-  //   )
-
   return (
-    <ScrollView
-      // stickyHeaderIndices={[1]} // 👈 index of the header child
-      // showsVerticalScrollIndicator={false}
-      style={{ flex: 1, backgroundColor: '#fff' }}
-    >
+    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Header */}
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
       <View
@@ -518,9 +492,21 @@ export default function FoodTab() {
               }}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsVisible(true)}>
+          <TouchableOpacity
+            onPress={() => setIsVisible(true)}
+            style={{
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              gap: 4
+            }}
+          >
             <Text style={styles.headerSubtitle}>{t('deliver_to')}</Text>
-            <Text style={styles.headerTitle}>{location?.label} ▼</Text>
+            <Text style={styles.headerTitle}>
+              {location?.label.length > 6
+                ? `${location?.label.substring(0, 6)}...`
+                : location?.label.substring(0, 6)}{' '}
+              ▼
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
@@ -806,7 +792,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerSubtitle: {
-    fontSize: 12,
+    fontSize: 14,
     // color: 'tomato',
     color: colors.primary,
     fontWeight: '600'
