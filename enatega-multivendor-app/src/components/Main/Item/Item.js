@@ -63,16 +63,18 @@ function Item(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = openingTimes.find((o) => o.day === DAYS[day])
+    const todaysTimings = openingTimes
+      ? openingTimes.find((o) => o.day === DAYS[day])
+      : true
     if (todaysTimings === undefined) return false
-    const times = todaysTimings.times.filter(
+    const times = todaysTimings?.times?.filter(
       (t) =>
         hours >= Number(t.startTime[0]) &&
         minutes >= Number(t.startTime[1]) &&
         hours <= Number(t.endTime[0]) &&
         minutes <= Number(t.endTime[1])
     )
-    return times.length > 0
+    return openingTimes ? times?.length > 0 : true
   }
 
   function onCompleted() {

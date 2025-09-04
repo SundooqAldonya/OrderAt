@@ -54,6 +54,8 @@ const MiddleRestaurantsSection = () => {
     fetchPolicy: 'no-cache'
   })
 
+  // console.log({ dataHighRating })
+
   const {
     data: dataNearestRestaurants,
     loading: loadingNearestRestaurants,
@@ -69,8 +71,8 @@ const MiddleRestaurantsSection = () => {
   const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
 
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
-  const highestRatingRestaurantData =
-    dataHighRating?.highestRatingRestaurant || null
+  // const highestRatingRestaurantData =
+  //   dataHighRating?.highestRatingRestaurant || null
   const nearestRestaurantsData =
     dataNearestRestaurants?.nearestRestaurants || null
 

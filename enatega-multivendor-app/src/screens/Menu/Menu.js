@@ -39,6 +39,7 @@ import {
   getCuisines,
   highestRatingRestaurant,
   nearestRestaurants,
+  recentOrderRestaurantsQuery,
   restaurantListPreview,
   restaurantsWithOffers
 } from '../../apollo/queries'
@@ -118,6 +119,7 @@ function Menu({ route, props }) {
   const [filters, setFilters] = useState(FILTER_VALUES)
   const [restaurantData, setRestaurantData] = useState([])
   const [sectionData, setSectionData] = useState([])
+  const [titleMain, setTitleMain] = useState(title ? title : '')
   const modalRef = useRef(null)
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -163,14 +165,19 @@ function Menu({ route, props }) {
     fetchOffersRestaurants,
     { data: dataWithOffers, loading: loadingWithOffers, error: errorWithOffers }
   ] = useLazyQuery(restaurantsWithOffers)
-  const [
-    fetchHighRatingRestaurants,
-    { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
-  ] = useLazyQuery(highestRatingRestaurant)
+  // const [
+  //   fetchHighRatingRestaurants,
+  //   { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
+  // ] = useLazyQuery(highestRatingRestaurant)
   const [
     fetchNearestRestaurants,
     { data: dataNearest, loading: loadingNearest, error: errorNearest }
   ] = useLazyQuery(nearestRestaurants)
+
+  const [
+    fetchMostOrderedRestaurants,
+    { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
+  ] = useLazyQuery(recentOrderRestaurantsQuery)
 
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
@@ -218,13 +225,12 @@ function Menu({ route, props }) {
   })
 
   useEffect(() => {
-    if (highlight && title) {
+    if (highlight && titleMain) {
       const updatedFilters = { ...filters }
-      updatedFilters.Highlights.selected = [title]
+      updatedFilters.Highlights.selected = [titleMain]
       fetchHighlightsData()
-      // applyFilters(filters)
     }
-  }, [highlight, title, restaurantData])
+  }, [highlight, titleMain, restaurantData])
 
   const fetchHighlightsData = useCallback(async () => {
     console.log('fetchHighlightsData called')
@@ -232,95 +238,20 @@ function Menu({ route, props }) {
       longitude: location.longitude,
       latitude: location.latitude
     }
-    if (title === 'businesses_with_offers') {
+    if (titleMain === 'businesses_with_offers') {
       fetchOffersRestaurants({ variables }).then((res) => {
         setRestaurantData(res?.data?.restaurantsWithOffers || [])
       })
-    } else if (title === 'mostOrderedNow') {
-      fetchHighRatingRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.highestRatingRestaurant || [])
+    } else if (titleMain === 'mostOrderedNow') {
+      fetchMostOrderedRestaurants({ variables }).then((res) => {
+        setRestaurantData(res?.data?.recentOrderRestaurantsPreview || [])
       })
-    } else if (title === 'nearest_to_you') {
+    } else if (titleMain === 'nearest_to_you') {
       fetchNearestRestaurants({ variables }).then((res) => {
         setRestaurantData(res?.data?.nearestRestaurants || [])
       })
     }
-  }, [highlight, title])
-
-  // const applyFilters = useCallback(
-  //   async (currentFilters = filters) => {
-  //     let filteredData = [
-  //       ...(data?.nearByRestaurantsPreview?.restaurants || [])
-  //     ]
-
-  //     const ratings = currentFilters.Rating
-  //     const sort = currentFilters.Sort
-  //     const cuisines = currentFilters.Cuisines
-  //     const businessCategories = currentFilters.categories
-  //     const highlights = currentFilters.Highlights
-
-  //     if (ratings?.selected?.length > 0) {
-  //       const numericRatings = ratings.selected?.map(extractRating)
-  //       filteredData = filteredData.filter(
-  //         (item) => item?.reviewData?.ratings >= Math.min(...numericRatings)
-  //       )
-  //     }
-
-  //     if (sort?.selected?.length > 0) {
-  //       if (sort.selected[0] === 'Fast Delivery') {
-  //         filteredData.sort((a, b) => a.deliveryTime - b.deliveryTime)
-  //       } else if (sort.selected[0] === 'Distance') {
-  //         filteredData.sort(
-  //           (a, b) =>
-  //             a.distanceWithCurrentLocation - b.distanceWithCurrentLocation
-  //         )
-  //       }
-  //     }
-
-  //     if (cuisines?.selected?.length > 0) {
-  //       filteredData = filteredData.filter((item) =>
-  //         item.cuisines.some((cuisine) => cuisines?.selected?.includes(cuisine))
-  //       )
-  //     }
-
-  //     // 🔑 Highlights
-  //     if (highlights?.selected?.length) {
-  //       const variables = {
-  //         longitude: location.longitude,
-  //         latitude: location.latitude
-  //       }
-
-  //       if (highlights.selected[0] === 'businesses_with_offers') {
-  //         const res = await fetchOffersRestaurants({ variables })
-  //         setRestaurantData(res.data?.restaurantsWithOffers || [])
-  //         return
-  //       }
-
-  //       if (highlights.selected[0] === 'mostOrderedNow') {
-  //         const res = await fetchHighRatingRestaurants({ variables })
-  //         setRestaurantData(res.data?.highestRatingRestaurant || [])
-  //         return
-  //       }
-
-  //       if (highlights.selected[0] === 'nearest_to_you') {
-  //         const res = await fetchNearestRestaurants({ variables })
-  //         setRestaurantData(res.data?.nearestRestaurants || [])
-  //         return
-  //       }
-  //     }
-
-  //     if (businessCategories?.selected?.length > 0) {
-  //       filteredData = filteredData.filter((item) =>
-  //         item.businessCategories.some((category) =>
-  //           businessCategories?.selected?.includes(category._id)
-  //         )
-  //       )
-  //     }
-
-  //     setRestaurantData(filteredData)
-  //   },
-  //   [data, restaurantData]
-  // )
+  }, [highlight, titleMain])
 
   // useEffect(() => {
   //   setFilters((prev) => ({
@@ -584,7 +515,7 @@ function Menu({ route, props }) {
 
   const extractRating = (ratingString) => parseInt(ratingString)
 
-  console.log({ dataNearest })
+  console.log({ dataHighRating })
 
   const applyFilters = async () => {
     let filteredData = [...data.nearByRestaurantsPreview.restaurants]
@@ -639,6 +570,7 @@ function Menu({ route, props }) {
         longitude: location.longitude,
         latitude: location.latitude
       }
+      setTitleMain('')
 
       if (highlights.selected[0] === 'businesses_with_offers') {
         const res = await fetchOffersRestaurants({ variables })
@@ -647,8 +579,8 @@ function Menu({ route, props }) {
       }
 
       if (highlights.selected[0] === 'mostOrderedNow') {
-        const res = await fetchHighRatingRestaurants({ variables })
-        setRestaurantData(res.data?.highestRatingRestaurant || [])
+        const res = await fetchMostOrderedRestaurants({ variables })
+        setRestaurantData(res.data?.recentOrderRestaurantsPreview || [])
         return
       }
 
