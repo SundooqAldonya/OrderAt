@@ -1519,16 +1519,18 @@ export const checkDeliveryZone = gql`
     }
   }
 `
-export const searchRestaurants = gql`
-  query SearchRestaurants(
+export const searchRestaurantsCustomer = gql`
+  query SearchRestaurantsCustomer(
     $search: String
     $latitude: Float
     $longitude: Float
+    $businessCategoryId: String
   ) {
-    searchRestaurants(
+    searchRestaurantsCustomer(
       search: $search
       latitude: $latitude
       longitude: $longitude
+      businessCategoryId: $businessCategoryId
     ) {
       _id
       orderId

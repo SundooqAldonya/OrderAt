@@ -1033,7 +1033,8 @@ module.exports = {
       try {
         const { search, longitude, latitude } = args
 
-        const query = { isVisible: true }
+        // const query = { isVisible: true }
+        const query = {}
         if (search) {
           const regex = new RegExp(search, 'i')
           query.name = regex
@@ -1051,6 +1052,40 @@ module.exports = {
         }
 
         const restaurants = await Restaurant.find(query).limit(10)
+        return restaurants
+      } catch (err) {
+        throw err
+      }
+    },
+    async searchRestaurantsCustomer(_, args) {
+      console.log('searchRestaurantsCustomer', { args })
+      try {
+        const { search, longitude, latitude, businessCategoryId } = args
+
+        const query = { isVisible: true }
+        if (search) {
+          const regex = new RegExp(search, 'i')
+          query.name = regex
+        }
+
+        if (businessCategoryId) {
+          query.businessCategories = { $in: [businessCategoryId] }
+        }
+
+        if (longitude && latitude) {
+          query.deliveryBounds = {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [Number(longitude), Number(latitude)]
+              }
+            }
+          }
+        }
+
+        const restaurants = await Restaurant.find(query)
+          .populate('businessCategories')
+          .limit(10)
         return restaurants
       } catch (err) {
         throw err

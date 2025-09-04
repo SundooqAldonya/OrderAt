@@ -27,7 +27,7 @@ import {
   nearestRestaurants,
   restaurantListPreview,
   restaurantsWithOffers,
-  searchRestaurants,
+  searchRestaurantsCustomer,
   topRatedVendorsInfo
 } from '../../apollo/queries'
 import useHomeRestaurants from '../../ui/hooks/useRestaurantOrderInfo'
@@ -178,7 +178,7 @@ export default function FoodTab() {
     data: dataSearch,
     loading: loadingSearch,
     error: errorSearch
-  } = useQuery(searchRestaurants, {
+  } = useQuery(searchRestaurantsCustomer, {
     variables: {
       search,
       longitude: location.longitude,
@@ -196,7 +196,7 @@ export default function FoodTab() {
   const nearestRestaurantsData =
     dataNearestRestaurants?.nearestRestaurants || null
   const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
-  const filteredRestaurants = dataSearch?.searchRestaurants || null
+  const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
 
   const [mutateAddress, { loading: mutationLoading }] = useMutation(
     SELECT_ADDRESS,
@@ -574,8 +574,8 @@ export default function FoodTab() {
         <Ionicons name='search-outline' size={18} color='gray' />
         <TouchableOpacity
           style={styles.inputLike}
-          onPress={() => setSearchOpen(true)}
-          // onPress={() => navigation.navigate('SearchRestaurants')}
+          // onPress={() => setSearchOpen(true)}
+          onPress={() => navigation.navigate('CategorySearchRestaurants')}
         >
           <Text
             style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
@@ -621,88 +621,9 @@ export default function FoodTab() {
         </ErrorView>
       ) : (
         <Fragment>
+          {/* Top restaurants section */}
           <MiddleRestaurantsSection />
-          {/* <View style={{ marginTop: 20 }}>
-            <View>
-              {restaurantsWithOffersData &&
-                restaurantsWithOffersData.length > 0 && (
-                  <>
-                    {orderLoading ? (
-                      <MainLoadingUI />
-                    ) : (
-                      <MainRestaurantCard
-                        orders={[...restaurantsWithOffersData]}
-                        loading={orderLoading}
-                        error={orderError}
-                        title={'businesses_with_offers'}
-                      />
-                    )}
-                  </>
-                )}
-            </View>
-          </View> */}
-          {/* <Divider style={{ marginBottom: 10, marginTop: -10 }} />
-          <View style={{ marginTop: 0 }}>
-            <View>
-              {mostOrderedRestaurantsVar &&
-                mostOrderedRestaurantsVar.length > 0 && (
-                  <>
-                    {orderLoading ? (
-                      <MainLoadingUI />
-                    ) : (
-                      <MainRestaurantCard
-                        orders={mostOrderedRestaurantsVar}
-                        loading={orderLoading}
-                        error={orderError}
-                        title={'mostOrderedNow'}
-                      />
-                    )}
-                  </>
-                )}
-            </View>
-          </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
-          {/* heighest rating */}
-          {/* <View style={{ marginTop: 0 }}>
-            <View>
-              {highestRatingRestaurantData &&
-                highestRatingRestaurantData.length > 0 && (
-                  <>
-                    {loadingHighRating ? (
-                      <MainLoadingUI />
-                    ) : (
-                      <MainRestaurantCard
-                        orders={highestRatingRestaurantData}
-                        loading={loadingHighRating}
-                        error={errorHighRating}
-                        title={'highest_rated'}
-                      />
-                    )}
-                  </>
-                )}
-            </View>
-          </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
-          {/* nearest restaurants */}
-          {/* <View style={{ marginTop: 0 }}>
-            <View>
-              {nearestRestaurantsData && nearestRestaurantsData.length > 0 && (
-                <>
-                  {loadingNearestRestaurants ? (
-                    <MainLoadingUI />
-                  ) : (
-                    <MainRestaurantCard
-                      orders={nearestRestaurantsData}
-                      loading={loadingNearestRestaurants}
-                      error={errorNearestRestaurants}
-                      title={'nearest_to_you'}
-                    />
-                  )}
-                </>
-              )}
-            </View>
-          </View>
-          <Divider style={{ marginBottom: 10, marginTop: -10 }} /> */}
+
           {/* Restaurants */}
           <TouchableOpacity
             onPress={() =>
@@ -728,10 +649,6 @@ export default function FoodTab() {
             </View>
           </TouchableOpacity>
           {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
-          {/* {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
-          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
-          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
-          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))} */}
 
           {isLoggedIn && (
             <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />

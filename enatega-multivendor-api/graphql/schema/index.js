@@ -1626,6 +1626,12 @@ const typeDefs = gql`
       longitude: Float
       latitude: Float
     ): [Restaurant]
+    searchRestaurantsCustomer(
+      search: String
+      longitude: Float
+      latitude: Float
+      businessCategoryId: String
+    ): [RestaurantPreview]
     getRidersLocation(cityId: String): [Rider]
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!

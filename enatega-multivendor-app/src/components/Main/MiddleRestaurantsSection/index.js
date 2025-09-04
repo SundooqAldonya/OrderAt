@@ -4,7 +4,7 @@ import {
   highestRatingRestaurant,
   nearestRestaurants,
   restaurantsWithOffers,
-  searchRestaurants,
+  // searchRestaurants,
   topRatedVendorsInfo
 } from '../../../apollo/queries'
 import { useQuery } from '@apollo/client'
