@@ -574,8 +574,8 @@ export default function FoodTab() {
         <Ionicons name='search-outline' size={18} color='gray' />
         <TouchableOpacity
           style={styles.inputLike}
-          // onPress={() => setSearchOpen(true)}
-          onPress={() => navigation.navigate('CategorySearchRestaurants')}
+          onPress={() => setSearchOpen(true)}
+          // onPress={() => navigation.navigate('CategorySearchRestaurants')}
         >
           <Text
             style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
