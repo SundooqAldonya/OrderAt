@@ -19,9 +19,10 @@ import {
   MaterialIcons,
   SimpleLineIcons,
   AntDesign,
-  MaterialCommunityIcons
+  MaterialCommunityIcons,
+  Ionicons
 } from '@expo/vector-icons'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import {
   useCollapsibleSubHeader,
   CollapsibleSubHeaderAnimator
@@ -35,7 +36,10 @@ import UserContext from '../../context/User'
 import {
   getBusinessCategoriesCustomer,
   getCuisines,
-  restaurantListPreview
+  highestRatingRestaurant,
+  nearestRestaurants,
+  restaurantListPreview,
+  restaurantsWithOffers
 } from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
 import { moderateScale } from '../../utils/scaling'
@@ -76,16 +80,21 @@ const GET_CUISINES = gql`
 `
 
 export const FILTER_VALUES = {
-  Sort: {
-    type: FILTER_TYPE.RADIO,
-    values: ['Relevance (Default)', 'Fast Delivery', 'Distance'],
-    selected: []
-  },
+  // Sort: {
+  //   type: FILTER_TYPE.RADIO,
+  //   values: ['Relevance (Default)', 'Fast Delivery', 'Distance'],
+  //   selected: []
+  // },
   // Offers: {
   //   selected: [],
   //   type: FILTER_TYPE.CHECKBOX,
   //   values: ['Free Delivery', 'Accept Vouchers', 'Deal']
   // },
+  Highlights: {
+    type: FILTER_TYPE.RADIO, // only one can be selected
+    selected: [],
+    values: ['businesses_with_offers', 'mostOrderedNow', 'nearest_to_you']
+  },
   Rating: {
     selected: [],
     type: FILTER_TYPE.CHECKBOX,
@@ -96,6 +105,7 @@ export const FILTER_VALUES = {
 function Menu({ route, props }) {
   const Analytics = analytics()
   const { selectedType } = route.params
+  const { highlights, title } = route.params || {}
   const filteredItem = route.params?.filteredItem || null
   const { i18n, t } = useTranslation()
   const { language } = i18n
@@ -114,7 +124,7 @@ function Menu({ route, props }) {
   const { getCurrentLocation } = useLocation()
   const locationData = location
 
-  console.log({ filteredItem })
+  console.log({ highlights, title })
 
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
@@ -147,6 +157,20 @@ function Menu({ route, props }) {
     fetchPolicy: 'no-cache'
   })
 
+  // to get the highlights filter values
+  const [
+    fetchOffersRestaurants,
+    { data: dataWithOffers, loading: loadingWithOffers, error: errorWithOffers }
+  ] = useLazyQuery(restaurantsWithOffers)
+  const [
+    fetchHighRatingRestaurants,
+    { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
+  ] = useLazyQuery(highestRatingRestaurant)
+  const [
+    fetchNearestRestaurants,
+    { data: dataNearest, loading: loadingNearest, error: errorNearest }
+  ] = useLazyQuery(nearestRestaurants)
+
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
@@ -168,34 +192,68 @@ function Menu({ route, props }) {
 
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(colors.primary)
+      StatusBar.setBackgroundColor('#fff')
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
+  // useLayoutEffect(() => {
+  //   navigation.setOptions(
+  //     navigationOptions({
+  //       headerMenuBackground: currentTheme.main,
+  //       horizontalLine: currentTheme.headerColor,
+  //       fontMainColor: currentTheme.darkBgFont,
+  //       iconColorPink: currentTheme.black,
+  //       open: onOpen,
+  //       icon: 'back'
+  //     })
+  //   )
+  // }, [navigation, currentTheme])
+
   useLayoutEffect(() => {
-    navigation.setOptions(
-      navigationOptions({
-        headerMenuBackground: currentTheme.main,
-        horizontalLine: currentTheme.headerColor,
-        fontMainColor: currentTheme.darkBgFont,
-        iconColorPink: currentTheme.black,
-        open: onOpen,
-        icon: 'back'
-      })
-    )
-  }, [navigation, currentTheme])
+    navigation.setOptions({
+      headerShown: false
+    })
+  })
 
   useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      Cuisines: {
-        selected: [],
-        type: FILTER_TYPE.CHECKBOX,
-        values: allCuisines?.cuisines?.map((item) => item.name)
-      }
-    }))
-  }, [allCuisines])
+    if (highlights && title) {
+      const updatedFilters = { ...filters }
+      updatedFilters.Highlights.selected = [title]
+      fetchHighlightsData()
+    }
+  }, [highlights, title])
+
+  const fetchHighlightsData = async () => {
+    const variables = {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
+    if (title === 'businesses_with_offers') {
+      fetchOffersRestaurants({ variables }).then((res) => {
+        setRestaurantData(res?.data?.restaurantsWithOffers || [])
+      })
+    } else if (title === 'mostOrderedNow') {
+      fetchHighRatingRestaurants({ variables }).then((res) => {
+        setRestaurantData(res?.data?.highestRatingRestaurant || [])
+      })
+    } else if (title === 'nearest_to_you') {
+      fetchNearestRestaurants({ variables }).then((res) => {
+        setRestaurantData(res?.data?.nearestRestaurants || [])
+      })
+    }
+  }
+
+  // useEffect(() => {
+  //   setFilters((prev) => ({
+  //     ...prev,
+  //     Cuisines: {
+  //       selected: [],
+  //       type: FILTER_TYPE.CHECKBOX,
+  //       values: allCuisines?.cuisines?.map((item) => item.name)
+  //     }
+  //   }))
+  // }, [allCuisines])
 
   useEffect(() => {
     if (businessCategories?.length) {
@@ -448,7 +506,9 @@ function Menu({ route, props }) {
 
   const extractRating = (ratingString) => parseInt(ratingString)
 
-  const applyFilters = () => {
+  console.log({ dataNearest })
+
+  const applyFilters = async () => {
     let filteredData = [...data.nearByRestaurantsPreview.restaurants]
 
     const ratings = filters.Rating
@@ -456,7 +516,7 @@ function Menu({ route, props }) {
     // const offers = filters.Offers
     const cuisines = filters.Cuisines
     const businessCategories = filters.categories
-    console.log({ businessCategories: businessCategories[0] })
+    const highlights = filters.Highlights
 
     // Apply filters incrementally
     // Ratings filter
@@ -494,6 +554,31 @@ function Menu({ route, props }) {
       filteredData = filteredData.filter((item) =>
         item.cuisines.some((cuisine) => cuisines?.selected?.includes(cuisine))
       )
+    }
+
+    if (highlights?.selected?.length) {
+      const variables = {
+        longitude: location.longitude,
+        latitude: location.latitude
+      }
+
+      if (highlights.selected[0] === 'businesses_with_offers') {
+        const res = await fetchOffersRestaurants({ variables })
+        setRestaurantData(res.data?.restaurantsWithOffers || [])
+        return
+      }
+
+      if (highlights.selected[0] === 'mostOrderedNow') {
+        const res = await fetchHighRatingRestaurants({ variables })
+        setRestaurantData(res.data?.highestRatingRestaurant || [])
+        return
+      }
+
+      if (highlights.selected[0] === 'nearest_to_you') {
+        const res = await fetchNearestRestaurants({ variables })
+        setRestaurantData(res.data?.nearestRestaurants || [])
+        return
+      }
     }
 
     if (businessCategories?.selected?.length > 0) {
@@ -555,11 +640,39 @@ function Menu({ route, props }) {
                 <CollapsibleSubHeaderAnimator translateY={translateY}>
                   <View
                     style={[
-                      styles(currentTheme).searchbar,
-                      { backgroundColor: colors.primary }
+                      styles(currentTheme).searchbar
+                      // { backgroundColor: '#fff' }
                     ]}
                   >
+                    <View
+                      style={{
+                        marginBlock: 10,
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 20
+                      }}
+                    >
+                      <TextDefault
+                        bold
+                        H3
+                        style={{
+                          color: '#000',
+                          textAlign: 'right'
+                        }}
+                      >
+                        {t('search')}
+                      </TextDefault>
+                      <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <AntDesign
+                          name={isArabic ? 'arrowleft' : 'arrowright'}
+                          size={24}
+                          color='black'
+                        />
+                      </TouchableOpacity>
+                    </View>
                     <Search
+                      backgroundColor={'#fff'}
                       setSearch={setSearch}
                       search={search}
                       newheaderColor={newheaderColor}

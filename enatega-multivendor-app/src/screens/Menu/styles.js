@@ -14,8 +14,8 @@ const styles = (props = null) =>
       ...alignment.PBlarge
     },
     searchbar: {
-      ...alignment.PBmedium,
-      backgroundColor: colors.primary
+      ...alignment.PBmedium
+      // backgroundColor: colors.primary
     },
 
     mainContentContainer: {
@@ -59,7 +59,7 @@ const styles = (props = null) =>
       ...alignment.PBsmall
     },
     addButton: {
-      backgroundColor:colors.primary,
+      backgroundColor: colors.primary,
       width: '100%',
       height: scale(40),
       borderRadius: 50,

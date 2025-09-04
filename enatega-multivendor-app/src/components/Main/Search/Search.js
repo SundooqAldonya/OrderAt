@@ -41,12 +41,11 @@ function Search(props) {
                 style={{
                   ...styles(currentTheme).bodyStyleOne,
                   color: currentTheme.fontMainColor,
-                  paddingRight: 25
+                  paddingRight: 15,
+                  paddingVertical: 10
                 }}
                 placeholder={t(props.placeHolder)}
-                placeholderTextColor={
-                  themeContext.ThemeValue === 'Dark' ? '#fff' : colors.border1
-                }
+                placeholderTextColor={'#bbb'}
                 onChangeText={(text) => props.setSearch(text)}
                 value={props.search}
               />

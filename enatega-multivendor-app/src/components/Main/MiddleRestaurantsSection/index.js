@@ -95,12 +95,16 @@ const MiddleRestaurantsSection = () => {
           marginBottom: 10,
           marginHorizontal: 10
         }}
-        onPress={() =>
-          navigation.navigate('MainRestaurantScreen', {
-            restaurantData: restaurantsWithOffersData,
+        onPress={() => {
+          navigation.navigate('Menu', {
+            highlights: true,
             title: 'businesses_with_offers'
           })
-        }
+          // navigation.navigate('MainRestaurantScreen', {
+          //   restaurantData: restaurantsWithOffersData,
+          //   title: 'businesses_with_offers'
+          // })
+        }}
       >
         <TextDefault
           numberOfLines={1}
@@ -146,12 +150,16 @@ const MiddleRestaurantsSection = () => {
           marginBottom: 10,
           marginHorizontal: 10
         }}
-        onPress={() =>
-          navigation.navigate('MainRestaurantScreen', {
-            restaurantData: mostOrderedRestaurantsVar,
+        onPress={() => {
+          navigation.navigate('Menu', {
+            highlights: true,
             title: 'mostOrderedNow'
           })
-        }
+          // navigation.navigate('MainRestaurantScreen', {
+          //   restaurantData: mostOrderedRestaurantsVar,
+          //   title: 'mostOrderedNow'
+          // })
+        }}
       >
         <TextDefault
           numberOfLines={1}
@@ -198,12 +206,16 @@ const MiddleRestaurantsSection = () => {
           marginBottom: 10,
           marginHorizontal: 10
         }}
-        onPress={() =>
-          navigation.navigate('MainRestaurantScreen', {
-            restaurantData: nearestRestaurantsData,
+        onPress={() => {
+          navigation.navigate('Menu', {
+            highlights: true,
             title: 'nearest_to_you'
           })
-        }
+          // navigation.navigate('MainRestaurantScreen', {
+          //   restaurantData: nearestRestaurantsData,
+          //   title: 'nearest_to_you'
+          // })
+        }}
       >
         <TextDefault
           numberOfLines={1}

@@ -33,8 +33,10 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'center',
-      borderRadius: moderateScale(40),
-      backgroundColor: props != null ? props.color1 : 'black',
+      borderRadius: moderateScale(8),
+      // paddingVertical: verticalScale(20),
+      // backgroundColor: props != null ? props.color1 : 'black',
+      backgroundColor: props != null ? '#f2f2f2' : 'black',
 
       shadowColor: props != null ? props.shadowColor : 'black',
       shadowOffset: {
@@ -62,7 +64,6 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
     inputContainer: {
       width: '100%',
       height: scale(36),
-
       justifyContent: 'center',
       ...alignment.MLxSmall,
       ...alignment.MRxSmall
@@ -72,6 +73,7 @@ const styles = (props = null, newheaderColor = theme.headerMenuBackground) =>
       height: '90%',
       justifyContent: 'center',
       alignItems: 'center'
+      // backgroundColor: 'red'
     }
   })
 export default styles
