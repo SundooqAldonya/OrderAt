@@ -4,7 +4,8 @@ import React, {
   useContext,
   useLayoutEffect,
   useState,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react'
 import {
   View,
@@ -105,7 +106,7 @@ export const FILTER_VALUES = {
 function Menu({ route, props }) {
   const Analytics = analytics()
   const { selectedType } = route.params || { selectedType: 'restaurant' }
-  const { highlights, title } = route.params || {}
+  const { highlight, title } = route.params || {}
   const filteredItem = route.params?.filteredItem || null
   const { i18n, t } = useTranslation()
   const { language } = i18n
@@ -124,7 +125,7 @@ function Menu({ route, props }) {
   const { getCurrentLocation } = useLocation()
   const locationData = location
 
-  console.log({ highlights, title })
+  console.log({ highlight, title })
 
   const { data, refetch, networkStatus, loading, error } = useQuery(
     RESTAURANTS,
@@ -217,14 +218,16 @@ function Menu({ route, props }) {
   })
 
   useEffect(() => {
-    if (highlights && title) {
+    if (highlight && title) {
       const updatedFilters = { ...filters }
       updatedFilters.Highlights.selected = [title]
       fetchHighlightsData()
+      // applyFilters(filters)
     }
-  }, [highlights, title])
+  }, [highlight, title, restaurantData])
 
-  const fetchHighlightsData = async () => {
+  const fetchHighlightsData = useCallback(async () => {
+    console.log('fetchHighlightsData called')
     const variables = {
       longitude: location.longitude,
       latitude: location.latitude
@@ -242,7 +245,82 @@ function Menu({ route, props }) {
         setRestaurantData(res?.data?.nearestRestaurants || [])
       })
     }
-  }
+  }, [highlight, title])
+
+  // const applyFilters = useCallback(
+  //   async (currentFilters = filters) => {
+  //     let filteredData = [
+  //       ...(data?.nearByRestaurantsPreview?.restaurants || [])
+  //     ]
+
+  //     const ratings = currentFilters.Rating
+  //     const sort = currentFilters.Sort
+  //     const cuisines = currentFilters.Cuisines
+  //     const businessCategories = currentFilters.categories
+  //     const highlights = currentFilters.Highlights
+
+  //     if (ratings?.selected?.length > 0) {
+  //       const numericRatings = ratings.selected?.map(extractRating)
+  //       filteredData = filteredData.filter(
+  //         (item) => item?.reviewData?.ratings >= Math.min(...numericRatings)
+  //       )
+  //     }
+
+  //     if (sort?.selected?.length > 0) {
+  //       if (sort.selected[0] === 'Fast Delivery') {
+  //         filteredData.sort((a, b) => a.deliveryTime - b.deliveryTime)
+  //       } else if (sort.selected[0] === 'Distance') {
+  //         filteredData.sort(
+  //           (a, b) =>
+  //             a.distanceWithCurrentLocation - b.distanceWithCurrentLocation
+  //         )
+  //       }
+  //     }
+
+  //     if (cuisines?.selected?.length > 0) {
+  //       filteredData = filteredData.filter((item) =>
+  //         item.cuisines.some((cuisine) => cuisines?.selected?.includes(cuisine))
+  //       )
+  //     }
+
+  //     // 🔑 Highlights
+  //     if (highlights?.selected?.length) {
+  //       const variables = {
+  //         longitude: location.longitude,
+  //         latitude: location.latitude
+  //       }
+
+  //       if (highlights.selected[0] === 'businesses_with_offers') {
+  //         const res = await fetchOffersRestaurants({ variables })
+  //         setRestaurantData(res.data?.restaurantsWithOffers || [])
+  //         return
+  //       }
+
+  //       if (highlights.selected[0] === 'mostOrderedNow') {
+  //         const res = await fetchHighRatingRestaurants({ variables })
+  //         setRestaurantData(res.data?.highestRatingRestaurant || [])
+  //         return
+  //       }
+
+  //       if (highlights.selected[0] === 'nearest_to_you') {
+  //         const res = await fetchNearestRestaurants({ variables })
+  //         setRestaurantData(res.data?.nearestRestaurants || [])
+  //         return
+  //       }
+  //     }
+
+  //     if (businessCategories?.selected?.length > 0) {
+  //       filteredData = filteredData.filter((item) =>
+  //         item.businessCategories.some((category) =>
+  //           businessCategories?.selected?.includes(category._id)
+  //         )
+  //       )
+  //     }
+
+  //     setRestaurantData(filteredData)
+  //   },
+  //   [data, restaurantData]
+  // )
 
   // useEffect(() => {
   //   setFilters((prev) => ({

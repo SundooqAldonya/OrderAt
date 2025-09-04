@@ -97,7 +97,7 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() => {
           navigation.navigate('Menu', {
-            highlights: true,
+            highlight: true,
             title: 'businesses_with_offers'
           })
           // navigation.navigate('MainRestaurantScreen', {
@@ -152,7 +152,7 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() => {
           navigation.navigate('Menu', {
-            highlights: true,
+            highlight: true,
             title: 'mostOrderedNow'
           })
           // navigation.navigate('MainRestaurantScreen', {
@@ -208,7 +208,7 @@ const MiddleRestaurantsSection = () => {
         }}
         onPress={() => {
           navigation.navigate('Menu', {
-            highlights: true,
+            highlight: true,
             title: 'nearest_to_you'
           })
           // navigation.navigate('MainRestaurantScreen', {

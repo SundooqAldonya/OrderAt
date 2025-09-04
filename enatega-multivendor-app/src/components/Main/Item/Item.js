@@ -115,17 +115,19 @@ function Item(props) {
                 <TextDefault bolder style={{ fontSize: 18 }}>
                   {t('closed')}
                 </TextDefault>
-                <MaterialIcons name='info-outline' size={moderateScale(24)} color='#fff' />
+                <MaterialIcons
+                  name='info-outline'
+                  size={moderateScale(24)}
+                  color='#fff'
+                />
               </View>
             ) : null}
           </View>
           <View style={{ ...styles().descriptionContainer }}>
             <View
               style={{
-                //    flexDirection: isArabic ? 'row-reverse' : 'row',
                 justifyContent: isArabic ? 'flex-end' : 'flex-start',
                 alignItems: isArabic ? 'flex-end' : 'flex-start'
-                // width: '100%'
               }}
             >
               <TextDefault
@@ -154,7 +156,10 @@ function Item(props) {
                   textColor={currentTheme.fontThirdColor}
                   H4
                   bolder
-                  style={{ marginLeft: moderateScale(2), marginRight: moderateScale(5) }}
+                  style={{
+                    marginLeft: moderateScale(2),
+                    marginRight: moderateScale(5)
+                  }}
                 >
                   {item.reviewAverage}
                 </TextDefault>
@@ -238,7 +243,11 @@ function Item(props) {
             <TouchableOpacity
               activeOpacity={0}
               disabled={loadingMutation}
-              style={styles(currentTheme).favOverlay}
+              style={
+                isArabic
+                  ? styles(currentTheme).favOverlayAr
+                  : styles(currentTheme).favOverlay
+              }
               onPress={() =>
                 profile ? mutate({ variables: { id: item._id } }) : null
               }

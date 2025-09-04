@@ -733,5 +733,6 @@ export const en = {
   all_categories: 'All Categories',
   see_all: 'See All',
   search_for_restaurants: 'Search dishes, restaurants',
-  all_businesses: 'All Businesses'
+  all_businesses: 'All Businesses',
+  Highlights: 'Highlights'
 }

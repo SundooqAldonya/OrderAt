@@ -722,5 +722,6 @@ export const ar = {
   all_categories: 'جميع التصنيفات',
   see_all: 'رؤية الكل',
   search_for_restaurants: 'ابحث عن مطاعم',
-  all_businesses: 'جميع المتاجر'
+  all_businesses: 'جميع المتاجر',
+  Highlights: 'اختيارات بارزة'
 }

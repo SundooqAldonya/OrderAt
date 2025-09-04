@@ -14,12 +14,21 @@ const styles = (props = null) =>
       flex: 1,
       alignItems: 'flex-end',
       padding: 10,
-      borderWidth: moderateScale(1),
+      // borderWidth: moderateScale(1),
       borderRadius: moderateScale(8),
       backgroundColor: colors.white,
       marginHorizontal: 5,
       borderColor: colors.lightGray,
-      width: '100%'
+      width: '100%',
+      // iOS shadow
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+
+      // Android shadow
+      elevation: 3,
+      overflow: 'hidden'
     },
     imageContainer: {
       // position: 'relative',
@@ -54,6 +63,18 @@ const styles = (props = null) =>
     },
 
     favOverlay: {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      width: moderateScale(30),
+      height: moderateScale(30),
+      borderRadius: moderateScale(15),
+      backgroundColor: colors.lightGray,
+      zIndex: 10,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    favOverlayAr: {
       position: 'absolute',
       top: 10,
       left: 10,
