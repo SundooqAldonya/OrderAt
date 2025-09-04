@@ -445,7 +445,7 @@ export const ar = {
   signUpDiscount: 'اشتراك للحصول على الخصم',
   foodDelivery: 'أطلب طعام',
   OrderfoodLove: 'وجبتك المفضله من مطعمك المفضل',
-  grocery: 'البقالة',
+  grocery: '',
   essentialsDeliveredFast: 'توصيل سريع للضروريات',
   cartClearWarning:
     'بمغادرة صفحة هذا المطعم، سيتم مسح العناصر التي قمت بإضافتها إلى سلتك',
@@ -497,8 +497,8 @@ export const ar = {
   titleEmptyPastOrders: 'لا توجد طلبات سابقة بعد!',
   emptyPastOrdersDesc: 'سوف تظهر طلباتك السابقة هنا.',
   emptyPastOrdersBtn: 'لنطلب شيئًا!',
-  allGrocery: 'جميع متاجر البقالة',
-  searchGrocery: 'البحث عن متاجر البقالة',
+  allGrocery: 'جميع المتاجر ',
+  searchGrocery: 'البحث عن متاجر ',
   noGrocery: 'لا يقدم أي متجر بقالة تسليمًا حاليًا في منطقتك',
 
   alertLocation: 'نوع الموقع غير محدد',
