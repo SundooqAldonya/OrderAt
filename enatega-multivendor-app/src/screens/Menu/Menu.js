@@ -426,14 +426,14 @@ function Menu({ route, props }) {
   function loadingScreen() {
     return (
       <View style={styles(currentTheme).screenBackground}>
-        <View style={styles(currentTheme).searchbar}>
+        {/* <View style={styles(currentTheme).searchbar}>
           <Search
             search={''}
             setSearch={() => {}}
             newheaderColor={newheaderColor}
             placeHolder={searchPlaceholderText}
           />
-        </View>
+        </View> */}
 
         <Placeholder
           Animation={(props) => (
