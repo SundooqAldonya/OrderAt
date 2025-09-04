@@ -403,7 +403,10 @@ export default function FoodTab() {
         .join(', ') || null
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Restaurant', { _id: item._id })}
+        style={styles.card}
+      >
         <Image source={{ uri: item.image }} style={styles.cardImage} />
         <View style={styles.cardInfo}>
           <Text
@@ -450,7 +453,7 @@ export default function FoodTab() {
             <Text style={styles.metaText}>⏱ {item.deliveryTime}</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -574,8 +577,8 @@ export default function FoodTab() {
         <Ionicons name='search-outline' size={18} color='gray' />
         <TouchableOpacity
           style={styles.inputLike}
-          onPress={() => setSearchOpen(true)}
-          // onPress={() => navigation.navigate('CategorySearchRestaurants')}
+          // onPress={() => setSearchOpen(true)}
+          onPress={() => navigation.navigate('Menu')}
         >
           <Text
             style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
@@ -636,7 +639,7 @@ export default function FoodTab() {
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
-            <Text style={styles.sectionTitle}>{t('highest_rated')}</Text>
+            <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
             <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -645,7 +648,11 @@ export default function FoodTab() {
               }}
             >
               <Text style={styles.sectionLink}>{t('see_all')} </Text>
-              <AntDesign name='arrowleft' size={18} color='black' />
+              <AntDesign
+                name={isArabic ? 'arrowleft' : 'arrowright'}
+                size={18}
+                color='black'
+              />
             </View>
           </TouchableOpacity>
           {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}

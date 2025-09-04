@@ -104,7 +104,7 @@ export const FILTER_VALUES = {
 
 function Menu({ route, props }) {
   const Analytics = analytics()
-  const { selectedType } = route.params
+  const { selectedType } = route.params || { selectedType: 'restaurant' }
   const { highlights, title } = route.params || {}
   const filteredItem = route.params?.filteredItem || null
   const { i18n, t } = useTranslation()
