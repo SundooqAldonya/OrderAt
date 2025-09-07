@@ -120,6 +120,7 @@ function Menu({ route, props }) {
   const [restaurantData, setRestaurantData] = useState([])
   const [sectionData, setSectionData] = useState([])
   const [titleMain, setTitleMain] = useState(title ? title : '')
+  const [titleUI, setTitleUI] = useState(title ? title : '')
   const modalRef = useRef(null)
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -176,8 +177,14 @@ function Menu({ route, props }) {
 
   const [
     fetchMostOrderedRestaurants,
-    { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
+    {
+      data: dataMostOrdered,
+      loading: loadingMostOrdered,
+      error: errorMostOrdered
+    }
   ] = useLazyQuery(recentOrderRestaurantsQuery)
+
+  console.log({ dataMostOrdered })
 
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
@@ -384,7 +391,15 @@ function Menu({ route, props }) {
   )
 
   const emptyView = () => {
-    if (loading || mutationLoading || loadingOrders) return loadingScreen()
+    if (
+      loading ||
+      mutationLoading ||
+      loadingOrders ||
+      loadingWithOffers ||
+      loadingNearest ||
+      loadingMostOrdered
+    )
+      return loadingScreen()
     else {
       return (
         <View style={styles().emptyViewContainer}>
@@ -492,6 +507,7 @@ function Menu({ route, props }) {
   if (loading || mutationLoading || loadingOrders) return loadingScreen()
 
   const searchRestaurants = (searchText) => {
+    // to change - should come from backend
     const data = []
     const escapedSearchText = escapeRegExp(searchText)
     const regex = new RegExp(escapedSearchText, 'i')
@@ -515,7 +531,7 @@ function Menu({ route, props }) {
 
   const extractRating = (ratingString) => parseInt(ratingString)
 
-  console.log({ dataHighRating })
+  // console.log({ dataHighRating })
 
   const applyFilters = async () => {
     let filteredData = [...data.nearByRestaurantsPreview.restaurants]
@@ -575,18 +591,21 @@ function Menu({ route, props }) {
       if (highlights.selected[0] === 'businesses_with_offers') {
         const res = await fetchOffersRestaurants({ variables })
         setRestaurantData(res.data?.restaurantsWithOffers || [])
+        setTitleUI('businesses_with_offers')
         return
       }
 
       if (highlights.selected[0] === 'mostOrderedNow') {
         const res = await fetchMostOrderedRestaurants({ variables })
         setRestaurantData(res.data?.recentOrderRestaurantsPreview || [])
+        setTitleUI('mostOrderedNow')
         return
       }
 
       if (highlights.selected[0] === 'nearest_to_you') {
         const res = await fetchNearestRestaurants({ variables })
         setRestaurantData(res.data?.nearestRestaurants || [])
+        setTitleUI('nearest_to_you')
         return
       }
     }
@@ -626,7 +645,8 @@ function Menu({ route, props }) {
                     search || restaurantData.length === 0 ? null : (
                       <ActiveOrdersAndSections
                         sections={restaurantSections}
-                        menuPageHeading={menuPageHeading}
+                        // menuPageHeading={menuPageHeading}
+                        menuPageHeading={t(titleUI) || menuPageHeading}
                       />
                     )
                   }
