@@ -552,6 +552,7 @@ function Menu({ route, props }) {
   // console.log({ dataHighRating })
 
   const applyFilters = async () => {
+    setRestaurantData([])
     let filteredData = [...data.nearByRestaurantsPreview.restaurants]
 
     const ratings = filters.Rating
