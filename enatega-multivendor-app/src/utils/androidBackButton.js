@@ -1,6 +1,7 @@
 // packages
 import { useTranslation } from 'react-i18next'
 import { BackHandler, Alert, StyleSheet } from 'react-native'
+import { t } from 'react-i18next'
 
 // const { t } = useTranslation()
 let backHandlerSubscription = null
@@ -35,18 +36,18 @@ const removeAndroidBackButtonHandler = () => {
 //   ])
 //   return true
 // }
-const exitAlert = () => {
+const exitAlert = ({ title, question, cancel, okey }) => {
   Alert.alert(
-    'Confirm exit',
-    'Do you want to quit the app',
+    t('confirm_exit'), // Confirm Exit
+    t('quit_question'), // Do you want to quit the app
     [
       {
-        text: 'Cancel',
+        text: t('Cancel'), // cancel
         style: 'cancel',
         style: styles.cancelButton
       },
       {
-        text: 'okText',
+        text: 'okText', // okay
         onPress: () => BackHandler.exitApp(),
         style: styles.confirmButton
       }

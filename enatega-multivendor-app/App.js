@@ -73,6 +73,11 @@ import NetInfo from '@react-native-community/netinfo'
 import TrackingPermissionModal from './src/components/TrackingPermissionModal'
 import { initI18n } from './i18next'
 import * as TrackingTransparency from 'expo-tracking-transparency'
+import {
+  handleAndroidBackButton,
+  removeAndroidBackButtonHandler
+} from './src/components/ExitModal/backHandler'
+import ExitModal from './src/components/ExitModal'
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -96,6 +101,7 @@ Notifications.setNotificationHandler({
 export default function App() {
   const reviewModalRef = useRef()
   const [isConnected, setIsConnected] = useState(true)
+  const [exitVisible, setExitVisible] = useState(false)
 
   const [appIsReady, setAppIsReady] = useState(false)
   const [location, setLocation] = useState(null)
@@ -213,7 +219,7 @@ export default function App() {
   useWatchLocation()
 
   useEffect(() => {
-    let subscription = null
+    // let subscription = null
     const loadAppData = async () => {
       try {
         await SplashScreen.preventAutoHideAsync()
@@ -240,18 +246,28 @@ export default function App() {
       })
       // await permissionForPushNotificationsAsync()
       await getActiveLocation()
-      subscription = BackHandler.addEventListener(
-        'hardwareBackPress',
-        exitAlert
-      )
+      // subscription = BackHandler.addEventListener(
+      //   'hardwareBackPress',
+      //   exitAlert
+      // )
 
       setAppIsReady(true)
     }
 
     loadAppData()
 
+    // return () => {
+    //   subscription.remove()
+    // }
+  }, [])
+
+  useEffect(() => {
+    // register back button listener
+    handleAndroidBackButton(() => setExitVisible(true))
+
     return () => {
-      subscription.remove()
+      // cleanup listener
+      removeAndroidBackButtonHandler()
     }
   }, [])
 
@@ -382,6 +398,15 @@ export default function App() {
     reviewModalRef?.current?.close()
   }
 
+  const confirmExitApp = () => {
+    setExitVisible(false)
+    BackHandler.exitApp()
+  }
+
+  const handleCancelExit = () => {
+    setExitVisible(false) // just close modal
+  }
+
   if (!isConnected) return <ErrorView />
 
   if (appIsReady) {
@@ -404,6 +429,11 @@ export default function App() {
                       <UserProvider>
                         <OrdersProvider>
                           <AppContainer />
+                          <ExitModal
+                            visible={exitVisible}
+                            onConfirm={confirmExitApp}
+                            onCancel={handleCancelExit}
+                          />
                           {/* <TrackingPermissionModal /> */}
                           <ReviewModal
                             ref={reviewModalRef}

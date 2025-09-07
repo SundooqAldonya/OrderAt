@@ -723,5 +723,8 @@ export const ar = {
   see_all: 'رؤية الكل',
   search_for_restaurants: 'ابحث عن مطاعم',
   all_businesses: 'جميع المتاجر',
-  Highlights: 'اختيارات بارزة'
+  Highlights: 'اختيارات بارزة',
+  confirm_exit: 'تأكيد الخروج',
+  quit_question: 'هل تريد الخروج؟',
+  okey: 'نعم'
 }

@@ -734,5 +734,8 @@ export const en = {
   see_all: 'See All',
   search_for_restaurants: 'Search dishes, restaurants',
   all_businesses: 'All Businesses',
-  Highlights: 'Highlights'
+  Highlights: 'Highlights',
+  confirm_exit: 'Confirm exit',
+  quit_question: 'Do you want to quit the app?',
+  okey: 'Okey'
 }
