@@ -20,6 +20,7 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'
+import { Divider } from 'react-native-paper'
 
 const MiddleRestaurantsSection = ({
   restaurantsWithOffersData,
@@ -78,7 +79,10 @@ const MiddleRestaurantsSection = ({
         >
           {t('businesses_with_offers')}
         </TextDefault>
-        <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+        <View
+          style={{ ...styles(isArabic).image, borderRadius: 50, padding: 5 }}
+        >
+          <Text style={styles.sectionLink}>{t('see_all')} </Text>
           <AntDesign
             name={isArabic ? 'arrowleft' : 'arrowright'}
             size={moderateScale(20)}
@@ -102,6 +106,7 @@ const MiddleRestaurantsSection = ({
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
+      <Divider style={{ marginBottom: 8 }} />
       <TouchableOpacity
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -133,7 +138,14 @@ const MiddleRestaurantsSection = ({
         >
           {t('mostOrderedNow')}
         </TextDefault>
-        <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+        <View
+          style={{
+            ...styles(isArabic).image,
+            borderRadius: 50,
+            padding: 5
+          }}
+        >
+          <Text style={styles.sectionLink}>{t('see_all')} </Text>
           <AntDesign
             name={isArabic ? 'arrowleft' : 'arrowright'}
             size={moderateScale(20)}
@@ -157,7 +169,7 @@ const MiddleRestaurantsSection = ({
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
-
+      <Divider style={{ marginBottom: 8 }} />
       <TouchableOpacity
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -169,7 +181,7 @@ const MiddleRestaurantsSection = ({
         onPress={() => {
           navigation.navigate('Menu', {
             highlight: true,
-            title: 'nearest_to_you'
+            title: 'featured'
           })
           // navigation.navigate('MainRestaurantScreen', {
           //   restaurantData: nearestRestaurantsData,
@@ -189,7 +201,10 @@ const MiddleRestaurantsSection = ({
         >
           {t('featured')}
         </TextDefault>
-        <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
+        <View
+          style={{ ...styles(isArabic).image, borderRadius: 50, padding: 5 }}
+        >
+          <Text style={styles.sectionLink}>{t('see_all')} </Text>
           <AntDesign
             name={isArabic ? 'arrowleft' : 'arrowright'}
             size={moderateScale(20)}
@@ -213,6 +228,7 @@ const MiddleRestaurantsSection = ({
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
+      <Divider style={{ marginBottom: 8 }} />
     </View>
   )
 }

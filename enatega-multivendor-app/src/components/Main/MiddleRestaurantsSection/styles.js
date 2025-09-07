@@ -53,12 +53,13 @@ const styles = (props = null) =>
       height: scale(200)
     },
     image: {
-      backgroundColor: '#f3f3f3',
+      // backgroundColor: '#f3f3f3',
       borderRadius: 10,
       marginHorizontal: 5,
       paddingHorizontal: 5,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      flexDirection: props ? 'row-reverse' : 'row'
     },
     image1: {
       // width: 30,

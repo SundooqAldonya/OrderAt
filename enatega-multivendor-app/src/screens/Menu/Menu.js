@@ -35,6 +35,7 @@ import Search from '../../components/Main/Search/Search'
 import Item from '../../components/Main/Item/Item'
 import UserContext from '../../context/User'
 import {
+  featuredRestaurants,
   getBusinessCategoriesCustomer,
   getCuisines,
   highestRatingRestaurant,
@@ -97,7 +98,7 @@ export const FILTER_VALUES = {
   Highlights: {
     type: FILTER_TYPE.RADIO, // only one can be selected
     selected: [],
-    values: ['businesses_with_offers', 'mostOrderedNow', 'nearest_to_you']
+    values: ['businesses_with_offers', 'mostOrderedNow', 'featured']
   },
   Rating: {
     selected: [],
@@ -173,10 +174,14 @@ function Menu({ route, props }) {
   //   fetchHighRatingRestaurants,
   //   { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
   // ] = useLazyQuery(highestRatingRestaurant)
+  // const [
+  //   fetchNearestRestaurants,
+  //   { data: dataNearest, loading: loadingNearest, error: errorNearest }
+  // ] = useLazyQuery(nearestRestaurants)
   const [
-    fetchNearestRestaurants,
-    { data: dataNearest, loading: loadingNearest, error: errorNearest }
-  ] = useLazyQuery(nearestRestaurants)
+    fetchFeaturedRestaurants,
+    { data: dataFeatured, loading: loadingFeatured, error: errorFeatured }
+  ] = useLazyQuery(featuredRestaurants)
 
   const [
     fetchMostOrderedRestaurants,
@@ -286,9 +291,9 @@ function Menu({ route, props }) {
       fetchMostOrderedRestaurants({ variables }).then((res) => {
         setRestaurantData(res?.data?.recentOrderRestaurantsPreview || [])
       })
-    } else if (titleMain === 'nearest_to_you') {
-      fetchNearestRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.nearestRestaurants || [])
+    } else if (titleMain === 'featured') {
+      fetchFeaturedRestaurants({ variables }).then((res) => {
+        setRestaurantData(res?.data?.featuredRestaurants || [])
       })
     }
   }, [highlight, titleMain])
@@ -429,7 +434,7 @@ function Menu({ route, props }) {
       mutationLoading ||
       loadingOrders ||
       loadingWithOffers ||
-      loadingNearest ||
+      loadingFeatured ||
       loadingMostOrdered
     )
       return loadingScreen()
@@ -621,10 +626,10 @@ function Menu({ route, props }) {
         return
       }
 
-      if (highlights.selected[0] === 'nearest_to_you') {
-        const res = await fetchNearestRestaurants({ variables })
-        setRestaurantData(res.data?.nearestRestaurants || [])
-        setTitleUI('nearest_to_you')
+      if (highlights.selected[0] === 'featured') {
+        const res = await fetchFeaturedRestaurants({ variables })
+        setRestaurantData(res.data?.featuredRestaurants || [])
+        setTitleUI('featured')
         return
       }
     }
