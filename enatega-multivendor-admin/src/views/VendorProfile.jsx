@@ -112,6 +112,7 @@ const VendorProfile = () => {
   const [responsiblePersonName, setResponsiblePersonName] = useState('')
   const [contactNumber, setContactNumber] = useState('')
   const [isVisible, setIsVisible] = useState(false)
+  const [featured, setFeatured] = useState(false)
 
   const onCompleted = data => {
     setNameError(null)
@@ -197,6 +198,9 @@ const VendorProfile = () => {
     }
     if (data?.restaurant?.isVisible) {
       setIsVisible(data?.restaurant?.isVisible)
+    }
+    if (data?.restaurant?.featured) {
+      setFeatured(data?.restaurant?.featured)
     }
   }, [data?.restaurant])
 
@@ -404,7 +408,8 @@ const VendorProfile = () => {
             salesPersonName,
             responsiblePersonName,
             contactNumber,
-            isVisible
+            isVisible,
+            featured
           }
         }
       })
@@ -849,6 +854,31 @@ const VendorProfile = () => {
                             />
                           }
                           label="Restaurant Visible"
+                        />
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box>
+                      <Typography className={classes.labelText}>
+                        {t('Featured')}
+                      </Typography>
+                      <Box
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          marginInlineStart: 20
+                        }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={featured}
+                              onChange={e => setFeatured(e.target.checked)}
+                              color="primary"
+                            />
+                          }
+                          label="Featured"
                         />
                       </Box>
                     </Box>

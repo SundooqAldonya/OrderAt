@@ -11,7 +11,7 @@ import {
   restaurantByOwner
 } from '../../apollo'
 import defaultLogo from '../../assets/img/defaultLogo.png'
-import { IconButton } from '@mui/material'
+import { FormControlLabel, IconButton } from '@mui/material'
 import Close from '@mui/icons-material/Close'
 
 import {
@@ -110,6 +110,7 @@ const CreateRestaurant = props => {
   const [category, setCategory] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
   const [restaurantCategories, setRestaurantCategories] = useState([])
+  const [featured, setFeatured] = useState(false)
 
   const {
     data: dataCategories,
@@ -733,6 +734,31 @@ const CreateRestaurant = props => {
                 </Select>
               </Box>
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Typography className={classes.labelText}>
+                  {t('Featured')}
+                </Typography>
+                <Box
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginInlineStart: 20
+                  }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={featured}
+                        onChange={e => setFeatured(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="Featured"
+                  />
+                </Box>
+              </Box>
+            </Grid>
           </Grid>
 
           <Grid container spacing={2}>
@@ -835,7 +861,8 @@ const CreateRestaurant = props => {
                         ),
                         salesPersonName,
                         responsiblePersonName,
-                        contactNumber
+                        contactNumber,
+                        featured
                       }
                     }
                   })

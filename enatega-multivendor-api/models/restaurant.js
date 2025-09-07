@@ -152,6 +152,10 @@ const restaurantSchema = new Schema(
     isVisible: {
       type: Boolean,
       default: false
+    },
+    featured: {
+      type: Boolean,
+      default: false
     }
   },
 

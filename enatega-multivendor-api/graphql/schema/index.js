@@ -170,6 +170,7 @@ const typeDefs = gql`
     responsiblePersonName: String
     contactNumber: String
     isVisible: Boolean
+    featured: Boolean
   }
 
   type RestaurantCustomer {
@@ -1061,6 +1062,7 @@ const typeDefs = gql`
     salesPersonName: String
     responsiblePersonName: String
     contactNumber: String
+    featured: Boolean
   }
 
   input RestaurantProfileInput {
@@ -1085,6 +1087,7 @@ const typeDefs = gql`
     responsiblePersonName: String
     contactNumber: String
     isVisible: Boolean
+    featured: Boolean
   }
 
   input OptionInput {

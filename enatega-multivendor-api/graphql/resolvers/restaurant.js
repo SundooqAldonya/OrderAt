@@ -1131,7 +1131,8 @@ module.exports = {
           salesPersonName: args.restaurant.salesPersonName,
           responsiblePersonName: args.restaurant.responsiblePersonName,
           contactNumber: args.restaurant.contactNumber,
-          isVisible: args.restaurant.isVisible
+          isVisible: args.restaurant.isVisible,
+          featured: args.restaurant.featured
         })
         console.log('New Restaurant: ', restaurant)
 
@@ -1210,6 +1211,7 @@ module.exports = {
         restaurant.responsiblePersonName = args.restaurant.responsiblePersonName
         restaurant.contactNumber = args.restaurant.contactNumber
         restaurant.isVisible = args.restaurant.isVisible
+        restaurant.featured = args.restaurant.featured
         await restaurant.save()
         const result = await restaurant.populate('city')
         return transformRestaurant(result)

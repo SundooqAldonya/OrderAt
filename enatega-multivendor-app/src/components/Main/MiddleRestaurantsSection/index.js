@@ -141,7 +141,7 @@ const MiddleRestaurantsSection = ({
         </View>
       </TouchableOpacity>
       <FlatList
-        getItemLayout={getItemLayout}
+        // getItemLayout={getItemLayout}
         data={
           isArabic
             ? mostOrderedRestaurantsVar?.slice().reverse()

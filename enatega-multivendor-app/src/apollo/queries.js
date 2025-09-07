@@ -1336,6 +1336,16 @@ export const highestRatingRestaurant = gql`
         name
         isActive
       }
+      categories {
+        _id
+        foods {
+          _id
+          variations {
+            _id
+            discounted
+          }
+        }
+      }
     }
   }
 `

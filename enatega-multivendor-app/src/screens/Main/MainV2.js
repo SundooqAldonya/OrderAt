@@ -58,6 +58,7 @@ import { Divider } from 'react-native-paper'
 import ActiveOrders from '../../components/Main/ActiveOrders/ActiveOrders'
 import MiddleRestaurantsSection from '../../components/Main/MiddleRestaurantsSection'
 import MainV2Header from '../../components/Main/MainV2Header'
+import truncate from '../../utils/helperFun'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -422,7 +423,7 @@ export default function FoodTab() {
               textAlign: isArabic ? 'right' : 'left'
             }}
           >
-            {item.name}
+            {truncate(item.name, 25)}
           </Text>
           {businessCategoriesNames?.length ? (
             <View>
@@ -719,7 +720,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 160
+    height: 140 // default 160
   },
   cardInfo: {
     padding: 12

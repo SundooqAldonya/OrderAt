@@ -752,6 +752,7 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       responsiblePersonName
       contactNumber
       isVisible
+      featured
     }
 }`
 

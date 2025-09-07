@@ -212,7 +212,7 @@ function NewRestaurantCard(props) {
             bolder
           >
             {/* {props.name} */}
-            {truncate(props.name, 15)}
+            {truncate(props.name, 25)}
           </TextDefault>
         </View>
         {/* tags */}
@@ -280,7 +280,7 @@ function NewRestaurantCard(props) {
                 ]}
                 H5
               >
-                ({props.reviewCount})
+                ({props.reviewCount})+
               </TextDefault>
             </View>
           ) : (
@@ -295,6 +295,7 @@ function NewRestaurantCard(props) {
               ({t('new')})
             </TextDefault>
           )}
+          <Text style={{ color: '#000' }}> {props.deliveryCharge}</Text>
           <Text style={{ color: '#000' }}>⏱ {props.deliveryTime}</Text>
         </View>
         {/* <View
