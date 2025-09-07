@@ -47,6 +47,7 @@ import navigationService from '../../routes/navigationService'
 import { useTranslation } from 'react-i18next'
 import Spinner from '../../components/Spinner/Spinner'
 import { colors } from '../../utils/colors'
+import { nativeApplicationVersion, nativeBuildVersion } from 'expo-application'
 
 const UPDATEUSER = gql`
   ${updateUser}
@@ -175,7 +176,7 @@ function Profile(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View  style={{paddingLeft: moderateScale(10)}}>
+            <View style={{ paddingLeft: moderateScale(10) }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(22)}
@@ -937,7 +938,8 @@ function Profile(props) {
                   </TouchableOpacity>
                 </View>
               </View> */}
-              <TouchableOpacity onPress={() => setDeleteModalVisible(true)}
+              <TouchableOpacity
+                onPress={() => setDeleteModalVisible(true)}
                 // style={{ alignItems: 'center', padding: 10 }}
 
                 style={{
@@ -955,15 +957,28 @@ function Profile(props) {
                   justifyContent: 'flex-end'
                 }}
               >
-                  <TextDefault
-                    bolder
-                    H4
-                    textColor={currentTheme.deleteAccountBtn}
-                  >
-                    {t('DeleteAccount')}
-                  </TextDefault>
+                <TextDefault
+                  bolder
+                  H4
+                  textColor={currentTheme.deleteAccountBtn}
+                >
+                  {t('DeleteAccount')}
+                </TextDefault>
               </TouchableOpacity>
             </View>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 270
+            }}
+          >
+            <Text style={{ color: '#666' }}>
+              App Version: {nativeApplicationVersion} ({nativeBuildVersion})
+            </Text>
           </View>
 
           <Modal
