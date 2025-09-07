@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import {
   highestRatingRestaurant,
   nearestRestaurants,
@@ -170,65 +170,73 @@ const MiddleRestaurantsSection = ({
         renderItem={renderItem}
       />
       <Divider style={{ marginBottom: 8 }} />
-      <TouchableOpacity
-        style={{
-          flexDirection: isArabic ? 'row-reverse' : 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 10,
-          marginHorizontal: 10
-        }}
-        onPress={() => {
-          navigation.navigate('Menu', {
-            highlight: true,
-            title: 'featured'
-          })
-          // navigation.navigate('MainRestaurantScreen', {
-          //   restaurantData: nearestRestaurantsData,
-          //   title: 'nearest_to_you'
-          // })
-        }}
-      >
-        <TextDefault
-          numberOfLines={1}
-          textColor={currentTheme.fontFourthColor}
-          bolder
-          H4
-          style={{
-            ...styles().ItemTitle,
-            textAlign: isArabic ? 'right' : 'left'
-          }}
-        >
-          {t('featured')}
-        </TextDefault>
-        <View
-          style={{ ...styles(isArabic).image, borderRadius: 50, padding: 5 }}
-        >
-          <Text style={styles.sectionLink}>{t('see_all')} </Text>
-          <AntDesign
-            name={isArabic ? 'arrowleft' : 'arrowright'}
-            size={moderateScale(20)}
-            color='black'
+      {featuredRestaurants?.length ? (
+        <Fragment>
+          <TouchableOpacity
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+              marginHorizontal: 10
+            }}
+            onPress={() => {
+              navigation.navigate('Menu', {
+                highlight: true,
+                title: 'featured'
+              })
+              // navigation.navigate('MainRestaurantScreen', {
+              //   restaurantData: nearestRestaurantsData,
+              //   title: 'nearest_to_you'
+              // })
+            }}
+          >
+            <TextDefault
+              numberOfLines={1}
+              textColor={currentTheme.fontFourthColor}
+              bolder
+              H4
+              style={{
+                ...styles().ItemTitle,
+                textAlign: isArabic ? 'right' : 'left'
+              }}
+            >
+              {t('featured')}
+            </TextDefault>
+            <View
+              style={{
+                ...styles(isArabic).image,
+                borderRadius: 50,
+                padding: 5
+              }}
+            >
+              <Text style={styles.sectionLink}>{t('see_all')} </Text>
+              <AntDesign
+                name={isArabic ? 'arrowleft' : 'arrowright'}
+                size={moderateScale(20)}
+                color='black'
+              />
+            </View>
+          </TouchableOpacity>
+          <FlatList
+            getItemLayout={getItemLayout}
+            data={
+              isArabic
+                ? featuredRestaurants?.slice().reverse()
+                : featuredRestaurants
+            }
+            contentContainerStyle={{
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
+            horizontal={true}
+            // inverted={isArabic}
+            // numColumns={2}
+            keyExtractor={(item) => item._id}
+            renderItem={renderItem}
           />
-        </View>
-      </TouchableOpacity>
-      <FlatList
-        getItemLayout={getItemLayout}
-        data={
-          isArabic
-            ? featuredRestaurants?.slice().reverse()
-            : featuredRestaurants
-        }
-        contentContainerStyle={{
-          flexDirection: isArabic ? 'row-reverse' : 'row'
-        }}
-        horizontal={true}
-        // inverted={isArabic}
-        // numColumns={2}
-        keyExtractor={(item) => item._id}
-        renderItem={renderItem}
-      />
-      <Divider style={{ marginBottom: 8 }} />
+          <Divider style={{ marginBottom: 8 }} />
+        </Fragment>
+      ) : null}
     </View>
   )
 }
