@@ -620,13 +620,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerSubtitle: {
-    fontSize: 18,
+    fontSize: 14,
     // color: 'tomato',
     color: colors.primary,
     fontWeight: '600'
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '600'
   },
   cartWrapper: {
