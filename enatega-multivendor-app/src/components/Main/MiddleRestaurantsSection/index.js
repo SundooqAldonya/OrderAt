@@ -25,7 +25,8 @@ const MiddleRestaurantsSection = ({
   restaurantsWithOffersData,
   mostOrderedRestaurantsVar,
   highestRatingRestaurantData,
-  nearestRestaurantsData
+  nearestRestaurantsData,
+  featuredRestaurants
 }) => {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
@@ -186,7 +187,7 @@ const MiddleRestaurantsSection = ({
             textAlign: isArabic ? 'right' : 'left'
           }}
         >
-          {t('nearest_to_you')}
+          {t('featured')}
         </TextDefault>
         <View style={{ ...styles().image, borderRadius: 50, padding: 5 }}>
           <AntDesign
@@ -200,8 +201,8 @@ const MiddleRestaurantsSection = ({
         getItemLayout={getItemLayout}
         data={
           isArabic
-            ? nearestRestaurantsData?.slice().reverse()
-            : nearestRestaurantsData
+            ? featuredRestaurants?.slice().reverse()
+            : featuredRestaurants
         }
         contentContainerStyle={{
           flexDirection: isArabic ? 'row-reverse' : 'row'

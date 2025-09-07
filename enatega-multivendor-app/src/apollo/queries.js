@@ -1502,6 +1502,78 @@ export const nearestRestaurants = gql`
     }
   }
 `
+export const featuredRestaurants = gql`
+  query FeaturedRestaurants($longitude: Float!, $latitude: Float!) {
+    featuredRestaurants(longitude: $longitude, latitude: $latitude) {
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData {
+        total
+        ratings
+        reviews {
+          _id
+          order {
+            user {
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+      reviewCount
+      reviewAverage
+      options {
+        _id
+        title
+        description
+        price
+      }
+      addons {
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone {
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes {
+        day
+        times {
+          startTime
+          endTime
+        }
+      }
+      businessCategories {
+        _id
+        name
+        isActive
+      }
+      featured
+    }
+  }
+`
 export const isRestaurantOpenNow = gql`
   query IsRestaurantOpenNow($id: String!) {
     isRestaurantOpenNow(id: $id)

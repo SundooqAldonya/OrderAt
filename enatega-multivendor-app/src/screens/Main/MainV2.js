@@ -22,6 +22,7 @@ import { useNavigation } from '@react-navigation/native'
 import MainLoadingUI from '../../components/Main/LoadingUI/MainLoadingUI'
 import {
   checkDeliveryZone,
+  featuredRestaurants,
   getBusinessCategoriesCustomer,
   highestRatingRestaurant,
   nearestRestaurants,
@@ -146,17 +147,29 @@ export default function FoodTab() {
   })
 
   const {
-    data: dataNearestRestaurants,
-    loading: loadingNearestRestaurants,
-    error: errorNearestRestaurants,
-    refetch: refetchNearestRestaurants
-  } = useQuery(nearestRestaurants, {
+    data: dataFeatured,
+    loading: loadingFeatured,
+    error: errorFeatured,
+    refetch: refetchFeatured
+  } = useQuery(featuredRestaurants, {
     variables: {
       longitude: location.longitude,
       latitude: location.latitude
     },
     fetchPolicy: 'no-cache'
   })
+  // const {
+  //   data: dataNearestRestaurants,
+  //   loading: loadingNearestRestaurants,
+  //   error: errorNearestRestaurants,
+  //   refetch: refetchNearestRestaurants
+  // } = useQuery(nearestRestaurants, {
+  //   variables: {
+  //     longitude: location.longitude,
+  //     latitude: location.latitude
+  //   },
+  //   fetchPolicy: 'no-cache'
+  // })
 
   // const {
   //   data: dataBusinessCategories,
@@ -198,9 +211,10 @@ export default function FoodTab() {
   const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
   const highestRatingRestaurantData =
     dataHighRating?.highestRatingRestaurant || null
-  const nearestRestaurantsData =
-    dataNearestRestaurants?.nearestRestaurants || null
+  // const nearestRestaurantsData =
+  //   dataNearestRestaurants?.nearestRestaurants || null
   const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
+  const featuredRestaurantsVar = dataFeatured?.featuredRestaurants || null
   const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
 
   const [mutateAddress, { loading: mutationLoading }] = useMutation(
@@ -556,7 +570,8 @@ export default function FoodTab() {
             restaurantsWithOffersData={restaurantsWithOffersData}
             mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
             highestRatingRestaurantData={highestRatingRestaurantData}
-            nearestRestaurantsData={nearestRestaurantsData}
+            // nearestRestaurantsData={nearestRestaurantsData}
+            featuredRestaurants={featuredRestaurantsVar}
           />
 
           {/* Restaurants */}

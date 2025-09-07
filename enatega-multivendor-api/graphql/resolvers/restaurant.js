@@ -898,6 +898,26 @@ module.exports = {
         throw new Error(err)
       }
     },
+    async featuredRestaurants(_, args) {
+      console.log('featuredRestaurants', { args })
+      try {
+        const { longitude, latitude } = args
+
+        const restaurants = await Restaurant.find({
+          isVisible: true,
+          featured: true,
+          deliveryBounds: {
+            $geoIntersects: {
+              $geometry: { type: 'Point', coordinates: [longitude, latitude] }
+            }
+          }
+        }).populate('businessCategories')
+        console.log({ featuredRestaurants: restaurants })
+        return restaurants
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
 
     topRatedVendors: async (_, args, { req }) => {
       console.log('topRatedVendors', args)

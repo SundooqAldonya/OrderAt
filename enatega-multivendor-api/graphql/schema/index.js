@@ -215,6 +215,7 @@ const typeDefs = gql`
     phone: String
     createdAt: String
     businessCategories: [BusinessCategory]
+    featured: Boolean
   }
 
   type CategoryCustomer {
@@ -1639,6 +1640,10 @@ const typeDefs = gql`
     orderRidersInteractions(id: String!): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
+    featuredRestaurants(
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
     nearestRestaurants(
       longitude: Float!
       latitude: Float!
