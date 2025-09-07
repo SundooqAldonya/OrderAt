@@ -80,7 +80,7 @@ module.exports = {
           query.shopType = shopType
         }
 
-        const restaurants = await Restaurant.find(query)
+        const restaurants = await Restaurant.find(query).limit(20)
 
         if (!restaurants.length) {
           return {
@@ -229,7 +229,9 @@ module.exports = {
     restaurantList: async _ => {
       console.log('restaurantList')
       try {
-        const allRestaurants = await Restaurant.find({ address: { $ne: null } })
+        const allRestaurants = await Restaurant.find({
+          address: { $ne: null }
+        }).limit(20)
         return transformRestaurants(allRestaurants)
       } catch (error) {
         throw error

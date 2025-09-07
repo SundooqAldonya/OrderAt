@@ -192,18 +192,18 @@ export default function FoodTab() {
     fetchPolicy: 'network-only'
   })
 
-  const {
-    data: dataSearch,
-    loading: loadingSearch,
-    error: errorSearch
-  } = useQuery(searchRestaurantsCustomer, {
-    variables: {
-      search,
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'network-only'
-  })
+  // const {
+  //   data: dataSearch,
+  //   loading: loadingSearch,
+  //   error: errorSearch
+  // } = useQuery(searchRestaurantsCustomer, {
+  //   variables: {
+  //     search,
+  //     longitude: location.longitude,
+  //     latitude: location.latitude
+  //   },
+  //   fetchPolicy: 'network-only'
+  // })
 
   // const businessCategories =
   //   dataBusinessCategories?.getBusinessCategoriesCustomer || null
@@ -215,7 +215,7 @@ export default function FoodTab() {
   //   dataNearestRestaurants?.nearestRestaurants || null
   const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
   const featuredRestaurantsVar = dataFeatured?.featuredRestaurants || null
-  const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
+  // const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
 
   const [mutateAddress, { loading: mutationLoading }] = useMutation(
     SELECT_ADDRESS,
@@ -576,11 +576,15 @@ export default function FoodTab() {
 
           {/* Restaurants */}
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('TopBrandsScreen', {
-                topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+            onPress={() => {
+              navigation.navigate('Menu', {
+                highlight: true,
+                title: 'all_businesses'
               })
-            }
+              // navigation.navigate('TopBrandsScreen', {
+              //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+              // })
+            }}
             style={{
               ...styles.sectionHeader,
               flexDirection: isArabic ? 'row-reverse' : 'row'
