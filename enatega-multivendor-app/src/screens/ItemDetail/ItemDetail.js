@@ -52,7 +52,7 @@ const HEADER_MIN_HEIGHT = height * 0.05 + TOP_BAR_HEIGHT
 const SCROLL_RANGE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
 function ItemDetail(props) {
-  const Analytics = analytics()
+  // const Analytics = analytics()
 
   const { food, addons, options, restaurant } = props.route.params
   const navigation = useNavigation()
@@ -95,17 +95,19 @@ function ItemDetail(props) {
     }
     StatusBar.setBarStyle('light-content')
   })
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.OPENED_RESTAURANT_ITEM, {
-        restaurantID: restaurant,
-        foodID: food._id,
-        foodName: food.title,
-        foodRestaurantName: food.restaurantName
-      })
-    }
-    Track()
-  })
+
+  // useEffect(() => {
+  //   async function Track() {
+  //     await Analytics.track(Analytics.events.OPENED_RESTAURANT_ITEM, {
+  //       restaurantID: restaurant,
+  //       foodID: food._id,
+  //       foodName: food.title,
+  //       foodRestaurantName: food.restaurantName
+  //     })
+  //   }
+  //   Track()
+  // })
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: null,
@@ -462,7 +464,7 @@ function ItemDetail(props) {
                     status={t('Required')}
                   />
                   <RadioComponent
-                    options={food.variations}
+                    variations={food.variations}
                     selected={selectedVariation}
                     onPress={onSelectVariation}
                   />

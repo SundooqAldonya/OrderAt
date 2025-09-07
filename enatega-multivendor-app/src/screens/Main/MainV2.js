@@ -437,7 +437,7 @@ export default function FoodTab() {
               textAlign: isArabic ? 'right' : 'left'
             }}
           >
-            {truncate(item.name, 25)}
+            {truncate(item.name, 35)}
           </Text>
           {businessCategoriesNames?.length ? (
             <View>

@@ -11,25 +11,26 @@ import { useTranslation } from 'react-i18next'
 
 function RadioComponent(props) {
   const [selected, setSelected] = useState(props.selected || null)
-  const [options] = useState(props.options)
+  const [variations] = useState(props.variations)
+  console.log({ variations })
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
-  function onPress(option) {
-    setSelected(option)
-    props.onPress(option)
+  function onPress(variation) {
+    setSelected(variation)
+    props.onPress(variation)
   }
 
   return (
     <View>
-      {options?.map((option) => (
+      {variations?.map((variation) => (
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={onPress.bind(this, option)}
-          key={option._id}
+          onPress={onPress.bind(this, variation)}
+          key={variation._id}
           style={[
             styles.mainContainer,
             {
@@ -50,8 +51,8 @@ function RadioComponent(props) {
               outerColor={currentTheme.iconColorDark}
               innerColor={currentTheme.main}
               animation={'bounceIn'}
-              isSelected={selected ? selected._id === option._id : false}
-              onPress={onPress.bind(this, option)}
+              isSelected={selected ? selected._id === variation._id : false}
+              onPress={onPress.bind(this, variation)}
             />
             <TextDefault
               textColor={currentTheme.fontMainColor}
@@ -60,21 +61,33 @@ function RadioComponent(props) {
               }}
               bolder
             >
-              {option.title}
+              {variation.title}
             </TextDefault>
           </View>
           <View
             style={[
               styles.rightContainer,
               {
-                flexDirection: isArabic ? 'row-reverse' : 'row'
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 20
               }
             ]}
           >
-            <TextDefault
-              textColor={currentTheme.fontMainColor}
-              bolder
-            >{`${option.price} ${configuration.currencySymbol}`}</TextDefault>
+            <View>
+              <TextDefault
+                textColor={currentTheme.fontMainColor}
+                bolder
+              >{`${variation.price} ${configuration.currencySymbol}`}</TextDefault>
+            </View>
+            {variation.discounted ? (
+              <View>
+                <TextDefault
+                  textColor={currentTheme.fontMainColor}
+                  bolder
+                  style={{ textDecorationLine: 'line-through' }}
+                >{`${variation.price + variation.discounted} ${configuration.currencySymbol}`}</TextDefault>
+              </View>
+            ) : null}
           </View>
         </TouchableOpacity>
       ))}
