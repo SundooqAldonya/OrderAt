@@ -416,7 +416,7 @@ function Checkout(props) {
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
         ...textStyles.H4,
-        ...textStyles.Bolder,
+        ...textStyles.Bolder
       },
 
       headerStyle: {
@@ -1104,15 +1104,15 @@ function Checkout(props) {
     }
   }
 
-  const calculateDeliveryCoupon = (delivery) => {
-    if (coupon.discountType === 'percent') {
-      delivery -= (coupon.discount / 100) * delivery
-    } else {
-      delivery -= coupon.discount
-    }
-    // setDeliveryDiscount(delivery)
-    return delivery
-  }
+  // const calculateDeliveryCoupon = (delivery) => {
+  //   if (coupon.discountType === 'percent') {
+  //     delivery -= (coupon.discount / 100) * delivery
+  //   } else {
+  //     delivery -= coupon.discount
+  //   }
+  //   // setDeliveryDiscount(delivery)
+  //   return delivery
+  // }
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
@@ -1151,11 +1151,11 @@ function Checkout(props) {
                     />
                   </View>
                 ) : null} */}
-                <FulfillmentMode
+                {/* <FulfillmentMode
                   theme={currentTheme}
                   setIsPickup={setIsPickup}
                   isPickup={isPickup}
-                />
+                /> */}
                 <View style={[styles(currentTheme).headerContainer]}>
                   {/* user address */}
                   <TouchableOpacity
@@ -1195,7 +1195,7 @@ function Checkout(props) {
                           bolder
                           style={{ fontSize: moderateScale(16), color: '#333' }}
                         >
-                          {t('your_address')}
+                          {t('deliveryAddress')}
                         </TextDefault>
                         {/* <TextDefault
                           bolder
@@ -1280,7 +1280,8 @@ function Checkout(props) {
                           bolder
                           style={{ fontSize: moderateScale(16), color: '#333' }}
                         >
-                          {t('business_address')}
+                          {/* {t('business_address')} */}
+                          {restaurant?.name}
                         </TextDefault>
                       </View>
                       <View
@@ -2155,7 +2156,10 @@ function Checkout(props) {
               disabled={!tipAmount}
               activeOpacity={0.7}
               onPress={onTipping}
-              style={[styles(currentTheme).button, { height: moderateScale(40) }]}
+              style={[
+                styles(currentTheme).button,
+                { height: moderateScale(40) }
+              ]}
             >
               <TextDefault
                 textColor={currentTheme.black}
