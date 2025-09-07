@@ -21,60 +21,17 @@ import { theme } from '../../../utils/themeColors'
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'
 
-const MiddleRestaurantsSection = () => {
+const MiddleRestaurantsSection = ({
+  restaurantsWithOffersData,
+  mostOrderedRestaurantsVar,
+  highestRatingRestaurantData,
+  nearestRestaurantsData
+}) => {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const { location, setLocation } = useContext(LocationContext)
-  const { orderLoading, orderError, orderData } = useHomeRestaurants()
-
-  const {
-    data: dataWithOffers,
-    loading: loadingWithOffers,
-    error: errorWithOffers
-  } = useQuery(restaurantsWithOffers, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
-
-  const {
-    data: dataHighRating,
-    loading: loadingHighRating,
-    error: errorHighRating
-  } = useQuery(highestRatingRestaurant, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
-
-  // console.log({ dataHighRating })
-
-  const {
-    data: dataNearestRestaurants,
-    loading: loadingNearestRestaurants,
-    error: errorNearestRestaurants
-  } = useQuery(nearestRestaurants, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
-
-  const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
-
-  const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
-  // const highestRatingRestaurantData =
-  //   dataHighRating?.highestRatingRestaurant || null
-  const nearestRestaurantsData =
-    dataNearestRestaurants?.nearestRestaurants || null
 
   const ITEM_HEIGHT = 65 // fixed height of item component
   const getItemLayout = (data, index) => {

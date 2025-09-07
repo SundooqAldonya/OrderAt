@@ -22,6 +22,7 @@ import {
   MaterialIcons,
   SimpleLineIcons
 } from '@expo/vector-icons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { moderateScale, verticalScale } from '../../utils/scaling'
 import MandoobImg from '../../assets/delivery_dark.png'
 import { Image } from 'react-native'
@@ -87,16 +88,21 @@ function SidebBar(props) {
       isAuth: true
     },
 
-    // {
-    //   title: 'requestDeliveryTitle',
-    //   icon: (
-    //     <View>
-    //       <Image source={MandoobImg} style={{ width: 30, height: 30 }} />
-    //     </View>
-    //   ),
-    //   navigateTo: 'RequestDelivery',
-    //   isAuth: true
-    // },
+    {
+      title: 'change_language',
+      icon: (
+        <View>
+          <Icon
+            name={'language'}
+            size={24}
+            color={'#000'}
+            style={{ marginTop: 10 }}
+          />
+        </View>
+      ),
+      navigateTo: 'SelectLanguageScreen',
+      isAuth: true
+    },
     {
       title: 'citySelect',
       icon: <MaterialIcons name='location-city' size={24} color='black' />,

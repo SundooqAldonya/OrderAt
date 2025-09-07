@@ -8,27 +8,43 @@ import { moderateScale, scale } from '../../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../../utils/colors'
 
-function Search(props) {
+function Search({
+  setSearch,
+  search,
+  handleSearch,
+  newheaderColor,
+  placeHolder,
+  backgroundColor,
+  cartContainer
+}) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
+  const handleSearchChange = (text) => {
+    setSearch(text)
+    if (handleSearch) {
+      handleSearch(text)
+    }
+  }
+
   return (
     <View
       style={[
-        styles(currentTheme, props.newheaderColor).mainContainerHolder,
-        { backgroundColor: props?.backgroundColor || colors.primary }
+        styles(currentTheme, newheaderColor).mainContainerHolder,
+        { backgroundColor: backgroundColor || colors.primary }
       ]}
     >
-      <View style={styles(currentTheme, props.cartContainer).mainContainer}>
+      <View style={styles(currentTheme, cartContainer).mainContainer}>
         <View style={{ ...styles().subContainer }}>
           <View style={styles().leftContainer}>
             <TouchableOpacity
               onPress={() => {
-                props.setSearch('')
+                setSearch('')
               }}
             >
-              {props.search?.length ? (
+              {search?.length ? (
                 <AntDesign
                   name='closecircleo'
                   size={moderateScale(18)}
@@ -41,13 +57,18 @@ function Search(props) {
                 style={{
                   ...styles(currentTheme).bodyStyleOne,
                   color: currentTheme.fontMainColor,
-                  paddingRight: 15,
+                  paddingHorizontal: 20,
                   paddingVertical: 10
                 }}
-                placeholder={t(props.placeHolder)}
+                placeholder={t(placeHolder)}
                 placeholderTextColor={'#bbb'}
-                onChangeText={(text) => props.setSearch(text)}
-                value={props.search}
+                // onChangeText={(text) => setSearch(text)}
+                onChangeText={handleSearchChange}
+                autoCorrect={false}
+                autoCapitalize='none'
+                underlineColorAndroid='transparent'
+                returnKeyType='search'
+                value={search}
               />
             </View>
           </View>

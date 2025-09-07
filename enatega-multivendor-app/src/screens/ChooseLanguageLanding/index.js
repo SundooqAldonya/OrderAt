@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLanguage } from '../../store/languageSlice'
+import { AntDesign } from '@expo/vector-icons'
+import UserContext from '../../context/User'
 
 const languages = [
   { value: 'English', code: 'en', index: 0 },
@@ -24,6 +26,8 @@ const languages = [
 const SelectLanguageScreen = ({ firstTime }) => {
   const { t } = useTranslation()
   const navigation = useNavigation()
+  const { isLoggedIn } = useContext(UserContext)
+
   const dispatch = useDispatch()
   // const [language, setLanguage] = useState(null)
   const { language } = useSelector((state) => state.language)
@@ -38,6 +42,14 @@ const SelectLanguageScreen = ({ firstTime }) => {
   }
   return (
     <SafeAreaView style={styles.container}>
+      {isLoggedIn && (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.arrowBackContainer}
+        >
+          <AntDesign name='arrowleft' size={24} color='black' />
+        </TouchableOpacity>
+      )}
       <View
         style={{ width: 200, height: 100, marginTop: -150, marginBottom: 50 }}
       >
@@ -69,7 +81,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 20
+  },
+  arrowBackContainer: {
+    position: 'absolute',
+    top: 25,
+    left: 15
   },
   title: {
     fontSize: 24,

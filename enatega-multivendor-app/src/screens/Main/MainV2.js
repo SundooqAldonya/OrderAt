@@ -57,6 +57,7 @@ import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { Divider } from 'react-native-paper'
 import ActiveOrders from '../../components/Main/ActiveOrders/ActiveOrders'
 import MiddleRestaurantsSection from '../../components/Main/MiddleRestaurantsSection'
+import MainV2Header from '../../components/Main/MainV2Header'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -71,7 +72,6 @@ export default function FoodTab() {
   const [isVisible, setIsVisible] = useState(false)
   const [loadingAddress, setLoadingAddress] = useState(false)
   const [busy, setBusy] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
 
   const [search, setSearch] = useState('')
@@ -119,7 +119,8 @@ export default function FoodTab() {
   const {
     data: dataWithOffers,
     loading: loadingWithOffers,
-    error: errorWithOffers
+    error: errorWithOffers,
+    refetch: refetchOffers
   } = useQuery(restaurantsWithOffers, {
     variables: {
       longitude: location.longitude,
@@ -133,7 +134,8 @@ export default function FoodTab() {
   const {
     data: dataHighRating,
     loading: loadingHighRating,
-    error: errorHighRating
+    error: errorHighRating,
+    refetch: refetchHighRating
   } = useQuery(highestRatingRestaurant, {
     variables: {
       longitude: location.longitude,
@@ -145,7 +147,8 @@ export default function FoodTab() {
   const {
     data: dataNearestRestaurants,
     loading: loadingNearestRestaurants,
-    error: errorNearestRestaurants
+    error: errorNearestRestaurants,
+    refetch: refetchNearestRestaurants
   } = useQuery(nearestRestaurants, {
     variables: {
       longitude: location.longitude,
@@ -165,7 +168,8 @@ export default function FoodTab() {
   const {
     data: dataTopRated,
     loading: loadingTopRated,
-    error: errorTopRated
+    error: errorTopRated,
+    refetch: refetchTopRated
   } = useQuery(topRatedVendorsInfo, {
     variables: {
       latitude: location?.latitude,
@@ -303,6 +307,9 @@ export default function FoodTab() {
         })
       }
       refetch()
+      refetchHighRating()
+      refetchOffers()
+      refetchNearestRestaurants()
       setIsVisible(false)
     })
   }
@@ -470,88 +477,12 @@ export default function FoodTab() {
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Header */}
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
-      <View
-        style={{
-          ...styles.header
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 20
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.toggleDrawer()}
-            style={{ width: 40, height: 40 }}
-          >
-            <Image
-              source={require('../../assets/hamburger_btn.png')}
-              style={{
-                width: '100%',
-                height: '100%',
-                resizeMode: 'contain'
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setIsVisible(true)}
-            style={{
-              flexDirection: 'row-reverse',
-              alignItems: 'center',
-              gap: 4
-            }}
-          >
-            <Text style={styles.headerSubtitle}>{t('deliver_to')}</Text>
-            <Text style={styles.headerTitle}>
-              {location?.label.length > 6
-                ? `${location?.label.substring(0, 6)}...`
-                : location?.label.substring(0, 6)}{' '}
-              ▼
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Favourite')}>
-            <MaterialIcons
-              name='favorite-outline'
-              size={moderateScale(24)}
-              color='black'
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SelectLanguageScreen')}
-          >
-            <FontAwesome
-              name='language'
-              size={moderateScale(24)}
-              color='black'
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (cartCount > 0) {
-                navigation.navigate('Cart')
-              } else {
-                FlashMessage({
-                  message: t('cartIsEmpty')
-                })
-              }
-            }}
-            style={styles.cartWrapper}
-          >
-            <Ionicons
-              name='cart-outline'
-              size={moderateScale(24)}
-              color='#000'
-            />
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{cartCount}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <MainV2Header
+        styles={styles}
+        setIsVisible={setIsVisible}
+        cartCount={cartCount}
+        location={location}
+      />
 
       {/* Greeting */}
       {/* {profile ? (
@@ -586,11 +517,6 @@ export default function FoodTab() {
             {t('search_for_restaurants')}
           </Text>
         </TouchableOpacity>
-        {/* <TextInput
-          placeholder={t('search_for_restaurants')}
-          style={styles.searchInput}
-          placeholderTextColor='gray'
-        /> */}
       </View>
 
       {/* Categories */}
@@ -625,7 +551,12 @@ export default function FoodTab() {
       ) : (
         <Fragment>
           {/* Top restaurants section */}
-          <MiddleRestaurantsSection />
+          <MiddleRestaurantsSection
+            restaurantsWithOffersData={restaurantsWithOffersData}
+            mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
+            highestRatingRestaurantData={highestRatingRestaurantData}
+            nearestRestaurantsData={nearestRestaurantsData}
+          />
 
           {/* Restaurants */}
           <TouchableOpacity
@@ -674,34 +605,6 @@ export default function FoodTab() {
             onClose={onModalClose}
             otlobMandoob={false}
           />
-
-          {/* Search Modal */}
-          <Modal visible={searchOpen} animationType='slide'>
-            <View style={styles.modalContainer}>
-              {/* Search Bar */}
-              <TextInput
-                style={styles.searchInput}
-                placeholder={t('search_for_restaurants')}
-                placeholderTextColor={'#999'}
-                value={search}
-                onChangeText={setSearch}
-              />
-
-              {/* Restaurant List */}
-              <FlatList
-                data={filteredRestaurants}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => renderTopRestaurants(item)}
-              />
-
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setSearchOpen(false)}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
         </Fragment>
       )}
     </ScrollView>
@@ -717,13 +620,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 18,
     // color: 'tomato',
     color: colors.primary,
     fontWeight: '600'
   },
   headerTitle: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: '600'
   },
   cartWrapper: {

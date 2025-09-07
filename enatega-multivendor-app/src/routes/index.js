@@ -555,6 +555,8 @@ const BottomTabs = () => {
             iconName = 'login'
           } else if (route.name === 'SelectLanguageScreen') {
             iconName = 'language'
+          } else if (route.name === 'Menu') {
+            iconName = 'search'
           }
           return (
             <Icon
@@ -650,8 +652,23 @@ const BottomTabs = () => {
           headerShown: true
         }}
       />
-
       {isLoggedIn ? (
+        <Tab.Screen
+          name='Menu'
+          options={{ tabBarLabel: t('search') }}
+          component={Menu}
+        />
+      ) : (
+        <Tab.Screen
+          name='SelectLanguageScreen'
+          options={{
+            headerShown: false,
+            tabBarLabel: t('change_language')
+          }}
+          component={SelectLanguageScreen}
+        />
+      )}
+      {/* {isLoggedIn ? (
         <Tab.Screen
           name='Settings'
           options={{ tabBarLabel: t('titleSettings') }}
@@ -666,7 +683,7 @@ const BottomTabs = () => {
           }}
           component={CreateAccount}
         />
-      )}
+      )} */}
 
       {/* <Tab.Screen
         name='RequestDelivery'
@@ -676,11 +693,30 @@ const BottomTabs = () => {
       {isLoggedIn ? (
         <Tab.Screen
           name='Profile'
-          options={{ tabBarLabel: t('profile') }}
+          options={{
+            tabBarLabel: t('profile')
+          }}
+          listeners={() => ({
+            tabPress: (e) => {
+              if (!isLoggedIn) {
+                e.preventDefault() // prevent tab from switching
+                navigation.navigate('CreateAccount') // redirect to Login screen
+              }
+            }
+          })}
           component={Profile}
         />
-      ) : null}
-      {!isLoggedIn ? (
+      ) : (
+        <Tab.Screen
+          name='CreateAccount'
+          options={{
+            tabBarLabel: t('login'),
+            tabBarStyle: { display: 'none' }
+          }}
+          component={CreateAccount}
+        />
+      )}
+      {/* {!isLoggedIn ? (
         <Tab.Screen
           name='SelectLanguageScreen'
           options={{
@@ -689,7 +725,7 @@ const BottomTabs = () => {
           }}
           component={SelectLanguageScreen}
         />
-      ) : null}
+      ) : null} */}
     </Tab.Navigator>
   )
 }

@@ -41,7 +41,8 @@ import {
   nearestRestaurants,
   recentOrderRestaurantsQuery,
   restaurantListPreview,
-  restaurantsWithOffers
+  restaurantsWithOffers,
+  searchRestaurantsCustomer
 } from '../../apollo/queries'
 import { selectAddress } from '../../apollo/mutations'
 import { moderateScale } from '../../utils/scaling'
@@ -69,6 +70,7 @@ import MainModalize from '../../components/Main/Modalize/MainModalize'
 
 import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
+import { debounce } from 'lodash'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -118,6 +120,7 @@ function Menu({ route, props }) {
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState(FILTER_VALUES)
   const [restaurantData, setRestaurantData] = useState([])
+  const [resultSearchData, setResultSearchData] = useState([])
   const [sectionData, setSectionData] = useState([])
   const [titleMain, setTitleMain] = useState(title ? title : '')
   const [titleUI, setTitleUI] = useState(title ? title : '')
@@ -184,7 +187,37 @@ function Menu({ route, props }) {
     }
   ] = useLazyQuery(recentOrderRestaurantsQuery)
 
-  console.log({ dataMostOrdered })
+  const [fetchSearchRestaurants, { loading: loadingSearch }] = useLazyQuery(
+    searchRestaurantsCustomer
+    // {
+    //   variables: {
+    //     search,
+    //     longitude: location.longitude,
+    //     latitude: location.latitude
+    //   },
+    //   fetchPolicy: 'network-only'
+    // }
+  )
+
+  const searchRestaurants = async (searchText) => {
+    const res = await fetchSearchRestaurants({
+      variables: {
+        search: searchText,
+        longitude: location.longitude,
+        latitude: location.latitude
+      }
+    })
+    setResultSearchData(res.data?.searchRestaurantsCustomer || [])
+  }
+
+  const handleSearch = useCallback(
+    debounce((text) => {
+      console.log('Searching for:', text)
+      // call API here
+      searchRestaurants(text)
+    }, 500),
+    []
+  )
 
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
@@ -506,21 +539,6 @@ function Menu({ route, props }) {
 
   if (loading || mutationLoading || loadingOrders) return loadingScreen()
 
-  const searchRestaurants = (searchText) => {
-    // to change - should come from backend
-    const data = []
-    const escapedSearchText = escapeRegExp(searchText)
-    const regex = new RegExp(escapedSearchText, 'i')
-    restaurantData?.forEach((restaurant) => {
-      const resultCatFoods = restaurant.keywords.some((keyword) => {
-        const result = keyword.search(regex)
-        return result > -1
-      })
-      if (resultCatFoods) data.push(restaurant)
-    })
-    return data
-  }
-
   // Flatten the array. That is important for data sequence
   const restaurantSections = sectionData?.map((sec) => ({
     ...sec,
@@ -664,7 +682,8 @@ function Menu({ route, props }) {
                       }}
                     />
                   }
-                  data={search ? searchRestaurants(search) : restaurantData}
+                  // data={search ? searchRestaurants(search) : restaurantData}
+                  data={search ? resultSearchData : restaurantData}
                   renderItem={({ item }) => <Item item={item} />}
                 />
                 <CollapsibleSubHeaderAnimator translateY={translateY}>
@@ -705,6 +724,7 @@ function Menu({ route, props }) {
                       backgroundColor={'#fff'}
                       setSearch={setSearch}
                       search={search}
+                      handleSearch={handleSearch}
                       newheaderColor={newheaderColor}
                       placeHolder={searchPlaceholderText}
                     />
