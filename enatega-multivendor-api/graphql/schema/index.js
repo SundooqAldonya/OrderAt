@@ -216,6 +216,7 @@ const typeDefs = gql`
     createdAt: String
     businessCategories: [BusinessCategory]
     featured: Boolean
+    deliveryFee: Amount
   }
 
   type CategoryCustomer {
@@ -1800,7 +1801,7 @@ const typeDefs = gql`
     mostOrderedRestaurantsPreview(
       latitude: Float!
       longitude: Float!
-    ): [RestaurantPreview!]
+    ): [RestaurantCustomer!]
     relatedItems(itemId: String!, restaurantId: String!): [String!]!
     # popularItems(restaurantId: String!): [PopularItemsResponse!]!
     popularItems(restaurantId: String!): [FoodCustomer!]!

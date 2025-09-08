@@ -295,7 +295,17 @@ function NewRestaurantCard(props) {
               ({t('new')})
             </TextDefault>
           )}
-          {/* <Text style={{ color: '#000' }}> {props.deliveryCharge}</Text> */}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialIcons
+              name='directions-bike'
+              size={moderateScale(16)}
+              color={currentTheme.fontNewColor}
+            />
+            <Text style={{ color: '#000', fontSize: 12 }}>
+              {' '}
+              {props.deliveryFee?.amount}
+            </Text>
+          </View>
           <Text style={{ color: '#000' }}>⏱ {props.deliveryTime} +</Text>
         </View>
         {/* <View

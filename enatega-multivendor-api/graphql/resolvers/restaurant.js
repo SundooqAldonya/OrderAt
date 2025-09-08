@@ -52,10 +52,36 @@ const Review = require('../../models/review')
 const { isRestaurantOpenNow } = require('../../helpers/restaurantWorkingHours')
 const { defaultOpeningTimes } = require('../../helpers/defaultValues')
 const dateScalar = require('../../helpers/dateScalar')
+const { calculateDeliveryFee } = require('../../helpers/calculateDeliveryFee')
 
 module.exports = {
   Upload: GraphqlUpload,
   Date: dateScalar,
+  RestaurantCustomer: {
+    deliveryFee: async (restaurant, _, { req }) => {
+      console.log('deliveryFee')
+      const user = await User.findById(req.user._id)
+      if (!user) return null
+      const selectedAddress = user?.addresses.find(
+        address => address.selected === true
+      )
+      if (!selectedAddress) return null
+
+      const [destLong, destLat] = selectedAddress.location.coordinates
+      const [originLong, originLat] = restaurant.location.coordinates
+
+      // console.log({ selectedAddress, restaurant })
+
+      return await calculateDeliveryFee({
+        originLat,
+        originLong,
+        destLat,
+        destLong,
+        // code: req?.couponCode, // optional
+        restaurantId: restaurant._id
+      })
+    }
+  },
 
   Query: {
     nearByRestaurants: async (_, args) => {

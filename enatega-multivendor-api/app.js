@@ -4,6 +4,10 @@ const bodyParser = require('body-parser')
 const { ApolloServer } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const engines = require('consolidate')
+// const path = require('path')
+// const { loadFilesSync } = require('@graphql-tools/load-files')
+// const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge')
+// const { makeExecutableSchema } = require('@graphql-tools/schema')
 const typeDefs = require('./graphql/schema/index')
 const resolvers = require('./graphql/resolvers/index')
 const paypal = require('./routes/paypal')
@@ -39,6 +43,7 @@ const {
   orderCheckUnassigned,
   checkRidersAvailability
 } = require('./helpers/orderCheckUnassigned.js')
+
 const emitter = new EventEmitter()
 
 emitter.setMaxListeners(50)
@@ -74,6 +79,25 @@ async function startApolloServer() {
   // })
   // app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
+  // 1) Load all .graphql files (or .js if your typedefs are JS strings)
+  // const typeDefsArray = loadFilesSync(
+  //   path.join(__dirname, './graphql/schema/**/*.{js,graphql}')
+  // )
+  // const typeDefs = mergeTypeDefs(typeDefsArray)
+
+  // // 2) Load all resolvers
+  // const resolversArray = loadFilesSync(
+  //   path.join(__dirname, './graphql/resolvers/**/*.js'),
+  //   {
+  //     ignoreIndex: true // skip index.js inside resolvers
+  //   }
+  // )
+  // const resolvers = mergeResolvers(resolversArray)
+
+  // const schema = makeExecutableSchema({
+  //   typeDefs,
+  //   resolvers
+  // })
   const schema = graphqlTools.makeExecutableSchema({
     typeDefs,
     resolvers

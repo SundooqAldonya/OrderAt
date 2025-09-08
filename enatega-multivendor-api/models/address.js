@@ -10,7 +10,7 @@ const addressSchema = new Schema(
     deliveryAddress: { type: String, required: false },
     details: { type: String },
     label: { type: String, required: false },
-    //selected: { type: Boolean, default: false },
+    selected: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }

@@ -1156,10 +1156,88 @@ export const recentOrderRestaurantsQuery = gql`
 `
 
 export const mostOrderedRestaurantsQuery = gql`
-  ${restaurantPreviewFragment}
   query GetMostOrderedRestaurants($latitude: Float!, $longitude: Float!) {
     mostOrderedRestaurantsPreview(latitude: $latitude, longitude: $longitude) {
-      ...RestaurantPreviewFields
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData {
+        total
+        ratings
+        reviews {
+          _id
+          order {
+            user {
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+      reviewCount
+      reviewAverage
+      options {
+        _id
+        title
+        description
+        price
+      }
+      addons {
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone {
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes {
+        day
+        times {
+          startTime
+          endTime
+        }
+      }
+      businessCategories {
+        _id
+        name
+        isActive
+      }
+      categories {
+        _id
+        foods {
+          _id
+          variations {
+            _id
+            discounted
+          }
+        }
+      }
+      deliveryFee {
+        amount
+        originalDiscount
+        isPrepaid
+      }
     }
   }
 `
@@ -1427,6 +1505,11 @@ export const restaurantsWithOffers = gql`
           }
         }
       }
+      deliveryFee {
+        amount
+        originalDiscount
+        isPrepaid
+      }
     }
   }
 `
@@ -1571,6 +1654,11 @@ export const featuredRestaurants = gql`
         isActive
       }
       featured
+      deliveryFee {
+        amount
+        originalDiscount
+        isPrepaid
+      }
     }
   }
 `

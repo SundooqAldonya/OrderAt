@@ -90,6 +90,8 @@ export default function FoodTab() {
   const { location, setLocation } = useContext(LocationContext)
   const { cartCount, isLoggedIn, profile } = useContext(UserContext)
 
+  console.log({ location })
+
   const { loading: loadingZone, error: errorZone } = useQuery(
     checkDeliveryZone,
     {
@@ -132,6 +134,12 @@ export default function FoodTab() {
   })
 
   const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
+
+  console.log({
+    restaurantsWithOffersData: restaurantsWithOffersData.length
+      ? restaurantsWithOffersData[0].deliveryFee
+      : null
+  })
 
   const {
     data: dataHighRating,
@@ -569,7 +577,7 @@ export default function FoodTab() {
           <MiddleRestaurantsSection
             restaurantsWithOffersData={restaurantsWithOffersData}
             mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
-            highestRatingRestaurantData={highestRatingRestaurantData}
+            // highestRatingRestaurantData={highestRatingRestaurantData}
             // nearestRestaurantsData={nearestRestaurantsData}
             featuredRestaurants={featuredRestaurantsVar}
           />

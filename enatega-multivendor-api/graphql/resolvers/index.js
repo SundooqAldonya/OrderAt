@@ -44,6 +44,9 @@ const xlsx = require('./xlsx')
 const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
 
 const rootResolver = {
+  RestaurantCustomer: {
+    ...restaurantResolver.RestaurantCustomer
+  },
   Query: {
     ...dashboardResolver.Query,
     ...categoryResolver.Query,
