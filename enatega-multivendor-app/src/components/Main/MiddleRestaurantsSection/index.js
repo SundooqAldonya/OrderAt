@@ -25,8 +25,8 @@ import { Divider } from 'react-native-paper'
 const MiddleRestaurantsSection = ({
   restaurantsWithOffersData,
   mostOrderedRestaurantsVar,
-  highestRatingRestaurantData,
-  nearestRestaurantsData,
+  // highestRatingRestaurantData,
+  // nearestRestaurantsData,
   featuredRestaurants
 }) => {
   const navigation = useNavigation()
@@ -61,10 +61,6 @@ const MiddleRestaurantsSection = ({
             highlight: true,
             title: 'businesses_with_offers'
           })
-          // navigation.navigate('MainRestaurantScreen', {
-          //   restaurantData: restaurantsWithOffersData,
-          //   title: 'businesses_with_offers'
-          // })
         }}
       >
         <TextDefault
