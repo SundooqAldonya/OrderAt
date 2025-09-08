@@ -213,7 +213,7 @@ function Item(props) {
                   {t('min')}
                 </TextDefault>
               </View>
-              <View
+              {/* <View
                 style={{
                   flexDirection: isArabic ? 'row-reverse' : 'row',
                   alignItems: 'center',
@@ -234,10 +234,9 @@ function Item(props) {
                   bold
                   Normal
                 >
-                  {/* {configuration.currencySymbol + '' + item.minimumOrder} */}
                   {item.minimumOrder + ' ' + configuration.currencySymbol}
                 </TextDefault>
-              </View>
+              </View> */}
             </View>
           </View>
 

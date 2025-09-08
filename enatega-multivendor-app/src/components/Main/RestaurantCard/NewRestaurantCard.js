@@ -295,8 +295,8 @@ function NewRestaurantCard(props) {
               ({t('new')})
             </TextDefault>
           )}
-          <Text style={{ color: '#000' }}> {props.deliveryCharge}</Text>
-          <Text style={{ color: '#000' }}>⏱ {props.deliveryTime}</Text>
+          {/* <Text style={{ color: '#000' }}> {props.deliveryCharge}</Text> */}
+          <Text style={{ color: '#000' }}>⏱ {props.deliveryTime} +</Text>
         </View>
         {/* <View
           style={{

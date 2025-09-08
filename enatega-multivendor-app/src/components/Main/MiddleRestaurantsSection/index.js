@@ -102,7 +102,7 @@ const MiddleRestaurantsSection = ({
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
-      <Divider style={{ marginBottom: 8 }} />
+      <Divider style={{ marginBottom: 5, marginTop: 12 }} />
       <TouchableOpacity
         style={{
           flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -165,7 +165,7 @@ const MiddleRestaurantsSection = ({
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
-      <Divider style={{ marginBottom: 8 }} />
+      <Divider style={{ marginBottom: 5, marginTop: 12 }} />
       {featuredRestaurants?.length ? (
         <Fragment>
           <TouchableOpacity
@@ -230,7 +230,7 @@ const MiddleRestaurantsSection = ({
             keyExtractor={(item) => item._id}
             renderItem={renderItem}
           />
-          <Divider style={{ marginBottom: 8 }} />
+          <Divider style={{ marginBottom: 5, marginTop: 12 }} />
         </Fragment>
       ) : null}
     </View>

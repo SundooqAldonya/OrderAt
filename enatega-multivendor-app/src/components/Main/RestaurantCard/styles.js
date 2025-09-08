@@ -4,7 +4,7 @@ import { alignment } from '../../../utils/alignment'
 import { theme } from '../../../utils/themeColors'
 import { colors } from '../../../utils/colors'
 const { height } = Dimensions.get('window')
-export const CARD_WIDTH = moderateScale(280)
+export const CARD_WIDTH = moderateScale(260)
 const styles = (theme) =>
   StyleSheet.create({
     offerContainer: {
@@ -12,14 +12,14 @@ const styles = (theme) =>
       borderRadius: moderateScale(8),
       marginVertical: moderateScale(8),
       marginHorizontal: moderateScale(8),
-      // shadowColor: '#000',
-      // shadowOffset: { width: 0, height: 4 },
-      // shadowOpacity: 0.08,
-      // shadowRadius: 8,
-      // elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 3,
       borderColor: '#000',
       width: CARD_WIDTH,
-      height: '100%',
+      // height: '100%',
       overflow: 'hidden'
     },
     imageContainer: {
