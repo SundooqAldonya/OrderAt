@@ -647,119 +647,180 @@ function Menu({ route, props }) {
   }
 
   return (
-    <>
-      <SafeAreaView
-        edges={['bottom', 'left', 'right']}
-        style={[styles().flex, { backgroundColor: 'black' }]}
-      >
-        <View style={[styles().flex, styles(currentTheme).screenBackground]}>
-          <View style={styles().flex}>
-            <View style={styles().mainContentContainer}>
-              <View style={[styles().flex, styles().subContainer]}>
-                <Animated.FlatList
-                  contentInset={{ top: containerPaddingTop }}
-                  contentContainerStyle={{
-                    paddingTop: Platform.OS === 'ios' ? 0 : containerPaddingTop
-                  }}
-                  contentOffset={{ y: -containerPaddingTop }}
-                  onScroll={onScroll}
-                  scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
-                  showsVerticalScrollIndicator={false}
-                  ListHeaderComponent={
-                    search || restaurantData.length === 0 ? null : (
-                      <ActiveOrdersAndSections
-                        sections={restaurantSections}
-                        // menuPageHeading={menuPageHeading}
-                        menuPageHeading={t(titleUI) || menuPageHeading}
-                      />
-                    )
-                  }
-                  ListEmptyComponent={emptyView()}
-                  keyExtractor={(item, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      progressViewOffset={containerPaddingTop}
-                      colors={[currentTheme.iconColorPink]}
-                      refreshing={networkStatus === 4}
-                      onRefresh={() => {
-                        if (networkStatus === 7) {
-                          refetch()
-                        }
-                      }}
-                    />
-                  }
-                  // data={search ? searchRestaurants(search) : restaurantData}
-                  data={search ? resultSearchData : restaurantData}
-                  renderItem={({ item }) => <Item item={item} />}
-                />
-                <CollapsibleSubHeaderAnimator translateY={translateY}>
-                  <View
-                    style={[
-                      styles(currentTheme).searchbar
-                      // { backgroundColor: '#fff' }
-                    ]}
-                  >
-                    <View
-                      style={{
-                        marginBlock: 10,
-                        flexDirection: isArabic ? 'row-reverse' : 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: 20
-                      }}
-                    >
-                      <TextDefault
-                        bold
-                        H3
-                        style={{
-                          color: '#000',
-                          textAlign: 'right'
-                        }}
-                      >
-                        {t('search')}
-                      </TextDefault>
-                      <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <AntDesign
-                          name={isArabic ? 'arrowleft' : 'arrowright'}
-                          size={24}
-                          color='black'
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <Search
-                      backgroundColor={'#fff'}
-                      setSearch={setSearch}
-                      search={search}
-                      handleSearch={handleSearch}
-                      newheaderColor={newheaderColor}
-                      placeHolder={searchPlaceholderText}
-                    />
-                  </View>
-                  <Filters
-                    filters={filters}
-                    setFilters={setFilters}
-                    applyFilters={applyFilters}
-                    filteredItem={filteredItem}
-                  />
-                </CollapsibleSubHeaderAnimator>
-              </View>
-            </View>
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      style={[styles().flex, { backgroundColor: '#fff' }]}
+    >
+      <CollapsibleSubHeaderAnimator translateY={translateY}>
+        <View style={styles(currentTheme).searchbar}>
+          <View
+            style={{
+              marginVertical: 10,
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 20
+            }}
+          >
+            <TextDefault bold H3 style={{ color: '#000', textAlign: 'right' }}>
+              {t('search')}
+            </TextDefault>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign
+                name={isArabic ? 'arrowleft' : 'arrowright'}
+                size={24}
+                color='black'
+              />
+            </TouchableOpacity>
           </View>
-
-          <MainModalize
-            modalRef={modalRef}
-            currentTheme={currentTheme}
-            isLoggedIn={isLoggedIn}
-            addressIcons={addressIcons}
-            modalHeader={modalHeader}
-            modalFooter={modalFooter}
-            setAddressLocation={setAddressLocation}
-            profile={profile}
-            location={location}
+          <Search
+            backgroundColor={'#fff'}
+            setSearch={setSearch}
+            search={search}
+            handleSearch={handleSearch}
+            newheaderColor={newheaderColor}
+            placeHolder={searchPlaceholderText}
           />
         </View>
-      </SafeAreaView>
-    </>
+
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          applyFilters={applyFilters}
+          filteredItem={filteredItem}
+        />
+      </CollapsibleSubHeaderAnimator>
+
+      {/* Scrollable List */}
+      <View style={{ marginTop: 170 }}>
+        <Animated.FlatList
+          data={search ? resultSearchData : restaurantData}
+          renderItem={({ item }) => <Item item={item} />}
+          keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={
+            search || restaurantData.length === 0 ? null : (
+              <ActiveOrdersAndSections
+                sections={restaurantSections}
+                menuPageHeading={t(titleUI) || menuPageHeading}
+              />
+            )
+          }
+          ListEmptyComponent={emptyView()}
+          contentContainerStyle={{
+            paddingBottom: 40 // avoid modal/footer overlap
+          }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              progressViewOffset={containerPaddingTop}
+              colors={[currentTheme.iconColorPink]}
+              refreshing={networkStatus === 4}
+              onRefresh={() => {
+                if (networkStatus === 7) {
+                  refetch()
+                }
+              }}
+            />
+          }
+        />
+      </View>
+      {/* <View style={[styles().flex, styles(currentTheme).screenBackground]}>
+        <View style={styles().flex}>
+          <View style={styles().mainContentContainer}>
+            <Animated.FlatList
+              data={search ? resultSearchData : restaurantData}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <Item item={item} />}
+              onScroll={onScroll}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingTop: containerPaddingTop, // consistent padding
+                paddingBottom: 40 // give space for footer/modal
+              }}
+              ListHeaderComponent={
+                search || restaurantData.length === 0 ? null : (
+                  <ActiveOrdersAndSections
+                    sections={restaurantSections}
+                    menuPageHeading={t(titleUI) || menuPageHeading}
+                  />
+                )
+              }
+              ListEmptyComponent={emptyView()}
+              refreshControl={
+                <RefreshControl
+                  progressViewOffset={containerPaddingTop}
+                  colors={[currentTheme.iconColorPink]}
+                  refreshing={networkStatus === 4}
+                  onRefresh={() => {
+                    if (networkStatus === 7) {
+                      refetch()
+                    }
+                  }}
+                />
+              }
+              scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
+            /> */}
+
+      {/* Sticky search + filters header */}
+      {/* <CollapsibleSubHeaderAnimator translateY={translateY}>
+              <View style={styles(currentTheme).searchbar}>
+                <View
+                  style={{
+                    marginVertical: 10,
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 20
+                  }}
+                >
+                  <TextDefault
+                    bold
+                    H3
+                    style={{ color: '#000', textAlign: 'right' }}
+                  >
+                    {t('search')}
+                  </TextDefault>
+                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <AntDesign
+                      name={isArabic ? 'arrowleft' : 'arrowright'}
+                      size={24}
+                      color='black'
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Search
+                  backgroundColor={'#fff'}
+                  setSearch={setSearch}
+                  search={search}
+                  handleSearch={handleSearch}
+                  newheaderColor={newheaderColor}
+                  placeHolder={searchPlaceholderText}
+                />
+              </View>
+
+              <Filters
+                filters={filters}
+                setFilters={setFilters}
+                applyFilters={applyFilters}
+                filteredItem={filteredItem}
+              />
+            </CollapsibleSubHeaderAnimator> */}
+      {/* </View>
+        </View> */}
+
+      <MainModalize
+        modalRef={modalRef}
+        currentTheme={currentTheme}
+        isLoggedIn={isLoggedIn}
+        addressIcons={addressIcons}
+        modalHeader={modalHeader}
+        modalFooter={modalFooter}
+        setAddressLocation={setAddressLocation}
+        profile={profile}
+        location={location}
+      />
+      {/* </View> */}
+    </SafeAreaView>
   )
 }
 

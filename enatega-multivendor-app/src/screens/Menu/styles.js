@@ -20,7 +20,8 @@ const styles = (props = null) =>
 
     mainContentContainer: {
       width: '100%',
-      height: '100%',
+      // height: '100%',
+      flex: 1,
       alignSelf: 'center'
     },
 
