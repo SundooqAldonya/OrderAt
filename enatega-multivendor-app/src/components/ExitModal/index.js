@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Modal, View, Text, TouchableOpacity, BackHandler } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const ExitModal = ({ visible, onCancel, onConfirm }) => {
   const { t, i18n } = useTranslation()
@@ -30,14 +31,14 @@ const ExitModal = ({ visible, onCancel, onConfirm }) => {
             style={{
               flexDirection: isArabic ? 'row-reverse' : 'row',
               justifyContent: 'flex-end',
-              gap: 20
+              gap: 10
             }}
           >
-            <TouchableOpacity onPress={onCancel}>
-              <Text style={styles.cancelButton}>{t('cancel')}</Text>
+            <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
+              <Text style={styles.cancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onConfirm}>
-              <Text style={styles.confirmButton}>{t('okey')}</Text>
+            <TouchableOpacity style={styles.okBtn} onPress={onConfirm}>
+              <Text style={styles.confirmText}>{t('okey')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -61,8 +62,20 @@ const styles = {
   },
   titleStyle: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
   messageStyle: { fontSize: 16, color: '#666', marginBottom: 20 },
-  cancelButton: { color: '#666' },
-  confirmButton: { color: '#06C167', fontWeight: 'bold' }
+  cancelBtn: {
+    // backgroundColor: 'red',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5
+  },
+  okBtn: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5
+  },
+  cancelText: { color: '#000' },
+  confirmText: { color: '#fff', fontWeight: 'bold' }
 }
 
 export default ExitModal
