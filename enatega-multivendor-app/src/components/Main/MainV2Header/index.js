@@ -36,6 +36,26 @@ const MainV2Header = ({ styles, setIsVisible, location, cartCount }) => {
             }}
           />
         </TouchableOpacity>
+        {/* <TouchableOpacity
+          onPress={() => setIsVisible(true)}
+          style={{
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            maxWidth: '80%',
+            gap: 4
+          }}
+        >
+          <Text style={styles.headerSubtitle}>{t('deliver_to')}</Text>
+          <Text style={styles.headerTitle}>
+            {location?.label.length > 40
+              ? `${location?.label.substring(0, 40)}...`
+              : location?.label.substring(0, 40)}{' '}
+            ▼
+          </Text>
+        </TouchableOpacity> */}
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
         <TouchableOpacity
           onPress={() => setIsVisible(true)}
           style={{
@@ -54,8 +74,6 @@ const MainV2Header = ({ styles, setIsVisible, location, cartCount }) => {
             ▼
           </Text>
         </TouchableOpacity>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
         <TouchableOpacity onPress={() => navigation.navigate('Favourite')}>
           <MaterialIcons
             name='favorite-outline'

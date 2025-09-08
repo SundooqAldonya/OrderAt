@@ -303,7 +303,7 @@ function NewRestaurantCard(props) {
             />
             <Text style={{ color: '#000', fontSize: 12 }}>
               {' '}
-              {props.deliveryFee?.amount}
+              {props.deliveryFee?.amount} {configuration.currency}
             </Text>
           </View>
           <Text style={{ color: '#000' }}>⏱ {props.deliveryTime} +</Text>
