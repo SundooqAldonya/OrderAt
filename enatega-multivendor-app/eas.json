@@ -8,7 +8,7 @@
       }
     },
     "preview": {
-      "channel": "production",
+      "channel": "staging",
       "android": {
         "buildType": "apk"
       },
