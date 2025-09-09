@@ -7,8 +7,8 @@ const ConfigurableValues = () => {
 
   switch (process.env.REACT_APP_ENV) {
     case 'staging':
-      SERVER_URL = 'https://query.orderat.ai'
-      WS_SERVER_URL = 'wss://query.orderat.ai'
+      SERVER_URL = 'https://querytest.orderat.ai'
+      WS_SERVER_URL = 'wss://querytest.orderat.ai'
       break
 
     case 'production':
