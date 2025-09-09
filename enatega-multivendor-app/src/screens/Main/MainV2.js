@@ -145,12 +145,6 @@ export default function FoodTab() {
 
   const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
 
-  console.log({
-    restaurantsWithOffersData: restaurantsWithOffersData.length
-      ? restaurantsWithOffersData[0].isOpen
-      : null
-  })
-
   const {
     data: dataHighRating,
     loading: loadingHighRating,

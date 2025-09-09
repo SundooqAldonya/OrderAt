@@ -38,6 +38,7 @@ import UserContext from '../../context/User'
 import {
   featuredRestaurants,
   getBusinessCategoriesCustomer,
+  mostOrderedRestaurantsQuery,
   // getCuisines,
   // highestRatingRestaurant,
   // nearestRestaurants,
@@ -200,7 +201,7 @@ function Menu({ route, props }) {
       loading: loadingMostOrdered,
       error: errorMostOrdered
     }
-  ] = useLazyQuery(recentOrderRestaurantsQuery)
+  ] = useLazyQuery(mostOrderedRestaurantsQuery)
 
   const [fetchSearchRestaurants, { loading: loadingSearch }] = useLazyQuery(
     searchRestaurantsCustomer
@@ -299,7 +300,7 @@ function Menu({ route, props }) {
       })
     } else if (titleMain === 'mostOrderedNow') {
       fetchMostOrderedRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.recentOrderRestaurantsPreview || [])
+        setRestaurantData(res?.data?.mostOrderedRestaurantsPreview || [])
       })
     } else if (titleMain === 'featured') {
       fetchFeaturedRestaurants({ variables }).then((res) => {
@@ -624,7 +625,7 @@ function Menu({ route, props }) {
 
       if (highlights.selected[0] === 'mostOrderedNow') {
         const res = await fetchMostOrderedRestaurants({ variables })
-        setRestaurantData(res.data?.recentOrderRestaurantsPreview || [])
+        setRestaurantData(res.data?.mostOrderedRestaurantsPreview || [])
         setTitleUI('mostOrderedNow')
         return
       }
