@@ -147,7 +147,7 @@ export default function FoodTab() {
 
   console.log({
     restaurantsWithOffersData: restaurantsWithOffersData.length
-      ? restaurantsWithOffersData[0].deliveryFee
+      ? restaurantsWithOffersData[0].isOpen
       : null
   })
 

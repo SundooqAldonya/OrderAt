@@ -60,26 +60,39 @@ module.exports = {
   RestaurantCustomer: {
     deliveryFee: async (restaurant, _, { req }) => {
       console.log('deliveryFee')
-      const user = await User.findById(req.user._id)
-      if (!user) return null
-      const selectedAddress = user?.addresses.find(
-        address => address.selected === true
-      )
-      if (!selectedAddress) return null
+      try {
+        const user = await User.findById(req.user._id)
+        if (!user) return null
+        const selectedAddress = user?.addresses.find(
+          address => address.selected === true
+        )
+        if (!selectedAddress) return null
 
-      const [destLong, destLat] = selectedAddress.location.coordinates
-      const [originLong, originLat] = restaurant.location.coordinates
+        const [destLong, destLat] = selectedAddress.location.coordinates
+        const [originLong, originLat] = restaurant.location.coordinates
 
-      // console.log({ selectedAddress, restaurant })
+        // console.log({ selectedAddress, restaurant })
 
-      return await calculateDeliveryFee({
-        originLat,
-        originLong,
-        destLat,
-        destLong,
-        // code: req?.couponCode, // optional
-        restaurantId: restaurant._id
-      })
+        return await calculateDeliveryFee({
+          originLat,
+          originLong,
+          destLat,
+          destLong,
+          // code: req?.couponCode, // optional
+          restaurantId: restaurant._id
+        })
+      } catch (err) {
+        throw err
+      }
+    },
+    isOpen: async (restaurant, _, { req }) => {
+      try {
+        const isOpenNow = isRestaurantOpenNow(restaurant?.openingTimes)
+        console.log({ isOpenNow })
+        return isOpenNow
+      } catch (err) {
+        throw err
+      }
     }
   },
 

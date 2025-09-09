@@ -44,7 +44,10 @@ const MiddleRestaurantsSection = ({
     }
   }
 
-  const renderItem = ({ item }) => <NewRestaurantCard {...item} />
+  const renderItem = ({ item }) => {
+    console.log({ isOpen: item.isOpen })
+    return <NewRestaurantCard {...item} />
+  }
 
   return (
     <View>

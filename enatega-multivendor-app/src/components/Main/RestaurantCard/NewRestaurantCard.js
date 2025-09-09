@@ -65,15 +65,17 @@ function NewRestaurantCard(props) {
     refetchQueries: [{ query: PROFILE }]
   })
 
-  const { data, loading, error } = useQuery(isRestaurantOpenNow, {
-    variables: {
-      id: props._id
-    }
-  })
+  // const { data, loading, error } = useQuery(isRestaurantOpenNow, {
+  //   variables: {
+  //     id: props._id
+  //   }
+  // })
 
-  console.log({ data })
+  // // console.log({ data })
 
-  const isOpenNow = data?.isRestaurantOpenNow
+  const isOpenNow = typeof props?.isOpen === 'boolean' ? props.isOpen : true
+
+  console.log({ isOpenNow })
 
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })

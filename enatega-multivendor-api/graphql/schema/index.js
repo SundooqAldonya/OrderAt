@@ -217,6 +217,7 @@ const typeDefs = gql`
     businessCategories: [BusinessCategory]
     featured: Boolean
     deliveryFee: Amount
+    isOpen: Boolean
   }
 
   type CategoryCustomer {

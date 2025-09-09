@@ -1238,6 +1238,7 @@ export const mostOrderedRestaurantsQuery = gql`
         originalDiscount
         isPrepaid
       }
+      isOpen
     }
   }
 `
@@ -1510,6 +1511,7 @@ export const restaurantsWithOffers = gql`
         originalDiscount
         isPrepaid
       }
+      isOpen
     }
   }
 `
@@ -1659,6 +1661,7 @@ export const featuredRestaurants = gql`
         originalDiscount
         isPrepaid
       }
+      isOpen
     }
   }
 `
