@@ -1233,7 +1233,7 @@ export const mostOrderedRestaurantsQuery = gql`
           }
         }
       }
-      deliveryFee {
+      deliveryFee(latitude: $latitude, longitude: $longitude) {
         amount
         originalDiscount
         isPrepaid
@@ -1506,7 +1506,7 @@ export const restaurantsWithOffers = gql`
           }
         }
       }
-      deliveryFee {
+      deliveryFee(latitude: $latitude, longitude: $longitude) {
         amount
         originalDiscount
         isPrepaid
@@ -1656,7 +1656,7 @@ export const featuredRestaurants = gql`
         isActive
       }
       featured
-      deliveryFee {
+      deliveryFee(latitude: $latitude, longitude: $longitude) {
         amount
         originalDiscount
         isPrepaid

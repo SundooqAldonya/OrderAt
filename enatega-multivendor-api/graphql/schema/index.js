@@ -216,7 +216,7 @@ const typeDefs = gql`
     createdAt: String
     businessCategories: [BusinessCategory]
     featured: Boolean
-    deliveryFee: Amount
+    deliveryFee(latitude: Float, longitude: Float): Amount
     isOpen: Boolean
   }
 

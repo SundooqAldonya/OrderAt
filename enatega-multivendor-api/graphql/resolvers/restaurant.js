@@ -58,27 +58,40 @@ module.exports = {
   Upload: GraphqlUpload,
   Date: dateScalar,
   RestaurantCustomer: {
-    deliveryFee: async (restaurant, _, { req }) => {
+    deliveryFee: async (restaurant, args, { req }) => {
       console.log('deliveryFee')
+      // if (!req?.user) return null
       try {
-        const user = await User.findById(req.user._id)
-        if (!user) return null
-        const selectedAddress = user?.addresses.find(
-          address => address.selected === true
-        )
-        if (!selectedAddress) return null
+        const { latitude, longitude } = args
+        console.log({ latitude, longitude })
+        let destLat, destLong
 
-        const [destLong, destLat] = selectedAddress.location.coordinates
+        if (req?.user?._id) {
+          // Authenticated user → check selected address
+          const user = await User.findById(req.user._id)
+          const selectedAddress = user?.addresses.find(a => a.selected === true)
+          if (selectedAddress) {
+            ;[destLong, destLat] = selectedAddress.location.coordinates
+          }
+        }
+
+        // If still no address, fallback to args
+        if (!destLat || !destLong) {
+          if (latitude && longitude) {
+            destLat = latitude
+            destLong = longitude
+          } else {
+            return null // no way to calculate
+          }
+        }
+
         const [originLong, originLat] = restaurant.location.coordinates
-
-        // console.log({ selectedAddress, restaurant })
 
         return await calculateDeliveryFee({
           originLat,
           originLong,
           destLat,
           destLong,
-          // code: req?.couponCode, // optional
           restaurantId: restaurant._id
         })
       } catch (err) {
