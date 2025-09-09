@@ -12,14 +12,18 @@ const getEnvVars = (env = Updates.channel) => {
 
   console.log('configuration', configuration)
   console.log({ env: process.env.NODE_ENV })
+
   if (
     process.env.NODE_ENV === 'production' ||
     process.env.NODE_ENV === 'staging'
   ) {
     return {
-      GRAPHQL_URL: 'https://query.orderat.ai/graphql',
-      WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
-      SERVER_URL: 'https://query.orderat.ai/',
+      // GRAPHQL_URL: 'https://query.orderat.ai/graphql',
+      // WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
+      // SERVER_URL: 'https://query.orderat.ai/',
+      GRAPHQL_URL: 'https://service.orderatco.com/graphql',
+      WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
+      SERVER_URL: 'https://service.orderatco.com/',
       SENTRY_DSN: configuration.restaurantAppSentryUrl
     }
   }
