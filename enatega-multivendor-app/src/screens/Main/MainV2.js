@@ -9,7 +9,8 @@ import {
   TextInput,
   StyleSheet,
   StatusBar,
-  Modal
+  Modal,
+  Alert
 } from 'react-native'
 import {
   AntDesign,
@@ -60,6 +61,8 @@ import ActiveOrders from '../../components/Main/ActiveOrders/ActiveOrders'
 import MiddleRestaurantsSection from '../../components/Main/MiddleRestaurantsSection'
 import MainV2Header from '../../components/Main/MainV2Header'
 import truncate from '../../utils/helperFun'
+import { setRestaurant } from '../../store/restaurantSlice'
+import { useDispatch } from 'react-redux'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -75,7 +78,7 @@ export default function FoodTab() {
   const [loadingAddress, setLoadingAddress] = useState(false)
   const [busy, setBusy] = useState(false)
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
-
+  const dispatch = useDispatch()
   const [search, setSearch] = useState('')
   const isArabic = i18n.language === 'ar'
   const { getCurrentLocation, getLocationPermission } = useLocation()
@@ -88,7 +91,14 @@ export default function FoodTab() {
     Other: CustomOtherIcon
   }
   const { location, setLocation } = useContext(LocationContext)
-  const { cartCount, isLoggedIn, profile } = useContext(UserContext)
+  const {
+    cartCount,
+    isLoggedIn,
+    profile,
+    restaurant: restaurantCart,
+    clearCart,
+    cart
+  } = useContext(UserContext)
 
   console.log({ location })
 
@@ -425,6 +435,33 @@ export default function FoodTab() {
   //   </TouchableOpacity>
   // )
 
+  const handleShowRestaurant = (item) => {
+    if (cart?.length && restaurantCart !== item._id) {
+      Alert.alert(
+        '',
+        t('cartClearWarning'),
+        [
+          {
+            text: t('Cancel'),
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          {
+            text: t('okText'),
+            onPress: async () => {
+              clearCart()
+              navigation.navigate('Restaurant', { ...item })
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    } else {
+      navigation.navigate('Restaurant', { ...item })
+    }
+    dispatch(setRestaurant({ restaurantId: item._id }))
+  }
+
   const renderTopRestaurants = (item) => {
     const businessCategoriesNames =
       (item?.businessCategories || [])
@@ -434,7 +471,7 @@ export default function FoodTab() {
 
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('Restaurant', { _id: item._id })}
+        onPress={() => handleShowRestaurant(item)}
         style={styles.card}
       >
         <Image source={{ uri: item.image }} style={styles.cardImage} />

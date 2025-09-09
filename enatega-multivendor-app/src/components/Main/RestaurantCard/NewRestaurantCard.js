@@ -46,7 +46,14 @@ function NewRestaurantCard(props) {
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const { profile } = useContext(UserContext)
+  const {
+    profile,
+    restaurant: restaurantCart,
+    clearCart,
+    cart
+  } = useContext(UserContext)
+  // const { setCartRestaurant, cart, addQuantity, addCartItem } =
+  //   useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props._id) : false
   const businessCategoriesNames =
     (props?.businessCategories || [])
@@ -100,14 +107,38 @@ function NewRestaurantCard(props) {
 
   // console.log({ highestOffer: getCategoriesWithHighestDiscount() })
 
+  const handleShowRestaurant = () => {
+    if (cart?.length && restaurantCart !== props._id) {
+      Alert.alert(
+        '',
+        t('cartClearWarning'),
+        [
+          {
+            text: t('Cancel'),
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          {
+            text: t('okText'),
+            onPress: async () => {
+              clearCart()
+              navigation.navigate('Restaurant', { ...props })
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    } else {
+      navigation.navigate('Restaurant', { ...props })
+    }
+    dispatch(setRestaurant({ restaurantId: props._id }))
+  }
+
   return (
     <TouchableOpacity
       style={styles(currentTheme).offerContainer}
       activeOpacity={1}
-      onPress={async () => {
-        dispatch(setRestaurant({ restaurantId: props._id }))
-        navigation.navigate('Restaurant', { ...props })
-      }}
+      onPress={handleShowRestaurant}
     >
       <View style={styles().imageContainer}>
         <View

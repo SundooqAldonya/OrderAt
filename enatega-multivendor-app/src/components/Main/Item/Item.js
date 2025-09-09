@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Image, TouchableOpacity } from 'react-native'
+import { View, Image, TouchableOpacity, Alert } from 'react-native'
 import styles from './styles'
 import ConfigurationContext from '../../../context/Configuration'
 import { useNavigation } from '@react-navigation/native'
@@ -23,6 +23,8 @@ import Spinner from '../../Spinner/Spinner'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import { useTranslation } from 'react-i18next'
 import truncate from '../../../utils/helperFun'
+import { setRestaurant } from '../../../store/restaurantSlice'
+import { useDispatch } from 'react-redux'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -43,9 +45,15 @@ function Item(props) {
   const { language } = i18n
   const isArabic = language === 'ar'
   const navigation = useNavigation()
-  const { profile } = useContext(UserContext)
+  const {
+    profile,
+    restaurant: restaurantCart,
+    clearCart,
+    cart
+  } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props.item._id) : false
   const item = props.item
+  const dispatch = useDispatch()
 
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
@@ -80,11 +88,39 @@ function Item(props) {
   function onCompleted() {
     FlashMessage({ message: t('favouritelistUpdated') })
   }
+
+  const handleShowRestaurant = () => {
+    if (cart?.length && restaurantCart !== item._id) {
+      Alert.alert(
+        '',
+        t('cartClearWarning'),
+        [
+          {
+            text: t('Cancel'),
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          {
+            text: t('okText'),
+            onPress: async () => {
+              clearCart()
+              navigation.navigate('Restaurant', { ...item })
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    } else {
+      navigation.navigate('Restaurant', { ...item })
+    }
+    dispatch(setRestaurant({ restaurantId: item._id }))
+  }
+
   return (
     <TouchableOpacity
       style={{ padding: moderateScale(10) }}
       activeOpacity={1}
-      onPress={() => navigation.navigate('Restaurant', { ...item })}
+      onPress={handleShowRestaurant}
     >
       <View key={item._id} style={styles().mainContainer}>
         <View
