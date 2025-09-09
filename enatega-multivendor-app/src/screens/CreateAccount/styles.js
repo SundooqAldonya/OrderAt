@@ -25,7 +25,7 @@ const styles = (props = null) =>
       marginBottom: scale(-20),
 
       flex: 1,
-      backgroundColor: '#f3f0eb',
+      backgroundColor: '#fff',
       shadowColor: '#f3f0eb',
       shadowOffset: { width: 16, height: 8 },
       shadowOpacity: 0.1,
@@ -54,7 +54,7 @@ const styles = (props = null) =>
       width: '100%',
       flex: 1,
       gap: scale(20),
-      justifyContent: 'center',
+      justifyContent: 'center'
     },
     whiteColor: {
       backgroundColor: props !== null ? props.buttonText : 'transparent'
@@ -98,7 +98,7 @@ const styles = (props = null) =>
     },
     guestButton: {
       width: '90%',
-       alignSelf: 'center',
+      alignSelf: 'center',
       height: height * 0.06,
       flexDirection: 'row',
       alignItems: 'center',
@@ -108,7 +108,7 @@ const styles = (props = null) =>
       borderRadius: scale(16),
       // borderWidth: scale(1),
       borderColor: props !== null ? props.newIconColor : '#9B9A9A',
-      backgroundColor:colors.primary
+      backgroundColor: colors.primary
     }
   })
 export default styles

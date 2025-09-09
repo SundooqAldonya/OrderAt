@@ -221,15 +221,18 @@ const CreateAccount = (props) => {
     <View style={styles().container}>
       <View style={styles().image}>
         <Image
-          source={require('../../assets/images/loginHeader.png')}
+          // source={require('../../assets/images/loginHeader.png')}
+          source={require('../../assets/logo.jpg')}
           resizeMode='contain'
           style={styles().image1}
         />
       </View>
       <View style={[styles(currentTheme).subContainer]}>
         <View style={[styles().signupContainer]}>
-          <View style={{ marginBottom: moderateScale(2) }}>{renderEmailAction()}</View>
-          
+          <View style={{ marginBottom: moderateScale(2) }}>
+            {renderEmailAction()}
+          </View>
+
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles(currentTheme).line} />
             <View style={{ marginBottom: moderateScale(2) }}>
