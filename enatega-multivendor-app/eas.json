@@ -19,6 +19,7 @@
         }
       },
       "env": {
+        "API_ENV": "staging",
         "SENTRY_AUTH_TOKEN": "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"
       }
     },
@@ -31,7 +32,10 @@
       }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "API_ENV": "production"
+      }
     },
     "development-simulator": {
       "developmentClient": true,
