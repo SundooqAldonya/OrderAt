@@ -123,7 +123,7 @@ function Settings(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: 10}}>
+            <View style={{ paddingLeft: 10 }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(24)}
@@ -449,7 +449,7 @@ function Settings(props) {
                 )}
               </TouchableOpacity>
             </View>
-            <View
+            {/* <View
               style={[
                 styles(currentTheme).languageContainer,
                 styles().checkboxSettings,
@@ -478,7 +478,7 @@ function Settings(props) {
                   </TextDefault>
                 </View>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         ) : null}
         <View style={styles().versionContainer}>
