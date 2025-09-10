@@ -7,9 +7,15 @@ import { Overlay } from 'react-native-elements'
 import { useAcceptOrder, usePrintOrder, useOrderRing } from '../../ui/hooks'
 import { useTranslation } from 'react-i18next'
 
-function OverlayCreateOrder(props) {
+function OverlayCreateOrder({
+  visible,
+  toggle,
+  createOrder,
+  selectedTime,
+  setSelectedTime,
+  loading
+}) {
   const { t } = useTranslation()
-  const { visible, toggle, createOrder, selectedTime, setSelectedTime } = props
 
   const btnPress = () => {
     createOrder()
@@ -57,7 +63,8 @@ function OverlayCreateOrder(props) {
         </View>
         <TouchableOpacity
           activeOpacity={0.8}
-          style={styles.btn}
+          style={{ ...styles.btn, backgroundColor: loading ? 'grey' : '#000' }}
+          disabled={loading}
           onPress={btnPress}>
           <TextDefault bold style={{ color: colors.darkgreen }}>
             {t('setAndAccept')}

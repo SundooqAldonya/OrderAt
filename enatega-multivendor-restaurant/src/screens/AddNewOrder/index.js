@@ -64,20 +64,23 @@ const AddNewOrder = ({ navigation }) => {
   const { data: restaurantData } = useAccount()
   const { currencySymbol } = useContext(Configuration.Context)
 
-  const [mutateCreateOrder] = useMutation(newCheckoutPlaceOrder, {
-    onCompleted: data => {
-      acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
-      muteRing(data.newCheckoutPlaceOrder.orderId)
-      navigation.navigate('Orders')
-      Alert.alert(
-        `${t('ordersuccessfullycreated')}`,
-        `${t('ordernumber')} ${data?.newCheckoutPlaceOrder?.orderId}`
-      )
-    },
-    onError: error => {
-      console.log({ error })
+  const [mutateCreateOrder, { loading: loadingMutation }] = useMutation(
+    newCheckoutPlaceOrder,
+    {
+      onCompleted: data => {
+        acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
+        muteRing(data.newCheckoutPlaceOrder.orderId)
+        navigation.navigate('Orders')
+        Alert.alert(
+          `${t('ordersuccessfullycreated')}`,
+          `${t('ordernumber')} ${data?.newCheckoutPlaceOrder?.orderId}`
+        )
+      },
+      onError: error => {
+        console.log({ error })
+      }
     }
-  })
+  )
 
   const [
     fetchAreas,
@@ -278,6 +281,7 @@ const AddNewOrder = ({ navigation }) => {
                 visible={overlayVisible}
                 toggle={toggleOverlay}
                 createOrder={handleOrderSubmit}
+                loading={loadingMutation}
                 navigation={navigation}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
@@ -285,8 +289,9 @@ const AddNewOrder = ({ navigation }) => {
             </View>
             <TouchableOpacity
               onPress={toggleOverlay}
+              disabled={loadingMutation}
               style={{
-                backgroundColor: '#000',
+                backgroundColor: loadingMutation ? 'grey' : '#000',
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -296,7 +301,7 @@ const AddNewOrder = ({ navigation }) => {
                 borderRadius: 10
               }}>
               <TextDefault H4 bold textColor={'#fff'}>
-                {t('saveandcontinue')}
+                {loadingMutation ? t('loading') : t('saveandcontinue')}
               </TextDefault>
             </TouchableOpacity>
           </ScrollView>
