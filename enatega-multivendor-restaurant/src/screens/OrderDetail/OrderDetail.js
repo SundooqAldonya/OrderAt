@@ -260,10 +260,23 @@ export default function OrderDetail({ navigation, route }) {
                   </>
                 )}
               </View>
-
+              <Button
+                title={t('Print')}
+                buttonStyle={{
+                  backgroundColor: 'black',
+                  borderRadius: 10,
+                  padding: 15
+                }}
+                titleStyle={{ color: colors.white, fontWeight: '500' }}
+                containerStyle={{
+                  width: 250,
+                  marginVertical: 10
+                }}
+                onPress={printOrder}
+              />
               {activeBar === 0 && isAcceptButtonVisible && (
                 <>
-                  <Button
+                  {/* <Button
                     title={t('Print')}
                     buttonStyle={{
                       backgroundColor: 'black',
@@ -276,7 +289,7 @@ export default function OrderDetail({ navigation, route }) {
                       marginVertical: 10
                     }}
                     onPress={printOrder}
-                  />
+                  /> */}
 
                   <Button
                     title={t('acceptAndPrint')}

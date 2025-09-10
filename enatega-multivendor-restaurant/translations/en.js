@@ -111,5 +111,6 @@ export const en = {
   free: 'Free',
   products: 'Products',
   orders_history: 'Orders History',
-  loading: 'Loading'
+  loading: 'Loading',
+  Print: 'Print'
 }

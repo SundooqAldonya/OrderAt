@@ -112,5 +112,6 @@ export const ar = {
   free: 'مجاني',
   products: 'المنتجات',
   orders_history: 'الطلبات',
-  loading: 'جاري الطلب'
+  loading: 'جاري الطلب',
+  Print: 'أطبع'
 }
