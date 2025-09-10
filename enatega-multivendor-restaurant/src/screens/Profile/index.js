@@ -33,6 +33,7 @@ import {
   clearConnectedDevice
 } from '../../../store/printersSlice'
 import PrinterManager from '../../utilities/printers/printerManager'
+// import { nativeApplicationVersion, nativeBuildVersion } from 'expo-application'
 
 const Profile = () => {
   const { t } = useTranslation()
@@ -306,6 +307,18 @@ const Profile = () => {
               {t('DeleteAccount')}
             </TextDefault>
           </TouchableOpacity>
+          {/* <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 270
+            }}>
+            <Text style={{ color: '#666' }}>
+              {t('app_version')}: {nativeApplicationVersion} (
+              {nativeBuildVersion})
+            </Text>
+          </View> */}
         </Fragment>
       ) : (
         <View style={{ flex: 1, marginVertical: 50 }}>

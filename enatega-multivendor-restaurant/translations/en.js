@@ -112,5 +112,6 @@ export const en = {
   products: 'Products',
   orders_history: 'Orders History',
   loading: 'Loading',
-  Print: 'Print'
+  Print: 'Print',
+  app_version: 'App Version'
 }
