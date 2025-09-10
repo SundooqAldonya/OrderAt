@@ -111,5 +111,6 @@ export const ar = {
   no_internet: 'لا يوجد اتصال بالإنترنت',
   free: 'مجاني',
   products: 'المنتجات',
-  orders_history: 'الطلبات'
+  orders_history: 'الطلبات',
+  loading: 'جاري الطلب'
 }

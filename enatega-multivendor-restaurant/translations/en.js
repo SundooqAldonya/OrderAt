@@ -110,5 +110,6 @@ export const en = {
   no_internet: 'No Internet Connection',
   free: 'Free',
   products: 'Products',
-  orders_history: 'Orders History'
+  orders_history: 'Orders History',
+  loading: 'Loading'
 }
