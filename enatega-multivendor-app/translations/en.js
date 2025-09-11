@@ -737,5 +737,6 @@ export const en = {
   Highlights: 'Highlights',
   confirm_exit: 'Confirm exit',
   quit_question: 'Do you want to quit the app?',
-  okey: 'Okey'
+  okey: 'Okey',
+  minimum_delivery: 'Min delivery'
 }

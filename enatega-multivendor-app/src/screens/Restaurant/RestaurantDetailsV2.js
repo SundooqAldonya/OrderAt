@@ -409,7 +409,7 @@ const RestaurantDetailsV2 = () => {
                 textAlign: 'right'
               }}
             >
-              🚲 {t('minimum')} {configuration?.minimumDeliveryFee}{' '}
+              🚲 {t('minimum_delivery')} {configuration?.minimumDeliveryFee}{' '}
               {configuration?.currencySymbol} •{' '}
               {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
               {t('minutes')}
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
   headerImage: {
     width: '100%',
     height: moderateScale(HEADER_EXPANDED_HEIGHT + 40),
-    resizeMode: 'cover',
+    resizeMode: 'cover'
   },
 
   restaurantInfo: {
