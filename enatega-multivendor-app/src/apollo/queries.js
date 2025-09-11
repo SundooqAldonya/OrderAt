@@ -648,6 +648,12 @@ export const restaurantListPreview = `query Restaurants($latitude:Float,$longitu
         _id
         name
       }
+      deliveryFee(latitude: $latitude, longitude: $longitude) {
+        amount
+        originalDiscount
+        isPrepaid
+      }
+      isOpen
     }
 }
 }`

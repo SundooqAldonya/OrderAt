@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import truncate from '../../../utils/helperFun'
 import { setRestaurant } from '../../../store/restaurantSlice'
 import { useDispatch } from 'react-redux'
+import { Text } from 'react-native'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -115,6 +116,12 @@ function Item(props) {
     }
     dispatch(setRestaurant({ restaurantId: item._id }))
   }
+
+  const businessCategoriesNames =
+    (item?.businessCategories || [])
+      .map((cat) => cat.name)
+      .filter(Boolean)
+      .join(', ') || null
 
   return (
     <TouchableOpacity
@@ -210,7 +217,7 @@ function Item(props) {
                 </TextDefault>
               </View>
             </View>
-            <TextDefault
+            {/* <TextDefault
               style={styles().offerCategoty}
               numberOfLines={1}
               bold
@@ -218,7 +225,23 @@ function Item(props) {
               textColor={currentTheme.fontNewColor}
             >
               {item?.tags?.join(',')}
-            </TextDefault>
+            </TextDefault> */}
+            <View>
+              <TextDefault
+                style={{
+                  ...styles().offerCategoty,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+                numberOfLines={1}
+                bold
+                Normal
+                textColor={currentTheme.fontNewColor}
+              >
+                {businessCategoriesNames?.length
+                  ? truncate(businessCategoriesNames, 40)
+                  : null}
+              </TextDefault>
+            </View>
             <View
               style={{
                 ...styles().priceRestaurant,
@@ -248,6 +271,18 @@ function Item(props) {
                   {item.deliveryTime + ' '}
                   {t('min')}
                 </TextDefault>
+              </View>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
+              >
+                <MaterialIcons
+                  name='directions-bike'
+                  size={moderateScale(16)}
+                  color={'#000'}
+                />
+                <Text style={{ color: '#000', fontSize: 12 }}>
+                  {item.deliveryFee?.amount} {configuration.currency}
+                </Text>
               </View>
               {/* <View
                 style={{
