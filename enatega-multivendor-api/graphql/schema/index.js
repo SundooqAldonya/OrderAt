@@ -770,7 +770,7 @@ const typeDefs = gql`
     sections: [SectionInfo!]
   }
   type NearByDataPreview {
-    restaurants: [RestaurantPreview!]
+    restaurants: [RestaurantCustomer!]
     offers: [OfferInfo!]
     sections: [SectionInfo!]
   }

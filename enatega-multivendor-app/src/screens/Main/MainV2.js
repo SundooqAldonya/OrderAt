@@ -63,6 +63,7 @@ import MainV2Header from '../../components/Main/MainV2Header'
 import truncate from '../../utils/helperFun'
 import { setRestaurant } from '../../store/restaurantSlice'
 import { useDispatch } from 'react-redux'
+import ConfigurationContext from '../../context/Configuration'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -83,6 +84,7 @@ export default function FoodTab() {
   const isArabic = i18n.language === 'ar'
   const { getCurrentLocation, getLocationPermission } = useLocation()
   const { getAddress } = useGeocoding()
+  const configuration = useContext(ConfigurationContext)
 
   const addressIcons = {
     House: CustomHomeIcon,
@@ -127,6 +129,10 @@ export default function FoodTab() {
       errorPolicy: 'all'
     }
   )
+
+  // console.log({
+  //   data: data?.nearByRestaurantsPreview.restaurants[0].deliveryFee
+  // })
 
   const { orderLoading, orderError, orderData } = useHomeRestaurants()
 
@@ -225,7 +231,8 @@ export default function FoodTab() {
     dataHighRating?.highestRatingRestaurant || null
   // const nearestRestaurantsData =
   //   dataNearestRestaurants?.nearestRestaurants || null
-  const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
+  // const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
+  const allRestaurants = data?.nearByRestaurantsPreview?.restaurants || null
   const featuredRestaurantsVar = dataFeatured?.featuredRestaurants || null
   // const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
 
@@ -336,7 +343,7 @@ export default function FoodTab() {
       refetch()
       refetchHighRating()
       refetchOffers()
-      refetchNearestRestaurants()
+      // refetchNearestRestaurants()
       setIsVisible(false)
     })
   }
@@ -511,6 +518,18 @@ export default function FoodTab() {
               />
               <Text style={styles.metaText}>{item.reviewAverage}</Text>
             </View>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
+            >
+              <MaterialIcons
+                name='directions-bike'
+                size={moderateScale(16)}
+                color={'#000'}
+              />
+              <Text style={{ color: '#000', fontSize: 12 }}>
+                {item.deliveryFee?.amount} {configuration.currency}
+              </Text>
+            </View>
             <Text style={styles.metaText}>⏱ {item.deliveryTime}</Text>
           </View>
         </View>
@@ -645,7 +664,7 @@ export default function FoodTab() {
               />
             </View>
           </TouchableOpacity>
-          {topRatedRestaurants?.map((item) => renderTopRestaurants(item))}
+          {allRestaurants?.map((item) => renderTopRestaurants(item))}
 
           {isLoggedIn && (
             <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />

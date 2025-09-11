@@ -13,6 +13,7 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import { playCustomSound } from '../../utilities/playSound'
 import { startBackgroundUpdate } from '../../utilities/backgroundLocationTask'
+import messaging from '@react-native-firebase/messaging'
 
 const RIDER_LOGIN = gql`
   ${riderLogin}
@@ -130,13 +131,9 @@ const useLogin = () => {
               Notifications.IosAuthorizationStatus.PROVISIONAL) &&
           Device.isDevice
         ) {
-          notificationToken = (
-            await Notifications.getDevicePushTokenAsync({
-              projectId: Constants.expoConfig?.extra?.firebaseProjectId
-            })
-          ).data
+          notificationToken = await messaging().getToken()
         }
-
+        console.log({ notificationToken })
         // Perform mutation with the obtained data
         mutate({
           variables: {

@@ -113,5 +113,6 @@ export const ar = {
   products: 'المنتجات',
   orders_history: 'الطلبات',
   loading: 'جاري الطلب',
-  Print: 'أطبع'
+  Print: 'أطبع',
+  app_version: 'الإصدار'
 }

@@ -24,6 +24,7 @@ import { useNavigation } from '@react-navigation/native'
 import IconVec from 'react-native-vector-icons/FontAwesome5'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import messaging from '@react-native-firebase/messaging'
 
 export default function SideBar() {
   const { t, i18n } = useTranslation()
@@ -53,11 +54,13 @@ export default function SideBar() {
           const permissionStatus = await getPermission()
           if (permissionStatus.granted) {
             setNotificationStatus(true)
-            const token = (
-              await getDevicePushTokenAsync({
-                projectId: Constants.expoConfig.extra.eas.projectId
-              })
-            ).data
+            const token = await messaging().getToken()
+            // const token = (
+            //   await getDevicePushTokenAsync({
+            //     projectId: Constants.expoConfig.extra.eas.projectId
+            //   })
+            // ).data
+            console.log({ token })
             sendTokenToBackend({ variables: { token, isEnabled: true } })
           }
         }
@@ -80,11 +83,13 @@ export default function SideBar() {
             openSettingsRef.current
           ) {
             setNotificationStatus(true)
-            const token = (
-              await getDevicePushTokenAsync({
-                projectId: Constants.expoConfig.extra.eas.projectId
-              })
-            ).data
+            const token = await messaging().getToken()
+            // const token = (
+            //   await getDevicePushTokenAsync({
+            //     projectId: Constants.expoConfig.extra.eas.projectId
+            //   })
+            // ).data
+            console.log({ token })
             sendTokenToBackend({ variables: { token, isEnabled: true } })
           }
         }
@@ -103,21 +108,25 @@ export default function SideBar() {
       const permissionStatus = await getPermission()
       if (permissionStatus.granted) {
         setNotificationStatus(true)
-        const token = (
-          await getDevicePushTokenAsync({
-            projectId: Constants.expoConfig.extra.eas.projectId
-          })
-        ).data
+        const token = await messaging().getToken()
+        // const token = (
+        //   await getDevicePushTokenAsync({
+        //     projectId: Constants.expoConfig.extra.eas.projectId
+        //   })
+        // ).data
+        console.log({ token })
         sendTokenToBackend({ variables: { token, isEnabled: true } })
       } else if (permissionStatus.canAskAgain) {
         const result = await requestPermission()
         if (result.granted) {
           setNotificationStatus(true)
-          const token = (
-            await getDevicePushTokenAsync({
-              projectId: Constants.expoConfig.extra.eas.projectId
-            })
-          ).data
+          const token = await messaging().getToken()
+          // const token = (
+          //   await getDevicePushTokenAsync({
+          //     projectId: Constants.expoConfig.extra.eas.projectId
+          //   })
+          // ).data
+          console.log({ token })
           sendTokenToBackend({ variables: { token, isEnabled: true } })
         }
       } else {

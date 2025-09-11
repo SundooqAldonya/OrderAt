@@ -11,14 +11,20 @@
       "distribution": "internal"
     },
     "preview": {
-      "channel": "production",
+      "channel": "staging",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "API_ENV": "staging"
       }
     },
     "production": {
       "channel": "production",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "API_ENV": "production"
+      }
     }
   },
   "submit": {

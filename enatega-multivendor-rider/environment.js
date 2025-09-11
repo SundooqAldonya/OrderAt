@@ -8,12 +8,18 @@ const getEnvVars = (env = Updates.channel) => {
   console.log('configuration', configuration)
   console.log('node_env', env)
 
-  if (env && (env === 'production' || env === 'staging')) {
+  if (env && env === 'production') {
     return {
-      // GRAPHQL_URL: 'https://query.orderat.ai/graphql',
-      // WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
       GRAPHQL_URL: 'https://service.orderatco.com/graphql',
       WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
+      SENTRY_DSN: configuration.riderAppSentryUrl,
+      GOOGLE_MAPS_KEY: configuration.googleApiKey
+    }
+  }
+  if (env && env === 'staging') {
+    return {
+      GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
+      WS_GRAPHQL_URL: 'wss://querytest.orderat.ai/graphql',
       SENTRY_DSN: configuration.riderAppSentryUrl,
       GOOGLE_MAPS_KEY: configuration.googleApiKey
     }

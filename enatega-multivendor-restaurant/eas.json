@@ -10,14 +10,20 @@
       "channel": "staging",
       "distribution": "internal"
     },
-    "production": {
-      "channel": "production",
-      "autoIncrement": true
-    },
     "preview": {
-      "channel": "production",
+      "channel": "staging",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "API_ENV": "staging"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "autoIncrement": true,
+      "env": {
+        "API_ENV": "production"
       }
     }
   },
@@ -35,6 +41,7 @@
     }
   },
   "cli": {
-    "appVersionSource": "remote"
+    "version": ">= 0.43.0",
+    "appVersionSource": "local"
   }
 }

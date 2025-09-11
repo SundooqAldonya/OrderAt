@@ -210,7 +210,7 @@ module.exports = {
         if (shopType) {
           query.shopType = shopType
         }
-        const restaurants = await Restaurant.find(query)
+        const restaurants = await Restaurant.find(query).limit(20)
         console.log({ restaurants })
         if (!restaurants.length) {
           return {
