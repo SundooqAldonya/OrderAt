@@ -727,5 +727,6 @@ export const ar = {
   confirm_exit: 'تأكيد الخروج',
   quit_question: 'هل تريد الخروج؟',
   okey: 'نعم',
-  minimum_delivery: 'الحد الادني للتوصيل'
+  minimum_delivery: 'الحد الادني للتوصيل',
+  minimum_orders: 'الحد الادنى للطلبات'
 }

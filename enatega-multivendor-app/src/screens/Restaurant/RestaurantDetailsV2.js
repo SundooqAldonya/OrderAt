@@ -397,10 +397,11 @@ const RestaurantDetailsV2 = () => {
                 textAlign: 'left'
               }}
             >
-              🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '}
-              {t('minimum')} •{' '}
+              {/* 🚲 {configuration?.currency} {configuration?.minimumDeliveryFee}{' '} */}
+              {configuration?.currency} {restaurant?.minimumOrder}{' '}
+              {t('minimum_orders')} •{' '}
               {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
-              {t('minutes')}
+              {/* {t('minutes')} */}⏱
             </Text>
           ) : (
             <Text
@@ -409,10 +410,11 @@ const RestaurantDetailsV2 = () => {
                 textAlign: 'right'
               }}
             >
-              🚲 {t('minimum_delivery')} {configuration?.minimumDeliveryFee}{' '}
+              {/* 🚲 {t('minimum')} {configuration?.minimumDeliveryFee}{' '} */}
+              {t('minimum_orders')} {restaurant?.minimumOrder}{' '}
               {configuration?.currencySymbol} •{' '}
-              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0}{' '}
-              {t('minutes')}
+              {restaurant?.deliveryTime ? restaurant.deliveryTime : 0} ⏱
+              {/* {t('minutes')} */}
             </Text>
           )}
           <View
@@ -555,7 +557,7 @@ const RestaurantDetailsV2 = () => {
         restaurantId={restaurant?._id}
       />
 
-      {restaurant && restaurant.minimumOrder > calculatePrice() ? (
+      {/* {restaurant && restaurant.minimumOrder > calculatePrice() ? (
         <View style={styles.bottomBanner}>
           <Text style={styles.bottomText}>
             {t('add')} {configuration?.currency}{' '}
@@ -563,7 +565,7 @@ const RestaurantDetailsV2 = () => {
             {t('to_start_your_order')}
           </Text>
         </View>
-      ) : null}
+      ) : null} */}
     </SafeAreaView>
   )
 }

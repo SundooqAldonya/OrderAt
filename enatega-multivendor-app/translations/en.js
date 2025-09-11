@@ -738,5 +738,6 @@ export const en = {
   confirm_exit: 'Confirm exit',
   quit_question: 'Do you want to quit the app?',
   okey: 'Okey',
-  minimum_delivery: 'Min delivery'
+  minimum_delivery: 'Min delivery',
+  minimum_orders: 'Min Orders'
 }
