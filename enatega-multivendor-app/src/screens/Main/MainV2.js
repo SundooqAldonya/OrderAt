@@ -336,7 +336,7 @@ export default function FoodTab() {
       refetch()
       refetchHighRating()
       refetchOffers()
-      refetchNearestRestaurants()
+      // refetchNearestRestaurants()
       setIsVisible(false)
     })
   }

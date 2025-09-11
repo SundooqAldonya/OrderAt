@@ -41,6 +41,7 @@
     }
   },
   "cli": {
-    "appVersionSource": "remote"
+    "version": ">= 0.43.0",
+    "appVersionSource": "local"
   }
 }

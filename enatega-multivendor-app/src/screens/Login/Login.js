@@ -28,7 +28,8 @@ import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
-import Constants from 'expo-constants'
+// import Constants from 'expo-constants'
+import messaging from '@react-native-firebase/messaging'
 
 function Login(props) {
   const dispatch = useDispatch()
@@ -125,15 +126,21 @@ function Login(props) {
 
   const handleSubmitLogin = async () => {
     let notificationToken = null
+    // permissions for IOS
+    const { status } = await Notifications.requestPermissionsAsync()
+    if (status !== 'granted') {
+      alert('Please enable notifications in settings for better experience')
+    }
     if (Device.isDevice) {
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync()
       if (existingStatus === 'granted') {
-        notificationToken = (
-          await Notifications.getDevicePushTokenAsync({
-            projectId: Constants.expoConfig.extra.eas.projectId
-          })
-        ).data
+        notificationToken = await messaging().getToken()
+        // notificationToken = (
+        //   await Notifications.getDevicePushTokenAsync({
+        //     projectId: Constants.expoConfig.extra.eas.projectId
+        //   })
+        // ).data
       }
     }
     console.log({ notificationToken })
