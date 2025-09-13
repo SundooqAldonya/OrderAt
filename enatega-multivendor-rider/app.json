@@ -75,7 +75,7 @@
     ],
     "ios": {
       "buildNumber": "3",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.orderatrider.app",
       "config": {
         "googleMapsApiKey": "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY"
