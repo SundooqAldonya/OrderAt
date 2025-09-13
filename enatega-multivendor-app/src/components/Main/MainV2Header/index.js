@@ -25,7 +25,7 @@ const MainV2Header = ({ styles, setIsVisible, location, cartCount }) => {
       >
         <TouchableOpacity
           onPress={() => navigation.toggleDrawer()}
-          style={{ width: 40, height: 40 }}
+          style={{ width: moderateScale(40), height:  moderateScale(40) }}
         >
           <Image
             source={require('../../../assets/hamburger_btn.png')}

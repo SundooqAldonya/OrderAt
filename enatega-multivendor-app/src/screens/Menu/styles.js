@@ -14,7 +14,7 @@ const styles = (props = null) =>
       ...alignment.PBlarge
     },
     searchbar: {
-      ...alignment.PBmedium
+      ...alignment.PBmedium,
       // backgroundColor: colors.primary
     },
 

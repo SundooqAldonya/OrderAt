@@ -2,7 +2,7 @@
   "expo": {
     "name": "Orderat",
     "scheme": ["orderatcustomer"],
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Orderat Customer is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
     "slug": "enatega-customer-app-latest",
     "owner": "mahmoudattia",
@@ -20,7 +20,7 @@
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "90",
+      "buildNumber": "91",
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.orderatcustomer.app",
@@ -52,7 +52,7 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 90,
+      "versionCode": 91,
       "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
