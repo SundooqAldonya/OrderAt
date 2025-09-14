@@ -525,24 +525,40 @@ module.exports = {
     assignOrder: async (_, args, { req }) => {
       console.log('assignOrder', args.id, req.userId)
       try {
-        const order = await Order.findById(args.id)
-        if (!order) throw new Error('Order does not exist')
-        if (order.rider) {
+        // const order = await Order.findById(args.id)
+        // if (!order) throw new Error('Order does not exist')
+        // if (order.rider) {
+        //   throw new Error('تم تعيين الطلب لشخص آخر!')
+        // }
+        // order.rider = req.userId
+        // order.orderStatus = order_status[6]
+        // order.assignedAt = new Date()
+        // order.isRiderRinged = false
+        // const result = await order.save()
+        const order = await Order.findOneAndUpdate(
+          { _id: args.id, rider: { $exists: false } }, // only if no rider assigned
+          {
+            $set: {
+              rider: req.userId,
+              orderStatus: order_status[6],
+              assignedAt: new Date(),
+              isRiderRinged: false
+            }
+          },
+          { new: true }
+        )
+
+        if (!order) {
           throw new Error('تم تعيين الطلب لشخص آخر!')
         }
-        order.rider = req.userId
-        order.orderStatus = order_status[6]
-        order.assignedAt = new Date()
-        order.isRiderRinged = false
-        const result = await order.save()
         // check when last time assigned to order
         await Rider.findByIdAndUpdate(req.userId, {
           lastOrderAt: new Date()
         })
-        const transformedOrder = await transformOrder(result)
+        const transformedOrder = await transformOrder(order)
         const populatedOrder = await order.populate('restaurant')
         // sendNotificationToUser(order.user.toString(), transformedOrder)
-        const user = await User.findById(result.user)
+        const user = await User.findById(order.user)
         console.log({ user })
         if (user && user.isOrderNotification) {
           console.log('through condition')
