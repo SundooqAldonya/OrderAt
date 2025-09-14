@@ -10,7 +10,8 @@ import {
   StyleSheet,
   StatusBar,
   Modal,
-  Alert
+  Alert,
+  SafeAreaView
 } from 'react-native'
 import {
   AntDesign,
@@ -547,9 +548,10 @@ export default function FoodTab() {
   }
 
   return (
+    <SafeAreaView style={styles.flex}>
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Header */}
-      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+      <StatusBar color={'#fff'} barStyle={'default'} />
       <MainV2Header
         styles={styles}
         setIsVisible={setIsVisible}
@@ -686,10 +688,15 @@ export default function FoodTab() {
         </Fragment>
       )}
     </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+   flex: {
+      flex: 1,
+      backgroundColor: '#fff'
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
