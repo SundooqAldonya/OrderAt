@@ -1,4 +1,4 @@
-import { verticalScale, scale } from '../../utils/scaling'
+import { verticalScale, scale, moderateScale } from '../../utils/scaling'
 import { StyleSheet } from 'react-native'
 
 import { alignment } from '../../utils/alignment'
@@ -15,6 +15,7 @@ const styles = (props = null) =>
     },
     searchbar: {
       ...alignment.PBmedium,
+      marginTop: moderateScale(40)
       // backgroundColor: colors.primary
     },
 
