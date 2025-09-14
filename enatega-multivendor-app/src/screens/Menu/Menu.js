@@ -74,6 +74,7 @@ import ErrorView from '../../components/ErrorView/ErrorView'
 // import { escapeRegExp } from '../../utils/regex'
 // import { colors } from '../../utils/colors'
 import { debounce } from 'lodash'
+import { moderateScale } from '../../utils/scaling'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -652,7 +653,6 @@ function Menu({ route, props }) {
 
   return (
     <SafeAreaView
-      edges={['bottom', 'left', 'right']}
       style={[styles().flex, { backgroundColor: '#fff' }]}
     >
       <CollapsibleSubHeaderAnimator translateY={translateY}>
@@ -696,7 +696,7 @@ function Menu({ route, props }) {
       </CollapsibleSubHeaderAnimator>
 
       {/* Scrollable List */}
-      <View style={{ marginTop: 170 }}>
+      <View style={{ marginTop: moderateScale(170) }}>
         <FlatList
           data={search ? resultSearchData : restaurantData}
           keyExtractor={(item, index) => index.toString()}
@@ -705,7 +705,11 @@ function Menu({ route, props }) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             // paddingTop: containerPaddingTop, // consistent padding
-            paddingBottom: 40 // give space for footer/modal
+            paddingBottom: 40, // give space for footer/modal
+            flexGrow: 1
+          }}
+          style={{
+            flexGrow: 1
           }}
           ListHeaderComponent={
             search || restaurantData.length === 0 ? null : (

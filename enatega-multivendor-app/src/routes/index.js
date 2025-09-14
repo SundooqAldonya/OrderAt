@@ -509,16 +509,15 @@ const CustomSearchButton = ({ children, onPress }) => (
       elevation: 5,
       overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
       backgroundColor: colors.primary,
-      borderRadius: 40,
-      paddingHorizontal: 4
+      borderRadius: moderateScale(40),
     }}
     onPress={onPress}
   >
     <View
       style={{
-        width: 65,
-        height: 65,
-        borderRadius: 65 / 2,
+        width: moderateScale(65),
+        height: moderateScale(65),
+        borderRadius:  moderateScale(65) / 2,
         backgroundColor: colors.primary, // 👈 main color
         justifyContent: 'center',
         alignItems: 'center'
@@ -624,7 +623,7 @@ const BottomTabs = () => {
         })}
         options={{
           tabBarIcon: ({ color }) => (
-            <Image source={MandoobImg} style={{ width: 80, height: 80 }} />
+            <Image source={MandoobImg} style={{ width:  moderateScale(60), height:  moderateScale(60) }} />
           ),
           tabBarButton: (props) => <CustomSearchButton {...props} />,
           tabBarLabel: () => null,

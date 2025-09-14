@@ -10,7 +10,8 @@ import {
   StyleSheet,
   StatusBar,
   Modal,
-  Alert
+  Alert,
+  SafeAreaView
 } from 'react-native'
 import {
   AntDesign,
@@ -526,7 +527,7 @@ export default function FoodTab() {
                 size={moderateScale(16)}
                 color={'#000'}
               />
-              <Text style={{ color: '#000', fontSize: 12 }}>
+              <Text style={{ color: '#000', fontSize: moderateScale(12) }}>
                 {item.deliveryFee?.amount} {configuration.currency}
               </Text>
             </View>
@@ -547,9 +548,10 @@ export default function FoodTab() {
   }
 
   return (
+    <SafeAreaView style={styles.flex}>
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Header */}
-      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+      <StatusBar color={'#fff'} barStyle={'default'} />
       <MainV2Header
         styles={styles}
         setIsVisible={setIsVisible}
@@ -648,7 +650,7 @@ export default function FoodTab() {
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
-            <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
+            <TextDefault numberOfLines={1} textColor={'#111827'} bolder H4 style={styles.sectionTitle}>{t('all_businesses')}</TextDefault>
             <View
               style={{
                 flexDirection: isArabic ? 'row-reverse' : 'row',
@@ -656,10 +658,10 @@ export default function FoodTab() {
                 gap: 4
               }}
             >
-              <Text style={styles.sectionLink}>{t('see_all')} </Text>
+              <Text>{t('see_all')} </Text>
               <AntDesign
                 name={isArabic ? 'arrowleft' : 'arrowright'}
-                size={18}
+                size={moderateScale(20)}
                 color='black'
               />
             </View>
@@ -686,10 +688,15 @@ export default function FoodTab() {
         </Fragment>
       )}
     </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+   flex: {
+      flex: 1,
+      backgroundColor: '#fff'
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -698,13 +705,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     // color: 'tomato',
     color: colors.primary,
     fontWeight: '600'
   },
   headerTitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600'
   },
   cartWrapper: {
@@ -755,13 +762,8 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600'
-  },
-  sectionLink: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'gray'
+    fontSize: moderateScale(16),
+    // fontWeight: '600'
   },
   categoryChip: {
     flexDirection: 'row',
@@ -803,11 +805,11 @@ const styles = StyleSheet.create({
     padding: 12
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '700'
   },
   cardTags: {
-    fontSize: 13,
+    fontSize: moderateScale(13),
     color: 'gray',
     marginVertical: 4
   },
@@ -817,7 +819,7 @@ const styles = StyleSheet.create({
     marginTop: 4
   },
   metaText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: 'gray'
   },
   addNewAddressbtn: {
