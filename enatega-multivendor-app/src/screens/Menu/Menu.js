@@ -653,7 +653,6 @@ function Menu({ route, props }) {
 
   return (
     <SafeAreaView
-      edges={['bottom', 'left', 'right']}
       style={[styles().flex, { backgroundColor: '#fff' }]}
     >
       <CollapsibleSubHeaderAnimator translateY={translateY}>
@@ -707,6 +706,9 @@ function Menu({ route, props }) {
           contentContainerStyle={{
             // paddingTop: containerPaddingTop, // consistent padding
             paddingBottom: 40, // give space for footer/modal
+            flexGrow: 1
+          }}
+          style={{
             flexGrow: 1
           }}
           ListHeaderComponent={
