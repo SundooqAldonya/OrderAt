@@ -53,6 +53,7 @@ const { isRestaurantOpenNow } = require('../../helpers/restaurantWorkingHours')
 const { defaultOpeningTimes } = require('../../helpers/defaultValues')
 const dateScalar = require('../../helpers/dateScalar')
 const { calculateDeliveryFee } = require('../../helpers/calculateDeliveryFee')
+const dispatchQueue = require('../../queues/dispatchRiderQueue')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -1443,7 +1444,8 @@ module.exports = {
         console.log({ transformedOrder })
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
-          await sendPushNotification(result.zone.toString(), result)
+          // await sendPushNotification(result.zone.toString(), result)
+          await dispatchQueue.add({ orderId: populatedOrder._id, attempt: 0 })
         }
         if (
           user &&
@@ -1493,7 +1495,8 @@ module.exports = {
         if (!transformedOrder.isPickedUp) {
           publishToZoneRiders(order.zone.toString(), transformedOrder, 'new')
           // sendNotificationToZoneRiders(order.zone.toString(), transformedOrder)
-          await sendPushNotification(order.zone.toString(), order)
+          // await sendPushNotification(order.zone.toString(), order)
+          await dispatchQueue.add({ orderId: populatedOrder._id, attempt: 0 })
         }
         if (
           user &&

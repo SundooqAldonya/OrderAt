@@ -23,7 +23,7 @@ const {
   notificationsQueue,
   JOB_TYPE,
   JOB_DELAY_DEFAULT
-} = require('../../queue')
+} = require('../../queue_old')
 const { sendPushNotification } = require('../../helpers/findRiders')
 const { uploadReceiptImage, uploadImage } = require('../../helpers/cloudinary')
 const { GraphQLUpload } = require('graphql-upload')

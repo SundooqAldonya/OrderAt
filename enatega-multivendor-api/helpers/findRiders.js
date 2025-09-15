@@ -100,6 +100,94 @@ const findRiders = {
     return R * c // Distance in km
   },
 
+  async sendNotificationToRiders(order, riders) {
+    if (!riders.length) {
+      console.log('🚫 No riders provided to sendNotificationToRiders')
+      return
+    }
+
+    const username = order?.user?.name || 'عميل'
+    const restaurantName = order?.restaurant?.name || 'مطعم'
+
+    const title = 'طلب جديد'
+    const body =
+      order.type === 'delivery_request'
+        ? `طلب جديد من ${username}`
+        : `طلب جديد من ${restaurantName}`
+
+    // recipients structure for Notification model
+    const recipients = riders.map(rider => ({
+      kind: 'Rider',
+      item: rider._id,
+      token: rider.notificationToken,
+      phone: rider.phone,
+      status: 'pending'
+    }))
+
+    // Create DB record
+    const notificationDoc = await Notification.create({
+      title,
+      body,
+      data: {
+        orderId: order.orderId,
+        type: 'Rider'
+      },
+      recipients,
+      createdAt: new Date()
+    })
+
+    const tokens = recipients.map(r => r.token)
+
+    const message = {
+      notification: { title, body },
+      android: {
+        notification: { sound: 'beep3', channelId: 'default' }
+      },
+      data: {
+        channelId: 'default',
+        orderId: order._id.toString(),
+        notificationId: notificationDoc._id.toString(),
+        type: 'new_order'
+      },
+      tokens
+    }
+
+    try {
+      const response = await admin.messaging().sendEachForMulticast(message)
+      console.log(`✅ Sent to ${response.successCount}/${tokens.length} riders`)
+
+      // Update recipient statuses
+      const updates = recipients.map((r, i) => {
+        const res = response.responses[i]
+        const status = res.success ? 'sent' : 'failed'
+        return {
+          updateOne: {
+            filter: { _id: notificationDoc._id, 'recipients.item': r.item },
+            update: {
+              $set: {
+                'recipients.$.status': status,
+                'recipients.$.lastAttempt': new Date()
+              }
+            }
+          }
+        }
+      })
+
+      await Notification.bulkWrite(updates)
+
+      // Log failed tokens
+      response.responses.forEach((res, i) => {
+        if (!res.success) {
+          console.warn(
+            `❌ Failed to send to rider ${riders[i]._id}: ${res.error.message}`
+          )
+        }
+      })
+    } catch (err) {
+      console.error('❌ Error sending notifications to riders:', err)
+    }
+  },
+
   async sendPushNotification(zoneId, order) {
     const riders = await Rider.find({
       zone: zoneId,
