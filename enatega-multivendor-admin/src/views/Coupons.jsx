@@ -77,12 +77,19 @@ const Coupon = props => {
     {
       name: t('Discount'),
       sortable: true,
-      selector: 'discount'
+      selector: 'discount',
+      cell: row => (
+        <>
+          {`${row.rules.discount_value} ${
+            row.rules.discount_type === 'percent' ? '%' : 'EGP'
+          }`}
+        </>
+      )
     },
-    {
-      name: t('Status'),
-      cell: row => <>{statusChanged(row)}</>
-    },
+    // {
+    //   name: t('Status'),
+    //   cell: row => <>{statusChanged(row)}</>
+    // },
     {
       name: t('Action'),
       cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
