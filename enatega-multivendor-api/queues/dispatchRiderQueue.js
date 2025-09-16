@@ -43,7 +43,7 @@ dispatchQueue.process(async job => {
 
   console.log({ populatedLog })
 
-  const mappedLogRider = await populatedLog?.recipients?.map(item =>
+  const mappedLogRider = populatedLog?.recipients?.map(item =>
     item.rider._id.toString()
   )
 
