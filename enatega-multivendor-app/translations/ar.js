@@ -728,5 +728,7 @@ export const ar = {
   quit_question: 'هل تريد الخروج؟',
   okey: 'نعم',
   minimum_delivery: 'الحد الادني للتوصيل',
-  minimum_orders: 'الحد الادنى للطلبات'
+  minimum_orders: 'الحد الادنى للطلبات',
+  sorry: 'معذرة',
+  will_be_available: 'سنكون متاحين قريبا في هذا المكان بامكانك اختيار مكان آخر'
 }

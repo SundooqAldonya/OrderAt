@@ -11,7 +11,8 @@ import {
   StatusBar,
   Modal,
   Alert,
-  Linking
+  Linking,
+  RefreshControl
 } from 'react-native'
 import {
   AntDesign,
@@ -79,6 +80,7 @@ export default function FoodTab() {
   const [isVisible, setIsVisible] = useState(false)
   const [loadingAddress, setLoadingAddress] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [hasActiveOrders, setHasActiveOrders] = useState(false)
   const dispatch = useDispatch()
   const [search, setSearch] = useState('')
@@ -135,7 +137,13 @@ export default function FoodTab() {
   //   data: data?.nearByRestaurantsPreview.restaurants[0].deliveryFee
   // })
 
-  const { orderLoading, orderError, orderData } = useHomeRestaurants()
+  const {
+    orderLoading,
+    orderError,
+    orderData,
+    refetchRecentOrderRestaurants,
+    refetchMostOrderedRestaurants
+  } = useHomeRestaurants()
 
   const {
     data: dataWithOffers,
@@ -549,8 +557,35 @@ export default function FoodTab() {
     )
   }
 
+  const onRefresh = () => {
+    setRefreshing(true)
+    refetchOffers()
+    refetchHighRating()
+    refetchFeatured()
+    refetch()
+    refetchRecentOrderRestaurants()
+    refetchMostOrderedRestaurants()
+    setTimeout(() => setRefreshing(false), 2000) // simulate fetching
+  }
+
+  const allErrorsZone =
+    errorZone &&
+    !restaurantsWithOffersData?.length &&
+    !loadingWithOffers &&
+    !allRestaurants?.length &&
+    !loading &&
+    !featuredRestaurantsVar?.length &&
+    !loadingFeatured &&
+    !mostOrderedRestaurantsVar?.length &&
+    !orderLoading
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: '#fff' }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {/* Header */}
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
       <MainV2Header
@@ -560,134 +595,151 @@ export default function FoodTab() {
         location={location}
       />
 
-      {/* Greeting */}
-      {/* {profile ? (
-        <Text
-          style={{ ...styles.greeting, textAlign: isArabic ? 'right' : 'left' }}
-        >
-          {t('hey')} {profile?.name}
-          {i18n.language === 'en' && (
-            <Text style={{ fontWeight: '700', color: colors.primary }}>
-              , {t('good_afternoon')}
-            </Text>
-          )}
-        </Text>
-      ) : null} */}
+      {/* {!restaurantsWithOffersData?.length &&
+      !loadingWithOffers &&
+      !allRestaurants?.length &&
+      !loading &&
+      !featuredRestaurantsVar?.length &&
+      !loadingFeatured &&
+      !mostOrderedRestaurantsVar?.length &&
+      !orderLoading ? (
+        <View style={{ marginTop: 50 }}>
+          <ErrorView wentWrong={t('sorry')} message={t('will_be_available')} />
+        </View>
+      ) : ( */}
+      <Fragment>
+        {/* Greeting */}
+        {/* {profile ? (
+              <Text
+                style={{ ...styles.greeting, textAlign: isArabic ? 'right' : 'left' }}
+              >
+                {t('hey')} {profile?.name}
+                {i18n.language === 'en' && (
+                  <Text style={{ fontWeight: '700', color: colors.primary }}>
+                    , {t('good_afternoon')}
+                  </Text>
+                )}
+              </Text>
+            ) : null} */}
 
-      {/* Search */}
-      <View
-        style={{
-          ...styles.searchBar,
-          flexDirection: isArabic ? 'row-reverse' : 'row'
-        }}
-      >
-        <Ionicons name='search-outline' size={18} color='gray' />
-        <TouchableOpacity
-          style={styles.inputLike}
-          // onPress={() => setSearchOpen(true)}
-          onPress={() => navigation.navigate('Menu')}
+        {/* Search */}
+        <View
+          style={{
+            ...styles.searchBar,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }}
         >
-          <Text
-            style={{ color: '#bbb', textAlign: isArabic ? 'right' : 'left' }}
-          >
-            {t('search_for_restaurants')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Categories */}
-      <BusinessCategories />
-      {/* <FlatList
-        data={businessCategories}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => renderCategory(item)}
-        contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
-      /> */}
-      {errorZone ? (
-        <ErrorView
-          // wentWrong={t('somethingWentWrong')}
-          message={t('city_location_no_deliveryzone')}
-        >
-          <MainModalize
-            isVisible={isVisible}
-            isLoggedIn={isLoggedIn}
-            addressIcons={addressIcons}
-            modalHeader={modalHeader}
-            modalFooter={modalFooter}
-            setAddressLocation={setAddressLocation}
-            profile={profile}
-            location={location}
-            loading={loadingAddress}
-            onClose={onModalClose}
-            otlobMandoob={false}
-          />
-        </ErrorView>
-      ) : (
-        <Fragment>
-          {/* Top restaurants section */}
-          <MiddleRestaurantsSection
-            restaurantsWithOffersData={restaurantsWithOffersData}
-            mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
-            // highestRatingRestaurantData={highestRatingRestaurantData}
-            // nearestRestaurantsData={nearestRestaurantsData}
-            featuredRestaurants={featuredRestaurantsVar}
-          />
-
-          {/* Restaurants */}
+          <Ionicons name='search-outline' size={18} color='gray' />
           <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Menu', {
-                highlight: true,
-                title: 'all_businesses'
-              })
-              // navigation.navigate('TopBrandsScreen', {
-              //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
-              // })
-            }}
-            style={{
-              ...styles.sectionHeader,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
-            }}
+            style={styles.inputLike}
+            // onPress={() => setSearchOpen(true)}
+            onPress={() => navigation.navigate('Menu')}
           >
-            <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
-            <View
+            <Text
               style={{
-                flexDirection: isArabic ? 'row-reverse' : 'row',
-                alignItems: 'center',
-                gap: 4
+                color: '#bbb',
+                textAlign: isArabic ? 'right' : 'left'
               }}
             >
-              <Text style={styles.sectionLink}>{t('see_all')} </Text>
-              <AntDesign
-                name={isArabic ? 'arrowleft' : 'arrowright'}
-                size={18}
-                color='black'
-              />
-            </View>
+              {t('search_for_restaurants')}
+            </Text>
           </TouchableOpacity>
-          {allRestaurants?.map((item) => renderTopRestaurants(item))}
+        </View>
 
-          {isLoggedIn && (
-            <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
-          )}
+        {/* Categories */}
+        <BusinessCategories />
+        {/* <FlatList
+                data={businessCategories}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => renderCategory(item)}
+                contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
+                /> */}
+        {allErrorsZone ? (
+          <ErrorView
+            // wentWrong={t('somethingWentWrong')}
+            message={t('city_location_no_deliveryzone')}
+          >
+            <MainModalize
+              isVisible={isVisible}
+              isLoggedIn={isLoggedIn}
+              addressIcons={addressIcons}
+              modalHeader={modalHeader}
+              modalFooter={modalFooter}
+              setAddressLocation={setAddressLocation}
+              profile={profile}
+              location={location}
+              loading={loadingAddress}
+              onClose={onModalClose}
+              otlobMandoob={false}
+            />
+          </ErrorView>
+        ) : (
+          <Fragment>
+            {/* Top restaurants section */}
+            <MiddleRestaurantsSection
+              restaurantsWithOffersData={restaurantsWithOffersData}
+              mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
+              // highestRatingRestaurantData={highestRatingRestaurantData}
+              // nearestRestaurantsData={nearestRestaurantsData}
+              featuredRestaurants={featuredRestaurantsVar}
+            />
 
-          <MainModalize
-            isVisible={isVisible}
-            isLoggedIn={isLoggedIn}
-            addressIcons={addressIcons}
-            modalHeader={modalHeader}
-            modalFooter={modalFooter}
-            setAddressLocation={setAddressLocation}
-            profile={profile}
-            location={location}
-            loading={loadingAddress}
-            onClose={onModalClose}
-            otlobMandoob={false}
-          />
-        </Fragment>
-      )}
+            {/* Restaurants */}
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Menu', {
+                  highlight: true,
+                  title: 'all_businesses'
+                })
+                // navigation.navigate('TopBrandsScreen', {
+                //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+                // })
+              }}
+              style={{
+                ...styles.sectionHeader,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
+            >
+              <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
+              <View
+                style={{
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  gap: 4
+                }}
+              >
+                <Text style={styles.sectionLink}>{t('see_all')} </Text>
+                <AntDesign
+                  name={isArabic ? 'arrowleft' : 'arrowright'}
+                  size={18}
+                  color='black'
+                />
+              </View>
+            </TouchableOpacity>
+            {allRestaurants?.map((item) => renderTopRestaurants(item))}
+
+            {isLoggedIn && (
+              <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+            )}
+          </Fragment>
+        )}
+      </Fragment>
+      {/* )} */}
+      <MainModalize
+        isVisible={isVisible}
+        isLoggedIn={isLoggedIn}
+        addressIcons={addressIcons}
+        modalHeader={modalHeader}
+        modalFooter={modalFooter}
+        setAddressLocation={setAddressLocation}
+        profile={profile}
+        location={location}
+        loading={loadingAddress}
+        onClose={onModalClose}
+        otlobMandoob={false}
+      />
     </ScrollView>
   )
 }

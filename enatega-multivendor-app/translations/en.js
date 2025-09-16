@@ -739,5 +739,7 @@ export const en = {
   quit_question: 'Do you want to quit the app?',
   okey: 'Okey',
   minimum_delivery: 'Min delivery',
-  minimum_orders: 'Min Orders'
+  minimum_orders: 'Min Orders',
+  sorry: 'Sorry',
+  will_be_available: 'Will be available in that area soon!'
 }

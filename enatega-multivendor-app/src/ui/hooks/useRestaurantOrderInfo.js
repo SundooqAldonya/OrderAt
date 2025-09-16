@@ -22,6 +22,9 @@ export default function useHomeRestaurants() {
     fetchPolicy: 'no-cache'
   })
 
+  const refetchRecentOrderRestaurants = recentOrderRestaurants.refetch
+  const refetchMostOrderedRestaurants = mostOrderedRestaurants.refetch
+
   const orderLoading =
     recentOrderRestaurants.loading || mostOrderedRestaurants.loading
 
@@ -31,6 +34,8 @@ export default function useHomeRestaurants() {
   return {
     orderLoading,
     orderError,
+    refetchRecentOrderRestaurants,
+    refetchMostOrderedRestaurants,
     orderData: {
       recentOrderRestaurants:
         recentOrderRestaurants?.data?.recentOrderRestaurantsPreview,
