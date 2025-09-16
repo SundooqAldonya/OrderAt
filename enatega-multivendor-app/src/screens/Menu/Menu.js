@@ -145,22 +145,55 @@ function Menu({ route, props }) {
     }
   }, [highlight, title])
 
-  const { data, refetch, networkStatus, loading, error } = useQuery(
-    RESTAURANTS,
-    {
-      variables: {
-        longitude: location.longitude || null,
-        latitude: location.latitude || null,
-        shopType: selectedType || null,
-        ip: null
-      },
-      onCompleted: (data) => {
-        setRestaurantData(data.nearByRestaurantsPreview.restaurants)
-        setSectionData(data.nearByRestaurantsPreview.sections)
-      },
-      fetchPolicy: 'network-only'
+  // const { data, refetch, networkStatus, loading, error } = useQuery(
+  //   RESTAURANTS,
+  //   {
+  //     variables: {
+  //       longitude: location.longitude || null,
+  //       latitude: location.latitude || null,
+  //       shopType: selectedType || null,
+  //       ip: null
+  //     },
+  //     onCompleted: (data) => {
+  //       console.log({ nearByRestaurantsPreview: data.nearByRestaurantsPreview })
+  //       setRestaurantData(data.nearByRestaurantsPreview.restaurants)
+  //       setSectionData(data.nearByRestaurantsPreview.sections)
+  //     },
+  //     fetchPolicy: 'no-cache'
+  //   }
+  // )
+
+  const [fetchAllBusinesses, { data, refetch, networkStatus, loading, error }] =
+    useLazyQuery(RESTAURANTS)
+
+  useEffect(() => {
+    // Clear old list immediately when params change
+    initialFun()
+  }, [route.params])
+
+  const initialFun = async () => {
+    setRestaurantData([])
+    setResultSearchData([])
+    setFilters(FILTER_VALUES)
+    generateBusinessCategories()
+    // then trigger refetch
+    if (titleMain === 'all_businesses' || !title) {
+      // refetch()
+      const res = await fetchAllBusinesses({
+        variables: {
+          longitude: location.longitude || null,
+          latitude: location.latitude || null,
+          shopType: selectedType || null,
+          ip: null
+        }
+      })
+      // console.log({ res })
+      setRestaurantData(res.data.nearByRestaurantsPreview?.restaurants)
+      setSectionData(res.data.nearByRestaurantsPreview?.sections)
     }
-  )
+  }
+
+  // console.log({ restaurantData })
 
   // const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
   //   onError
@@ -241,7 +274,7 @@ function Menu({ route, props }) {
   const newheaderColor = currentTheme.newheaderColor
 
   const {
-    onScroll /* Event handler */,
+    // onScroll /* Event handler */,
     containerPaddingTop /* number */,
     scrollIndicatorInsetTop /* number */,
     translateY
@@ -260,19 +293,6 @@ function Menu({ route, props }) {
     }
     StatusBar.setBarStyle('dark-content')
   })
-
-  // useLayoutEffect(() => {
-  //   navigation.setOptions(
-  //     navigationOptions({
-  //       headerMenuBackground: currentTheme.main,
-  //       horizontalLine: currentTheme.headerColor,
-  //       fontMainColor: currentTheme.darkBgFont,
-  //       iconColorPink: currentTheme.black,
-  //       open: onOpen,
-  //       icon: 'back'
-  //     })
-  //   )
-  // }, [navigation, currentTheme])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -321,6 +341,10 @@ function Menu({ route, props }) {
   // }, [allCuisines])
 
   useEffect(() => {
+    generateBusinessCategories()
+  }, [businessCategories])
+
+  const generateBusinessCategories = () => {
     if (businessCategories?.length) {
       setFilters((prev) => ({
         ...prev,
@@ -331,7 +355,7 @@ function Menu({ route, props }) {
         }
       }))
     }
-  }, [businessCategories])
+  }
 
   useEffect(() => {
     if (filteredItem) {
@@ -345,93 +369,6 @@ function Menu({ route, props }) {
     }
   }, [route.params])
 
-  // function onError(error) {
-  //   console.log(error)
-  // }
-
-  // const addressIcons = {
-  //   House: CustomHomeIcon,
-  //   Office: CustomWorkIcon,
-  //   Apartment: CustomApartmentIcon,
-  //   Other: CustomOtherIcon
-  // }
-
-  // const setAddressLocation = async (address) => {
-  //   setLocation({
-  //     _id: address._id,
-  //     label: address.label,
-  //     latitude: Number(address.location.coordinates[1]),
-  //     longitude: Number(address.location.coordinates[0]),
-  //     deliveryAddress: address.deliveryAddress,
-  //     details: address.details
-  //   })
-  //   mutate({ variables: { id: address._id } })
-  //   modalRef.current.close()
-  // }
-
-  // const setCurrentLocation = async () => {
-  //   setBusy(true)
-  //   const { error, coords } = await getCurrentLocation()
-
-  //   const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
-  //   fetch(apiUrl)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       if (data.error) {
-  //         console.log('Reverse geocoding request failed:', data.error)
-  //       } else {
-  //         let address = data.display_name
-  //         if (address.length > 21) {
-  //           address = address.substring(0, 21) + '...'
-  //         }
-
-  //         if (error) navigation.navigate('SelectLocation')
-  //         else {
-  //           modalRef.current.close()
-  //           setLocation({
-  //             label: 'currentLocation',
-  //             latitude: coords.latitude,
-  //             longitude: coords.longitude,
-  //             deliveryAddress: address
-  //           })
-  //           setBusy(false)
-  //         }
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching reverse geocoding data:', error)
-  //     })
-  // }
-
-  // const modalHeader = () => (
-  //   <View style={[styles().addNewAddressbtn]}>
-  //     <View style={styles(currentTheme).addressContainer}>
-  //       <TouchableOpacity
-  //         style={[styles(currentTheme).addButton]}
-  //         activeOpacity={0.7}
-  //         onPress={setCurrentLocation}
-  //         disabled={busy}
-  //       >
-  //         <View style={styles().addressSubContainer}>
-  //           {busy ? (
-  //             <Spinner size='small' />
-  //           ) : (
-  //             <>
-  //               <SimpleLineIcons
-  //                 name='target'
-  //                 size={moderateScale(18)}
-  //                 color={currentTheme.black}
-  //               />
-  //               <View style={styles().mL5p} />
-  //               <TextDefault bold>{t('currentLocation')}</TextDefault>
-  //             </>
-  //           )}
-  //         </View>
-  //       </TouchableOpacity>
-  //     </View>
-  //   </View>
-  // )
-
   const emptyView = () => {
     if (
       loading ||
@@ -440,9 +377,9 @@ function Menu({ route, props }) {
       loadingWithOffers ||
       loadingFeatured ||
       loadingMostOrdered
-    )
+    ) {
       return loadingScreen()
-    else {
+    } else {
       return (
         <View style={styles().emptyViewContainer}>
           <View style={styles(currentTheme).emptyViewBox}>
@@ -457,37 +394,6 @@ function Menu({ route, props }) {
       )
     }
   }
-
-  // const modalFooter = () => (
-  //   <View style={styles().addNewAddressbtn}>
-  //     <View style={styles(currentTheme).addressContainer}>
-  //       <TouchableOpacity
-  //         activeOpacity={0.5}
-  //         style={styles(currentTheme).addButton}
-  //         onPress={() => {
-  //           if (isLoggedIn) {
-  //             navigation.navigate('AddNewAddress', { ...locationData })
-  //           } else {
-  //             const modal = modalRef.current
-  //             modal?.close()
-  //             navigation.navigate({ name: 'CreateAccount' })
-  //           }
-  //         }}
-  //       >
-  //         <View style={styles().addressSubContainer}>
-  //           <AntDesign
-  //             name='pluscircleo'
-  //             size={moderateScale(20)}
-  //             color={currentTheme.black}
-  //           />
-  //           <View style={styles().mL5p} />
-  //           <TextDefault bold>{t('addAddress')}</TextDefault>
-  //         </View>
-  //       </TouchableOpacity>
-  //     </View>
-  //     <View style={styles().addressTick}></View>
-  //   </View>
-  // )
 
   function loadingScreen() {
     return (
@@ -546,7 +452,14 @@ function Menu({ route, props }) {
 
   if (error) return <ErrorView />
 
-  if (loading || loadingOrders) return loadingScreen()
+  if (
+    loading ||
+    loadingOrders ||
+    loadingMostOrdered ||
+    loadingFeatured ||
+    loadingWithOffers
+  )
+    return loadingScreen()
 
   // Flatten the array. That is important for data sequence
   const restaurantSections = sectionData?.map((sec) => ({
@@ -562,7 +475,8 @@ function Menu({ route, props }) {
 
   const applyFilters = async () => {
     setRestaurantData([])
-    let filteredData = [...data.nearByRestaurantsPreview.restaurants]
+    // let filteredData = [...data.nearByRestaurantsPreview.restaurants]
+    let filteredData = []
 
     const ratings = filters.Rating
     const sort = filters.Sort
@@ -731,102 +645,6 @@ function Menu({ route, props }) {
           scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
         />
       </View>
-      {/* <View style={[styles().flex, styles(currentTheme).screenBackground]}>
-        <View style={styles().flex}>
-          <View style={styles().mainContentContainer}>
-            <Animated.FlatList
-              data={search ? resultSearchData : restaurantData}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Item item={item} />}
-              onScroll={onScroll}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingTop: containerPaddingTop, // consistent padding
-                paddingBottom: 40 // give space for footer/modal
-              }}
-              ListHeaderComponent={
-                search || restaurantData.length === 0 ? null : (
-                  <ActiveOrdersAndSections
-                    sections={restaurantSections}
-                    menuPageHeading={t(titleUI) || menuPageHeading}
-                  />
-                )
-              }
-              ListEmptyComponent={emptyView()}
-              refreshControl={
-                <RefreshControl
-                  progressViewOffset={containerPaddingTop}
-                  colors={[currentTheme.iconColorPink]}
-                  refreshing={networkStatus === 4}
-                  onRefresh={() => {
-                    if (networkStatus === 7) {
-                      refetch()
-                    }
-                  }}
-                />
-              }
-              scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
-            /> */}
-
-      {/* Sticky search + filters header */}
-      {/* <CollapsibleSubHeaderAnimator translateY={translateY}>
-              <View style={styles(currentTheme).searchbar}>
-                <View
-                  style={{
-                    marginVertical: 10,
-                    flexDirection: isArabic ? 'row-reverse' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 20
-                  }}
-                >
-                  <TextDefault
-                    bold
-                    H3
-                    style={{ color: '#000', textAlign: 'right' }}
-                  >
-                    {t('search')}
-                  </TextDefault>
-                  <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <AntDesign
-                      name={isArabic ? 'arrowleft' : 'arrowright'}
-                      size={24}
-                      color='black'
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Search
-                  backgroundColor={'#fff'}
-                  setSearch={setSearch}
-                  search={search}
-                  handleSearch={handleSearch}
-                  newheaderColor={newheaderColor}
-                  placeHolder={searchPlaceholderText}
-                />
-              </View>
-
-              <Filters
-                filters={filters}
-                setFilters={setFilters}
-                applyFilters={applyFilters}
-                filteredItem={filteredItem}
-              />
-            </CollapsibleSubHeaderAnimator> */}
-      {/* </View>
-        </View> */}
-
-      {/* <MainModalize
-        modalRef={modalRef}
-        currentTheme={currentTheme}
-        isLoggedIn={isLoggedIn}
-        addressIcons={addressIcons}
-        modalHeader={modalHeader}
-        modalFooter={modalFooter}
-        setAddressLocation={setAddressLocation}
-        profile={profile}
-        location={location}
-      /> */}
-      {/* </View> */}
     </SafeAreaView>
   )
 }
