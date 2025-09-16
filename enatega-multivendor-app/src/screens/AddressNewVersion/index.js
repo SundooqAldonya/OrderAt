@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Linking,
   Modal,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native'
 import { Ionicons, Feather, Entypo, AntDesign } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -43,6 +44,7 @@ import {
 } from '../../store/addNewAddressSlice'
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import Toast from 'react-native-toast-message'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -117,7 +119,7 @@ const AddressNewVersion = () => {
       headerTitle: t('add_new_address'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: "#fff"
+        color: '#fff'
       },
       headerStyle: {
         backgroundColor: colors.primary
@@ -261,6 +263,21 @@ const AddressNewVersion = () => {
       selectedCityAndArea,
       locationMap
     })
+    if (!name) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: 'اسم المكان مطلوب',
+        text1Style: {
+          textAlign: 'right'
+        },
+        text2Style: {
+          textAlign: 'right',
+          fontSize: 18
+        }
+      })
+      return
+    }
     const addressInput = {
       _id: '',
       label: name,
@@ -375,7 +392,11 @@ const AddressNewVersion = () => {
           </Text>
         </View>
         {chooseFromMap && (
-          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(20)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 
@@ -405,7 +426,11 @@ const AddressNewVersion = () => {
           </Text>
         </View>
         {selectedCityAndArea && (
-          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(20)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 

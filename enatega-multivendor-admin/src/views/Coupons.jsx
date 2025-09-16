@@ -104,7 +104,7 @@ const Coupon = props => {
         {row.enabled}
         <Switch
           size="small"
-          defaultChecked={row.enabled}
+          defaultChecked={row.status === 'active' ? true : false}
           onChange={_event => {
             mutateEdit({
               variables: {
@@ -112,7 +112,8 @@ const Coupon = props => {
                   _id: row._id,
                   title: row.title,
                   discount: row.discount,
-                  enabled: !row.enabled
+                  // enabled: !row.enabled
+                  status: row.status === 'active' ? 'disabled' : 'active'
                 }
               }
             })

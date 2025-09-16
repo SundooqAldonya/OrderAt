@@ -349,6 +349,8 @@ module.exports = {
           }
         })
 
+        const now = new Date()
+
         if (!coupon) {
           throw new Error('Coupon not found.')
         }

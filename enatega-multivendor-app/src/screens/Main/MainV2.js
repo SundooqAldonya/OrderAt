@@ -10,7 +10,8 @@ import {
   StyleSheet,
   StatusBar,
   Modal,
-  Alert
+  Alert,
+  Linking
 } from 'react-native'
 import {
   AntDesign,
@@ -287,13 +288,15 @@ export default function FoodTab() {
 
   const setCurrentLocation = async () => {
     setBusy(true)
+    setIsVisible(false)
     const { status, canAskAgain } = await getLocationPermission()
     if (status !== 'granted' && !canAskAgain) {
       FlashMessage({
         message: t('locationPermissionMessage'),
         onPress: async () => {
           await Linking.openSettings()
-        }
+        },
+        duration: 10000
       })
       setBusy(false)
       return
