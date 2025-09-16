@@ -54,7 +54,7 @@ const MainModalize = ({
           <FlatList
             data={isLoggedIn && profile ? profile.addresses : []}
             keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{flexGrow: 1}}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: scale(20) }}
             renderItem={({ item: address }) => (
               <TouchableOpacity
                 style={[
@@ -65,13 +65,18 @@ const MainModalize = ({
                 activeOpacity={0.5}
               >
                 <View style={styles().addressSubContainer}>
-                  <View style={{width: moderateScale(24), height: moderateScale(24)}}>
+                  <View
+                    style={{
+                      width: moderateScale(24),
+                      height: moderateScale(24)
+                    }}
+                  >
                     {addressIcons[address.label]
                       ? React.createElement(addressIcons[address.label], {
-                          fill: currentTheme.darkBgFont,
+                          fill: currentTheme.darkBgFont
                         })
                       : React.createElement(addressIcons['Other'], {
-                          fill: currentTheme.darkBgFont,
+                          fill: currentTheme.darkBgFont
                         })}
                   </View>
 
@@ -129,7 +134,6 @@ const MainModalize = ({
               <TextDefault center>{t('noSavedAddresses')}</TextDefault>
             )}
             ListFooterComponent={modalFooter?.()}
-            contentContainerStyle={{ paddingBottom: scale(20) }}
           />
         </View>
       </Modal>
