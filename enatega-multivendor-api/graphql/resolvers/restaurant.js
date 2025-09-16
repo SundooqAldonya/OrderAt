@@ -923,9 +923,9 @@ module.exports = {
           }
         ])
 
-        console.log({
-          discountedRestaurantIds: discountedRestaurantIds[0].businessCategories
-        })
+        // console.log({
+        //   discountedRestaurantIds: discountedRestaurantIds[0].businessCategories
+        // })
 
         return discountedRestaurantIds
       } catch (err) {
