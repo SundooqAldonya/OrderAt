@@ -31,7 +31,7 @@ const {
   sendCustomerNotifications
 } = require('../../helpers/customerNotifications')
 const dateScalar = require('../../helpers/dateScalar')
-const { Types } = require('mongoose')
+const mongoose = require('mongoose')
 
 module.exports = {
   Date: dateScalar,
@@ -524,19 +524,15 @@ module.exports = {
     },
     assignOrder: async (_, args, { req }) => {
       console.log('assignOrder', args.id, req.userId)
+      const session = await mongoose.startSession()
+      session.startTransaction()
+      console.log('assignment session started for transaction')
       try {
-        // const order = await Order.findById(args.id)
-        // if (!order) throw new Error('Order does not exist')
-        // if (order.rider) {
-        //   throw new Error('تم تعيين الطلب لشخص آخر!')
-        // }
-        // order.rider = req.userId
-        // order.orderStatus = order_status[6]
-        // order.assignedAt = new Date()
-        // order.isRiderRinged = false
-        // const result = await order.save()
         const order = await Order.findOneAndUpdate(
-          { _id: args.id, rider: { $exists: false } }, // only if no rider assigned
+          {
+            _id: args.id,
+            $or: [{ rider: null }, { rider: { $exists: false } }]
+          },
           {
             $set: {
               rider: req.userId,
@@ -545,16 +541,21 @@ module.exports = {
               isRiderRinged: false
             }
           },
-          { new: true }
+          { new: true, session }
         )
 
         if (!order) {
           throw new Error('تم تعيين الطلب لشخص آخر!')
         }
         // check when last time assigned to order
-        await Rider.findByIdAndUpdate(req.userId, {
-          lastOrderAt: new Date()
-        })
+        await Rider.findByIdAndUpdate(
+          req.userId,
+          { lastOrderAt: new Date() },
+          { session }
+        )
+        await session.commitTransaction()
+        session.endSession() // ending transaction
+
         const transformedOrder = await transformOrder(order)
         const populatedOrder = await order.populate('restaurant')
         // sendNotificationToUser(order.user.toString(), transformedOrder)
@@ -567,6 +568,8 @@ module.exports = {
         publishOrder(transformedOrder)
         return transformedOrder
       } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
         throw error
       }
     },
