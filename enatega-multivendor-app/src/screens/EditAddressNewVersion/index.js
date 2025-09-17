@@ -47,6 +47,7 @@ import {
 } from '../../store/addNewAddressSlice'
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import Toast from 'react-native-toast-message'
 
 const EDIT_ADDRESS = gql`
   ${editAddress}
@@ -126,10 +127,11 @@ const EditAddressNewVersion = () => {
       headerTitle: t('edit_address'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: "#fff"
+        color: '#000'
       },
+      headerTitleAlign: 'center',
       headerStyle: {
-        backgroundColor: colors.primary
+        backgroundColor: '#fff'
       },
       headerLeft: () => (
         <TouchableOpacity
@@ -139,7 +141,7 @@ const EditAddressNewVersion = () => {
           }}
           style={{ paddingHorizontal: 15 }}
         >
-          <Ionicons name='arrow-back' size={moderateScale(20)} color='white' />
+          <Ionicons name='arrow-back' size={moderateScale(20)} color='#000' />
         </TouchableOpacity>
       ),
       headerRight: () => null
@@ -225,6 +227,21 @@ const EditAddressNewVersion = () => {
       selectedCityAndArea,
       coordinates
     })
+    if (!name) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: 'اسم المكان مطلوب',
+        text1Style: {
+          textAlign: 'right'
+        },
+        text2Style: {
+          textAlign: 'right',
+          fontSize: 18
+        }
+      })
+      return
+    }
     const addressInput = {
       _id: id,
       label: name,
@@ -275,7 +292,11 @@ const EditAddressNewVersion = () => {
           </Text>
         </View>
         {chooseFromMap && (
-          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(20)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 
@@ -305,7 +326,11 @@ const EditAddressNewVersion = () => {
           </Text>
         </View>
         {selectedCityAndArea && (
-          <AntDesign name='checkcircleo' size={moderateScale(20)} color='green' />
+          <AntDesign
+            name='checkcircleo'
+            size={moderateScale(20)}
+            color='green'
+          />
         )}
       </TouchableOpacity>
 

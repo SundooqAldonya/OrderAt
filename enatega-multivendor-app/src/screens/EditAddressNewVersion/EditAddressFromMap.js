@@ -78,7 +78,7 @@ const EditAddressFromMap = () => {
       headerTitle: t('choose_from_map'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: '#fff'
+        color: '#000'
       },
       headerRight: () => {
         return (
@@ -89,13 +89,13 @@ const EditAddressFromMap = () => {
             <FontAwesome6
               name='location-crosshairs'
               size={moderateScale(18)}
-              color='#fff'
+              color='#000'
             />
           </TouchableOpacity>
         )
       },
       headerStyle: {
-        backgroundColor: colors.primary
+        backgroundColor: '#fff'
       }
     })
   }, [navigation, t, colors.primary])

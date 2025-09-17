@@ -52,8 +52,8 @@ const AddressFromMap = () => {
     longitude: 30.9426
   })
 
-  const state = useSelector((state) => state.addNewAddress)
-  const { selectedCityAndArea, selectedArea } = state
+  // const state = useSelector((state) => state.addNewAddress)
+  // const { selectedCityAndArea, selectedArea } = state
 
   // console.log({ selectedCityAndArea })
 
@@ -62,7 +62,10 @@ const AddressFromMap = () => {
       headerTitle: t('choose_from_map'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: '#fff'
+        color: '#000'
+      },
+      headerStyle: {
+        backgroundColor: '#fff'
       },
       headerRight: () => {
         return (
@@ -73,13 +76,10 @@ const AddressFromMap = () => {
             <FontAwesome6
               name='location-crosshairs'
               size={moderateScale(18)}
-              color='#fff'
+              color='#000'
             />
           </TouchableOpacity>
         )
-      },
-      headerStyle: {
-        backgroundColor: colors.primary
       }
     })
   }, [navigation, t, colors.primary])

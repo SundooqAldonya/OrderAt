@@ -119,10 +119,11 @@ const AddressNewVersion = () => {
       headerTitle: t('add_new_address'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: '#fff'
+        color: '#000'
       },
+      headerTitleAlign: 'center',
       headerStyle: {
-        backgroundColor: colors.primary
+        backgroundColor: '#fff'
       },
       headerLeft: () => (
         <TouchableOpacity
@@ -132,7 +133,7 @@ const AddressNewVersion = () => {
           }}
           style={{ paddingHorizontal: 15 }}
         >
-          <Ionicons name='arrow-back' size={moderateScale(22)} color='white' />
+          <Ionicons name='arrow-back' size={moderateScale(22)} color='#000' />
         </TouchableOpacity>
       ),
       headerRight: () => null
@@ -173,89 +174,6 @@ const AddressNewVersion = () => {
     }
   })
 
-  // const setAddressLocation = async (address) => {
-  //   console.log({ address })
-  //   // setChooseFromAddressBook(true)
-  //   dispatch(setchooseFromAddressBook({ status: true }))
-  //   // setLocation({
-  //   //   _id: address._id,
-  //   //   label: address.label,
-  //   //   latitude: Number(address.location.coordinates[1]),
-  //   //   longitude: Number(address.location.coordinates[0]),
-  //   //   deliveryAddress: address.deliveryAddress,
-  //   //   details: address.details
-  //   // })
-  //   // mutate({ variables: { id: address._id } })
-  //   setCoordinates({
-  //     ...coordinates,
-  //     latitude: +address.location.coordinates[1],
-  //     longitude: +address.location.coordinates[0]
-  //   })
-  //   setFormattedAddress(address.deliveryAddress)
-  //   setCurrentPosSelected(false)
-  //   if (chooseFromMap) {
-  //     dispatch(setchooseFromMap({ status: false }))
-  //   }
-  //   setName(address.label)
-  //   setDetails(address.details)
-  //   modalRef.current.close()
-  // }
-
-  // const handleCurrentPosition = async () => {
-  //   try {
-  //     if (!currentPosSelected) {
-  //       const { status } = await Location.requestForegroundPermissionsAsync()
-  //       console.log({ status })
-  //       if (status !== 'granted') {
-  //         FlashMessage({
-  //           message:
-  //             'Location permission denied. Please enable it in settings.',
-  //           onPress: async () => {
-  //             await Linking.openSettings()
-  //           }
-  //         })
-  //         return
-  //       }
-  //       const position = await Location.getCurrentPositionAsync({
-  //         accuracy: Location.Accuracy.High,
-  //         maximumAge: 1000,
-  //         timeout: 1000
-  //       })
-  //       console.log('Current Position:', position.coords)
-
-  //       getAddress(position.coords.latitude, position.coords.longitude).then(
-  //         (res) => {
-  //           const newCoordinates = {
-  //             latitude: position.coords.latitude,
-  //             longitude: position.coords.longitude,
-  //             latitudeDelta: 0.01,
-  //             longitudeDelta: 0.01
-  //           }
-
-  //           setCoordinates({ ...newCoordinates })
-
-  //           if (res.formattedAddress) {
-  //             setFormattedAddress(res.formattedAddress)
-  //           }
-  //           setCurrentPosSelected(true)
-  //           dispatch(setchooseFromMap({ status: false }))
-  //           // setChooseFromAddressBook(false)
-  //           dispatch(setChooseFromAddressBook({ status: false }))
-  //         }
-  //       )
-  //     } else {
-  //       setCurrentPosSelected(false)
-  //     }
-  //   } catch (error) {
-  //     console.log('Error fetching location:', error)
-  //     FlashMessage({ message: 'Failed to get current location. Try again.' })
-  //   }
-  // }
-
-  // const handleChooseAddress = () => {
-  //   modalRef.current.open()
-  // }
-
   console.log({ locationMap })
 
   const handleSubmit = () => {
@@ -287,80 +205,12 @@ const AddressNewVersion = () => {
       details: details
     }
     mutate({ variables: { addressInput } })
-    // if (chooseFromMap) {
-    // dispatch(
-    //   setAddress({
-    //     addressFrom: currentInput,
-    //     regionFrom: locationMap,
-    //     addressFreeText: details,
-    //     label: name
-    //   })
-    // )
-
-    // } else if (selectedCityAndArea) {
-    //   // const newCoordinates = {
-    //   //   latitude: selectedArea.location.location.coordinates[1],
-    //   //   longitude: selectedArea.location.location.coordinates[0],
-    //   //   latitudeDelta: 0.01,
-    //   //   longitudeDelta: 0.01
-    //   // }
-    //   //   dispatch(
-    //   //     setAddress({
-    //   //       address: selectedArea.address,
-    //   //       region: locationMap,
-    //   //       addressFreeText: details,
-    //   //       label: name
-    //   //     })
-    //   //   )
-    //   // } else {
-    //   //   dispatch(
-    //   //     setAddress({
-    //   //       address: formattedAddress,
-    //   //       region: coordinates,
-    //   //       addressFreeText: details,
-    //   //       label: name
-    //   //     })
-    //   //   )
-    //   // }
-    // }
   }
 
   const handleNearestArea = () => {
     setAreasModalVisible(true)
     fetchAreas({ variables: { id: city._id } })
   }
-
-  // const modalFooter = () => (
-  //   <View style={styles.addNewAddressbtn}>
-  //     <View style={styles.addressContainer}>
-  //       <TouchableOpacity
-  //         activeOpacity={0.5}
-  //         style={styles.addButton}
-  //         onPress={() => {
-  //           if (isLoggedIn) {
-  //             // navigation.navigate('AddNewAddressUser')
-  //             navigation.navigate('AddressNewVersion')
-  //           } else {
-  //             navigation.navigate('SelectLocation', {
-  //               ...location
-  //             })
-  //             const modal = modalRef.current
-  //             modal?.close()
-  //           }
-  //         }}
-  //       >
-  //         <View style={{ ...styles.addressSubContainer, gap: 5 }}>
-  //           <AntDesign name='pluscircleo' size={moderateScale(20)} color={'#fff'} />
-  //           <View style={styles.mL5p} />
-  //           <TextDefault bold H4>
-  //             {t('addAddress')}
-  //           </TextDefault>
-  //         </View>
-  //       </TouchableOpacity>
-  //     </View>
-  //     <View style={styles.addressTick}></View>
-  //   </View>
-  // )
 
   return (
     <View style={styles.container}>
