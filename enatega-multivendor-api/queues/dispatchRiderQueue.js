@@ -5,6 +5,7 @@ const Rider = require('../models/rider')
 const rankRiders = require('../helpers/rankRiders')
 const { sendNotificationToRiders } = require('../helpers/findRiders')
 const DispatchRecipient = require('../models/DispatchRecipient')
+const DispatchOptions = require('../models/DispatchOptions')
 
 const dispatchQueue = new Queue('dispatch', 'redis://127.0.0.1:6379')
 
@@ -71,10 +72,17 @@ dispatchQueue.process(async job => {
   })
   console.log({ rankedLength: ranked?.length })
 
-  const firstAttempt = 1 // default 5
+  const dispatchOptions = await DispatchOptions.findOne()
+  console.log({ dispatchOptions })
+
+  const firstAttempt = dispatchOptions ? dispatchOptions.firstAttemptRiders : 1
+  const secondAttempt = dispatchOptions
+    ? dispatchOptions.secondAttemptRiders
+    : 10
+  const delayDispatch = dispatchOptions ? dispatchOptions.delayDispatch : 30000
 
   const batchSize =
-    attempt === 0 ? firstAttempt : attempt === 1 ? 10 : riders.length
+    attempt === 0 ? firstAttempt : attempt === 1 ? secondAttempt : riders.length
   console.log({ batchSize })
 
   const selected = ranked.slice(0, batchSize)
@@ -134,7 +142,10 @@ dispatchQueue.process(async job => {
   // Re-enqueue retry if not last attempt
   const freshOrder = await Order.findById(orderId)
   if (!freshOrder.rider && attempt + 1 < log.maxCycles) {
-    await dispatchQueue.add({ orderId, attempt: attempt + 1 }, { delay: 30000 })
+    await dispatchQueue.add(
+      { orderId, attempt: attempt + 1 },
+      { delay: delayDispatch }
+    )
   }
 })
 

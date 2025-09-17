@@ -1051,3 +1051,10 @@ export const updateRiderAvailabilityPeriod = gql`
     }
   }
 `
+export const updateDispatchOptions = gql`
+  mutation UpdateDispatchOptions($input: DispatchOptionsInput!) {
+    updateDispatchOptions(input: $input) {
+      message
+    }
+  }
+`

@@ -1388,3 +1388,12 @@ export const getPrepaidDeliveryPackages = gql`
     }
   }
 `
+export const getDispatchOptions = gql`
+  query GetDispatchOptions {
+    getDispatchOptions {
+      delayDispatch
+      firstAttemptRiders
+      secondAttemptRiders
+    }
+  }
+`

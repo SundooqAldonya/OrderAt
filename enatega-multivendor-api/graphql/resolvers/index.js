@@ -42,6 +42,7 @@ const contactus = require('./contactus')
 const notifications = require('./notifications')
 const xlsx = require('./xlsx')
 const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
+const dispatchOptions = require('./dispatchOptions')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -86,7 +87,8 @@ const rootResolver = {
     ...contactus.Query,
     ...notifications.Query,
     ...xlsx.Query,
-    ...prepaidDeliveryPackage.Query
+    ...prepaidDeliveryPackage.Query,
+    ...dispatchOptions.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -130,7 +132,8 @@ const rootResolver = {
     ...contactus.Mutation,
     ...notifications.Mutation,
     ...xlsx.Mutation,
-    ...prepaidDeliveryPackage.Mutation
+    ...prepaidDeliveryPackage.Mutation,
+    ...dispatchOptions.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

@@ -25,6 +25,7 @@ import AppConfigurations from '../components/Configuration/App/App'
 import FirebaseConfiguration from '../components/Configuration/FireBase/FireBase'
 import Configuration1 from './Configuration1'
 import RiderAvailabilityTime from '../components/Configuration/RiderAvailabilityTime'
+import DispatchOptions from '../components/Configuration/DispatchOptions'
 
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
@@ -58,6 +59,9 @@ const Configuration = props => {
             sx={{ display: { xs: 'none', lg: 'block' } }}
             ml={-2}>
             <ConfigIcon />
+          </Grid>
+          <Grid item sx={12} md={12} lg={5}>
+            <DispatchOptions />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
             <RiderAvailabilityTime

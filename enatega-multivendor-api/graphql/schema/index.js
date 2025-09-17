@@ -1613,7 +1613,14 @@ const typeDefs = gql`
     restaurantId: String
   }
 
+  type DispatchOptions {
+    delayDispatch: Float
+    firstAttemptRiders: Float
+    secondAttemptRiders: Float
+  }
+
   type Query {
+    getDispatchOptions: DispatchOptions
     restaurantOrdersHistory(startDate: String, endDate: String): [Order!]
     getPrepaidDeliveryPackages: [PrepaidDeliveryPackage!]
     checkDeliveryZone(latitude: Float!, longitude: Float!): Message
@@ -2083,7 +2090,14 @@ const typeDefs = gql`
     stock: String
   }
 
+  input DispatchOptionsInput {
+    delayDispatch: Float
+    firstAttemptRiders: Float
+    secondAttemptRiders: Float
+  }
+
   type Mutation {
+    updateDispatchOptions(input: DispatchOptionsInput!): Message
     updateRiderAvailabilityPeriod(period: Float!): Message
     updateRiderStatus(available: Boolean!): Message
     updateStockFood(input: FoodStockInput!): Message

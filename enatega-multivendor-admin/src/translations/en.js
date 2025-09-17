@@ -438,7 +438,11 @@ const en = {
     UploadDocuments: 'Upload Documents',
     'Profile Picture': 'Profile Picture',
     'National ID Picture': 'National ID Picture',
-    ChooseImage: 'Choose Image'
+    ChooseImage: 'Choose Image',
+    DispatchOptions: 'Dispatch Options',
+    first_attempt_riders: 'First Attempt Riders',
+    second_attempt_riders: 'Second Attempt Riders',
+    dispatch_delay: 'Dispatch Delay'
   }
 }
 
