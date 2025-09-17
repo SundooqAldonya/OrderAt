@@ -13,11 +13,17 @@ import {
   ColumnAlignment,
   CENTER
 } from 'react-native-thermal-receipt-printer-image-qr'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 let connectedDevice = null
 
+console.log({ connectedDevice })
+
 // Navigation reference for redirecting to settings
 let navigationRef = null
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+const LAST_PRINTER_KEY = 'last_connected_printer'
 
 export class PrinterManager {
   /**
@@ -31,6 +37,12 @@ export class PrinterManager {
    * Get currently connected device
    */
   static getConnectedDevice() {
+    return connectedDevice
+  }
+
+  static async setConnectedDevice(dev) {
+    // const dev = await AsyncStorage.getItem(LAST_PRINTER_KEY)
+    connectedDevice = dev
     return connectedDevice
   }
 
@@ -49,42 +61,85 @@ export class PrinterManager {
    * If one fails, we log the error and keep going.
    * Network scan is commented out - use manual IP instead.
    */
+  // static async scanAll(manualIP = null) {
+  //   const devices = []
+
+  //   // 1) USB
+  //   try {
+  //     const usbDevices = await USB.scan()
+  //     devices.push(...usbDevices)
+  //   } catch (err) {
+  //     console.error('USB scan failed:', err)
+  //   }
+
+  //   // 2) BLE
+  //   try {
+  //     const bleDevices = await Bluetooth.scan()
+  //     devices.push(...bleDevices)
+  //   } catch (err) {
+  //     console.error('Bluetooth scan failed:', err)
+  //   }
+
+  //   // 3) Network - COMMENTED OUT FOR MANUAL IP CONFIGURATION
+  //   // Use manual IP if provided
+  //   if (manualIP && manualIP.trim()) {
+  //     const networkDevice = this.createNetworkPrinterFromIP(manualIP)
+  //     if (networkDevice) {
+  //       devices.push(networkDevice)
+  //     }
+  //   } else {
+  //     try {
+  //       const netDevices = await Network.scan()
+  //       console.log(netDevices)
+  //       devices.push(...netDevices)
+  //     } catch (err) {
+  //       console.error('Network scan failed:', err)
+  //     }
+  //   }
+
+  //   return devices
+  // }
+
   static async scanAll(manualIP = null) {
-    const devices = []
+    const [usb, ble, net] = await Promise.all([
+      this.scanUSB(),
+      this.scanBluetooth(),
+      this.scanNetwork(manualIP)
+    ])
+    return [...usb, ...ble, ...net]
+  }
 
-    // 1) USB
+  static async scanBluetooth() {
     try {
-      const usbDevices = await USB.scan()
-      devices.push(...usbDevices)
-    } catch (err) {
-      console.error('USB scan failed:', err)
-    }
-
-    // 2) BLE
-    try {
-      const bleDevices = await Bluetooth.scan()
-      devices.push(...bleDevices)
+      return await Bluetooth.scan()
     } catch (err) {
       console.error('Bluetooth scan failed:', err)
+      return []
     }
+  }
 
-    // 3) Network - COMMENTED OUT FOR MANUAL IP CONFIGURATION
-    // Use manual IP if provided
+  static async scanUSB() {
+    try {
+      return await USB.scan()
+    } catch (err) {
+      console.error('USB scan failed:', err)
+      return []
+    }
+  }
+
+  static async scanNetwork(manualIP = null) {
+    const devices = []
     if (manualIP && manualIP.trim()) {
-      const networkDevice = this.createNetworkPrinterFromIP(manualIP)
-      if (networkDevice) {
-        devices.push(networkDevice)
-      }
+      const device = this.createNetworkPrinterFromIP(manualIP)
+      if (device) devices.push(device)
     } else {
       try {
         const netDevices = await Network.scan()
-        console.log(netDevices)
         devices.push(...netDevices)
       } catch (err) {
         console.error('Network scan failed:', err)
       }
     }
-
     return devices
   }
 
@@ -102,9 +157,33 @@ export class PrinterManager {
         case 'network':
           return Network.connect(device.address)
       }
+      await delay(300)
+
+      // ✅ send ESC @ init sequence if supported
+      // await this.escPrint()
+      // try {
+      //   let PrinterAPI = BLEPrinter
+      //   if (device.type === 'usb') PrinterAPI = USBPrinter
+      //   if (device.type === 'network') PrinterAPI = NetPrinter
+
+      //   const initCmd = '\x1B\x40' // ESC @
+      //   await PrinterAPI.printText(initCmd)
+      // } catch (e) {
+      //   console.warn('Printer init failed:', e)
+      // }
     } catch (err) {
       console.error(err)
       connectedDevice = null
+    }
+  }
+
+  static async escPrint(printerAPI) {
+    await delay(300)
+    try {
+      const initCmd = '\x1B\x40' // ESC @
+      await printerAPI.printText(initCmd)
+    } catch (e) {
+      console.warn('Printer init failed:', e)
     }
   }
 
@@ -172,7 +251,7 @@ export class PrinterManager {
         PrinterAPI = NetPrinter
         break
     }
-
+    // await this.escPrint(PrinterAPI)
     try {
       if (printOptions.cutPaper) {
         await PrinterAPI.printBill(text)
@@ -228,6 +307,8 @@ export class PrinterManager {
         PrinterAPI = NetPrinter
         break
     }
+
+    // await this.escPrint(PrinterAPI)
 
     try {
       await PrinterAPI.printImageBase64(rawBase64, opts)

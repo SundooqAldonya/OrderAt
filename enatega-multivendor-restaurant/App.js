@@ -128,6 +128,7 @@ export default function App() {
       if (lastPrinter) {
         try {
           console.log('Reconnecting to last used printer:', lastPrinter)
+          await PrinterManager.setConnectedDevice(lastPrinter)
           await PrinterManager.connect(lastPrinter)
         } catch (e) {
           console.warn('Auto-reconnect failed:', e)

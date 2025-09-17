@@ -46,6 +46,7 @@ const Profile = () => {
   const printers = useSelector(state => state.printers.printers)
   const connectedDevice = useSelector(state => state.printers.connectedDevice)
   const isScanning = useSelector(state => state.printers.isScanning)
+  const [printerType, setPrinterType] = useState('bluetooth') // 'bluetooth' | 'network'
 
   // Local state
   const [printerIP, setPrinterIP] = useState(printer ? printer : '')
@@ -86,17 +87,34 @@ const Profile = () => {
   }
 
   // Scan for printers
+  // const scanPrinters = async () => {
+  //   try {
+  //     dispatch(setIsScanning(true))
+  //     const foundPrinters = await PrinterManager.scanAll(printerIP)
+  //     dispatch(setPrinters({ printers: foundPrinters }))
+  //   } catch (error) {
+  //     console.error('Error scanning printers:', error)
+  //     Alert.alert(
+  //       'Scan Error',
+  //       'Failed to scan for printers. Please try again.'
+  //     )
+  //   } finally {
+  //     dispatch(setIsScanning(false))
+  //   }
+  // }
+
   const scanPrinters = async () => {
+    dispatch(setIsScanning(true))
     try {
-      dispatch(setIsScanning(true))
-      const foundPrinters = await PrinterManager.scanAll(printerIP)
+      let foundPrinters = []
+      if (printerType === 'bluetooth') {
+        foundPrinters = await PrinterManager.scanBluetooth()
+      } else if (printerType === 'network') {
+        foundPrinters = await PrinterManager.scanNetwork(printerIP)
+      }
       dispatch(setPrinters({ printers: foundPrinters }))
-    } catch (error) {
-      console.error('Error scanning printers:', error)
-      Alert.alert(
-        'Scan Error',
-        'Failed to scan for printers. Please try again.'
-      )
+    } catch (err) {
+      console.error(err)
     } finally {
       dispatch(setIsScanning(false))
     }
@@ -186,6 +204,19 @@ const Profile = () => {
         {isConnected && (
           <MaterialIcons name="check-circle" size={24} color={colors.green} />
         )}
+        <TouchableOpacity
+          style={styles.testBtn}
+          onPress={async () => {
+            try {
+              await PrinterManager.print('Test Print\n\n')
+              alert('✅ Test print sent')
+            } catch (err) {
+              console.error('Test print failed:', err)
+              alert('❌ Could not print')
+            }
+          }}>
+          <TextDefault style={styles.testBtnText}>Test Print</TextDefault>
+        </TouchableOpacity>
       </TouchableOpacity>
     )
   }
@@ -220,19 +251,53 @@ const Profile = () => {
               </View>
             </View>
           ) : null}
-          <View style={style.inputGroup}>
-            <TextDefault bolder style={{ marginBottom: -10 }}>
-              Printer IP
-            </TextDefault>
-            <TextInput
-              style={[styles.textInput]}
-              placeholder={'192.168.1.1'}
-              value={printerIP}
-              onChangeText={e => setPrinterIP(e)}
-              autoCapitalize={'none'}
-              placeholderTextColor="#999"
-            />
+
+          <View style={style.toggleContainer}>
+            <TouchableOpacity
+              onPress={() => setPrinterType('bluetooth')}
+              style={[
+                style.toggleBtn,
+                printerType === 'bluetooth' && style.activeToggle
+              ]}>
+              <TextDefault
+                style={[
+                  style.toggleText,
+                  printerType === 'bluetooth' && style.activeText
+                ]}>
+                Bluetooth
+              </TextDefault>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setPrinterType('network')}
+              style={[
+                style.toggleBtn,
+                printerType === 'network' && style.activeToggle
+              ]}>
+              <TextDefault
+                style={[
+                  style.toggleText,
+                  printerType === 'network' && style.activeText
+                ]}>
+                Network
+              </TextDefault>
+            </TouchableOpacity>
           </View>
+
+          {printerType === 'network' ? (
+            <View style={style.inputGroup}>
+              <TextDefault bolder style={{ marginBottom: -10 }}>
+                Printer IP
+              </TextDefault>
+              <TextInput
+                style={[styles.textInput]}
+                placeholder={'192.168.1.1'}
+                value={printerIP}
+                onChangeText={e => setPrinterIP(e)}
+                autoCapitalize={'none'}
+                placeholderTextColor="#999"
+              />
+            </View>
+          ) : null}
 
           {/* Printer Management Section */}
           <View style={style.card}>
@@ -390,7 +455,7 @@ const Profile = () => {
 const style = StyleSheet.create({
   profileContainer: {
     alignItems: 'center',
-    marginTop: 40
+    marginTop: 0
   },
   profileImage: {
     width: 100,
@@ -482,6 +547,32 @@ const style = StyleSheet.create({
   saveBtnText: {
     color: '#fff',
     fontSize: 16
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 12,
+    borderRadius: 30,
+    backgroundColor: '#f1f1f1',
+    padding: 4
+  },
+  toggleBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  activeToggle: {
+    backgroundColor: colors.primary // iOS blue, looks neat
+  },
+  toggleText: {
+    fontSize: 16,
+    color: '#555'
+  },
+  activeText: {
+    color: '#fff',
+    fontWeight: '600'
   }
 })
 
@@ -514,9 +605,10 @@ const printerItemStyle = StyleSheet.create({
     color: '#666'
   },
   connectedInfo: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    gap: 10,
     padding: 10,
     backgroundColor: '#e8f5e8',
     borderRadius: 8,

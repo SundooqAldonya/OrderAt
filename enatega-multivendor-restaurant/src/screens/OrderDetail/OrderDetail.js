@@ -123,6 +123,7 @@ export default function OrderDetail({ navigation, route }) {
         // b64 = b64.replace(/\r?\n|\r/g, '')
         await new Promise(res => setTimeout(res, 1000))
         // console.log({ b64 })
+        // await PrinterManager.escPrint()
         await PrinterManager.printBase64(b64, { width: 384 })
         await PrinterManager.print('\n', { align: 'center', cutPaper: true })
         return true
