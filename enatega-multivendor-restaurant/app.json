@@ -10,20 +10,16 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.orderatbusiness.app",
       "infoPlist": {
-        "UIBackgroundModes": [
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["remote-notification"]
       }
     },
     "android": {
-      "versionCode": 71,
+      "versionCode": 72,
       "package": "com.orderatbusiness.app",
       "googleServicesFile": "./google-services.json",
       "permissions": [
@@ -46,9 +42,7 @@
       [
         "expo-notifications",
         {
-          "sounds": [
-            "./assets/beep1.wav"
-          ]
+          "sounds": ["./assets/beep1.wav"]
         }
       ],
       "expo-localization",
