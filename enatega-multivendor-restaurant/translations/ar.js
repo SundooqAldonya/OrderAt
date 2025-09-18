@@ -114,5 +114,6 @@ export const ar = {
   orders_history: 'الطلبات',
   loading: 'جاري الطلب',
   Print: 'أطبع',
-  app_version: 'الإصدار'
+  app_version: 'الإصدار',
+  test_print_working: '✅ الطابعة فعالة'
 }

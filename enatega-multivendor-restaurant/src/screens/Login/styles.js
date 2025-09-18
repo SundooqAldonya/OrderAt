@@ -234,6 +234,14 @@ const styles = StyleSheet.create({
     zIndex: 999999999999999,
     borderRadius: 10,
     marginTop: height * 0.15
+  },
+  testBtn: {
+    backgroundColor: colors.startColor,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    marginTop: 10
   }
 })
 export default styles

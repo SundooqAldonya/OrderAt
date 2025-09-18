@@ -113,5 +113,6 @@ export const en = {
   orders_history: 'Orders History',
   loading: 'Loading',
   Print: 'Print',
-  app_version: 'App Version'
+  app_version: 'App Version',
+  test_print_working: '✅ Test print sent'
 }

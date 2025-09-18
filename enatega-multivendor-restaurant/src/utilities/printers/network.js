@@ -100,6 +100,7 @@ export const savePrinterInfo = async printerDevice => {
 export const loadPrinterInfo = async () => {
   try {
     const stored = await AsyncStorage.getItem(LAST_PRINTER_KEY)
+    console.log({ stored })
     return stored ? JSON.parse(stored) : null
   } catch (err) {
     console.error('Failed to load printer info:', err)

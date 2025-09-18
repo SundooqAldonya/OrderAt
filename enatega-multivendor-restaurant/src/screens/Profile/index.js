@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   View,
   FlatList,
-  Alert
+  Alert,
+  Platform
 } from 'react-native'
 import { Spinner, TextDefault } from '../../components'
 import { useTranslation } from 'react-i18next'
@@ -33,7 +34,12 @@ import {
   clearConnectedDevice
 } from '../../../store/printersSlice'
 import PrinterManager from '../../utilities/printers/printerManager'
+import { loadPrinterInfo, savePrinterInfo } from '../../utilities/printers'
 // import { nativeApplicationVersion, nativeBuildVersion } from 'expo-application'
+import RNFS from 'react-native-fs'
+import { Asset } from 'expo-asset'
+import * as FileSystem from 'expo-file-system'
+import * as ImageManipulator from 'expo-image-manipulator'
 
 const Profile = () => {
   const { t } = useTranslation()
@@ -134,6 +140,7 @@ const Profile = () => {
           text: 'Connect',
           onPress: async () => {
             try {
+              await savePrinterInfo(printer)
               await PrinterManager.connect(printer)
               dispatch(setConnectedDevice(printer))
               Alert.alert('Success', `Connected to ${printer.name}`)
@@ -179,6 +186,50 @@ const Profile = () => {
     )
   }
 
+  const getImageBase64 = async () => {
+    try {
+      const image = require('../../assets/logo_2.png')
+      const asset = Asset.fromModule(image)
+      await asset.downloadAsync()
+      const fileUri = asset.localUri || asset.uri
+      // const base64 = await FileSystem.readAsStringAsync(fileUri, {
+      //   encoding: FileSystem.EncodingType.Base64
+      // })
+
+      // return base64
+      const manipulated = await ImageManipulator.manipulateAsync(
+        fileUri,
+        [{ resize: { width: 300, height: 200 } }],
+        { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
+      )
+
+      return manipulated.base64
+    } catch (err) {
+      console.error('Error reading image:', err)
+      return null
+    }
+  }
+
+  const handleTestPrinter = async item => {
+    try {
+      const b64 = await getImageBase64()
+      await PrinterManager.connect(item)
+      await PrinterManager.printBase64(b64, {
+        align: 'center',
+        width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
+        height: 200
+      })
+      await PrinterManager.print('\n', {
+        align: 'center',
+        cutPaper: true
+      })
+      alert(t('test_print_working'))
+    } catch (err) {
+      console.error('Test print failed:', err)
+      alert('❌ Could not print')
+    }
+  }
+
   // Render printer item
   const renderPrinterItem = ({ item }) => {
     const isConnected =
@@ -193,28 +244,22 @@ const Profile = () => {
           isConnected && printerItemStyle.connectedContainer
         ]}
         onPress={() => connectToPrinter(item)}>
-        <View style={printerItemStyle.info}>
-          <TextDefault bolder style={printerItemStyle.name}>
-            {item.name}
-          </TextDefault>
-          <TextDefault style={printerItemStyle.address}>
-            {item.type}: {item.address}
-          </TextDefault>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={printerItemStyle.info}>
+            <TextDefault bolder style={printerItemStyle.name}>
+              {item.name}
+            </TextDefault>
+            <TextDefault style={printerItemStyle.address}>
+              {item.type}: {item.address}
+            </TextDefault>
+          </View>
+          {isConnected && (
+            <MaterialIcons name="check-circle" size={24} color={colors.green} />
+          )}
         </View>
-        {isConnected && (
-          <MaterialIcons name="check-circle" size={24} color={colors.green} />
-        )}
         <TouchableOpacity
           style={styles.testBtn}
-          onPress={async () => {
-            try {
-              await PrinterManager.print('Test Print\n\n')
-              alert('✅ Test print sent')
-            } catch (err) {
-              console.error('Test print failed:', err)
-              alert('❌ Could not print')
-            }
-          }}>
+          onPress={() => handleTestPrinter(item)}>
           <TextDefault style={styles.testBtnText}>Test Print</TextDefault>
         </TouchableOpacity>
       </TouchableOpacity>
@@ -225,7 +270,7 @@ const Profile = () => {
     <SafeAreaView
       style={{
         paddingHorizontal: 20,
-        backgroundColor: colors.primary,
+        // backgroundColor: colors.primary,
         height: '100%',
         flex: 1
       }}>
@@ -236,7 +281,7 @@ const Profile = () => {
             style={{ marginTop: 50 }}>
             <AntDesign name="arrowleft" size={30} />
           </TouchableOpacity>
-          {data ? (
+          {/* {data ? (
             <View style={style.profileContainer}>
               <Image
                 source={{ uri: restaurant.image }}
@@ -250,7 +295,7 @@ const Profile = () => {
                 </TextDefault>
               </View>
             </View>
-          ) : null}
+          ) : null} */}
 
           <View style={style.toggleContainer}>
             <TouchableOpacity
@@ -351,11 +396,11 @@ const Profile = () => {
             )}
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               marginHorizontal: 'auto',
               marginTop: 20,
-              backgroundColor: 'purple',
+              backgroundColor: colors.primary,
               width: 70,
               height: 30,
               justifyContent: 'center',
@@ -364,7 +409,7 @@ const Profile = () => {
             }}
             onPress={handleSave}>
             <TextDefault style={{ color: '#fff' }}>{t('save')}</TextDefault>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={style.deleteAccountBtn}
             onPress={() => setDeleteModalVisible(true)}>
@@ -554,7 +599,12 @@ const style = StyleSheet.create({
     marginVertical: 12,
     borderRadius: 30,
     backgroundColor: '#f1f1f1',
-    padding: 4
+    padding: 4,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3
   },
   toggleBtn: {
     flex: 1,
@@ -578,7 +628,7 @@ const style = StyleSheet.create({
 
 const printerItemStyle = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,

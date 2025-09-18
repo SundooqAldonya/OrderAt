@@ -117,7 +117,7 @@ export default function OrderDetail({ navigation, route }) {
     console.log({ printerInfo: lastPrinter })
     console.log({ b64: b64?.substring(0, 40) })
     // await PrinterManager.disconnect(lastPrinter)
-    // await PrinterManager.connect(lastPrinter)
+    await PrinterManager.connect(lastPrinter)
     if (receiptRef.current) {
       try {
         // b64 = b64.replace(/\r?\n|\r/g, '')
