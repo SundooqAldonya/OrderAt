@@ -123,28 +123,38 @@ const AddNewOrder = ({ navigation }) => {
 
   const deliveryFee = data?.getDeliveryCalculation?.amount || 0
 
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible)
-  }
-
-  const handleOrderSubmit = async () => {
-    if (!userData.phone) {
-      Alert.alert('Error', `Please fill phone number`)
-      return
-    }
-    if (userData.phone?.length > 11) {
+  const validated = () => {
+    // if (!userData.phone) {
+    //   Alert.alert('Error', `Please fill phone number`)
+    //   return false
+    // }
+    if (
+      userData.phone?.length &&
+      (userData.phone?.length > 11 || userData.phone.length < 11)
+    ) {
       Alert.alert('Error', t('digits_error'))
-      return
+      return false
     }
     if (!selectedArea) {
       Alert.alert('Error', `Please select area`)
-      return
+      return false
     }
+    return true
+  }
+
+  const toggleOverlay = () => {
+    console.log({ validated: validated() })
+    if (validated()) {
+      setOverlayVisible(!overlayVisible)
+    }
+  }
+
+  const handleOrderSubmit = async () => {
     const restaurantId = await AsyncStorage.getItem('restaurantId')
     mutateCreateOrder({
       variables: {
         input: {
-          phone: userData?.phone,
+          phone: userData?.phone ? userData.phone : '01000000000',
           areaId: selectedArea?._id,
           addressDetails: userData?.addressDetails,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
