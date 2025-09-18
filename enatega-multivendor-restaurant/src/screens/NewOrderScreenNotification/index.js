@@ -11,7 +11,7 @@ import { colors, MAX_TIME } from '../../utilities'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import AntDesign from '@expo/vector-icons/AntDesign'
 
 const NewOrderScreenNotification = ({ route }) => {
   const { t } = useTranslation()
@@ -48,9 +48,16 @@ const NewOrderScreenNotification = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.green} />
-      <TextDefault bolder style={styles.title}>
-        {t('new_order_title')}
-      </TextDefault>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+        <TouchableOpacity
+          style={{ marginTop: 50 }}
+          onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={30} color="black" />
+        </TouchableOpacity>
+        <TextDefault bolder style={styles.title}>
+          {t('new_order_title')}
+        </TextDefault>
+      </View>
       <TextDefault bolder style={styles.subtitle}>
         {t('orderId')}: {orderData.orderId}
       </TextDefault>
