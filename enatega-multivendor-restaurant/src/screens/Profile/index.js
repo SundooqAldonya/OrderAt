@@ -52,8 +52,9 @@ const Profile = () => {
   const printers = useSelector(state => state.printers.printers)
   const connectedDevice = useSelector(state => state.printers.connectedDevice)
   const isScanning = useSelector(state => state.printers.isScanning)
-  const [printerType, setPrinterType] = useState('bluetooth') // 'bluetooth' | 'network'
-
+  const [printerType, setPrinterType] = useState('network') // 'bluetooth' | 'network'
+  const [bluetoothPrinters, setBluetoothPrinters] = useState([])
+  const [networkPrinters, setNetworkPrinters] = useState([])
   // Local state
   const [printerIP, setPrinterIP] = useState(printer ? printer : '')
   const dispatch = useDispatch()
@@ -115,8 +116,10 @@ const Profile = () => {
       let foundPrinters = []
       if (printerType === 'bluetooth') {
         foundPrinters = await PrinterManager.scanBluetooth()
+        setBluetoothPrinters(foundPrinters)
       } else if (printerType === 'network') {
         foundPrinters = await PrinterManager.scanNetwork(printerIP)
+        setNetworkPrinters(foundPrinters)
       }
       dispatch(setPrinters({ printers: foundPrinters }))
     } catch (err) {
@@ -192,11 +195,7 @@ const Profile = () => {
       const asset = Asset.fromModule(image)
       await asset.downloadAsync()
       const fileUri = asset.localUri || asset.uri
-      // const base64 = await FileSystem.readAsStringAsync(fileUri, {
-      //   encoding: FileSystem.EncodingType.Base64
-      // })
 
-      // return base64
       const manipulated = await ImageManipulator.manipulateAsync(
         fileUri,
         [{ resize: { width: 300, height: 200 } }],
@@ -223,7 +222,7 @@ const Profile = () => {
         align: 'center',
         cutPaper: true
       })
-      alert(t('test_print_working'))
+      // alert(t('test_print_working'))
     } catch (err) {
       console.error('Test print failed:', err)
       alert('❌ Could not print')
@@ -265,6 +264,9 @@ const Profile = () => {
       </TouchableOpacity>
     )
   }
+
+  const printersToShow =
+    printerType === 'bluetooth' ? bluetoothPrinters : networkPrinters
 
   return (
     <SafeAreaView
@@ -379,7 +381,7 @@ const Profile = () => {
             {/* Printer List */}
             {printers.length > 0 ? (
               <FlatList
-                data={printers}
+                data={printersToShow}
                 renderItem={renderPrinterItem}
                 keyExtractor={(item, index) =>
                   `${item.type}-${item.address}-${index}`
