@@ -54,6 +54,7 @@ const Profile = () => {
   const isScanning = useSelector(state => state.printers.isScanning)
   const [printerType, setPrinterType] = useState('network') // 'bluetooth' | 'network'
   const [bluetoothPrinters, setBluetoothPrinters] = useState([])
+  const [firstTimeRender, setFirstTimeRender] = useState(true)
   const [networkPrinters, setNetworkPrinters] = useState([])
   // Local state
   const [printerIP, setPrinterIP] = useState(printer ? printer : '')
@@ -65,6 +66,35 @@ const Profile = () => {
   useEffect(() => {
     PrinterManager.setNavigationRef(navigation)
   }, [navigation])
+
+  useEffect(() => {
+    if (firstTimeRender) {
+      setFirstTimeRender(false)
+    }
+  }, [firstTimeRender])
+
+  console.log({ firstTimeRender })
+
+  useEffect(() => {
+    if (!printers || printers.length === 0) {
+      scaneType()
+    } else {
+      const bluetooth = printers.filter(item => item.type === 'bluetooth')
+      const network = printers.filter(item => item.type === 'network')
+      if (printerType === 'bluetooth') setBluetoothPrinters(bluetooth)
+      if (printerType === 'network') setNetworkPrinters(network)
+    }
+  }, [printerType])
+
+  const scaneType = async () => {
+    let foundPrinters = []
+    if (printerType === 'bluetooth') {
+      foundPrinters = await PrinterManager.scanBluetooth()
+    } else if (printerType === 'network') {
+      foundPrinters = await PrinterManager.scanNetwork(printerIP)
+    }
+    dispatch(setPrinters({ printers: foundPrinters }))
+  }
 
   const [deactivate, { loading: deactivateLoading }] = useMutation(
     deactivateRestaurant,
@@ -88,10 +118,10 @@ const Profile = () => {
     }
   }
 
-  const handleSave = () => {
-    dispatch(setPrinter({ printerIP }))
-    navigation.navigate('Orders')
-  }
+  // const handleSave = () => {
+  //   dispatch(setPrinter({ printerIP }))
+  //   navigation.navigate('Orders')
+  // }
 
   // Scan for printers
   // const scanPrinters = async () => {
@@ -113,15 +143,7 @@ const Profile = () => {
   const scanPrinters = async () => {
     dispatch(setIsScanning(true))
     try {
-      let foundPrinters = []
-      if (printerType === 'bluetooth') {
-        foundPrinters = await PrinterManager.scanBluetooth()
-        setBluetoothPrinters(foundPrinters)
-      } else if (printerType === 'network') {
-        foundPrinters = await PrinterManager.scanNetwork(printerIP)
-        setNetworkPrinters(foundPrinters)
-      }
-      dispatch(setPrinters({ printers: foundPrinters }))
+      await scaneType()
     } catch (err) {
       console.error(err)
     } finally {
