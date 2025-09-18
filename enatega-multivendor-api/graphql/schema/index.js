@@ -171,6 +171,7 @@ const typeDefs = gql`
     contactNumber: String
     isVisible: Boolean
     featured: Boolean
+    lastOnlineAt: Date
   }
 
   type RestaurantCustomer {

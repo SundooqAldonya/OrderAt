@@ -442,7 +442,8 @@ const en = {
     DispatchOptions: 'Dispatch Options',
     first_attempt_riders: 'First Attempt Riders',
     second_attempt_riders: 'Second Attempt Riders',
-    dispatch_delay: 'Dispatch Delay'
+    dispatch_delay: 'Dispatch Delay',
+    lastOnlineAt: 'Last online'
   }
 }
 

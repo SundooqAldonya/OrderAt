@@ -692,6 +692,7 @@ export const restaurants = `query Restaurants{
     }
     createdAt
     isVisible
+    lastOnlineAt
   }
 }
 `

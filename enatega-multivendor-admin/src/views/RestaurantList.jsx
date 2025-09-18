@@ -23,6 +23,7 @@ import { customStyles } from '../utils/tableCustomStyles'
 import useGlobalStyles from '../utils/globalStyles'
 import { ReactComponent as RestIcon } from '../assets/svg/svg/Restaurant.svg'
 import TableHeader from '../components/TableHeader'
+import moment from 'moment'
 
 const GET_RESTAURANTS = gql`
   ${restaurants}
@@ -102,12 +103,17 @@ const Restaurants = props => {
         cursor: 'pointer'
       }
     },
+    // {
+    //   name: t('Address'),
+    //   selector: 'address',
+    //   style: {
+    //     cursor: 'pointer'
+    //   }
+    // },
     {
-      name: t('Address'),
-      selector: 'address',
-      style: {
-        cursor: 'pointer'
-      }
+      name: t('lastOnlineAt'),
+      selector: 'lastOnlineAt',
+      cell: row => <>{formattedDate(row.lastOnlineAt)}</>
     },
     {
       name: t('OrderPrefix'),
@@ -168,6 +174,10 @@ const Restaurants = props => {
       cell: row => <>{actionButtons(row)}</>
     }
   ]
+
+  const formattedDate = date => {
+    return date ? moment(date).format('YYYY-MM-DD hh:mm A') : 'Never online'
+  }
 
   const [mutateVisiblity] = useMutation(makeRestaurantVisible, {
     refetchQueries: [{ query: GET_RESTAURANTS }],
