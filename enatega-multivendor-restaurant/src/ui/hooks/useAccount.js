@@ -1,7 +1,11 @@
 import { useContext, useState, useEffect } from 'react'
 import { useQuery, useMutation, gql } from '@apollo/client'
 import { AuthContext } from '../context'
-import { restaurantInfo, toggleAvailability } from '../../apollo'
+import {
+  heartbeatRestaurant,
+  restaurantInfo,
+  toggleAvailability
+} from '../../apollo'
 import { Alert } from 'react-native'
 import { DAYS } from '../../utilities'
 import usePrintOrder from './usePrintOrder'
@@ -21,6 +25,18 @@ export default function useAccount() {
     { fetchPolicy: 'network-only' }
   )
 
+  const [mutateHeartbeat, { loading: loadingHeartbeat }] = useMutation(
+    heartbeatRestaurant,
+    {
+      onCompleted: res => {
+        console.log({ res })
+      },
+      onError: err => {
+        console.log({ err })
+      }
+    }
+  )
+
   const [toggle, { loading: loadingToggle }] = useMutation(
     gql`
       ${toggleAvailability}
@@ -32,6 +48,28 @@ export default function useAccount() {
     if (!data) return
     setIsAvailable(data.restaurant.isAvailable)
   }, [data])
+
+  useEffect(() => {
+    // send immediately when app mounts
+    if (data) {
+      mutateHeartbeat({
+        variables: {
+          id: data?.restaurant._id
+        }
+      })
+
+      // then send every 60 seconds
+      const interval = setInterval(() => {
+        mutateHeartbeat({
+          variables: {
+            id: data?.restaurant._id
+          }
+        })
+      }, 60 * 1000)
+
+      return () => clearInterval(interval)
+    }
+  }, [mutateHeartbeat])
 
   function onCompleted({ toggleAvailability }) {
     if (toggleAvailability) {

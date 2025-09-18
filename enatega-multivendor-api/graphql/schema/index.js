@@ -2097,6 +2097,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    heartbeatRestaurant(id: String!): Message
     updateDispatchOptions(input: DispatchOptionsInput!): Message
     updateRiderAvailabilityPeriod(period: Float!): Message
     updateRiderStatus(available: Boolean!): Message

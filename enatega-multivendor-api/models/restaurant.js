@@ -100,14 +100,7 @@ const restaurantSchema = new Schema(
       type: Boolean,
       default: true
     },
-    isAvailable: {
-      type: Boolean,
-      default: true
-    },
-    openingTimes: {
-      type: [timingsSchema],
-      default: defaultOpeningTimes
-    },
+
     slug: { type: String, default: null },
     stripeAccountId: { type: String, default: null },
     stripeDetailsSubmitted: { type: Boolean, default: false },
@@ -156,6 +149,29 @@ const restaurantSchema = new Schema(
     featured: {
       type: Boolean,
       default: false
+    },
+    // last time the app sent a keep-alive ping
+    lastPingAt: {
+      type: Date,
+      default: null
+    },
+    // when the business app actually went online
+    lastOnlineAt: {
+      type: Date,
+      default: null
+    },
+    // track if backend detected business as online/offline
+    isOnline: {
+      type: Boolean,
+      default: false
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true
+    },
+    openingTimes: {
+      type: [timingsSchema],
+      default: defaultOpeningTimes
     }
   },
 

@@ -1725,6 +1725,30 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+    async heartbeatRestaurant(_, { id }) {
+      console.log('heartbeatRestaurant', { id })
+      try {
+        const now = new Date()
+
+        const restaurant = await Restaurant.findByIdAndUpdate(
+          id,
+          {
+            lastPingAt: now,
+            isOnline: true,
+            lastOnlineAt: now
+          },
+          { new: true }
+        )
+
+        if (!restaurant) {
+          throw new Error('Restaurant not found')
+        }
+
+        return { message: 'Message' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

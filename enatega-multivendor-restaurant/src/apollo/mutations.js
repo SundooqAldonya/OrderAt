@@ -195,3 +195,10 @@ export const updateStockFood = gql`
     }
   }
 `
+export const heartbeatRestaurant = gql`
+  mutation HeartbeatRestaurant($id: String!) {
+    heartbeatRestaurant(id: $id) {
+      message
+    }
+  }
+`
