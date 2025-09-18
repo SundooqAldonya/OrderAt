@@ -114,5 +114,6 @@ export const en = {
   loading: 'Loading',
   Print: 'Print',
   app_version: 'App Version',
-  test_print_working: '✅ Test print sent'
+  test_print_working: '✅ Test print sent',
+  DeactivateAccount: 'Deactivate Account'
 }

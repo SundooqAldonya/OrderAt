@@ -115,5 +115,6 @@ export const ar = {
   loading: 'جاري الطلب',
   Print: 'أطبع',
   app_version: 'الإصدار',
-  test_print_working: '✅ الطابعة فعالة'
+  test_print_working: '✅ الطابعة فعالة',
+  DeactivateAccount: 'إلغاء الحساب'
 }

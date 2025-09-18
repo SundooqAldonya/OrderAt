@@ -23,7 +23,7 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import IconVec from 'react-native-vector-icons/FontAwesome5'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import messaging from '@react-native-firebase/messaging'
 
 export default function SideBar() {
@@ -418,6 +418,26 @@ export default function SideBar() {
             {t('aboutUs')}
           </TextDefault>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.logout,
+            isRtl && { flexDirection: 'row-reverse', gap: 10 }
+          ]}
+          activeOpacity={0.8}
+          onPress={() => navigator.navigate('DeactivateAccount')}>
+          <View style={{ width: '12%', marginInlineStart: 5 }}>
+            {/* <Icon type="font-awesome" color="white" name="user" size={26} /> */}
+            <FontAwesome name="ban" size={26} color="#fff" />
+          </View>
+          <TextDefault
+            H4
+            bolder
+            style={[styles.text, { textAlign: isRtl ? 'right' : 'left' }]}>
+            {t('DeactivateAccount')}
+          </TextDefault>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[
             styles.logout,

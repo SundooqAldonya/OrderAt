@@ -45,7 +45,7 @@ const Profile = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const { data, loading } = useAccount()
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+  // const [deleteModalVisible, setDeleteModalVisible] = useState(false)
 
   // Printer related state from Redux
   const printer = useSelector(state => state.printers.printerIP)
@@ -60,7 +60,7 @@ const Profile = () => {
   const [printerIP, setPrinterIP] = useState(printer ? printer : '')
   const dispatch = useDispatch()
 
-  const restaurant = data?.restaurant || null
+  // const restaurant = data?.restaurant || null
 
   // Set navigation reference for PrinterManager
   useEffect(() => {
@@ -96,27 +96,27 @@ const Profile = () => {
     dispatch(setPrinters({ printers: foundPrinters }))
   }
 
-  const [deactivate, { loading: deactivateLoading }] = useMutation(
-    deactivateRestaurant,
-    {
-      onCompleted: data => {
-        console.log({ data })
-      },
-      onError: error => {
-        console.log({ error })
-      }
-    }
-  )
+  // const [deactivate, { loading: deactivateLoading }] = useMutation(
+  //   deactivateRestaurant,
+  //   {
+  //     onCompleted: data => {
+  //       console.log({ data })
+  //     },
+  //     onError: error => {
+  //       console.log({ error })
+  //     }
+  //   }
+  // )
 
-  async function deactivateRestaurantById() {
-    try {
-      await deactivate({
-        variables: { id: restaurant?._id }
-      })
-    } catch (error) {
-      console.error('Error during deactivation mutation:', error)
-    }
-  }
+  // async function deactivateRestaurantById() {
+  //   try {
+  //     await deactivate({
+  //       variables: { id: restaurant?._id }
+  //     })
+  //   } catch (error) {
+  //     console.error('Error during deactivation mutation:', error)
+  //   }
+  // }
 
   // const handleSave = () => {
   //   dispatch(setPrinter({ printerIP }))
@@ -434,13 +434,13 @@ const Profile = () => {
             onPress={handleSave}>
             <TextDefault style={{ color: '#fff' }}>{t('save')}</TextDefault>
           </TouchableOpacity> */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={style.deleteAccountBtn}
             onPress={() => setDeleteModalVisible(true)}>
             <TextDefault bolder H4 style={style.deleteAccountText}>
               {t('DeleteAccount')}
             </TextDefault>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* <View
             style={{
               flex: 1,
@@ -461,7 +461,7 @@ const Profile = () => {
           </TextDefault>
         </View>
       )}
-      <Modal
+      {/* <Modal
         onBackdropPress={() => setDeleteModalVisible(false)}
         onBackButtonPress={() => setDeleteModalVisible(false)}
         visible={deleteModalVisible}
@@ -516,7 +516,7 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   )
 }
