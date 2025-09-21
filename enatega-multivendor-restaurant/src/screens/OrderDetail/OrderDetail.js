@@ -31,6 +31,8 @@ import * as htmlToImage from 'html-to-image'
 import { toPng } from 'html-to-image'
 import RenderHtml from '@builder.io/react-native-render-html'
 import { loadPrinterInfo } from '../../utilities/printers'
+import * as ImageManipulator from 'expo-image-manipulator'
+import { Asset } from 'expo-asset'
 
 const ReceiptViewer = ({ receipt_HTML, width }) => {
   return <RenderHtml contentWidth={width} source={{ html: receipt_HTML }} />
@@ -112,12 +114,39 @@ export default function OrderDetail({ navigation, route }) {
     }
   }
 
+  const getImageBase64 = async () => {
+    try {
+      const image = require('../../assets/logo_2.png')
+      const asset = Asset.fromModule(image)
+      await asset.downloadAsync()
+      const fileUri = asset.localUri || asset.uri
+
+      const manipulated = await ImageManipulator.manipulateAsync(
+        fileUri,
+        [{ resize: { width: 300, height: 200 } }],
+        { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
+      )
+
+      return manipulated.base64
+    } catch (err) {
+      console.error('Error reading image:', err)
+      return null
+    }
+  }
+
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
     console.log({ printerInfo: lastPrinter })
     console.log({ b64: b64?.substring(0, 40) })
     // await PrinterManager.disconnect(lastPrinter)
     await PrinterManager.connect(lastPrinter)
+    await new Promise(res => setTimeout(res, 300))
+    const imageBase64 = await getImageBase64()
+    await PrinterManager.printBase64(imageBase64, {
+      align: 'center',
+      width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
+      height: 200
+    })
     if (receiptRef.current) {
       try {
         // b64 = b64.replace(/\r?\n|\r/g, '')
@@ -146,14 +175,14 @@ export default function OrderDetail({ navigation, route }) {
     }
   }
 
-  const pickUpOrderFunc = () => {
-    pickedUp(order._id)
-    if (loadingPicked) {
-      return <Spinner />
-    } else {
-      navigation.navigate('Orders')
-    }
-  }
+  // const pickUpOrderFunc = () => {
+  //   pickedUp(order._id)
+  //   if (loadingPicked) {
+  //     return <Spinner />
+  //   } else {
+  //     navigation.navigate('Orders')
+  //   }
+  // }
 
   const isArabic = i18n.language === 'ar'
 

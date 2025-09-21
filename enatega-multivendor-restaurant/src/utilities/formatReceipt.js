@@ -80,8 +80,8 @@ export const formatReceipt = (order, currency) => {
         ${
           item.specialInstructions
             ? `<div style="margin-top: 6px; font-size: 13px; border: 2px dashed #000; padding: 12px 6px;">
-                <div style="text-align: right;">ملاحظات العميل:</div>
-                <div>${item.specialInstructions}</div>
+                <div style="text-align: right; font-weight: bold;">ملاحظات العميل:</div>
+                <div style="text-align: right; font-weight: bold;">${item.specialInstructions}</div>
               </div>`
             : ''
         }
