@@ -46,7 +46,7 @@ const Profile = () => {
   const navigation = useNavigation()
   const { data, loading } = useAccount()
   // const [deleteModalVisible, setDeleteModalVisible] = useState(false)
-
+  const [printersLoaded, setPrintersLoaded] = useState(false)
   // Printer related state from Redux
   const printer = useSelector(state => state.printers.printerIP)
   const printers = useSelector(state => state.printers.printers)
@@ -84,7 +84,7 @@ const Profile = () => {
       if (printerType === 'bluetooth') setBluetoothPrinters(bluetooth)
       if (printerType === 'network') setNetworkPrinters(network)
     }
-  }, [printerType])
+  }, [printerType, printersLoaded])
 
   const scaneType = async () => {
     let foundPrinters = []
@@ -93,6 +93,7 @@ const Profile = () => {
     } else if (printerType === 'network') {
       foundPrinters = await PrinterManager.scanNetwork(printerIP)
     }
+    setPrintersLoaded(true)
     dispatch(setPrinters({ printers: foundPrinters }))
   }
 
@@ -235,6 +236,7 @@ const Profile = () => {
     try {
       const b64 = await getImageBase64()
       await PrinterManager.connect(item)
+      await new Promise(res => setTimeout(res, 1000))
       await PrinterManager.printBase64(b64, {
         align: 'center',
         width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
