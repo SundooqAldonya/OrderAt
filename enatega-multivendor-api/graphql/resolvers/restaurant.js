@@ -1693,6 +1693,7 @@ module.exports = {
       try {
         const restaurant = await Restaurant.findById(args.id)
         restaurant.isActive = false
+        restaurant.isVisible = false
         await restaurant.save()
         return { message: 'Deactivated business account successfully!' }
       } catch (err) {
