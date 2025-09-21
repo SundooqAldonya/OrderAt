@@ -166,7 +166,7 @@ export const formatReceipt = (order, currency) => {
           user?.name ? user.name : 'لا يوجد اسم'
         }</div>
         <div style="text-align: right;"><strong>الهاتف:</strong> ${
-          user ? user.phone : 'N/A'
+          user ? user.phone.replace('+2') : 'N/A'
         }</div>
         <div style="text-align: right;"><strong>العنوان:</strong> ${address}</div>
         
