@@ -61,13 +61,13 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider start",
-    "start:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider start",
-    "start:prod": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider start",
-    "build": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build",
-    "build:dev": "cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider build",
-    "build:staging": "cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider build",
-    "build:production": "cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build"
+    "start": "node init && cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider start",
+    "start:staging": "node init && cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider start",
+    "start:prod": "node init && cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider start",
+    "build": "node init && cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build",
+    "build:dev": "node init && cross-env REACT_APP_ENV=development react-scripts --openssl-legacy-provider build",
+    "build:staging": "node init && cross-env REACT_APP_ENV=staging react-scripts --openssl-legacy-provider build",
+    "build:production": "node init && cross-env REACT_APP_ENV=production react-scripts --openssl-legacy-provider build"
   },
   "eslintConfig": {
     "extends": [
