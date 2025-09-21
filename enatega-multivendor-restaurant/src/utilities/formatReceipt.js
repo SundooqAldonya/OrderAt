@@ -1,32 +1,49 @@
 //src/utilities/formatReceipt.js
+// import image from '../assets/logo_no_subtitle.jpg'
 export const formatReceipt = (order, currency) => {
+  // console.log({ userOrder: order.user })
   const address =
     order?.shippingMethod === 'PICKUP'
       ? 'الاستلام من الفرع'
       : `${order?.deliveryAddress?.label} ${order?.deliveryAddress?.details} ${order?.deliveryAddress?.deliveryAddress}`
 
   const {
-    user: { phone },
-    restaurant: { name, image },
+    // user: { phone },
+    // restaurant: { name },
     taxationAmount: tax,
     orderAmount,
     deliveryCharges,
     createdAt
   } = order
 
+  const user = order?.user || null
+  const restaurant = order?.restaurant || null
+  const name = restaurant?.name || null
+
   const currencySymbol = currency
 
   const itemsRow = order.items
     .map(item => {
+      // Format Addons
       const addons = item.addons
         .map(
-          addon =>
-            `<div style="font-size: 10px; color: #555;">${
-              addon.title
-            }: ${addon.options.map(o => o.title).join(', ')}</div>`
+          addon => `
+          <div style="font-size: 14px; margin-left: 20px;">
+            <span style="font-weight: 500;">- ${addon.title}:</span> 
+            ${addon.options
+              .map((o, index) => {
+                return `<div>${index + 1}- ${o.title}: ${
+                  o.price
+                } ${currencySymbol}</div>`
+              })
+              .join('')}
+            
+          </div>
+        `
         )
         .join('')
 
+      // Item total price (variation + addon options)
       const itemTotal =
         item.variation.price +
         item.addons
@@ -34,27 +51,42 @@ export const formatReceipt = (order, currency) => {
           .reduce((sum, option) => sum + option.price, 0)
 
       return `
-        <div style="border-bottom: 1px dashed #ccc; padding: 5px 0;">
-          <div style="font-weight: bold;">
-            ${item.title}
-          </div>
-          <div style="font-weight: bold;">
-          ${item.variation.title ? item.variation.title : ''} - ${
-        item.variation.price ? item.variation.price + ' ' + currency : ''
-      } 
-          </div>
-          ${addons}
-          <div style="display: flex; justify-content: space-between;">
-            <span>الكمية: ${item.quantity}</span>
-            <span>السعر: ${currencySymbol}${itemTotal.toFixed(2)}</span>
-          </div>
+      <div style="border-bottom: 1px dashed #000; padding: 6px 0;">
+        <!-- Item title -->
+        <div style="font-size: 16px; font-weight: bold;">
+          ${item.title} x ${item.quantity}
+        </div>
+        
+        <!-- Variation -->
+        <div style="font-size: 16px; margin-left: 8px; color: #444;">
+          ${item.variation.title ? item.variation.title : ''} 
           ${
-            item.specialInstructions
-              ? `<div style="font-size: 11px; border: 1px dashed #000; padding: 15px 25px;">ملاحظة: ${item.specialInstructions}</div>`
+            item.variation.price
+              ? `- ${item.variation.price.toFixed(2)} ${currencySymbol}`
               : ''
           }
         </div>
-      `
+
+        <!-- Addons -->
+        ${addons}
+
+        <!-- Quantity & Total -->
+        <div style="font-size: 13px; display: flex; justify-content: space-between; margin-top: 4px;">
+          <span>الكمية: ${item.quantity}</span>
+          <span>السعر: ${currencySymbol}${itemTotal.toFixed(2)}</span>
+        </div>
+
+        <!-- Special Instructions -->
+        ${
+          item.specialInstructions
+            ? `<div style="margin-top: 6px; font-size: 13px; border: 2px dashed #000; padding: 12px 6px;">
+                <div style="text-align: right;">ملاحظات العميل:</div>
+                <div>${item.specialInstructions}</div>
+              </div>`
+            : ''
+        }
+      </div>
+    `
     })
     .join('')
 
@@ -76,6 +108,9 @@ export const formatReceipt = (order, currency) => {
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
+      * {
+        text-align: right;
+      }
       @page {
         margin-inline: auto !important;
       }
@@ -120,40 +155,48 @@ export const formatReceipt = (order, currency) => {
     <body>
       <div id="receipt">
 	  
-        <img src="${image}" width="120" height="120" />
+        
 		
         <div class="center bold" style="text-align:center; font-size: 22px;">${name}</div>
 		
-        <div class="center" style="font-size: 16px; margin-bottom: 5px;">تاريخ الطلب: ${formattedDate}</div>
+        <div class="center" style="font-size: 16px; margin-bottom: 5px; text-align: center;">تاريخ الطلب: ${formattedDate}</div>
 
         <div class="line"></div>
-        <div><strong>العنوان:</strong> ${address}</div>
-        <div><strong>الهاتف:</strong> ${phone}</div>
+        <div style="text-align: right;"><strong>العميل:</strong> ${
+          user?.name ? user.name : 'لا يوجد اسم'
+        }</div>
+        <div style="text-align: right;"><strong>الهاتف:</strong> ${
+          user ? user.phone : 'N/A'
+        }</div>
+        <div style="text-align: right;"><strong>العنوان:</strong> ${address}</div>
+        
         <div class="line"></div>
 
-        <div class="bold" style="margin-bottom: 6px;">تفاصيل الطلب:</div>
+        <div class="bold" style="margin-bottom: 6px; font-size: 16px; font-weight: bold; text-align: center;">تفاصيل الطلب</div>
+
+        <!-- items -->
         ${itemsRow}
 
         <div class="line"></div>
 
-        <div class="row">
+        <div class="row" style="text-align: right;">
           <span>الضريبة</span>
           <span>${currencySymbol}${tax.toFixed(2)}</span>
         </div>
 
-        <div class="row">
+        <div class="row" style="text-align: right;">
           <span>رسوم التوصيل</span>
           <span>${currencySymbol}${deliveryCharges.toFixed(2)}</span>
         </div>
 
-        <div class="row bold">
+        <div class="row bold" style="text-align: right;">
           <span>الإجمالي</span>
           <span>${currencySymbol}${orderAmount.toFixed(2)}</span>
         </div>
 
         <div class="line"></div>
 
-        <div class="footer">
+        <div class="footer" style="text-align: center;">
           <p>شكراً لتعاملكم معنا</p>
           <p>${order.restaurant.name}</p>
         </div>
