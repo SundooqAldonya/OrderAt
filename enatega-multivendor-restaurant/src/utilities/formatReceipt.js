@@ -156,8 +156,9 @@ export const formatReceipt = (order, currency) => {
       <div id="receipt">
 	  
         
-		
-        <div class="center bold" style="text-align:center; font-size: 22px;">${name}</div>
+  
+        <div class="center bold" style="text-align:right; font-size: 22px;">Orderat - أوردرات</div>
+        <div class="center bold" style="text-align:center; font-size: 18px;">${name}</div>
 		
         <div class="center" style="font-size: 16px; margin-bottom: 5px; text-align: center;">تاريخ الطلب: ${formattedDate}</div>
 
