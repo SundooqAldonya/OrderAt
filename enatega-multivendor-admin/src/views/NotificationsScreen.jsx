@@ -115,6 +115,7 @@ const NotificationsScreen = () => {
                 <TableRow sx={{ color: '#000' }}>
                   <TableCell />
                   <TableCell sx={{ color: '#000' }}>Title</TableCell>
+                  <TableCell sx={{ color: '#000' }}>Order ID</TableCell>
                   <TableCell sx={{ color: '#000' }}>Body</TableCell>
                   <TableCell sx={{ color: '#000' }}>Created At</TableCell>
                   <TableCell sx={{ color: '#000' }}>Type</TableCell>

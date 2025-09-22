@@ -30,6 +30,7 @@ const NotificationRow = ({ row }) => {
           </IconButton>
         </TableCell>
         <TableCell sx={{ color: '#000' }}>{row.title}</TableCell>
+        <TableCell sx={{ color: '#000' }}>{row.data.orderId}</TableCell>
         <TableCell sx={{ color: '#000' }}>{row.body}</TableCell>
         <TableCell sx={{ color: '#000' }}>
           {new Date(row.createdAt).toLocaleString('en-GB', { hour12: true })}
