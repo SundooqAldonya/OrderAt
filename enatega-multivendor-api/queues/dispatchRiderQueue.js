@@ -20,6 +20,16 @@ dispatchQueue.process(async job => {
     return
   }
 
+  const dispatchOptions = await DispatchOptions.findOne()
+  console.log({ dispatchOptions })
+
+  const attemptRiderCounts = []
+  for (const key in dispatchOptions.toObject()) {
+    if (key.endsWith('AttemptRiders')) {
+      attemptRiderCounts.push(dispatchOptions[key])
+    }
+  }
+
   // Find already-notified riders for this order
   let log = await DispatchLog.findOne({ order: orderId })
 
@@ -29,7 +39,7 @@ dispatchQueue.process(async job => {
       order: orderId,
       zone: order.zone,
       currentCycle: 1,
-      maxCycles: 3,
+      maxCycles: attemptRiderCounts.length + 1,
       status: 'in_progress',
       recipients: []
     })
@@ -72,24 +82,41 @@ dispatchQueue.process(async job => {
   })
   console.log({ rankedLength: ranked?.length })
 
-  const dispatchOptions = await DispatchOptions.findOne()
-  console.log({ dispatchOptions })
-
   const firstAttempt = dispatchOptions ? dispatchOptions.firstAttemptRiders : 1
   const secondAttempt = dispatchOptions
     ? dispatchOptions.secondAttemptRiders
     : 10
+  const thirdAttempt = dispatchOptions ? dispatchOptions.thirdAttemptRiders : 15
   const delayDispatch = dispatchOptions ? dispatchOptions.delayDispatch : 30
 
+  // const batchSize =
+  //   attempt === 0 // first attempt
+  //     ? firstAttempt
+  //     : attempt === 1 // second attempt
+  //     ? secondAttempt
+  //     : attempt === 2 // third attempt
+  //     ? thirdAttempt
+  //     : riders.length // last attempt
+
   const batchSize =
-    attempt === 0 ? firstAttempt : attempt === 1 ? secondAttempt : riders.length
+    attempt < attemptRiderCounts.length
+      ? attemptRiderCounts[attempt]
+      : riders.length
   console.log({ batchSize })
 
   const selected = ranked.slice(0, batchSize)
   console.log({ selectedLength: selected?.length })
 
   if (!selected.length) {
-    console.log(`No eligible riders for order ${orderId}`)
+    console.log(`No eligible riders for order ${orderId} in attempt ${attempt}`)
+
+    // Still re-enqueue if more cycles remain
+    if (attempt + 1 < log.maxCycles) {
+      await dispatchQueue.add(
+        { orderId, attempt: attempt + 1 },
+        { delay: delayDispatch * 1000 }
+      )
+    }
     return
   }
 

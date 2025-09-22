@@ -1395,6 +1395,7 @@ export const getDispatchOptions = gql`
       delayDispatch
       firstAttemptRiders
       secondAttemptRiders
+      thirdAttemptRiders
     }
   }
 `

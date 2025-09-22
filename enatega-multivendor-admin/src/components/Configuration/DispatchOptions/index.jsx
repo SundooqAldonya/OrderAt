@@ -15,10 +15,16 @@ function DispatchOptions() {
   const [values, setValues] = useState({
     delayDispatch: 0,
     firstAttemptRiders: 0,
-    secondAttemptRiders: 0
+    secondAttemptRiders: 0,
+    thirdAttemptRiders: 0
   })
 
-  const { delayDispatch, firstAttemptRiders, secondAttemptRiders } = values
+  const {
+    delayDispatch,
+    firstAttemptRiders,
+    secondAttemptRiders,
+    thirdAttemptRiders
+  } = values
 
   const { data, loading: loadingQuery, error } = useQuery(getDispatchOptions)
 
@@ -51,7 +57,8 @@ function DispatchOptions() {
         input: {
           delayDispatch: parseInt(delayDispatch),
           firstAttemptRiders: parseInt(firstAttemptRiders),
-          secondAttemptRiders: parseInt(secondAttemptRiders)
+          secondAttemptRiders: parseInt(secondAttemptRiders),
+          thirdAttemptRiders: parseInt(thirdAttemptRiders)
         }
       }
     })
@@ -109,6 +116,21 @@ function DispatchOptions() {
               placeholder="For example: 1 or 2 (in hours)"
               type="text"
               value={secondAttemptRiders}
+              disableUnderline
+              className={[globalClasses.input]}
+              onChange={handleChange}
+            />
+          </Box>
+          <Box>
+            <Typography className={classes.labelText}>
+              {t('third_attempt_riders')}
+            </Typography>
+            <Input
+              style={{ marginTop: -1 }}
+              name="thirdAttemptRiders"
+              placeholder="For example: 1 or 2 (in hours)"
+              type="text"
+              value={thirdAttemptRiders}
               disableUnderline
               className={[globalClasses.input]}
               onChange={handleChange}

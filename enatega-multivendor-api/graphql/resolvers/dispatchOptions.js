@@ -23,7 +23,8 @@ module.exports = {
             $set: {
               delayDispatch: input.delayDispatch,
               firstAttemptRiders: input.firstAttemptRiders,
-              secondAttemptRiders: input.secondAttemptRiders
+              secondAttemptRiders: input.secondAttemptRiders,
+              thirdAttemptRiders: input.thirdAttemptRiders
             }
           },
           {

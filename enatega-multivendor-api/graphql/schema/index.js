@@ -1618,6 +1618,7 @@ const typeDefs = gql`
     delayDispatch: Float
     firstAttemptRiders: Float
     secondAttemptRiders: Float
+    thirdAttemptRiders: Float
   }
 
   type Query {
@@ -2095,6 +2096,7 @@ const typeDefs = gql`
     delayDispatch: Float
     firstAttemptRiders: Float
     secondAttemptRiders: Float
+    thirdAttemptRiders: Float
   }
 
   type Mutation {

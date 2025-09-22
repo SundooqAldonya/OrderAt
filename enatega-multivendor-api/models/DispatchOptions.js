@@ -14,6 +14,10 @@ const dispatchOptions = new Schema(
     secondAttemptRiders: {
       type: Number,
       default: 10
+    },
+    thirdAttemptRiders: {
+      type: Number,
+      default: 2
     }
   },
   { timestamps: true }
