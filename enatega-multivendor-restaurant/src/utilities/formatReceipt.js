@@ -29,12 +29,9 @@ export const formatReceipt = (order, currency) => {
         .map(
           addon => `
           <div style="font-size: 14px; margin-left: 20px;">
-            <span style="font-weight: 500;">- ${addon.title}:</span> 
             ${addon.options
               .map((o, index) => {
-                return `<div>${index + 1}- ${o.title}: ${
-                  o.price
-                } ${currencySymbol}</div>`
+                return `<div style="text-align: right;"> - ${o.title}: ${o.price}</div>`
               })
               .join('')}
             
@@ -51,30 +48,25 @@ export const formatReceipt = (order, currency) => {
           .reduce((sum, option) => sum + option.price, 0)
 
       return `
-      <div style="border-bottom: 1px dashed #000; padding: 6px 0;">
+      <div style="padding: 6px 0;">
         <!-- Item title -->
-        <div style="font-size: 16px; font-weight: bold;">
-          ${item.title} x ${item.quantity}
+        <div style="display: flex; flex-direction: row-reverse; align-items: center;">
+          <div style="font-size: 16px; font-weight: bold; text-align: right; margin-left: 5px;">x${
+            item.quantity
+          } </div>
+          <div style="font-size: 16px; font-weight: bold; text-align: right;">
+           ${item.title}
+            (<span style="text-align: right;">
+              ${item.variation.title ? item.variation.title : ''}
+            </span>)
+        <span style="text-align: right;">${
+          item.variation.price ? ` ${item.variation.price.toFixed(2)} ` : ''
+        }</span> 
+          </div>
         </div>
-        
-        <!-- Variation -->
-        <div style="font-size: 16px; margin-left: 8px; color: #444;">
-          ${item.variation.title ? item.variation.title : ''} 
-          ${
-            item.variation.price
-              ? `- ${item.variation.price.toFixed(2)} ${currencySymbol}`
-              : ''
-          }
-        </div>
-
+       
         <!-- Addons -->
         ${addons}
-
-        <!-- Quantity & Total -->
-        <div style="font-size: 13px; display: flex; justify-content: space-between; margin-top: 4px;">
-          <span>الكمية: ${item.quantity}</span>
-          <span>السعر: ${currencySymbol}${itemTotal.toFixed(2)}</span>
-        </div>
 
         <!-- Special Instructions -->
         ${
@@ -85,6 +77,7 @@ export const formatReceipt = (order, currency) => {
               </div>`
             : ''
         }
+        <div style="border: 1px dashed #000; height: 1px; width: 100%; margin-top: 10px;"></div>
       </div>
     `
     })
@@ -92,8 +85,8 @@ export const formatReceipt = (order, currency) => {
 
   const date = new Date(createdAt)
   const formatter = new Intl.DateTimeFormat('ar-EG', {
-    weekday: 'long',
-    year: 'numeric',
+    // weekday: 'long',
+    // year: 'numeric',
     month: 'long',
     day: 'numeric',
     hour: 'numeric',
@@ -154,11 +147,13 @@ export const formatReceipt = (order, currency) => {
     </head>
     <body>
       <div id="receipt">
-	  
-        
-  
-        <div class="center bold" style="text-align:right; font-size: 22px;">Orderat - أوردرات</div>
-        <div class="center bold" style="text-align:center; font-size: 18px;">${name}</div>
+        <div style="background-color: #000; padding: 20px; width: 100%;">
+          <div class="center bold" style="text-align: center; font-size: 22px; color: #fff;">Orderat - أوردرات</div>
+          <div class="center bold" style="text-align: center; font-size: 22px; color: #fff;">${
+            order?.orderId
+          }</div>
+        </div>
+        <div class="center bold" style="text-align: center; font-size: 18px;">${name}</div>
 		
         <div class="center" style="font-size: 16px; margin-bottom: 5px; text-align: center;">تاريخ الطلب: ${formattedDate}</div>
 
@@ -167,9 +162,8 @@ export const formatReceipt = (order, currency) => {
           user?.name ? user.name : 'لا يوجد اسم'
         }</div>
         <div style="text-align: right;"><strong>الهاتف:</strong> ${
-          user ? user.phone.replace('+2') : 'N/A'
+          user ? user.phone.replace('+2', '') : 'N/A'
         }</div>
-        <div style="text-align: right;"><strong>العنوان:</strong> ${address}</div>
         
         <div class="line"></div>
 

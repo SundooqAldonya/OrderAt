@@ -29,7 +29,7 @@ function DispatchOptions() {
   }, [data])
 
   const handleChange = e => {
-    setValues({ ...values, [e.target.name]: parseInt(e.target.value) })
+    setValues({ ...values, [e.target.name]: e.target.value })
   }
 
   const [mutateDispatchOptions, { loading }] = useMutation(
@@ -49,7 +49,9 @@ function DispatchOptions() {
     mutateDispatchOptions({
       variables: {
         input: {
-          ...values
+          delayDispatch: parseInt(delayDispatch),
+          firstAttemptRiders: parseInt(firstAttemptRiders),
+          secondAttemptRiders: parseInt(secondAttemptRiders)
         }
       }
     })
@@ -69,7 +71,7 @@ function DispatchOptions() {
         <form onSubmit={handleSubmit}>
           <Box>
             <Typography className={classes.labelText}>
-              {t('dispatch_delay')}
+              {t('dispatch_delay')} {`(in seconds)`}
             </Typography>
             <Input
               style={{ marginTop: -1 }}

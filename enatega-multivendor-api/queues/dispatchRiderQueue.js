@@ -79,7 +79,7 @@ dispatchQueue.process(async job => {
   const secondAttempt = dispatchOptions
     ? dispatchOptions.secondAttemptRiders
     : 10
-  const delayDispatch = dispatchOptions ? dispatchOptions.delayDispatch : 30000
+  const delayDispatch = dispatchOptions ? dispatchOptions.delayDispatch : 30
 
   const batchSize =
     attempt === 0 ? firstAttempt : attempt === 1 ? secondAttempt : riders.length
@@ -144,7 +144,7 @@ dispatchQueue.process(async job => {
   if (!freshOrder.rider && attempt + 1 < log.maxCycles) {
     await dispatchQueue.add(
       { orderId, attempt: attempt + 1 },
-      { delay: delayDispatch }
+      { delay: delayDispatch * 1000 }
     )
   }
 })
