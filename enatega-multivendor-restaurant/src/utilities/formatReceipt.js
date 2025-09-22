@@ -174,19 +174,19 @@ export const formatReceipt = (order, currency) => {
 
         <div class="line"></div>
 
-        <div class="row" style="text-align: right;">
-          <span>الضريبة</span>
-          <span>${currencySymbol}${tax.toFixed(2)}</span>
+        <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
+          <div>الضريبة</div>
+          <div style="margin-right: 100px;">${tax.toFixed(2)}</div>
         </div>
 
-        <div class="row" style="text-align: right;">
-          <span>رسوم التوصيل</span>
-          <span>${currencySymbol}${deliveryCharges.toFixed(2)}</span>
+        <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
+          <div>رسوم التوصيل</div>
+          <div style="margin-right: 100px;">${deliveryCharges.toFixed(2)}</div>
         </div>
 
-        <div class="row bold" style="text-align: right;">
-          <span>الإجمالي</span>
-          <span>${currencySymbol}${orderAmount.toFixed(2)}</span>
+        <div class="row bold" style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
+          <div>الإجمالي</div>
+          <div style="margin-right: 100px;">${orderAmount.toFixed(2)}</div>
         </div>
 
         <div class="line"></div>
