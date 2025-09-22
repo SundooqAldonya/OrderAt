@@ -9,7 +9,7 @@ import { useQuery, gql } from '@apollo/client'
 import SearchBar from '../TableHeader/SearchBar'
 import { customStyles } from '../../utils/tableCustomStyles'
 import TableHeader from '../TableHeader'
-import { useTheme } from '@mui/material'
+import { Typography, useTheme } from '@mui/material'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
@@ -29,7 +29,7 @@ const ORDER_PLACED = gql`
 
 const OrdersDataAdmin = props => {
   const theme = useTheme()
-  const { t, refetchOrders, isAdminPage } = props
+  const { t, refetchOrders, isAdminPage, handleModalVisible } = props
   const [searchQuery, setSearchQuery] = useState('')
   const [isOrderFormVisible, setIsOrderFormVisible] = useState(false) // Track visibility of the form
   const [orderDetails, setOrderDetails] = useState({
@@ -145,6 +145,17 @@ const OrdersDataAdmin = props => {
       sortable: true,
       cell: row => (
         <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
+      )
+    },
+    {
+      name: t('seen_by'),
+      cell: row => (
+        <Button
+          onClick={() => {
+            handleModalVisible(row)
+          }}>
+          <Typography>{t('seen_by')}</Typography>
+        </Button>
       )
     }
   ]

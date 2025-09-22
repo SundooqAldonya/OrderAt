@@ -9,6 +9,7 @@ import { Container, Modal, Paper, TablePagination } from '@mui/material'
 import CustomLoader from '../components/Loader/CustomLoader'
 import { AreaContext } from '../context/AreaContext'
 import OrdersDataAdmin from '../components/Order/OrdersDataAdmin'
+import DispatchDrawer from '../components/DispatchDrawer'
 
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
@@ -24,6 +25,8 @@ const CITY_AREAS = gql`
 const OrdersAdmin = () => {
   const [detailsModal, setDetailModal] = useState(false)
   const [order, setOrder] = useState(null)
+  const [selectedInteraction, setSelectedInteraction] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   // const [search] = useState('')
@@ -59,6 +62,7 @@ const OrdersAdmin = () => {
       limit
     })
   }
+
   const handleChangeRowsPerPage = e => {
     setLimit(e.target.value)
     refetchOrders({
@@ -66,6 +70,16 @@ const OrdersAdmin = () => {
       page: 1,
       limit: parseInt(e.target.value, 10)
     })
+  }
+
+  const handleModalVisible = item => {
+    setSelectedInteraction(item)
+    setModalVisible(true)
+  }
+
+  const toggleDrawer = () => {
+    setSelectedInteraction(null)
+    setModalVisible(false)
   }
 
   const globalClasses = useGlobalStyles()
@@ -92,6 +106,7 @@ const OrdersAdmin = () => {
             rows={setLimit}
             refetchOrders={refetchOrders}
             isAdminPage={true}
+            handleModalVisible={handleModalVisible}
           />
 
           <TablePagination
@@ -151,6 +166,12 @@ const OrdersAdmin = () => {
             toggleModal={toggleModal}
           />
         </Modal>
+
+        <DispatchDrawer
+          open={modalVisible}
+          order={selectedInteraction}
+          toggleDrawer={toggleDrawer}
+        />
       </Container>
     </>
   )
