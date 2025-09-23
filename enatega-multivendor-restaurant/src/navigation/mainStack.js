@@ -30,11 +30,11 @@ import Toast from 'react-native-toast-message'
 import { testingNotifications } from '../utilities/setupNotificationChannel'
 import NewOrderScreenNotification from '../screens/NewOrderScreenNotification'
 import AddNewOrder from '../screens/AddNewOrder'
-import Profile from '../screens/Profile'
 import AreasDeliveryCosts from '../screens/AreasDeliveryCosts'
 import FoodListing from '../screens/FoodListing'
 import OrdersHistory from '../screens/OrdersHistory'
 import DeactivateAccount from '../screens/DeleteAccount'
+import PrinterSettings from '../screens/PrinterSettings'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -174,7 +174,7 @@ function StackNavigator() {
         component={NewOrderScreenNotification}
       />
       <Stack.Screen name="AddNewOrder" component={AddNewOrder} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="PrinterSettings" component={PrinterSettings} />
       <Stack.Screen name="AreasDeliveryCosts" component={AreasDeliveryCosts} />
       <Stack.Screen name="FoodListing" component={FoodListing} />
       <Stack.Screen name="OrdersHistory" component={OrdersHistory} />

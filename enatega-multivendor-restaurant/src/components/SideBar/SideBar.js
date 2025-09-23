@@ -331,7 +331,7 @@ export default function SideBar() {
             isRtl && { flexDirection: 'row-reverse', gap: 10 }
           ]}
           activeOpacity={0.8}
-          onPress={() => navigator.navigate('Profile')}>
+          onPress={() => navigator.navigate('PrinterSettings')}>
           <View style={styles.icon}>
             <Icon type="font-awesome" color="white" name="user" size={26} />
           </View>

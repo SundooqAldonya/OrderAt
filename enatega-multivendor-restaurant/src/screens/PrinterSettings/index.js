@@ -40,8 +40,9 @@ import RNFS from 'react-native-fs'
 import { Asset } from 'expo-asset'
 import * as FileSystem from 'expo-file-system'
 import * as ImageManipulator from 'expo-image-manipulator'
+import { ScrollView } from 'react-native'
 
-const Profile = () => {
+const PrinterSettings = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const { data, loading } = useAccount()
@@ -296,229 +297,126 @@ const Profile = () => {
     <SafeAreaView
       style={{
         paddingHorizontal: 20,
-        // backgroundColor: colors.primary,
         height: '100%',
         flex: 1
       }}>
-      {!loading ? (
-        <Fragment>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ marginTop: 50 }}>
-            <AntDesign name="arrowleft" size={30} />
-          </TouchableOpacity>
-          {/* {data ? (
-            <View style={style.profileContainer}>
-              <Image
-                source={{ uri: restaurant.image }}
-                style={{ width: 100, height: 100, marginHorizontal: 'auto' }}
-              />
-              <View style={{ marginTop: 20 }}>
-                <TextDefault
-                  bolder
-                  style={{ fontSize: 20, textAlign: 'center' }}>
-                  {restaurant.name}
-                </TextDefault>
-              </View>
-            </View>
-          ) : null} */}
-
-          <View style={style.toggleContainer}>
+      <ScrollView style={{ paddingBottom: 50 }}>
+        {!loading ? (
+          <Fragment>
             <TouchableOpacity
-              onPress={() => setPrinterType('bluetooth')}
-              style={[
-                style.toggleBtn,
-                printerType === 'bluetooth' && style.activeToggle
-              ]}>
-              <TextDefault
-                style={[
-                  style.toggleText,
-                  printerType === 'bluetooth' && style.activeText
-                ]}>
-                Bluetooth
-              </TextDefault>
+              onPress={() => navigation.goBack()}
+              style={{ marginTop: 50 }}>
+              <AntDesign name="arrowleft" size={30} />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPrinterType('network')}
-              style={[
-                style.toggleBtn,
-                printerType === 'network' && style.activeToggle
-              ]}>
-              <TextDefault
-                style={[
-                  style.toggleText,
-                  printerType === 'network' && style.activeText
-                ]}>
-                Network
-              </TextDefault>
-            </TouchableOpacity>
-          </View>
 
-          {printerType === 'network' ? (
-            <View style={style.inputGroup}>
-              <TextDefault bolder style={{ marginBottom: -10 }}>
-                Printer IP
-              </TextDefault>
-              <TextInput
-                style={[styles.textInput]}
-                placeholder={'192.168.1.1'}
-                value={printerIP}
-                onChangeText={e => setPrinterIP(e)}
-                autoCapitalize={'none'}
-                placeholderTextColor="#999"
-              />
-            </View>
-          ) : null}
-
-          {/* Printer Management Section */}
-          <View style={style.card}>
-            <View style={style.cardHeader}>
-              <TextDefault bolder>Available Printers</TextDefault>
+            <View style={style.toggleContainer}>
               <TouchableOpacity
-                style={printerButtonStyle.scanButton}
-                onPress={scanPrinters}
-                disabled={isScanning}>
-                {isScanning ? (
-                  <Spinner size="small" />
-                ) : (
-                  <TextDefault style={{ color: '#fff' }}>Scan</TextDefault>
-                )}
+                onPress={() => setPrinterType('bluetooth')}
+                style={[
+                  style.toggleBtn,
+                  printerType === 'bluetooth' && style.activeToggle
+                ]}>
+                <TextDefault
+                  style={[
+                    style.toggleText,
+                    printerType === 'bluetooth' && style.activeText
+                  ]}>
+                  Bluetooth
+                </TextDefault>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setPrinterType('network')}
+                style={[
+                  style.toggleBtn,
+                  printerType === 'network' && style.activeToggle
+                ]}>
+                <TextDefault
+                  style={[
+                    style.toggleText,
+                    printerType === 'network' && style.activeText
+                  ]}>
+                  Network
+                </TextDefault>
               </TouchableOpacity>
             </View>
 
-            {/* Connected Device Info */}
-            {connectedDevice && (
-              <View style={printerItemStyle.connectedInfo}>
-                <TextDefault bolder style={{ color: colors.green }}>
-                  Connected: {connectedDevice.name}
+            {printerType === 'network' ? (
+              <View style={style.inputGroup}>
+                <TextDefault bolder style={{ marginBottom: -10 }}>
+                  Printer IP
                 </TextDefault>
+                <TextInput
+                  style={[styles.textInput]}
+                  placeholder={'192.168.1.1'}
+                  value={printerIP}
+                  onChangeText={e => setPrinterIP(e)}
+                  autoCapitalize={'none'}
+                  placeholderTextColor="#999"
+                />
+              </View>
+            ) : null}
+
+            {/* Printer Management Section */}
+            <View style={style.card}>
+              <View style={style.cardHeader}>
+                <TextDefault bolder>Available Printers</TextDefault>
                 <TouchableOpacity
-                  style={printerButtonStyle.disconnectButton}
-                  onPress={disconnectPrinter}>
-                  <TextDefault style={{ color: '#fff', fontSize: 12 }}>
-                    Disconnect
-                  </TextDefault>
+                  style={printerButtonStyle.scanButton}
+                  onPress={scanPrinters}
+                  disabled={isScanning}>
+                  {isScanning ? (
+                    <Spinner size="small" />
+                  ) : (
+                    <TextDefault style={{ color: '#fff' }}>Scan</TextDefault>
+                  )}
                 </TouchableOpacity>
               </View>
-            )}
 
-            {/* Printer List */}
-            {printers.length > 0 ? (
-              <FlatList
-                data={printersToShow}
-                renderItem={renderPrinterItem}
-                keyExtractor={(item, index) =>
-                  `${item.type}-${item.address}-${index}`
-                }
-                style={{ maxHeight: 200 }}
-                showsVerticalScrollIndicator={false}
-              />
-            ) : (
-              <View style={printerItemStyle.emptyContainer}>
-                <TextDefault style={{ textAlign: 'center', color: '#666' }}>
-                  No printers found. Tap "Scan" to search for printers.
-                </TextDefault>
-              </View>
-            )}
-          </View>
-
-          {/* <TouchableOpacity
-            style={{
-              marginHorizontal: 'auto',
-              marginTop: 20,
-              backgroundColor: colors.primary,
-              width: 70,
-              height: 30,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 4
-            }}
-            onPress={handleSave}>
-            <TextDefault style={{ color: '#fff' }}>{t('save')}</TextDefault>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity
-            style={style.deleteAccountBtn}
-            onPress={() => setDeleteModalVisible(true)}>
-            <TextDefault bolder H4 style={style.deleteAccountText}>
-              {t('DeleteAccount')}
-            </TextDefault>
-          </TouchableOpacity> */}
-          {/* <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: 270
-            }}>
-            <Text style={{ color: '#666' }}>
-              {t('app_version')}: {nativeApplicationVersion} (
-              {nativeBuildVersion})
-            </Text>
-          </View> */}
-        </Fragment>
-      ) : (
-        <View style={{ flex: 1, marginVertical: 50 }}>
-          <TextDefault bolder style={{ fontSize: 25 }}>
-            Loading...
-          </TextDefault>
-        </View>
-      )}
-      {/* <Modal
-        onBackdropPress={() => setDeleteModalVisible(false)}
-        onBackButtonPress={() => setDeleteModalVisible(false)}
-        visible={deleteModalVisible}
-        onRequestClose={() => {
-          setDeleteModalVisible(false)
-        }}>
-        <View style={style.centeredView}>
-          <View style={style.modalView}>
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 24,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: scale(10)
-              }}>
-              <TextDefault bolder H3 textColor={style.newFontcolor}>
-                {t('DeleteConfirmation')}
-              </TextDefault>
-              <Feather
-                name="x-circle"
-                size={24}
-                color={style.newFontcolor}
-                onPress={() => setDeleteModalVisible(!deleteModalVisible)}
-              />
-            </View>
-            <TextDefault H5 textColor={style.newFontcolor}>
-              {t('permanentDeleteMessage')}
-            </TextDefault>
-            <TouchableOpacity
-              style={[
-                style.btn,
-                style.btnDelete,
-                { opacity: deactivateLoading ? 0.5 : 1 }
-              ]}
-              onPress={deactivateRestaurantById}>
-              {deactivateLoading ? (
-                <Spinner backColor="transparent" size="small" />
-              ) : (
-                <TextDefault bolder H4 textColor={style.white}>
-                  {t('yesSure')}
-                </TextDefault>
+              {/* Connected Device Info */}
+              {connectedDevice && (
+                <View style={printerItemStyle.connectedInfo}>
+                  <TextDefault bolder style={{ color: colors.green }}>
+                    Connected: {connectedDevice.name}
+                  </TextDefault>
+                  <TouchableOpacity
+                    style={printerButtonStyle.disconnectButton}
+                    onPress={disconnectPrinter}>
+                    <TextDefault style={{ color: '#fff', fontSize: 12 }}>
+                      Disconnect
+                    </TextDefault>
+                  </TouchableOpacity>
+                </View>
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[style.btn, style.btnCancel]}
-              onPress={() => setDeleteModalVisible(false)}
-              disabled={deactivateLoading}>
-              <TextDefault bolder H4 textColor={style.black}>
-                {t('cancel')}
-              </TextDefault>
-            </TouchableOpacity>
+
+              {/* Printer List */}
+              {printers.length > 0 ? (
+                <FlatList
+                  data={printersToShow}
+                  renderItem={renderPrinterItem}
+                  keyExtractor={(item, index) =>
+                    `${item.type}-${item.address}-${index}`
+                  }
+                  // style={{ maxHeight: 200 }}
+                  showsVerticalScrollIndicator={false}
+                  scrollEnabled={false}
+                />
+              ) : (
+                <View style={printerItemStyle.emptyContainer}>
+                  <TextDefault style={{ textAlign: 'center', color: '#666' }}>
+                    No printers found. Tap "Scan" to search for printers.
+                  </TextDefault>
+                </View>
+              )}
+            </View>
+          </Fragment>
+        ) : (
+          <View style={{ flex: 1, marginVertical: 50 }}>
+            <TextDefault bolder style={{ fontSize: 25 }}>
+              Loading...
+            </TextDefault>
           </View>
-        </View>
-      </Modal> */}
+        )}
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -717,4 +615,4 @@ const printerButtonStyle = StyleSheet.create({
   }
 })
 
-export default Profile
+export default PrinterSettings
