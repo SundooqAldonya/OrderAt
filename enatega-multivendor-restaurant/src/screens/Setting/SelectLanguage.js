@@ -8,30 +8,19 @@ import {
   Dimensions,
   Platform
 } from 'react-native'
-import { TextDefault, Spinner } from '../../components'
-import { useLogin } from '../../ui/hooks'
+import { Spinner } from '../../components'
 import { colors } from '../../utilities'
 import styles from './styles'
-import { Image, Button, Input, Icon } from 'react-native-elements'
+import { Image } from 'react-native-elements'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import i18next from '../../../i18n'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useTranslation } from 'react-i18next'
-import { I18nManager } from 'react-native'
+import { AntDesign } from '@expo/vector-icons'
 
 const { height } = Dimensions.get('window')
 export default function SelectLanguage() {
-  const {
-    onLogin,
-    isValid,
-    loading,
-    errors,
-    setPassword,
-    setUserName,
-    username,
-    password
-  } = useLogin()
   const { t } = useTranslation()
   const [selectedLanguage, setSelectedLanguage] = useState('')
   const [loader, setLoader] = useState(false)
@@ -68,9 +57,19 @@ export default function SelectLanguage() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           height: Platform.OS === 'ios' ? height * 1.0 : height * 1.05
+          // position: 'relative'
         }}>
         <View style={{ flex: 1, backgroundColor: colors.white }}>
           <View style={styles.topContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                position: 'absolute',
+                top: 50,
+                left: 15
+              }}>
+              <AntDesign name="arrowleft" size={30} />
+            </TouchableOpacity>
             <View>
               <Image
                 source={require('../../assets/Header.png')}

@@ -48,20 +48,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.white
   },
   topContainer: {
     flex: 3,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   image: {
     width: 150,
-    height: 140,
+    height: 140
   },
   languageContainer: {
     backgroundColor: colors.green,
@@ -70,13 +70,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     justifyContent: 'space-around',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 20
   },
   headingText: {
     fontWeight: 'bold',
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 20
   },
   languageButton: {
     marginBottom: 10,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   }
 })
 export default styles
