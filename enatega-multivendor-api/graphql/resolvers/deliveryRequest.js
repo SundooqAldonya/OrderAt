@@ -12,6 +12,7 @@ const {
   publishToDispatcher,
   publishToZoneRiders
 } = require('../../helpers/pubsub')
+const Coupon = require('../../models/coupon')
 const DeliveryRequest = require('../../models/deliveryRequest')
 const Order = require('../../models/order')
 const User = require('../../models/user')
@@ -93,6 +94,33 @@ module.exports = {
       }
 
       console.log({ zone })
+
+      const couponCode = await Coupon.findOne({ code: input.couponId })
+      console.log({ couponCode })
+      if (couponCode) {
+        if (!couponCode.tracking.user_usage) {
+          couponCode.tracking.user_usage = new Map()
+        }
+
+        // Convert to Map if it's a plain object (can happen when using `.lean()` or from Mongo)
+        if (!(couponCode.tracking.user_usage instanceof Map)) {
+          couponCode.tracking.user_usage = new Map(
+            Object.entries(couponCode.tracking.user_usage)
+          )
+        }
+      }
+
+      const previousCount = couponCode?.tracking.user_usage.get(req.userId) || 0
+      console.log({ previousCount })
+      if (couponCode) {
+        couponCode.tracking.user_usage.set(req.userId, previousCount + 1)
+        couponCode.tracking.usage_count += 1
+        console.log({
+          nextCount: couponCode.tracking.user_usage.get(req.userId),
+          usage_count: couponCode.tracking.usage_count
+        })
+        await couponCode.save()
+      }
 
       const order = new Order({
         orderId: delivery.requestId,

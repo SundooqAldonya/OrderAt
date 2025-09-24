@@ -90,6 +90,7 @@ const RequestDelivery = () => {
   console.log({ pickupCoords })
 
   const [coupon, setCoupon] = useState(null)
+  console.log({ coupon })
   const [voucherCode, setVoucherCode] = useState('')
 
   const themeContext = useContext(ThemeContext)
@@ -406,7 +407,8 @@ const RequestDelivery = () => {
         deliveryFee,
         requestChannel: 'customer_app',
         is_urgent: isUrgent,
-        notes
+        notes,
+        couponId: coupon?.code || null
       }
       console.log({ pickupCoords, dropOffCoords })
       if (notes?.length) {

@@ -1998,6 +1998,7 @@ const typeDefs = gql`
     notes: String
     phone: String
     name: String
+    couponId: String
   }
 
   input BusinessCategoryInput {
