@@ -60,7 +60,7 @@ module.exports = {
         request_channel: input.requestChannel,
         priority_level: input.priorityLevel || 'standard',
         is_urgent: input.isUrgent || false,
-        requestId: `mandoob-${lastRequestId}`
+        requestId: `PRIV-${lastRequestId}`
       })
 
       console.log({ delivery })
