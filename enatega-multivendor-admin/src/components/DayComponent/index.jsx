@@ -92,6 +92,7 @@ const DayComponent = ({ day, value, onChangeTime, idx }) => {
             onClick={e => {
               e.preventDefault()
               setValues([])
+              onChangeTime({ index: idx, day, values: [] })
             }}
             className={globalClasses.closeBtn}>
             {t('ClosedAllDay')}
@@ -102,6 +103,7 @@ const DayComponent = ({ day, value, onChangeTime, idx }) => {
             onClick={e => {
               e.preventDefault()
               setValues([['00:00', '23:59']])
+              onChangeTime({ index: idx, day, values: [['00:00', '23:59']] })
             }}
             className={globalClasses.openBtn}>
             {t('Open')}
