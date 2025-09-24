@@ -46,7 +46,7 @@ import { colors } from '../../utils/colors'
 import Toast from 'react-native-toast-message'
 
 const { height } = Dimensions.get('window')
-const TOP_BAR_HEIGHT = height * 0.08
+const TOP_BAR_HEIGHT = height * 0.04
 const HEADER_MAX_HEIGHT = height * 0.34
 const HEADER_MIN_HEIGHT = height * 0.05 + TOP_BAR_HEIGHT
 const SCROLL_RANGE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
@@ -415,16 +415,19 @@ function ItemDetail(props) {
               </TouchableOpacity>
             </View>
 
-            <View>
+            <View
+              style={{
+                backgroundColor: colors.primary,
+                borderRadius: 8,
+                paddingHorizontal: 15
+              }}
+            >
               <Text
                 style={{
                   textAlign: 'center',
-                  color: '#000',
+                  color: '#fff',
                   fontSize: 20,
                   fontWeight: 'bold',
-                  textShadowColor: 'rgba(0, 0, 0, 0.8)', // black with opacity
-                  textShadowOffset: { width: 1, height: 1 }, // horizontal & vertical shift
-                  textShadowRadius: 4, // blur,
                   marginInlineEnd: 5
                 }}
               >
@@ -444,6 +447,7 @@ function ItemDetail(props) {
           ]}
           scrollEventThrottle={1}
           contentContainerStyle={{
+            marginTop: -10,
             paddingTop: HEADER_MAX_HEIGHT,
             paddingBottom: scale(height * 0.09),
             backgroundColor: currentTheme.themeBackground

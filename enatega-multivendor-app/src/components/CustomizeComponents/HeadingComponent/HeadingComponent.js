@@ -37,11 +37,11 @@ function HeadingComponent(props) {
             {props.description}
           </TextDefault>
         </View>
-        <View style={styles.priceContainer}>
+        {/* <View style={styles.priceContainer}>
           <TextDefault textColor={currentTheme.fontMainColor} H4 bolder>
             {`${formatNumber(props.price)} ${configuration.currencySymbol}`}
           </TextDefault>
-        </View>
+        </View> */}
       </View>
     </View>
   )

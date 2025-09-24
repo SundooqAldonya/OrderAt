@@ -7,6 +7,7 @@ export default StyleSheet.create({
   backgroundImage: {
     height: height * 0.2,
     objectFit: 'cover',
-    ...alignment.Mmedium
+    ...alignment.Mmedium,
+    marginTop: 30
   }
 })
