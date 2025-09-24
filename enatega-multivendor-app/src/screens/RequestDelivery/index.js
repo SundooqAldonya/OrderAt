@@ -478,7 +478,7 @@ const RequestDelivery = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 120}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 120}
     >
       <ScrollView
         keyboardShouldPersistTaps='handled'
