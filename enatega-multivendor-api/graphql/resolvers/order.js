@@ -541,8 +541,12 @@ module.exports = {
         }
         console.log({ subtotal })
 
-        const total = subtotal + finalDeliveryCharges + tax
-        originalTotal = originalSubtotal + deliveryCharges + tax
+        const calculatedTax = ((subtotal + finalDeliveryCharges) * tax) / 100
+        console.log({ calculatedTax })
+        const total = subtotal + finalDeliveryCharges + calculatedTax
+        const originalTax = ((originalSubtotal + deliveryCharges) * tax) / 100
+        console.log({ originalTax })
+        originalTotal = originalSubtotal + deliveryCharges + originalTax
         console.log({ total, subtotalDiscount, originalTotal })
 
         return {

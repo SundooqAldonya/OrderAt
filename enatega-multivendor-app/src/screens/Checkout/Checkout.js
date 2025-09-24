@@ -1864,10 +1864,10 @@ function Checkout(props) {
                     >
                       {loadingCalculatePrice
                         ? 'loading...'
-                        : parseFloat(calculatedPrice?.tax).toFixed(2)}{' '}
-                      {isArabic
-                        ? configuration.currencySymbol
-                        : configuration.currency}
+                        : calculatedPrice?.tax
+                          ? parseFloat(calculatedPrice?.tax).toFixed(2)
+                          : 0}
+                      %
                     </TextDefault>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
