@@ -575,7 +575,7 @@ export const ar = {
   calculating: 'جاري حساب المبلغ...',
   Confirm_exit: 'تأكيد الخروج',
   Do_you_want_to_quit_the_app: 'هل تريد الخروج من التطبيق؟',
-  Request_delivery: 'أطلب مندوب',
+  Request_delivery: 'خدمة مشاوير',
   your_location: 'موقعك',
   your_order_will_send_here: 'سيتم توصيل طلبك الي هذ المكان',
   requestDeliveryTitle: 'أطلب مندوب',
