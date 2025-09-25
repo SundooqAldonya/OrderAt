@@ -456,7 +456,9 @@ const RestaurantDetailsV2 = () => {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <Text style={{ color: colors.primary }}>{t('no_reviews')}</Text>
+              <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
+                <Text style={{ color: colors.primary }}>{t('no_reviews')}</Text>
+              </TouchableOpacity>
             )}
           </View>
         </View>

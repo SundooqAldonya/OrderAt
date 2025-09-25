@@ -37,14 +37,6 @@ const ReviewsModal = ({
     return <ReviewCard key={item._id} review={item} />
   }
 
-  if (!reviews || reviews.length === 0) {
-    return (
-      <Text style={{ textAlign: 'center', marginTop: 20 }}>
-        {t('noReviewsYet')}
-      </Text>
-    )
-  }
-
   return (
     <Modal
       visible={reviewModalVisible}
@@ -70,13 +62,19 @@ const ReviewsModal = ({
           </View>
 
           {/* List of Reviews */}
-          <FlatList
-            data={reviews}
-            keyExtractor={(item) => item._id}
-            renderItem={renderItem}
-            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-            contentContainerStyle={{ paddingBottom: 100 }}
-          />
+          {reviews?.length ? (
+            <FlatList
+              data={reviews}
+              keyExtractor={(item) => item._id}
+              renderItem={renderItem}
+              ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+              contentContainerStyle={{ paddingBottom: 100 }}
+            />
+          ) : (
+            <Text style={{ textAlign: 'center', marginTop: 20 }}>
+              {t('noReviewsYet')}
+            </Text>
+          )}
         </View>
       </SafeAreaView>
     </Modal>
