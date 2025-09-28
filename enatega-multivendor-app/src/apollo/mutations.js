@@ -542,3 +542,10 @@ export const bulkAddUserAddresses = gql`
     }
   }
 `
+export const createRiderReview = gql`
+  mutation CreateRiderReview($input: RiderReviewInput!) {
+    createRiderReview(input: $input) {
+      message
+    }
+  }
+`

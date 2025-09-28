@@ -43,6 +43,7 @@ const notifications = require('./notifications')
 const xlsx = require('./xlsx')
 const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
 const dispatchOptions = require('./dispatchOptions')
+const riderReviews = require('./riderReviews')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -88,7 +89,8 @@ const rootResolver = {
     ...notifications.Query,
     ...xlsx.Query,
     ...prepaidDeliveryPackage.Query,
-    ...dispatchOptions.Query
+    ...dispatchOptions.Query,
+    ...riderReviews.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -133,7 +135,8 @@ const rootResolver = {
     ...notifications.Mutation,
     ...xlsx.Mutation,
     ...prepaidDeliveryPackage.Mutation,
-    ...dispatchOptions.Mutation
+    ...dispatchOptions.Mutation,
+    ...riderReviews.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

@@ -10,11 +10,15 @@ import {
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../../utils/colors'
-import { useMutation } from '@apollo/client'
-import { reviewOrder } from '../../../apollo/mutations'
-import Toast from 'react-native-toast-message'
 
-const ReviewModal = ({ visible, onClose, order }) => {
+const ReviewModal = ({
+  visible,
+  onClose,
+  order,
+  restaurantMutation,
+  riderReviewMutation,
+  restaurant
+}) => {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
   const [rating, setRating] = useState(0)
@@ -22,34 +26,12 @@ const ReviewModal = ({ visible, onClose, order }) => {
 
   const handleRating = (value) => setRating(value)
 
-  const [mutate] = useMutation(reviewOrder, {
-    onCompleted: (data) => {
-      console.log({ data })
-      Toast.show({
-        type: 'success',
-        text1: t('added_review'),
-        text2: t('added_review_successfully'),
-        text1Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        },
-        text2Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        }
-      })
-    },
-    onError: (err) => {
-      console.log({ err })
-    }
-  })
-
   const handleSubmit = () => {
-    mutate({
-      variables: {
-        order,
-        rating,
-        description: review
-      }
-    })
+    if (restaurant) {
+      restaurantMutation({ review, rating })
+    } else {
+      riderReviewMutation({ review, rating })
+    }
     setRating(0)
     setReview('')
     onClose()

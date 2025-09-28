@@ -1622,6 +1622,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getRiderOrderReview(orderId: String!, riderId: String!): Boolean
     getDispatchOptions: DispatchOptions
     restaurantOrdersHistory(startDate: String, endDate: String): [Order!]
     getPrepaidDeliveryPackages: [PrepaidDeliveryPackage!]
@@ -2100,7 +2101,15 @@ const typeDefs = gql`
     thirdAttemptRiders: Float
   }
 
+  input RiderReviewInput {
+    rider: String!
+    order: String!
+    rating: Int!
+    description: String
+  }
+
   type Mutation {
+    createRiderReview(input: RiderReviewInput!): Message
     heartbeatRestaurant(id: String!): Message
     updateDispatchOptions(input: DispatchOptionsInput!): Message
     updateRiderAvailabilityPeriod(period: Float!): Message

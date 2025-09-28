@@ -15,8 +15,14 @@ import { colors } from '../../../utils/colors'
 import { openGoogleMaps } from '../../../utils/callMaps'
 import ReviewModal from './ReviewModal'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { useQuery } from '@apollo/client'
-import { userHasOrderReview } from '../../../apollo/queries'
+import { useMutation, useQuery } from '@apollo/client'
+import {
+  getRiderOrderReview,
+  userHasOrderReview
+} from '../../../apollo/queries'
+import { FontAwesome5, Ionicons } from '@expo/vector-icons'
+import { createRiderReview, reviewOrder } from '../../../apollo/mutations'
+import Toast from 'react-native-toast-message'
 
 export default function Detail({
   _id,
@@ -47,27 +53,111 @@ export default function Detail({
   const { language } = i18n
   const isArabic = language === 'ar'
   const [reviewVisible, setReviewVisible] = useState(false)
+  const [reviewRiderVisible, setReviewRiderVisible] = useState(false)
 
-  console.log({ restaurantId: restaurant })
+  console.log({ riderId: rider })
 
-  const { data, loading, error } = useQuery(userHasOrderReview, {
+  const { data, loading, error, refetch } = useQuery(userHasOrderReview, {
     variables: {
       orderId: _id,
       restaurantId: restaurant?._id
-    },
-    pollInterval: 10000
+    }
+    // pollInterval: 10000
+  })
+  const {
+    data: dataRiderReview,
+    loading: loadingRiderReview,
+    error: errorRiderReview,
+    refetch: refetchRiderReview
+  } = useQuery(getRiderOrderReview, {
+    variables: {
+      orderId: _id,
+      riderId: rider?._id
+    }
+    // pollInterval: 10000
   })
 
-  console.log({ data })
+  const [mutate] = useMutation(reviewOrder, {
+    onCompleted: (data) => {
+      console.log({ data })
+      Toast.show({
+        type: 'success',
+        text1: t('added_review'),
+        text2: t('added_review_successfully'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      refetch()
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
+
+  const [mutateRider] = useMutation(createRiderReview, {
+    onCompleted: (data) => {
+      console.log({ data })
+      Toast.show({
+        type: 'success',
+        text1: t('added_review'),
+        text2: t('added_review_successfully'),
+        text1Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        },
+        text2Style: {
+          textAlign: isArabic ? 'right' : 'left'
+        }
+      })
+      refetchRiderReview()
+    },
+    onError: (err) => {
+      console.log({ err })
+    }
+  })
+
+  console.log({ dataRiderReview })
+
+  const riderHasReview = dataRiderReview?.getRiderOrderReview || false
 
   const userHasReview = data?.userHasOrderReview || null
 
   const handleModalClose = () => {
     setReviewVisible(false)
+    setReviewRiderVisible(false)
   }
 
   const handleShowReviewModal = () => {
     setReviewVisible(true)
+  }
+  const handleShowReviewRiderModal = () => {
+    setReviewRiderVisible(true)
+  }
+
+  const callRestaurantReviewMutation = ({ review, rating }) => {
+    mutate({
+      variables: {
+        order: _id,
+        rating,
+        description: review
+      }
+    })
+  }
+
+  const callRiderReviewMutation = ({ review, rating }) => {
+    mutateRider({
+      variables: {
+        input: {
+          rider: rider._id,
+          order: _id,
+          rating,
+          description: review
+        }
+      }
+    })
   }
 
   return (
@@ -77,8 +167,18 @@ export default function Detail({
           visible={reviewVisible}
           order={_id}
           onClose={handleModalClose}
+          restaurantMutation={callRestaurantReviewMutation}
+          restaurant={true}
         />
       )}
+      {/* for both otlob mandoob and customer restaurant ordering */}
+      <ReviewModal
+        visible={reviewRiderVisible}
+        order={_id}
+        onClose={handleModalClose}
+        riderReviewMutation={callRiderReviewMutation}
+        restaurant={false}
+      />
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
           onPress={() =>
@@ -120,29 +220,6 @@ export default function Detail({
             #{orderNo.toLowerCase()}
           </TextDefault>
         </View>
-        {type && type !== 'delivery_request' && (
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#f9f9f9',
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-              flexDirection: isArabic ? 'row-reverse' : 'row',
-              alignItems: 'center',
-              gap: 5
-            }}
-            onPress={handleShowReviewModal}
-            disabled={userHasReview}
-          >
-            <FontAwesome
-              name={userHasReview ? 'star' : 'star-o'}
-              size={18}
-              color='orange'
-            />
-            <TextDefault style={{ color: '#000' }}>
-              {userHasReview ? t('review_added') : t('add_review')}
-            </TextDefault>
-          </TouchableOpacity>
-        )}
       </View>
       {rider && (
         <View>
@@ -164,26 +241,109 @@ export default function Detail({
               {t('rider_name')}: {rider.name}
             </TextDefault>
           </View>
-          <TouchableOpacity
-            style={{
-              flexDirection: isArabic ? 'row-reverse' : 'row',
-              gap: 10
-            }}
-            onPress={() => callNumber(rider.phone)}
+          <View
+            style={
+              {
+                // flexDirection: isArabic ? 'row-reverse' : 'row',
+                // justifyContent: 'space-between',
+                // alignItems: 'center'
+              }
+            }
           >
-            <TextDefault
-              bolder
+            <TouchableOpacity
               style={{
-                color: '#000',
-                textAlign: isArabic ? 'right' : 'left',
-                marginBottom: 20,
-                fontSize: 16
+                flexDirection: isArabic ? 'row-reverse' : 'row',
+                gap: 10
               }}
+              onPress={() => callNumber(rider.phone)}
             >
-              {t('rider_phone')}: {rider.phone}
-            </TextDefault>
-            <Feather name='external-link' size={18} color='black' />
-          </TouchableOpacity>
+              <TextDefault
+                bolder
+                style={{
+                  color: '#000',
+                  textAlign: isArabic ? 'right' : 'left',
+                  marginBottom: 20,
+                  fontSize: 16
+                }}
+              >
+                {t('rider_phone')}: {rider.phone}
+              </TextDefault>
+              <Feather name='external-link' size={18} color='black' />
+            </TouchableOpacity>
+            {type &&
+              type !== 'delivery_request' &&
+              orderStatus === 'DELIVERED' && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: !userHasReview
+                      ? colors.primary
+                      : '#d3d3d3', // orange if active, grey if disabled
+                    paddingVertical: 12,
+                    paddingHorizontal: 20,
+                    borderRadius: 25,
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    opacity: userHasReview ? 0.7 : 1,
+                    marginBottom: 20
+                  }}
+                  onPress={handleShowReviewModal}
+                  disabled={userHasReview}
+                >
+                  <FontAwesome
+                    name={userHasReview ? 'star' : 'star-o'}
+                    size={18}
+                    color='orange'
+                  />
+                  <TextDefault
+                    style={{ color: userHasReview ? '#000' : '#fff' }}
+                  >
+                    {userHasReview ? t('review_added') : t('add_review')}
+                  </TextDefault>
+                  <FontAwesome5
+                    name='store'
+                    size={24}
+                    color={userHasReview ? '#000' : '#fff'}
+                  />
+                </TouchableOpacity>
+              )}
+            {orderStatus === 'DELIVERED' && (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: riderHasReview ? '#d3d3d3' : colors.primary, // orange if active, grey if disabled
+                  paddingVertical: 12,
+                  paddingHorizontal: 20,
+                  borderRadius: 25,
+                  flexDirection: isArabic ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  opacity: riderHasReview ? 0.7 : 1
+                }}
+                onPress={handleShowReviewRiderModal}
+                disabled={riderHasReview}
+              >
+                <FontAwesome
+                  name={riderHasReview ? 'star' : 'star-o'}
+                  size={18}
+                  color='orange'
+                />
+                <TextDefault
+                  style={{ color: riderHasReview ? '#000' : '#fff' }}
+                >
+                  {riderHasReview
+                    ? t('rider_review_added')
+                    : t('add_review_rider')}
+                </TextDefault>
+                <Ionicons
+                  name='bicycle'
+                  size={24}
+                  color={riderHasReview ? '#000' : '#fff'}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
       {type && type === 'delivery_request' ? (

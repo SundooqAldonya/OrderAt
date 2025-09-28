@@ -1339,6 +1339,11 @@ export const userHasOrderReview = gql`
     userHasOrderReview(orderId: $orderId, restaurantId: $restaurantId)
   }
 `
+export const getRiderOrderReview = gql`
+  query GetRiderOrderReview($orderId: String!, $riderId: String!) {
+    getRiderOrderReview(orderId: $orderId, riderId: $riderId)
+  }
+`
 export const getBusinessCategoriesCustomer = gql`
   query GetBusinessCategoriesCustomer {
     getBusinessCategoriesCustomer {

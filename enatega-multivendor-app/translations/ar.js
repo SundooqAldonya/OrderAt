@@ -627,7 +627,7 @@ export const ar = {
   orderPending: 'طلبك ما زال قيد الانتظار',
   mandoob: 'مندوب',
   login: 'تسجيل الدخول',
-  add_review: 'أضف تقييم',
+  add_review: 'أضف تقييم للمتجر',
   write_review: 'أكتب تقييمك...',
   leave_review: 'أترك تقييم',
   added_review: 'التقييم',
@@ -730,5 +730,7 @@ export const ar = {
   minimum_delivery: 'الحد الادني للتوصيل',
   minimum_orders: 'الحد الادنى للطلبات',
   sorry: 'معذرة',
-  will_be_available: 'سنكون متاحين قريبا في هذا المكان بامكانك اختيار مكان آخر'
+  will_be_available: 'سنكون متاحين قريبا في هذا المكان بامكانك اختيار مكان آخر',
+  add_review_rider: 'أضف تقييم للسائق',
+  rider_review_added: 'تم إضافة تقييم السائق بنجاح'
 }

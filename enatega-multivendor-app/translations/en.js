@@ -638,7 +638,7 @@ export const en = {
   orderPending: 'Your order is still pending',
   mandoob: 'Mandoob',
   login: 'Login',
-  add_review: 'Add review',
+  add_review: 'Add review for store',
   write_review: 'Write your review...',
   leave_review: 'Leave a Review',
   added_review: 'Added review',
@@ -741,5 +741,7 @@ export const en = {
   minimum_delivery: 'Min delivery',
   minimum_orders: 'Min Orders',
   sorry: 'Sorry',
-  will_be_available: 'Will be available in that area soon!'
+  will_be_available: 'Will be available in that area soon!',
+  add_review_rider: 'Add review for the rider',
+  rider_review_added: 'Rider review is added'
 }
