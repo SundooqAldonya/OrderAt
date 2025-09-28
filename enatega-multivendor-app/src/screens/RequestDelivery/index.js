@@ -56,6 +56,7 @@ import { colors } from '../../utils/colors'
 import { resetRequestDelivery } from '../../store/requestDeliverySlice'
 import Modal from 'react-native-modal'
 import UserContext from '../../context/User'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const ORDERS = gql`
   ${myOrders}
@@ -475,61 +476,72 @@ const RequestDelivery = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 120}
-    >
-      <ScrollView
-        keyboardShouldPersistTaps='handled'
+    <Fragment>
+      {/* <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 120}
+      > */}
+      <KeyboardAwareScrollView
         contentContainerStyle={{ flexGrow: 1 }}
+        enableOnAndroid={true}
+        extraScrollHeight={60}
       >
-        {regionFrom?.latitude &&
-        regionFrom?.longitude &&
-        regionTo?.latitude &&
-        regionTo?.longitude ? (
-          <View>
-            <MapView
-              key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}
-              ref={mapRef}
-              style={{ height: 300 }}
-              region={{
-                latitude: pickupCoords?.latitude || 31.111667,
-                longitude: pickupCoords?.longitude || 30.945833,
-                latitudeDelta: 0.02,
-                longitudeDelta: 0.02
-              }}
-              onMapReady={() => {
-                if (pickupCoords && dropOffCoords && mapRef.current) {
-                  mapRef.current.fitToCoordinates(
-                    [pickupCoords, dropOffCoords],
-                    {
-                      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-                      animated: true
-                    }
-                  )
-                }
-              }}
-            >
-              {pickupCoords && (
-                <Marker coordinate={pickupCoords} title='Pickup'>
-                  <Image
-                    source={FromIcon}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
-                  />
-                </Marker>
-              )}
-              {dropOffCoords && (
-                <Fragment>
-                  <Marker coordinate={dropOffCoords} title='Dropoff'>
+        <ScrollView
+          keyboardShouldPersistTaps='handled'
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          {regionFrom?.latitude &&
+          regionFrom?.longitude &&
+          regionTo?.latitude &&
+          regionTo?.longitude ? (
+            <View>
+              <MapView
+                key={`${regionFrom?.latitude}-${regionFrom?.longitude}-${regionTo?.latitude}-${regionTo?.longitude}`}
+                ref={mapRef}
+                style={{ height: 300 }}
+                region={{
+                  latitude: pickupCoords?.latitude || 31.111667,
+                  longitude: pickupCoords?.longitude || 30.945833,
+                  latitudeDelta: 0.02,
+                  longitudeDelta: 0.02
+                }}
+                onMapReady={() => {
+                  if (pickupCoords && dropOffCoords && mapRef.current) {
+                    mapRef.current.fitToCoordinates(
+                      [pickupCoords, dropOffCoords],
+                      {
+                        edgePadding: {
+                          top: 50,
+                          right: 50,
+                          bottom: 50,
+                          left: 50
+                        },
+                        animated: true
+                      }
+                    )
+                  }
+                }}
+              >
+                {pickupCoords && (
+                  <Marker coordinate={pickupCoords} title='Pickup'>
                     <Image
-                      source={ToIcon}
+                      source={FromIcon}
                       style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
                     />
                   </Marker>
-                </Fragment>
-              )}
-              {/* {pickupCoords && dropOffCoords && (
+                )}
+                {dropOffCoords && (
+                  <Fragment>
+                    <Marker coordinate={dropOffCoords} title='Dropoff'>
+                      <Image
+                        source={ToIcon}
+                        style={{ width: 40, height: 40, resizeMode: 'contain' }} // control the size here
+                      />
+                    </Marker>
+                  </Fragment>
+                )}
+                {/* {pickupCoords && dropOffCoords && (
             <MapViewDirections
               origin={pickupCoords}
               destination={dropOffCoords}
@@ -548,97 +560,97 @@ const RequestDelivery = () => {
               }}
             />
           )} */}
-            </MapView>
-          </View>
-        ) : null}
-        <View style={styles.wrapper}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('NewPickupMandoob')}
-            style={[styles.addressCard]}
-          >
-            <View style={styles.addressRow(isArabic)}>
-              <View style={styles.labelContainer(isArabic)}>
-                <TextDefault style={styles.addressText(isArabic)}>
-                  {t('pick_up_location')}:
+              </MapView>
+            </View>
+          ) : null}
+          <View style={styles.wrapper}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NewPickupMandoob')}
+              style={[styles.addressCard]}
+            >
+              <View style={styles.addressRow(isArabic)}>
+                <View style={styles.labelContainer(isArabic)}>
+                  <TextDefault style={styles.addressText(isArabic)}>
+                    {t('pick_up_location')}:
+                  </TextDefault>
+                  <Image source={FromIcon} style={styles.iconStyle} />
+                </View>
+
+                <View style={styles.editIconContainer(isArabic)}>
+                  <Feather name='edit' size={moderateScale(20)} color='black' />
+                </View>
+              </View>
+              <View style={{ marginHorizontal: 35 }}>
+                <TextDefault
+                  style={{
+                    ...styles.addressText(isArabic),
+                    color: !addressInfo.labelFrom ? 'red' : colors.primary
+                  }}
+                >
+                  {addressInfo.labelFrom
+                    ? `(${addressInfo.labelFrom})`
+                    : `(${t('choose_pickup')})`}
                 </TextDefault>
-                <Image source={FromIcon} style={styles.iconStyle} />
               </View>
+            </TouchableOpacity>
 
-              <View style={styles.editIconContainer(isArabic)}>
-                <Feather name='edit' size={moderateScale(20)} color='black' />
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NewDropoffMandoob')}
+              style={[styles.addressCard]}
+            >
+              <View style={styles.addressRow(isArabic)}>
+                <View style={styles.labelContainer(isArabic)}>
+                  <TextDefault style={styles.addressText(isArabic)}>
+                    {t('drop_off_location')}:
+                  </TextDefault>
+                  <Image source={ToIcon} style={styles.iconStyle} />
+                </View>
+
+                <View style={styles.editIconContainer(isArabic)}>
+                  <Feather name='edit' size={moderateScale(20)} color='black' />
+                </View>
               </View>
-            </View>
-            <View style={{ marginHorizontal: 35 }}>
-              <TextDefault
-                style={{
-                  ...styles.addressText(isArabic),
-                  color: !addressInfo.labelFrom ? 'red' : colors.primary
-                }}
-              >
-                {addressInfo.labelFrom
-                  ? `(${addressInfo.labelFrom})`
-                  : `(${t('choose_pickup')})`}
-              </TextDefault>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('NewDropoffMandoob')}
-            style={[styles.addressCard]}
-          >
-            <View style={styles.addressRow(isArabic)}>
-              <View style={styles.labelContainer(isArabic)}>
-                <TextDefault style={styles.addressText(isArabic)}>
-                  {t('drop_off_location')}:
+              <View style={{ marginHorizontal: 35 }}>
+                <TextDefault
+                  style={{
+                    ...styles.addressText(isArabic),
+                    color: !addressInfo.labelTo ? 'red' : colors.primary
+                  }}
+                >
+                  {addressInfo.labelTo
+                    ? `(${addressInfo.labelTo})`
+                    : `(${t('choose_dropoff')})`}
                 </TextDefault>
-                <Image source={ToIcon} style={styles.iconStyle} />
               </View>
+            </TouchableOpacity>
 
-              <View style={styles.editIconContainer(isArabic)}>
-                <Feather name='edit' size={moderateScale(20)} color='black' />
-              </View>
-            </View>
-            <View style={{ marginHorizontal: 35 }}>
-              <TextDefault
-                style={{
-                  ...styles.addressText(isArabic),
-                  color: !addressInfo.labelTo ? 'red' : colors.primary
-                }}
-              >
-                {addressInfo.labelTo
-                  ? `(${addressInfo.labelTo})`
-                  : `(${t('choose_dropoff')})`}
-              </TextDefault>
-            </View>
-          </TouchableOpacity>
+            {/* Item Description */}
+            <TextDefault
+              bolder
+              style={{
+                ...styles.title,
+                textAlign: isArabic ? 'right' : 'left',
+                marginTop: 20,
+                color: notesError ? 'red' : '#000'
+              }}
+            >
+              {t('item_description')} *
+            </TextDefault>
+            <TextInput
+              placeholder={t('item_description_notes')}
+              placeholderTextColor='#888'
+              style={[
+                styles.textArea,
+                notesError && { borderColor: 'red', borderWidth: 1 }
+              ]}
+              onChangeText={(text) => setNotes(text)}
+              multiline
+              numberOfLines={4}
+              textAlignVertical='top'
+            />
 
-          {/* Item Description */}
-          <TextDefault
-            bolder
-            style={{
-              ...styles.title,
-              textAlign: isArabic ? 'right' : 'left',
-              marginTop: 20,
-              color: notesError ? 'red' : '#000'
-            }}
-          >
-            {t('item_description')} *
-          </TextDefault>
-          <TextInput
-            placeholder={t('item_description_notes')}
-            placeholderTextColor='#888'
-            style={[
-              styles.textArea,
-              notesError && { borderColor: 'red', borderWidth: 1 }
-            ]}
-            onChangeText={(text) => setNotes(text)}
-            multiline
-            numberOfLines={4}
-            textAlignVertical='top'
-          />
-
-          {/* Urgency */}
-          {/* <View
+            {/* Urgency */}
+            {/* <View
           style={{
             ...styles.switchRow,
             flexDirection: isArabic ? 'row-reverse' : 'row'
@@ -649,300 +661,302 @@ const RequestDelivery = () => {
           <Switch value={isUrgent} onValueChange={toggleSwitch} />
         </View> */}
 
-          <View style={{ marginTop: 20 }}>
-            {!coupon ? (
-              <TouchableOpacity
-                // activeOpacity={0.7}
-                style={{
-                  ...styles.voucherSecInner,
-                  flexDirection: isArabic ? 'row-reverse' : 'row'
-                }}
-                onPress={() => setCouponOpen(true)}
-              >
-                <MaterialCommunityIcons
-                  name='ticket-confirmation-outline'
-                  size={moderateScale(24)}
-                  color={currentTheme.lightBlue}
-                />
-                <TextDefault
-                  H4
-                  bolder
-                  textColor={currentTheme.lightBlue}
-                  center
+            <View style={{ marginTop: 20 }}>
+              {!coupon ? (
+                <TouchableOpacity
+                  // activeOpacity={0.7}
+                  style={{
+                    ...styles.voucherSecInner,
+                    flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }}
+                  onPress={() => setCouponOpen(true)}
                 >
-                  {t('applyVoucher')}
-                </TextDefault>
-              </TouchableOpacity>
-            ) : (
-              <View>
-                <TextDefault
-                  numberOfLines={1}
-                  H5
-                  bolder
-                  textColor={currentTheme.fontNewColor}
-                  style={{ textAlign: isArabic ? 'right' : 'left' }}
-                >
-                  {t('coupon')}
-                </TextDefault>
+                  <MaterialCommunityIcons
+                    name='ticket-confirmation-outline'
+                    size={moderateScale(24)}
+                    color={currentTheme.lightBlue}
+                  />
+                  <TextDefault
+                    H4
+                    bolder
+                    textColor={currentTheme.lightBlue}
+                    center
+                  >
+                    {t('applyVoucher')}
+                  </TextDefault>
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  <TextDefault
+                    numberOfLines={1}
+                    H5
+                    bolder
+                    textColor={currentTheme.fontNewColor}
+                    style={{ textAlign: isArabic ? 'right' : 'left' }}
+                  >
+                    {t('coupon')}
+                  </TextDefault>
+                  <View
+                    style={{
+                      flexDirection: isArabic ? 'row-reverse' : 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingTop: moderateScale(8),
+                        gap: moderateScale(5)
+                      }}
+                    >
+                      <View>
+                        <View
+                          style={{
+                            flexDirection: isArabic ? 'row-reverse' : 'row',
+                            alignItems: 'center',
+                            gap: 5
+                          }}
+                        >
+                          <AntDesign
+                            name='tags'
+                            size={24}
+                            color={currentTheme.main}
+                          />
+                          <TextDefault
+                            numberOfLines={1}
+                            tnormal
+                            bold
+                            textColor={currentTheme.fontFourthColor}
+                            style={{
+                              textAlign: isArabic ? 'right' : 'left'
+                            }}
+                          >
+                            {coupon ? coupon.code : null} {t('applied')}
+                          </TextDefault>
+                        </View>
+                        <TextDefault
+                          small
+                          bolder
+                          textColor={colors.primary}
+                          style={{
+                            textAlign: isArabic ? 'right' : 'left',
+                            fontSize: 12,
+                            marginTop: 10
+                          }}
+                        >
+                          {coupon.discount}
+                          {coupon.discountType === 'percent'
+                            ? '%'
+                            : configuration.currencySymbol}{' '}
+                          {t('discount_on')} {t(coupon.appliesTo)}{' '}
+                          {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
+                        </TextDefault>
+                      </View>
+                    </View>
+                    <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
+                      <TouchableOpacity
+                        style={{
+                          ...styles.changeBtn
+                        }}
+                        onPress={() => setCoupon(null)}
+                      >
+                        <TextDefault
+                          small
+                          bold
+                          textColor={currentTheme.darkBgFont}
+                          center
+                        >
+                          {coupon ? t('remove') : null}
+                        </TextDefault>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Fare Preview */}
+            <View style={styles.fareBox}>
+              {loading ? (
+                <Text>Loading...</Text>
+              ) : (
                 <View
                   style={{
                     flexDirection: isArabic ? 'row-reverse' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
+                    gap: 10,
+                    // marginTop: 20,
+                    // alignItems: 'center',
+                    // backgroundColor: 'red',
+                    // justifyContent: 'center',
+                    width: '100%'
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingTop: moderateScale(8),
-                      gap: moderateScale(5)
-                    }}
-                  >
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: isArabic ? 'row-reverse' : 'row',
-                          alignItems: 'center',
-                          gap: 5
-                        }}
-                      >
-                        <AntDesign
-                          name='tags'
-                          size={24}
-                          color={currentTheme.main}
-                        />
-                        <TextDefault
-                          numberOfLines={1}
-                          tnormal
-                          bold
-                          textColor={currentTheme.fontFourthColor}
-                          style={{
-                            textAlign: isArabic ? 'right' : 'left'
-                          }}
-                        >
-                          {coupon ? coupon.code : null} {t('applied')}
-                        </TextDefault>
-                      </View>
-                      <TextDefault
-                        small
-                        bolder
-                        textColor={colors.primary}
-                        style={{
-                          textAlign: isArabic ? 'right' : 'left',
-                          fontSize: 12,
-                          marginTop: 10
-                        }}
-                      >
-                        {coupon.discount}
-                        {coupon.discountType === 'percent'
-                          ? '%'
-                          : configuration.currencySymbol}{' '}
-                        {t('discount_on')} {t(coupon.appliesTo)}{' '}
-                        {`(${t('max')} ${coupon.maxDiscount} ${configuration.currencySymbol})`}
-                      </TextDefault>
-                    </View>
-                  </View>
-                  <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
-                    <TouchableOpacity
-                      style={{
-                        ...styles.changeBtn
-                      }}
-                      onPress={() => setCoupon(null)}
-                    >
-                      <TextDefault
-                        small
-                        bold
-                        textColor={currentTheme.darkBgFont}
-                        center
-                      >
-                        {coupon ? t('remove') : null}
-                      </TextDefault>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            )}
-          </View>
-
-          {/* Fare Preview */}
-          <View style={styles.fareBox}>
-            {loading ? (
-              <Text>Loading...</Text>
-            ) : (
-              <View
-                style={{
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  gap: 10,
-                  // marginTop: 20,
-                  // alignItems: 'center',
-                  // backgroundColor: 'red',
-                  // justifyContent: 'center',
-                  width: '100%'
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: isArabic ? 'right' : 'left',
-                    // textAlign: 'center',
-                    fontSize: 16
-                  }}
-                >
-                  {t('deliveryFee')}: {deliveryFee}{' '}
-                  {configuration.currencySymbol}
-                </Text>
-                {coupon && (
                   <Text
                     style={{
                       textAlign: isArabic ? 'right' : 'left',
-                      textDecorationLine: 'line-through',
+                      // textAlign: 'center',
                       fontSize: 16
                     }}
                   >
-                    {originalDiscount} {configuration.currencySymbol}
+                    {t('deliveryFee')}: {deliveryFee}{' '}
+                    {configuration.currencySymbol}
                   </Text>
-                )}
-              </View>
-            )}
-          </View>
-
-          <TouchableOpacity
-            disabled={disabled}
-            style={{
-              ...styles.submitButton,
-              backgroundColor: disabled ? 'grey' : '#000'
-            }}
-            onPress={handleSubmit}
-          >
-            <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          isVisible={nameFormAppear}
-          onBackdropPress={onClose}
-          onBackButtonPress={onClose}
-          backdropOpacity={0.4}
-          style={styleNameModal.modal}
-          swipeDirection='down'
-          onSwipeComplete={onClose}
-          useNativeDriver={false}
-        >
-          <View style={styleNameModal.modalContent}>
-            <Text
-              style={{
-                ...styleNameModal.title,
-                textAlign: isArabic ? 'right' : 'left'
-              }}
-            >
-              {t('enter_your_name')}
-            </Text>
-            <TextInput
-              value={customerName}
-              onChangeText={setCustomerName}
-              placeholder={t('your_name')}
-              style={styleNameModal.input}
-              placeholderTextColor='#999'
-            />
-            <View style={styleNameModal.buttonsContainer}>
-              <TouchableOpacity
-                onPress={onClose}
-                style={styleNameModal.cancelButton}
-              >
-                <Text style={styleNameModal.cancelText}>{t('Cancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleSubmitCustomerName}
-                style={styleNameModal.submitButton}
-              >
-                <Text style={styleNameModal.submitText}>{t('send')}</Text>
-              </TouchableOpacity>
+                  {coupon && (
+                    <Text
+                      style={{
+                        textAlign: isArabic ? 'right' : 'left',
+                        textDecorationLine: 'line-through',
+                        fontSize: 16
+                      }}
+                    >
+                      {originalDiscount} {configuration.currencySymbol}
+                    </Text>
+                  )}
+                </View>
+              )}
             </View>
-          </View>
-        </Modal>
-        <Modal
-          ref={voucherModalRef}
-          isVisible={couponOpen}
-          onBackdropPress={onClose}
-          onBackButtonPress={onClose}
-          backdropOpacity={0.4}
-          style={couponStyles.modalWrapper}
-          swipeDirection='down'
-          onSwipeComplete={onClose}
-          useNativeDriver={false}
-        >
-          <View style={couponStyles.modalContainer}>
-            <View
+
+            <TouchableOpacity
+              disabled={disabled}
               style={{
-                ...couponStyles.modalHeader,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
+                ...styles.submitButton,
+                backgroundColor: disabled ? 'grey' : '#000'
               }}
+              onPress={handleSubmit}
             >
-              <View
-                activeOpacity={0.7}
+              <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
+            </TouchableOpacity>
+          </View>
+
+          <Modal
+            isVisible={nameFormAppear}
+            onBackdropPress={onClose}
+            onBackButtonPress={onClose}
+            backdropOpacity={0.4}
+            style={styleNameModal.modal}
+            swipeDirection='down'
+            onSwipeComplete={onClose}
+            useNativeDriver={false}
+          >
+            <View style={styleNameModal.modalContent}>
+              <Text
                 style={{
-                  ...couponStyles.modalheading,
+                  ...styleNameModal.title,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('enter_your_name')}
+              </Text>
+              <TextInput
+                value={customerName}
+                onChangeText={setCustomerName}
+                placeholder={t('your_name')}
+                style={styleNameModal.input}
+                placeholderTextColor='#999'
+              />
+              <View style={styleNameModal.buttonsContainer}>
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={styleNameModal.cancelButton}
+                >
+                  <Text style={styleNameModal.cancelText}>{t('Cancel')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleSubmitCustomerName}
+                  style={styleNameModal.submitButton}
+                >
+                  <Text style={styleNameModal.submitText}>{t('send')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <Modal
+            ref={voucherModalRef}
+            isVisible={couponOpen}
+            onBackdropPress={onClose}
+            onBackButtonPress={onClose}
+            backdropOpacity={0.4}
+            style={couponStyles.modalWrapper}
+            swipeDirection='down'
+            onSwipeComplete={onClose}
+            useNativeDriver={false}
+          >
+            <View style={couponStyles.modalContainer}>
+              <View
+                style={{
+                  ...couponStyles.modalHeader,
                   flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}
               >
-                <MaterialCommunityIcons
-                  name='ticket-confirmation-outline'
+                <View
+                  activeOpacity={0.7}
+                  style={{
+                    ...couponStyles.modalheading,
+                    flexDirection: isArabic ? 'row-reverse' : 'row'
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name='ticket-confirmation-outline'
+                    size={moderateScale(24)}
+                    color={currentTheme.newIconColor}
+                  />
+                  <TextDefault
+                    H4
+                    bolder
+                    textColor={currentTheme.newFontcolor}
+                    center
+                  >
+                    {t('applyVoucher')}
+                  </TextDefault>
+                </View>
+                <Feather
+                  name='x-circle'
                   size={moderateScale(24)}
                   color={currentTheme.newIconColor}
+                  onPress={() => onModalClose(voucherModalRef)}
                 />
-                <TextDefault
-                  H4
-                  bolder
-                  textColor={currentTheme.newFontcolor}
-                  center
-                >
-                  {t('applyVoucher')}
-                </TextDefault>
               </View>
-              <Feather
-                name='x-circle'
-                size={moderateScale(24)}
-                color={currentTheme.newIconColor}
-                onPress={() => onModalClose(voucherModalRef)}
-              />
+              <View style={{ gap: 8 }}>
+                <TextInput
+                  ref={inputRef}
+                  label={t('inputCode')}
+                  placeholder={t('inputCode')}
+                  value={voucherCode}
+                  onChangeText={(text) => setVoucherCode(text)}
+                  style={couponStyles.modalInput}
+                />
+              </View>
+              <TouchableOpacity
+                disabled={!voucherCode || couponLoading}
+                onPress={handleApplyCoupon}
+                style={[
+                  couponStyles.applyButton,
+                  !voucherCode && couponStyles.buttonDisabled,
+                  { height: moderateScale(40), marginTop: moderateScale(20) },
+                  { opacity: couponLoading ? 0.5 : 1 }
+                ]}
+              >
+                {!couponLoading && (
+                  <TextDefault
+                    textColor={currentTheme.black}
+                    style={couponStyles.checkoutBtn}
+                    bold
+                    H4
+                  >
+                    {t('apply')}
+                  </TextDefault>
+                )}
+                {couponLoading && <Spinner backColor={'transparent'} />}
+              </TouchableOpacity>
             </View>
-            <View style={{ gap: 8 }}>
-              <TextInput
-                ref={inputRef}
-                label={t('inputCode')}
-                placeholder={t('inputCode')}
-                value={voucherCode}
-                onChangeText={(text) => setVoucherCode(text)}
-                style={couponStyles.modalInput}
-              />
-            </View>
-            <TouchableOpacity
-              disabled={!voucherCode || couponLoading}
-              onPress={handleApplyCoupon}
-              style={[
-                couponStyles.applyButton,
-                !voucherCode && couponStyles.buttonDisabled,
-                { height: moderateScale(40), marginTop: moderateScale(20) },
-                { opacity: couponLoading ? 0.5 : 1 }
-              ]}
-            >
-              {!couponLoading && (
-                <TextDefault
-                  textColor={currentTheme.black}
-                  style={couponStyles.checkoutBtn}
-                  bold
-                  H4
-                >
-                  {t('apply')}
-                </TextDefault>
-              )}
-              {couponLoading && <Spinner backColor={'transparent'} />}
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </Modal>
+        </ScrollView>
+        {/* </KeyboardAvoidingView> */}
+      </KeyboardAwareScrollView>
+    </Fragment>
   )
 }
 
