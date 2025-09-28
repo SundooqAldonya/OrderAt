@@ -589,7 +589,7 @@ export default function FoodTab() {
         }
       >
         {/* Header */}
-        <StatusBar color={'#fff'} barStyle={'default'} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
         <MainV2Header
           styles={styles}
           setIsVisible={setIsVisible}
@@ -637,23 +637,26 @@ export default function FoodTab() {
               // onPress={() => setSearchOpen(true)}
               onPress={() => navigation.navigate('Menu')}
             >
-              {/* <Text> */}
-              {/* <TextDefault numberOfLines={1} textColor={'#111827'} bolder H4 style={styles.sectionTitle}>{t('all_businesses')}</TextDefault> */}
-              <View
+              {/* <View
+                style={{
+                  color: '#bbb',
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              > */}
+              <Text
                 style={{
                   color: '#bbb',
                   textAlign: isArabic ? 'right' : 'left'
                 }}
               >
-                {t('search_for_restaurants')}
-                {/* </Text> */}
-                <Text>{t('see_all')} </Text>
-                <AntDesign
+                {t('search_for_restaurants')}{' '}
+              </Text>
+              {/* <AntDesign
                   name={isArabic ? 'arrowleft' : 'arrowright'}
                   size={moderateScale(20)}
                   color='black'
-                />
-              </View>
+                /> */}
+              {/* </View> */}
             </TouchableOpacity>
           </View>
 

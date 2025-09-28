@@ -721,7 +721,7 @@ export const ar = {
   good_afternoon: 'مساء الخير',
   all_categories: 'جميع التصنيفات',
   see_all: 'رؤية الكل',
-  search_for_restaurants: 'ابحث عن مطاعم',
+  search_for_restaurants: 'ابحث عن متاجر',
   all_businesses: 'جميع المتاجر',
   Highlights: 'اختيارات بارزة',
   confirm_exit: 'تأكيد الخروج',
