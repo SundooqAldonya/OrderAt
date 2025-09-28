@@ -12,7 +12,8 @@ import {
   Modal,
   Alert,
   Linking,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView
 } from 'react-native'
 import {
   AntDesign,
@@ -537,7 +538,7 @@ export default function FoodTab() {
                 size={moderateScale(16)}
                 color={'#000'}
               />
-              <Text style={{ color: '#000', fontSize: 12 }}>
+              <Text style={{ color: '#000', fontSize: moderateScale(12) }}>
                 {item.deliveryFee?.amount} {configuration.currency}
               </Text>
             </View>
@@ -580,22 +581,23 @@ export default function FoodTab() {
     !orderLoading
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: '#fff' }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {/* Header */}
-      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
-      <MainV2Header
-        styles={styles}
-        setIsVisible={setIsVisible}
-        cartCount={cartCount}
-        location={location}
-      />
+    <SafeAreaView style={styles.flex}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: '#fff' }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Header */}
+        <StatusBar color={'#fff'} barStyle={'default'} />
+        <MainV2Header
+          styles={styles}
+          setIsVisible={setIsVisible}
+          cartCount={cartCount}
+          location={location}
+        />
 
-      {/* {!restaurantsWithOffersData?.length &&
+        {/* {!restaurantsWithOffersData?.length &&
       !loadingWithOffers &&
       !allRestaurants?.length &&
       !loading &&
@@ -607,9 +609,9 @@ export default function FoodTab() {
           <ErrorView wentWrong={t('sorry')} message={t('will_be_available')} />
         </View>
       ) : ( */}
-      <Fragment>
-        {/* Greeting */}
-        {/* {profile ? (
+        <Fragment>
+          {/* Greeting */}
+          {/* {profile ? (
               <Text
                 style={{ ...styles.greeting, textAlign: isArabic ? 'right' : 'left' }}
               >
@@ -622,33 +624,42 @@ export default function FoodTab() {
               </Text>
             ) : null} */}
 
-        {/* Search */}
-        <View
-          style={{
-            ...styles.searchBar,
-            flexDirection: isArabic ? 'row-reverse' : 'row'
-          }}
-        >
-          <Ionicons name='search-outline' size={18} color='gray' />
-          <TouchableOpacity
-            style={styles.inputLike}
-            // onPress={() => setSearchOpen(true)}
-            onPress={() => navigation.navigate('Menu')}
+          {/* Search */}
+          <View
+            style={{
+              ...styles.searchBar,
+              flexDirection: isArabic ? 'row-reverse' : 'row'
+            }}
           >
-            <Text
-              style={{
-                color: '#bbb',
-                textAlign: isArabic ? 'right' : 'left'
-              }}
+            <Ionicons name='search-outline' size={18} color='gray' />
+            <TouchableOpacity
+              style={styles.inputLike}
+              // onPress={() => setSearchOpen(true)}
+              onPress={() => navigation.navigate('Menu')}
             >
-              {t('search_for_restaurants')}
-            </Text>
-          </TouchableOpacity>
-        </View>
+              {/* <Text> */}
+              {/* <TextDefault numberOfLines={1} textColor={'#111827'} bolder H4 style={styles.sectionTitle}>{t('all_businesses')}</TextDefault> */}
+              <View
+                style={{
+                  color: '#bbb',
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('search_for_restaurants')}
+                {/* </Text> */}
+                <Text>{t('see_all')} </Text>
+                <AntDesign
+                  name={isArabic ? 'arrowleft' : 'arrowright'}
+                  size={moderateScale(20)}
+                  color='black'
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
 
-        {/* Categories */}
-        <BusinessCategories />
-        {/* <FlatList
+          {/* Categories */}
+          <BusinessCategories />
+          {/* <FlatList
                 data={businessCategories}
                 keyExtractor={(item) => item.id}
                 horizontal
@@ -656,95 +667,100 @@ export default function FoodTab() {
                 renderItem={({ item }) => renderCategory(item)}
                 contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
                 /> */}
-        {allErrorsZone ? (
-          <ErrorView
-            // wentWrong={t('somethingWentWrong')}
-            message={t('city_location_no_deliveryzone')}
-          >
-            <MainModalize
-              isVisible={isVisible}
-              isLoggedIn={isLoggedIn}
-              addressIcons={addressIcons}
-              modalHeader={modalHeader}
-              modalFooter={modalFooter}
-              setAddressLocation={setAddressLocation}
-              profile={profile}
-              location={location}
-              loading={loadingAddress}
-              onClose={onModalClose}
-              otlobMandoob={false}
-            />
-          </ErrorView>
-        ) : (
-          <Fragment>
-            {/* Top restaurants section */}
-            <MiddleRestaurantsSection
-              restaurantsWithOffersData={restaurantsWithOffersData}
-              mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
-              // highestRatingRestaurantData={highestRatingRestaurantData}
-              // nearestRestaurantsData={nearestRestaurantsData}
-              featuredRestaurants={featuredRestaurantsVar}
-            />
-
-            {/* Restaurants */}
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Menu', {
-                  highlight: true,
-                  title: 'all_businesses'
-                })
-                // navigation.navigate('TopBrandsScreen', {
-                //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
-                // })
-              }}
-              style={{
-                ...styles.sectionHeader,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
-              }}
+          {allErrorsZone ? (
+            <ErrorView
+              // wentWrong={t('somethingWentWrong')}
+              message={t('city_location_no_deliveryzone')}
             >
-              <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
-              <View
+              <MainModalize
+                isVisible={isVisible}
+                isLoggedIn={isLoggedIn}
+                addressIcons={addressIcons}
+                modalHeader={modalHeader}
+                modalFooter={modalFooter}
+                setAddressLocation={setAddressLocation}
+                profile={profile}
+                location={location}
+                loading={loadingAddress}
+                onClose={onModalClose}
+                otlobMandoob={false}
+              />
+            </ErrorView>
+          ) : (
+            <Fragment>
+              {/* Top restaurants section */}
+              <MiddleRestaurantsSection
+                restaurantsWithOffersData={restaurantsWithOffersData}
+                mostOrderedRestaurantsVar={mostOrderedRestaurantsVar}
+                // highestRatingRestaurantData={highestRatingRestaurantData}
+                // nearestRestaurantsData={nearestRestaurantsData}
+                featuredRestaurants={featuredRestaurantsVar}
+              />
+
+              {/* Restaurants */}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Menu', {
+                    highlight: true,
+                    title: 'all_businesses'
+                  })
+                  // navigation.navigate('TopBrandsScreen', {
+                  //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
+                  // })
+                }}
                 style={{
-                  flexDirection: isArabic ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  gap: 4
+                  ...styles.sectionHeader,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
                 }}
               >
-                <Text style={styles.sectionLink}>{t('see_all')} </Text>
-                <AntDesign
-                  name={isArabic ? 'arrowleft' : 'arrowright'}
-                  size={18}
-                  color='black'
-                />
-              </View>
-            </TouchableOpacity>
-            {allRestaurants?.map((item) => renderTopRestaurants(item))}
+                <Text style={styles.sectionTitle}>{t('all_businesses')}</Text>
+                <View
+                  style={{
+                    flexDirection: isArabic ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    gap: 4
+                  }}
+                >
+                  <Text style={styles.sectionLink}>{t('see_all')} </Text>
+                  <AntDesign
+                    name={isArabic ? 'arrowleft' : 'arrowright'}
+                    size={18}
+                    color='black'
+                  />
+                </View>
+              </TouchableOpacity>
+              {allRestaurants?.map((item) => renderTopRestaurants(item))}
 
-            {isLoggedIn && (
-              <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
-            )}
-          </Fragment>
-        )}
-      </Fragment>
-      {/* )} */}
-      <MainModalize
-        isVisible={isVisible}
-        isLoggedIn={isLoggedIn}
-        addressIcons={addressIcons}
-        modalHeader={modalHeader}
-        modalFooter={modalFooter}
-        setAddressLocation={setAddressLocation}
-        profile={profile}
-        location={location}
-        loading={loadingAddress}
-        onClose={onModalClose}
-        otlobMandoob={false}
-      />
-    </ScrollView>
+              {isLoggedIn && (
+                <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+              )}
+            </Fragment>
+          )}
+        </Fragment>
+        {/* )} */}
+        <MainModalize
+          isVisible={isVisible}
+          isLoggedIn={isLoggedIn}
+          addressIcons={addressIcons}
+          modalHeader={modalHeader}
+          modalFooter={modalFooter}
+          setAddressLocation={setAddressLocation}
+          profile={profile}
+          location={location}
+          loading={loadingAddress}
+          onClose={onModalClose}
+          otlobMandoob={false}
+        />
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -753,13 +769,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     // color: 'tomato',
     color: colors.primary,
     fontWeight: '600'
   },
   headerTitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600'
   },
   cartWrapper: {
@@ -810,13 +826,8 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600'
-  },
-  sectionLink: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'gray'
+    fontSize: moderateScale(16)
+    // fontWeight: '600'
   },
   categoryChip: {
     flexDirection: 'row',
@@ -858,11 +869,11 @@ const styles = StyleSheet.create({
     padding: 12
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '700'
   },
   cardTags: {
-    fontSize: 13,
+    fontSize: moderateScale(13),
     color: 'gray',
     marginVertical: 4
   },
@@ -872,7 +883,7 @@ const styles = StyleSheet.create({
     marginTop: 4
   },
   metaText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: 'gray'
   },
   addNewAddressbtn: {

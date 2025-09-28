@@ -273,7 +273,7 @@ function Item(props) {
                 </TextDefault>
               </View>
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginLeft: 10 }}
               >
                 <MaterialIcons
                   name='directions-bike'

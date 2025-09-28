@@ -10,7 +10,7 @@ import * as Updates from 'expo-updates'
 const useEnvVars = (env = Updates.channel) => {
   const configuration = useContext(ConfigurationContext)
   const apiEnv = process.env.API_ENV || Updates.channel
-
+console.log({apiEnv});
   if (apiEnv === 'staging') {
     return {
       GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
@@ -70,6 +70,4 @@ const useEnvVars = (env = Updates.channel) => {
     TEST_OTP: configuration.testOtp,
     GOOGLE_PACES_API_BASE_URL: configuration.googlePlacesApiBaseUrl
   }
-}
-
 export default useEnvVars
