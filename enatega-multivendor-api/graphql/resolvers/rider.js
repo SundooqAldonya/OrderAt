@@ -78,7 +78,6 @@ module.exports = {
         }
         const rider = await Rider.findById(userId)
         return transformRider(rider)
-        // return rider
       } catch (err) {
         console.log(err)
         throw err

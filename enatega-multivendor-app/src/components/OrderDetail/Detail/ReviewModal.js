@@ -17,7 +17,8 @@ const ReviewModal = ({
   order,
   restaurantMutation,
   riderReviewMutation,
-  restaurant
+  restaurant,
+  title
 }) => {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
@@ -44,7 +45,7 @@ const ReviewModal = ({
           <Text
             style={{ ...styles.title, textAlign: isArabic ? 'right' : 'left' }}
           >
-            {t('leave_review')}
+            {title}
           </Text>
 
           <View style={styles.ratingContainer}>

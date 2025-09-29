@@ -95,7 +95,10 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
         <Ionicons name='close' size={moderateScale(24)} color='#333' />
       </TouchableOpacity>
       <TouchableOpacity
-        style={{ marginTop: moderateScale(30), marginHorizontal: moderateScale(10) }}
+        style={{
+          marginTop: moderateScale(30),
+          marginHorizontal: moderateScale(10)
+        }}
         onPress={() => onPressDetails(order)}
       >
         <View

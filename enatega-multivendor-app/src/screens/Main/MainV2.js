@@ -583,7 +583,10 @@ export default function FoodTab() {
   return (
     <SafeAreaView style={styles.flex}>
       <ScrollView
-        style={{ flex: 1, backgroundColor: '#fff' }}
+        style={{
+          flex: 1,
+          backgroundColor: '#fff'
+        }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -732,15 +735,14 @@ export default function FoodTab() {
                   />
                 </View>
               </TouchableOpacity>
-              {allRestaurants?.map((item) => renderTopRestaurants(item))}
-
-              {isLoggedIn && (
-                <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
-              )}
+              <View style={{ paddingBottom: hasActiveOrders ? 180 : 0 }}>
+                {allRestaurants?.map((item) => renderTopRestaurants(item))}
+              </View>
             </Fragment>
           )}
         </Fragment>
         {/* )} */}
+
         <MainModalize
           isVisible={isVisible}
           isLoggedIn={isLoggedIn}
@@ -755,6 +757,9 @@ export default function FoodTab() {
           otlobMandoob={false}
         />
       </ScrollView>
+      {isLoggedIn && (
+        <ActiveOrders onActiveOrdersChange={handleActiveOrdersChange} />
+      )}
     </SafeAreaView>
   )
 }

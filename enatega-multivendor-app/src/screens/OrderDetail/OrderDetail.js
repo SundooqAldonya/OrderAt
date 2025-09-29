@@ -234,7 +234,7 @@ function OrderDetail(props) {
               >
                 <CustomerMarker />
               </Marker>
-              <MapViewDirections
+              {/* <MapViewDirections
                 origin={{
                   longitude: restaurant
                     ? +restaurant?.location?.coordinates[0]
@@ -268,7 +268,7 @@ function OrderDetail(props) {
                 onError={(error) => {
                   console.log('onerror', error)
                 }}
-              />
+              /> */}
               {order.rider && <TrackingRider id={order.rider._id} />}
             </MapView>
           )}

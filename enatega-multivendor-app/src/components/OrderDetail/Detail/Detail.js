@@ -119,8 +119,6 @@ export default function Detail({
     }
   })
 
-  console.log({ dataRiderReview })
-
   const riderHasReview = dataRiderReview?.getRiderOrderReview || false
 
   const userHasReview = data?.userHasOrderReview || null
@@ -169,6 +167,7 @@ export default function Detail({
           onClose={handleModalClose}
           restaurantMutation={callRestaurantReviewMutation}
           restaurant={true}
+          title={t('add_review')}
         />
       )}
       {/* for both otlob mandoob and customer restaurant ordering */}
@@ -178,6 +177,7 @@ export default function Detail({
         onClose={handleModalClose}
         riderReviewMutation={callRiderReviewMutation}
         restaurant={false}
+        title={t('add_review_rider')}
       />
       {/* {rider && orderStatus !== ORDER_STATUS_ENUM.DELIVERED && (
         <ChatButton
