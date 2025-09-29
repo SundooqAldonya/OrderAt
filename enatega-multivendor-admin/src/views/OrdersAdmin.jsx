@@ -10,6 +10,7 @@ import CustomLoader from '../components/Loader/CustomLoader'
 import { AreaContext } from '../context/AreaContext'
 import OrdersDataAdmin from '../components/Order/OrdersDataAdmin'
 import DispatchDrawer from '../components/DispatchDrawer'
+import DispatchForm from '../components/DispatchForm'
 
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
@@ -87,7 +88,7 @@ const OrdersAdmin = () => {
     <>
       <Header />
       {/* Page content */}
-      <OrderComponent order={order} />
+
       <Container className={globalClasses.flex} fluid>
         {errorQuery && (
           <tr>
@@ -95,6 +96,7 @@ const OrdersAdmin = () => {
           </tr>
         )}
         <Paper sx={{ background: '#fff' }}>
+          <DispatchForm />
           <OrdersDataAdmin
             orders={data && orders}
             toggleModal={toggleModal}
@@ -160,11 +162,7 @@ const OrdersAdmin = () => {
           onClose={() => {
             toggleModal(null)
           }}>
-          <OrderComponent
-            order={order}
-            modal={true}
-            toggleModal={toggleModal}
-          />
+          <DispatchForm order={order} />
         </Modal>
 
         <DispatchDrawer

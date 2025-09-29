@@ -57,6 +57,22 @@ module.exports = {
     }
   },
   Query: {
+    async searchRiders(_, { search }) {
+      console.log('searchRiders', search)
+      try {
+        const riders = await Rider.find({
+          $or: [
+            { name: { $regex: search, $options: 'i' } },
+            { username: { $regex: search, $options: 'i' } },
+            { phone: { $regex: search, $options: 'i' } }
+          ]
+        }).limit(10)
+        return riders.map(transformRider)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    },
     riders: async () => {
       console.log('riders')
       try {

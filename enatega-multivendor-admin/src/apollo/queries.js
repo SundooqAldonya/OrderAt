@@ -1399,3 +1399,13 @@ export const getDispatchOptions = gql`
     }
   }
 `
+
+export const searchRiders = gql`
+  query SearchRiders($search: String) {
+    searchRiders(search: $search) {
+      _id
+      name
+      username
+    }
+  }
+`

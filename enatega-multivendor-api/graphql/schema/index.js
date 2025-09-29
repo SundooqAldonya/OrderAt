@@ -1622,6 +1622,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    searchRiders(search: String): [Rider!]
     getRiderOrderReview(orderId: String!, riderId: String!): Boolean
     getDispatchOptions: DispatchOptions
     restaurantOrdersHistory(startDate: String, endDate: String): [Order!]

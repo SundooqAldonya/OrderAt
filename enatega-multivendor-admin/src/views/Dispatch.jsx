@@ -35,6 +35,7 @@ import 'react-notifications/lib/notifications.css'
 import RiderFunc from '../components/RiderFunc'
 import moment from 'moment'
 import DispatchDrawer from '../components/DispatchDrawer'
+import DispatchForm from '../components/DispatchForm'
 
 const SUBSCRIPTION_ORDER = gql`
   ${subscriptionOrder}
@@ -59,6 +60,7 @@ const Orders = props => {
   const [restaurantId, setRestaurantId] = useState(
     localStorage.getItem('restaurantId')
   )
+
   useEffect(() => {
     if (params.id) setRestaurantId(params.id)
   }, [])
@@ -300,7 +302,7 @@ const Orders = props => {
   }
 
   return (
-    <>
+    <Fragment>
       <NotificationContainer />
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
@@ -309,15 +311,14 @@ const Orders = props => {
       <Container className={globalClasses.flex} fluid>
         {errorOrders ? (
           <tr>
-            <td>
-              `${'Error'}! ${errorOrders.message}`
-            </td>
+            <td>{`${'Error'}! ${errorOrders.message}`}</td>
           </tr>
         ) : null}
         {loadingOrders ? (
           <CustomLoader />
         ) : (
           <Paper>
+            {/* <DispatchForm /> */}
             <DataTable
               subHeader={true}
               subHeaderComponent={
@@ -386,7 +387,7 @@ const Orders = props => {
           toggleDrawer={toggleDrawer}
         />
       </Container>
-    </>
+    </Fragment>
   )
 }
 
