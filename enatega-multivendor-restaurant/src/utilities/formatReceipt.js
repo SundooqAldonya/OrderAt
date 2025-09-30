@@ -22,8 +22,8 @@ export const formatReceipt = (order, currency) => {
 
   const currencySymbol = currency
 
-  const itemsRow = order.items
-    .map(item => {
+  const itemsRow = order?.items
+    ?.map(item => {
       // Format Addons
       const addons = item.addons
         .map(
@@ -162,7 +162,7 @@ export const formatReceipt = (order, currency) => {
           user?.name ? user.name : 'لا يوجد اسم'
         }</div>
         <div style="text-align: right;"><strong>الهاتف:</strong> ${
-          user ? user.phone.replace('+2', '') : 'N/A'
+          user ? user?.phone?.replace('+2', '') : 'N/A'
         }</div>
         
         <div class="line"></div>
@@ -176,17 +176,17 @@ export const formatReceipt = (order, currency) => {
 
         <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>الضريبة</div>
-          <div style="margin-right: 100px;">${tax.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${tax?.toFixed(2)}</div>
         </div>
 
         <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>رسوم التوصيل</div>
-          <div style="margin-right: 100px;">${deliveryCharges.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${deliveryCharges?.toFixed(2)}</div>
         </div>
 
         <div class="row bold" style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>الإجمالي</div>
-          <div style="margin-right: 100px;">${orderAmount.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${orderAmount?.toFixed(2)}</div>
         </div>
 
         <div class="line"></div>

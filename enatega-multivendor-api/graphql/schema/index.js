@@ -2109,7 +2109,13 @@ const typeDefs = gql`
     description: String
   }
 
+  input AdminCheckoutInput {
+    restaurant: String!
+    area: String!
+  }
+
   type Mutation {
+    adminCheckout(input: AdminCheckoutInput): Message
     createRiderReview(input: RiderReviewInput!): Message
     heartbeatRestaurant(id: String!): Message
     updateDispatchOptions(input: DispatchOptionsInput!): Message

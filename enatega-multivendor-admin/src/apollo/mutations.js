@@ -1058,3 +1058,10 @@ export const updateDispatchOptions = gql`
     }
   }
 `
+export const adminCheckout = gql`
+  mutation AdminCheckout($input: AdminCheckoutInput!) {
+    adminCheckout(input: $input) {
+      message
+    }
+  }
+`

@@ -190,9 +190,11 @@ export default function OrderDetail({ navigation, route }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <SpriteCapture ref={receiptRef} width={250}>
-        <ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
-      </SpriteCapture>
+      {orderData ? (
+        <SpriteCapture ref={receiptRef} width={250}>
+          <ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
+        </SpriteCapture>
+      ) : null}
 
       <BackButton navigation={navigation} />
       <ImageBackground

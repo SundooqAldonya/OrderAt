@@ -58,6 +58,8 @@ const dateScalar = require('../../helpers/dateScalar')
 const Variation = require('../../models/variation')
 const { GraphQLError } = require('graphql')
 const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
+const { acceptOrderHandler } = require('../../helpers/acceptOrderHandler')
+const Owner = require('../../models/owner')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -1535,6 +1537,81 @@ module.exports = {
         }
         const orderResult = await transformOrder(result)
         return orderResult
+      } catch (err) {
+        throw err
+      }
+    },
+
+    async adminCheckout(_, { input }, { req }) {
+      console.log('adminCheckout', input)
+      if (!req.user) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const { area, restaurant } = input
+        console.log({ user: req.user })
+        const user = await Owner.findById(req.user._id)
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const restaurantData = await Restaurant.findById(restaurant).populate(
+          'location'
+        )
+        if (!restaurantData) {
+          throw new Error('Restaurant not found')
+        }
+        const foundArea = await Area.findById(area).populate('location')
+        console.log({ foundArea: foundArea.location.location })
+        if (!foundArea) {
+          throw new Error('Area not found')
+        }
+        const zone = await Zone.findOne({
+          isActive: true,
+          location: {
+            $geoIntersects: {
+              $geometry: restaurantData.location
+            }
+          }
+        })
+        const orderId =
+          'ADMIN-' + new Date().getTime().toString().substring(0, 4)
+
+        const orderObj = {
+          zone: zone._id,
+          restaurant,
+          user: req.userId,
+          items: [],
+          deliveryAddress: {
+            address: foundArea.address,
+            location: foundArea.location.location
+          },
+          orderId,
+          paidAmount: 0,
+          orderStatus: 'PENDING',
+          deliveryCharges: input.deliveryFee,
+          finalDeliveryCharges: input.deliveryFee,
+          originalDeliveryCharges: input.deliveryFee,
+          tipping: 0,
+          taxationAmount: 0,
+          orderDate: new Date(),
+          isPickedUp: false,
+          orderAmount: 0,
+          originalPrice: 0,
+          originalSubtotal: 0,
+          paymentStatus: payment_status[0],
+          coupon: null,
+          completionTime: new Date(
+            Date.now() + restaurantData.deliveryTime * 60 * 1000
+          ),
+          instructions: input.instructions
+          // pickupLocation
+        }
+        console.log({ orderObj })
+        const order = await Order.create({
+          ...orderObj
+        })
+        // acceptOrderHandler({ user, restaurant: restaurantData })
+        return { message: 'created_request_delivery_successfully' }
       } catch (err) {
         throw err
       }

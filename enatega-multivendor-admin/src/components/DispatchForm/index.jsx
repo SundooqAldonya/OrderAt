@@ -15,8 +15,9 @@ import {
 import React, { useMemo, useState } from 'react'
 import useStyles from '../styles'
 import useGlobalStyles from '../../utils/globalStyles'
-import { gql, useLazyQuery, useQuery } from '@apollo/client'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
+  adminCheckout,
   getCities,
   getCityAreas,
   searchRestaurants,
@@ -122,8 +123,30 @@ const DispatchForm = ({ order }) => {
     })
   }
 
+  const [mutateCreateOrder, { loading: mutateLoading }] = useMutation(
+    adminCheckout,
+    {
+      onCompleted: res => {
+        console.log({ res })
+      },
+      onError: err => {
+        console.log({ err })
+        // setMainError(err.message)
+        // setSuccess(null)
+      }
+    }
+  )
+
   const handleSubmit = e => {
     e.preventDefault()
+    mutateCreateOrder({
+      variables: {
+        input: {
+          restaurant: selectedRestaurants?._id,
+          area: selectedArea
+        }
+      }
+    })
   }
 
   return (
@@ -250,6 +273,8 @@ const DispatchForm = ({ order }) => {
               {t('Rider')}
             </Typography> */}
             <Autocomplete
+              filterOptions={x => x} // 👈 disable built-in filtering
+              loading={loadingRiders} // 👈 show spinner
               options={ridersOptions || []}
               value={selectedRiders}
               onChange={(e, newValue) => handleRiderselect(newValue)}
@@ -257,7 +282,9 @@ const DispatchForm = ({ order }) => {
               onInputChange={(event, inputValue) => {
                 debouncedSearchRiders(inputValue)
               }}
-              getOptionLabel={option => option.name}
+              getOptionLabel={option =>
+                option?.name || option?.phone || option?.username || ''
+              }
               renderInput={params => (
                 <TextField
                   {...params}

@@ -14,8 +14,8 @@ export default function OrderDetails({ orderData }) {
   const isRtl = i18n.language === 'ar'
   const directionStyle = { flexDirection: isRtl ? 'row-reverse' : 'row' }
   const textAlignStyle = isRtl ? { textAlign: 'right' } : {}
-  const phone = orderData?.rider?.phone.includes('+2')
-    ? orderData?.rider?.phone.replace('+2', '')
+  const phone = orderData?.rider?.phone?.includes('+2')
+    ? orderData?.rider?.phone?.replace('+2', '')
     : orderData?.rider?.phone
   return (
     <View style={{ flex: 1 }}>
@@ -81,7 +81,7 @@ export default function OrderDetails({ orderData }) {
         <View style={[styles.row, directionStyle]}>
           <Text style={[styles.heading, textAlignStyle]}>{t('contact')}</Text>
           <Text style={[styles.text, textAlignStyle]} selectable>
-            {user.phone.replace('+2', '')}
+            {user?.phone?.replace('+2', '')}
           </Text>
         </View>
         <View style={[styles.row, directionStyle]}>

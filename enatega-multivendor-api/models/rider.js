@@ -22,7 +22,7 @@ const riderSchema = new Schema(
     },
     phone: {
       type: String,
-      default: true,
+      default: '',
       required: false
     },
     location: {
