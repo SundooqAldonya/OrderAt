@@ -188,7 +188,7 @@ function Menu({ route, props }) {
           ip: null
         }
       })
-      // console.log({ res })
+      console.log({ res: res.data })
       setRestaurantData(res.data.nearByRestaurantsPreview?.restaurants)
       setSectionData(res.data.nearByRestaurantsPreview?.sections)
     }
@@ -315,7 +315,20 @@ function Menu({ route, props }) {
       longitude: location.longitude,
       latitude: location.latitude
     }
-    if (titleMain === 'businesses_with_offers') {
+    if (titleMain === 'all_businesses' || !title) {
+      // refetch()
+      const res = await fetchAllBusinesses({
+        variables: {
+          longitude: location.longitude || null,
+          latitude: location.latitude || null,
+          shopType: selectedType || null,
+          ip: null
+        }
+      })
+      console.log({ res: res.data })
+      setRestaurantData(res.data.nearByRestaurantsPreview?.restaurants)
+      setSectionData(res.data.nearByRestaurantsPreview?.sections)
+    } else if (titleMain === 'businesses_with_offers') {
       fetchOffersRestaurants({ variables }).then((res) => {
         setRestaurantData(res?.data?.restaurantsWithOffers || [])
       })
@@ -385,11 +398,12 @@ function Menu({ route, props }) {
         <View style={styles().emptyViewContainer}>
           <View style={styles(currentTheme).emptyViewBox}>
             <TextDefault bold H4 center textColor={currentTheme.fontMainColor}>
-              {t('notAvailableinYourArea')}
+              {/* {t('notAvailableinYourArea')} */}
+              {t('no_search_result')}
             </TextDefault>
-            <TextDefault textColor={currentTheme.fontMainColor} center>
+            {/* <TextDefault textColor={currentTheme.fontMainColor} center>
               {emptyViewDesc}
-            </TextDefault>
+            </TextDefault> */}
           </View>
         </View>
       )
@@ -566,9 +580,7 @@ function Menu({ route, props }) {
   }
 
   return (
-    <SafeAreaView
-      style={[styles().flex, { backgroundColor: '#fff' }]}
-    >
+    <SafeAreaView style={[styles().flex, { backgroundColor: '#fff' }]}>
       <CollapsibleSubHeaderAnimator translateY={translateY}>
         <View style={styles(currentTheme).searchbar}>
           <View
@@ -610,7 +622,7 @@ function Menu({ route, props }) {
       </CollapsibleSubHeaderAnimator>
 
       {/* Scrollable List */}
-      <View style={{ marginTop: moderateScale(170) }}>
+      <View style={{ marginTop: moderateScale(190) }}>
         <FlatList
           data={search ? resultSearchData : restaurantData}
           keyExtractor={(item, index) => index.toString()}

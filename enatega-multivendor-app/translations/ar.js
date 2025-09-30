@@ -405,7 +405,7 @@ export const ar = {
   additionalItems: 'العناصر الإضافية',
   edit: 'تعديل',
   notAvailableinYourArea: 'نحن غير متاحين حاليًا في منطقتك',
-  noRestaurant: 'لا يقدم أي مطعم توصيل في منطقتك حاليًا',
+  noRestaurant: 'لا يوجد أي متجر حاليًا',
   apply: 'تطبيق',
   filters: 'تصفيات',
   help: 'مساعدة',
@@ -499,8 +499,7 @@ export const ar = {
   emptyPastOrdersBtn: 'لنطلب شيئًا!',
   allGrocery: 'جميع المتاجر ',
   searchGrocery: 'البحث عن متاجر ',
-  noGrocery: 'لا يقدم أي متجر بقالة تسليمًا حاليًا في منطقتك',
-
+  noGrocery: 'لا يقدم أي متجر تسليمًا حاليًا ',
   alertLocation: 'نوع الموقع غير محدد',
   Sort: 'ترتيب',
   Offers: 'عروض',
@@ -732,5 +731,6 @@ export const ar = {
   sorry: 'معذرة',
   will_be_available: 'سنكون متاحين قريبا في هذا المكان بامكانك اختيار مكان آخر',
   add_review_rider: 'أضف تقييم للسائق',
-  rider_review_added: 'تم إضافة تقييم السائق بنجاح'
+  rider_review_added: 'تم إضافة تقييم السائق بنجاح',
+  no_search_result: 'لا توجد نتائج بحث'
 }

@@ -15,7 +15,7 @@ const styles = (props = null) =>
     },
     searchbar: {
       ...alignment.PBmedium,
-      marginTop: moderateScale(40)
+      marginTop: moderateScale(10)
       // backgroundColor: colors.primary
     },
 

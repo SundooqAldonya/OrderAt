@@ -426,7 +426,7 @@ function ItemDetail(props) {
                 style={{
                   textAlign: 'center',
                   color: '#fff',
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: 'bold',
                   marginInlineEnd: 5
                 }}

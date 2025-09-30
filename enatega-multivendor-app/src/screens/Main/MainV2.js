@@ -710,9 +710,6 @@ export default function FoodTab() {
                     highlight: true,
                     title: 'all_businesses'
                   })
-                  // navigation.navigate('TopBrandsScreen', {
-                  //   topRatedVendorsPreview: dataTopRated?.topRatedVendorsPreview
-                  // })
                 }}
                 style={{
                   ...styles.sectionHeader,
@@ -830,7 +827,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginBottom: 10,
+    marginBottom: 20,
     marginTop: 10
   },
   sectionTitle: {
