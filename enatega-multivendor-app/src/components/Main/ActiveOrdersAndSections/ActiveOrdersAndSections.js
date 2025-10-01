@@ -25,7 +25,7 @@ function ActiveOrdersAndSections({ menuPageHeading, restaurantLength }) {
         H4
         style={{ textAlign: isArabic ? 'right' : 'left' }}
       >
-        {menuPageHeading} {restaurantLength}
+        {menuPageHeading}
       </TextDefault>
       <TextDefault
         Normal
