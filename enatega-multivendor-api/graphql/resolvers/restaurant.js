@@ -356,6 +356,31 @@ module.exports = {
         throw e
       }
     },
+
+    async getRestaurantsBusinessCategories(_, args) {
+      console.log('getRestaurantsBusinessCategories', args)
+      try {
+        const { businessCategoryIds } = args
+        const restaurants = await Restaurant.find({
+          businessCategories: { $in: businessCategoryIds },
+          isActive: true,
+          isAvailable: true,
+          isVisible: true,
+          deliveryBounds: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [Number(args.longitude), Number(args.latitude)]
+              }
+            }
+          }
+        }).populate('businessCategories')
+        return restaurants
+      } catch (err) {
+        throw err
+      }
+    },
+
     restaurantCustomer: async (_, args, { req }) => {
       console.log('restaurantCustomer.args', args)
       try {

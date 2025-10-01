@@ -38,6 +38,7 @@ import UserContext from '../../context/User'
 import {
   featuredRestaurants,
   getBusinessCategoriesCustomer,
+  getRestaurantsBusinessCategories,
   mostOrderedRestaurantsQuery,
   // getCuisines,
   // highestRatingRestaurant,
@@ -139,7 +140,7 @@ function Menu({ route, props }) {
   console.log({ highlight, title, titleMain })
 
   useEffect(() => {
-    if (highlight && title) {
+    if (highlight || title) {
       setHighlightMain(true)
       setTitleMain(title)
       setTitleUI(title)
@@ -227,6 +228,15 @@ function Menu({ route, props }) {
     fetchFeaturedRestaurants,
     { data: dataFeatured, loading: loadingFeatured, error: errorFeatured }
   ] = useLazyQuery(featuredRestaurants)
+
+  const [
+    fetchRestaurantsBusinessCategories,
+    {
+      data: dataRestaurantsWithBusinessCategories,
+      loading: loadingWithBusinessCats,
+      error: errorWithBusinessCats
+    }
+  ] = useLazyQuery(getRestaurantsBusinessCategories)
 
   const [
     fetchMostOrderedRestaurants,
@@ -358,6 +368,7 @@ function Menu({ route, props }) {
     generateBusinessCategories()
   }, [businessCategories])
 
+  // to generate business categories filter values
   const generateBusinessCategories = () => {
     if (businessCategories?.length) {
       setFilters((prev) => ({
@@ -371,17 +382,21 @@ function Menu({ route, props }) {
     }
   }
 
+  console.log({ filtersCategories: filters?.categories?.selected })
+
   useEffect(() => {
-    if (filteredItem) {
-      const filteredData = restaurantData.filter((item) =>
-        item.businessCategories.some((category) => {
-          return filteredItem._id === category._id
-        })
-      )
-      console.log({ filteredData })
-      setRestaurantData(filteredData)
+    if (titleMain === 'businessCategory' && filteredItem) {
+      fetchRestaurantsBusinessCategories({
+        variables: {
+          longitude: location.longitude,
+          latitude: location.latitude,
+          businessCategoryIds: [filteredItem._id]
+        }
+      }).then((res) => {
+        setRestaurantData(res?.data?.getRestaurantsBusinessCategories || [])
+      })
     }
-  }, [route.params])
+  }, [route.params, filters.categories, titleMain, filteredItem])
 
   const emptyView = () => {
     if (
@@ -499,7 +514,10 @@ function Menu({ route, props }) {
     const cuisines = filters.Cuisines
     const businessCategories = filters.categories
     const highlights = filters.Highlights
-
+    const variables = {
+      longitude: location.longitude,
+      latitude: location.latitude
+    }
     // Apply filters incrementally
     // Ratings filter
     if (ratings?.selected?.length > 0) {
@@ -539,10 +557,6 @@ function Menu({ route, props }) {
     }
 
     if (highlights?.selected?.length) {
-      const variables = {
-        longitude: location.longitude,
-        latitude: location.latitude
-      }
       setTitleMain('')
 
       if (highlights.selected[0] === 'businesses_with_offers') {
@@ -568,11 +582,19 @@ function Menu({ route, props }) {
     }
 
     if (businessCategories?.selected?.length > 0) {
-      filteredData = filteredData.filter((item) =>
-        item.businessCategories.some((category) => {
-          return businessCategories?.selected?.includes(category._id)
-        })
-      )
+      fetchRestaurantsBusinessCategories({
+        variables: {
+          ...variables,
+          businessCategoryIds: [...businessCategories?.selected]
+        }
+      }).then((res) => {
+        setRestaurantData(res?.data?.getRestaurantsBusinessCategories || [])
+      })
+      // filteredData = filteredData.filter((item) =>
+      //   item.businessCategories.some((category) => {
+      //     return businessCategories?.selected?.includes(category._id)
+      //   })
+      // )
     }
 
     // Set filtered data

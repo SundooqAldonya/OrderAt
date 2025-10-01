@@ -49,7 +49,8 @@ const BusinessCategories = () => {
     // })
     // Pass the selected category to the Menu screen
     navigation.navigate('Menu', {
-      filteredItem: item
+      filteredItem: item,
+      title: 'businessCategory'
     })
   }
 

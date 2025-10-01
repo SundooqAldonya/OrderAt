@@ -1622,6 +1622,11 @@ const typeDefs = gql`
   }
 
   type Query {
+    getRestaurantsBusinessCategories(
+      businessCategoryIds: [String!]!
+      longitude: Float!
+      latitude: Float!
+    ): [RestaurantCustomer!]
     searchRiders(search: String): [Rider!]
     getRiderOrderReview(orderId: String!, riderId: String!): Boolean
     getDispatchOptions: DispatchOptions
