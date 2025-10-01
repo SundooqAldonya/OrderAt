@@ -555,11 +555,11 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
           textColor={colors.black}
           style={[styles.coll3, { flex: 3 }]}>
           {isArabic
-            ? `${subTotal ? subTotal : subTotalZero} ${
+            ? `${subTotal ? Math.abs(subTotal) : Math.abs(subTotalZero)} ${
                 dataConfig.configuration.currencySymbol
               }`
             : `${dataConfig.configuration.currencySymbol} ${
-                subTotal ? subTotal : subTotalZero
+                subTotal ? Math.abs(subTotal) : Math.abs(subTotalZero)
               }`}
         </TextDefault>
       </View>

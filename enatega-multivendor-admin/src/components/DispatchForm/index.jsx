@@ -5,6 +5,8 @@ import {
   Button,
   Checkbox,
   debounce,
+  FormControl,
+  Grid,
   Input,
   ListItemText,
   MenuItem,
@@ -20,10 +22,12 @@ import {
   adminCheckout,
   getCities,
   getCityAreas,
+  getDeliveryCalculation,
   searchRestaurants,
   searchRiders
 } from '../../apollo'
 import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
 
 const GET_AREAS = gql`
   ${getCityAreas}
@@ -46,6 +50,9 @@ const DispatchForm = ({ order }) => {
   const [ridersOptions, setRidersOptions] = useState([])
   const [selectedRestaurants, setSelectedRestaurants] = useState(null)
   const [selectedRiders, setSelectedRiders] = useState(null)
+  const [times, setTimes] = useState([10, 20, 30, 40, 50, 60, 70, 80, 90])
+  const [selectedTime, setSelectedTime] = useState(times[1])
+  const [loaded, setLoaded] = useState(false)
 
   const {
     data: dataCities,
@@ -66,16 +73,16 @@ const DispatchForm = ({ order }) => {
 
   const areas = data ? data.areasByCity : []
 
-  const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
-    searchRestaurants,
-    {
-      fetchPolicy: 'no-cache',
-      onCompleted: data => {
-        console.log({ data })
-        setRestaurantOptions(data?.searchRestaurants || [])
-      }
+  const [
+    fetchRestaurants,
+    { data: dataRestaurants, loading: loadingRestaurants }
+  ] = useLazyQuery(searchRestaurants, {
+    fetchPolicy: 'no-cache',
+    onCompleted: data => {
+      console.log({ data })
+      setRestaurantOptions(data?.searchRestaurants || [])
     }
-  )
+  })
   const [fetchRiders, { loading: loadingRiders }] = useLazyQuery(searchRiders, {
     fetchPolicy: 'no-cache',
     onCompleted: data => {
@@ -83,6 +90,48 @@ const DispatchForm = ({ order }) => {
       setRidersOptions(data?.searchRiders || [])
     }
   })
+
+  const [
+    fetchDeliveryCost,
+    { data: calcData, loading: calcLoading, error: errorCalc }
+  ] = useLazyQuery(getDeliveryCalculation, {
+    onCompleted: res => {
+      console.log({ resDelivery: res })
+      setLoaded(true)
+    },
+    nextFetchPolicy: 'network-only',
+    pollInterval: 10000
+  })
+
+  const deliveryAmount = calcData?.getDeliveryCalculation?.amount || 0
+
+  console.log({ deliveryAmount })
+
+  useEffect(() => {
+    if (selectedArea && areas && selectedRestaurants) {
+      const foundArea = areas.find(item => item._id === selectedArea)
+      console.log({ foundArea })
+      fetchDeliveryCost({
+        variables: {
+          // input: {
+          destLong: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[0])
+            : null,
+          destLat: foundArea?.location?.location?.coordinates
+            ? Number(foundArea?.location?.location?.coordinates[1])
+            : null,
+          originLong: selectedRestaurants?.location?.coordinates
+            ? Number(selectedRestaurants?.location?.coordinates[0])
+            : null,
+          originLat: selectedRestaurants?.location?.coordinates
+            ? Number(selectedRestaurants?.location?.coordinates[1])
+            : null,
+          restaurantId: selectedRestaurants?._id
+          // }
+        }
+      })
+    }
+  }, [selectedArea, selectedRestaurants])
 
   const debouncedSearchRestaurants = useMemo(
     () =>
@@ -123,6 +172,10 @@ const DispatchForm = ({ order }) => {
     })
   }
 
+  const handleTimeChange = e => {
+    setSelectedTime(e.target.value)
+  }
+
   const [mutateCreateOrder, { loading: mutateLoading }] = useMutation(
     adminCheckout,
     {
@@ -143,7 +196,10 @@ const DispatchForm = ({ order }) => {
       variables: {
         input: {
           restaurant: selectedRestaurants?._id,
-          area: selectedArea
+          area: selectedArea,
+          time: selectedTime,
+          rider: selectedRiders?._id,
+          deliveryAmount: parseInt(deliveryAmount) || 0
         }
       }
     })
@@ -248,7 +304,7 @@ const DispatchForm = ({ order }) => {
                 />
               )}
               sx={{
-                width: 300,
+                width: '100%',
                 margin: '0 0 0 0',
                 padding: '0px 0px',
                 '& .MuiOutlinedInput-root': {
@@ -302,7 +358,7 @@ const DispatchForm = ({ order }) => {
                 />
               )}
               sx={{
-                width: 300,
+                width: '100%',
                 margin: '0 0 0 0',
                 padding: '0px 0px',
                 '& .MuiOutlinedInput-root': {
@@ -321,6 +377,43 @@ const DispatchForm = ({ order }) => {
               }}
             />
           </Box>
+
+          <Box mb={2}>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 'bold', mb: 2, color: '#000' }}>
+              {t('time_preparation')}
+            </Typography>
+            <FormControl fullWidth>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedTime}
+                onChange={handleTimeChange}
+                sx={{ color: '#000' }}>
+                {times?.map((time, index) => {
+                  return (
+                    <MenuItem key={index} value={time} sx={{ color: '#000' }}>
+                      {time}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+
+          {calcLoading && (
+            <Grid item xs={12}>
+              <Typography>Calculating price...</Typography>
+            </Grid>
+          )}
+          {deliveryAmount && loaded && dataRestaurants ? (
+            <Grid item xs={12}>
+              <Typography style={{ color: '#000' }}>
+                Delivery Amount: {deliveryAmount} EGP
+              </Typography>
+            </Grid>
+          ) : null}
 
           <Box>
             <Button

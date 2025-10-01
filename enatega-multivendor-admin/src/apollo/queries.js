@@ -1224,6 +1224,9 @@ export const searchRestaurants = gql`
     searchRestaurants(search: $search) {
       _id
       name
+      location {
+        coordinates
+      }
     }
   }
 `

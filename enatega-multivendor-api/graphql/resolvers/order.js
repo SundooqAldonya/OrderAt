@@ -1548,7 +1548,7 @@ module.exports = {
         throw new Error('Unauthenticated!')
       }
       try {
-        const { area, restaurant } = input
+        const { area, restaurant, time, rider, deliveryAmount } = input
         console.log({ user: req.user })
         const user = await Owner.findById(req.user._id)
         if (!user) {
@@ -1588,9 +1588,9 @@ module.exports = {
           orderId,
           paidAmount: 0,
           orderStatus: 'PENDING',
-          deliveryCharges: input.deliveryFee,
-          finalDeliveryCharges: input.deliveryFee,
-          originalDeliveryCharges: input.deliveryFee,
+          deliveryCharges: deliveryAmount,
+          finalDeliveryCharges: deliveryAmount,
+          originalDeliveryCharges: deliveryAmount,
           tipping: 0,
           taxationAmount: 0,
           orderDate: new Date(),
@@ -1603,14 +1603,20 @@ module.exports = {
           completionTime: new Date(
             Date.now() + restaurantData.deliveryTime * 60 * 1000
           ),
-          instructions: input.instructions
+          instructions: input.instructions,
+          rider
           // pickupLocation
         }
         console.log({ orderObj })
         const order = await Order.create({
           ...orderObj
         })
-        // acceptOrderHandler({ user, restaurant: restaurantData })
+        acceptOrderHandler({
+          user,
+          restaurant: restaurantData,
+          time,
+          orderId: order._id
+        })
         return { message: 'created_request_delivery_successfully' }
       } catch (err) {
         throw err

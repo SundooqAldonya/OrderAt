@@ -2117,6 +2117,9 @@ const typeDefs = gql`
   input AdminCheckoutInput {
     restaurant: String!
     area: String!
+    time: Float!
+    deliveryAmount: Float!
+    rider: String!
   }
 
   type Mutation {
