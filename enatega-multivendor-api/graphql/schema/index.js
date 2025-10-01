@@ -1621,7 +1621,19 @@ const typeDefs = gql`
     thirdAttemptRiders: Float
   }
 
+  input FilterRestaurantsInput {
+    longitude: Float!
+    latitude: Float!
+    mode: String! # "offers" | "featured" | "mostOrdered" | "custom"
+    categories: [ID]
+    highlights: [String]
+    minRating: Float
+    maxRating: Float
+    search: String
+  }
+
   type Query {
+    filterRestaurants(input: FilterRestaurantsInput!): [RestaurantCustomer]
     getRestaurantsBusinessCategories(
       businessCategoryIds: [String!]!
       longitude: Float!

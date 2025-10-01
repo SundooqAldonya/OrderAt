@@ -1157,6 +1157,227 @@ module.exports = {
         throw err
       }
     },
+
+    async filterRestaurants(_, { input }) {
+      try {
+        const {
+          longitude,
+          latitude,
+          mode, // "offers", "featured", "mostOrdered", "custom"
+          categories,
+          highlights,
+          minRating,
+          maxRating,
+          search
+        } = input
+
+        const baseMatch = {
+          isActive: true,
+          isVisible: true,
+          deliveryBounds: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [Number(longitude), Number(latitude)]
+              }
+            }
+          }
+        }
+
+        let pipeline = [{ $match: baseMatch }]
+
+        // ----- MODE SPECIFIC LOGIC -----
+        if (mode === 'featured') {
+          pipeline[0].$match.featured = true
+          pipeline.push({
+            $lookup: {
+              from: 'businesscategories',
+              localField: 'businessCategories',
+              foreignField: '_id',
+              as: 'businessCategories'
+            }
+          })
+        }
+
+        if (mode === 'offers') {
+          // bring in discounted variations like your current logic
+          pipeline = pipeline.concat([
+            {
+              $lookup: {
+                from: 'businesscategories',
+                localField: 'businessCategories',
+                foreignField: '_id',
+                as: 'businessCategories'
+              }
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: 'restaurant',
+                as: 'categories'
+              }
+            },
+            {
+              $lookup: {
+                from: 'foods',
+                localField: 'categories._id',
+                foreignField: 'category',
+                as: 'foods'
+              }
+            },
+            {
+              $lookup: {
+                from: 'variations',
+                localField: 'foods.variations',
+                foreignField: '_id',
+                as: 'variations'
+              }
+            },
+            {
+              $addFields: {
+                categories: {
+                  $map: {
+                    input: '$categories',
+                    as: 'cat',
+                    in: {
+                      $mergeObjects: [
+                        '$$cat',
+                        {
+                          foods: {
+                            $map: {
+                              input: {
+                                $filter: {
+                                  input: '$foods',
+                                  as: 'food',
+                                  cond: {
+                                    $eq: ['$$food.category', '$$cat._id']
+                                  }
+                                }
+                              },
+                              as: 'food',
+                              in: {
+                                $mergeObjects: [
+                                  '$$food',
+                                  {
+                                    variations: {
+                                      $filter: {
+                                        input: '$variations',
+                                        as: 'var',
+                                        cond: {
+                                          $and: [
+                                            {
+                                              $in: [
+                                                '$$var._id',
+                                                '$$food.variations'
+                                              ]
+                                            },
+                                            { $gt: ['$$var.discounted', 0] }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              $addFields: {
+                categories: {
+                  $filter: {
+                    input: '$categories',
+                    as: 'cat',
+                    cond: {
+                      $gt: [
+                        {
+                          $size: {
+                            $filter: {
+                              input: '$$cat.foods',
+                              as: 'f',
+                              cond: { $gt: [{ $size: '$$f.variations' }, 0] }
+                            }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            { $match: { 'categories.0': { $exists: true } } }
+          ])
+        }
+
+        if (mode === 'mostOrdered') {
+          pipeline = pipeline.concat([
+            {
+              $match: {
+                isActive: true,
+                isAvailable: true
+              }
+            },
+            {
+              $lookup: {
+                from: 'orders',
+                localField: '_id',
+                foreignField: 'restaurant',
+                pipeline: [
+                  { $match: { createdAt: { $gte: getThirtyDaysAgo() } } }
+                ],
+                as: 'orders'
+              }
+            },
+            { $addFields: { orderCount: { $size: '$orders' } } },
+            { $sort: { orderCount: -1 } },
+            { $limit: 20 },
+            {
+              $lookup: {
+                from: 'businesscategories',
+                localField: 'businessCategories',
+                foreignField: '_id',
+                as: 'businessCategories'
+              }
+            }
+          ])
+        }
+
+        // ----- CUSTOM FILTER LOGIC -----
+        if (mode === 'custom') {
+          if (categories?.length) {
+            pipeline.push({ $match: { category: { $in: categories } } })
+          }
+          if (highlights?.length) {
+            pipeline.push({ $match: { highlights: { $all: highlights } } })
+          }
+          if (minRating || maxRating) {
+            const ratingMatch = {}
+            if (minRating) ratingMatch.$gte = minRating
+            if (maxRating) ratingMatch.$lte = maxRating
+            pipeline.push({ $match: { rating: ratingMatch } })
+          }
+          if (search) {
+            pipeline.push({
+              $match: { name: { $regex: search, $options: 'i' } }
+            })
+          }
+        }
+
+        const restaurants = await Restaurant.aggregate(pipeline).exec()
+        return restaurants
+      } catch (err) {
+        throw new Error(err.message)
+      }
+    },
+
     async searchRestaurantsCustomer(_, args) {
       console.log('searchRestaurantsCustomer', { args })
       try {

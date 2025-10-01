@@ -98,6 +98,7 @@ import MainV2 from '../screens/Main/MainV2'
 import MandoobImg from '../assets/tabs_request_delivery.png'
 import TextDefault from '../components/Text/TextDefault/TextDefault'
 import CategorySearchRestaurants from '../screens/CategorySearchRestaurants'
+import MenuV2 from '../screens/Menu/MenuV2'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -207,7 +208,7 @@ function NoDrawer() {
         options={{ headerShown: false }}
         component={BottomTabs}
       />
-      <NavigationStack.Screen name='Menu' component={Menu} />
+      <NavigationStack.Screen name='Menu' component={MenuV2} />
 
       <NavigationStack.Screen
         // options={{ headerShown: false }}
@@ -658,7 +659,7 @@ const BottomTabs = () => {
         <Tab.Screen
           name='Menu'
           options={{ tabBarLabel: t('search') }}
-          component={Menu}
+          component={MenuV2}
         />
       ) : (
         <Tab.Screen

@@ -1837,3 +1837,81 @@ export const getRestaurantsBusinessCategories = gql`
     }
   }
 `
+export const filterRestaurants = gql`
+  query FilterRestaurants($input: FilterRestaurantsInput!) {
+    filterRestaurants(input: $input) {
+      _id
+      orderId
+      orderPrefix
+      name
+      image
+      slug
+      address
+      location {
+        coordinates
+      }
+      deliveryTime
+      minimumOrder
+      tax
+      reviewData {
+        total
+        ratings
+        reviews {
+          _id
+          order {
+            user {
+              _id
+              name
+              email
+            }
+          }
+          rating
+          description
+          createdAt
+        }
+      }
+      reviewCount
+      reviewAverage
+      options {
+        _id
+        title
+        description
+        price
+      }
+      addons {
+        _id
+        options
+        title
+        description
+        quantityMinimum
+        quantityMaximum
+      }
+      zone {
+        _id
+        title
+        tax
+      }
+      rating
+      isAvailable
+      openingTimes {
+        day
+        times {
+          startTime
+          endTime
+        }
+      }
+      businessCategories {
+        _id
+        name
+        isActive
+      }
+      featured
+      deliveryFee(latitude: $latitude, longitude: $longitude) {
+        amount
+        originalDiscount
+        isPrepaid
+      }
+      isOpen
+    }
+  }
+`
