@@ -8,7 +8,7 @@ import { scale } from '../../../utils/scaling'
 import { useTranslation } from 'react-i18next'
 import styles from './styles'
 
-function ActiveOrdersAndSections(props) {
+function ActiveOrdersAndSections({ menuPageHeading, restaurantLength }) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -25,7 +25,7 @@ function ActiveOrdersAndSections(props) {
         H4
         style={{ textAlign: isArabic ? 'right' : 'left' }}
       >
-        {props?.menuPageHeading}
+        {menuPageHeading} {restaurantLength}
       </TextDefault>
       <TextDefault
         Normal

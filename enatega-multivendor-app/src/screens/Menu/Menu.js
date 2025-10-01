@@ -653,7 +653,7 @@ function Menu({ route, props }) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             // paddingTop: containerPaddingTop, // consistent padding
-            paddingBottom: 40, // give space for footer/modal
+            paddingBottom: 140, // give space for footer/modal
             flexGrow: 1
           }}
           style={{
@@ -663,7 +663,10 @@ function Menu({ route, props }) {
             search || restaurantData.length === 0 ? null : (
               <ActiveOrdersAndSections
                 sections={restaurantSections}
-                menuPageHeading={t(titleUI) || menuPageHeading}
+                menuPageHeading={t('results') || menuPageHeading}
+                restaurantLength={
+                  search ? resultSearchData.length : restaurantData.length
+                }
               />
             )
           }

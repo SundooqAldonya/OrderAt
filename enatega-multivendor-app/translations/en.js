@@ -744,5 +744,6 @@ export const en = {
   will_be_available: 'Will be available in that area soon!',
   add_review_rider: 'Add review for the rider',
   rider_review_added: 'Rider review is added',
-  no_search_result: 'No search result found'
+  no_search_result: 'No search result found',
+  results: 'Results'
 }

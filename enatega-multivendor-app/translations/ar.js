@@ -732,5 +732,6 @@ export const ar = {
   will_be_available: 'سنكون متاحين قريبا في هذا المكان بامكانك اختيار مكان آخر',
   add_review_rider: 'أضف تقييم للسائق',
   rider_review_added: 'تم إضافة تقييم السائق بنجاح',
-  no_search_result: 'لا توجد نتائج بحث'
+  no_search_result: 'لا توجد نتائج بحث',
+  results: 'النتائج'
 }
