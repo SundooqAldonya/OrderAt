@@ -209,7 +209,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
                                 styles(currentTheme).selectedModalItem
                             ]}
                             onPress={() =>
-                              handleValueSelection(filterValue, value)
+                              handleValueSelection(filterValue, value._id)
                             }
                           >
                             <TextDefault
