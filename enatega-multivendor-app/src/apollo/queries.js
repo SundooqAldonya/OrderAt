@@ -1838,8 +1838,26 @@ export const getRestaurantsBusinessCategories = gql`
   }
 `
 export const filterRestaurants = gql`
-  query FilterRestaurants($input: FilterRestaurantsInput!) {
-    filterRestaurants(input: $input) {
+  query FilterRestaurants(
+    $longitude: Float!
+    $latitude: Float!
+    $mode: String
+    $categories: [ID]
+    $highlights: [String]
+    $minRating: Float
+    $maxRating: Float
+    $search: String
+  ) {
+    filterRestaurants(
+      longitude: $longitude
+      latitude: $latitude
+      mode: $mode
+      categories: $categories
+      highlights: $highlights
+      minRating: $minRating
+      maxRating: $maxRating
+      search: $search
+    ) {
       _id
       orderId
       orderPrefix

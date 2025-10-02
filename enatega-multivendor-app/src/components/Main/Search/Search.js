@@ -15,7 +15,8 @@ function Search({
   newheaderColor,
   placeHolder,
   backgroundColor,
-  cartContainer
+  cartContainer,
+  refetch
 }) {
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
@@ -42,6 +43,7 @@ function Search({
             <TouchableOpacity
               onPress={() => {
                 setSearch('')
+                refetch({ search: null })
               }}
             >
               {search?.length ? (

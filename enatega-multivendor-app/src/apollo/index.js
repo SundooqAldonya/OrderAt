@@ -17,8 +17,8 @@ import useEnvVars from '../../environment'
 import { useContext } from 'react'
 import { LocationContext } from '../context/Location'
 import { calculateDistance } from '../utils/customFunctions'
-import { RetryLink } from '@apollo/client/link/retry';
-import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry'
+import { onError } from '@apollo/client/link/error'
 
 const setupApollo = () => {
   const { GRAPHQL_URL, WS_GRAPHQL_URL } = useEnvVars()
@@ -54,6 +54,21 @@ const setupApollo = () => {
       Restaurant: {
         fields: {
           distanceWithCurrentLocation: {
+            // read(_existing, { variables, readField }) {
+            //   if (!variables?.latitude || !variables?.longitude) {
+            //     return null // or 0
+            //   }
+
+            //   const restaurantLocation = readField('location')
+            //   if (!restaurantLocation?.coordinates) return null
+
+            //   return calculateDistance(
+            //     restaurantLocation.coordinates[0],
+            //     restaurantLocation.coordinates[1],
+            //     variables.latitude,
+            //     variables.longitude
+            //   )
+            // }
             read(_existing, { variables, field, readField }) {
               const restaurantLocation = readField('location')
               const distance = calculateDistance(
@@ -94,31 +109,31 @@ const setupApollo = () => {
   })
 
   const retryLink = new RetryLink({
-  attempts: {
-    max: 2,
-    retryIf: async (error, operation) => {
-      console.log('retryLink error-->>', error);
-      if (!error) {
-        return false;
+    attempts: {
+      max: 2,
+      retryIf: async (error, operation) => {
+        console.log('retryLink error-->>', error)
+        if (!error) {
+          return false
+        }
+        // Attempt to refresh the token if it's an authentication error
+        return true
       }
-      // Attempt to refresh the token if it's an authentication error
-      return true;
-    },
-  },
-});
+    }
+  })
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
       )
-    );
-  }
-  if (networkError) {
-    console.log(`[Network error]: ${networkError}`);
-  }
-});
+    }
+    if (networkError) {
+      console.log(`[Network error]: ${networkError}`)
+    }
+  })
 
   const request = async (operation) => {
     // await AsyncStorage.removeItem('token')
@@ -169,7 +184,13 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   )
 
   const client = new ApolloClient({
-    link: ApolloLink.from([retryLink, errorLink, terminatingLink, requestLink, httpLink]),
+    link: ApolloLink.from([
+      retryLink,
+      errorLink,
+      terminatingLink,
+      requestLink,
+      httpLink
+    ]),
     cache,
     resolvers: {}
   })

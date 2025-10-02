@@ -1624,7 +1624,7 @@ const typeDefs = gql`
   input FilterRestaurantsInput {
     longitude: Float!
     latitude: Float!
-    mode: String! # "offers" | "featured" | "mostOrdered" | "custom"
+    mode: String # "offers" | "featured" | "mostOrdered" | "custom"
     categories: [ID]
     highlights: [String]
     minRating: Float
@@ -1633,7 +1633,16 @@ const typeDefs = gql`
   }
 
   type Query {
-    filterRestaurants(input: FilterRestaurantsInput!): [RestaurantCustomer]
+    filterRestaurants(
+      longitude: Float!
+      latitude: Float!
+      mode: String # "offers" | "featured" | "mostOrdered" | "custom"
+      categories: [ID]
+      highlights: [String]
+      minRating: Float
+      maxRating: Float
+      search: String
+    ): [RestaurantCustomer]
     getRestaurantsBusinessCategories(
       businessCategoryIds: [String!]!
       longitude: Float!

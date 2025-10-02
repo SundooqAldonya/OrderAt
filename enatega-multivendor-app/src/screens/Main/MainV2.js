@@ -600,33 +600,7 @@ export default function FoodTab() {
           location={location}
         />
 
-        {/* {!restaurantsWithOffersData?.length &&
-      !loadingWithOffers &&
-      !allRestaurants?.length &&
-      !loading &&
-      !featuredRestaurantsVar?.length &&
-      !loadingFeatured &&
-      !mostOrderedRestaurantsVar?.length &&
-      !orderLoading ? (
-        <View style={{ marginTop: 50 }}>
-          <ErrorView wentWrong={t('sorry')} message={t('will_be_available')} />
-        </View>
-      ) : ( */}
         <Fragment>
-          {/* Greeting */}
-          {/* {profile ? (
-              <Text
-                style={{ ...styles.greeting, textAlign: isArabic ? 'right' : 'left' }}
-              >
-                {t('hey')} {profile?.name}
-                {i18n.language === 'en' && (
-                  <Text style={{ fontWeight: '700', color: colors.primary }}>
-                    , {t('good_afternoon')}
-                  </Text>
-                )}
-              </Text>
-            ) : null} */}
-
           {/* Search */}
           <View
             style={{
@@ -637,15 +611,8 @@ export default function FoodTab() {
             <Ionicons name='search-outline' size={18} color='gray' />
             <TouchableOpacity
               style={styles.inputLike}
-              // onPress={() => setSearchOpen(true)}
               onPress={() => navigation.navigate('Menu')}
             >
-              {/* <View
-                style={{
-                  color: '#bbb',
-                  textAlign: isArabic ? 'right' : 'left'
-                }}
-              > */}
               <Text
                 style={{
                   color: '#bbb',
@@ -654,25 +621,12 @@ export default function FoodTab() {
               >
                 {t('search_for_restaurants')}{' '}
               </Text>
-              {/* <AntDesign
-                  name={isArabic ? 'arrowleft' : 'arrowright'}
-                  size={moderateScale(20)}
-                  color='black'
-                /> */}
-              {/* </View> */}
             </TouchableOpacity>
           </View>
 
           {/* Categories */}
           <BusinessCategories />
-          {/* <FlatList
-                data={businessCategories}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => renderCategory(item)}
-                contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
-                /> */}
+
           {allErrorsZone ? (
             <ErrorView
               // wentWrong={t('somethingWentWrong')}

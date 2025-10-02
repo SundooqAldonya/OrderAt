@@ -1158,7 +1158,8 @@ module.exports = {
       }
     },
 
-    async filterRestaurants(_, { input }) {
+    async filterRestaurants(_, args) {
+      console.log('filterRestaurants', { args })
       try {
         const {
           longitude,
@@ -1169,7 +1170,7 @@ module.exports = {
           minRating,
           maxRating,
           search
-        } = input
+        } = args
 
         const baseMatch = {
           isActive: true,
@@ -1186,192 +1187,202 @@ module.exports = {
 
         let pipeline = [{ $match: baseMatch }]
 
-        // ----- MODE SPECIFIC LOGIC -----
-        if (mode === 'featured') {
-          pipeline[0].$match.featured = true
+        if (categories?.length) {
           pipeline.push({
-            $lookup: {
-              from: 'businesscategories',
-              localField: 'businessCategories',
-              foreignField: '_id',
-              as: 'businessCategories'
+            $match: {
+              businessCategories: {
+                $in: categories.map(id => new mongoose.Types.ObjectId(id))
+              }
             }
           })
         }
 
-        if (mode === 'offers') {
-          // bring in discounted variations like your current logic
-          pipeline = pipeline.concat([
-            {
+        if (minRating || maxRating) {
+          const ratingMatch = {}
+          if (minRating) ratingMatch.$gte = minRating
+          // if (maxRating) ratingMatch.$lte = maxRating
+          console.log({ ratingMatch })
+          pipeline.push({ $match: { reviewAverage: ratingMatch } })
+        }
+
+        if (search) {
+          pipeline.push({
+            $match: { name: { $regex: search, $options: 'i' } }
+          })
+        }
+
+        // ----- MODE SPECIFIC LOGIC -----
+        if (highlights?.length) {
+          if (highlights.includes('featured')) {
+            pipeline[0].$match.featured = true
+            pipeline.push({
               $lookup: {
                 from: 'businesscategories',
                 localField: 'businessCategories',
                 foreignField: '_id',
                 as: 'businessCategories'
               }
-            },
-            {
-              $lookup: {
-                from: 'categories',
-                localField: '_id',
-                foreignField: 'restaurant',
-                as: 'categories'
-              }
-            },
-            {
-              $lookup: {
-                from: 'foods',
-                localField: 'categories._id',
-                foreignField: 'category',
-                as: 'foods'
-              }
-            },
-            {
-              $lookup: {
-                from: 'variations',
-                localField: 'foods.variations',
-                foreignField: '_id',
-                as: 'variations'
-              }
-            },
-            {
-              $addFields: {
-                categories: {
-                  $map: {
-                    input: '$categories',
-                    as: 'cat',
-                    in: {
-                      $mergeObjects: [
-                        '$$cat',
-                        {
-                          foods: {
-                            $map: {
-                              input: {
-                                $filter: {
-                                  input: '$foods',
-                                  as: 'food',
-                                  cond: {
-                                    $eq: ['$$food.category', '$$cat._id']
+            })
+          }
+
+          if (highlights.includes('businesses_with_offers')) {
+            pipeline = pipeline.concat([
+              {
+                $lookup: {
+                  from: 'businesscategories',
+                  localField: 'businessCategories',
+                  foreignField: '_id',
+                  as: 'businessCategories'
+                }
+              },
+              {
+                $lookup: {
+                  from: 'categories',
+                  localField: '_id',
+                  foreignField: 'restaurant',
+                  as: 'categories'
+                }
+              },
+              {
+                $lookup: {
+                  from: 'foods',
+                  localField: 'categories._id',
+                  foreignField: 'category',
+                  as: 'foods'
+                }
+              },
+              {
+                $lookup: {
+                  from: 'variations',
+                  localField: 'foods.variations',
+                  foreignField: '_id',
+                  as: 'variations'
+                }
+              },
+              {
+                $addFields: {
+                  categories: {
+                    $map: {
+                      input: '$categories',
+                      as: 'cat',
+                      in: {
+                        $mergeObjects: [
+                          '$$cat',
+                          {
+                            foods: {
+                              $map: {
+                                input: {
+                                  $filter: {
+                                    input: '$foods',
+                                    as: 'food',
+                                    cond: {
+                                      $eq: ['$$food.category', '$$cat._id']
+                                    }
                                   }
-                                }
-                              },
-                              as: 'food',
-                              in: {
-                                $mergeObjects: [
-                                  '$$food',
-                                  {
-                                    variations: {
-                                      $filter: {
-                                        input: '$variations',
-                                        as: 'var',
-                                        cond: {
-                                          $and: [
-                                            {
-                                              $in: [
-                                                '$$var._id',
-                                                '$$food.variations'
-                                              ]
-                                            },
-                                            { $gt: ['$$var.discounted', 0] }
-                                          ]
+                                },
+                                as: 'food',
+                                in: {
+                                  $mergeObjects: [
+                                    '$$food',
+                                    {
+                                      variations: {
+                                        $filter: {
+                                          input: '$variations',
+                                          as: 'var',
+                                          cond: {
+                                            $and: [
+                                              {
+                                                $in: [
+                                                  '$$var._id',
+                                                  '$$food.variations'
+                                                ]
+                                              },
+                                              { $gt: ['$$var.discounted', 0] }
+                                            ]
+                                          }
                                         }
                                       }
                                     }
-                                  }
-                                ]
+                                  ]
+                                }
                               }
                             }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     }
                   }
                 }
-              }
-            },
-            {
-              $addFields: {
-                categories: {
-                  $filter: {
-                    input: '$categories',
-                    as: 'cat',
-                    cond: {
-                      $gt: [
-                        {
-                          $size: {
-                            $filter: {
-                              input: '$$cat.foods',
-                              as: 'f',
-                              cond: { $gt: [{ $size: '$$f.variations' }, 0] }
+              },
+              {
+                $addFields: {
+                  categories: {
+                    $filter: {
+                      input: '$categories',
+                      as: 'cat',
+                      cond: {
+                        $gt: [
+                          {
+                            $size: {
+                              $filter: {
+                                input: '$$cat.foods',
+                                as: 'f',
+                                cond: { $gt: [{ $size: '$$f.variations' }, 0] }
+                              }
                             }
-                          }
-                        },
-                        0
-                      ]
+                          },
+                          0
+                        ]
+                      }
                     }
                   }
                 }
-              }
-            },
-            { $match: { 'categories.0': { $exists: true } } }
-          ])
-        }
+              },
+              { $match: { 'categories.0': { $exists: true } } }
+            ])
+          }
 
-        if (mode === 'mostOrdered') {
-          pipeline = pipeline.concat([
-            {
-              $match: {
-                isActive: true,
-                isAvailable: true
+          if (highlights.includes('mostOrderedNow')) {
+            pipeline = pipeline.concat([
+              {
+                $match: {
+                  isActive: true,
+                  isAvailable: true
+                }
+              },
+              {
+                $lookup: {
+                  from: 'orders',
+                  localField: '_id',
+                  foreignField: 'restaurant',
+                  pipeline: [
+                    { $match: { createdAt: { $gte: getThirtyDaysAgo() } } }
+                  ],
+                  as: 'orders'
+                }
+              },
+              { $addFields: { orderCount: { $size: '$orders' } } },
+              { $sort: { orderCount: -1 } },
+              { $limit: 20 },
+              {
+                $lookup: {
+                  from: 'businesscategories',
+                  localField: 'businessCategories',
+                  foreignField: '_id',
+                  as: 'businessCategories'
+                }
               }
-            },
-            {
-              $lookup: {
-                from: 'orders',
-                localField: '_id',
-                foreignField: 'restaurant',
-                pipeline: [
-                  { $match: { createdAt: { $gte: getThirtyDaysAgo() } } }
-                ],
-                as: 'orders'
-              }
-            },
-            { $addFields: { orderCount: { $size: '$orders' } } },
-            { $sort: { orderCount: -1 } },
-            { $limit: 20 },
-            {
-              $lookup: {
-                from: 'businesscategories',
-                localField: 'businessCategories',
-                foreignField: '_id',
-                as: 'businessCategories'
-              }
-            }
-          ])
+            ])
+          }
         }
 
         // ----- CUSTOM FILTER LOGIC -----
-        if (mode === 'custom') {
-          if (categories?.length) {
-            pipeline.push({ $match: { category: { $in: categories } } })
-          }
-          if (highlights?.length) {
-            pipeline.push({ $match: { highlights: { $all: highlights } } })
-          }
-          if (minRating || maxRating) {
-            const ratingMatch = {}
-            if (minRating) ratingMatch.$gte = minRating
-            if (maxRating) ratingMatch.$lte = maxRating
-            pipeline.push({ $match: { rating: ratingMatch } })
-          }
-          if (search) {
-            pipeline.push({
-              $match: { name: { $regex: search, $options: 'i' } }
-            })
-          }
-        }
+        // if (mode === 'custom') {
+
+        // }
 
         const restaurants = await Restaurant.aggregate(pipeline).exec()
+        console.log({ restaurantTest: restaurants?.length })
         return restaurants
       } catch (err) {
         throw new Error(err.message)

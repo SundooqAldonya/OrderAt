@@ -1,6 +1,5 @@
 /* eslint-disable react/display-name */
 import React, {
-  // useRef,
   useContext,
   useLayoutEffect,
   useState,
@@ -11,83 +10,38 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Animated,
   StatusBar,
   Platform,
   RefreshControl,
   FlatList
 } from 'react-native'
-import {
-  // MaterialIcons,
-  // SimpleLineIcons,
-  AntDesign
-  // MaterialCommunityIcons,
-  // Ionicons
-} from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useQuery, useLazyQuery } from '@apollo/client'
 import {
   useCollapsibleSubHeader,
   CollapsibleSubHeaderAnimator
 } from 'react-navigation-collapsible'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
-import gql from 'graphql-tag'
-// import { useLocation } from '../../ui/hooks'
 import Search from '../../components/Main/Search/Search'
 import Item from '../../components/Main/Item/Item'
 import UserContext from '../../context/User'
 import {
-  featuredRestaurants,
   filterRestaurants,
-  getBusinessCategoriesCustomer,
-  getRestaurantsBusinessCategories,
-  mostOrderedRestaurantsQuery,
-  // getCuisines,
-  // highestRatingRestaurant,
-  // nearestRestaurants,
-  recentOrderRestaurantsQuery,
-  restaurantListPreview,
-  restaurantsWithOffers,
-  searchRestaurantsCustomer
+  getBusinessCategoriesCustomer
 } from '../../apollo/queries'
-// import { selectAddress } from '../../apollo/mutations'
-// import { moderateScale } from '../../utils/scaling'
 import styles from './styles'
-// import TextError from '../../components/Text/TextError/TextError'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
-// import navigationOptions from '../Main/navigationOptions'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { LocationContext } from '../../context/Location'
 import { ActiveOrdersAndSections } from '../../components/Main/ActiveOrdersAndSections'
-// import { alignment } from '../../utils/alignment'
-// import analytics from '../../utils/analytics'
 import { useTranslation } from 'react-i18next'
 import Filters from '../../components/Filter/FilterSlider'
 import { FILTER_TYPE } from '../../utils/enums'
-// import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon'
-// import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
-// import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
-// import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import ErrorView from '../../components/ErrorView/ErrorView'
-// import Spinner from '../../components/Spinner/Spinner'
-// import MainModalize from '../../components/Main/Modalize/MainModalize'
-
-// import { escapeRegExp } from '../../utils/regex'
-// import { colors } from '../../utils/colors'
 import { debounce } from 'lodash'
 import { moderateScale } from '../../utils/scaling'
-
-const RESTAURANTS = gql`
-  ${restaurantListPreview}
-`
-// const SELECT_ADDRESS = gql`
-//   ${selectAddress}
-// `
-
-// const GET_CUISINES = gql`
-//   ${getCuisines}
-// `
 
 export const FILTER_VALUES = {
   // Sort: {
@@ -107,7 +61,7 @@ export const FILTER_VALUES = {
   },
   Rating: {
     selected: [],
-    type: FILTER_TYPE.CHECKBOX,
+    type: FILTER_TYPE.RADIO,
     values: ['3+ Rating', '4+ Rating', '5 star Rating']
   }
 }
@@ -117,26 +71,22 @@ function MenuV2({ route, props }) {
   const { selectedType } = route.params || { selectedType: 'restaurant' }
   const { highlight, title } = route.params || {}
   const filteredItem = route.params?.filteredItem || null
+  console.log({ filteredItem })
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
-  // const [busy, setBusy] = useState(false)
-  const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
+
+  // const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState(FILTER_VALUES)
-  const [restaurantData, setRestaurantData] = useState([])
-  const [resultSearchData, setResultSearchData] = useState([])
-  const [sectionData, setSectionData] = useState([])
   const [highlightMain, setHighlightMain] = useState(false)
   const [titleMain, setTitleMain] = useState('')
-  const [titleUI, setTitleUI] = useState('')
-  // const modalRef = useRef(null)
+  // const [titleUI, setTitleUI] = useState('')
+
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  // const { getCurrentLocation } = useLocation()
-  // const locationData = location
 
   console.log({ highlight, title, titleMain })
 
@@ -144,74 +94,25 @@ function MenuV2({ route, props }) {
     if (highlight || title) {
       setHighlightMain(true)
       setTitleMain(title)
-      setTitleUI(title)
+      // setTitleUI(title)
+      // setFilters((prev) => ({
+      //   ...prev,
+      //   Highlights: {
+      //     ...prev.Highlights,
+      //     selected: [title] // pre-select highlight
+      //   }
+      // }))
     }
   }, [highlight, title])
 
-  // const { data, refetch, networkStatus, loading, error } = useQuery(
-  //   RESTAURANTS,
-  //   {
-  //     variables: {
-  //       longitude: location.longitude || null,
-  //       latitude: location.latitude || null,
-  //       shopType: selectedType || null,
-  //       ip: null
-  //     },
-  //     onCompleted: (data) => {
-  //       console.log({ nearByRestaurantsPreview: data.nearByRestaurantsPreview })
-  //       setRestaurantData(data.nearByRestaurantsPreview.restaurants)
-  //       setSectionData(data.nearByRestaurantsPreview.sections)
-  //     },
-  //     fetchPolicy: 'no-cache'
-  //   }
-  // )
+  const [
+    fetchFilterRestaurants,
+    { data, refetch, networkStatus, loading, error }
+  ] = useLazyQuery(filterRestaurants, {
+    fetchPolicy: 'no-cache'
+  })
 
-  // const [fetchAllBusinesses, { data, refetch, networkStatus, loading, error }] =
-  //   useLazyQuery(RESTAURANTS)
-
-  const [filterRestaurants, { data, refetch, networkStatus, loading, error }] =
-    useLazyQuery(filterRestaurants)
-
-  useEffect(() => {
-    if (dataFiltered?.filterRestaurants) {
-      setRestaurantData(dataFiltered.filterRestaurants)
-    }
-  }, [dataFiltered])
-
-  useEffect(() => {
-    // Clear old list immediately when params change
-    initialFun()
-  }, [route.params])
-
-  const initialFun = async () => {
-    setRestaurantData([])
-    setResultSearchData([])
-    setFilters(FILTER_VALUES)
-    generateBusinessCategories()
-    // then trigger refetch
-    if (titleMain === 'all_businesses' || !title) {
-      // refetch()
-      const res = await fetchAllBusinesses({
-        variables: {
-          longitude: location.longitude || null,
-          latitude: location.latitude || null,
-          shopType: selectedType || null,
-          ip: null
-        }
-      })
-      console.log({ res: res.data })
-      setRestaurantData(res.data.nearByRestaurantsPreview?.restaurants)
-      setSectionData(res.data.nearByRestaurantsPreview?.sections)
-    }
-  }
-
-  // console.log({ restaurantData })
-
-  // const [mutate, { loading: mutationLoading }] = useMutation(SELECT_ADDRESS, {
-  //   onError
-  // })
-
-  // const { data: allCuisines } = useQuery(GET_CUISINES)
+  console.log({ dataFilterRestaurants: data ? data[0] : 'no data' })
 
   const {
     data: dataBusinessCategories,
@@ -221,72 +122,83 @@ function MenuV2({ route, props }) {
     fetchPolicy: 'no-cache'
   })
 
-  // to get the highlights filter values
-  const [
-    fetchOffersRestaurants,
-    { data: dataWithOffers, loading: loadingWithOffers, error: errorWithOffers }
-  ] = useLazyQuery(restaurantsWithOffers)
-  // const [
-  //   fetchHighRatingRestaurants,
-  //   { data: dataHighRating, loading: loadingHighRating, error: errorHighRating }
-  // ] = useLazyQuery(highestRatingRestaurant)
-  // const [
-  //   fetchNearestRestaurants,
-  //   { data: dataNearest, loading: loadingNearest, error: errorNearest }
-  // ] = useLazyQuery(nearestRestaurants)
-  const [
-    fetchFeaturedRestaurants,
-    { data: dataFeatured, loading: loadingFeatured, error: errorFeatured }
-  ] = useLazyQuery(featuredRestaurants)
+  const businessCategories =
+    dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
-  const [
-    fetchRestaurantsBusinessCategories,
-    {
-      data: dataRestaurantsWithBusinessCategories,
-      loading: loadingWithBusinessCats,
-      error: errorWithBusinessCats
+  useEffect(() => {
+    generateBusinessCategories()
+  }, [businessCategories])
+
+  // to generate business categories filter values
+  const generateBusinessCategories = () => {
+    if (businessCategories?.length) {
+      setFilters((prev) => ({
+        ...prev,
+        categories: {
+          // selected: [filteredItem ? filteredItem._id : ''], // pre-select category if came from business category
+          selected: [],
+          type: FILTER_TYPE.CHECKBOX,
+          values: businessCategories?.map((item) => item)
+        }
+      }))
     }
-  ] = useLazyQuery(getRestaurantsBusinessCategories)
+  }
 
-  const [
-    fetchMostOrderedRestaurants,
-    {
-      data: dataMostOrdered,
-      loading: loadingMostOrdered,
-      error: errorMostOrdered
+  useEffect(() => {
+    if (filteredItem?._id) {
+      setFilters((prev) => ({
+        ...prev,
+        categories: {
+          ...prev.categories,
+          selected: [filteredItem._id]
+        }
+      }))
+      applyFilters()
     }
-  ] = useLazyQuery(mostOrderedRestaurantsQuery)
+  }, [filteredItem])
 
-  const [fetchSearchRestaurants, { loading: loadingSearch }] = useLazyQuery(
-    searchRestaurantsCustomer
-    // {
-    //   variables: {
-    //     search,
-    //     longitude: location.longitude,
-    //     latitude: location.latitude
-    //   },
-    //   fetchPolicy: 'network-only'
-    // }
-  )
+  useEffect(() => {
+    applyFilters()
+  }, [])
+
+  const applyFilters = async () => {
+    const highlights = filters.Highlights.selected
+    const ratings = filters.Rating.selected
+    const categories = filters.categories?.selected || []
+
+    let minRating = null
+    if (ratings.includes('3+ Rating')) minRating = 3
+    if (ratings.includes('4+ Rating')) minRating = 4
+    if (ratings.includes('5 star Rating')) minRating = 5
+
+    await fetchFilterRestaurants({
+      variables: {
+        categories,
+        highlights,
+        minRating,
+        maxRating: null, // optional
+        search: search || null,
+        city: location?.cityId || null,
+        isOpen: false, // toggle if you want open-now filter
+        mode: titleMain === 'all_businesses' ? null : titleMain, // optional
+        longitude: location.longitude || null,
+        latitude: location.latitude || null
+      }
+    })
+  }
 
   const searchRestaurants = async (searchText) => {
-    await filterRestaurants({
+    await fetchFilterRestaurants({
       variables: {
         search: searchText,
         categories: filters.categories?.selected || [],
         highlights: filters.Highlights.selected || [],
         minRating: null,
-        city: location?.cityId || null
+        city: location?.cityId || null,
+        longitude: location.longitude || null,
+        latitude: location.latitude || null
       }
     })
-    // const res = await fetchSearchRestaurants({
-    //   variables: {
-    //     search: searchText,
-    //     longitude: location.longitude,
-    //     latitude: location.latitude
-    //   }
-    // })
-    // setResultSearchData(res.data?.searchRestaurantsCustomer || [])
   }
 
   const handleSearch = useCallback(
@@ -294,12 +206,9 @@ function MenuV2({ route, props }) {
       console.log('Searching for:', text)
       // call API here
       searchRestaurants(text)
-    }, 500),
+    }, 1000),
     []
   )
-
-  const businessCategories =
-    dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
   const newheaderColor = currentTheme.newheaderColor
 
@@ -334,128 +243,35 @@ function MenuV2({ route, props }) {
     if (highlightMain && titleMain) {
       const updatedFilters = { ...filters }
       updatedFilters.Highlights.selected = [titleMain]
-      fetchHighlightsData()
+      applyFilters()
     }
-  }, [highlightMain, titleMain, restaurantData])
-
-  const fetchHighlightsData = useCallback(async () => {
-    console.log('fetchHighlightsData called')
-    const variables = {
-      longitude: location.longitude,
-      latitude: location.latitude
-    }
-    if (titleMain === 'all_businesses' || !title) {
-      // refetch()
-      const res = await fetchAllBusinesses({
-        variables: {
-          longitude: location.longitude || null,
-          latitude: location.latitude || null,
-          shopType: selectedType || null,
-          ip: null
-        }
-      })
-      console.log({ res: res.data })
-      setRestaurantData(res.data.nearByRestaurantsPreview?.restaurants)
-      setSectionData(res.data.nearByRestaurantsPreview?.sections)
-    } else if (titleMain === 'businesses_with_offers') {
-      fetchOffersRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.restaurantsWithOffers || [])
-      })
-    } else if (titleMain === 'mostOrderedNow') {
-      fetchMostOrderedRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.mostOrderedRestaurantsPreview || [])
-      })
-    } else if (titleMain === 'featured') {
-      fetchFeaturedRestaurants({ variables }).then((res) => {
-        setRestaurantData(res?.data?.featuredRestaurants || [])
-      })
-    }
-  }, [highlight, titleMain])
-
-  // useEffect(() => {
-  //   setFilters((prev) => ({
-  //     ...prev,
-  //     Cuisines: {
-  //       selected: [],
-  //       type: FILTER_TYPE.CHECKBOX,
-  //       values: allCuisines?.cuisines?.map((item) => item.name)
-  //     }
-  //   }))
-  // }, [allCuisines])
-
-  useEffect(() => {
-    generateBusinessCategories()
-  }, [businessCategories])
-
-  // to generate business categories filter values
-  const generateBusinessCategories = () => {
-    if (businessCategories?.length) {
-      setFilters((prev) => ({
-        ...prev,
-        categories: {
-          selected: [],
-          type: FILTER_TYPE.CHECKBOX,
-          values: businessCategories?.map((item) => item)
-        }
-      }))
-    }
-  }
+  }, [highlightMain, titleMain])
 
   console.log({ filtersCategories: filters?.categories?.selected })
 
-  useEffect(() => {
-    if (titleMain === 'businessCategory' && filteredItem) {
-      fetchRestaurantsBusinessCategories({
-        variables: {
-          longitude: location.longitude,
-          latitude: location.latitude,
-          businessCategoryIds: [filteredItem._id]
-        }
-      }).then((res) => {
-        setRestaurantData(res?.data?.getRestaurantsBusinessCategories || [])
-      })
-    }
-  }, [route.params, filters.categories, titleMain, filteredItem])
-
-  const emptyView = () => {
-    if (
-      loading ||
-      // mutationLoading ||
-      loadingOrders ||
-      loadingWithOffers ||
-      loadingFeatured ||
-      loadingMostOrdered
-    ) {
-      return loadingScreen()
-    } else {
-      return (
-        <View style={styles().emptyViewContainer}>
-          <View style={styles(currentTheme).emptyViewBox}>
-            <TextDefault bold H4 center textColor={currentTheme.fontMainColor}>
-              {/* {t('notAvailableinYourArea')} */}
-              {t('no_search_result')}
-            </TextDefault>
-            {/* <TextDefault textColor={currentTheme.fontMainColor} center>
-              {emptyViewDesc}
-            </TextDefault> */}
-          </View>
-        </View>
-      )
-    }
-  }
+  // const emptyView = () => {
+  //   if (loading || loadingOrders) {
+  //     return loadingScreen()
+  //   } else {
+  //     return (
+  //       <View style={styles().emptyViewContainer}>
+  //         <View style={styles(currentTheme).emptyViewBox}>
+  //           <TextDefault bold H4 center textColor={currentTheme.fontMainColor}>
+  //             {/* {t('notAvailableinYourArea')} */}
+  //             {t('no_search_result')}
+  //           </TextDefault>
+  //           {/* <TextDefault textColor={currentTheme.fontMainColor} center>
+  //             {emptyViewDesc}
+  //           </TextDefault> */}
+  //         </View>
+  //       </View>
+  //     )
+  //   }
+  // }
 
   function loadingScreen() {
     return (
       <View style={styles(currentTheme).screenBackground}>
-        {/* <View style={styles(currentTheme).searchbar}>
-          <Search
-            search={''}
-            setSearch={() => {}}
-            newheaderColor={newheaderColor}
-            placeHolder={searchPlaceholderText}
-          />
-        </View> */}
-
         <Placeholder
           Animation={(props) => (
             <Fade
@@ -501,51 +317,6 @@ function MenuV2({ route, props }) {
 
   if (error) return <ErrorView />
 
-  if (
-    loading ||
-    loadingOrders ||
-    loadingMostOrdered ||
-    loadingFeatured ||
-    loadingWithOffers
-  )
-    return loadingScreen()
-
-  // Flatten the array. That is important for data sequence
-  const restaurantSections = sectionData?.map((sec) => ({
-    ...sec,
-    restaurants: sec?.restaurants
-      ?.map((id) => restaurantData?.filter((res) => res._id === id))
-      .flat()
-  }))
-
-  // console.log({ dataHighRating })
-
-  const applyFilters = async () => {
-    const highlights = filters.Highlights.selected
-    const ratings = filters.Rating.selected
-    const categories = filters.categories?.selected || []
-
-    let minRating = null
-    if (ratings.includes('3+ Rating')) minRating = 3
-    if (ratings.includes('4+ Rating')) minRating = 4
-    if (ratings.includes('5 star Rating')) minRating = 5
-
-    await filterRestaurants({
-      variables: {
-        categories,
-        highlights,
-        minRating,
-        maxRating: null, // optional
-        search: search || null,
-        city: location?.cityId || null,
-        isOpen: false, // toggle if you want open-now filter
-        mode: titleMain === 'all_businesses' ? null : titleMain, // optional
-        longitude: location.longitude || null,
-        latitude: location.latitude || null
-      }
-    })
-  }
-
   return (
     <SafeAreaView style={[styles().flex, { backgroundColor: '#fff' }]}>
       <CollapsibleSubHeaderAnimator translateY={translateY}>
@@ -577,6 +348,7 @@ function MenuV2({ route, props }) {
             handleSearch={handleSearch}
             newheaderColor={newheaderColor}
             placeHolder={searchPlaceholderText}
+            refetch={refetch}
           />
         </View>
 
@@ -590,46 +362,50 @@ function MenuV2({ route, props }) {
 
       {/* Scrollable List */}
       <View style={{ marginTop: moderateScale(190) }}>
-        <FlatList
-          data={search ? resultSearchData : restaurantData}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <Item item={item} />}
-          // onScroll={onScroll}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            // paddingTop: containerPaddingTop, // consistent padding
-            paddingBottom: 140, // give space for footer/modal
-            flexGrow: 1
-          }}
-          style={{
-            flexGrow: 1
-          }}
-          ListHeaderComponent={
-            search || restaurantData.length === 0 ? null : (
-              <ActiveOrdersAndSections
-                sections={restaurantSections}
-                menuPageHeading={t('results') || menuPageHeading}
-                restaurantLength={
-                  search ? resultSearchData.length : restaurantData.length
-                }
+        {loading ? (
+          <View style={{ marginTop: 20 }}>{loadingScreen()}</View>
+        ) : (
+          <FlatList
+            data={data?.filterRestaurants || []}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => <Item item={item} />}
+            // onScroll={onScroll}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              // paddingTop: containerPaddingTop, // consistent padding
+              paddingBottom: 140, // give space for footer/modal
+              flexGrow: 1
+            }}
+            style={{
+              flexGrow: 1
+            }}
+            // ListHeaderComponent={
+            //   search || restaurantData.length === 0 ? null : (
+            //     <ActiveOrdersAndSections
+            //       sections={restaurantSections}
+            //       menuPageHeading={t('results') || menuPageHeading}
+            //       restaurantLength={
+            //         search ? resultSearchData.length : restaurantData.length
+            //       }
+            //     />
+            //   )
+            // }
+            // ListEmptyComponent={emptyView()}
+            refreshControl={
+              <RefreshControl
+                progressViewOffset={containerPaddingTop}
+                colors={[currentTheme.iconColorPink]}
+                refreshing={networkStatus === 4}
+                onRefresh={() => {
+                  if (networkStatus === 7) {
+                    refetch()
+                  }
+                }}
               />
-            )
-          }
-          ListEmptyComponent={emptyView()}
-          refreshControl={
-            <RefreshControl
-              progressViewOffset={containerPaddingTop}
-              colors={[currentTheme.iconColorPink]}
-              refreshing={networkStatus === 4}
-              onRefresh={() => {
-                if (networkStatus === 7) {
-                  refetch()
-                }
-              }}
-            />
-          }
-          scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
-        />
+            }
+            scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
+          />
+        )}
       </View>
     </SafeAreaView>
   )

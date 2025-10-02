@@ -43,11 +43,6 @@ const BusinessCategories = () => {
   }
 
   const handlePress = (item) => {
-    // navigation.navigate('CategorySearchRestaurants', {
-    //   categoryId: item._id,
-    //   categoryName: item.name
-    // })
-    // Pass the selected category to the Menu screen
     navigation.navigate('Menu', {
       filteredItem: item,
       title: 'businessCategory'
