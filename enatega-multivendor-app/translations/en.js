@@ -745,5 +745,6 @@ export const en = {
   add_review_rider: 'Add review for the rider',
   rider_review_added: 'Rider review is added',
   no_search_result: 'No search result found',
-  results: 'Results'
+  results: 'Results',
+  clear_filters: 'Clear Filters'
 }

@@ -733,5 +733,6 @@ export const ar = {
   add_review_rider: 'أضف تقييم للسائق',
   rider_review_added: 'تم إضافة تقييم السائق بنجاح',
   no_search_result: 'لا توجد نتائج بحث',
-  results: 'النتائج'
+  results: 'النتائج',
+  clear_filters: 'مسح الفلاتر'
 }

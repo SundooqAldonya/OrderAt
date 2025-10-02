@@ -161,10 +161,11 @@ function MenuV2({ route, props }) {
     applyFilters()
   }, [])
 
-  const applyFilters = async () => {
-    const highlights = filters.Highlights.selected
-    const ratings = filters.Rating.selected
-    const categories = filters.categories?.selected || []
+  const applyFilters = async (filtersToApply = null) => {
+    const activeFilters = filtersToApply || filters
+    const highlights = activeFilters.Highlights.selected
+    const ratings = activeFilters.Rating.selected
+    const categories = activeFilters.categories?.selected || []
 
     let minRating = null
     if (ratings.includes('3+ Rating')) minRating = 3
@@ -209,6 +210,23 @@ function MenuV2({ route, props }) {
     }, 1000),
     []
   )
+
+  const clearFilters = async () => {
+    // Reset filters to default
+    setSearch('')
+    const resetFilters = {
+      ...FILTER_VALUES,
+      Highlights: { ...FILTER_VALUES.Highlights, selected: [] },
+      Rating: { ...FILTER_VALUES.Rating, selected: [] }
+    }
+
+    setFilters(resetFilters)
+    generateBusinessCategories()
+    // Optionally refetch all restaurants with no filters
+    setTimeout(() => {
+      applyFilters(resetFilters)
+    }, 1000)
+  }
 
   const newheaderColor = currentTheme.newheaderColor
 
@@ -333,7 +351,28 @@ function MenuV2({ route, props }) {
             <TextDefault bold H3 style={{ color: '#000', textAlign: 'right' }}>
               {t('search')}
             </TextDefault>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              onPress={clearFilters}
+              style={{
+                borderWidth: 1,
+                borderColor: currentTheme.main,
+                paddingVertical: 4,
+                paddingHorizontal: 10,
+                borderRadius: 12,
+                alignSelf: 'flex-start',
+                marginVertical: 5
+              }}
+            >
+              <TextDefault textColor={currentTheme.main} bold>
+                {t('clear_filters')}
+              </TextDefault>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                clearFilters() // reset filters and fetch fresh data
+                navigation.goBack() // navigate back
+              }}
+            >
               <AntDesign
                 name={isArabic ? 'arrowleft' : 'arrowright'}
                 size={24}
