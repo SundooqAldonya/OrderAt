@@ -3,19 +3,22 @@ const Order = require('../models/order')
 const dispatchQueue = require('../queues/dispatchRiderQueue')
 const { sendCustomerNotifications } = require('./customerNotifications')
 const { order_status } = require('./enum')
-const { sendPushNotification } = require('./findRiders')
+const {
+  sendPushNotification,
+  sendPushNotificationSingleRider
+} = require('./findRiders')
 const {
   sendNotificationToCustomerWeb
 } = require('./firebase-web-notifications')
 const { publishToZoneRiders, publishToUser, publishOrder } = require('./pubsub')
 
 module.exports = {
-  async acceptOrderHandler({ restaurant, user, time = 20, orderId }) {
+  async acceptOrderHandler({ restaurant, user, time = 20, orderId, rider }) {
     try {
-      // const restaurant = await Restaurant.findById(req.restaurantId)
       var newDateObj = new Date(Date.now() + (parseInt(time) || 0) * 60000)
       console.log('preparation', newDateObj)
-      const status = order_status[1]
+
+      const status = rider ? order_status[6] : order_status[1] // 'ASSIGNED' : 'ACCEPTED'
 
       const update = {
         orderStatus: status,
@@ -23,18 +26,25 @@ module.exports = {
         completionTime: new Date(
           Date.now() + restaurant.deliveryTime * 60 * 1000
         ),
-        acceptedAt: new Date()
+        acceptedAt: new Date(),
+        assignedAt: rider ? new Date() : null
       }
       const result = await Order.findByIdAndUpdate(orderId, update, {
         new: true
-      }).populate('restaurant')
+      })
+        .populate('restaurant')
+        .populate('rider')
       // const user = await User.findById(result.user)
       const transformedOrder = await transformOrder(result)
       const populatedOrder = await result.populate('user')
       console.log({ transformedOrder })
       if (!transformedOrder.isPickedUp) {
         publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
-        await sendPushNotification(result.zone.toString(), result)
+        if (transformedOrder.rider) {
+          await sendPushNotificationSingleRider(result.rider, result)
+        } else {
+          await sendPushNotification(result.zone.toString(), result)
+        }
         // await dispatchQueue.add({ orderId: populatedOrder._id, attempt: 0 })
       }
       if (

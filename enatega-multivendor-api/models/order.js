@@ -46,6 +46,10 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'Owner'
+    },
     paymentStatus: {
       type: String,
       enum: payment_status,
@@ -210,6 +214,10 @@ const orderSchema = new Schema(
       reason: {
         type: String
       }
+    },
+    area: {
+      type: Schema.Types.ObjectId,
+      ref: 'Area'
     }
   },
   { timestamps: true }

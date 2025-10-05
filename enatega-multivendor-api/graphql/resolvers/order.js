@@ -284,7 +284,14 @@ module.exports = {
           sort: {
             createdAt: -1
           },
-          populate: ['rider', 'restaurant', 'user']
+          populate: [
+            { path: 'rider' },
+            { path: 'user' },
+            {
+              path: 'restaurant',
+              populate: { path: 'city' } // 👈 populate city inside restaurant
+            }
+          ]
         })
         return {
           docs: result.docs.map(order => ({
@@ -1592,13 +1599,27 @@ module.exports = {
             }
           }
         })
-        const orderId =
-          'ADMIN-' + new Date().getTime().toString().substring(0, 4)
+
+        const lastOrder = await Order.findOne({})
+          .sort({ createdAt: -1 })
+          .limit(1)
+          .lean()
+
+        const lastOrderId = lastOrder
+          ? Number(lastOrder.orderId.split('-')[1])
+          : null
+
+        console.log({ lastOrderId })
+
+        const orderId = lastOrderId ? `ADMIN-${lastOrderId + 1}` : 'ADMIN-100'
+
+        console.log({ orderId })
 
         const orderObj = {
           zone: zone._id,
           restaurant,
-          user: req.userId,
+          user: null,
+          owner: req.userId,
           items: [],
           deliveryAddress: {
             address: foundArea.address,
@@ -1623,7 +1644,8 @@ module.exports = {
             Date.now() + restaurantData.deliveryTime * 60 * 1000
           ),
           instructions: input.instructions,
-          rider
+          rider: rider || null,
+          area
           // pickupLocation
         }
         console.log({ orderObj })
@@ -1634,7 +1656,8 @@ module.exports = {
           user,
           restaurant: restaurantData,
           time,
-          orderId: order._id
+          orderId: order._id,
+          rider
         })
         return { message: 'created_request_delivery_successfully' }
       } catch (err) {

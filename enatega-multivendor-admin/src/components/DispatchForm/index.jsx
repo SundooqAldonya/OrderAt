@@ -37,7 +37,7 @@ const GET_CITIES = gql`
   ${getCities}
 `
 
-const DispatchForm = ({ order }) => {
+const DispatchForm = ({ order, refetchOrders }) => {
   const { t } = useTranslation()
   const classes = useStyles()
   const globalClasses = useGlobalStyles()
@@ -53,6 +53,8 @@ const DispatchForm = ({ order }) => {
   const [times, setTimes] = useState([10, 20, 30, 40, 50, 60, 70, 80, 90])
   const [selectedTime, setSelectedTime] = useState(times[1])
   const [loaded, setLoaded] = useState(false)
+
+  console.log({ order })
 
   const {
     data: dataCities,
@@ -72,6 +74,28 @@ const DispatchForm = ({ order }) => {
   })
 
   const areas = data ? data.areasByCity : []
+
+  useEffect(() => {
+    if (order) {
+      fetchAreas({
+        variables: {
+          id: selectedCity || order?.restaurant?.city?._id || ''
+        }
+      })
+      setSelectedCity(order?.restaurant?.city?._id || '')
+      setSelectedRestaurants(order?.restaurant || null)
+      setSelectedRiders(order?.rider || null)
+      setSelectedTime(order?.preparationTime || times[1])
+    }
+  }, [order])
+
+  useEffect(() => {
+    // when areas arrive, validate current area id
+    if (areas?.length && order?.area) {
+      const found = areas.some(a => a._id === order.area)
+      setSelectedArea(found ? order.area : '')
+    }
+  }, [areas])
 
   const [
     fetchRestaurants,
@@ -181,6 +205,18 @@ const DispatchForm = ({ order }) => {
     {
       onCompleted: res => {
         console.log({ res })
+        setMainError(null)
+        setSuccess('Order created successfully')
+        setTimeout(() => {
+          setSuccess(null)
+        }, 3000)
+        setSelectedArea('')
+        setSelectedCity('')
+        setSelectedRestaurants(null)
+        setSelectedRiders(null)
+        setSelectedTime(times[1])
+        setLoaded(false)
+        refetchOrders()
       },
       onError: err => {
         console.log({ err })
@@ -192,6 +228,18 @@ const DispatchForm = ({ order }) => {
 
   const handleSubmit = e => {
     e.preventDefault()
+    if (!selectedCity) {
+      setMainError('Please select city')
+      return
+    }
+    if (!selectedArea) {
+      setMainError('Please select area')
+      return
+    }
+    if (!selectedRestaurants) {
+      setMainError('Please select business')
+      return
+    }
     mutateCreateOrder({
       variables: {
         input: {
@@ -213,6 +261,24 @@ const DispatchForm = ({ order }) => {
             {!order ? t('Create Order') : t('Edit Order')}
           </Typography>
         </Box>
+      </Box>
+      <Box mt={2}>
+        {success && (
+          <Alert
+            className={globalClasses.alertSuccess}
+            variant="filled"
+            severity="success">
+            {success}
+          </Alert>
+        )}
+        {mainError && (
+          <Alert
+            className={globalClasses.alertError}
+            variant="filled"
+            severity="error">
+            {mainError}
+          </Alert>
+        )}
       </Box>
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
@@ -252,7 +318,7 @@ const DispatchForm = ({ order }) => {
             <Select
               id="area"
               name="area"
-              defaultValue={selectedArea || ''}
+              defaultValue={order?.area || ''}
               value={selectedArea}
               onChange={e => setSelectedArea(e.target.value)}
               displayEmpty
@@ -422,24 +488,6 @@ const DispatchForm = ({ order }) => {
               type="submit">
               {t('Save')}
             </Button>
-          </Box>
-          <Box mt={2}>
-            {success && (
-              <Alert
-                className={globalClasses.alertSuccess}
-                variant="filled"
-                severity="success">
-                {success}
-              </Alert>
-            )}
-            {mainError && (
-              <Alert
-                className={globalClasses.alertError}
-                variant="filled"
-                severity="error">
-                {mainError}
-              </Alert>
-            )}
           </Box>
         </form>
       </Box>

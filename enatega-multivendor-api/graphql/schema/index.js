@@ -508,6 +508,7 @@ const typeDefs = gql`
     cancellation: Cancellation
     pickupLabel: String
     coupon: Coupon
+    area: String
   }
 
   scalar Date
@@ -546,6 +547,7 @@ const typeDefs = gql`
     reviewCount: Int
     reviewAverage: Float
     tax: Float
+    city: CityArea
   }
 
   type AuthData {
@@ -2141,7 +2143,7 @@ const typeDefs = gql`
     area: String!
     time: Float!
     deliveryAmount: Float!
-    rider: String!
+    rider: String
   }
 
   type Mutation {

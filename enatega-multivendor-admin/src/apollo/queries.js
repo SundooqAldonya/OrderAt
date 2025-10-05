@@ -182,7 +182,13 @@ export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $
           name
           image
           address
-          location{coordinates}
+          location {
+            coordinates
+          }
+          city {
+            _id
+            title
+          }
         }
         deliveryAddress{
           location{coordinates}
@@ -246,6 +252,7 @@ export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $
           available
         }
         cancelledAt
+        area
       }
       totalDocs
       limit

@@ -15,13 +15,13 @@ import DispatchForm from '../components/DispatchForm'
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
 `
-const GET_PROFILE = gql`
-  ${getRestaurantProfile}
-`
+// const GET_PROFILE = gql`
+//   ${getRestaurantProfile}
+// `
 
-const CITY_AREAS = gql`
-  ${getCityAreas}
-`
+// const CITY_AREAS = gql`
+//   ${getCityAreas}
+// `
 
 const OrdersAdmin = () => {
   const [detailsModal, setDetailModal] = useState(false)
@@ -30,6 +30,8 @@ const OrdersAdmin = () => {
   const [modalVisible, setModalVisible] = useState(false)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
+  const [openEdit, setOpenEdit] = useState(false)
+
   // const [search] = useState('')
   const { setAreas } = useContext(AreaContext)
 
@@ -48,7 +50,7 @@ const OrdersAdmin = () => {
   })
   const orders = data?.getOrdersByAdmin?.docs || null
 
-  const toggleModal = order => {
+  const handleClick = order => {
     // console.log({ order })
     // setOrder(order)
     // setDetailModal(!detailsModal)
@@ -78,9 +80,17 @@ const OrdersAdmin = () => {
     setModalVisible(true)
   }
 
+  const handleEditModal = () => {
+    setOpenEdit(!openEdit)
+  }
+
   const toggleDrawer = () => {
     setSelectedInteraction(null)
     setModalVisible(false)
+  }
+
+  const toggleModal = () => {
+    setOpenEdit(false)
   }
 
   const globalClasses = useGlobalStyles()
@@ -96,10 +106,10 @@ const OrdersAdmin = () => {
           </tr>
         )}
         <Paper sx={{ background: '#fff' }}>
-          <DispatchForm />
+          <DispatchForm refetchOrders={refetchOrders} />
           <OrdersDataAdmin
             orders={data && orders}
-            toggleModal={toggleModal}
+            handleClick={handleClick}
             subscribeToMore={subscribeToMore}
             loading={loadingQuery}
             selected={order}
@@ -109,6 +119,7 @@ const OrdersAdmin = () => {
             refetchOrders={refetchOrders}
             isAdminPage={true}
             handleModalVisible={handleModalVisible}
+            handleEditModal={handleEditModal}
           />
 
           <TablePagination
@@ -158,7 +169,7 @@ const OrdersAdmin = () => {
             marginLeft: { sm: 0, lg: '13%' },
             overflowY: 'auto'
           }}
-          open={detailsModal}
+          open={openEdit}
           onClose={() => {
             toggleModal(null)
           }}>
