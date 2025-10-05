@@ -47,7 +47,10 @@ export default function Detail({
   pickupAddress,
   pickupLabel,
   pickupLocation,
-  restaurant
+  restaurant,
+  originalDeliveryCharges,
+  originalPrice,
+  originalSubtotal
 }) {
   const { i18n, t } = useTranslation()
   const { language } = i18n
@@ -558,19 +561,18 @@ const ItemRow = ({
             {options.join(',')}
           </TextDefault>
         )}
-
-        <TextDefault
-          Regular
-          left
-          bolder
-          textColor={theme.gray900}
-          style={{
-            textAlign: isArabic ? 'right' : 'left'
-          }}
-        >
-          x{quantity}
-        </TextDefault>
       </View>
+      <TextDefault
+        Regular
+        left
+        bolder
+        textColor={theme.gray900}
+        style={{
+          textAlign: isArabic ? 'right' : 'left'
+        }}
+      >
+        x{quantity}
+      </TextDefault>
       <TextDefault
         right
         style={{ width: '15%' }}
@@ -578,7 +580,7 @@ const ItemRow = ({
         textColor={theme.gray900}
         H5
       >
-        {formatNumber(price)} {currency}
+        {parseInt(price).toFixed(2)} {currency}
       </TextDefault>
     </View>
   )

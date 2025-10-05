@@ -38,6 +38,7 @@ import MapViewDirections from 'react-native-maps-directions'
 import useEnvVars from '../../../environment'
 import LottieView from 'lottie-react-native'
 import { singleOrder } from '../../apollo/queries'
+import JSONTree from 'react-native-json-tree'
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
 
@@ -51,9 +52,9 @@ const ORDER = gql`
 
 function OrderDetail(props) {
   const [cancelModalVisible, setCancelModalVisible] = useState(false)
-  const Analytics = analytics()
+  // const Analytics = analytics()
   const id = props.route.params ? props.route.params._id : null
-  const user = props.route.params ? props.route.params.user : null
+  // const user = props.route.params ? props.route.params.user : null
   const { orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
@@ -62,8 +63,8 @@ function OrderDetail(props) {
   const { language } = i18n
   const isArabic = language === 'ar'
   const navigation = useNavigation()
-  const headerRef = useRef(false)
-  const { GOOGLE_MAPS_KEY } = useEnvVars()
+  // const headerRef = useRef(false)
+  // const { GOOGLE_MAPS_KEY } = useEnvVars()
   const mapView = useRef(null)
   const [cancelOrder, { loading: loadingCancel }] = useMutation(CANCEL_ORDER, {
     onError,
@@ -130,11 +131,15 @@ function OrderDetail(props) {
     tipping: tip,
     taxationAmount: tax,
     orderAmount: total,
-    deliveryCharges
+    deliveryCharges,
+    originalDeliveryCharges,
+    originalPrice,
+    originalSubtotal,
+    coupon
     // pickupLocation
   } = order
 
-  console.log({ deliveryAddress })
+  console.log({ coupon })
 
   const pickupLocation = order?.pickupLocation || null
 
@@ -173,6 +178,7 @@ function OrderDetail(props) {
   }
 
   const subTotal = total - tip - tax - deliveryCharges
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -353,6 +359,9 @@ function OrderDetail(props) {
           tax={tax}
           deliveryCharges={deliveryCharges}
           total={total}
+          // originalPrice={originalPrice}
+          // originalSubtotal={originalSubtotal}
+          // originalDeliveryCharges={originalDeliveryCharges}
           theme={currentTheme}
           id={_id}
           rider={order.rider}
@@ -403,15 +412,37 @@ function OrderDetail(props) {
                     >
                       {t('deliveryFee')}
                     </TextDefault>
-                    <TextDefault
-                      numberOfLines={1}
-                      textColor={currentTheme.fontFourthColor}
-                      normal
-                      bold
+                    <View
+                      style={{
+                        flexDirection: isArabic ? 'row-reverse' : 'row',
+                        alignItems: 'center',
+                        gap: 10
+                      }}
                     >
-                      {deliveryCharges.toFixed(2)}{' '}
-                      {configuration.currencySymbol}
-                    </TextDefault>
+                      {coupon?.rules?.applies_to.includes('delivery') ? (
+                        <TextDefault
+                          numberOfLines={1}
+                          textColor={currentTheme.fontFourthColor}
+                          normal
+                          bold
+                          style={{ textDecorationLine: 'line-through' }}
+                        >
+                          {parseFloat(originalDeliveryCharges).toFixed(2)}
+                          {isArabic
+                            ? configuration.currencySymbol
+                            : configuration.currency}
+                        </TextDefault>
+                      ) : null}
+                      <TextDefault
+                        numberOfLines={1}
+                        textColor={currentTheme.fontFourthColor}
+                        normal
+                        bold
+                      >
+                        {deliveryCharges.toFixed(2)}{' '}
+                        {configuration.currencySymbol}
+                      </TextDefault>
+                    </View>
                   </View>
                   <View style={styles(currentTheme).horizontalLine2} />
                 </>
@@ -450,6 +481,8 @@ function OrderDetail(props) {
             title={t('total')}
             currency={configuration.currencySymbol}
             price={total.toFixed(2)}
+            originalPrice={originalPrice}
+            coupon={coupon}
           />
           {order.orderStatus === ORDER_STATUS_ENUM.PENDING && (
             <View style={{ margin: scale(20) }}>

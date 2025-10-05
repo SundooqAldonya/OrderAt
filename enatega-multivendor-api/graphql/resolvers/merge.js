@@ -177,7 +177,8 @@ const transformOrder = async order => {
     isPickedUp: order?.isPickedUp,
     paymentStatus: order?.paymentStatus,
     tipping: order?.tipping,
-    taxationAmount: order?.taxationAmount
+    taxationAmount: order?.taxationAmount,
+    coupon: order?.coupon ? order?.coupon : null
   }
 }
 

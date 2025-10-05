@@ -1049,7 +1049,7 @@ export const orderFragment = `fragment NewOrder on Order {
   pickedAt
   deliveredAt
   cancelledAt
-  assignedAt
+  assignedAt  
 }`
 
 export const singleOrder = `query SingleOrder($id: String!){
@@ -1136,6 +1136,26 @@ export const singleOrder = `query SingleOrder($id: String!){
     pickupLabel
     type
     mandoobSpecialInstructions
+   coupon {
+    _id
+    code
+    status
+    rules {
+      discount_type
+      discount_value
+      applies_to
+      min_order_value
+      max_discount
+      start_date
+      end_date
+      limit_total
+      limit_per_user
+    }
+    
+  }
+    originalDeliveryCharges
+    originalPrice
+    originalSubtotal
   }
 }
 `

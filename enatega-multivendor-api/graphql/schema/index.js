@@ -507,6 +507,7 @@ const typeDefs = gql`
     originalPrice: Float
     cancellation: Cancellation
     pickupLabel: String
+    coupon: Coupon
   }
 
   scalar Date

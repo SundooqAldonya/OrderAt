@@ -151,7 +151,7 @@ module.exports = {
           .populate('cancellation.cancelledBy')
         // .populate('restaurant')
         // .populate('user')
-        console.log({ cancellation: order.cancellation })
+        console.log({ coupon: order?.coupon })
         if (!order) throw new Error('Order does not exist')
         return await transformOrder(order)
         // return order
