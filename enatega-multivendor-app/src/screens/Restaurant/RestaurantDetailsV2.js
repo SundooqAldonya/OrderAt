@@ -122,50 +122,50 @@ const RestaurantDetailsV2 = () => {
     sortedCategoryOffsetsRef.current = entries
   }, [categoryOffsets])
 
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      useNativeDriver: true,
-      listener: (event) => {
-        const y = event.nativeEvent.contentOffset.y
+  // const onScroll = Animated.event(
+  //   [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+  //   {
+  //     useNativeDriver: true,
+  //     listener: (event) => {
+  //       const y = event.nativeEvent.contentOffset.y
 
-        // ---- existing sticky header animation logic ----
-        setShowStickyHeader(
-          y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
-        )
-        const shouldShow = y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
-        Animated.timing(stickyHeaderAnim, {
-          toValue: shouldShow ? 1 : 0,
-          duration: 250,
-          useNativeDriver: true
-        }).start()
+  //       // ---- existing sticky header animation logic ----
+  //       setShowStickyHeader(
+  //         y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
+  //       )
+  //       const shouldShow = y > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
+  //       Animated.timing(stickyHeaderAnim, {
+  //         toValue: shouldShow ? 1 : 0,
+  //         duration: 250,
+  //         useNativeDriver: true
+  //       }).start()
 
-        if (categoriesLayoutY.current) {
-          setIsCategoriesSticky(y >= categoriesLayoutY.current - 60)
-        }
+  //       if (categoriesLayoutY.current) {
+  //         setIsCategoriesSticky(y >= categoriesLayoutY.current - 60)
+  //       }
 
-        // ---- NEW: active-category detection ----
-        const adjustedY = y + STICKY_ADJUST
-        const sorted = sortedCategoryOffsetsRef.current
-        if (sorted && sorted.length) {
-          let newActive = activeCategoryRef.current // start from last known
-          for (let i = 0; i < sorted.length; i++) {
-            const [id, offset] = sorted[i]
-            const nextOffset = sorted[i + 1]?.[1] ?? Number.POSITIVE_INFINITY
-            if (adjustedY >= offset && adjustedY < nextOffset) {
-              newActive = id
-              break
-            }
-          }
-          if (newActive !== activeCategoryRef.current) {
-            // update both ref and state (state triggers UI update)
-            activeCategoryRef.current = newActive
-            setActiveCategory(newActive)
-          }
-        }
-      }
-    }
-  )
+  //       // ---- NEW: active-category detection ----
+  //       const adjustedY = y + STICKY_ADJUST
+  //       const sorted = sortedCategoryOffsetsRef.current
+  //       if (sorted && sorted.length) {
+  //         let newActive = activeCategoryRef.current // start from last known
+  //         for (let i = 0; i < sorted.length; i++) {
+  //           const [id, offset] = sorted[i]
+  //           const nextOffset = sorted[i + 1]?.[1] ?? Number.POSITIVE_INFINITY
+  //           if (adjustedY >= offset && adjustedY < nextOffset) {
+  //             newActive = id
+  //             break
+  //           }
+  //         }
+  //         if (newActive !== activeCategoryRef.current) {
+  //           // update both ref and state (state triggers UI update)
+  //           activeCategoryRef.current = newActive
+  //           setActiveCategory(newActive)
+  //         }
+  //       }
+  //     }
+  //   }
+  // )
 
   const restaurantCategories = restaurant?.categories || []
 
@@ -245,33 +245,51 @@ const RestaurantDetailsV2 = () => {
       })
     }
   }
-  const handleScroll = (event) => {
-    const scrollY = event.nativeEvent.contentOffset.y
+  const STICKY_HEADER_HEIGHT = 50; // your sticky header height
 
-    // Adjust for sticky header height
-    const adjustedScrollY = scrollY + stickyHeaderHeight
+const handleScroll = (event) => {
+  const scrollY = event.nativeEvent.contentOffset.y;
 
-    let newActiveCategory = activeCategory
+  // Existing sticky header animation logic
+  const shouldShow =
+    scrollY > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT;
+  setShowStickyHeader(shouldShow);
+  Animated.timing(stickyHeaderAnim, {
+    toValue: shouldShow ? 1 : 0,
+    duration: 250,
+    useNativeDriver: true,
+  }).start();
 
-    const sortedCategories = Object.entries(categoryOffsets).sort(
-      (a, b) => a[1] - b[1]
-    )
+  if (categoriesLayoutY.current) {
+    setIsCategoriesSticky(scrollY >= categoriesLayoutY.current - 60);
+  }
 
-    for (let i = 0; i < sortedCategories.length; i++) {
-      const [categoryId, offset] = sortedCategories[i]
-      const nextOffset = sortedCategories[i + 1]?.[1] ?? Infinity
+  const adjustedScrollY = scrollY + STICKY_HEADER_HEIGHT;
 
-      if (adjustedScrollY >= offset && adjustedScrollY < nextOffset) {
-        newActiveCategory = categoryId
-        break
-      }
-    }
+  const sortedCategories = Object.entries(categoryOffsets).sort(
+    (a, b) => a[1] - b[1]
+  );
 
-    if (newActiveCategory !== activeCategory) {
-      setActiveCategory(newActiveCategory)
+  let currentCategory = activeCategory;
+
+  for (let i = 0; i < sortedCategories.length; i++) {
+    const [categoryId, offset] = sortedCategories[i];
+    const nextOffset = sortedCategories[i + 1]?.[1] ?? Infinity;
+
+    // 💡 This ensures category changes *only when the next one touches sticky header*
+    if (
+      adjustedScrollY >= offset &&
+      adjustedScrollY < nextOffset - STICKY_HEADER_HEIGHT
+    ) {
+      currentCategory = categoryId;
+      break;
     }
   }
 
+  if (currentCategory !== activeCategory) {
+    setActiveCategory(currentCategory);
+  }
+};
   const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
     ADD_FAVOURITE,
     {
@@ -358,7 +376,7 @@ const RestaurantDetailsV2 = () => {
       <Animated.ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ paddingBottom: 100, flexGrow: 1 }}
-        onScroll={onScroll}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
       >
         <Image
@@ -479,11 +497,6 @@ const RestaurantDetailsV2 = () => {
         </View>
 
         {/* scroll view for included food categories */}
-        <ScrollView
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        >
           {categories?.map((cat) => {
             return (
               <View
@@ -513,14 +526,9 @@ const RestaurantDetailsV2 = () => {
                 ) : null}
                 {/* render items for that section */}
                 {cat?.food?.length ? (
-                  <FlatList
-                    data={cat.food}
-                    renderItem={({ item }) => renderItem({ item, cat })}
-                    keyExtractor={(item) => item._id}
-                    numColumns={cat._id === 'picks' ? 2 : 1}
-                    scrollEnabled={false}
-                  />
-                ) : (
+                  cat?.food?.map((item) => (
+                   renderItem({ item, cat })
+                  ))) : (
                   <Text
                     style={{
                       color: '#999',
@@ -534,7 +542,6 @@ const RestaurantDetailsV2 = () => {
               </View>
             )
           })}
-        </ScrollView>
       </Animated.ScrollView>
       {cartCount > 0 ? (
         <ViewCart

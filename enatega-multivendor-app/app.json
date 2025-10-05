@@ -20,7 +20,7 @@
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "92",
+      "buildNumber": "94",
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.orderatcustomer.app",
