@@ -2246,6 +2246,10 @@ function Checkout(props) {
                 ref={inputRef}
                 label={t('inputCode')}
                 placeholder={t('inputCode')}
+                placeholderTextColor={currentTheme.gray500}
+                autoCapitalize='characters'
+                autoCorrect={false}
+                autoComplete='off'
                 value={voucherCode}
                 onChangeText={(text) => setVoucherCode(text)}
                 style={styles(currentTheme).modalInput}

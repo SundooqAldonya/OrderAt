@@ -452,20 +452,39 @@ module.exports = {
           const variation = await Variation.findById(item.variation._id).lean()
           if (!variation) continue
 
+          // let originalPrice = variation.price || 0
+          // originalSubtotal += variation.price
+          // // Add add-on prices
+          // if (item.addons?.length > 0) {
+          //   for (const addon of item.addons) {
+          //     for (const optionSingle of addon.options) {
+          //       const option = await Option.findById(optionSingle._id)
+          //       console.log({ option })
+          //       originalPrice += option?.price || 0
+          //       originalSubtotal += option?.price || 0
+          //     }
+          //   }
+          // }
+          // originalSubtotal *= quantity
+
           let originalPrice = variation.price || 0
-          originalSubtotal += variation.price
+
           // Add add-on prices
           if (item.addons?.length > 0) {
             for (const addon of item.addons) {
               for (const optionSingle of addon.options) {
                 const option = await Option.findById(optionSingle._id)
-                console.log({ option })
                 originalPrice += option?.price || 0
-                originalSubtotal += option?.price || 0
               }
             }
           }
-          originalSubtotal *= quantity
+
+          // ✅ Multiply after summing up the item’s full price
+          const itemTotal = originalPrice * quantity
+
+          // ✅ Add to total subtotal
+          originalSubtotal += itemTotal
+
           console.log({ originalSubtotal })
           let discountedPrice = originalPrice
 
