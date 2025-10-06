@@ -1575,8 +1575,8 @@ module.exports = {
       }
       try {
         const { area, restaurant, time, rider, deliveryAmount } = input
-        console.log({ user: req.user })
-        const user = await Owner.findById(req.user._id)
+        // const user = await Owner.findById(req.user._id)
+        const user = await User.findOne({ phone: '+201000000000' })
         if (!user) {
           throw new Error('User not found')
         }
@@ -1624,7 +1624,7 @@ module.exports = {
         const orderObj = {
           zone: zone._id,
           restaurant,
-          user: null,
+          user: user._id,
           owner: req.userId,
           items: [],
           deliveryAddress: {
