@@ -1065,3 +1065,11 @@ export const adminCheckout = gql`
     }
   }
 `
+
+export const adminOrderUpdate = gql`
+  mutation AdminOrderUpdate($id: String!, $input: AdminUpdateOrder!) {
+    adminOrderUpdate(id: $id, input: $input) {
+      message
+    }
+  }
+`

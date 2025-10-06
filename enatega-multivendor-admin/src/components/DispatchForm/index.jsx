@@ -20,6 +20,7 @@ import useGlobalStyles from '../../utils/globalStyles'
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
   adminCheckout,
+  adminOrderUpdate,
   getCities,
   getCityAreas,
   getDeliveryCalculation,
@@ -51,6 +52,11 @@ const DispatchForm = ({ order, refetchOrders }) => {
   const [selectedRestaurants, setSelectedRestaurants] = useState(null)
   const [selectedRiders, setSelectedRiders] = useState(null)
   const [times, setTimes] = useState([10, 20, 30, 40, 50, 60, 70, 80, 90])
+  const [cost, setCost] = useState(
+    order?.orderAmount && order?.deliveryCharges
+      ? order?.orderAmount - order?.deliveryCharges
+      : ''
+  )
   const [selectedTime, setSelectedTime] = useState(times[1])
   const [loaded, setLoaded] = useState(false)
 
@@ -200,31 +206,50 @@ const DispatchForm = ({ order, refetchOrders }) => {
     setSelectedTime(e.target.value)
   }
 
-  const [mutateCreateOrder, { loading: mutateLoading }] = useMutation(
-    adminCheckout,
-    {
-      onCompleted: res => {
-        console.log({ res })
-        setMainError(null)
-        setSuccess('Order created successfully')
-        setTimeout(() => {
-          setSuccess(null)
-        }, 3000)
-        setSelectedArea('')
-        setSelectedCity('')
-        setSelectedRestaurants(null)
-        setSelectedRiders(null)
-        setSelectedTime(times[1])
-        setLoaded(false)
-        refetchOrders()
-      },
-      onError: err => {
-        console.log({ err })
-        // setMainError(err.message)
-        // setSuccess(null)
-      }
+  const [mutateCreateOrder] = useMutation(adminCheckout, {
+    onCompleted: res => {
+      console.log({ res })
+      setMainError(null)
+      setSuccess('Order created successfully')
+      setTimeout(() => {
+        setSuccess(null)
+      }, 3000)
+      setSelectedArea('')
+      setSelectedCity('')
+      setSelectedRestaurants(null)
+      setSelectedRiders(null)
+      setSelectedTime(times[1])
+      setLoaded(false)
+      refetchOrders()
+    },
+    onError: err => {
+      console.log({ err })
+      // setMainError(err.message)
+      // setSuccess(null)
     }
-  )
+  })
+  const [mutateUpdateOrder] = useMutation(adminOrderUpdate, {
+    onCompleted: res => {
+      console.log({ res })
+      setMainError(null)
+      setSuccess('Order created successfully')
+      setTimeout(() => {
+        setSuccess(null)
+      }, 3000)
+      setSelectedArea('')
+      setSelectedCity('')
+      setSelectedRestaurants(null)
+      setSelectedRiders(null)
+      setSelectedTime(times[1])
+      setLoaded(false)
+      refetchOrders()
+    },
+    onError: err => {
+      console.log({ err })
+      // setMainError(err.message)
+      // setSuccess(null)
+    }
+  })
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -240,17 +265,34 @@ const DispatchForm = ({ order, refetchOrders }) => {
       setMainError('Please select business')
       return
     }
-    mutateCreateOrder({
-      variables: {
-        input: {
-          restaurant: selectedRestaurants?._id,
-          area: selectedArea,
-          time: selectedTime,
-          rider: selectedRiders?._id,
-          deliveryAmount: parseInt(deliveryAmount) || 0
+    if (!order) {
+      mutateCreateOrder({
+        variables: {
+          input: {
+            restaurant: selectedRestaurants?._id,
+            area: selectedArea,
+            time: selectedTime,
+            rider: selectedRiders?._id,
+            deliveryAmount: parseInt(deliveryAmount) || 0,
+            cost: parseFloat(cost) || 0
+          }
         }
-      }
-    })
+      })
+    } else {
+      mutateUpdateOrder({
+        variables: {
+          id: order._id,
+          input: {
+            // restaurant: selectedRestaurants?._id,
+            area: selectedArea,
+            time: selectedTime,
+            rider: selectedRiders?._id,
+            deliveryAmount: parseInt(deliveryAmount) || 0,
+            cost: parseFloat(cost) || 0
+          }
+        }
+      })
+    }
   }
 
   return (
@@ -447,7 +489,12 @@ const DispatchForm = ({ order, refetchOrders }) => {
           <Box mb={2}>
             <Typography
               variant="body2"
-              sx={{ fontWeight: 'bold', mb: 2, color: '#000' }}>
+              sx={{
+                fontWeight: 'bold',
+                mb: 2,
+                color: '#000',
+                textAlign: 'left'
+              }}>
               {t('time_preparation')}
             </Typography>
             <FormControl fullWidth>
@@ -466,6 +513,33 @@ const DispatchForm = ({ order, refetchOrders }) => {
                 })}
               </Select>
             </FormControl>
+          </Box>
+
+          <Box sx={{ mb: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 'bold', color: '#000', textAlign: 'left' }}>
+              {t('cost')}
+            </Typography>
+            <TextField
+              type="number"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              placeholder="e.g. 15"
+              value={cost}
+              onChange={e => setCost(e.target.value)}
+              error={!!cost && (isNaN(cost) || parseFloat(cost) <= 0)} // Error when cost is invalid
+              helperText={
+                cost && (isNaN(cost) || parseFloat(cost) <= 0)
+                  ? 'Please enter a valid cost greater than 0'
+                  : ''
+              }
+              sx={{
+                '& .MuiInputBase-input': { color: 'black' },
+                '& .MuiOutlinedInput-root': { borderRadius: 2 }
+              }}
+            />
           </Box>
 
           {calcLoading && (

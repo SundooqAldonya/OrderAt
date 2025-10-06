@@ -1600,7 +1600,9 @@ module.exports = {
           }
         })
 
-        const lastOrder = await Order.findOne({})
+        const lastOrder = await Order.findOne({
+          restaurant: restaurantData._id
+        })
           .sort({ createdAt: -1 })
           .limit(1)
           .lean()
@@ -1611,9 +1613,13 @@ module.exports = {
 
         console.log({ lastOrderId })
 
-        const orderId = lastOrderId ? `ADMIN-${lastOrderId + 1}` : 'ADMIN-100'
+        const orderId = lastOrderId
+          ? `${restaurantData.orderPrefix}-${lastOrderId + 1}`
+          : `${restaurantData.orderPrefix}-100`
 
         console.log({ orderId })
+
+        const totalAmount = input.cost + deliveryAmount
 
         const orderObj = {
           zone: zone._id,
@@ -1623,7 +1629,16 @@ module.exports = {
           items: [],
           deliveryAddress: {
             address: foundArea.address,
-            location: foundArea.location.location
+            // location: foundArea.location.location,
+            location: {
+              type: 'Point',
+              coordinates: [
+                foundArea.location.location.coordinates[0],
+                foundArea.location.location.coordinates[1]
+              ]
+            },
+            deliveryAddress: foundArea.address,
+            label: foundArea.title
           },
           orderId,
           paidAmount: 0,
@@ -1635,7 +1650,7 @@ module.exports = {
           taxationAmount: 0,
           orderDate: new Date(),
           isPickedUp: false,
-          orderAmount: 0,
+          orderAmount: totalAmount,
           originalPrice: 0,
           originalSubtotal: 0,
           paymentStatus: payment_status[0],
@@ -1665,6 +1680,74 @@ module.exports = {
       }
     },
 
+    async adminOrderUpdate(_, { id, input }, { req }) {
+      console.log('adminOrderUpdate', { id, input })
+      if (!req.user) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const order = await Order.findById(id)
+        if (!order) {
+          throw new Error('Order not found')
+        }
+        // edit rider
+        if (input.rider) {
+          order.rider = input.rider
+          order.orderStatus = order_status[6]
+          order.assignedAt = new Date()
+          order.isRiderRinged = false
+        }
+        // edit time
+        if (input.time) {
+          order.preparationTime = new Date(Date.now() + input.time * 60 * 1000)
+        }
+        // edit area
+        if (input.area) {
+          const foundArea = await Area.findById(input.area).populate('location')
+          if (!foundArea) {
+            throw new Error('Area not found')
+          }
+          order.area = input.area
+          let address = {}
+          address['deliveryAddress'] = area.address
+          address['details'] = addressDetails ? addressDetails : area.address
+          address['label'] = area.title
+          address['location'] = {
+            type: 'Point',
+            coordinates: [
+              area.location.location.coordinates[0],
+              area.location.location.coordinates[1]
+            ]
+          }
+          order.deliveryAddress = {
+            address: foundArea.address,
+            location: {
+              type: 'Point',
+              coordinates: [
+                foundArea.location.location.coordinates[0],
+                foundArea.location.location.coordinates[1]
+              ]
+            },
+            deliveryAddress: foundArea.address,
+            label: foundArea.title
+          }
+        }
+        if (input.deliveryAmount || input.deliveryAmount === 0) {
+          order.deliveryCharges = input.deliveryAmount
+          order.finalDeliveryCharges = input.deliveryAmount
+          order.originalDeliveryCharges = input.deliveryAmount
+          // order.orderAmount = input.deliveryAmount
+          // order.originalPrice = input.deliveryAmount
+          // order.originalSubtotal = input.deliveryAmount
+          const totalAmount = input.cost + input.deliveryAmount
+          order.orderAmount = totalAmount
+        }
+        await order.save()
+        return { message: 'updated_successfully' }
+      } catch (err) {
+        throw err
+      }
+    },
     editOrder: async (_, args, { req, res }) => {
       if (!req.isAuth) {
         throw new Error('Unauthenticated!')

@@ -2144,9 +2144,19 @@ const typeDefs = gql`
     time: Float!
     deliveryAmount: Float!
     rider: String
+    cost: Float!
+  }
+  input AdminUpdateOrder {
+    # restaurant: String!
+    area: String!
+    time: Float!
+    deliveryAmount: Float!
+    rider: String
+    cost: Float!
   }
 
   type Mutation {
+    adminOrderUpdate(id: String!, input: AdminUpdateOrder!): Message
     adminCheckout(input: AdminCheckoutInput): Message
     createRiderReview(input: RiderReviewInput!): Message
     heartbeatRestaurant(id: String!): Message
