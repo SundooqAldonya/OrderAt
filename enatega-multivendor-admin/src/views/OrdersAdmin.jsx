@@ -173,7 +173,7 @@ const OrdersAdmin = () => {
           onClose={() => {
             toggleModal(null)
           }}>
-          <DispatchForm order={order} />
+          <DispatchForm order={order} refetchOrders={refetchOrders} />
         </Modal>
 
         <DispatchDrawer

@@ -1708,17 +1708,7 @@ module.exports = {
             throw new Error('Area not found')
           }
           order.area = input.area
-          let address = {}
-          address['deliveryAddress'] = area.address
-          address['details'] = addressDetails ? addressDetails : area.address
-          address['label'] = area.title
-          address['location'] = {
-            type: 'Point',
-            coordinates: [
-              area.location.location.coordinates[0],
-              area.location.location.coordinates[1]
-            ]
-          }
+
           order.deliveryAddress = {
             address: foundArea.address,
             location: {
