@@ -36,4 +36,5 @@ function AppContainer() {
   )
 }
 
-export default Sentry.withProfiler(AppContainer)
+export default AppContainer
+// export default Sentry.withProfiler(AppContainer)

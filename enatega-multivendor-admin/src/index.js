@@ -82,7 +82,10 @@ function Main() {
   }, wsLink)
 
   const uploadLink = createUploadLink({
-    uri: `${SERVER_URL}/graphql`
+    uri: `${SERVER_URL}/graphql`,
+    headers: {
+      'apollo-require-preflight': 'true'
+    }
   })
 
   const client = new ApolloClient({

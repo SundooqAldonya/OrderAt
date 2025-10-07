@@ -1,215 +1,107 @@
 require('dotenv').config()
 const express = require('express')
+const http = require('http')
+const cors = require('cors')
+const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
-const { ApolloServer } = require('apollo-server-express')
 const mongoose = require('mongoose')
+const { ApolloServer } = require('@apollo/server')
+const { expressMiddleware } = require('@apollo/server/express4')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { useServer } = require('graphql-ws/lib/use/ws')
+const { WebSocketServer } = require('ws')
+const { graphqlUploadExpress } = require('graphql-upload')
 const engines = require('consolidate')
-// const path = require('path')
-// const { loadFilesSync } = require('@graphql-tools/load-files')
-// const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge')
-// const { makeExecutableSchema } = require('@graphql-tools/schema')
-const typeDefs = require('./graphql/schema/index')
-const resolvers = require('./graphql/resolvers/index')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')
+const passport = require('passport')
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
+const graphql = require('graphql')
+const config = require('./config')
 const paypal = require('./routes/paypal')
 const stripe = require('./routes/stripe')
 const isAuthenticated = require('./middleware/is-auth')
-const graphql = require('graphql')
-const morgan = require('morgan')
-const cors = require('cors')
-const passport = require('passport')
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
-const session = require('express-session')
-const User = require('./models/user.js')
-const subscriptionTransportWs = require('subscriptions-transport-ws')
-const config = require('./config.js')
-const graphqlTools = require('@graphql-tools/schema')
-const http = require('http')
-const populateCountries = require('./helpers/populate-countries-data.js')
-const {
-  graphqlUploadExpress // A Koa implementation is also exported.
-} = require('graphql-upload')
-const app = express()
-
-const Sentry = require('@sentry/node')
-const Tracing = require('@sentry/tracing')
-const { SentryConfig } = require('./helpers/sentry.config.js')
-const MongoStore = require('connect-mongo')
-const Owner = require('./models/owner.js')
-const Restaurant = require('./models/restaurant.js')
-const Rider = require('./models/rider.js')
-const EventEmitter = require('events')
-const { pubsub } = require('./helpers/pubsub.js')
-const {
-  orderCheckUnassigned,
-  checkRidersAvailability
-} = require('./helpers/orderCheckUnassigned.js')
-
-const emitter = new EventEmitter()
-
-emitter.setMaxListeners(50)
+const typeDefs = require('./graphql/schema')
+const resolvers = require('./graphql/resolvers')
+const User = require('./models/user')
+const Owner = require('./models/owner')
+const Restaurant = require('./models/restaurant')
+const Rider = require('./models/rider')
+const { orderCheckUnassigned } = require('./helpers/orderCheckUnassigned')
+const { pubsub } = require('./helpers/pubsub')
 
 async function startApolloServer() {
+  const app = express()
   const httpServer = http.createServer(app)
+
+  // ✅ Connect MongoDB
   mongoose
     .connect(config.CONNECTION_STRING, {
       dbName: config.DB_NAME,
       serverSelectionTimeoutMS: 30000
     })
-    .then(() => {
-      console.log('Connected to DB!')
-    })
-    .catch(err => {
-      console.log(`Couldn't connect to DB!\n`, err)
-    })
-  // mongoose.set('strictPopulate', false)
+    .then(() => console.log('Connected to DB!'))
+    .catch(err => console.error(`Couldn't connect to DB!`, err))
 
-  // Ensure to call this before requiring any other modules!
-  // initializing bug reporting platform i.e Sentry
-  // Sentry.init({
-  //   dsn:
-  //     'https://7a8412e2828843d77b72312ac60b0f02@o4508511447941120.ingest.de.sentry.io/4508511450169424',
-  //   debug: true,
-  //   integrations: [
-  //     new Sentry.Integrations.Http({ tracing: true }),
-  //     new Tracing.Integrations.Express({ app, methods: ['get', 'post'] })
-  //   ],
-  //   tracesSampleRate: 1.0,
-  //   profilesSampleRate: 1.0,
-  //   environment: config.NODE_ENV
-  // })
-  // app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
+  // ✅ GraphQL Schema
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-  // 1) Load all .graphql files (or .js if your typedefs are JS strings)
-  // const typeDefsArray = loadFilesSync(
-  //   path.join(__dirname, './graphql/schema/**/*.{js,graphql}')
-  // )
-  // const typeDefs = mergeTypeDefs(typeDefsArray)
-
-  // // 2) Load all resolvers
-  // const resolversArray = loadFilesSync(
-  //   path.join(__dirname, './graphql/resolvers/**/*.js'),
-  //   {
-  //     ignoreIndex: true // skip index.js inside resolvers
-  //   }
-  // )
-  // const resolvers = mergeResolvers(resolversArray)
-
-  // const schema = makeExecutableSchema({
-  //   typeDefs,
-  //   resolvers
-  // })
-  const schema = graphqlTools.makeExecutableSchema({
-    typeDefs,
-    resolvers
-  })
-
+  // ✅ Create Apollo Server
   const server = new ApolloServer({
     schema,
-    uploads: {
-      maxFileSize: 10000000, // 10 MB
-      maxFieldSize: 10000000 // 10 MB
-    },
-    debug: true,
     introspection: config.NODE_ENV !== 'production',
-    context: ({ req, res }) => {
-      if (isAuthenticated(req).isAuth) {
-        return new Promise((resolve, reject) => {
-          passport.authenticate('jwt', { session: true }, (err, user) => {
-            if (err) {
-              console.log('Authentication error:', err)
-              reject(err)
-            }
-            if (!user) {
-              return reject(new Error('Authentication failed user not found!'))
-            }
-            const { userType, restaurantId } = isAuthenticated(req)
-
-            req.user = user
-            req.userId = user._id
-            req.userType = userType
-            req.restaurantId = restaurantId
-            req.isAuth = true
-            resolve({ req, res, user })
-          })(req, res)
-        })
-      }
-      // if (!req) return {}
-      // const { isAuth, userId, userType, restaurantId } = isAuthenticated(req)
-      // req.isAuth = isAuth
-      // req.userId = userId
-      // req.userType = userType
-      // req.restaurantId = restaurantId
-      // const user = req.user
-      // return { req, res, user }
-    },
-    // plugins: [SentryConfig],
     formatError: (formattedError, error) => {
-      console.log({ error })
-      console.log({ formattedError })
-      console.log({ errorLocation: formattedError.extensions.exception })
+      console.error('GraphQL Error:', error)
       return {
-        message: formattedError.extensions.exception.stacktrace[0],
+        message: formattedError.message,
         extensions: formattedError.extensions
-        // code: error.extensions.code,
-        // path: error.path
       }
     }
-  })
-  const subscriptionServer = httpServer => {
-    return subscriptionTransportWs.SubscriptionServer.create(
-      {
-        schema,
-        execute: graphql.execute,
-        subscribe: graphql.subscribe,
-        onConnect() {
-          console.log('Connected to subscription server.')
-          // return { pubsub }
-        }
-      },
-      {
-        server: httpServer,
-        path: server.graphqlPath
-      }
-    )
-  }
+    // context: ({ req, res }) => {
+    //   if (isAuthenticated(req).isAuth) {
+    //     return new Promise((resolve, reject) => {
+    //       passport.authenticate('jwt', { session: true }, (err, user) => {
+    //         if (err) {
+    //           console.log('Authentication error:', err)
+    //           reject(err)
+    //         }
+    //         if (!user) {
+    //           return reject(new Error('Authentication failed user not found!'))
+    //         }
+    //         const { userType, restaurantId } = isAuthenticated(req)
 
+    //         req.user = user
+    //         req.userId = user._id
+    //         req.userType = userType
+    //         req.restaurantId = restaurantId
+    //         req.isAuth = true
+    //         resolve({ req, res, user })
+    //       })(req, res)
+    //     })
+    //   }
+    // }
+  })
   await server.start()
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
-  // app.use(morgan('dev'))
-  app.use(
-    cors({
-      origin: '*'
-    })
-  )
+
+  // ✅ WebSocket Server for Subscriptions
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql'
+  })
+  useServer({ schema, context: () => ({ pubsub }) }, wsServer)
+
+  // ✅ Middlewares
+  app.use(cors({ origin: '*' }))
+  app.use(graphqlUploadExpress({ maxFileSize: 10_000_000, maxFiles: 10 }))
+  app.use(bodyParser.json())
+  app.use(express.static('public'))
+
+  // ✅ EJS views
   app.engine('ejs', engines.ejs)
   app.set('views', './views')
   app.set('view engine', 'ejs')
-  server.applyMiddleware({ app })
 
-  // Use JSON parser for all non-webhook routes
-  app.use(Sentry.Handlers.requestHandler())
-  app.use(Sentry.Handlers.tracingHandler())
-  app.use(Sentry.Handlers.errorHandler())
-  app.use((req, res, next) => {
-    if (req.originalUrl === '/stripe/webhook') {
-      next()
-    } else {
-      bodyParser.json()(req, res, next)
-    }
-  })
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(200)
-    }
-    next()
-  })
-  app.use(express.static('public'))
-  app.use('/sentry-crash', (req, res) => {
-    throw new Error('Backend Crashed')
-  })
+  // ✅ Sessions
   app.use(
     session({
       secret: 'awesome work',
@@ -221,64 +113,92 @@ async function startApolloServer() {
       })
     })
   )
-  app.use('/paypal', paypal)
-  app.use('/stripe', stripe)
-  app.use(passport.initialize())
-  app.use(passport.session())
 
+  // ✅ Passport JWT
   const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRETKEY
   }
-
   passport.use(
     new JwtStrategy(opts, async (jwtPayload, done) => {
-      console.log({ jwtPayload })
       try {
         if (jwtPayload.restaurantId) {
           const restaurant = await Restaurant.findById(jwtPayload.restaurantId)
-          if (restaurant) {
-            return done(null, restaurant)
-          }
+          if (restaurant) return done(null, restaurant)
         } else {
-          const user = await User.findById(jwtPayload.userId)
-          const owner = await Owner.findById(jwtPayload.userId)
-          const rider = await Rider.findById(jwtPayload.userId)
-          if (user) {
-            return done(null, user)
-          }
-          if (owner) {
-            return done(null, owner)
-          }
-          if (rider) {
-            return done(null, rider)
-          }
+          const user =
+            (await User.findById(jwtPayload.userId)) ||
+            (await Owner.findById(jwtPayload.userId)) ||
+            (await Rider.findById(jwtPayload.userId))
+          if (user) return done(null, user)
         }
-        // console.log('inside passportjwt', { user, owner })
-
         return done(null, false)
       } catch (err) {
         return done(err, false)
       }
     })
   )
+  app.use(passport.initialize())
+  app.use(passport.session())
 
+  // ✅ GraphQL endpoint
+  app.use(
+    '/graphql',
+    expressMiddleware(server, {
+      context: async ({ req, res }) => {
+        if (isAuthenticated(req).isAuth) {
+          return new Promise((resolve, reject) => {
+            passport.authenticate('jwt', { session: true }, (err, user) => {
+              if (err) {
+                console.log('Authentication error:', err)
+                reject(err)
+              }
+              if (!user) {
+                return reject(
+                  new Error('Authentication failed user not found!')
+                )
+              }
+              const { userType, restaurantId } = isAuthenticated(req)
+
+              req.user = user
+              req.userId = user._id
+              req.userType = userType
+              req.restaurantId = restaurantId
+              req.isAuth = true
+              resolve({ req, res, user })
+            })(req, res)
+          })
+        }
+        // const {
+        //   isAuth,
+        //   userId,
+        //   userType,
+        //   restaurantId,
+        //   user
+        // } = isAuthenticated(req)
+        // req.isAuth = isAuth
+        // req.userId = userId
+        // req.userType = userType
+        // req.restaurantId = restaurantId
+        // req.user = user
+        // return { req, res, user }
+      }
+    })
+  )
+
+  // ✅ Routes
+  app.use('/paypal', paypal)
+  app.use('/stripe', stripe)
+
+  // ✅ Background jobs
   orderCheckUnassigned()
-  // checkRidersAvailability()
-  // populate countries data.
-  // await populateCountries()
-  //
-  await new Promise(resolve => httpServer.listen(config.PORT, resolve))
-  // start subscription server
-  subscriptionServer(httpServer)
 
-  console.log(
-    `🚀 Server ready at http://localhost:${config.PORT}${server.graphqlPath}`
-  )
-  console.log(
-    `🚀 Subscriptions ready at ws://localhost:${config.PORT}${server.graphqlPath}`
-  )
-
-  return { server, app, httpServer }
+  // ✅ Start Server
+  const PORT = config.PORT || 4000
+  httpServer.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`)
+    console.log(`📡 Subscriptions ready at ws://localhost:${PORT}/graphql`)
+  })
 }
+
 startApolloServer()

@@ -4,7 +4,7 @@
 //   AuthenticationError,
 //   ForbiddenError,
 //   UserInputError,
-const { AuthenticationError } = require('apollo-server-express')
+const { AuthenticationError } = require('@apollo/server/errors')
 const Order = require('../../models/order')
 const Rider = require('../../models/rider')
 const Restaurant = require('../../models/restaurant')

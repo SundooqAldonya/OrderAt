@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, Fragment } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApolloProvider, useMutation } from '@apollo/client'
 import { StatusBar } from 'expo-status-bar'
@@ -15,7 +15,8 @@ import {
   StyleSheet,
   View,
   LogBox,
-  I18nManager
+  I18nManager,
+  Text
 } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import {
@@ -52,6 +53,7 @@ import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
 import NoInternetConnection from './src/components/NoInternetConnection'
+console.log('AppContainer type:', typeof AppContainer)
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -175,22 +177,25 @@ export default function App() {
 
   if (fontLoaded) {
     return (
-      <Provider store={store}>
-        <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
-          <ApolloProvider client={client}>
-            <StatusBar style="dark" backgroundColor={colors.headerBackground} />
-            <Configuration.Provider>
-              <AuthProvider>
-                <SafeAreaProvider>
-                  {!isConnected && <NoInternetConnection />}
-                  <AppContainer />
-                </SafeAreaProvider>
-              </AuthProvider>
-            </Configuration.Provider>
-            <FlashMessage />
-          </ApolloProvider>
-        </PersistGate>
-      </Provider>
+      <Fragment>
+        {/* <Provider store={store}> */}
+        {/* <PersistGate loading={<ActivityIndicator />} persistor={persistor}> */}
+        <ApolloProvider client={client}>
+          <Text>Testing apollo provider</Text>
+          {/* <StatusBar style="dark" backgroundColor={colors.headerBackground} />
+          <Configuration.Provider>
+            <AuthProvider>
+              <SafeAreaProvider>
+                {!isConnected && <NoInternetConnection />}
+                <AppContainer />
+              </SafeAreaProvider>
+            </AuthProvider>
+          </Configuration.Provider>
+          <FlashMessage /> */}
+        </ApolloProvider>
+        {/* </PersistGate> */}
+        {/* </Provider> */}
+      </Fragment>
     )
   } else {
     return (
