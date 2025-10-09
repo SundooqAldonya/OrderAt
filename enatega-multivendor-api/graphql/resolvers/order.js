@@ -75,11 +75,13 @@ module.exports = {
   Subscription: {
     subscribePlaceOrder: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(PLACE_ORDER),
-        (payload, args, context) => {
-          const restaurantId = payload.subscribePlaceOrder.restaurantId
-          console.log('restaurantId', restaurantId)
-          return restaurantId === args.restaurant
+        () => {
+          console.log('Subscribing to PLACE_ORDER...')
+          return pubsub.asyncIterator(PLACE_ORDER)
+        },
+        (payload, args) => {
+          console.log('Subscription payload received:', payload)
+          return payload.subscribePlaceOrder.restaurantId === args.restaurant
         }
       )
     },
@@ -105,19 +107,22 @@ module.exports = {
       subscribe: withFilter(
         (_, args, { pubsub }) => {
           const asyncIterator = pubsub.asyncIterator(SUBSCRIPTION_ORDER)
-          // Override return() to remove listener when unsubscribed
-          const originalReturn = asyncIterator.return
+          const originalReturn = asyncIterator.return?.bind(asyncIterator)
+
           asyncIterator.return = async () => {
             console.log(`Cleaning up subscription for ORDER ID: ${args.id}`)
-            if (originalReturn) await originalReturn.call(asyncIterator)
+            if (originalReturn) {
+              await originalReturn()
+            }
+            // Always return a valid iterator result
+            return { value: undefined, done: true }
           }
 
           return asyncIterator
         },
         (payload, args) => {
           if (!payload?.subscriptionOrder?._id) return false
-          const orderId = payload?.subscriptionOrder?._id?.toString()
-          return orderId === args.id
+          return payload.subscriptionOrder._id.toString() === args.id
         }
       )
     }

@@ -27,13 +27,22 @@ function setupApolloClient() {
   const wsLink = new GraphQLWsLink(
     createClient({
       url: WS_GRAPHQL_URL.replace('http', 'ws'),
+      retryAttempts: Infinity, // ✅ reconnect forever
+      lazy: false,
+      shouldRetry: () => true,
+      retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000), // exponential backoff
+      on: {
+        connected: () => console.log('🔌 Connected to WS server'),
+        closed: event => console.log('❌ Disconnected', event),
+        error: err => console.error('WebSocket error', err),
+        opened: () => console.log('🌐 WS connection opened')
+      },
       connectionParams: async () => {
         const token = await SecureStore.getItemAsync('token')
         return {
           authorization: token ? `Bearer ${token}` : ''
         }
-      },
-      retryAttempts: Infinity
+      }
     })
   )
 

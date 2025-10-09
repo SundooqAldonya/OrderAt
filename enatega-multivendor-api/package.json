@@ -50,6 +50,7 @@
     "firebase-admin": "^13.4.0",
     "google-auth-library": "^9.15.1",
     "graphql": "^16.11.0",
+    "graphql-redis-subscriptions": "^2.7.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-tag": "^2.12.6",
     "graphql-upload": "^13.0.0",

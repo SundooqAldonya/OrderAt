@@ -5,7 +5,7 @@ import { TextDefault } from '../../components'
 import { colors, MAX_TIME } from '../../utilities'
 import { Badge } from 'react-native-elements'
 import { Configuration } from '../../ui/context'
-import { useSubscription, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import moment from 'moment'
 import { subscriptionOrder } from '../../apollo'
 import CountDown from 'react-native-countdown-component'
@@ -14,6 +14,7 @@ import { getAccessToken } from '../../utilities/apiServices'
 import { detectLanguageDir } from '../../../helpers'
 import SoundContext from '../../ui/context/sound'
 import 'moment-timezone'
+import { useSubscription } from '@apollo/client/react'
 
 function HomeOrderDetails(props) {
   const { activeBar, navigation } = props

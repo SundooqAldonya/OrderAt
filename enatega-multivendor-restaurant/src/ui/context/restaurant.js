@@ -101,18 +101,18 @@ const Provider = props => {
         const { origin, order } = subscriptionData.data.subscribePlaceOrder
         const updatedOrders = [order, ...restaurantOrders]
         console.log('navigating to NewOrderScreenNotification')
-        navigation.navigate('NewOrderScreenNotification', {
-          activeBar: 0,
-          orderData: order,
-          rider: order.rider,
-          remainingTime: moment(order.createdAt)
-            .add(MAX_TIME, 'seconds')
-            .diff(moment(), 'seconds'),
-          createdAt: order.createdAt,
-          MAX_TIME,
-          acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
-          preparationTime: new Date(order.preparationTime).toISOString()
-        })
+        // navigation.navigate('NewOrderScreenNotification', {
+        //   activeBar: 0,
+        //   orderData: order,
+        //   rider: order.rider,
+        //   remainingTime: moment(order.createdAt)
+        //     .add(MAX_TIME, 'seconds')
+        //     .diff(moment(), 'seconds'),
+        //   createdAt: order.createdAt,
+        //   MAX_TIME,
+        //   acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
+        //   preparationTime: new Date(order.preparationTime).toISOString()
+        // })
         if (origin === 'new') {
           return {
             restaurantOrders: [...updatedOrders]
