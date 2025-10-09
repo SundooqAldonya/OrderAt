@@ -86,7 +86,7 @@ export default function OrderDetail({ navigation, route }) {
   const { orderDate } = orderData || {}
 
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
-  const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
+  // const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
   const { muteRing } = useOrderRing()
   const [overlayVisible, setOverlayVisible] = useState(false)
   const isAcceptButtonVisible = !moment().isBefore(orderDate)
@@ -130,25 +130,25 @@ export default function OrderDetail({ navigation, route }) {
     }
   }
 
-  const getImageBase64 = async () => {
-    try {
-      const image = require('../../assets/logo_2.png')
-      const asset = Asset.fromModule(image)
-      await asset.downloadAsync()
-      const fileUri = asset.localUri || asset.uri
+  // const getImageBase64 = async () => {
+  //   try {
+  //     const image = require('../../assets/logo_2.png')
+  //     const asset = Asset.fromModule(image)
+  //     await asset.downloadAsync()
+  //     const fileUri = asset.localUri || asset.uri
 
-      const manipulated = await ImageManipulator.manipulateAsync(
-        fileUri,
-        [{ resize: { width: 300, height: 200 } }],
-        { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
-      )
+  //     const manipulated = await ImageManipulator.manipulateAsync(
+  //       fileUri,
+  //       [{ resize: { width: 300, height: 200 } }],
+  //       { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
+  //     )
 
-      return manipulated.base64
-    } catch (err) {
-      console.error('Error reading image:', err)
-      return null
-    }
-  }
+  //     return manipulated.base64
+  //   } catch (err) {
+  //     console.error('Error reading image:', err)
+  //     return null
+  //   }
+  // }
 
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
