@@ -72,8 +72,8 @@ const Orders = props => {
     loading: loadingOrders,
     refetch: refetchOrders
   } = useQuery(getActiveOrders, {
-    variables: { restaurantId: null, page, limit }
-    // pollInterval: 3000
+    variables: { restaurantId: null, page, limit },
+    pollInterval: 3000
   })
 
   const { data: subscriptionData, error: subscriptionError } = useSubscription(
