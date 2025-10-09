@@ -33,6 +33,8 @@ import RenderHtml from '@builder.io/react-native-render-html'
 import { loadPrinterInfo } from '../../utilities/printers'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Asset } from 'expo-asset'
+import { useQuery } from '@apollo/client/react'
+import { singleOrder } from '../../apollo'
 
 const ReceiptViewer = ({ receipt_HTML, width }) => {
   return <RenderHtml contentWidth={width} source={{ html: receipt_HTML }} />
@@ -41,16 +43,29 @@ const ReceiptViewer = ({ receipt_HTML, width }) => {
 export default function OrderDetail({ navigation, route }) {
   const { currency } = useContext(Configuration.Context)
   const receiptRef = useRef(null)
-  // let b64 = ''
+  const { itemId } = route.params
+  // const _id = itemId
   const [b64, setB64] = useState(null)
-
+  console.log({ itemId })
   const { t, i18n } = useTranslation()
+
+  const { data: dataOrderDetail, loading, error } = useQuery(singleOrder, {
+    variables: { id: itemId }
+  })
+
+  console.log({ dataOrderDetail })
+
+  const orderData = dataOrderDetail?.singleOrder || null
+
+  console.log({ orderData })
+  const order = orderData || null
+
   const {
-    activeBar,
-    orderData,
-    rider,
-    preparationTime,
-    createdAt
+    activeBar
+    // orderData,
+    // rider,
+    // preparationTime,
+    // createdAt
   } = route.params
 
   useEffect(() => {
@@ -68,7 +83,8 @@ export default function OrderDetail({ navigation, route }) {
     PrinterManager.setNavigationRef(navigation)
   }, [navigation])
 
-  const { _id, orderDate } = orderData
+  const { orderDate } = orderData || {}
+
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
   const { muteRing } = useOrderRing()
@@ -76,10 +92,10 @@ export default function OrderDetail({ navigation, route }) {
   const isAcceptButtonVisible = !moment().isBefore(orderDate)
   const [print, setPrint] = useState(false)
 
-  const { data } = useRestaurantContext()
+  // const { data } = useRestaurantContext()
   const timeNow = new Date()
 
-  const createdTime = new Date(createdAt)
+  const createdTime = orderData ? new Date(orderData.createdAt) : null
   const remainingTime = moment(createdTime)
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
@@ -87,7 +103,7 @@ export default function OrderDetail({ navigation, route }) {
   const date = new Date(orderDate)
   const acceptTime = moment(date).diff(timeNow, 'seconds')
 
-  const prep = new Date(preparationTime)
+  const prep = orderData ? new Date(orderData.preparationTime) : null
   const diffTime = prep - timeNow
   const totalPrep = diffTime > 0 ? diffTime / 1000 : 0
 
@@ -97,8 +113,8 @@ export default function OrderDetail({ navigation, route }) {
     ? remainingTime
     : 0
 
-  const order = data?.restaurantOrders?.find(o => o._id === _id)
-  const receiptHTML = formatReceipt(order, currency)
+  // const order = data?.restaurantOrders?.find(o => o._id === _id)
+  const receiptHTML = order ? formatReceipt(order, currency) : null
   const imagePath = require('../../assets/bowl.png')
 
   const toggleOverlay = () => {
@@ -166,8 +182,8 @@ export default function OrderDetail({ navigation, route }) {
   }
 
   const cancelOrderFunc = () => {
-    cancelOrder(order._id, 'not available')
-    muteRing(order.orderId)
+    cancelOrder(order?._id, 'not available')
+    muteRing(order?.orderId)
     if (cancelLoading) {
       return <Spinner />
     } else {
@@ -241,7 +257,7 @@ export default function OrderDetail({ navigation, route }) {
                   style={{
                     textAlign: isArabic ? 'right' : 'left'
                   }}>
-                  {t(orderData.orderStatus)}
+                  {t(orderData?.orderStatus)}
                 </TextDefault>
               </View>
             </View>
@@ -425,7 +441,9 @@ export default function OrderDetail({ navigation, route }) {
               </TextDefault>
             </View>
             {/* order details */}
-            <OrderDetails orderData={orderData} isArabic={isArabic} />
+            {orderData ? (
+              <OrderDetails orderData={orderData} isArabic={isArabic} />
+            ) : null}
             {/* order status */}
             <Status
               order={orderData}

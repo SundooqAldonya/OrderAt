@@ -143,8 +143,8 @@ module.exports = {
       }
     },
     singleOrder: async (_, args, { req }) => {
+      console.log('singleOrder', { args })
       try {
-        console.log('singleOrder')
         if (!req.isAuth) {
           throw new Error('Unauthenticated!')
         }

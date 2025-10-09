@@ -108,14 +108,15 @@ function HomeOrderDetails(props) {
       onPress={() => {
         stopSound()
         navigation.navigate('OrderDetail', {
-          activeBar,
-          orderData: props?.order,
-          rider: props?.order.rider,
-          remainingTime,
-          createdAt,
-          MAX_TIME,
-          acceptanceTime,
-          preparationTime
+          itemId: _id,
+          activeBar
+          // orderData: props?.order,
+          // rider: props?.order.rider,
+          // remainingTime,
+          // createdAt,
+          // MAX_TIME,
+          // acceptanceTime,
+          // preparationTime
         })
       }}>
       {activeBar === 0 ? (
