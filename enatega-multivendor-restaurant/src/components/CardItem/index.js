@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 import FoodPlaceholderImage from '../../assets/food_placeholder.jpeg'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { colors } from '../../utilities'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { updateStockFood } from '../../apollo'
 import { Configuration } from '../../ui/context'
 

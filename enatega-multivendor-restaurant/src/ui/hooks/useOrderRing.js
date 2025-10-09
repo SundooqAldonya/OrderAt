@@ -1,5 +1,6 @@
-import { useMutation, gql } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { muteRingOrder, orders } from '../../apollo'
+import { gql } from '@apollo/client'
 
 const MUTE_RING_ORDER = gql`
   ${muteRingOrder}

@@ -10,7 +10,7 @@ import React, { Fragment, useState } from 'react'
 import { TextDefault } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { scale } from 'react-native-size-matters'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { deactivateRestaurant } from '../../apollo'
 import {
   AntDesign,

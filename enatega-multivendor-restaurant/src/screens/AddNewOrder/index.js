@@ -27,7 +27,7 @@ import {
   muteRingOrder,
   newCheckoutPlaceOrder
 } from '../../apollo'
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
 import { useSelector } from 'react-redux'
 import OverlayCreateOrder from '../../components/Overlay/OverlayCreateOrder'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -36,6 +36,7 @@ import { Fragment } from 'react'
 import { Configuration } from '../../ui/context'
 import { useContext } from 'react'
 import Feather from '@expo/vector-icons/Feather'
+import { gql } from '@apollo/client'
 
 const GET_CITY_AREAS = gql`
   ${getCityAreas}

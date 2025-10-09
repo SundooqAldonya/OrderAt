@@ -8,7 +8,8 @@ import {
   getRidersByZone,
   subscriptionOrder,
   updateStatus,
-  assignRider
+  assignRider,
+  SUBSCRIBE_DISPATCHER
 } from '../apollo'
 import Header from '../components/Headers/Header'
 import { useParams } from 'react-router-dom'
@@ -71,9 +72,27 @@ const Orders = props => {
     loading: loadingOrders,
     refetch: refetchOrders
   } = useQuery(getActiveOrders, {
-    variables: { restaurantId: null, page, limit },
-    pollInterval: 3000
+    variables: { restaurantId: null, page, limit }
+    // pollInterval: 3000
   })
+
+  const { data: subscriptionData, error: subscriptionError } = useSubscription(
+    SUBSCRIBE_DISPATCHER
+  )
+
+  useEffect(() => {
+    if (subscriptionError) {
+      console.error('Subscription error:', subscriptionError)
+    }
+    if (subscriptionData?.subscriptionDispatcher) {
+      const newOrder = subscriptionData.subscriptionDispatcher
+      console.log('🟢 New order received via subscription:', newOrder)
+      // Option 1: Refetch your active orders query
+      refetchOrders()
+      // Option 2 (optional): Update local state directly
+      // setOrders(prev => [newOrder, ...prev])
+    }
+  }, [subscriptionData, subscriptionError])
 
   const statusFunc = row => {
     const handleStatusSuccessNotification = status => {

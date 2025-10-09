@@ -1,6 +1,6 @@
-import { useMutation, gql } from '@apollo/client'
-
+import { useMutation } from '@apollo/client/react'
 import { acceptOrder } from '../../apollo'
+import { gql } from '@apollo/client'
 
 export default function useAcceptOrder() {
   const [mutateAccept, { loading, error }] = useMutation(

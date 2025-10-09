@@ -31,13 +31,14 @@ import {
   UPDATE_USER_ADDRESS,
   getCityAreas
 } from '../../apollo'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
 import 'react-native-get-random-values'
 import { useSelector } from 'react-redux'
+import { gql } from '@apollo/client'
 // import * as SecureStore from 'expo-secure-store'
 
 // const { width, height } = Dimensions.get('window')

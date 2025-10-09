@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { Platform } from 'react-native'
 import { saveToken, restaurantInfo } from '../../apollo'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import { useTranslation } from 'react-i18next'
 import beep1 from '../../assets/beep1.wav'
+import { gql } from '@apollo/client'
 
 export default function useNotification() {
   const { t } = useTranslation()

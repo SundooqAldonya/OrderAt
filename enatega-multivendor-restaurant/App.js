@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { ApolloProvider, useMutation } from '@apollo/client'
+// import {
+//   ApolloClient,
+//   HttpLink,
+//   InMemoryCache,
+//   useMutation
+//   // ApolloProvider
+// } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import { StatusBar } from 'expo-status-bar'
 import FlashMessage from 'react-native-flash-message'
 // import { useFonts } from '@use-expo/font'
@@ -53,7 +60,8 @@ import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
 import NoInternetConnection from './src/components/NoInternetConnection'
-console.log('AppContainer type:', typeof AppContainer)
+import TestMutation from './MutationTest'
+// console.log('AppContainer type:', typeof AppContainer)
 
 LogBox.ignoreLogs([
   'Warning: ...',
@@ -178,23 +186,26 @@ export default function App() {
   if (fontLoaded) {
     return (
       <Fragment>
-        {/* <Provider store={store}> */}
-        {/* <PersistGate loading={<ActivityIndicator />} persistor={persistor}> */}
-        <ApolloProvider client={client}>
-          <Text>Testing apollo provider</Text>
-          {/* <StatusBar style="dark" backgroundColor={colors.headerBackground} />
-          <Configuration.Provider>
-            <AuthProvider>
-              <SafeAreaProvider>
-                {!isConnected && <NoInternetConnection />}
-                <AppContainer />
-              </SafeAreaProvider>
-            </AuthProvider>
-          </Configuration.Provider>
-          <FlashMessage /> */}
-        </ApolloProvider>
-        {/* </PersistGate> */}
-        {/* </Provider> */}
+        <Provider store={store}>
+          <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
+            <ApolloProvider client={client}>
+              {/* <TestMutation /> */}
+              <StatusBar
+                style="dark"
+                backgroundColor={colors.headerBackground}
+              />
+              <Configuration.Provider>
+                <AuthProvider>
+                  <SafeAreaProvider>
+                    {!isConnected && <NoInternetConnection />}
+                    <AppContainer />
+                  </SafeAreaProvider>
+                </AuthProvider>
+              </Configuration.Provider>
+              <FlashMessage />
+            </ApolloProvider>
+          </PersistGate>
+        </Provider>
       </Fragment>
     )
   } else {
