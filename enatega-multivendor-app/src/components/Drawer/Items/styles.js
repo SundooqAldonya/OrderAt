@@ -9,10 +9,10 @@ const styles = (props = null) =>
       flex: 1
     },
     container: {
-      flex: 1,
       flexDirection: 'row',
-      justifyContent: 'space-evenly',
       alignItems: 'center',
+      paddingLeft: moderateScale(15),
+      paddingVertical: moderateScale(5),
       ...alignment.MLxSmall
     },
     leftContainer: {
@@ -29,10 +29,8 @@ const styles = (props = null) =>
       height: '100%'
     },
     rightContainer: {
-      height: '80%',
       marginLeft:10,
-      width: '75%',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     drawerContainer: {
       alignSelf: 'flex-start'

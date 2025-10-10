@@ -94,9 +94,8 @@ function SidebBar(props) {
         <View>
           <Icon
             name={'language'}
-            size={24}
+            size={verticalScale(18)}
             color={'#000'}
-            style={{ marginTop: 10 }}
           />
         </View>
       ),
@@ -105,7 +104,7 @@ function SidebBar(props) {
     },
     {
       title: 'citySelect',
-      icon: <MaterialIcons name='location-city' size={24} color='black' />,
+      icon: <MaterialIcons name='location-city' size={verticalScale(18)} color='black' />,
       navigateTo: 'CityListScreen',
       isAuth: true
     },
@@ -156,6 +155,7 @@ function SidebBar(props) {
     })
   }
   const logoutClick = () => {
+    console.log('Cakked')
     setModalVisible(true)
   }
 
@@ -168,9 +168,10 @@ function SidebBar(props) {
 
   return (
     <ScrollView
+      style={{flex: 1}}
       contentContainerStyle={{
         paddingBottom: inset.bottom,
-        backgroundColor: currentTheme.themeBackground
+        flexGrow: 1
       }}
     >
       <SafeAreaView edges={['top']}>
@@ -178,8 +179,9 @@ function SidebBar(props) {
       </SafeAreaView>
 
       <View style={styles(currentTheme).botContainer}>
-        {isLoggedIn &&
-          datas.map((dataItem, ind) => (
+        {isLoggedIn ?
+        <>
+          {datas.map((dataItem, ind) => (
             <View
               key={ind}
               style={[
@@ -188,7 +190,7 @@ function SidebBar(props) {
               ]}
             >
               <SideDrawerItems
-                style={styles(currentTheme).iconContainer}
+                // style={styles(currentTheme).iconContainer}
                 onPress={async () => {
                   if (dataItem.isAuth && !isLoggedIn) {
                     props.navigation.navigate('CreateAccount')
@@ -201,13 +203,10 @@ function SidebBar(props) {
               />
             </View>
           ))}
-
-        {isLoggedIn ? (
-          <>
-            <TouchableOpacity
+             <View
               style={[
                 styles().item,
-                { borderBottomWidth: 0, marginVertical: 5 }
+                { borderBottomWidth: 0, marginVertical: 0 }
               ]}
             >
               <SideDrawerItems
@@ -221,12 +220,11 @@ function SidebBar(props) {
                 }
                 title={t('privacy')}
               />
-            </TouchableOpacity>
-
-            <View
+              </View>
+              <View
               style={[
                 styles().item,
-                { borderBottomWidth: 0, marginVertical: 5 }
+                { borderBottomWidth: 0, marginVertical: 0 }
               ]}
             >
               <SideDrawerItems
@@ -239,11 +237,12 @@ function SidebBar(props) {
                   />
                 }
                 title={t('titleLogout')}
+                // style={{marginVertical: 10 }}
               />
             </View>
           </>
-        ) : (
-          <View
+          
+          : <View
             style={[
               styles().item,
               { borderBottomWidth: 0, marginVertical: 10 }
@@ -261,7 +260,7 @@ function SidebBar(props) {
               title={t('login_or_create')}
             />
           </View>
-        )}
+          }
       </View>
 
       <LogoutModal

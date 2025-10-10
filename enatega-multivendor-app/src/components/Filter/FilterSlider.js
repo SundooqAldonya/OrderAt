@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   ScrollView,
   View,
@@ -19,12 +19,14 @@ import { FILTER_TYPE } from '../../utils/enums'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { moderateScale } from '../../utils/scaling'
+import { HighlightValues } from '../../screens/Menu/MenuV2'
 
-const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
+const Filters = ({ filters, setFilters, applyFilters, showCategory }) => {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const [modalVisible, setModalVisible] = useState(false)
-  const [selectedFilter, setSelectedFilter] = useState('all')
+  const [selectedFilter, setSelectedFilter] = useState('')
+  const [activeFilter, setActiveFilter] = useState('')
   const { i18n, t } = useTranslation()
   const { language } = i18n
   const isArabic = language === 'ar'
@@ -40,15 +42,34 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
     )
 
   const handleOptionsClick = () => {
-    setSelectedFilter('all')
+    // setSelectedFilter('all')
     setModalVisible(true)
   }
 
   const handleFilterClick = (filter) => {
-    setSelectedFilter(filter)
+    setActiveFilter(filter)
     setModalVisible(true)
   }
-
+  useEffect(() => {
+  let found = false;
+  for (const [key, value] of Object.entries(filters)) {
+    if (!value?.selected || value?.selected?.length === 0) continue;
+    // Special case for Highlights
+    if (key === 'Highlights') {
+      if (HighlightValues.includes(value.selected[0])) {
+        setSelectedFilter(key);
+        found = true;
+        break;
+      }
+    }
+    // For all other filters, any non-empty selection is valid
+    else {
+      setSelectedFilter(key);
+      found = true;
+      break;
+    }
+  }
+}, [JSON.stringify(filters)]);
   const handleValueSelection = (filterTitle, filterValue) => {
     const selectedFilter = filters[filterTitle]
     if (selectedFilter.type === FILTER_TYPE.RADIO) {
@@ -73,7 +94,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
         flexDirection: isArabic ? 'row-reverse' : 'row'
       }}
     >
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles(currentTheme).filterButton}
         onPress={handleOptionsClick}
       >
@@ -82,16 +103,17 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
           size={moderateScale(22)}
           color={currentTheme.black}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {filters &&
-        Object.keys(filters)?.map((filter, index) => (
+        Object.keys(filters)?.map((filter, index) => (!filters[filter]?.values?.length) ? null : (
           <TouchableOpacity
             key={index}
             style={[
               styles(currentTheme).filterButton,
-              selectedFilter === filter &&
-                styles(currentTheme).selectedFilterButton
+              (selectedFilter !== 'all' && (filter === 'Highlights' ? HighlightValues.includes(filters[filter]?.selected[0]) : filters[filter]?.selected?.length > 0))
+                ? styles(currentTheme).selectedFilterButton
+                : {}
             ]}
             onPress={() => handleFilterClick(filter)}
           >
@@ -112,6 +134,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
         ))}
 
       <Modal visible={modalVisible} adjustToContentHeight animationType='slide'>
+        <SafeAreaView style={{flex: 1}}>
         <View style={styles(currentTheme).modalHeader}>
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <AntDesign
@@ -130,130 +153,63 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
           </TouchableOpacity>
         </View>
         <ScrollView style={styles(currentTheme).modalContainer}>
-          {result?.map((filterValue) => {
-            return (
-              <View key={filterValue}>
-                <TextDefault
-                  style={styles(currentTheme).modalTitle}
-                  textColor={currentTheme.newFontcolor}
-                >
-                  {t(filterValue)}
-                </TextDefault>
-                <View>
-                  {filters && filterValue !== 'categories' ? (
-                    <Fragment>
-                      {filters[filterValue]?.values?.map((value, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            style={[
-                              {
-                                flexDirection: 'row',
-                                justifyContent: 'space-between'
-                              },
-                              styles(currentTheme).modalItem,
-                              filters[filterValue].selected === value &&
-                                styles(currentTheme).selectedModalItem
-                            ]}
-                            onPress={() =>
-                              handleValueSelection(filterValue, value)
-                            }
-                          >
-                            <TextDefault
-                              style={styles(currentTheme).modalItemText}
-                              textColor={currentTheme.newFontcolor}
-                            >
-                              {t(value)}
-                            </TextDefault>
-                            {filters &&
-                            filters[filterValue].type ===
-                              FILTER_TYPE.CHECKBOX ? (
-                              <CheckboxBtn
-                                checked={filters[filterValue].selected.includes(
-                                  value
-                                )}
-                                onPress={() =>
-                                  handleValueSelection(filterValue, value)
-                                }
-                              />
-                            ) : (
-                              <RadioButton
-                                size={moderateScale(12)}
-                                innerColor={currentTheme.main}
-                                outerColor={currentTheme.iconColorDark}
-                                isSelected={filters[
-                                  filterValue
-                                ].selected.includes(value)}
-                                onPress={() =>
-                                  handleValueSelection(filterValue, value)
-                                }
-                              />
-                            )}
-                          </TouchableOpacity>
-                        )
-                      })}
-                    </Fragment>
-                  ) : (
-                    <Fragment>
-                      {filters[filterValue]?.values?.map((value, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            style={[
-                              {
-                                flexDirection: 'row',
-                                justifyContent: 'space-between'
-                              },
-                              styles(currentTheme).modalItem,
-                              filters[filterValue].selected === value &&
-                                styles(currentTheme).selectedModalItem
-                            ]}
-                            onPress={() =>
-                              handleValueSelection(filterValue, value._id)
-                            }
-                          >
-                            <TextDefault
-                              style={styles(currentTheme).modalItemText}
-                              textColor={currentTheme.newFontcolor}
-                            >
-                              {t(value.name)}
-                            </TextDefault>
-                            {filters &&
-                            filters[filterValue].type ===
-                              FILTER_TYPE.CHECKBOX ? (
-                              <CheckboxBtn
-                                checked={
-                                  filteredItem?._id === value._id ||
-                                  filters[filterValue].selected.includes(
-                                    value._id
-                                  )
-                                }
-                                onPress={() =>
-                                  handleValueSelection(filterValue, value._id)
-                                }
-                              />
-                            ) : (
-                              <RadioButton
-                                size={12}
-                                innerColor={currentTheme.main}
-                                outerColor={currentTheme.iconColorDark}
-                                isSelected={filters[
-                                  filterValue
-                                ].selected.includes(value)}
-                                onPress={() =>
-                                  handleValueSelection(filterValue, value)
-                                }
-                              />
-                            )}
-                          </TouchableOpacity>
-                        )
-                      })}
-                    </Fragment>
-                  )}
-                </View>
-              </View>
-            )
-          })}
+          {activeFilter && filters[activeFilter] && (
+            <View key={activeFilter}>
+              <Text style={styles(currentTheme).modalTitle} textColor={currentTheme.newFontcolor}>
+                {t(activeFilter)}
+              </Text>
+
+              {filters[activeFilter]?.values?.map((value, index) => {
+                const filter = filters[activeFilter]
+                const isCategory = activeFilter === 'categories'
+                const valueKey = isCategory ? value._id : value
+                const label = isCategory ? value.name : value
+                const isSelected = filter.selected.includes(valueKey)
+
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      {
+                        flexDirection: 'row',
+                        justifyContent: 'space-between'
+                      },
+                      styles(currentTheme).modalItem,
+                      isSelected && styles(currentTheme).selectedModalItem
+                    ]}
+                    onPress={() => handleValueSelection(activeFilter, valueKey)}
+                  >
+                    <TextDefault
+                      style={styles(currentTheme).modalItemText}
+                      textColor={currentTheme.newFontcolor}
+                    >
+                      {t(label)}
+                    </TextDefault>
+
+                    {filter.type === FILTER_TYPE.CHECKBOX ? (
+                      <CheckboxBtn
+                        checked={isSelected}
+                        onPress={() =>
+                          handleValueSelection(activeFilter, valueKey)
+                        }
+                      />
+                    ) : (
+                      <RadioButton
+                        size={12}
+                        innerColor={currentTheme.main}
+                        outerColor={currentTheme.iconColorDark}
+                        isSelected={isSelected}
+                        onPress={() =>
+                          handleValueSelection(activeFilter, valueKey)
+                        }
+                      />
+                    )}
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+          )}
+
           <TouchableOpacity
             onPress={() => {
               setModalVisible(false)
@@ -267,6 +223,7 @@ const Filters = ({ filters, setFilters, applyFilters, filteredItem }) => {
             </TextDefault>
           </TouchableOpacity>
         </ScrollView>
+        </SafeAreaView>
       </Modal>
     </ScrollView>
   )
