@@ -66,6 +66,17 @@ function Login(props) {
         })
       },
       onError: (error) => {
+        Toast.show({
+          type: 'error',
+          text1: t('error'),
+          text2: t('wrong_credentials'),
+          text1Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          },
+          text2Style: {
+            textAlign: isArabic ? 'right' : 'left'
+          }
+        })
         console.log({ error })
       }
     }
