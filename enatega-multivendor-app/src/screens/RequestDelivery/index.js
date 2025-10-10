@@ -894,7 +894,7 @@ const RequestDelivery = () => {
                 <View
                   activeOpacity={0.7}
                   style={{
-                    ...couponStyles.modalheading,
+                    ...couponStyles.modalHeading,
                     flexDirection: isArabic ? 'row-reverse' : 'row'
                   }}
                 >
@@ -1161,7 +1161,7 @@ const couponStyles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    minHeight: 250
+    minHeight: moderateScale(550)
   },
   modalHeader: {
     alignItems: 'center',

@@ -35,6 +35,9 @@
       "channel": "production",
       "env": {
         "API_ENV": "production"
+      },
+      "android": {
+            "buildType": "app-bundle"
       }
     },
     "development-simulator": {

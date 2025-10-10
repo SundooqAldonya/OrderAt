@@ -16,7 +16,6 @@ const styles = (props = null) => {
       ...alignment.MTsmall
     },
     item: {
-      height: '9.5%',
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: props !== null ? props.horizontalLine : '#9B9A9A',
       ...alignment.PBxSmall,

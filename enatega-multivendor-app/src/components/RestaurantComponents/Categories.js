@@ -34,34 +34,38 @@ const Categories = ({ categories, activeCategory, onCategoryPress }) => {
   }, [isArabic, categories])
 
   // Auto-scroll to keep active tab visible/centered
-  useEffect(() => {
-    if (!scrollRef.current || !activeCategory) return
-    const ref = itemRefs.current[activeCategory]
-    if (!ref) return
+ useEffect(() => {
+  if (!scrollRef.current || !activeCategory) return
+  const ref = itemRefs.current[activeCategory]
+  if (!ref) return
 
-    // measure position of the active button relative to the ScrollView
+  // Defer until next frame so layout is settled
+  requestAnimationFrame(() => {
     ref.measureLayout(
-      // Android/IOS differences: measure relative to scrollRef's native node
-      // findNodeHandle(scrollRef.current) is usually not necessary for direct ref, but measureLayout accepts target view ref
-      // To be safe we pass scrollRef.current.getInnerViewNode if available, otherwise the scrollRef.current itself.
-      // We'll just use scrollRef.current as the relative parent.
       scrollRef.current,
       (x, y, width, height) => {
-        // desired scrollX to center the item (clamped)
+        if (width === 0) return // guard
+
         const itemCenter = x + width / 2
         let scrollToX = Math.max(0, itemCenter - CENTER_OFFSET)
 
-        // If RTL with row-reverse, x will be measured relative to scroll container (still OK),
-        // but to be safe we clamp to content width later if needed.
-        scrollRef.current.scrollTo({ x: scrollToX, animated: true })
+        scrollRef.current.scrollTo({
+          x: scrollToX,
+          animated: true,
+        })
       },
       (err) => {
-        // fallback: small scroll to the start/end depending on direction
-        if (isArabic) scrollRef.current.scrollToEnd({ animated: true })
-        else scrollRef.current.scrollTo({ x: 0, animated: true })
+        // fallback
+        if (isArabic) {
+          scrollRef.current.scrollToEnd({ animated: true })
+        } else {
+          scrollRef.current.scrollTo({ x: 0, animated: true })
+        }
       }
     )
-  }, [activeCategory, categories])
+  })
+}, [activeCategory, categories])
+
 
   return (
     <ScrollView

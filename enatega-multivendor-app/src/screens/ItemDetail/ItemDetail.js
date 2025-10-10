@@ -10,9 +10,10 @@ import {
   Keyboard,
   TouchableOpacity,
   Text,
-  TextInput
+  TextInput,
+  SafeAreaView
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {  useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './styles'
 import RadioComponent from '../../components/CustomizeComponents/RadioComponent/RadioComponent'
 import CheckComponent from '../../components/CustomizeComponents/CheckComponent/CheckComponent'
@@ -93,7 +94,7 @@ function ItemDetail(props) {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
   // useEffect(() => {
@@ -394,7 +395,7 @@ function ItemDetail(props) {
   })
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={[styles().flex, styles(currentTheme).mainContainer]}>
         <Animated.View
           style={[styles(currentTheme).headerContainer, animatedHeaderStyle]}
@@ -447,7 +448,7 @@ function ItemDetail(props) {
           ]}
           scrollEventThrottle={1}
           contentContainerStyle={{
-            marginTop: -10,
+            marginTop: Platform.OS === 'android' ? -10 : 0,
             paddingTop: HEADER_MAX_HEIGHT,
             paddingBottom: scale(height * 0.09),
             backgroundColor: currentTheme.themeBackground
@@ -541,7 +542,7 @@ function ItemDetail(props) {
           }}
         />
       </View>
-    </>
+    </SafeAreaView>
   )
 }
 
