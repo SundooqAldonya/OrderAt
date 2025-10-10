@@ -12,11 +12,10 @@ function DrawerItems(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   return (
-    <View style={[styles().flex, { borderBottomWidth: 0 }]}>
       <TouchableOpacity
-        activeOpacity={1}
-        style={styles().container}
+        style={[styles().container, props.style]}
         onPress={props.onPress}
+        
       >
         <View style={styles(currentTheme).leftContainer}>
           {/* <SimpleLineIcons
@@ -46,7 +45,6 @@ function DrawerItems(props) {
           </TextDefault>
         </View>
       </TouchableOpacity>
-    </View>
   )
 }
 export default DrawerItems

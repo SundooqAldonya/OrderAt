@@ -46,20 +46,23 @@ const styles = (props = null) =>
     modalHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingTop: moderateScale(40),
       paddingHorizontal: moderateScale(18),
       backgroundColor: props !== null ? props.themeBackground : '#fff'
     },
     modalTitle: {
-      fontSize: moderateScale(18),
+      fontSize: moderateScale(20),
       fontWeight: 'bold',
       marginBottom: moderateScale(10),
-      marginTop: moderateScale(10)
+      marginTop: moderateScale(10),
+            paddingHorizontal: 10,
+
     },
     modalItem: {
       paddingVertical: moderateScale(10),
       borderBottomWidth: 0.5,
-      borderBottomColor: props !== null ? props.white : '#fff'
+      borderBottomColor: props !== null ? props.white : '#fff',
+      paddingHorizontal: 10,
+
     },
     modalItemText: {
       fontSize: moderateScale(16)
@@ -76,7 +79,8 @@ const styles = (props = null) =>
       marginBottom: moderateScale(40)
     },
     selectedModalItem: {
-      backgroundColor: props !== null ? props.borderColor : '#efefef'
+      backgroundColor: props !== null ? props.borderColor : '#efefef',
+      paddingHorizontal: 10,
     }
   })
 export default styles

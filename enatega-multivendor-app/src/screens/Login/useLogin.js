@@ -48,7 +48,7 @@ export const useLogin = () => {
 
   const [mutatePhoneExists, { loading }] = useMutation(PHONE, {
     onCompleted,
-    onError
+    onError: onPhoneError
   })
 
   const [LoginMutation, { loading: loginLoading }] = useMutation(LOGIN, {
@@ -164,6 +164,20 @@ export const useLogin = () => {
         console.log(e)
       }
     }
+  }
+
+  function onPhoneError(error) {
+    Toast.show({
+              type: 'error',
+              text1: t('error'),
+              text2: t('wrong_credentials'),
+              text1Style: {
+                textAlign: isArabic ? 'right' : 'left'
+              },
+              text2Style: {
+                textAlign: isArabic ? 'right' : 'left'
+              }
+            })
   }
 
   function onLoginError(error) {

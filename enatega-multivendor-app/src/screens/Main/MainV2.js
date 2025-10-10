@@ -145,7 +145,6 @@ export default function FoodTab() {
     refetchRecentOrderRestaurants,
     refetchMostOrderedRestaurants
   } = useHomeRestaurants()
-
   const {
     data: dataWithOffers,
     loading: loadingWithOffers,
@@ -785,8 +784,8 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   sectionTitle: {
-    fontSize: moderateScale(16)
-    // fontWeight: '600'
+    fontSize: moderateScale(16),
+     fontWeight: '600'
   },
   categoryChip: {
     flexDirection: 'row',
