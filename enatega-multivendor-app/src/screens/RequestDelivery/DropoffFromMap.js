@@ -45,7 +45,6 @@ const DropoffFromMap = () => {
   const city = useSelector((state) => state.city.city)
   const route = useRoute()
   const { area = null } = route.params || {}
-
   const [sessionToken, setSessionToken] = useState(uuidv4())
   const [location, setLocation] = useState({
     latitude: 31.1091,
@@ -77,7 +76,7 @@ const DropoffFromMap = () => {
         </TextDefault>
       ),
       tabBarStyle: { display: 'none' },
-      headerLeft: ({ navigation }) => (
+      headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{

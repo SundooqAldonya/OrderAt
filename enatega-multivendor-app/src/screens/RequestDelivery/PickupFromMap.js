@@ -69,7 +69,7 @@ const PickupFromMap = () => {
           </TouchableOpacity>
         )
       },
-      headerLeft: ({ navigation }) => (
+      headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
