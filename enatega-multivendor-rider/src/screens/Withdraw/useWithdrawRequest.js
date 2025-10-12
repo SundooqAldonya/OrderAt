@@ -1,22 +1,24 @@
 import { Dimensions } from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { createWithdrawRequest } from '../../apollo/mutations'
 import UserContext from '../../context/user'
 
 import { FlashMessage } from '../../components/FlashMessage/FlashMessage'
 import { MIN_WITHDRAW_AMOUNT } from '../../utilities/constants'
 
+import { useTranslation } from 'react-i18next'
+import { useMutation } from '@apollo/client/react'
+
 const WITHDRAW_REQUEST = gql`
   ${createWithdrawRequest}
 `
-import {useTranslation} from 'react-i18next'
 
 export const useWithdrawRequest = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const [error, setError] = useState(false)
-  const [amount, setAmount] = useState("")
+  const [amount, setAmount] = useState('')
   const [requestSent, setRequestSent] = useState(false)
   const { height } = Dimensions.get('window')
   const { dataProfile } = useContext(UserContext)

@@ -6,9 +6,10 @@ import { Alert } from 'react-native'
 import { chat } from '../../apollo/queries'
 import { sendChatMessage } from '../../apollo/mutations'
 import { subscriptionNewMessage } from '../../apollo/subscriptions'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import UserContext from '../../context/user'
 import { useTranslation } from 'react-i18next'
+import { gql } from '@apollo/client'
 
 export const useChatScreen = ({ navigation, route }) => {
   const { t } = useTranslation()

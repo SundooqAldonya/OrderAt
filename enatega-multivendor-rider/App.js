@@ -10,7 +10,7 @@ import {
   BackHandler
 } from 'react-native'
 import * as Font from 'expo-font'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import FlashMessage from 'react-native-flash-message'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Updates from 'expo-updates'

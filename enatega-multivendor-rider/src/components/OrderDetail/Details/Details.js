@@ -11,10 +11,10 @@ import { useTranslation } from 'react-i18next'
 import { callNumber } from '../../../utilities/callNumber'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { openGoogleMaps } from '../../../utilities/callMaps'
-import { CameraView, useCameraPermissions } from 'expo-camera'
-import { useRef } from 'react'
+// import { CameraView, useCameraPermissions } from 'expo-camera'
+// import { useRef } from 'react'
 import { StyleSheet } from 'react-native'
-import { Image } from 'react-native'
+// import { Image } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const [captureCamera, setCaptureCamera] = useState(false)

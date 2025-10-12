@@ -51,6 +51,7 @@ module.exports = {
         () => pubsub.asyncIterator(ZONE_ORDER),
         (payload, args) => {
           const zoneId = payload.subscriptionZoneOrders.zoneId
+          console.log({ zoneId, args })
           return zoneId === args.zoneId
         }
       )

@@ -4,7 +4,6 @@ import {
   watchPositionAsync,
   LocationAccuracy
 } from 'expo-location'
-import { useQuery, gql } from '@apollo/client'
 import { profile, riderOrders } from '../apollo/queries'
 
 import { updateLocation } from '../apollo/mutations'
@@ -17,6 +16,8 @@ import {
   initBackgroundLocation,
   stopBackgroundLocation
 } from '../utilities/transistorBackgroundTracking'
+import { useQuery } from '@apollo/client/react'
+import { gql } from '@apollo/client'
 
 const PROFILE = gql`
   ${profile}
@@ -63,8 +64,8 @@ export const UserProvider = props => {
     onCompleted,
     onError: error2,
     fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true,
-    pollInterval: 15000
+    notifyOnNetworkStatusChange: true
+    // pollInterval: 15000
   })
 
   // console.log({ dataAssigned: dataAssigned?.riderOrders[0] })

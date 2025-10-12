@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const profile = `
 query Rider($id:String){
     rider(id:$id){
@@ -24,15 +26,17 @@ query Rider($id:String){
     }
   }`
 
-export const configuration = `query Configuration{
-    configuration{
+export const configuration = gql`
+  query Configuration {
+    configuration {
       _id
       currency
       currencySymbol
       riderAppSentryUrl
       googleApiKey
     }
-  }`
+  }
+`
 
 export const riderOrders = `query RiderOrders{
   riderOrders{

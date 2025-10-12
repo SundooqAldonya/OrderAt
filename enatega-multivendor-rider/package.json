@@ -35,7 +35,7 @@
     ]
   },
   "dependencies": {
-    "@apollo/client": "^3.7.10",
+    "@apollo/client": "^4.0.7",
     "@expo-google-fonts/montserrat": "^0.2.3",
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -69,8 +69,9 @@
     "expo-status-bar": "~2.2.3",
     "expo-task-manager": "~13.1.6",
     "expo-updates": "~0.28.17",
-    "graphql": "^15.8.0",
+    "graphql": "^16.11.0",
     "graphql-request": "^7.2.0",
+    "graphql-ws": "^5.16.2",
     "i18n-js": "^3.7.1",
     "i18next": "^23.7.6",
     "lottie-react-native": "7.2.2",
@@ -107,7 +108,6 @@
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
     "sentry-expo": "~7.0.0",
-    "subscriptions-transport-ws": "^0.9.19",
     "toastify-react-native": "^6.0.0"
   },
   "devDependencies": {

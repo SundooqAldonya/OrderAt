@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import setupApolloClient from '../apollo/index'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Location from 'expo-location'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { riderLogout } from '../apollo/mutations'
 
 export const AuthContext = React.createContext()

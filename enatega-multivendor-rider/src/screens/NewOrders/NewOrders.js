@@ -13,13 +13,13 @@ import TextError from '../../components/Text/TextError/TextError'
 import LottieView from 'lottie-react-native'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
-import { NetworkStatus, useMutation } from '@apollo/client'
+import { NetworkStatus } from '@apollo/client'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
 import useSidebar from '../../components/Sidebar/useSidebar'
 import { orderSeenByRider } from '../../apollo/mutations'
 import { useRef } from 'react'
-
+import { useMutation } from '@apollo/client/react'
 const { height, width } = Dimensions.get('window')
 
 const NewOrders = ({ navigation }) => {

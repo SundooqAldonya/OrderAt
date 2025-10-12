@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../context/auth'
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { toggleAvailablity, toggleMute } from '../../apollo/mutations'
 import UserContext from '../../context/user'
 import { profile } from '../../apollo/queries'
@@ -14,6 +14,7 @@ import {
   initBackgroundLocation,
   stopBackgroundLocation
 } from '../../utilities/transistorBackgroundTracking'
+import { useMutation } from '@apollo/client/react'
 
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}

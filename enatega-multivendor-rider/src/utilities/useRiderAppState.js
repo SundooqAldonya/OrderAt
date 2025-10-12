@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { AppState } from 'react-native'
-import { useApolloClient, gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import setupApolloClient from '../apollo'
 import { updateRiderStatus } from '../apollo/mutations'
 

@@ -2,7 +2,7 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { gql } from '@apollo/client'
-import { request } from 'graphql-request'
+// import { request } from 'graphql-request'
 import { getEnvVars } from '../../env_background'
 import { updateLocation } from '../apollo/mutations'
 
@@ -30,18 +30,36 @@ export async function initBackgroundLocation() {
     }
 
     try {
-      const res = await request(
-        GRAPHQL_URL,
-        SEND_LOCATION_MUTATION,
-        {
-          latitude: String(latitude),
-          longitude: String(longitude),
-          tracking: 'true'
-        },
-        {
+      // const res = await request(
+      //   GRAPHQL_URL,
+      //   SEND_LOCATION_MUTATION,
+      //   {
+      //     latitude: String(latitude),
+      //     longitude: String(longitude),
+      //     tracking: 'true'
+      //   },
+      //   {
+      //     Authorization: `Bearer ${token}`
+      //   }
+      // )
+      const res = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        }
-      )
+        },
+        body: JSON.stringify({
+          query: SEND_LOCATION_MUTATION.loc.source.body, // extract GraphQL string
+          variables: {
+            latitude: String(latitude),
+            longitude: String(longitude),
+            tracking: 'true'
+          }
+        })
+      })
+
+      const json = await res.json()
+      console.log('✅ Location sent:', json)
       console.log('✅ Location sent:', res)
     } catch (err) {
       console.warn('❌ Failed to send location:', err)

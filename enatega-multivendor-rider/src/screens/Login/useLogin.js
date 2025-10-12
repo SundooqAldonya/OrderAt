@@ -5,7 +5,7 @@ import { defaultRiderCreds } from '../../apollo/queries'
 import { AuthContext } from '../../context/auth'
 import { FlashMessage } from '../../components/FlashMessage/FlashMessage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 import { playCustomSound } from '../../utilities/playSound'
 import { startBackgroundUpdate } from '../../utilities/backgroundLocationTask'
 import messaging from '@react-native-firebase/messaging'
+import { gql } from '@apollo/client'
 
 const RIDER_LOGIN = gql`
   ${riderLogin}
