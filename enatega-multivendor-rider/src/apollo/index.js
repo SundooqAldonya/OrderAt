@@ -4,7 +4,8 @@ import {
   InMemoryCache,
   ApolloLink,
   split,
-  Observable
+  Observable,
+  HttpLink
 } from '@apollo/client'
 import {
   getMainDefinition,
@@ -38,6 +39,10 @@ function setupApolloClient() {
         }
       }
     }
+  })
+
+  const httpLink = new HttpLink({
+    uri: GRAPHQL_URL
   })
 
   // ✅ File upload link (HTTP)
@@ -76,34 +81,57 @@ function setupApolloClient() {
   )
 
   // ✅ Inject token into each HTTP request
-  const request = async operation => {
-    const token = await AsyncStorage.getItem('rider-token')
-    operation.setContext({
-      headers: {
-        authorization: token ? `Bearer ${token}` : ''
-      }
-    })
-  }
+  // const request = async operation => {
+  //   const token = await AsyncStorage.getItem('rider-token')
+  //   operation.setContext({
+  //     headers: {
+  //       authorization: token ? `Bearer ${token}` : ''
+  //     }
+  //   })
+  // }
 
-  const requestLink = new ApolloLink(
-    (operation, forward) =>
-      new Observable(observer => {
-        let handle
-        Promise.resolve(operation)
-          .then(oper => request(oper))
-          .then(() => {
-            handle = forward(operation).subscribe({
-              next: observer.next.bind(observer),
-              error: observer.error.bind(observer),
-              complete: observer.complete.bind(observer)
-            })
+  // const requestLink = new ApolloLink(
+  //   (operation, forward) =>
+  //     new Observable(observer => {
+  //       let handle
+  //       Promise.resolve(operation)
+  //         .then(oper => request(oper))
+  //         .then(() => {
+  //           handle = forward(operation).subscribe({
+  //             next: observer.next.bind(observer),
+  //             error: observer.error.bind(observer),
+  //             complete: observer.complete.bind(observer)
+  //           })
+  //         })
+  //         .catch(observer.error.bind(observer))
+  //       return () => {
+  //         if (handle) handle.unsubscribe()
+  //       }
+  //     })
+  // )
+
+  const authLink = new ApolloLink((operation, forward) => {
+    return new Observable(observer => {
+      Promise.resolve()
+        .then(async () => {
+          const token = await AsyncStorage.getItem('rider-token')
+          operation.setContext({
+            headers: {
+              authorization: token ? `Bearer ${token}` : ''
+            }
           })
-          .catch(observer.error.bind(observer))
-        return () => {
-          if (handle) handle.unsubscribe()
-        }
-      })
-  )
+        })
+        .then(() => {
+          const subscriber = forward(operation).subscribe({
+            next: result => observer.next(result),
+            error: err => observer.error(err),
+            complete: () => observer.complete()
+          })
+          return () => subscriber.unsubscribe()
+        })
+        .catch(error => observer.error(error))
+    })
+  })
 
   // ✅ Split links: subscriptions → wsLink, everything else → uploadLink
   const splitLink = split(
@@ -115,12 +143,13 @@ function setupApolloClient() {
       )
     },
     wsLink,
-    ApolloLink.from([requestLink, uploadLink])
+    httpLink
+    // ApolloLink.from([requestLink, uploadLink])
   )
 
   // ✅ Apollo Client
   const client = new ApolloClient({
-    link: splitLink,
+    link: ApolloLink.from([authLink, splitLink, uploadLink]),
     cache,
     connectToDevTools: true
   })
