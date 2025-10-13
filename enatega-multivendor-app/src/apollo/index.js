@@ -5,8 +5,8 @@ import {
   createHttpLink,
   ApolloLink,
   split,
-  concat
-  // Observable
+  // concat,
+  Observable
 } from '@apollo/client'
 import {
   getMainDefinition,
@@ -14,8 +14,8 @@ import {
 } from '@apollo/client/utilities'
 // import { WebSocketLink } from '@apollo/client/link/ws'
 import useEnvVars from '../../environment'
-import { useContext } from 'react'
-import { LocationContext } from '../context/Location'
+// import { useContext } from 'react'
+// import { LocationContext } from '../context/Location'
 import { calculateDistance } from '../utils/customFunctions'
 import { RetryLink } from '@apollo/client/link/retry'
 import { onError } from '@apollo/client/link/error'
@@ -181,22 +181,47 @@ const setupApollo = () => {
   //     })
   // )
 
+  // const authLink = new ApolloLink((operation, forward) => {
+  //   return new Promise(async (resolve) => {
+  //     const token = await AsyncStorage.getItem('token')
+  //     operation.setContext({
+  //       headers: {
+  //         authorization: token ? `Bearer ${token}` : ''
+  //       }
+  //     })
+  //     resolve(forward(operation))
+  //   })
+  // })
+
   const authLink = new ApolloLink((operation, forward) => {
-    return new Promise(async (resolve) => {
-      const token = await AsyncStorage.getItem('token')
-      operation.setContext({
-        headers: {
-          authorization: token ? `Bearer ${token}` : ''
-        }
-      })
-      resolve(forward(operation))
+    return new Observable((observer) => {
+      let handle
+      Promise.resolve(AsyncStorage.getItem('token'))
+        .then((token) => {
+          operation.setContext(({ headers = {} }) => ({
+            headers: {
+              ...headers,
+              authorization: token ? `Bearer ${token}` : ''
+            }
+          }))
+        })
+        .then(() => {
+          handle = forward(operation).subscribe({
+            next: observer.next.bind(observer),
+            error: observer.error.bind(observer),
+            complete: observer.complete.bind(observer)
+          })
+        })
+        .catch(observer.error.bind(observer))
+
+      return () => handle && handle.unsubscribe()
     })
   })
 
-  // const terminatingLink = split(({ query }) => {
-  //   const { kind, operation } = getMainDefinition(query)
-  //   return kind === 'OperationDefinition' && operation === 'subscription'
-  // }, wsLink)
+  const terminatingLink = split(({ query }) => {
+    const { kind, operation } = getMainDefinition(query)
+    return kind === 'OperationDefinition' && operation === 'subscription'
+  }, wsLink)
 
   // const splitLink = split(
   //   ({ query }) => {
@@ -219,21 +244,21 @@ const setupApollo = () => {
       )
     },
     wsLink,
-    httpLink
-    // ApolloLink.from([authLink, retryLink, errorLink, httpLink])
+    // httpLink
+    ApolloLink.from([authLink, retryLink, errorLink, httpLink])
   )
 
   const client = new ApolloClient({
-    // link: ApolloLink.from([authLink, splitLink, errorLink]),
-    link: ApolloLink.from([
-      retryLink,
-      errorLink,
-      splitLink,
-      authLink
-      // terminatingLink,
-      // requestLink,
-      // httpLink
-    ]),
+    link: splitLink,
+    // link: ApolloLink.from([
+    //   retryLink,
+    //   errorLink,
+    //   splitLink,
+    //   authLink
+    //   // terminatingLink,
+    //   // requestLink,
+    //   // httpLink
+    // ]),
     cache,
     resolvers: {}
   })

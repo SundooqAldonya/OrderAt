@@ -536,6 +536,8 @@ const BottomTabs = () => {
   const Tab = createBottomTabNavigator()
   const { isLoggedIn } = useContext(UserContext)
 
+  console.log({ isLoggedIn })
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

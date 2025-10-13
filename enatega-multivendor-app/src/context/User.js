@@ -39,6 +39,8 @@ export const UserProvider = (props) => {
   const [isPickup, setIsPickup] = useState(false)
   const [instructions, setInstructions] = useState('')
 
+  console.log({ token })
+
   const {
     called: calledProfile,
     loading: loadingProfile,
@@ -267,7 +269,8 @@ export const UserProvider = (props) => {
   return (
     <UserContext.Provider
       value={{
-        isLoggedIn: !!token && dataProfile && !!dataProfile.profile,
+        // isLoggedIn: !!token && dataProfile && !!dataProfile.profile,
+        isLoggedIn: !!token,
         loadingProfile: loadingProfile && calledProfile,
         errorProfile,
         profile:
