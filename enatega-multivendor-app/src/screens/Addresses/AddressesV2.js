@@ -9,7 +9,7 @@ import {
   ScrollView
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import {
   AntDesign,
   EvilIcons,
@@ -88,7 +88,7 @@ function Addresses() {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View
               style={{
@@ -97,8 +97,9 @@ function Addresses() {
                 marginLeft: 10,
                 width: 55,
                 alignItems: 'center'
-              }}>
-              <MaterialIcons name="arrow-back" size={30} color="black" />
+              }}
+            >
+              <MaterialIcons name='arrow-back' size={30} color='black' />
             </View>
           )}
           onPress={() => {
@@ -146,7 +147,7 @@ function Addresses() {
       <FlatList
         data={profile?.addresses}
         ListEmptyComponent={emptyView}
-        keyExtractor={item => item._id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => (
           <View style={styles(currentTheme).line} />
         )}
@@ -154,12 +155,14 @@ function Addresses() {
         renderItem={({ item: address }) => (
           <TouchableOpacity
             activeOpacity={0.7}
-            style={[styles(currentTheme).containerSpace]}>
+            style={[styles(currentTheme).containerSpace]}
+          >
             <View style={[styles().width100]}>
               <View style={[styles().titleAddress, styles().width100]}>
                 <TextDefault
                   textColor={currentTheme.darkBgFont}
-                  style={styles(currentTheme).labelStyle}>
+                  style={styles(currentTheme).labelStyle}
+                >
                   {address.label}
                 </TextDefault>
               </View>
@@ -172,7 +175,7 @@ function Addresses() {
                       fill: currentTheme.iconColorPink
                     })
                   ) : (
-                    <AntDesign name="question" size={20} color="black" />
+                    <AntDesign name='question' size={20} color='black' />
                   )}
                 </View>
 
@@ -190,9 +193,10 @@ function Addresses() {
                     activeOpacity={0.7}
                     onPress={() => {
                       navigation.navigate('EditAddress', { ...address })
-                    }}>
+                    }}
+                  >
                     <SimpleLineIcons
-                      name="pencil"
+                      name='pencil'
                       size={scale(20)}
                       color={currentTheme.tagColor}
                     />
@@ -203,9 +207,10 @@ function Addresses() {
                     disabled={loadingMutation}
                     onPress={() => {
                       mutate({ variables: { id: address._id } })
-                    }}>
+                    }}
+                  >
                     <EvilIcons
-                      name="trash"
+                      name='trash'
                       size={scale(33)}
                       color={currentTheme.tagColor}
                     />
@@ -221,8 +226,9 @@ function Addresses() {
         <TouchableOpacity
           activeOpacity={0.5}
           style={styles().addButton}
-          onPress={() => navigation.navigate('NewAddress')}>
-          <AntDesign name="plus" size={scale(30)} color={currentTheme.black} />
+          onPress={() => navigation.navigate('NewAddress')}
+        >
+          <AntDesign name='plus' size={scale(30)} color={currentTheme.black} />
         </TouchableOpacity>
       </View>
       <View

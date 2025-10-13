@@ -20,7 +20,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import gql from 'graphql-tag'
 import { editAddress } from '../../apollo/mutations'
 import * as Location from 'expo-location'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -43,17 +43,17 @@ const labelValues = [
   {
     title: 'Home',
     value: 'Home',
-    icon: <Entypo name="home" size={24} />
+    icon: <Entypo name='home' size={24} />
   },
   {
     title: 'Work',
     value: 'Work',
-    icon: <MaterialIcons name="work" size={24} />
+    icon: <MaterialIcons name='work' size={24} />
   },
   {
     title: 'Other',
     value: 'Other',
-    icon: <Foundation name="heart" size={24} />
+    icon: <Foundation name='heart' size={24} />
   }
 ]
 
@@ -117,17 +117,17 @@ function EditAddress(props) {
   }, [])
   function regionChange(region) {
     Location.reverseGeocodeAsync({ ...region })
-      .then(data => {
+      .then((data) => {
         if (data.length) {
           const location = data[0]
           const deliveryAddress = Object.keys(location)
-            .map(key => location[key])
+            .map((key) => location[key])
             .join(' ')
           setDeliveryAddress(deliveryAddress)
           addressRef.current.setValue(deliveryAddress)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
       })
     setRegion(region)
@@ -178,7 +178,8 @@ function EditAddress(props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={20}
         style={styles(currentTheme).flex}
-        enabled={!modalVisible}>
+        enabled={!modalVisible}
+      >
         <View style={styles().flex}>
           <View style={styles().mapContainer}>
             <MapView
@@ -209,7 +210,8 @@ function EditAddress(props) {
                   longitude: region.longitude,
                   currentScreen: 'EditAddress'
                 })
-              }}></MapView>
+              }}
+            ></MapView>
             <View style={styles().editOldAddressImageContainer}>
               <CustomMarker
                 width={40}
@@ -222,7 +224,8 @@ function EditAddress(props) {
           <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={styles(currentTheme).subContainer}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles().upperContainer}>
               <View style={styles().addressContainer}>
                 <View style={styles().geoLocation}>
@@ -246,7 +249,7 @@ function EditAddress(props) {
                         fontSize: scale(12),
                         paddingTop: scale(1)
                       }}
-                      onChangeText={text => {
+                      onChangeText={(text) => {
                         setDeliveryAddress(text)
                       }}
                       onBlur={() => {
@@ -269,7 +272,7 @@ function EditAddress(props) {
                   label={t('deliveryDetails')}
                   labelFontSize={scale(12)}
                   fontSize={scale(12)}
-                  textAlignVertical="top"
+                  textAlignVertical='top'
                   multiline={false}
                   maxLength={30}
                   textColor={currentTheme.fontMainColor}
@@ -284,7 +287,7 @@ function EditAddress(props) {
                     paddingTop: scale(1)
                   }}
                   value={deliveryDetails}
-                  onChangeText={text => {
+                  onChangeText={(text) => {
                     setDeliveryDetails(text)
                   }}
                   onBlur={() => {
@@ -314,7 +317,8 @@ function EditAddress(props) {
                       }
                       onPress={() => {
                         setSelectedLabel(label.value)
-                      }}>
+                      }}
+                    >
                       <TextDefault
                         textColor={
                           selectedLabel === label.value
@@ -322,7 +326,8 @@ function EditAddress(props) {
                             : currentTheme.fontMainColor
                         }
                         bold
-                        center>
+                        center
+                      >
                         {label.title}
                       </TextDefault>
                     </TouchableOpacity>
@@ -363,7 +368,8 @@ function EditAddress(props) {
                 }
               }}
               activeOpacity={0.5}
-              style={styles(currentTheme).saveBtnContainer}>
+              style={styles(currentTheme).saveBtnContainer}
+            >
               <TextDefault textColor={currentTheme.buttonText} H4 bold>
                 {t('saveContBtn')}
               </TextDefault>

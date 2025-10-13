@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useRef } from 'react'
 import { sendOtpToPhoneNumber, updateUser } from '../../../apollo/mutations'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'

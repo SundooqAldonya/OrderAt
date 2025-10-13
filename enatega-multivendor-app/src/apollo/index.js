@@ -193,10 +193,10 @@ const setupApollo = () => {
     })
   })
 
-  const terminatingLink = split(({ query }) => {
-    const { kind, operation } = getMainDefinition(query)
-    return kind === 'OperationDefinition' && operation === 'subscription'
-  }, wsLink)
+  // const terminatingLink = split(({ query }) => {
+  //   const { kind, operation } = getMainDefinition(query)
+  //   return kind === 'OperationDefinition' && operation === 'subscription'
+  // }, wsLink)
 
   // const splitLink = split(
   //   ({ query }) => {
@@ -219,18 +219,21 @@ const setupApollo = () => {
       )
     },
     wsLink,
-    ApolloLink.from([authLink, retryLink, errorLink, httpLink])
+    httpLink
+    // ApolloLink.from([authLink, retryLink, errorLink, httpLink])
   )
 
   const client = new ApolloClient({
-    link: splitLink,
-    // link: ApolloLink.from([
-    //   retryLink,
-    //   errorLink,
-    //   terminatingLink,
-    //   requestLink,
-    //   httpLink
-    // ]),
+    // link: ApolloLink.from([authLink, splitLink, errorLink]),
+    link: ApolloLink.from([
+      retryLink,
+      errorLink,
+      splitLink,
+      authLink
+      // terminatingLink,
+      // requestLink,
+      // httpLink
+    ]),
     cache,
     resolvers: {}
   })

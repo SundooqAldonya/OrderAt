@@ -21,8 +21,8 @@ import LottieView from 'lottie-react-native'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 import { useTranslation } from 'react-i18next'
-import { useMutation } from '@apollo/client'
-import { orderSeenByRider } from '../../apollo/mutations'
+// import { useMutation } from '@apollo/client'
+// import { orderSeenByRider } from '../../apollo/mutations'
 
 const { height, width } = Dimensions.get('window')
 const Orders = ({ navigation }) => {

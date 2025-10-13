@@ -100,6 +100,8 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const reviewModalRef = useRef()
+  const client = setupApolloClient()
+
   const [isConnected, setIsConnected] = useState(true)
   const [exitVisible, setExitVisible] = useState(false)
 
@@ -301,7 +303,6 @@ export default function App() {
     saveLocation()
   }, [location])
 
-  const client = setupApolloClient()
   const shouldBeRTL = false
   if (shouldBeRTL !== I18nManager.isRTL && Platform.OS !== 'web') {
     I18nManager.allowRTL(shouldBeRTL)

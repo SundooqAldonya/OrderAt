@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { updateUser } from '../../apollo/mutations'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
