@@ -4,7 +4,13 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 import styles from './styles'
-import React, { useContext, useEffect, useState, useRef } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect
+} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import TextError from '../../components/Text/TextError/TextError'
@@ -56,7 +62,7 @@ function OrderDetail(props) {
   // const Analytics = analytics()
   const id = props.route.params ? props.route.params._id : null
   // const user = props.route.params ? props.route.params.user : null
-  const { orders } = useContext(OrdersContext)
+  // const { orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -67,6 +73,7 @@ function OrderDetail(props) {
   // const headerRef = useRef(false)
   // const { GOOGLE_MAPS_KEY } = useEnvVars()
   const mapView = useRef(null)
+
   const [cancelOrder, { loading: loadingCancel }] = useMutation(CANCEL_ORDER, {
     onError,
     variables: { abortOrderId: id }
@@ -83,11 +90,11 @@ function OrderDetail(props) {
   } = useQuery(ORDER, {
     variables: { id },
     fetchPolicy: 'network-only',
-    onError,
-    pollInterval: 10000
+    onError
+    // pollInterval: 10000
   })
 
-  const order = data?.singleOrder
+  const order = data?.singleOrder || null
 
   const cancelModalToggle = () => {
     setCancelModalVisible(!cancelModalVisible)
@@ -99,7 +106,7 @@ function OrderDetail(props) {
     })
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     props.navigation.setOptions({
       headerRight: () =>
         HelpButton({
@@ -107,11 +114,16 @@ function OrderDetail(props) {
           navigation,
           t
         }),
-      headerTitle: `${order ? order?.deliveryAddress?.deliveryAddress?.substr(0, 15) : ''}...`,
+      headerTitle: `${t('orders')}`,
       headerTitleStyle: { color: currentTheme.newFontcolor },
       headerStyle: { backgroundColor: currentTheme.newheaderBG }
     })
-  }, [orders])
+  }, [
+    currentTheme.main,
+    currentTheme.newFontcolor,
+    currentTheme.newheaderBG,
+    t
+  ])
 
   if (loadingOrders || !order) {
     return (

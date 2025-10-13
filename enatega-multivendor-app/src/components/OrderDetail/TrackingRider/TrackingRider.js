@@ -15,8 +15,8 @@ const RIDER_LOCATION = gql`
 const TrackingRider = ({ id }) => {
   const { loading, error, data, subscribeToMore } = useQuery(RIDER, {
     variables: { id },
-    fetchPolicy: 'network-only',
-    pollInterval: 60000
+    fetchPolicy: 'network-only'
+    // pollInterval: 60000
   })
   useEffect(() => {
     const unsubscribe = subscribeToMore({
