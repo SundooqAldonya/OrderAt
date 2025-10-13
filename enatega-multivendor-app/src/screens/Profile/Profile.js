@@ -16,7 +16,7 @@ import {
   Pressable,
   TextInput
 } from 'react-native'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import gql from 'graphql-tag'
 //import { TextField, OutlinedTextField } from 'react-native-material-textfield'
 import { moderateScale } from '../../utils/scaling'

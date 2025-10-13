@@ -48,7 +48,7 @@ import EmailOtp from '../screens/Otp/Email/EmailOtp'
 import PhoneOtp from '../screens/Otp/Phone/PhoneOtp'
 import ForgotPasswordOtp from '../screens/Otp/ForgotPassword/ForgetPasswordOtp'
 import PhoneNumber from '../screens/PhoneNumber/PhoneNumber'
-import { useApolloClient, gql } from '@apollo/client'
+import { useApolloClient } from '@apollo/client/react'
 import { myOrders } from '../apollo/queries'
 import Checkout from '../screens/Checkout/Checkout'
 import Menu from '../screens/Menu/Menu'
@@ -99,6 +99,7 @@ import MandoobImg from '../assets/tabs_request_delivery.png'
 import TextDefault from '../components/Text/TextDefault/TextDefault'
 import CategorySearchRestaurants from '../screens/CategorySearchRestaurants'
 import MenuV2 from '../screens/Menu/MenuV2'
+import gql from 'graphql-tag'
 
 const NavigationStack = createStackNavigator()
 const MainStack = createStackNavigator()

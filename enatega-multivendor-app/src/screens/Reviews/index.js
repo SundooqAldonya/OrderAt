@@ -17,7 +17,7 @@ import {
   groupAndCount,
   sortReviews
 } from '../../utils/customFunctions'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { getReviews } from '../../apollo/queries'
 
 const Reviews = ({ navigation, route }) => {

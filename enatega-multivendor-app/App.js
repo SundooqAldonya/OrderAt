@@ -16,7 +16,7 @@ import {
   Text,
   AppState
 } from 'react-native'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import { exitAlert } from './src/utils/androidBackButton'
 import FlashMessage from 'react-native-flash-message'
 import setupApolloClient from './src/apollo/index'

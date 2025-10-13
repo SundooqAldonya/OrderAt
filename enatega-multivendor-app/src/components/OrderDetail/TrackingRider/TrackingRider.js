@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Marker } from 'react-native-maps'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { rider } from '../../../apollo/queries'
 import { subscriptionRiderLocation } from '../../../apollo/subscriptions'

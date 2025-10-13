@@ -46,13 +46,14 @@ import { LocationContext } from '../../context/Location'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import UserContext from '../../context/User'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { createAddress } from '../../apollo/mutations'
 import { HeaderBackButton } from '@react-navigation/elements'
 import navigationService from '../../routes/navigationService'
 import { scale } from '../../utils/scaling'
 import useEnvVars from '../../../environment'
 import { Image } from 'react-native'
+import gql from 'graphql-tag'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}

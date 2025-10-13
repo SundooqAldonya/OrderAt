@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { moderateScale } from '../../../utils/scaling'
-import { useSubscription } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { subscriptionOrder } from '../../../apollo/subscriptions'
 import gql from 'graphql-tag'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'

@@ -47,7 +47,7 @@ import { LocationContext } from '../../context/Location'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import * as Location from 'expo-location'
 import UserContext from '../../context/User'
-import { gql, useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { createAddress } from '../../apollo/mutations'
 import { moderateScale } from '../../utils/scaling'
 import navigationService from '../../routes/navigationService'
@@ -60,6 +60,7 @@ import { useSelector } from 'react-redux'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { v4 as uuidv4 } from 'uuid'
 import CustomPlacesAutocomplete from '../../components/CustomPlacesAutocomplete'
+import gql from 'graphql-tag'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -131,7 +132,11 @@ export default function SelectLocation(props) {
             truncatedLabel=''
             backImage={() => (
               <View>
-                <MaterialIcons name='arrow-back' size={moderateScale(20)} color={'black'} />
+                <MaterialIcons
+                  name='arrow-back'
+                  size={moderateScale(20)}
+                  color={'black'}
+                />
               </View>
             )}
             style={{ marginLeft: 10 }}
@@ -149,13 +154,21 @@ export default function SelectLocation(props) {
               onPress={getCurrentPosition}
               style={{ marginRight: 15 }}
             >
-              <MaterialIcons name='my-location' size={moderateScale(20)} color='black' />
+              <MaterialIcons
+                name='my-location'
+                size={moderateScale(20)}
+                color='black'
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => navigation.navigate('SelectLanguageScreen')}
             >
-              <FontAwesome name='language' size={moderateScale(20)} color='black' />
+              <FontAwesome
+                name='language'
+                size={moderateScale(20)}
+                color='black'
+              />
             </TouchableOpacity>
           </View>
         )
@@ -164,11 +177,11 @@ export default function SelectLocation(props) {
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
         fontWeight: 'bold',
-        fontSize: moderateScale(16),
+        fontSize: moderateScale(16)
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
-        elevation: 0,
+        elevation: 0
       }
     })
   }, [])
@@ -488,10 +501,11 @@ export default function SelectLocation(props) {
                       zIndex: 999999999
                     },
                     textInput: {
-                      paddingVertical: Platform.OS === 'ios' ? moderateScale(16) : 0,
+                      paddingVertical:
+                        Platform.OS === 'ios' ? moderateScale(16) : 0,
                       color: '#000',
                       fontSize: moderateScale(16),
-                      textAlign: isArabic ? 'right' : 'left',
+                      textAlign: isArabic ? 'right' : 'left'
                     },
                     listView: {
                       backgroundColor: '#fff',
@@ -626,7 +640,11 @@ export default function SelectLocation(props) {
                 onPress={handleSaveLocation}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <EvilIcons name='location' size={moderateScale(20)} color='#fff' />
+                  <EvilIcons
+                    name='location'
+                    size={moderateScale(20)}
+                    color='#fff'
+                  />
                 </View>
                 <TextDefault textColor={'#fff'} H5 bold>
                   {t('confirm_address')}

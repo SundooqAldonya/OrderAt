@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native'
 import { getBusinessCategoriesCustomer } from '../../apollo/queries'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { PlaceholderLine } from 'rn-placeholder'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import { useNavigation } from '@react-navigation/native'

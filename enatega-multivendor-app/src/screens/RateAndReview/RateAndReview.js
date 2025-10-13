@@ -13,7 +13,7 @@ import styles from './styles'
 import { reviewOrder } from '../../apollo/mutations'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 //import StarRating from 'react-native-star-rating'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -56,11 +56,11 @@ function RateAndReview(props) {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View>
               <MaterialIcons
-                name="arrow-back"
+                name='arrow-back'
                 size={30}
                 color={currentTheme.black}
               />
@@ -120,7 +120,8 @@ function RateAndReview(props) {
         style={[
           styles().flex,
           { backgroundColor: currentTheme.themeBackground }
-        ]}>
+        ]}
+      >
         <View style={{ display: 'flex' }}>
           <ImageHeader image={props.route.params.restaurant.image} />
           <View style={styles().mainView}>
@@ -130,17 +131,19 @@ function RateAndReview(props) {
               Center
               textColor={currentTheme.fontWhite}
               numberOfLines={1}
-              ellipsizeMode="tail">
+              ellipsizeMode='tail'
+            >
               {t('RateYourOrder')}
             </TextDefault>
             {!props.loading && (
               <View style={{ padding: scale(5) }}>
                 <TextDefault
-                  textColor="white"
+                  textColor='white'
                   paddingRight={scale(5)}
                   paddingLeft={scale(5)}
                   marginTop={scale(5)}
-                  bold>
+                  bold
+                >
                   {props.route.params.restaurant.name.length > 12
                     ? `${props.route.params.restaurant.name.slice(0, 15)}...`
                     : props.route.params.restaurant.name}
@@ -157,7 +160,8 @@ function RateAndReview(props) {
                   textColor={currentTheme.fontMainColor}
                   H3
                   bolder
-                  style={styles().reviewText}>
+                  style={styles().reviewText}
+                >
                   {t('howWasMeal')}
                 </TextDefault>
                 <TextDefault textColor={currentTheme.fontMainColor} H5>
@@ -184,7 +188,8 @@ function RateAndReview(props) {
             textColor={currentTheme.fontMainColor}
             H3
             bolder
-            style={{ padding: 20, marginTop: 20 }}>
+            style={{ padding: 20, marginTop: 20 }}
+          >
             {t('yourExperience')}
           </TextDefault>
           <KeyboardAvoidingView style={styles().inputContainer}>
@@ -207,12 +212,18 @@ function RateAndReview(props) {
           </KeyboardAvoidingView>
           <View style={styles().btnContainer}>
             <View style={styles().btnSubContainer}>
-              {loadingMutation && <Spinner backColor="transparent" spinnerColor={currentTheme.main} />}
+              {loadingMutation && (
+                <Spinner
+                  backColor='transparent'
+                  spinnerColor={currentTheme.main}
+                />
+              )}
               {!loadingMutation && (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={onSubmit}
-                  style={styles(currentTheme).btnTouch}>
+                  style={styles(currentTheme).btnTouch}
+                >
                   <TextDefault textColor={currentTheme.black} H3 bold>
                     {t('submit')}
                   </TextDefault>

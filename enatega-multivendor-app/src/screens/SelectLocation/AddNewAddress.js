@@ -30,7 +30,7 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import { moderateScale, scale } from '../../utils/scaling'
 import gql from 'graphql-tag'
 import { getCityAreas } from '../../apollo/queries'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import AreasModal from './AreasModal'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { HeaderBackButton } from '@react-navigation/elements'
@@ -124,7 +124,7 @@ export default function AddNewAddress(props) {
       headerTitleStyle: {
         color: currentTheme.newFontcolor,
         ...textStyles.H4,
-        fontWeight: 'bold',
+        fontWeight: 'bold'
       },
       headerTitleContainerStyle: {
         paddingLeft: moderateScale(25),
@@ -139,7 +139,7 @@ export default function AddNewAddress(props) {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: 10}}>
+            <View style={{ paddingLeft: 10 }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(20)}
@@ -335,7 +335,9 @@ export default function AddNewAddress(props) {
               marginTop: moderateScale(5)
             }}
           >
-            <Text style={{ fontSize: 18, textAlign: isArabic ? 'right' : 'left' }}>
+            <Text
+              style={{ fontSize: 18, textAlign: isArabic ? 'right' : 'left' }}
+            >
               {t('select_area')}
             </Text>
           </View>
@@ -352,7 +354,7 @@ export default function AddNewAddress(props) {
             <TextDefault
               style={{
                 color: selectedArea ? '#000' : 'red',
-                textAlign: isArabic ? 'right' : 'left',
+                textAlign: isArabic ? 'right' : 'left'
               }}
             >
               {selectedArea ? selectedArea.title : t('select_area')}

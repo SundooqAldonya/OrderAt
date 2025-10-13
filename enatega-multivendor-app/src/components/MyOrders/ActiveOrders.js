@@ -1,6 +1,6 @@
 import React, { Fragment, useContext } from 'react'
 import { View, TouchableOpacity, Image, FlatList } from 'react-native'
-import { useSubscription } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { subscriptionOrder } from '../../apollo/subscriptions'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'

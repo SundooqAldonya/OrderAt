@@ -14,7 +14,7 @@ import {
   Alert,
   Button
 } from 'react-native'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { AntDesign } from '@expo/vector-icons'
 import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder'
@@ -574,7 +574,7 @@ function Cart(props) {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: FOOTER_HEIGHT  + moderateScale(50),
+                height: FOOTER_HEIGHT + moderateScale(50),
                 backgroundColor: currentTheme.newheaderColor, // or your prop
                 paddingHorizontal: moderateScale(16),
                 justifyContent: 'center',

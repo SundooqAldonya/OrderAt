@@ -28,7 +28,7 @@ import { Picker } from '@react-native-picker/picker'
 import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client/react'
 import { getDeliveryCalculationV2, myOrders } from '../../apollo/queries'
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
@@ -57,6 +57,7 @@ import { resetRequestDelivery } from '../../store/requestDeliverySlice'
 import Modal from 'react-native-modal'
 import UserContext from '../../context/User'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import gql from 'graphql-tag'
 
 const ORDERS = gql`
   ${myOrders}

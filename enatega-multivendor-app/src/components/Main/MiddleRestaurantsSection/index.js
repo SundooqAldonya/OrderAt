@@ -1,15 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { Fragment, useContext } from 'react'
-import {
-  highestRatingRestaurant,
-  nearestRestaurants,
-  restaurantsWithOffers,
-  // searchRestaurants,
-  topRatedVendorsInfo
-} from '../../../apollo/queries'
-import { useQuery } from '@apollo/client'
-import { LocationContext } from '../../../context/Location'
-import useHomeRestaurants from '../../../ui/hooks/useRestaurantOrderInfo'
+// import {
+//   highestRatingRestaurant,
+//   nearestRestaurants,
+//   restaurantsWithOffers,
+//   // searchRestaurants,
+//   topRatedVendorsInfo
+// } from '../../../apollo/queries'
+// import { useQuery } from '@apollo/client'
+// import { LocationContext } from '../../../context/Location'
+// import useHomeRestaurants from '../../../ui/hooks/useRestaurantOrderInfo'
 import { FlatList } from 'react-native-gesture-handler'
 import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
 import TextDefault from '../../Text/TextDefault/TextDefault'

@@ -20,7 +20,7 @@ import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPhone } from '../../store/phoneSlice'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { validatePhoneUnauth } from '../../apollo/mutations'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
@@ -77,7 +77,11 @@ function ForgotPassword(props) {
               flexDirection: isArabic ? 'row-reverse' : 'row'
             }}
           >
-            <Feather name='lock' size={moderateScale(30)} color={currentTheme.newIconColor} />
+            <Feather
+              name='lock'
+              size={moderateScale(30)}
+              color={currentTheme.newIconColor}
+            />
           </View>
           <View>
             <TextDefault

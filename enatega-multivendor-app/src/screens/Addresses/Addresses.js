@@ -6,7 +6,7 @@ import {
   StatusBar,
   Platform
 } from 'react-native'
-import { NetworkStatus, useMutation, useQuery } from '@apollo/client'
+import { NetworkStatus, useMutation, useQuery } from '@apollo/client/react'
 import {
   AntDesign,
   EvilIcons,
@@ -130,7 +130,7 @@ function Addresses() {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: 10}}>
+            <View style={{ paddingLeft: 10 }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(24)}
@@ -191,93 +191,99 @@ function Addresses() {
           )}
           ListHeaderComponent={() => <View style={{ ...alignment.MTmedium }} />}
           renderItem={({ item: address }) => {
-            console.log('t(address.label)', t(address.label), addressIcons[address.label])
-            return(
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={[styles(currentTheme).containerSpace]}
-            >
-              <View style={[styles().width100, styles().rowContainer]}>
-                <View style={[styles(currentTheme).homeIcon]}>
-                  {addressIcons[address.label]
-                    ? React.createElement(addressIcons[address.label], {
-                        fill: currentTheme.darkBgFont
-                      })
-                    : React.createElement(addressIcons['Other'], {
-                        fill: currentTheme.darkBgFont
-                      })}
-                </View>
-                <View style={[styles().titleAddress]}>
-                  <TextDefault
-                    textColor={currentTheme.darkBgFont}
-                    style={styles(currentTheme).labelStyle}
-                  >
-                    {t(address.label)}
-                  </TextDefault>
-                </View>
-                <View style={styles().buttonsAddress}>
-                  <TouchableOpacity
-                    disabled={loadingMutation}
-                    onPress={() => {
-                      const [longitude, latitude] = address.location.coordinates
-                      dispatch(
-                        setAddress({
-                          addressFrom: address.deliveryAddress,
-                          regionFrom: {
-                            latitude: +latitude,
-                            longitude: +longitude
-                          },
-                          addressFreeText: address.details,
-                          label: address.label
+            console.log(
+              't(address.label)',
+              t(address.label),
+              addressIcons[address.label]
+            )
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[styles(currentTheme).containerSpace]}
+              >
+                <View style={[styles().width100, styles().rowContainer]}>
+                  <View style={[styles(currentTheme).homeIcon]}>
+                    {addressIcons[address.label]
+                      ? React.createElement(addressIcons[address.label], {
+                          fill: currentTheme.darkBgFont
                         })
-                      )
-                      navigation.navigate('EditAddressNewVersion', {
-                        address,
-                        id: address._id,
-                        longitude: +longitude,
-                        latitude: +latitude,
-                        prevScreen: 'Addresses'
-                      })
-                    }}
-                  >
-                    <SimpleLineIcons
-                      name='pencil'
-                      size={moderateScale(18)}
-                      color={currentTheme.darkBgFont}
-                    />
-                  </TouchableOpacity>
+                      : React.createElement(addressIcons['Other'], {
+                          fill: currentTheme.darkBgFont
+                        })}
+                  </View>
+                  <View style={[styles().titleAddress]}>
+                    <TextDefault
+                      textColor={currentTheme.darkBgFont}
+                      style={styles(currentTheme).labelStyle}
+                    >
+                      {t(address.label)}
+                    </TextDefault>
+                  </View>
+                  <View style={styles().buttonsAddress}>
+                    <TouchableOpacity
+                      disabled={loadingMutation}
+                      onPress={() => {
+                        const [longitude, latitude] =
+                          address.location.coordinates
+                        dispatch(
+                          setAddress({
+                            addressFrom: address.deliveryAddress,
+                            regionFrom: {
+                              latitude: +latitude,
+                              longitude: +longitude
+                            },
+                            addressFreeText: address.details,
+                            label: address.label
+                          })
+                        )
+                        navigation.navigate('EditAddressNewVersion', {
+                          address,
+                          id: address._id,
+                          longitude: +longitude,
+                          latitude: +latitude,
+                          prevScreen: 'Addresses'
+                        })
+                      }}
+                    >
+                      <SimpleLineIcons
+                        name='pencil'
+                        size={moderateScale(18)}
+                        color={currentTheme.darkBgFont}
+                      />
+                    </TouchableOpacity>
 
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    disabled={loadingMutation}
-                    onPress={() => {
-                      setAddressId(address._id)
-                      mutate({ variables: { id: address._id } })
-                    }}
-                  >
-                    <EvilIcons
-                      name='trash'
-                      size={moderateScale(28)}
-                      // color={currentTheme.darkBgFont}
-                      color={'red'}
-                    />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      disabled={loadingMutation}
+                      onPress={() => {
+                        setAddressId(address._id)
+                        mutate({ variables: { id: address._id } })
+                      }}
+                    >
+                      <EvilIcons
+                        name='trash'
+                        size={moderateScale(28)}
+                        // color={currentTheme.darkBgFont}
+                        color={'red'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ ...alignment.MTxSmall }}></View>
                 </View>
-                <View style={{ ...alignment.MTxSmall }}></View>
-              </View>
-              <View style={styles().midContainer}>
-                <View style={styles(currentTheme).addressDetail}>
-                  <TextDefault
-                    numberOfLines={2}
-                    textColor={currentTheme.darkBgFont}
-                    style={{ ...alignment.PBxSmall }}
-                  >
-                    {address.deliveryAddress}
-                  </TextDefault>
+                <View style={styles().midContainer}>
+                  <View style={styles(currentTheme).addressDetail}>
+                    <TextDefault
+                      numberOfLines={2}
+                      textColor={currentTheme.darkBgFont}
+                      style={{ ...alignment.PBxSmall }}
+                    >
+                      {address.deliveryAddress}
+                    </TextDefault>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          )}}
+              </TouchableOpacity>
+            )
+          }}
         />
       ) : null}
       {/* </ScrollView> */}

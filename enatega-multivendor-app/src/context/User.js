@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { v5 as uuidv5 } from 'uuid'
 import { v1 as uuidv1 } from 'uuid'

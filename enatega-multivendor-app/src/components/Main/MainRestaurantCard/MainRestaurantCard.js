@@ -1,28 +1,28 @@
 import React, { useContext, useMemo, useState } from 'react'
 import {
   View,
-  FlatList,
+  // FlatList,
   Text,
-  Image,
-  TouchableOpacity,
-  ScrollView
+  // Image,
+  TouchableOpacity
+  // ScrollView
 } from 'react-native'
-import UserContext from '../../../context/User'
+// import UserContext from '../../../context/User'
 import styles from './styles'
 import TextDefault from '../../Text/TextDefault/TextDefault'
-import { alignment } from '../../../utils/alignment'
+// import { alignment } from '../../../utils/alignment'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { useTranslation } from 'react-i18next'
 import NewRestaurantCard from '../RestaurantCard/NewRestaurantCard'
 import MainLoadingUI from '../LoadingUI/MainLoadingUI'
-import { Ionicons } from '@expo/vector-icons'
+// import { Ionicons } from '@expo/vector-icons'
 import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
-import { TopBrands } from '../TopBrands'
-import { useQuery } from '@apollo/client'
+// import { TopBrands } from '../TopBrands'
+// import { useQuery } from '@apollo/client/react'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import {
   DataProvider,

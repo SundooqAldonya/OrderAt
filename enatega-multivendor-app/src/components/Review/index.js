@@ -17,7 +17,7 @@ import { styles } from './styles'
 import Button from '../Button/Button'
 import { order } from '../../apollo/queries'
 import gql from 'graphql-tag'
-import { useApolloClient, useMutation } from '@apollo/client'
+import { useApolloClient, useMutation } from '@apollo/client/react'
 import { reviewOrder } from '../../apollo/mutations'
 import { useTranslation } from 'react-i18next'
 

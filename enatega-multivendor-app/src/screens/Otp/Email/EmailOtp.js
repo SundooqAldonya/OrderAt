@@ -14,7 +14,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import CustomOtpInput from '../../../components/CustomOTP'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { submitEmailOTP } from '../../../apollo/mutations'
 import Toast from 'react-native-toast-message'
 

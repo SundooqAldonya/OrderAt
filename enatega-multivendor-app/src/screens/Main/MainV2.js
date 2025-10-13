@@ -36,7 +36,7 @@ import {
   topRatedVendorsInfo
 } from '../../apollo/queries'
 import useHomeRestaurants from '../../ui/hooks/useRestaurantOrderInfo'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { LocationContext } from '../../context/Location'
 import MainRestaurantCard from '../../components/Main/MainRestaurantCard/MainRestaurantCard'
 import BusinessCategories from '../../components/BusinessCategories'
@@ -67,6 +67,7 @@ import truncate from '../../utils/helperFun'
 import { setRestaurant } from '../../store/restaurantSlice'
 import { useDispatch } from 'react-redux'
 import ConfigurationContext from '../../context/Configuration'
+import gql from 'graphql-tag'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}

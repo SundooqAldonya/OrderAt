@@ -6,10 +6,11 @@ import { AntDesign } from '@expo/vector-icons'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { styles as getStyles } from './styles'
-import { gql, useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import { food, getSingleFood } from '../../apollo/queries'
 import ConfigurationContext from '../../context/Configuration'
 import { useNavigation } from '@react-navigation/native'
+import gql from 'graphql-tag'
 
 // const FOOD = gql`
 //   ${food}

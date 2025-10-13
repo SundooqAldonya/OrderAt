@@ -21,7 +21,7 @@ import { moderateScale, scale } from '../../../utils/scaling'
 import { colors } from '../../../utils/colors'
 import { useSelector } from 'react-redux'
 import CustomOtpInput from '../../../components/CustomOTP'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import {
   validatePhone,
   validatePhoneUnauth,

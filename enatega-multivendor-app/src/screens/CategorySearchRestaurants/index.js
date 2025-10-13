@@ -10,7 +10,7 @@ import {
 import { EvilIcons, Ionicons } from '@expo/vector-icons'
 import ConfigurationContext from '../../context/Configuration'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { searchRestaurantsCustomer } from '../../apollo/queries'
 import { useLocation } from '../../ui/hooks'
 import { LocationContext } from '../../context/Location'
@@ -18,41 +18,6 @@ import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { useTranslation } from 'react-i18next'
 import { StarRatingDisplay } from 'react-native-star-rating-widget'
 import { moderateScale } from '../../utils/scaling'
-
-const burgers = [
-  {
-    id: '1',
-    name: 'Burger Restaurant',
-    restaurant: 'Rose Garden',
-    price: 40,
-    image:
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  },
-  {
-    id: '2',
-    name: "Smokin' Restaurant",
-    restaurant: 'Cafenio Restaurant',
-    price: 60,
-    image:
-      'https://images.unsplash.com/photo-1614873658551-c89ecc8ac973?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  },
-  {
-    id: '3',
-    name: 'Restaurant Burgers',
-    restaurant: 'Kaji Firm Kitchen',
-    price: 75,
-    image:
-      'https://images.unsplash.com/photo-1509710279439-9d856fa07d75?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  },
-  {
-    id: '4',
-    name: 'Bullseye Restaurant',
-    restaurant: 'Kabab Restaurant',
-    price: 94,
-    image:
-      'https://images.unsplash.com/photo-1581340387428-daa644fbedb3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  }
-]
 
 const CategorySearchRestaurants = () => {
   const configuration = useContext(ConfigurationContext)

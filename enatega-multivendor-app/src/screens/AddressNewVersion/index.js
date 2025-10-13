@@ -28,7 +28,7 @@ import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import { createAddress, selectAddress } from '../../apollo/mutations'
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
 import { moderateScale } from '../../utils/scaling'
 import { colors } from '../../utils/colors'
 import { alignment } from '../../utils/alignment'
@@ -45,6 +45,7 @@ import {
 import { getCities, getCityAreas } from '../../apollo/queries'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Toast from 'react-native-toast-message'
+import gql from 'graphql-tag'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}

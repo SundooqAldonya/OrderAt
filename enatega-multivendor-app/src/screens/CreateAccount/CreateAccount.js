@@ -18,7 +18,7 @@ import {
   statusCodes
 } from '@react-native-google-signin/google-signin'
 import useEnvVars from '../../../environment'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { googleAuthCustomerApp } from '../../apollo/mutations'
 import AuthContext from '../../context/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
