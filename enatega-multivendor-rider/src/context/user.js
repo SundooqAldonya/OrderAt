@@ -46,7 +46,7 @@ export const UserProvider = props => {
   } = useQuery(PROFILE, {
     fetchPolicy: 'network-only',
     onCompleted,
-    pollInterval: 10000,
+    // pollInterval: 10000,
     onError: error1
   })
 

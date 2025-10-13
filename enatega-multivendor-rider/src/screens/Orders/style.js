@@ -47,7 +47,7 @@ const styles = {
     marginHorizontal: 'auto'
   },
   btnText: {
-    color: '#fff',
+    color: '#fff'
   }
 }
 

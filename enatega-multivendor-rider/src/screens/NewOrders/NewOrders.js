@@ -1,5 +1,5 @@
 import { View, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, Fragment } from 'react'
 import ScreenBackground from '../../components/ScreenBackground/ScreenBackground'
 import styles from './style'
 import Tabs from '../../components/Tabs/Tabs'
@@ -20,6 +20,7 @@ import useSidebar from '../../components/Sidebar/useSidebar'
 import { orderSeenByRider } from '../../apollo/mutations'
 import { useRef } from 'react'
 import { useMutation } from '@apollo/client/react'
+
 const { height, width } = Dimensions.get('window')
 
 const NewOrders = ({ navigation }) => {
@@ -105,6 +106,38 @@ const NewOrders = ({ navigation }) => {
     })
   }).current
 
+  const listEmptyComponent = () => {
+    return (
+      <View
+        style={{
+          minHeight:
+            height > 670 ? height - height * 0.5 : height - height * 0.6,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <LottieView
+          style={{
+            width: width - 100,
+            height: 250
+          }}
+          source={require('../../assets/loader.json')}
+          autoPlay
+          loop
+        />
+
+        {noNewOrders ? (
+          <TextDefault bold center H3 textColor={colors.fontSecondColor}>
+            {t('noNewOrders')}
+          </TextDefault>
+        ) : (
+          <TextDefault bold center H3 textColor={colors.fontSecondColor}>
+            {t('pullToRefresh')}
+          </TextDefault>
+        )}
+      </View>
+    )
+  }
+
   return (
     <ScreenBackground>
       <View style={styles.innerContainer}>
@@ -140,65 +173,30 @@ const NewOrders = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ) : riderIsActive && isEnabled && dataProfile?.rider ? (
-          <FlatList
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-            ListEmptyComponent={() => {
-              return (
-                <View
-                  style={{
-                    minHeight:
-                      height > 670
-                        ? height - height * 0.5
-                        : height - height * 0.6,
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}>
-                  <LottieView
-                    style={{
-                      width: width - 100,
-                      height: 250
-                    }}
-                    source={require('../../assets/loader.json')}
-                    autoPlay
-                    loop
-                  />
-
-                  {noNewOrders ? (
-                    <TextDefault
-                      bold
-                      center
-                      H3
-                      textColor={colors.fontSecondColor}>
-                      {t('noNewOrders')}
-                    </TextDefault>
-                  ) : (
-                    <TextDefault
-                      bold
-                      center
-                      H3
-                      textColor={colors.fontSecondColor}>
-                      {t('pullToRefresh')}
-                    </TextDefault>
-                  )}
-                </View>
-              )
-            }}
-            style={styles.ordersContainer}
-            keyExtractor={item => item._id}
-            data={orders}
-            showsVerticalScrollIndicator={false}
-            refreshing={networkStatusAssigned === NetworkStatus.loading}
-            onRefresh={refetchAssigned}
-            renderItem={({ item }) => (
-              <Order
-                order={item}
-                key={item._id}
-                id={item._id}
-                orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
-              />
-            )}
-          />
+          <Fragment>
+            <FlatList
+              onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+              ListEmptyComponent={listEmptyComponent}
+              style={styles.ordersContainer}
+              // contentContainerStyle={{
+              //   backgroundColor: 'red'
+              // }}
+              keyExtractor={item => item._id}
+              data={orders}
+              showsVerticalScrollIndicator={false}
+              refreshing={networkStatusAssigned === NetworkStatus.loading}
+              onRefresh={refetchAssigned}
+              renderItem={({ item }) => (
+                <Order
+                  order={item}
+                  key={item._id}
+                  id={item._id}
+                  orderAmount={`${configuration.currencySymbol}${item.orderAmount}`}
+                />
+              )}
+            />
+          </Fragment>
         ) : (
           <TextDefault
             bold
