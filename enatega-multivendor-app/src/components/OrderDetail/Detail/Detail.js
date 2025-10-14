@@ -76,7 +76,8 @@ export default function Detail({
     variables: {
       orderId: _id,
       riderId: rider?._id
-    }
+    },
+    skip: !rider
     // pollInterval: 10000
   })
 

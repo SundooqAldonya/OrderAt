@@ -89,8 +89,12 @@ function OrderDetail(props) {
     // subscribeToMore: subscribeToMoreOrders
   } = useQuery(ORDER, {
     variables: { id },
-    fetchPolicy: 'network-only',
-    onError
+    fetchPolicy: 'cache-and-network',
+    onError: (err) => {
+      console.log({ err })
+    },
+    onCompleted: () => console.log('✅ Order fetched once')
+
     // pollInterval: 10000
   })
 
@@ -106,24 +110,20 @@ function OrderDetail(props) {
     })
   }
 
-  useLayoutEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () =>
-        HelpButton({
-          iconBackground: currentTheme.main,
-          navigation,
-          t
-        }),
-      headerTitle: `${t('orders')}`,
-      headerTitleStyle: { color: currentTheme.newFontcolor },
-      headerStyle: { backgroundColor: currentTheme.newheaderBG }
-    })
-  }, [
-    currentTheme.main,
-    currentTheme.newFontcolor,
-    currentTheme.newheaderBG,
-    t
-  ])
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <HelpButton
+  //         iconBackground={currentTheme.main}
+  //         navigation={navigation}
+  //         t={t}
+  //       />
+  //     ),
+  //     headerTitle: `${t('orders')}`,
+  //     headerTitleStyle: { color: currentTheme.newFontcolor },
+  //     headerStyle: { backgroundColor: currentTheme.newheaderBG }
+  //   })
+  // }, [currentTheme.main])
 
   if (loadingOrders || !order) {
     return (
