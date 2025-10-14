@@ -2,10 +2,10 @@
 // import image from '../assets/logo_no_subtitle.jpg'
 export const formatReceipt = (order, currency) => {
   // console.log({ userOrder: order.user })
-  const address =
-    order?.shippingMethod === 'PICKUP'
-      ? 'الاستلام من الفرع'
-      : `${order?.deliveryAddress?.label} ${order?.deliveryAddress?.details} ${order?.deliveryAddress?.deliveryAddress}`
+  // const address =
+  //   order?.shippingMethod === 'PICKUP'
+  //     ? 'الاستلام من الفرع'
+  //     : `${order?.deliveryAddress?.label} ${order?.deliveryAddress?.details} ${order?.deliveryAddress?.deliveryAddress}`
 
   const {
     // user: { phone },
@@ -193,7 +193,7 @@ export const formatReceipt = (order, currency) => {
 
         <div class="footer" style="text-align: center;">
           <p>شكراً لتعاملكم معنا</p>
-          <p>${order.restaurant.name}</p>
+          <p>${name}</p>
         </div>
       </div>
     </body>

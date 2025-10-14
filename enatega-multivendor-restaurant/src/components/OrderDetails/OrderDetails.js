@@ -33,7 +33,8 @@ export default function OrderDetails({ orderData }) {
                 textTransform: 'capitalize'
               }
             ]}>
-            {t('name')}: {orderData.rider.name ? orderData.rider.name : null}
+            {t('name')}:{' '}
+            {orderData?.rider?.name ? orderData?.rider?.name : null}
           </TextDefault>
           <TouchableOpacity
             style={{

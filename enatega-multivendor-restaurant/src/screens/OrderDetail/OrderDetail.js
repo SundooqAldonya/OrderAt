@@ -27,14 +27,19 @@ import SpriteCapture, {
 import PrinterManager from '../../utilities/printers/printerManager'
 import fs from 'react-native-fs'
 
-import * as htmlToImage from 'html-to-image'
-import { toPng } from 'html-to-image'
+// import * as htmlToImage from 'html-to-image'
+// import { toPng } from 'html-to-image'
 import RenderHtml from '@builder.io/react-native-render-html'
 import { loadPrinterInfo } from '../../utilities/printers'
-import * as ImageManipulator from 'expo-image-manipulator'
-import { Asset } from 'expo-asset'
+// import * as ImageManipulator from 'expo-image-manipulator'
+// import { Asset } from 'expo-asset'
 import { useQuery } from '@apollo/client/react'
-import { singleOrder } from '../../apollo'
+import { orderStatusChanged, singleOrder } from '../../apollo'
+import { gql } from '@apollo/client'
+
+const ORDER_STATUS_CHANGED = gql`
+  ${orderStatusChanged}
+`
 
 const ReceiptViewer = ({ receipt_HTML, width }) => {
   return <RenderHtml contentWidth={width} source={{ html: receipt_HTML }} />
@@ -49,9 +54,12 @@ export default function OrderDetail({ navigation, route }) {
   console.log({ itemId })
   const { t, i18n } = useTranslation()
 
-  const { data: dataOrderDetail, loading, error } = useQuery(singleOrder, {
-    variables: { id: itemId }
-  })
+  const { data: dataOrderDetail, loading, error, subscribeToMore } = useQuery(
+    singleOrder,
+    {
+      variables: { id: itemId }
+    }
+  )
 
   console.log({ dataOrderDetail })
 
@@ -59,6 +67,33 @@ export default function OrderDetail({ navigation, route }) {
 
   console.log({ orderData })
   const order = orderData || null
+
+  useEffect(() => {
+    if (!itemId) return
+
+    const unsubscribe = subscribeToMore({
+      document: ORDER_STATUS_CHANGED, // your gql subscription
+      variables: { orderId: itemId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+
+        const updatedOrder = subscriptionData.data.orderStatusChanged.order
+
+        // only update if same order
+        if (updatedOrder._id !== prev.singleOrder._id) return prev
+
+        return {
+          ...prev,
+          singleOrder: {
+            ...prev.singleOrder,
+            ...updatedOrder
+          }
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [itemId, subscribeToMore])
 
   const {
     activeBar

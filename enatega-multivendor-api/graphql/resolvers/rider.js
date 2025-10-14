@@ -12,7 +12,9 @@ const {
   publishRiderLocation,
   RIDER_LOCATION,
   ZONE_ORDER,
-  publishOrder
+  publishOrder,
+  publishToDashboard,
+  publishToDispatcher
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -522,6 +524,12 @@ module.exports = {
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
         // sendNotificationToUser(result.user, result)
+        // publishToDashboard(
+        //   result.restaurant.toString(),
+        //   transformedOrder,
+        //   'new'
+        // )
+        // publishToDispatcher(transformedOrder)
         if (user) {
           if (user.isOrderNotification) {
             console.log('through condition')
