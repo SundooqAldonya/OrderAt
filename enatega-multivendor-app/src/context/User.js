@@ -12,6 +12,7 @@ import analytics from '../utils/analytics'
 
 import { useTranslation } from 'react-i18next'
 import { useRestaurant } from '../ui/hooks'
+import { setUserId } from '@amplitude/analytics-react-native'
 
 const v1options = {
   random: [
@@ -38,6 +39,7 @@ export const UserProvider = (props) => {
   const [restaurant, setRestaurant] = useState(null)
   const [isPickup, setIsPickup] = useState(false)
   const [instructions, setInstructions] = useState('')
+  const [userId, setUserId] = useState(null)
 
   console.log({ token })
 
@@ -55,6 +57,12 @@ export const UserProvider = (props) => {
     skip: !token,
     pollInterval: 10000
   })
+
+  useEffect(() => {
+    if (dataProfile) {
+      setUserId(dataProfile.profile._id)
+    }
+  }, [dataProfile])
 
   const { loading, data } = useRestaurant(restaurant)
   const restaurantCustomer = data?.restaurantCustomer || null
@@ -294,7 +302,8 @@ export const UserProvider = (props) => {
         instructions,
         setInstructions,
         calculatePrice,
-        populateFood
+        populateFood,
+        userId
       }}
     >
       {props.children}

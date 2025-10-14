@@ -89,8 +89,10 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(ORDER_STATUS_CHANGED),
         (payload, args, context) => {
-          const userId = payload.orderStatusChanged.userId.toString()
-          return userId === args.userId
+          const orderId = payload.orderStatusChanged.order._id.toString()
+          return orderId === args.orderId
+          // const userId = payload.orderStatusChanged.userId.toString()
+          // return userId === args.userId
         }
       )
     },
@@ -831,6 +833,9 @@ module.exports = {
         //   restaurantId: savedOrder.resId,
         //   time: preparationTime
         // })
+        const transformedOrder = await transformOrder(savedOrder)
+        publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
+        publishToDispatcher(transformedOrder)
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,

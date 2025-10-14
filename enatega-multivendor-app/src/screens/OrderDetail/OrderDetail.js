@@ -46,6 +46,8 @@ import LottieView from 'lottie-react-native'
 import { singleOrder } from '../../apollo/queries'
 // import JSONTree from 'react-native-json-tree'
 import gql from 'graphql-tag'
+import { orderStatusChanged } from '../../apollo/subscriptions'
+import UserContext from '../../context/User'
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
 
@@ -57,6 +59,10 @@ const ORDER = gql`
   ${singleOrder}
 `
 
+const ORDER_STATUS_CHANGED = gql`
+  ${orderStatusChanged}
+`
+
 function OrderDetail(props) {
   const [cancelModalVisible, setCancelModalVisible] = useState(false)
   // const Analytics = analytics()
@@ -64,6 +70,8 @@ function OrderDetail(props) {
   // const user = props.route.params ? props.route.params.user : null
   // const { orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
+  const { userId } = useContext(UserContext)
+  console.log({ userId })
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { i18n, t } = useTranslation()
@@ -83,10 +91,10 @@ function OrderDetail(props) {
     data,
     // called: calledOrders,
     loading: loadingOrders,
-    error: errorOrders
+    error: errorOrders,
     // networkStatus: networkStatusOrders,
     // fetchMore: fetchMoreOrders,
-    // subscribeToMore: subscribeToMoreOrders
+    subscribeToMore: subscribeToMoreOrders
   } = useQuery(ORDER, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
@@ -103,6 +111,34 @@ function OrderDetail(props) {
   const cancelModalToggle = () => {
     setCancelModalVisible(!cancelModalVisible)
   }
+
+  useEffect(() => {
+    if (!order?._id) return
+
+    const unsubscribe = subscribeToMoreOrders({
+      document: ORDER_STATUS_CHANGED,
+      // variables: { userId },
+      variables: { orderId: order._id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+
+        const newOrder = subscriptionData.data.orderStatusChanged.order
+
+        // Only update if it's the same order
+        if (newOrder._id !== prev.singleOrder._id) return prev
+
+        return {
+          ...prev,
+          singleOrder: {
+            ...prev.singleOrder,
+            ...newOrder
+          }
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [userId, subscribeToMoreOrders])
 
   function onError(error) {
     FlashMessage({

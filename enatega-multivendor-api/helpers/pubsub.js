@@ -74,12 +74,14 @@ const pubsub = new RedisPubSub({
 // const pubsub = new SafePubSub()
 // pubsub.ee.setMaxListeners(100)
 
-const publishToUser = (userId, order, origin) => {
+const publishToUser = (order, origin) => {
   const orderStatusChanged = {
-    userId,
+    // userId,
+    orderId: order._id,
     order,
     origin
   }
+  console.log({ orderStatusChanged })
   pubsub.publish(ORDER_STATUS_CHANGED, { orderStatusChanged })
 }
 
