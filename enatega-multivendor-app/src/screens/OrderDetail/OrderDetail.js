@@ -110,20 +110,24 @@ function OrderDetail(props) {
     })
   }
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <HelpButton
-  //         iconBackground={currentTheme.main}
-  //         navigation={navigation}
-  //         t={t}
-  //       />
-  //     ),
-  //     headerTitle: `${t('orders')}`,
-  //     headerTitleStyle: { color: currentTheme.newFontcolor },
-  //     headerStyle: { backgroundColor: currentTheme.newheaderBG }
-  //   })
-  // }, [currentTheme.main])
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HelpButton
+          iconBackground={currentTheme.main}
+          navigation={navigation}
+          t={t}
+        />
+      ),
+      headerTitle: `${t('order')} `,
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        marginInlineEnd: scale(50)
+      },
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: currentTheme.newheaderBG }
+    })
+  }, [currentTheme.main])
 
   if (loadingOrders || !order) {
     return (

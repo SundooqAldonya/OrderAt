@@ -734,5 +734,6 @@ export const ar = {
   rider_review_added: 'تم إضافة تقييم السائق بنجاح',
   no_search_result: 'لا توجد نتائج بحث',
   results: 'النتائج',
-  clear_filters: 'مسح الفلاتر'
+  clear_filters: 'مسح الفلاتر',
+  order: 'طلب'
 }

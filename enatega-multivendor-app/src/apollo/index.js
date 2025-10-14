@@ -27,15 +27,6 @@ const setupApollo = () => {
 
   const cache = new InMemoryCache({
     typePolicies: {
-      Order: {
-        fields: {
-          deliveryAddress: {
-            merge(existing, incoming) {
-              return { ...existing, ...incoming }
-            }
-          }
-        }
-      },
       Query: {
         fields: {
           _id: {
