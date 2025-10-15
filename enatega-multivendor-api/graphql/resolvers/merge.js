@@ -118,7 +118,8 @@ const transformOrder = async order => {
     _id: order?._id,
     zone: zone(order?.zone),
     review: review.bind(this, order?.review),
-    user: await user.bind(this, order?._doc?.user),
+    // user: await user.bind(this, order?._doc?.user),
+    user: order?._doc?.user ? await user(order._doc.user) : null,
     userId: order?._doc?.user?.toString(),
     orderDate: dateToString(order?._doc?.orderDate) || dateToString(new Date()),
     items: await order?.items?.map(item => {
@@ -132,10 +133,11 @@ const transformOrder = async order => {
         addons: item.addons.map(populateOrderAddons)
       }
     }),
-    restaurant: await populateRestaurantDetail.bind(
-      this,
-      order?._doc?.restaurant
-    ),
+    // restaurant: await populateRestaurantDetail.bind(
+    //   this,
+    //   order?._doc?.restaurant
+    // ),
+    restaurant: await populateRestaurantDetail(order?._doc?.restaurant),
     restaurantId: order?.restaurant,
     isRinged: order?.isRinged,
     isRiderRinged: order?.isRiderRinged,

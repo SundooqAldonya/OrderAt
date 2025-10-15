@@ -2478,6 +2478,7 @@ const typeDefs = gql`
   type Subscription {
     subscribePlaceOrder(restaurant: String!): SubscriptionOrders!
     orderStatusChanged(orderId: String!): SubscriptionOrders!
+    orderStatusChangedRestaurant(orderId: String!): SubscriptionOrders!
     subscriptionAssignRider(riderId: String!): SubscriptionOrders!
     subscriptionRiderLocation(riderId: String!): Rider!
     subscriptionZoneOrders(zoneId: String!): Subscription_Zone_Orders!

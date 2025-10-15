@@ -10,6 +10,8 @@ const ZONE_ORDER = 'ZONE_ORDER'
 const SUBSCRIPTION_ORDER = 'SUBSCRIPTION_ORDER'
 const DISPATCH_ORDER = 'DISPATCH_ORDER'
 const SUBSCRIPTION_MESSAGE = 'SUBSCRIPTION_MESSAGE'
+const ORDER_STATUS_CHANGED_RESTAURANT = 'ORDER_STATUS_CHANGED_RESTAURANT'
+
 // const pubsub = new PubSub()
 
 // pubsub.asyncIterator
@@ -85,6 +87,18 @@ const publishToUser = (order, origin) => {
   pubsub.publish(ORDER_STATUS_CHANGED, { orderStatusChanged })
 }
 
+// 🔹 For restaurant app — filtered by orderId
+const publishToRestaurant = (order, origin) => {
+  const orderStatusChangedRestaurant = {
+    orderId: order._id,
+    order,
+    origin
+  }
+  pubsub.publish(ORDER_STATUS_CHANGED_RESTAURANT, {
+    orderStatusChangedRestaurant
+  })
+}
+
 const publishToAssignedRider = (userId, order, origin) => {
   const subscriptionAssignRider = {
     userId,
@@ -133,6 +147,7 @@ module.exports = {
   pubsub,
   PLACE_ORDER,
   ORDER_STATUS_CHANGED,
+  ORDER_STATUS_CHANGED_RESTAURANT,
   ASSIGN_RIDER,
   UNASSIGNED_ORDER,
   RIDER_LOCATION,
@@ -147,5 +162,6 @@ module.exports = {
   publishToZoneRiders,
   publishOrder,
   publishToDispatcher,
-  publishNewMessage
+  publishNewMessage,
+  publishToRestaurant
 }

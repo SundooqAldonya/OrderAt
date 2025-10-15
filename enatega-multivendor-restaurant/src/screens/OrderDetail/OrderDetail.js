@@ -34,7 +34,11 @@ import { loadPrinterInfo } from '../../utilities/printers'
 // import * as ImageManipulator from 'expo-image-manipulator'
 // import { Asset } from 'expo-asset'
 import { useQuery } from '@apollo/client/react'
-import { orderStatusChanged, singleOrder } from '../../apollo'
+import {
+  ORDER_STATUS_CHANGED_RESTAURANT,
+  orderStatusChanged,
+  singleOrder
+} from '../../apollo'
 import { gql } from '@apollo/client'
 
 const ORDER_STATUS_CHANGED = gql`
@@ -72,12 +76,14 @@ export default function OrderDetail({ navigation, route }) {
     if (!itemId) return
 
     const unsubscribe = subscribeToMore({
-      document: ORDER_STATUS_CHANGED, // your gql subscription
+      // document: ORDER_STATUS_CHANGED, // your gql subscription
+      document: ORDER_STATUS_CHANGED_RESTAURANT, // your gql subscription
       variables: { orderId: itemId },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev
 
-        const updatedOrder = subscriptionData.data.orderStatusChanged.order
+        const updatedOrder =
+          subscriptionData.data.orderStatusChangedRestaurant.order
 
         // only update if same order
         if (updatedOrder._id !== prev.singleOrder._id) return prev

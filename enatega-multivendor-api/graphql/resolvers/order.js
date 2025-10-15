@@ -35,7 +35,8 @@ const {
   PLACE_ORDER,
   ORDER_STATUS_CHANGED,
   ASSIGN_RIDER,
-  SUBSCRIPTION_ORDER
+  SUBSCRIPTION_ORDER,
+  ORDER_STATUS_CHANGED_RESTAURANT
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -126,6 +127,13 @@ module.exports = {
           if (!payload?.subscriptionOrder?._id) return false
           return payload.subscriptionOrder._id.toString() === args.id
         }
+      )
+    },
+    orderStatusChangedRestaurant: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(ORDER_STATUS_CHANGED_RESTAURANT),
+        (payload, variables) =>
+          payload.orderStatusChangedRestaurant.orderId === variables.orderId
       )
     }
   },
