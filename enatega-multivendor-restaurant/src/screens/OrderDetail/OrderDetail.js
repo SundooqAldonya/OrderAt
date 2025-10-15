@@ -85,6 +85,8 @@ export default function OrderDetail({ navigation, route }) {
         const updatedOrder =
           subscriptionData.data.orderStatusChangedRestaurant.order
 
+        console.log({ updatedOrder: updatedOrder.orderStatus })
+
         // only update if same order
         if (updatedOrder._id !== prev.singleOrder._id) return prev
 
@@ -442,7 +444,7 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )} */}
-              {activeBar !== 2 && (
+              {order.orderStatus !== 'DELIVERED' && (
                 <>
                   <Button
                     title={t('reject')}
@@ -464,7 +466,7 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )}
-              {activeBar === 2 && (
+              {order.orderStatus === 'DELIVERED' && (
                 <>
                   <TextDefault H3 textColor={colors.darkgreen} bold>
                     {t('delivered')}
