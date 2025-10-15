@@ -182,6 +182,22 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
                 </TextDefault>
               </TouchableOpacity>
             </View>
+          ) : order.orderStatus === 'CANCELLED' ? (
+            <View style={styles.btnContainer}>
+              {/* <ChatWithCustomerButton navigation={navigation} order={order} /> */}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                disabled={true}
+                style={[styles.btn, { backgroundColor: 'rgba(255,0,0,0.5)' }]}>
+                <TextDefault center H5 bold textColor={colors.black}>
+                  {loadingOrderStatus ? (
+                    <Spinner size="small" color="transparent" />
+                  ) : (
+                    t('cancelled')
+                  )}
+                </TextDefault>
+              </TouchableOpacity>
+            </View>
           ) : null}
         </>
       ) : null}
