@@ -3,7 +3,7 @@ import usePlacesAutocomplete, {
   getLatLng
 } from 'use-places-autocomplete'
 import { Autocomplete } from '@mui/material'
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/core'
 
 const AutocompleteInput = ({ label, value, onSelect }) => {
   const {
