@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production node app.js",
-    "start:dev": "node app.js --watch",
-    "dev": "cross-env NODE_ENV=development && nodemon app",
+    "start": "node init && cross-env NODE_ENV=production node app.js",
+    "start:dev": "node init && node app.js --watch",
+    "dev": "node init && cross-env NODE_ENV=development && nodemon app",
     "prod": "export NODE_ENV=production && nodemon app.js",
     "staging": "export NODE_ENV=staging && nodemon app.js",
     "format": "prettier --write '**/*.js'",
