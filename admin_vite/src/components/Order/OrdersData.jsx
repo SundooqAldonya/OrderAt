@@ -1,215 +1,217 @@
-import React, { useEffect, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { transformToNewline } from '../../utils/stringManipulations'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import CustomLoader from '../Loader/CustomLoader'
-import { subscribePlaceOrder, orderCount } from '../../apollo'
-import { useQuery, gql } from '@apollo/client'
-import SearchBar from '../TableHeader/SearchBar'
-import { customStyles } from '../../utils/tableCustomStyles'
-import TableHeader from '../TableHeader'
-import { Alert, useTheme } from '@mui/material'
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import { Box } from '@mui/system'
-import AddOrder from './AddOrder'
-import AddNewOrder from './AddNewOrder'
+import React, { useEffect, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { transformToNewline } from "../../utils/stringManipulations";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import CustomLoader from "../Loader/CustomLoader";
+import { subscribePlaceOrder, orderCount } from "../../apollo";
+import { useQuery } from "@apollo/client/react";
+import SearchBar from "../TableHeader/SearchBar";
+import { customStyles } from "../../utils/tableCustomStyles";
+import TableHeader from "../TableHeader";
+import { Alert, useTheme } from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Box } from "@mui/system";
+import AddOrder from "./AddOrder";
+import AddNewOrder from "./AddNewOrder";
+import { gql } from "@apollo/client";
 
 const ORDERCOUNT = gql`
   ${orderCount}
-`
+`;
 const ORDER_PLACED = gql`
   ${subscribePlaceOrder}
-`
+`;
 
-const OrdersData = props => {
-  const theme = useTheme()
-  const { t, refetchOrders, isAdminPage } = props
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false)
-  const [newFormVisible, setNewFormVisible] = useState(false)
+const OrdersData = (props) => {
+  const theme = useTheme();
+  const { t, refetchOrders, isAdminPage } = props;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false);
+  const [newFormVisible, setNewFormVisible] = useState(false);
   const [orderDetails, setOrderDetails] = useState({
-    items: '',
+    items: "",
     quantity: 1,
-    paymentMethod: '',
-    address: ''
-  })
-  const [success, setSuccess] = useState(null)
+    paymentMethod: "",
+    address: "",
+  });
+  const [success, setSuccess] = useState(null);
 
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
-  const handleOpenOrderForm = () => setIsOrderFormVisible(true)
-  const handleCloseOrderForm = () => setIsOrderFormVisible(false)
+  const handleOpenOrderForm = () => setIsOrderFormVisible(true);
+  const handleCloseOrderForm = () => setIsOrderFormVisible(false);
 
-  const handleOrderChange = e => {
-    const { name, value } = e.target
-    setOrderDetails(prevState => ({
+  const handleOrderChange = (e) => {
+    const { name, value } = e.target;
+    setOrderDetails((prevState) => ({
       ...prevState,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmitOrder = () => {
-    console.log('Order submitted:', orderDetails)
+    console.log("Order submitted:", orderDetails);
     // Implement the order submission logic here
-    setIsOrderFormVisible(false) // Hide the form and show the table again
-  }
+    setIsOrderFormVisible(false); // Hide the form and show the table again
+  };
 
-  const getItems = items => {
+  const getItems = (items) => {
     return items
       .map(
-        item =>
+        (item) =>
           `${item.quantity}x${item.title}${
-            item.variation.title ? `(${item.variation.title})` : ''
+            item.variation.title ? `(${item.variation.title})` : ""
           }`
       )
-      .join('\n')
-  }
+      .join("\n");
+  };
 
-  const restaurantId = localStorage.getItem('restaurantId')
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const { data, loading: loadingQuery } = useQuery(ORDERCOUNT, {
-    variables: { restaurant: restaurantId }
-  })
+    variables: { restaurant: restaurantId },
+  });
 
   const propExists = (obj, path) => {
-    return path.split('.').reduce((obj, prop) => {
-      return obj && obj[prop] ? obj[prop] : ''
-    }, obj)
-  }
+    return path.split(".").reduce((obj, prop) => {
+      return obj && obj[prop] ? obj[prop] : "";
+    }, obj);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (field && isNaN(propExists(row, field))) {
-        return propExists(row, field).toLowerCase()
+        return propExists(row, field).toLowerCase();
       }
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
   const handlePerRowsChange = (perPage, page) => {
-    props.page(page)
-    props.rows(perPage)
-  }
+    props.page(page);
+    props.rows(perPage);
+  };
 
-  const handlePageChange = async page => {
-    props.page(page)
-  }
+  const handlePageChange = async (page) => {
+    props.page(page);
+  };
 
   const columns = [
     {
-      name: t('OrderID'),
+      name: t("OrderID"),
       sortable: true,
-      selector: 'orderId'
+      selector: "orderId",
     },
     // {
     //   name: t('Items'),
     //   cell: row => <>{getItems(row.items)}</>
     // },
     {
-      name: t('name'),
-      cell: row => <>{row.user && row.user.name ? row.user.name : 'N/A'}</>
+      name: t("name"),
+      cell: (row) => <>{row.user && row.user.name ? row.user.name : "N/A"}</>,
     },
     {
-      name: t('phone'),
-      cell: row => <>{row.user && row.user.phone ? row.user.phone : 'N/A'}</>
+      name: t("phone"),
+      cell: (row) => <>{row.user && row.user.phone ? row.user.phone : "N/A"}</>,
     },
     {
-      name: t('Payment'),
-      selector: 'paymentMethod',
+      name: t("Payment"),
+      selector: "paymentMethod",
       sortable: true,
-      cell: row => <>{t(row.paymentMethod)}</>
+      cell: (row) => <>{t(row.paymentMethod)}</>,
     },
     {
-      name: t('Status'),
-      selector: 'orderStatus',
+      name: t("Status"),
+      selector: "orderStatus",
       sortable: true,
-      cell: row => <>{t(row.orderStatus)}</>
+      cell: (row) => <>{t(row.orderStatus)}</>,
     },
     {
-      name: t('Datetime'),
-      cell: row => (
-        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
-      )
-    }
+      name: t("Datetime"),
+      cell: (row) => (
+        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, "\n")}</>
+      ),
+    },
     // {
     //   name: t('Address'),
     //   cell: row => (
     //     <>{transformToNewline(row?.deliveryAddress?.deliveryAddress, 3)}</>
     //   )
     // }
-  ]
+  ];
 
   const conditionalRowStyles = [
     {
-      when: row =>
-        row.orderStatus !== 'DELIVERED' && row.orderStatus !== 'CANCELLED',
+      when: (row) =>
+        row.orderStatus !== "DELIVERED" && row.orderStatus !== "CANCELLED",
       style: {
-        backgroundColor: theme.palette.warning.lightest
-      }
-    }
-  ]
+        backgroundColor: theme.palette.warning.lightest,
+      },
+    },
+  ];
 
   useEffect(() => {
     props.subscribeToMore({
       document: ORDER_PLACED,
       variables: { id: restaurantId },
       updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
-        if (subscriptionData.data.subscribePlaceOrder.origin === 'new') {
+        if (!subscriptionData.data) return prev;
+        if (subscriptionData.data.subscribePlaceOrder.origin === "new") {
           return {
             ordersByRestId: [
               subscriptionData.data.subscribePlaceOrder.order,
-              ...prev.ordersByRestId
-            ]
-          }
+              ...prev.ordersByRestId,
+            ],
+          };
         } else {
           const orderIndex = prev.ordersByRestId.findIndex(
-            o => subscriptionData.data.subscribePlaceOrder.order._id === o._id
-          )
+            (o) => subscriptionData.data.subscribePlaceOrder.order._id === o._id
+          );
           prev.ordersByRestId[orderIndex] =
-            subscriptionData.data.subscribePlaceOrder.order
-          return { ordersByRestId: [...prev.ordersByRestId] }
+            subscriptionData.data.subscribePlaceOrder.order;
+          return { ordersByRestId: [...prev.ordersByRestId] };
         }
       },
-      onError: error => {
-        console.log('onError', error)
-      }
-    })
-  }, [])
+      onError: (error) => {
+        console.log("onError", error);
+      },
+    });
+  }, []);
 
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
 
   const filtered =
     searchQuery.length < 3
       ? props && props.orders
       : props.orders &&
-        props.orders.filter(order => {
-          return order.orderId.toLowerCase().search(regex) > -1
-        })
+        props.orders.filter((order) => {
+          return order.orderId.toLowerCase().search(regex) > -1;
+        });
 
   return (
     <>
       {/* Add Order Button on the Right Side */}
       {!isAdminPage ? (
-        <Grid container spacing={2} style={{ marginBottom: '20px' }}>
-          <Grid item xs={9}></Grid>{' '}
+        <Grid container spacing={2} style={{ marginBottom: "20px" }}>
+          <Grid item xs={9}></Grid>{" "}
           <Grid item xs={3}>
             <Button
               variant="contained"
               color="primary"
               // onClick={handleOpenOrderForm}
               onClick={() => setNewFormVisible(true)}
-              fullWidth>
-              {t('Addorder')}
+              fullWidth
+            >
+              {t("Addorder")}
             </Button>
           </Grid>
         </Grid>
@@ -220,13 +222,14 @@ const OrdersData = props => {
           severity="success"
           sx={{
             mb: 2,
-            color: 'white', // Text color
-            backgroundColor: '#32620e', // Background color
-            fontWeight: 'bold',
-            '& .MuiAlert-icon': {
-              color: 'white' // Icon color
-            }
-          }}>
+            color: "white", // Text color
+            backgroundColor: "#32620e", // Background color
+            fontWeight: "bold",
+            "& .MuiAlert-icon": {
+              color: "white", // Icon color
+            },
+          }}
+        >
           {success}
         </Alert>
       )}
@@ -244,13 +247,14 @@ const OrdersData = props => {
 
       {/* Data Table (Slides Up when Order Form is Visible) */}
       <div
-        className={`table-container ${isOrderFormVisible ? 'slide-up' : ''}`}
+        className={`table-container ${isOrderFormVisible ? "slide-up" : ""}`}
         style={{
-          transition: 'transform 0.3s ease-in-out',
-          marginTop: isOrderFormVisible ? '20px' : '0px' // Adds space above table when form is visible
-        }}>
+          transition: "transform 0.3s ease-in-out",
+          marginTop: isOrderFormVisible ? "20px" : "0px", // Adds space above table when form is visible
+        }}
+      >
         <DataTable
-          title={<TableHeader title={t('Orders')} />}
+          title={<TableHeader title={t("Orders")} />}
           columns={columns}
           data={filtered}
           onRowClicked={props.toggleModal}
@@ -275,7 +279,7 @@ const OrdersData = props => {
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(OrdersData)
+export default withTranslation()(OrdersData);

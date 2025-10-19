@@ -1,75 +1,75 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
-import { getDispatchOptions, updateDispatchOptions } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button, Alert } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+import React, { useRef, useState, useEffect } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { getDispatchOptions, updateDispatchOptions } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button, Alert } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function DispatchOptions() {
-  const { t } = useTranslation()
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const { t } = useTranslation();
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [values, setValues] = useState({
     delayDispatch: 0,
     firstAttemptRiders: 0,
     secondAttemptRiders: 0,
-    thirdAttemptRiders: 0
-  })
+    thirdAttemptRiders: 0,
+  });
 
   const {
     delayDispatch,
     firstAttemptRiders,
     secondAttemptRiders,
-    thirdAttemptRiders
-  } = values
+    thirdAttemptRiders,
+  } = values;
 
-  const { data, loading: loadingQuery, error } = useQuery(getDispatchOptions)
+  const { data, loading: loadingQuery, error } = useQuery(getDispatchOptions);
 
   useEffect(() => {
     if (data) {
-      setValues({ ...data.getDispatchOptions })
+      setValues({ ...data.getDispatchOptions });
     }
-  }, [data])
+  }, [data]);
 
-  const handleChange = e => {
-    setValues({ ...values, [e.target.name]: e.target.value })
-  }
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
   const [mutateDispatchOptions, { loading }] = useMutation(
     updateDispatchOptions,
     {
-      onCompleted: res => {
-        console.log({ res })
+      onCompleted: (res) => {
+        console.log({ res });
       },
-      onError: err => {
-        console.log({ err })
-      }
+      onError: (err) => {
+        console.log({ err });
+      },
     }
-  )
+  );
 
-  const handleSubmit = e => {
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
     mutateDispatchOptions({
       variables: {
         input: {
           delayDispatch: parseInt(delayDispatch),
           firstAttemptRiders: parseInt(firstAttemptRiders),
           secondAttemptRiders: parseInt(secondAttemptRiders),
-          thirdAttemptRiders: parseInt(thirdAttemptRiders)
-        }
-      }
-    })
-  }
+          thirdAttemptRiders: parseInt(thirdAttemptRiders),
+        },
+      },
+    });
+  };
 
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
         <Box item className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
-            {t('DispatchOptions')}
+            {t("DispatchOptions")}
           </Typography>
         </Box>
       </Box>
@@ -78,7 +78,7 @@ function DispatchOptions() {
         <form onSubmit={handleSubmit}>
           <Box>
             <Typography className={classes.labelText}>
-              {t('dispatch_delay')} {`(in seconds)`}
+              {t("dispatch_delay")} {`(in seconds)`}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -93,7 +93,7 @@ function DispatchOptions() {
           </Box>
           <Box>
             <Typography className={classes.labelText}>
-              {t('first_attempt_riders')}
+              {t("first_attempt_riders")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -108,7 +108,7 @@ function DispatchOptions() {
           </Box>
           <Box>
             <Typography className={classes.labelText}>
-              {t('second_attempt_riders')}
+              {t("second_attempt_riders")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -123,7 +123,7 @@ function DispatchOptions() {
           </Box>
           <Box>
             <Typography className={classes.labelText}>
-              {t('third_attempt_riders')}
+              {t("third_attempt_riders")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -141,8 +141,9 @@ function DispatchOptions() {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              type="submit">
-              {t('Save')}
+              type="submit"
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -150,7 +151,8 @@ function DispatchOptions() {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
@@ -158,7 +160,8 @@ function DispatchOptions() {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}
@@ -166,6 +169,6 @@ function DispatchOptions() {
         </form>
       </Box>
     </Box>
-  )
+  );
 }
-export default DispatchOptions
+export default DispatchOptions;

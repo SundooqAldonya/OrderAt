@@ -1,39 +1,53 @@
-import React, { useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import React, { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 
-import { Box } from '@mui/material'
+import { Box } from "@mui/material";
 
-import routes from '../routes'
+import routes from "../routes";
 
 function Auth() {
   useEffect(() => {
-    document.body.classList.add('bg-default')
+    document.body.classList.add("bg-default");
     return () => {
-      document.body.classList.remove('bg-default')
-    }
-  }, [])
-  const getRoutes = routes => {
-    return routes.map((prop, key) => {
-      if (prop.layout === '/auth') {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        )
-      } else {
-        return null
-      }
-    })
-  }
+      document.body.classList.remove("bg-default");
+    };
+  }, []);
+
+  // const getRoutes = routes => {
+  //   return routes.map((prop, key) => {
+  //     if (prop.layout === '/auth') {
+  //       return (
+  //         <Route
+  //           path={prop.layout + prop.path}
+  //           component={prop.component}
+  //           key={key}
+  //         />
+  //       )
+  //     } else {
+  //       return null
+  //     }
+  //   })
+  // }
+
+  const getRoutes = (routes) => {
+    return routes
+      .filter((prop) => prop.layout === "/auth")
+      .map((prop, key) => (
+        <Route
+          key={key}
+          path={prop.layout + prop.path}
+          element={<prop.component />}
+        />
+      ));
+  };
+
   return (
     <Box>
       <Box>
-        <Switch>{getRoutes(routes)}</Switch>
+        <Routes>{getRoutes(routes)}</Routes>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default Auth
+export default Auth;

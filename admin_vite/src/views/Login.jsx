@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { withTranslation } from 'react-i18next'
+import React, { useState, useEffect, useRef } from "react";
+import { withTranslation } from "react-i18next";
 import {
   Box,
   Alert,
@@ -10,140 +10,141 @@ import {
   Link,
   Checkbox,
   FormGroup,
-  FormControlLabel
-} from '@mui/material'
+  FormControlLabel,
+} from "@mui/material";
 
-import { useMutation, gql } from '@apollo/client'
-import { ownerLogin } from '../apollo'
-import { validateFunc } from '../constraints/constraints'
-import useStyles from '../components/Configuration/styles'
-import useGlobalStyles from '../utils/globalStyles'
-import LoginBg from '../assets/img/loginBg.png'
-import LoginPageIcon from '../assets/img/LoginPageIcon.png'
-import InputAdornment from '@mui/material/InputAdornment'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { authenticate } from '../helpers/user'
-import { useHistory } from 'react-router-dom'
+import { useMutation } from "@apollo/client/react";
+import { ownerLogin } from "../apollo";
+import { validateFunc } from "../constraints/constraints";
+import useStyles from "../components/Configuration/styles";
+import useGlobalStyles from "../utils/globalStyles";
+import LoginBg from "../assets/img/loginBg.png";
+import LoginPageIcon from "../assets/img/LoginPageIcon.png";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { authenticate } from "../helpers/user";
+import { useNavigate } from "react-router-dom";
+import { gql } from "@apollo/client";
 
 const LOGIN = gql`
   ${ownerLogin}
-`
-const Login = props => {
-  const [showPassword, setShowPassword] = useState(false)
+`;
+const Login = (props) => {
+  const [showPassword, setShowPassword] = useState(false);
   const [stateData, setStateData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     // emailError: null,
     // passwordError: null,
     // error: null,
     type: null, /// 0 for vendor
-    redirectToReferrer: !!localStorage.getItem('user-enatega')
-  })
-  const [error, setError] = useState(null)
-  const [emailError, setEmailError] = useState(null)
-  const [passwordError, setPasswordError] = useState(null)
-  const formRef = useRef()
-  const { t } = props
-  const history = useHistory()
-  const [isLogged, setIsLogged] = useState(false)
+    redirectToReferrer: !!localStorage.getItem("user-enatega"),
+  });
+  const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
+  const formRef = useRef();
+  const { t } = props;
+  const navigate = useNavigate();
+  const [isLogged, setIsLogged] = useState(false);
   const onBlur = (event, field) => {
     setStateData({
       ...stateData,
-      [field + 'Error']: !validateFunc({ [field]: stateData[field] }, field)
-    })
-  }
+      [field + "Error"]: !validateFunc({ [field]: stateData[field] }, field),
+    });
+  };
   const validate = () => {
     // const emailError = !validateFunc({ email: stateData.email }, 'email')
     const passwordErrors = !validateFunc(
       { password: stateData.password },
-      'password'
-    )
+      "password"
+    );
     // setStateData({ ...stateData, passwordError })
-    setPasswordError(passwordErrors)
+    setPasswordError(passwordErrors);
     // return emailError && passwordError
-    return passwordErrors
-  }
-  const { redirectToReferrer, type } = stateData
+    return passwordErrors;
+  };
+  const { redirectToReferrer, type } = stateData;
 
   useEffect(() => {
     if (isLogged) {
       if (redirectToReferrer && type === 0) {
         // props.history.replace('/restaurant/list')
-        history.push('/restaurant/list')
+        navigate("/restaurant/list");
         // window.location.reload()
       }
       if (redirectToReferrer && type === 1) {
         // props.history.replace('/super_admin/vendors')
-        history.push('/super_admin/vendors')
+        navigate("/super_admin/vendors");
       }
-      window.location.reload()
+      window.location.reload();
     }
-  }, [isLogged])
+  }, [isLogged]);
 
-  console.log({ isLogged })
+  console.log({ isLogged });
 
-  const onCompleted = data => {
+  const onCompleted = (data) => {
     // localStorage.setItem('user-enatega', JSON.stringify(data.ownerLogin))
 
-    console.log({ data })
+    console.log({ data });
     authenticate(data.ownerLogin, () => {
-      console.log('user logged in')
+      console.log("user logged in");
 
-      const userType = data.ownerLogin.userType
-      if (userType === 'VENDOR') {
+      const userType = data.ownerLogin.userType;
+      if (userType === "VENDOR") {
         setStateData({
           ...stateData,
           redirectToReferrer: true,
           type: 0,
           emailError: null,
-          passwordError: null
-        })
+          passwordError: null,
+        });
       } else {
         setStateData({
           ...stateData,
           redirectToReferrer: true,
           type: 1,
           emailError: null,
-          passwordError: null
-        })
+          passwordError: null,
+        });
       }
-      setIsLogged(true)
-      setTimeout(hideAlert, 5000)
-    })
-  }
+      setIsLogged(true);
+      setTimeout(hideAlert, 5000);
+    });
+  };
   const hideAlert = () => {
-    setError(null)
-    setEmailError(null)
-    setPasswordError(null)
-  }
+    setError(null);
+    setEmailError(null);
+    setPasswordError(null);
+  };
 
-  const onError = error => {
-    console.log({ error })
+  const onError = (error) => {
+    console.log({ error });
     if (error.graphQLErrors.length) {
-      setError(error.graphQLErrors[0].message)
+      setError(error.graphQLErrors[0].message);
     }
     if (error.networkError) {
-      setError(error.message)
+      setError(error.message);
     }
-    setIsLogged(false)
-    setTimeout(hideAlert, 5000)
-  }
-  const [mutate] = useMutation(LOGIN, { onError, onCompleted })
+    setIsLogged(false);
+    setTimeout(hideAlert, 5000);
+  };
+  const [mutate] = useMutation(LOGIN, { onError, onCompleted });
 
-  const handleChange = e => {
-    setStateData({ ...stateData, [e.target.name]: e.target.value })
-  }
+  const handleChange = (e) => {
+    setStateData({ ...stateData, [e.target.name]: e.target.value });
+  };
 
-  const loginFunc = e => {
-    e.preventDefault()
+  const loginFunc = (e) => {
+    e.preventDefault();
     if (validate()) {
-      mutate({ variables: { ...stateData } })
+      mutate({ variables: { ...stateData } });
     }
-  }
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <>
@@ -151,32 +152,34 @@ const Login = props => {
         container
         sx={{
           backgroundImage: `url(${LoginBg})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          minHeight: '100vh', // Full screen height
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          px: { xs: 2, sm: 4, md: 6 } // Responsive padding
-        }}>
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh", // Full screen height
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: { xs: 2, sm: 4, md: 6 }, // Responsive padding
+        }}
+      >
         {/* Left Side Image (Hidden on Small Screens) */}
         <Grid
           item
           lg={5}
           sm={12}
           sx={{
-            display: { xs: 'none', md: 'none', lg: 'flex' },
-            alignItems: 'center',
-            justifyContent: 'center',
-            p: { lg: 5, md: 3 }
-          }}>
+            display: { xs: "none", md: "none", lg: "flex" },
+            alignItems: "center",
+            justifyContent: "center",
+            p: { lg: 5, md: 3 },
+          }}
+        >
           <img
             src={LoginPageIcon}
             alt="login img"
             style={{
-              maxHeight: '60%',
-              maxWidth: '80%'
+              maxHeight: "60%",
+              maxWidth: "80%",
             }}
           />
         </Grid>
@@ -187,29 +190,32 @@ const Login = props => {
           lg={7}
           sm={12}
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             px: { xs: 2, sm: 4, md: 6 }, // Responsive horizontal padding
-            width: '100%'
-          }}>
+            width: "100%",
+          }}
+        >
           <Typography
             sx={{
               fontSize: { xs: 18, sm: 22, md: 24 },
-              fontWeight: 'bold',
-              textAlign: 'center'
-            }}>
-            {t('enterYourDetailsBelow')}
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            {t("enterYourDetailsBelow")}
           </Typography>
 
           <Box
-            sx={{ width: { xs: '100%', sm: '80%', md: 600 } }}
-            className={classes.container}>
+            sx={{ width: { xs: "100%", sm: "80%", md: 600 } }}
+            className={classes.container}
+          >
             <Box className={classes.flexRow}>
               <Box item className={classes.heading}>
                 <Typography variant="h6" className={classes.text}>
-                  {t('LogintoEnatega')}
+                  {t("LogintoEnatega")}
                 </Typography>
               </Box>
             </Box>
@@ -220,15 +226,15 @@ const Login = props => {
                   {/* Email Input */}
                   <Grid item xs={12}>
                     <Typography className={classes.labelText}>
-                      {t('email_or_phone')}
+                      {t("email_or_phone")}
                     </Typography>
                     <Input
                       id="input-email"
                       name="email"
                       value={stateData.email}
                       onChange={handleChange}
-                      onBlur={event => onBlur(event, 'email')}
-                      placeholder={t('Email')}
+                      onBlur={(event) => onBlur(event, "email")}
+                      placeholder={t("Email")}
                       type="text"
                       disableUnderline
                       fullWidth
@@ -238,7 +244,7 @@ const Login = props => {
                           ? globalClasses.inputError
                           : emailError === true
                           ? globalClasses.inputSuccess
-                          : ''
+                          : "",
                       ]}
                     />
                   </Grid>
@@ -246,16 +252,16 @@ const Login = props => {
                   {/* Password Input */}
                   <Grid item xs={12}>
                     <Typography className={classes.labelText}>
-                      {t('Password')}
+                      {t("Password")}
                     </Typography>
                     <Input
                       id="input-password"
                       name="password"
-                      placeholder={t('Password')}
+                      placeholder={t("Password")}
                       value={stateData.password}
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       onChange={handleChange}
-                      onBlur={event => onBlur(event, 'password')}
+                      onBlur={(event) => onBlur(event, "password")}
                       disableUnderline
                       fullWidth
                       className={[
@@ -264,7 +270,7 @@ const Login = props => {
                           ? globalClasses.inputError
                           : passwordError === true
                           ? globalClasses.inputSuccess
-                          : ''
+                          : "",
                       ]}
                       endAdornment={
                         <InputAdornment position="end">
@@ -285,17 +291,18 @@ const Login = props => {
                 <Grid
                   container
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    mt: 2
-                  }}>
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    mt: 2,
+                  }}
+                >
                   <Grid item xs={12} md={6}>
                     <FormGroup>
                       <FormControlLabel
                         control={<Checkbox defaultChecked />}
-                        label={t('RememberMe')}
+                        label={t("RememberMe")}
                       />
                     </FormGroup>
                   </Grid>
@@ -304,17 +311,19 @@ const Login = props => {
                     xs={12}
                     md={6}
                     sx={{
-                      display: 'flex',
-                      justifyContent: { xs: 'flex-start', md: 'flex-end' }
-                    }}>
+                      display: "flex",
+                      justifyContent: { xs: "flex-start", md: "flex-end" },
+                    }}
+                  >
                     <Link
                       href="/#/auth/reset"
                       sx={{
-                        textDecoration: 'none',
-                        color: 'primary.main',
-                        fontWeight: 'bold'
-                      }}>
-                      {t('ForgotYourPassword')}
+                        textDecoration: "none",
+                        color: "primary.main",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {t("ForgotYourPassword")}
                     </Link>
                   </Grid>
                 </Grid>
@@ -322,7 +331,7 @@ const Login = props => {
                 {/* Login Button */}
                 <Box mt={3}>
                   <Button type="submit" className={globalClasses.button100}>
-                    {t('Login')}
+                    {t("Login")}
                   </Button>
                 </Box>
               </form>
@@ -333,7 +342,8 @@ const Login = props => {
                   <Alert
                     className={globalClasses.alertError}
                     variant="filled"
-                    severity="error">
+                    severity="error"
+                  >
                     {error}
                   </Alert>
                 </Box>
@@ -343,6 +353,6 @@ const Login = props => {
         </Grid>
       </Grid>
     </>
-  )
-}
-export default withTranslation()(Login)
+  );
+};
+export default withTranslation()(Login);

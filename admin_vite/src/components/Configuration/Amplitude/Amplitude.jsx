@@ -1,53 +1,54 @@
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveAmplitudeApiKeyConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveAmplitudeApiKeyConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_AMPLITUDE_API_KEY_CONFIGURATION = gql`
   ${saveAmplitudeApiKeyConfiguration}
-`
+`;
 
 function AmplitudeApiKeyConfiguration(props) {
-  const formRef = useRef()
-  const [webAmplitudeApiKey] = useState(props.webAmplitudeApiKey || '')
-  const [appAmplitudeApiKey] = useState(props.appAmplitudeApiKey || '')
+  const formRef = useRef();
+  const [webAmplitudeApiKey] = useState(props.webAmplitudeApiKey || "");
+  const [appAmplitudeApiKey] = useState(props.appAmplitudeApiKey || "");
 
-  const [webAmplitudeApiKeyError, setWebAmplitudeApiKeyError] = useState(null)
-  const [appAmplitudeApiKeyError, setAppAmplitudeApiKeyError] = useState(null)
+  const [webAmplitudeApiKeyError, setWebAmplitudeApiKeyError] = useState(null);
+  const [appAmplitudeApiKeyError, setAppAmplitudeApiKeyError] = useState(null);
 
   const [mutate, { loading }] = useMutation(
     SAVE_AMPLITUDE_API_KEY_CONFIGURATION
-  )
+  );
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let webAmplitudeApiKeyResult = true
-    let appAmplitudeApiKeyResult = true
+    let webAmplitudeApiKeyResult = true;
+    let appAmplitudeApiKeyResult = true;
 
     webAmplitudeApiKeyResult = !validateFunc(
-      { webAmplitudeApiKey: formRef.current['input-webAmplitudeApiKey'].value },
-      'webAmplitudeApiKey'
-    )
+      { webAmplitudeApiKey: formRef.current["input-webAmplitudeApiKey"].value },
+      "webAmplitudeApiKey"
+    );
     appAmplitudeApiKeyResult = !validateFunc(
-      { appAmplitudeApiKey: formRef.current['input-appAmplitudeApiKey'].value },
-      'appAmplitudeApiKey'
-    )
+      { appAmplitudeApiKey: formRef.current["input-appAmplitudeApiKey"].value },
+      "appAmplitudeApiKey"
+    );
 
-    setWebAmplitudeApiKeyError(webAmplitudeApiKeyResult)
-    setAppAmplitudeApiKeyError(appAmplitudeApiKeyResult)
+    setWebAmplitudeApiKeyError(webAmplitudeApiKeyResult);
+    setAppAmplitudeApiKeyError(appAmplitudeApiKeyResult);
 
-    return webAmplitudeApiKeyResult && appAmplitudeApiKeyResult
-  }
+    return webAmplitudeApiKeyResult && appAmplitudeApiKeyResult;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -72,10 +73,10 @@ function AmplitudeApiKeyConfiguration(props) {
               placeholder="Web Amplitude API Key"
               type="password"
               defaultValue={webAmplitudeApiKey}
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setWebAmplitudeApiKeyError,
-                  'webAmplitudeApiKey',
+                  "webAmplitudeApiKey",
                   event.target.value
                 )
               }
@@ -86,7 +87,7 @@ function AmplitudeApiKeyConfiguration(props) {
                   ? globalClasses.inputError
                   : webAmplitudeApiKeyError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -101,10 +102,10 @@ function AmplitudeApiKeyConfiguration(props) {
               placeholder="App Amplitude API Key"
               type="password"
               defaultValue={appAmplitudeApiKey}
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setAppAmplitudeApiKeyError,
-                  'appAmplitudeApiKey',
+                  "appAmplitudeApiKey",
                   event.target.value
                 )
               }
@@ -115,7 +116,7 @@ function AmplitudeApiKeyConfiguration(props) {
                   ? globalClasses.inputError
                   : appAmplitudeApiKeyError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -123,28 +124,29 @@ function AmplitudeApiKeyConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
                         webAmplitudeApiKey:
-                          formRef.current['input-webAmplitudeApiKey'].value,
+                          formRef.current["input-webAmplitudeApiKey"].value,
                         appAmplitudeApiKey:
-                          formRef.current['input-appAmplitudeApiKey'].value
-                      }
-                    }
-                  })
+                          formRef.current["input-appAmplitudeApiKey"].value,
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(AmplitudeApiKeyConfiguration)
+export default withTranslation()(AmplitudeApiKeyConfiguration);

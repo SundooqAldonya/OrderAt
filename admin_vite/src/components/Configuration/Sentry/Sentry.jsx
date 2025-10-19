@@ -1,91 +1,89 @@
 // SentryConfiguration.jsx
 
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveSentryConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveSentryConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_SENTRY_CONFIGURATION = gql`
   ${saveSentryConfiguration}
-`
+`;
 
 function SentryConfiguration(props) {
-  const formRef = useRef()
+  const formRef = useRef();
 
-  const [dashboardSentryUrl] = useState(props.dashboardSentryUrl || '')
-  const [webSentryUrl] = useState(props.webSentryUrl || '')
-  const [apiSentryUrl] = useState(props.apiSentryUrl || '')
-  const [customerAppSentryUrl] = useState(props.customerAppSentryUrl || '')
-  const [restaurantAppSentryUrl] = useState(props.restaurantAppSentryUrl || '')
-  const [riderAppSentryUrl] = useState(props.riderAppSentryUrl || '')
+  const [dashboardSentryUrl] = useState(props.dashboardSentryUrl || "");
+  const [webSentryUrl] = useState(props.webSentryUrl || "");
+  const [apiSentryUrl] = useState(props.apiSentryUrl || "");
+  const [customerAppSentryUrl] = useState(props.customerAppSentryUrl || "");
+  const [restaurantAppSentryUrl] = useState(props.restaurantAppSentryUrl || "");
+  const [riderAppSentryUrl] = useState(props.riderAppSentryUrl || "");
 
-  const [dashboardSentryUrlError, setDashboardSentryUrlError] = useState(null)
-  const [webSentryUrlError, setWebSentryUrlError] = useState(null)
-  const [apiSentryUrlError, setApiSentryUrlError] = useState(null)
-  const [customerAppSentryUrlError, setCustomerAppSentryUrlError] = useState(
-    null
-  )
-  const [
-    restaurantAppSentryUrlError,
-    setRestaurantAppSentryUrlError
-  ] = useState(null)
-  const [riderAppSentryUrlError, setRiderAppSentryUrlError] = useState(null)
+  const [dashboardSentryUrlError, setDashboardSentryUrlError] = useState(null);
+  const [webSentryUrlError, setWebSentryUrlError] = useState(null);
+  const [apiSentryUrlError, setApiSentryUrlError] = useState(null);
+  const [customerAppSentryUrlError, setCustomerAppSentryUrlError] =
+    useState(null);
+  const [restaurantAppSentryUrlError, setRestaurantAppSentryUrlError] =
+    useState(null);
+  const [riderAppSentryUrlError, setRiderAppSentryUrlError] = useState(null);
 
-  const [mutate, { loading }] = useMutation(SAVE_SENTRY_CONFIGURATION)
+  const [mutate, { loading }] = useMutation(SAVE_SENTRY_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let dashboardSentryUrlResult = true
-    let webSentryUrlResult = true
-    let apiSentryUrlResult = true
-    let customerAppSentryUrlResult = true
-    let restaurantAppSentryUrlResult = true
-    let riderAppSentryUrlResult = true
+    let dashboardSentryUrlResult = true;
+    let webSentryUrlResult = true;
+    let apiSentryUrlResult = true;
+    let customerAppSentryUrlResult = true;
+    let restaurantAppSentryUrlResult = true;
+    let riderAppSentryUrlResult = true;
 
     dashboardSentryUrlResult = !validateFunc(
-      { dashboardSentryUrl: formRef.current['input-dashboardSentryUrl'].value },
-      'dashboardSentryUrl'
-    )
+      { dashboardSentryUrl: formRef.current["input-dashboardSentryUrl"].value },
+      "dashboardSentryUrl"
+    );
     webSentryUrlResult = !validateFunc(
-      { webSentryUrl: formRef.current['input-webSentryUrl'].value },
-      'webSentryUrl'
-    )
+      { webSentryUrl: formRef.current["input-webSentryUrl"].value },
+      "webSentryUrl"
+    );
     apiSentryUrlResult = !validateFunc(
-      { apiSentryUrl: formRef.current['input-apiSentryUrl'].value },
-      'apiSentryUrl'
-    )
+      { apiSentryUrl: formRef.current["input-apiSentryUrl"].value },
+      "apiSentryUrl"
+    );
     customerAppSentryUrlResult = !validateFunc(
       {
         customerAppSentryUrl:
-          formRef.current['input-customerAppSentryUrl'].value
+          formRef.current["input-customerAppSentryUrl"].value,
       },
-      'customerAppSentryUrl'
-    )
+      "customerAppSentryUrl"
+    );
     restaurantAppSentryUrlResult = !validateFunc(
       {
         restaurantAppSentryUrl:
-          formRef.current['input-restaurantAppSentryUrl'].value
+          formRef.current["input-restaurantAppSentryUrl"].value,
       },
-      'restaurantAppSentryUrl'
-    )
+      "restaurantAppSentryUrl"
+    );
     riderAppSentryUrlResult = !validateFunc(
-      { riderAppSentryUrl: formRef.current['input-riderAppSentryUrl'].value },
-      'riderAppSentryUrl'
-    )
+      { riderAppSentryUrl: formRef.current["input-riderAppSentryUrl"].value },
+      "riderAppSentryUrl"
+    );
 
-    setDashboardSentryUrlError(dashboardSentryUrlResult)
-    setWebSentryUrlError(webSentryUrlResult)
-    setApiSentryUrlError(apiSentryUrlResult)
-    setCustomerAppSentryUrlError(customerAppSentryUrlResult)
-    setRestaurantAppSentryUrlError(restaurantAppSentryUrlResult)
-    setRiderAppSentryUrlError(riderAppSentryUrlResult)
+    setDashboardSentryUrlError(dashboardSentryUrlResult);
+    setWebSentryUrlError(webSentryUrlResult);
+    setApiSentryUrlError(apiSentryUrlResult);
+    setCustomerAppSentryUrlError(customerAppSentryUrlResult);
+    setRestaurantAppSentryUrlError(restaurantAppSentryUrlResult);
+    setRiderAppSentryUrlError(riderAppSentryUrlResult);
 
     return (
       dashboardSentryUrlResult &&
@@ -94,11 +92,11 @@ function SentryConfiguration(props) {
       customerAppSentryUrlResult &&
       restaurantAppSentryUrlResult &&
       riderAppSentryUrlResult
-    )
-  }
+    );
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -123,10 +121,10 @@ function SentryConfiguration(props) {
               placeholder="Dashboard Sentry URL"
               defaultValue={dashboardSentryUrl}
               type="password"
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setDashboardSentryUrlError,
-                  'dashboardSentryUrl',
+                  "dashboardSentryUrl",
                   event.target.value
                 )
               }
@@ -137,7 +135,7 @@ function SentryConfiguration(props) {
                   ? globalClasses.inputError
                   : dashboardSentryUrlError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -153,10 +151,10 @@ function SentryConfiguration(props) {
                 placeholder="Web Sentry URL"
                 defaultValue={webSentryUrl}
                 type="password"
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setWebSentryUrlError,
-                    'webSentryUrl',
+                    "webSentryUrl",
                     event.target.value
                   )
                 }
@@ -167,7 +165,7 @@ function SentryConfiguration(props) {
                     ? globalClasses.inputError
                     : webSentryUrlError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -182,10 +180,10 @@ function SentryConfiguration(props) {
                 placeholder="API Sentry URL"
                 defaultValue={apiSentryUrl}
                 type="password"
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setApiSentryUrlError,
-                    'apiSentryUrl',
+                    "apiSentryUrl",
                     event.target.value
                   )
                 }
@@ -196,7 +194,7 @@ function SentryConfiguration(props) {
                     ? globalClasses.inputError
                     : apiSentryUrlError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -213,10 +211,10 @@ function SentryConfiguration(props) {
                 placeholder="Customer App Sentry URL"
                 type="password"
                 defaultValue={customerAppSentryUrl}
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setCustomerAppSentryUrlError,
-                    'customerAppSentryUrl',
+                    "customerAppSentryUrl",
                     event.target.value
                   )
                 }
@@ -227,7 +225,7 @@ function SentryConfiguration(props) {
                     ? globalClasses.inputError
                     : customerAppSentryUrlError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -242,10 +240,10 @@ function SentryConfiguration(props) {
                 placeholder="Restaurant App Sentry URL"
                 defaultValue={restaurantAppSentryUrl}
                 type="password"
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setRestaurantAppSentryUrlError,
-                    'restaurantAppSentryUrl',
+                    "restaurantAppSentryUrl",
                     event.target.value
                   )
                 }
@@ -256,7 +254,7 @@ function SentryConfiguration(props) {
                     ? globalClasses.inputError
                     : restaurantAppSentryUrlError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -272,10 +270,10 @@ function SentryConfiguration(props) {
               placeholder="Rider App Sentry URL"
               defaultValue={riderAppSentryUrl}
               type="password"
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setRiderAppSentryUrlError,
-                  'riderAppSentryUrl',
+                  "riderAppSentryUrl",
                   event.target.value
                 )
               }
@@ -286,7 +284,7 @@ function SentryConfiguration(props) {
                   ? globalClasses.inputError
                   : riderAppSentryUrlError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -294,36 +292,37 @@ function SentryConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
                         dashboardSentryUrl:
-                          formRef.current['input-dashboardSentryUrl'].value,
+                          formRef.current["input-dashboardSentryUrl"].value,
                         webSentryUrl:
-                          formRef.current['input-webSentryUrl'].value,
+                          formRef.current["input-webSentryUrl"].value,
                         apiSentryUrl:
-                          formRef.current['input-apiSentryUrl'].value,
+                          formRef.current["input-apiSentryUrl"].value,
                         customerAppSentryUrl:
-                          formRef.current['input-customerAppSentryUrl'].value,
+                          formRef.current["input-customerAppSentryUrl"].value,
                         restaurantAppSentryUrl:
-                          formRef.current['input-restaurantAppSentryUrl'].value,
+                          formRef.current["input-restaurantAppSentryUrl"].value,
                         riderAppSentryUrl:
-                          formRef.current['input-riderAppSentryUrl'].value
-                      }
-                    }
-                  })
+                          formRef.current["input-riderAppSentryUrl"].value,
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(SentryConfiguration)
+export default withTranslation()(SentryConfiguration);

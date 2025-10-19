@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 // import ReactDOM from 'react-dom'
 import {
-  ApolloProvider,
   ApolloClient,
   InMemoryCache,
   ApolloLink,
@@ -26,6 +25,7 @@ import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 import { isAuthenticated } from "./helpers/user";
 import AreaProvider from "./context/AreaContext";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { ApolloProvider } from "@apollo/client/react";
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues();

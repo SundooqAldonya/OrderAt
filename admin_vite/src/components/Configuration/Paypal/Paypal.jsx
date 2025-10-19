@@ -1,81 +1,82 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { savePaypalConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Switch, Typography, Input, Button, Alert } from '@mui/material'
+import React, { useRef, useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { savePaypalConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Switch, Typography, Input, Button, Alert } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_PAYPAL_CONFIGURATION = gql`
   ${savePaypalConfiguration}
-`
+`;
 
 function Paypal(props) {
-  const { t } = props
-  const formRef = useRef()
-  const clientId = props.clientId || ''
-  const clientSecret = props.clientSecret || ''
-  const [clientIdError, clientIdErrorSetter] = useState(null)
-  const [sandbox, setSandbox] = useState(!!props.sandbox)
-  const [clientSecretError, clientSecretErrorSetter] = useState(null)
-  const [mutate, { loading }] = useMutation(SAVE_PAYPAL_CONFIGURATION)
+  const { t } = props;
+  const formRef = useRef();
+  const clientId = props.clientId || "";
+  const clientSecret = props.clientSecret || "";
+  const [clientIdError, clientIdErrorSetter] = useState(null);
+  const [sandbox, setSandbox] = useState(!!props.sandbox);
+  const [clientSecretError, clientSecretErrorSetter] = useState(null);
+  const [mutate, { loading }] = useMutation(SAVE_PAYPAL_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
   const validateInput = () => {
-    let clientIdResult = true
-    let clientSecretResult = true
-    clientIdResult = !!formRef.current['input-clientid'].value
-    clientSecretResult = !!formRef.current['input-clientsecret'].value
-    clientIdErrorSetter(clientIdResult)
-    clientIdErrorSetter(clientSecretResult)
-    return clientIdResult && clientSecretResult
-  }
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const [successMessage, setSuccessMessage] = useState('')
-  const handleSuccess = message => {
-    setSuccessMessage(message)
-  }
+    let clientIdResult = true;
+    let clientSecretResult = true;
+    clientIdResult = !!formRef.current["input-clientid"].value;
+    clientSecretResult = !!formRef.current["input-clientsecret"].value;
+    clientIdErrorSetter(clientIdResult);
+    clientIdErrorSetter(clientSecretResult);
+    return clientIdResult && clientSecretResult;
+  };
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const [successMessage, setSuccessMessage] = useState("");
+  const handleSuccess = (message) => {
+    setSuccessMessage(message);
+  };
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setSuccessMessage('')
-    }, 3000)
+      setSuccessMessage("");
+    }, 3000);
 
-    return () => clearTimeout(timeoutId)
-  }, [successMessage, setSuccessMessage])
-  const [errorMessage, setErrorMessage] = useState('')
-  const handleError = error => {
-    setErrorMessage('An error occurred while saving configuration.')
-    console.error('Mutation error:', error)
-  }
+    return () => clearTimeout(timeoutId);
+  }, [successMessage, setSuccessMessage]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleError = (error) => {
+    setErrorMessage("An error occurred while saving configuration.");
+    console.error("Mutation error:", error);
+  };
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setErrorMessage('')
-    }, 3000)
+      setErrorMessage("");
+    }, 3000);
 
-    return () => clearTimeout(timeoutId)
-  }, [errorMessage, setErrorMessage])
+    return () => clearTimeout(timeoutId);
+  }, [errorMessage, setErrorMessage]);
 
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
         <Box item className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
-            {t('Paypal')}
+            {t("Paypal")}
           </Typography>
         </Box>
         <Box ml={5} mt={1}>
-          <label>{t('Sandbox')}</label>
+          <label>{t("Sandbox")}</label>
           <Switch
             defaultChecked={sandbox}
             value={sandbox}
-            onChange={e => setSandbox(e.target.checked)}
+            onChange={(e) => setSandbox(e.target.checked)}
             id="input-sandbox"
             name="input-sandbox"
-            style={{ color: 'black' }}
+            style={{ color: "black" }}
           />
         </Box>
       </Box>
@@ -84,7 +85,7 @@ function Paypal(props) {
         <form ref={formRef}>
           <Box>
             <Typography className={classes.labelText}>
-              {t('Client ID')}
+              {t("Client ID")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -93,8 +94,8 @@ function Paypal(props) {
               placeholder="ClientId e.g AeGIgSX--JEVwoQgLjGOb8gh1DUJG0MFVgLc2mBIe6_V5NefV0LM3L78m01fLLI6U2FFB-qJr4ErrtL1"
               type="password"
               defaultValue={clientId}
-              onBlur={event =>
-                onBlur(clientIdErrorSetter, 'clientId', event.target.value)
+              onBlur={(event) =>
+                onBlur(clientIdErrorSetter, "clientId", event.target.value)
               }
               disableUnderline
               className={[
@@ -103,13 +104,13 @@ function Paypal(props) {
                   ? globalClasses.inputError
                   : clientIdError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
           <Box>
             <Typography className={classes.labelText}>
-              {t('ClientSecretKey')}
+              {t("ClientSecretKey")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
@@ -118,12 +119,12 @@ function Paypal(props) {
               placeholder="e.g EHAP6CSZt3kwzcpdxrpw16PqHEspw5wtJCVVux_95e2Qcwbeh6mQp9GncEbxnVFkEbJu4z1i-GuDDthf"
               type="password"
               defaultValue={clientSecret}
-              onBlur={event => {
+              onBlur={(event) => {
                 onBlur(
                   clientSecretErrorSetter,
-                  'clientSecret',
+                  "clientSecret",
                   event.target.value
-                )
+                );
               }}
               disableUnderline
               className={[
@@ -132,7 +133,7 @@ function Paypal(props) {
                   ? globalClasses.inputError
                   : clientSecretError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -140,29 +141,30 @@ function Paypal(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
-                        clientId: formRef.current['input-clientid'].value,
+                        clientId: formRef.current["input-clientid"].value,
                         clientSecret:
-                          formRef.current['input-clientsecret'].value,
+                          formRef.current["input-clientsecret"].value,
                         //sandbox: formRef.current['input-sandbox'].checked
-                        sandbox: sandbox
-                      }
+                        sandbox: sandbox,
+                      },
                     },
-                    onCompleted: data => {
-                      handleSuccess('Configuration saved successfully!')
+                    onCompleted: (data) => {
+                      handleSuccess("Configuration saved successfully!");
                     },
-                    onError: error => {
-                      handleError(error)
-                    }
-                  })
+                    onError: (error) => {
+                      handleError(error);
+                    },
+                  });
                 }
-              }}>
-              {t('Save')}
+              }}
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -170,7 +172,8 @@ function Paypal(props) {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
@@ -178,7 +181,8 @@ function Paypal(props) {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}
@@ -186,7 +190,7 @@ function Paypal(props) {
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(Paypal)
+export default withTranslation()(Paypal);

@@ -1,74 +1,80 @@
-import React from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import Header from '../components/Headers/Header'
-import { restaurants, updateCommission } from '../apollo'
-import CustomLoader from '../components/Loader/CustomLoader'
-import useGlobalStyles from '../utils/globalStyles'
-import { Container, Box, Typography, Grid, Input, Button } from '@mui/material'
-import useStyles from '../components/Rider/styles'
-import { NotificationContainer, NotificationManager } from 'react-notifications'
-import 'react-notifications/lib/notifications.css'
-import { ReactComponent as CommissionIcon } from '../assets/svg/svg/CommisionRate.svg'
-import { useTranslation, withTranslation } from 'react-i18next'
+import React from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import Header from "../components/Headers/Header";
+import { restaurants, updateCommission } from "../apollo";
+import CustomLoader from "../components/Loader/CustomLoader";
+import useGlobalStyles from "../utils/globalStyles";
+import { Container, Box, Typography, Grid, Input, Button } from "@mui/material";
+import useStyles from "../components/Rider/styles";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+import "react-notifications/lib/notifications.css";
+import CommissionIcon from "../assets/svg/svg/CommisionRate.svg";
+import { useTranslation, withTranslation } from "react-i18next";
+import { gql } from "@apollo/client";
 
 const GET_RESTAURANTS = gql`
   ${restaurants}
-`
+`;
 const UPDATE_COMMISSION = gql`
   ${updateCommission}
-`
+`;
 const Commission = () => {
-  const getValues = id => {
-    const commissionRate = document.getElementById(id).value
-    return { id, commissionRate: +commissionRate }
-  }
-  const [mutate, { error }] = useMutation(UPDATE_COMMISSION)
+  const getValues = (id) => {
+    const commissionRate = document.getElementById(id).value;
+    return { id, commissionRate: +commissionRate };
+  };
+  const [mutate, { error }] = useMutation(UPDATE_COMMISSION);
 
-  const { data, error: errorQuery, loading: loadingQuery } = useQuery(
-    GET_RESTAURANTS
-  )
-  console.log(data)
-  const globalClasses = useGlobalStyles()
-  const classes = useStyles()
-  const { t } = useTranslation()
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+  } = useQuery(GET_RESTAURANTS);
+  console.log(data);
+  const globalClasses = useGlobalStyles();
+  const classes = useStyles();
+  const { t } = useTranslation();
   const handleSuccessButtonClick = () => {
     NotificationManager.success(
-      t('UpdateSuccessful'),
-      t('CommissionRates'),
+      t("UpdateSuccessful"),
+      t("CommissionRates"),
       3000,
       {
-        className: 'customNotification'
+        className: "customNotification",
       }
-    )
-  }
+    );
+  };
   const handleErrorButtonClick = () => {
-    NotificationManager.error(t('Update Error'), t('Commission Rates'), 3000, {
-      className: 'customNotification'
-    })
-  }
+    NotificationManager.error(t("Update Error"), t("Commission Rates"), 3000, {
+      className: "customNotification",
+    });
+  };
 
-  const handleSaveButtonClick = id => {
-    const result = getValues(id)
+  const handleSaveButtonClick = (id) => {
+    const result = getValues(id);
 
     // Validate commissionRate to ensure it's not negative
     if (result.commissionRate < 0) {
       NotificationManager.error(
-        t('The value Should not be in the negative'),
-        t('Commission Rates'),
+        t("The value Should not be in the negative"),
+        t("Commission Rates"),
         3000,
         {
-          className: 'customNotification'
+          className: "customNotification",
         }
-      )
-      return
+      );
+      return;
     }
 
     mutate({
       variables: result,
       onCompleted: handleSuccessButtonClick,
-      onError: handleErrorButtonClick
-    })
-  }
+      onError: handleErrorButtonClick,
+    });
+  };
 
   return (
     <>
@@ -80,7 +86,7 @@ const Commission = () => {
             <Box container className={classes.container}>
               <Box item className={classes.heading}>
                 <Typography variant="h6" className={classes.text}>
-                  {t('CommissionRates')}
+                  {t("CommissionRates")}
                 </Typography>
               </Box>
               <Box className={classes.form}>
@@ -90,7 +96,7 @@ const Commission = () => {
                 ) : (
                   data && (
                     <>
-                      {data.restaurants.map(restaurant => (
+                      {data.restaurants.map((restaurant) => (
                         <Grid key={restaurant._id} container spacing={1}>
                           <Grid item sm={5} mt={3}>
                             {restaurant.name}
@@ -100,7 +106,7 @@ const Commission = () => {
                               disableUnderline
                               className={globalClasses.input}
                               id={restaurant._id}
-                              placeholder={t('PHCommission')}
+                              placeholder={t("PHCommission")}
                               inputProps={{ min: 0 }}
                               type="number"
                               step="1"
@@ -110,8 +116,11 @@ const Commission = () => {
                           <Grid item sm={3}>
                             <Button
                               className={globalClasses.button}
-                              onClick={() => handleSaveButtonClick(restaurant._id)}>
-                              {t('Save')}
+                              onClick={() =>
+                                handleSaveButtonClick(restaurant._id)
+                              }
+                            >
+                              {t("Save")}
                             </Button>
                             {error && <span>{error.message}</span>}
                           </Grid>
@@ -128,14 +137,16 @@ const Commission = () => {
         <Grid
           item
           lg={4}
-          sx={{ display: { xs: 'none', lg: 'block' } }}
+          sx={{ display: { xs: "none", lg: "block" } }}
           mt={5}
           ml={-3}
-          order={{ xs: 1, lg: 2 }}>
-          <CommissionIcon />
+          order={{ xs: 1, lg: 2 }}
+        >
+          {/* <CommissionIcon /> */}
+          <img src={CommissionIcon} alt="Config" width={32} height={32} />
         </Grid>
       </Grid>
     </>
-  )
-}
-export default withTranslation()(Commission)
+  );
+};
+export default withTranslation()(Commission);

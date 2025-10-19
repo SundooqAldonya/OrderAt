@@ -1,15 +1,19 @@
 /* eslint-disable react/display-name */
-import React, { useMemo, useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import CustomLoader from '../components/Loader/CustomLoader'
+import React, { useMemo, useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import CustomLoader from "../components/Loader/CustomLoader";
 // core components
-import Header from '../components/Headers/Header'
-import { restaurants, deleteRestaurant, makeRestaurantVisible } from '../apollo'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import Loader from 'react-loader-spinner'
-import SearchBar from '../components/TableHeader/SearchBar'
+import Header from "../components/Headers/Header";
+import {
+  restaurants,
+  deleteRestaurant,
+  makeRestaurantVisible,
+} from "../apollo";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+// import Loader from "react-loader-spinner";
+import SearchBar from "../components/TableHeader/SearchBar";
 import {
   Container,
   Button,
@@ -17,91 +21,92 @@ import {
   useTheme,
   Snackbar,
   FormControlLabel,
-  Switch
-} from '@mui/material'
-import { customStyles } from '../utils/tableCustomStyles'
-import useGlobalStyles from '../utils/globalStyles'
-import { ReactComponent as RestIcon } from '../assets/svg/svg/Restaurant.svg'
-import TableHeader from '../components/TableHeader'
-import moment from 'moment'
+  Switch,
+} from "@mui/material";
+import { customStyles } from "../utils/tableCustomStyles";
+import useGlobalStyles from "../utils/globalStyles";
+import RestIcon from "../assets/svg/svg/Restaurant.svg";
+import TableHeader from "../components/TableHeader";
+import moment from "moment";
+import { gql } from "@apollo/client";
 
 const GET_RESTAURANTS = gql`
   ${restaurants}
-`
+`;
 const DELETE_RESTAURANT = gql`
   ${deleteRestaurant}
-`
+`;
 
-const Restaurants = props => {
-  const { t } = props
-  const [searchQuery, setSearchQuery] = useState('')
-  const [error, setError] = useState(null)
-  const onChangeSearch = e => setSearchQuery(e.target.value)
-  const globalClasses = useGlobalStyles()
+const Restaurants = (props) => {
+  const { t } = props;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState(null);
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
+  const globalClasses = useGlobalStyles();
 
   const [mutate, { loading }] = useMutation(DELETE_RESTAURANT, {
-    onError: error => {
-      setError(error.graphQLErrors[0].message || 'Something went wrong')
-    }
-  })
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message || "Something went wrong");
+    },
+  });
 
   const {
     data,
     loading: loadingQuery,
     refetch,
-    networkStatus
-  } = useQuery(GET_RESTAURANTS, { fetchPolicy: 'network-only' })
+    networkStatus,
+  } = useQuery(GET_RESTAURANTS, { fetchPolicy: "network-only" });
 
-  console.log({ data })
+  console.log({ data });
 
-  const onClickRefetch = cb => {
-    cb()
-  }
+  const onClickRefetch = (cb) => {
+    cb();
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Image'),
-      cell: row => (
+      name: t("Image"),
+      cell: (row) => (
         <>
           {!!row.image && (
             <img
               className="img-responsive"
               src={row.image}
-              alt={t('ImageMenu')}
+              alt={t("ImageMenu")}
               style={{
                 width: 30,
                 height: 30,
                 borderRadius: 15,
-                cursor: 'pointer'
+                cursor: "pointer",
               }}
               onClick={() => {
-                localStorage.setItem('restaurant_id', row._id)
-                props.history.push(`/admin/dashboard`)
+                localStorage.setItem("restaurant_id", row._id);
+                props.history.push(`/admin/dashboard`);
               }}
             />
           )}
-          {!row.image && 'No Image'}
+          {!row.image && "No Image"}
         </>
       ),
-      selector: 'image'
+      selector: "image",
     },
     {
-      name: t('Name'),
+      name: t("Name"),
       // sortable: true,
-      selector: 'name',
+      selector: "name",
       style: {
-        cursor: 'pointer'
-      }
+        cursor: "pointer",
+      },
     },
     // {
     //   name: t('Address'),
@@ -111,142 +116,137 @@ const Restaurants = props => {
     //   }
     // },
     {
-      name: t('lastOnlineAt'),
-      selector: 'lastOnlineAt',
-      cell: row => <>{formattedDate(row.lastOnlineAt)}</>
+      name: t("lastOnlineAt"),
+      selector: "lastOnlineAt",
+      cell: (row) => <>{formattedDate(row.lastOnlineAt)}</>,
     },
     {
-      name: t('OrderPrefix'),
-      selector: 'orderPrefix',
+      name: t("OrderPrefix"),
+      selector: "orderPrefix",
       style: {
-        cursor: 'pointer'
-      }
-    },
-    {
-      name: t('Vendor'),
-      selector: 'owner',
-      style: {
-        cursor: 'pointer'
+        cursor: "pointer",
       },
-      cell: row => <>{row.owner && row.owner.name ? row.owner.name : 'N/A'}</>
     },
     {
-      name: t('city'),
-      selector: 'city',
+      name: t("Vendor"),
+      selector: "owner",
       style: {
-        cursor: 'pointer'
+        cursor: "pointer",
       },
-      cell: row => <>{row.city?.title ? row.city.title : 'N/A'}</>
+      cell: (row) => (
+        <>{row.owner && row.owner.name ? row.owner.name : "N/A"}</>
+      ),
     },
     {
-      name: t('createdAt'),
-      selector: 'createdAt',
+      name: t("city"),
+      selector: "city",
       style: {
-        cursor: 'pointer'
+        cursor: "pointer",
+      },
+      cell: (row) => <>{row.city?.title ? row.city.title : "N/A"}</>,
+    },
+    {
+      name: t("createdAt"),
+      selector: "createdAt",
+      style: {
+        cursor: "pointer",
       },
       sortable: true,
-      cell: row => (
+      cell: (row) => (
         <>
           {row.createdAt
-            ? new Date(row.createdAt).toLocaleDateString('en-GB')
-            : 'N/A'}
+            ? new Date(row.createdAt).toLocaleDateString("en-GB")
+            : "N/A"}
         </>
-      )
+      ),
     },
     {
-      name: t('Visibility'),
-      cell: row => (
+      name: t("Visibility"),
+      cell: (row) => (
         <Box>
           <FormControlLabel
             control={
               <Switch
                 checked={row.isVisible}
-                onChange={e => handleVisiblity(row._id)}
+                onChange={(e) => handleVisiblity(row._id)}
                 color="primary"
               />
             }
           />
         </Box>
-      )
+      ),
     },
     {
-      name: t('Action'),
-      cell: row => <>{actionButtons(row)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{actionButtons(row)}</>,
+    },
+  ];
 
-  const formattedDate = date => {
-    return date ? moment(date).format('YYYY-MM-DD hh:mm A') : 'Never online'
-  }
+  const formattedDate = (date) => {
+    return date ? moment(date).format("YYYY-MM-DD hh:mm A") : "Never online";
+  };
 
   const [mutateVisiblity] = useMutation(makeRestaurantVisible, {
     refetchQueries: [{ query: GET_RESTAURANTS }],
-    onCompleted: res => {
-      console.log({ res })
+    onCompleted: (res) => {
+      console.log({ res });
     },
-    onError: err => {
-      console.log({ err })
-    }
-  })
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
 
-  const handleVisiblity = rowId => {
+  const handleVisiblity = (rowId) => {
     mutateVisiblity({
       variables: {
-        id: rowId
-      }
-    })
-  }
+        id: rowId,
+      },
+    });
+  };
 
-  const theme = useTheme()
-  const actionButtons = row => {
+  const theme = useTheme();
+  const actionButtons = (row) => {
     return (
       <>
-        {loading ? (
-          <Loader
-            type="ThreeDots"
-            color={theme.palette.error.light}
-            height={20}
-            width={40}
-            visible={loading}
-          />
-        ) : null}
+        {loading ? <CustomLoader /> : null}
         <Button
           size="20px"
           variant="contained"
-          color={row.isActive ? 'warning' : 'success'}
-          sx={{ padding: 0, height: '15px', fontSize: '10px' }}
-          onClick={e => {
-            e.preventDefault()
-            mutate({ variables: { id: row._id } })
-          }}>
-          {row.isActive ? t('Disable') : t('Enable')}
+          color={row.isActive ? "warning" : "success"}
+          sx={{ padding: 0, height: "15px", fontSize: "10px" }}
+          onClick={(e) => {
+            e.preventDefault();
+            mutate({ variables: { id: row._id } });
+          }}
+        >
+          {row.isActive ? t("Disable") : t("Enable")}
         </Button>
       </>
-    )
-  }
+    );
+  };
 
   const conditionalRowStyles = [
     {
-      when: row => !row.isActive,
+      when: (row) => !row.isActive,
       style: {
-        backgroundColor: theme.palette.background.primary
-      }
-    }
-  ]
+        backgroundColor: theme.palette.background.primary,
+      },
+    },
+  ];
 
   const regex = useMemo(
     () =>
       searchQuery.length > 2
-        ? new RegExp(searchQuery.toLowerCase(), 'g')
+        ? new RegExp(searchQuery.toLowerCase(), "g")
         : null,
     [searchQuery]
-  )
+  );
 
   const filtered =
     searchQuery.length < 3
       ? data && data.restaurants
       : data &&
-        data.restaurants.filter(restaurant => {
+        data.restaurants.filter((restaurant) => {
           return (
             (restaurant.name &&
               restaurant.name.toLowerCase().search(regex) > -1) ||
@@ -259,14 +259,15 @@ const Restaurants = props => {
               restaurant.address.toLowerCase().search(regex) > -1) ||
             (restaurant.city &&
               restaurant.city.title.toLowerCase().search(regex) > -1)
-          )
-        })
+          );
+        });
 
   return (
     <>
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
-        <RestIcon />
+        {/* <RestIcon /> */}
+        <img src={RestIcon} alt="Config" width={32} height={32} />
       </Box>
       <Container className={globalClasses.flex} fluid>
         {loadingQuery ? (
@@ -282,7 +283,7 @@ const Restaurants = props => {
                 onClick={() => onClickRefetch(refetch)}
               />
             }
-            title={<TableHeader title={t('Restaurants')} />}
+            title={<TableHeader title={t("Restaurants")} />}
             columns={columns}
             data={filtered}
             pagination
@@ -290,13 +291,13 @@ const Restaurants = props => {
             progressComponent={<CustomLoader />}
             sortFunction={customSort}
             defaultSortField="name"
-            onRowClicked={row => {
-              console.log({ rowID: row._id })
-              localStorage.setItem('restaurantId', row._id)
-              localStorage.setItem('restaurant_id', row._id)
-              localStorage.setItem('restaurantImage', row.image)
-              localStorage.setItem('restaurantName', row.name)
-              props.history.push(`/admin/dashboard/${row.slug}`)
+            onRowClicked={(row) => {
+              console.log({ rowID: row._id });
+              localStorage.setItem("restaurantId", row._id);
+              localStorage.setItem("restaurant_id", row._id);
+              localStorage.setItem("restaurantImage", row.image);
+              localStorage.setItem("restaurantName", row.name);
+              props.history.push(`/admin/dashboard/${row.slug}`);
             }}
             conditionalRowStyles={conditionalRowStyles}
             selectableRows
@@ -310,6 +311,6 @@ const Restaurants = props => {
         />
       </Container>
     </>
-  )
-}
-export default withTranslation()(Restaurants)
+  );
+};
+export default withTranslation()(Restaurants);

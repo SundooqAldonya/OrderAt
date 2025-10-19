@@ -1,96 +1,99 @@
-import React, { useRef, useState } from 'react'
-import { useMutation, gql } from '@apollo/client'
-import { resetPassword } from '../apollo'
-import { validateFunc } from '../constraints/constraints'
-import useStyles from '../components/Configuration/styles'
-import useGlobalStyles from '../utils/globalStyles'
-import { Box, Typography, Input, Alert, Button, Checkbox } from '@mui/material'
-import { withTranslation } from 'react-i18next'
-import InputAdornment from '@mui/material/InputAdornment'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import React, { useRef, useState } from "react";
+import { useMutation } from "@apollo/client/react";
+import { resetPassword } from "../apollo";
+import { validateFunc } from "../constraints/constraints";
+import useStyles from "../components/Configuration/styles";
+import useGlobalStyles from "../utils/globalStyles";
+import { Box, Typography, Input, Alert, Button, Checkbox } from "@mui/material";
+import { withTranslation } from "react-i18next";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { gql } from "@apollo/client";
 
 const RESET_PASSWORD = gql`
   ${resetPassword}
-`
-const ResetPassword = props => {
-  const { t } = props
-  const formRef = useRef()
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [confirmPasswordError, setConfirmPasswordError] = useState(null)
-  const [passwordError, setPasswordError] = useState(null)
-  const [email, setEmail] = useState(null)
-  const [emailError, setEmailError] = useState(null)
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState(null)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+`;
+const ResetPassword = (props) => {
+  const { t } = props;
+  const formRef = useRef();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onBlur = (event, field) => {
-    if (field === 'password') {
-      setPasswordError(!validateFunc({ password: password }, 'password'))
-    } else if (field === 'confirmPassword') {
+    if (field === "password") {
+      setPasswordError(!validateFunc({ password: password }, "password"));
+    } else if (field === "confirmPassword") {
       setConfirmPasswordError(
         !validateFunc(
           { confirmPassword: confirmPassword, password: password },
-          'confirmPassword'
+          "confirmPassword"
         )
-      )
+      );
     }
-  }
+  };
   const hideAlert = () => {
-    passwordError('')
-    confirmPasswordError('')
-  }
+    passwordError("");
+    confirmPasswordError("");
+  };
   const validate = () => {
     const confirmPasswordErrorDisplay = !validateFunc(
       { password: password, confirmPassword: confirmPassword },
-      'confirmPassword'
-    )
+      "confirmPassword"
+    );
     const passwordErrorDisplay = !validateFunc(
       { password: password },
-      'password'
-    )
-    setConfirmPasswordError(confirmPasswordErrorDisplay)
-    setPasswordError(passwordErrorDisplay)
-    return confirmPasswordErrorDisplay && passwordErrorDisplay
-  }
-  const onCompleted = data => {
-    setConfirmPasswordError(null)
-    setPasswordError(null)
-    setSuccess(t('PasswordUpdated'))
-    setTimeout(hideAlert, 5000)
-  }
-  const onError = error => {
-    setConfirmPasswordError(null)
-    setPasswordError(null)
-    setError(error.networkError.result.errors[0].message)
-    setTimeout(hideAlert, 5000)
-  }
-  const [mutate] = useMutation(RESET_PASSWORD, { onError, onCompleted })
+      "password"
+    );
+    setConfirmPasswordError(confirmPasswordErrorDisplay);
+    setPasswordError(passwordErrorDisplay);
+    return confirmPasswordErrorDisplay && passwordErrorDisplay;
+  };
+  const onCompleted = (data) => {
+    setConfirmPasswordError(null);
+    setPasswordError(null);
+    setSuccess(t("PasswordUpdated"));
+    setTimeout(hideAlert, 5000);
+  };
+  const onError = (error) => {
+    setConfirmPasswordError(null);
+    setPasswordError(null);
+    setError(error.networkError.result.errors[0].message);
+    setTimeout(hideAlert, 5000);
+  };
+  const [mutate] = useMutation(RESET_PASSWORD, { onError, onCompleted });
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         pt: 20,
-        pb: 20
-      }}>
+        pb: 20,
+      }}
+    >
       <Box
         container
-        sx={{ width: { xs: '80%', md: '50%' } }}
-        className={classes.container}>
+        sx={{ width: { xs: "80%", md: "50%" } }}
+        className={classes.container}
+      >
         <Box className={classes.flexRow}>
           <Box item className={classes.heading}>
             <Typography variant="h6" className={classes.text}>
-              {t('ForgotPassword')}
+              {t("ForgotPassword")}
             </Typography>
           </Box>
         </Box>
@@ -102,13 +105,13 @@ const ResetPassword = props => {
                 id="email"
                 name="email"
                 value={email}
-                onChange={event => {
-                  setEmail(event.target.value)
+                onChange={(event) => {
+                  setEmail(event.target.value);
                 }}
-                onBlur={event => {
-                  onBlur(event, 'email')
+                onBlur={(event) => {
+                  onBlur(event, "email");
                 }}
-                placeholder={t('Email')}
+                placeholder={t("Email")}
                 disableUnderline
                 className={[
                   globalClasses.input,
@@ -116,7 +119,7 @@ const ResetPassword = props => {
                     ? globalClasses.inputError
                     : emailError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -125,14 +128,14 @@ const ResetPassword = props => {
                 id="input-password"
                 name="input-password"
                 value={password}
-                onChange={event => {
-                  setPassword(event.target.value)
+                onChange={(event) => {
+                  setPassword(event.target.value);
                 }}
-                onBlur={event => {
-                  onBlur(event, 'password')
+                onBlur={(event) => {
+                  onBlur(event, "password");
                 }}
-                placeholder={t('Password')}
-                type={showPassword ? 'text' : 'password'}
+                placeholder={t("Password")}
+                type={showPassword ? "text" : "password"}
                 disableUnderline
                 className={[
                   globalClasses.input,
@@ -140,7 +143,7 @@ const ResetPassword = props => {
                     ? globalClasses.inputError
                     : passwordError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
                 endAdornment={
                   <InputAdornment position="end">
@@ -160,14 +163,14 @@ const ResetPassword = props => {
                 id="input-confirm-password"
                 name="input-confirm-password"
                 value={confirmPassword}
-                type={showConfirmPassword ? 'text' : 'password'}
-                onChange={event => {
-                  setConfirmPassword(event.target.value)
+                type={showConfirmPassword ? "text" : "password"}
+                onChange={(event) => {
+                  setConfirmPassword(event.target.value);
                 }}
-                onBlur={event => {
-                  onBlur(event, 'confirmPassword')
+                onBlur={(event) => {
+                  onBlur(event, "confirmPassword");
                 }}
-                placeholder={t('ConfirmPassword')}
+                placeholder={t("ConfirmPassword")}
                 disableUnderline
                 className={[
                   globalClasses.input,
@@ -175,7 +178,7 @@ const ResetPassword = props => {
                     ? globalClasses.inputError
                     : confirmPasswordError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
                 endAdornment={
                   <InputAdornment position="end">
@@ -196,28 +199,29 @@ const ResetPassword = props => {
               <Button
                 className={globalClasses.button}
                 onClick={() => {
-                  setConfirmPasswordError(null)
-                  setPasswordError(null)
-                  setError(null)
-                  setSuccess(null)
-                  const params = new URLSearchParams(props.location.search)
+                  setConfirmPasswordError(null);
+                  setPasswordError(null);
+                  setError(null);
+                  setSuccess(null);
+                  const params = new URLSearchParams(props.location.search);
                   if (validate()) {
                     mutate({
                       variables: {
                         email,
-                        password
+                        password,
                         // token: params.get('reset')
-                      }
+                      },
                     })
-                      .then(response => {
-                        console.log('Mutation successful:', response)
+                      .then((response) => {
+                        console.log("Mutation successful:", response);
                       })
-                      .catch(error => {
-                        console.error('Mutation error:', error.message)
-                      })
+                      .catch((error) => {
+                        console.error("Mutation error:", error.message);
+                      });
                   }
-                }}>
-                {t('Reset')}
+                }}
+              >
+                {t("Reset")}
               </Button>
             </Box>
           </form>
@@ -226,7 +230,8 @@ const ResetPassword = props => {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {success}
               </Alert>
             )}
@@ -234,7 +239,8 @@ const ResetPassword = props => {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {error}
               </Alert>
             )}
@@ -242,7 +248,7 @@ const ResetPassword = props => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default withTranslation()(ResetPassword)
+export default withTranslation()(ResetPassword);

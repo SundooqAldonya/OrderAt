@@ -1,20 +1,20 @@
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import CategoryComponent from '../components/Category/Category'
-import CustomLoader from '../components/Loader/CustomLoader'
+import React, { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import CategoryComponent from "../components/Category/Category";
+import CustomLoader from "../components/Loader/CustomLoader";
 // core components
-import Header from '../components/Headers/Header'
+import Header from "../components/Headers/Header";
 import {
   getRestaurantDetail,
   deleteCategory,
-  categoriesByRestaurants
-} from '../apollo'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import SearchBar from '../components/TableHeader/SearchBar'
-import useGlobalStyles from '../utils/globalStyles'
+  categoriesByRestaurants,
+} from "../apollo";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import SearchBar from "../components/TableHeader/SearchBar";
+import useGlobalStyles from "../utils/globalStyles";
 import {
   Container,
   IconButton,
@@ -24,73 +24,78 @@ import {
   Paper,
   Typography,
   ListItemIcon,
-  Grid
-} from '@mui/material'
-import { customStyles } from '../utils/tableCustomStyles'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import TableHeader from '../components/TableHeader'
-import Alert from '../components/Alert'
-import ConfigurableValues from '../config/constants'
+  Grid,
+} from "@mui/material";
+import { customStyles } from "../utils/tableCustomStyles";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TableHeader from "../components/TableHeader";
+import Alert from "../components/Alert";
+import ConfigurableValues from "../config/constants";
+import { gql } from "@apollo/client";
 
 const GET_CATEGORIES = gql`
   ${categoriesByRestaurants}
-`
+`;
 const DELETE_CATEGORY = gql`
   ${deleteCategory}
-`
-const Category = props => {
-  const { t } = props
-  const { PAID_VERSION } = ConfigurableValues()
-  const [editModal, setEditModal] = useState(false)
-  const [category, setCategory] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+`;
+const Category = (props) => {
+  const { t } = props;
+  const { PAID_VERSION } = ConfigurableValues();
+  const [editModal, setEditModal] = useState(false);
+  const [category, setCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
-  const toggleModal = category => {
-    setEditModal(!editModal)
-    setCategory(category)
-  }
+  const toggleModal = (category) => {
+    setEditModal(!editModal);
+    setCategory(category);
+  };
   const closeEditModal = () => {
-    setEditModal(false)
-  }
-  const restaurantId = localStorage.getItem('restaurantId')
-  console.log({ restaurantId })
+    setEditModal(false);
+  };
+  const restaurantId = localStorage.getItem("restaurantId");
+  console.log({ restaurantId });
 
   const [mutate, { loading }] = useMutation(DELETE_CATEGORY, {
-    refetchQueries: [{ query: GET_CATEGORIES, variables: { id: restaurantId } }]
-  })
+    refetchQueries: [
+      { query: GET_CATEGORIES, variables: { id: restaurantId } },
+    ],
+  });
 
-  const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
-    GET_CATEGORIES,
-    {
-      variables: {
-        id: restaurantId
-      }
-    }
-  )
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+    refetch,
+  } = useQuery(GET_CATEGORIES, {
+    variables: {
+      id: restaurantId,
+    },
+  });
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Title'),
+      name: t("Title"),
       sortable: true,
-      selector: 'title'
+      selector: "title",
     },
     {
-      name: t('Action'),
-      cell: row => (
+      name: t("Action"),
+      cell: (row) => (
         <>
           {ActionButtons(
             row,
@@ -103,25 +108,25 @@ const Category = props => {
             setIsOpen
           )}
         </>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
   const filtered =
     searchQuery.length < 3
       ? data && data.categoriesByRestaurant
       : data &&
-        data.categoriesByRestaurant.filter(option => {
-          return option.title.toLowerCase().search(regex) > -1
-        })
-  const globalClasses = useGlobalStyles()
+        data.categoriesByRestaurant.filter((option) => {
+          return option.title.toLowerCase().search(regex) > -1;
+        });
+  const globalClasses = useGlobalStyles();
   return (
     <>
       <Header />
       {isOpen && (
-        <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
+        <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
       {/* Page content */}
       <Container className={globalClasses.flex} fluid>
@@ -143,7 +148,7 @@ const Category = props => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Categories')} />}
+            title={<TableHeader title={t("Categories")} />}
             columns={columns}
             data={data && data.categoriesByRestaurant?.length ? filtered : []}
             pagination
@@ -161,19 +166,20 @@ const Category = props => {
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal(null)
+            toggleModal(null);
           }}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <CategoryComponent category={category} onClose={closeEditModal} />
         </Modal>
       </Container>
     </>
-  )
-}
+  );
+};
 
 const ActionButtons = (
   row,
@@ -184,14 +190,14 @@ const ActionButtons = (
   mutate,
   restaurantId
 ) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <div>
@@ -199,62 +205,66 @@ const ActionButtons = (
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
 
-                if (PAID_VERSION) toggleModal(row)
+                if (PAID_VERSION) toggleModal(row);
                 else {
-                  setIsOpen(true)
+                  setIsOpen(true);
                   setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
+                    setIsOpen(false);
+                  }, 5000);
                 }
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
 
                 if (PAID_VERSION)
                   mutate({
-                    variables: { id: row._id }
-                  })
+                    variables: { id: row._id },
+                  });
                 else {
-                  setIsOpen(true)
+                  setIsOpen(true);
                   setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
+                    setIsOpen(false);
+                  }, 5000);
                 }
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Category)
+export default withTranslation()(Category);

@@ -1,88 +1,92 @@
-import React, { useState } from 'react'
-import { useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
 
-import { Box, Typography, Input, Button, Alert } from '@mui/material'
+import { Box, Typography, Input, Button, Alert } from "@mui/material";
 
 import {
   editCategory,
   createCategory,
-  categoriesByRestaurants
-} from '../../apollo'
-import useGlobalStyles from '../../utils/globalStyles'
-import useStyles from '../styles'
+  categoriesByRestaurants,
+} from "../../apollo";
+import useGlobalStyles from "../../utils/globalStyles";
+import useStyles from "../styles";
+import { gql } from "@apollo/client";
 
 const CREATE_CATEGORY = gql`
   ${createCategory}
-`
+`;
 const EDIT_CATEGORY = gql`
   ${editCategory}
-`
+`;
 
 const GET_CATEGORIES = gql`
   ${categoriesByRestaurants}
-`
+`;
 
 function Category(props) {
-  const mutation = props.category ? EDIT_CATEGORY : CREATE_CATEGORY
-  const [mainError, mainErrorSetter] = useState('')
-  const [success, successSetter] = useState('')
+  const mutation = props.category ? EDIT_CATEGORY : CREATE_CATEGORY;
+  const [mainError, mainErrorSetter] = useState("");
+  const [success, successSetter] = useState("");
   const [category, setCategory] = useState(
-    props.category ? props.category.title : ''
-  )
-  const restaurantId = localStorage.getItem('restaurantId')
-  const onCompleted = data => {
+    props.category ? props.category.title : ""
+  );
+  const restaurantId = localStorage.getItem("restaurantId");
+  const onCompleted = (data) => {
     const message = props.category
-      ? t('CategoryUpdatedSuccessfully')
-      : t('CategoryAddedSuccessfully')
-    successSetter(message)
-    mainErrorSetter('')
-    setCategory('')
-    setTimeout(hideAlert, 3000)
-  }
-  const onError = error => {
-    const message = `${t('ActionFailedTryAgain')} ${error}`
-    successSetter('')
-    mainErrorSetter(message)
-    setTimeout(hideAlert, 3000)
-  }
+      ? t("CategoryUpdatedSuccessfully")
+      : t("CategoryAddedSuccessfully");
+    successSetter(message);
+    mainErrorSetter("");
+    setCategory("");
+    setTimeout(hideAlert, 3000);
+  };
+  const onError = (error) => {
+    const message = `${t("ActionFailedTryAgain")} ${error}`;
+    successSetter("");
+    mainErrorSetter(message);
+    setTimeout(hideAlert, 3000);
+  };
   const [mutate, { loading }] = useMutation(mutation, {
     onError,
     onCompleted,
-    refetchQueries: [{ query: GET_CATEGORIES, variables: { id: restaurantId } }]
-  })
+    refetchQueries: [
+      { query: GET_CATEGORIES, variables: { id: restaurantId } },
+    ],
+  });
   const hideAlert = () => {
-    mainErrorSetter('')
-    successSetter('')
-  }
-  const { t } = props
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+    mainErrorSetter("");
+    successSetter("");
+  };
+  const { t } = props;
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
         <Box
           item
-          className={props.category ? classes.headingBlack : classes.heading2}>
+          className={props.category ? classes.headingBlack : classes.heading2}
+        >
           <Typography variant="h6" className={classes.textWhite}>
-            {props.category ? t('Edit Category') : t('Add Category')}
+            {props.category ? t("Edit Category") : t("Add Category")}
           </Typography>
         </Box>
       </Box>
       <Box className={classes.form}>
         <form>
           <Box>
-            <Typography className={classes.labelText}>{t('Name')}</Typography>
+            <Typography className={classes.labelText}>{t("Name")}</Typography>
             <Input
               style={{ marginTop: -1 }}
               id="input-category"
               name="input-category"
-              placeholder={t('PHCategory')}
+              placeholder={t("PHCategory")}
               type="text"
               defaultValue={category}
-              onChange={e => {
-                setCategory(e.target.value)
+              onChange={(e) => {
+                setCategory(e.target.value);
               }}
               disableUnderline
               className={globalClasses.input}
@@ -92,25 +96,26 @@ function Category(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={async e => {
-                e.preventDefault()
+              onClick={async (e) => {
+                e.preventDefault();
                 if (!loading) {
                   mutate({
                     variables: {
                       category: {
-                        _id: props.category ? props.category._id : '',
+                        _id: props.category ? props.category._id : "",
                         title: category,
-                        restaurant: restaurantId
-                      }
-                    }
-                  })
+                        restaurant: restaurantId,
+                      },
+                    },
+                  });
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
                     // props.onClose(); // Close the modal
-                  }, 4000)
+                  }, 4000);
                 }
-              }}>
-              {t('Save')}
+              }}
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -118,7 +123,8 @@ function Category(props) {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {success}
               </Alert>
             )}
@@ -126,7 +132,8 @@ function Category(props) {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {mainError}
               </Alert>
             )}
@@ -134,7 +141,7 @@ function Category(props) {
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(Category)
+export default withTranslation()(Category);

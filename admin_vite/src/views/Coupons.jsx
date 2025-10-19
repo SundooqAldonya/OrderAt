@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import CouponComponent from '../components/Coupon/Coupon'
-import Header from '../components/Headers/Header'
-import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import { getCoupons, deleteCoupon, editCoupon } from '../apollo'
-import SearchBar from '../components/TableHeader/SearchBar'
-import useGlobalStyles from '../utils/globalStyles'
-import { customStyles } from '../utils/tableCustomStyles'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import CouponComponent from "../components/Coupon/Coupon";
+import Header from "../components/Headers/Header";
+import CustomLoader from "../components/Loader/CustomLoader";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import { getCoupons, deleteCoupon, editCoupon } from "../apollo";
+import SearchBar from "../components/TableHeader/SearchBar";
+import useGlobalStyles from "../utils/globalStyles";
+import { customStyles } from "../utils/tableCustomStyles";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Container,
   Grid,
@@ -23,96 +23,100 @@ import {
   Paper,
   Switch,
   Typography,
-  ListItemIcon
-} from '@mui/material'
-import { ReactComponent as CouponsIcon } from '../assets/svg/svg/Coupons.svg'
-import TableHeader from '../components/TableHeader'
+  ListItemIcon,
+} from "@mui/material";
+// import { ReactComponent as CouponsIcon } from '../assets/svg/svg/Coupons.svg'
+import TableHeader from "../components/TableHeader";
+import { gql } from "@apollo/client";
 
 const GET_COUPONS = gql`
   ${getCoupons}
-`
+`;
 const EDIT_COUPON = gql`
   ${editCoupon}
-`
+`;
 const DELETE_COUPON = gql`
   ${deleteCoupon}
-`
+`;
 
-const Coupon = props => {
-  const { t } = props
-  const [editModal, setEditModal] = useState(false)
-  const [coupon, setCoupon] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const onChangeSearch = e => setSearchQuery(e.target.value)
-  const [mutateEdit] = useMutation(EDIT_COUPON)
+const Coupon = (props) => {
+  const { t } = props;
+  const [editModal, setEditModal] = useState(false);
+  const [coupon, setCoupon] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
+  const [mutateEdit] = useMutation(EDIT_COUPON);
   const [mutateDelete] = useMutation(DELETE_COUPON, {
-    refetchQueries: [{ query: GET_COUPONS }]
-  })
-  const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
-    GET_COUPONS
-  )
-  const toggleModal = coupon => {
-    setEditModal(!editModal)
-    setCoupon(coupon)
-  }
+    refetchQueries: [{ query: GET_COUPONS }],
+  });
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+    refetch,
+  } = useQuery(GET_COUPONS);
+  const toggleModal = (coupon) => {
+    setEditModal(!editModal);
+    setCoupon(coupon);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field] && isNaN(row[field])) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Code'),
+      name: t("Code"),
       sortable: true,
-      selector: 'code'
+      selector: "code",
     },
     {
-      name: t('Discount'),
+      name: t("Discount"),
       sortable: true,
-      selector: 'discount',
-      cell: row => (
+      selector: "discount",
+      cell: (row) => (
         <>
           {`${row.rules.discount_value} ${
-            row.rules.discount_type === 'percent' ? '%' : 'EGP'
+            row.rules.discount_type === "percent" ? "%" : "EGP"
           }`}
         </>
-      )
+      ),
     },
     // {
     //   name: t('Status'),
     //   cell: row => <>{statusChanged(row)}</>
     // },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>,
+    },
+  ];
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
   const filtered =
     searchQuery.length < 3
       ? data && data.coupons
       : data &&
-        data.coupons.filter(coupon => {
-          return coupon.code.toLowerCase().search(regex) > -1
-        })
+        data.coupons.filter((coupon) => {
+          return coupon.code.toLowerCase().search(regex) > -1;
+        });
 
-  const statusChanged = row => {
+  const statusChanged = (row) => {
     return (
       <>
         {row.enabled}
         <Switch
           size="small"
-          defaultChecked={row.status === 'active' ? true : false}
-          onChange={_event => {
+          defaultChecked={row.status === "active" ? true : false}
+          onChange={(_event) => {
             mutateEdit({
               variables: {
                 couponInput: {
@@ -120,22 +124,22 @@ const Coupon = props => {
                   title: row.title,
                   discount: row.discount,
                   // enabled: !row.enabled
-                  status: row.status === 'active' ? 'disabled' : 'active'
-                }
-              }
-            })
+                  status: row.status === "active" ? "disabled" : "active",
+                },
+              },
+            });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </>
-    )
-  }
+    );
+  };
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
 
   const handleClose = () => {
-    setEditModal(false)
-  }
+    setEditModal(false);
+  };
   return (
     <>
       <Header />
@@ -152,7 +156,7 @@ const Coupon = props => {
 
         {errorQuery ? (
           <span>
-            `${t('Error')}! ${errorQuery.message}`
+            `${t("Error")}! ${errorQuery.message}`
           </span>
         ) : null}
         {loadingQuery ? (
@@ -167,7 +171,7 @@ const Coupon = props => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Coupons')} />}
+            title={<TableHeader title={t("Coupons")} />}
             columns={columns}
             data={filtered}
             pagination
@@ -181,29 +185,30 @@ const Coupon = props => {
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal(null)
+            toggleModal(null);
           }}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <CouponComponent coupon={coupon} onClose={handleClose} />
         </Modal>
       </Container>
     </>
-  )
-}
+  );
+};
 
 const ActionButtons = (row, toggleModal, t, mutateDelete) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <div>
@@ -211,45 +216,49 @@ const ActionButtons = (row, toggleModal, t, mutateDelete) => {
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                toggleModal(row)
+              onClick={(e) => {
+                e.preventDefault();
+                toggleModal(row);
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                mutateDelete({ variables: { id: row._id } })
+              onClick={(e) => {
+                e.preventDefault();
+                mutateDelete({ variables: { id: row._id } });
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Coupon)
+export default withTranslation()(Coupon);

@@ -1,55 +1,58 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation, useTranslation } from 'react-i18next'
+import React, { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation, useTranslation } from "react-i18next";
 // core components
-import Header from '../components/Headers/Header'
-import { defaultTimings, getRestaurantProfile, updateTimings } from '../apollo'
+import Header from "../components/Headers/Header";
+import { defaultTimings, getRestaurantProfile, updateTimings } from "../apollo";
 // import TimeRangePicker from '@wojtekmaj/react-timerange-picker'
-import CustomLoader from '../components/Loader/CustomLoader'
-import useGlobalStyles from '../utils/globalStyles'
-import { Container, Grid, Box, Button, Alert, useTheme } from '@mui/material'
-import DayComponent from '../components/DayComponent'
+import CustomLoader from "../components/Loader/CustomLoader";
+import useGlobalStyles from "../utils/globalStyles";
+import { Container, Grid, Box, Button, Alert, useTheme } from "@mui/material";
+import DayComponent from "../components/DayComponent";
+import { gql } from "@apollo/client";
+
 const GET_RESTAURANT_PROFILE = gql`
   ${getRestaurantProfile}
-`
+`;
 const UPDATE_TIMINGS = gql`
   ${updateTimings}
-`
-const Timings = props => {
-  const { t } = useTranslation()
-  const [value, setValues] = useState({})
-  const restaurantId = localStorage.getItem('restaurantId')
+`;
+const Timings = (props) => {
+  const { t } = useTranslation();
+  const [value, setValues] = useState({});
+  const restaurantId = localStorage.getItem("restaurantId");
 
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const { data, error: errorQuery, loading: loadingQuery } = useQuery(
-    GET_RESTAURANT_PROFILE,
-    {
-      variables: { id: restaurantId }
-    }
-  )
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+  } = useQuery(GET_RESTAURANT_PROFILE, {
+    variables: { id: restaurantId },
+  });
 
   const onChangeTime = ({ index, day, values }) => {
-    console.log({ index, values, day })
+    console.log({ index, values, day });
     // here its not objects anymore, its array of objects
-    setValues(prev => ({
+    setValues((prev) => ({
       ...prev,
-      [day]: values
-    }))
-  }
+      [day]: values,
+    }));
+  };
 
-  console.log({ value })
+  console.log({ value });
 
-  const getTransformedTimings = e => {
+  const getTransformedTimings = (e) => {
     return Object.entries(value).map(([day, timeRanges]) => ({
       day,
       times: timeRanges.map(([start, end]) => ({
-        startTime: start.split(':'),
-        endTime: end.split(':')
-      }))
-    }))
+        startTime: start.split(":"),
+        endTime: end.split(":"),
+      })),
+    }));
     // const openingTimes = Object.keys(value).map(day => {
     //   console.log({ day })
     //   return {
@@ -64,79 +67,79 @@ const Timings = props => {
     // console.log({ openingTimes })
 
     // return openingTimes
-  }
+  };
 
   // console.log({ getTransformedTimings: getTransformedTimings() })
 
   const generateValues = () => {
-    const newValue = {}
-    data.restaurant.openingTimes.forEach(item => {
-      newValue[item.day] = item.times.map(t => [
+    const newValue = {};
+    data.restaurant.openingTimes.forEach((item) => {
+      newValue[item.day] = item.times.map((t) => [
         `${t.startTime[0]}:${t.startTime[1]}`,
-        `${t.endTime[0]}:${t.endTime[1]}`
-      ])
-    })
-    setValues(newValue)
-  }
+        `${t.endTime[0]}:${t.endTime[1]}`,
+      ]);
+    });
+    setValues(newValue);
+  };
 
   useEffect(() => {
     if (data?.restaurant) {
-      generateValues()
+      generateValues();
     }
-  }, [data?.restaurant])
+  }, [data?.restaurant]);
 
-  const transformedTimes = {}
+  const transformedTimes = {};
 
-  console.log({ transformedTimes })
+  console.log({ transformedTimes });
 
-  const [mutate, { loading }] = useMutation(UPDATE_TIMINGS)
+  const [mutate, { loading }] = useMutation(UPDATE_TIMINGS);
   const [mutateDefault, { loading: loadingDefaultTiming }] = useMutation(
     defaultTimings,
     {
       refetchQueries: [{ query: GET_RESTAURANT_PROFILE }],
-      onCompleted: res => {
-        console.log({ res })
+      onCompleted: (res) => {
+        console.log({ res });
       },
-      onError: error => {
-        console.log({ error })
-      }
+      onError: (error) => {
+        console.log({ error });
+      },
     }
-  )
+  );
 
   data &&
-    data.restaurant.openingTimes?.forEach(value => {
-      transformedTimes[value.day] = value.times.map(t => [
+    data.restaurant.openingTimes?.forEach((value) => {
+      transformedTimes[value.day] = value.times.map((t) => [
         `${t.startTime[0]}:${t.startTime[1]}`,
-        `${t.endTime[0]}:${t.endTime[1]}`
-      ])
-    })
+        `${t.endTime[0]}:${t.endTime[1]}`,
+      ]);
+    });
 
-  console.log({ times: data?.restaurant?.openingTimes })
-  const globalClasses = useGlobalStyles()
+  console.log({ times: data?.restaurant?.openingTimes });
+  const globalClasses = useGlobalStyles();
 
-  const handleSaveTiming = e => {
-    e.preventDefault()
-    const openingTimes = getTransformedTimings()
-    console.log({ openingTimes })
+  const handleSaveTiming = (e) => {
+    e.preventDefault();
+    const openingTimes = getTransformedTimings();
+    console.log({ openingTimes });
     mutate({
       variables: {
         id: restaurantId,
-        openingTimes
+        openingTimes,
       },
       onCompleted: () => {
-        setSuccessMessage(t('TimeSavedSuccessfully'))
-        setTimeout(() => setSuccessMessage(''), 5000)
-        setErrorMessage('')
+        setSuccessMessage(t("TimeSavedSuccessfully"));
+        setTimeout(() => setSuccessMessage(""), 5000);
+        setErrorMessage("");
       },
-      onError: error => {
-        setErrorMessage(t('ErrorWhileSavingTime'))
-        setTimeout(() => setErrorMessage(''), 5000)
-        setSuccessMessage('')
-      }
-    })
-  }
+      onError: (error) => {
+        setErrorMessage(t("ErrorWhileSavingTime"));
+        setTimeout(() => setErrorMessage(""), 5000);
+        setSuccessMessage("");
+      },
+    });
+  };
 
-  const dayKeys = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+  const dayKeys = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   return (
     <>
@@ -150,17 +153,17 @@ const Timings = props => {
           <Box className={globalClasses.timing}>
             <Grid container className={globalClasses.timingHeader}>
               <Grid item md={2} lg={2}>
-                {t('Days')}
+                {t("Days")}
               </Grid>
               <Grid item md={7} lg={7}>
-                {t('OpenTimes')}
+                {t("OpenTimes")}
               </Grid>
             </Grid>
             {dayKeys.map((dayKey, idx) => (
               <DayComponent
                 key={dayKey}
                 day={t(dayKey)}
-                value={transformedTimes[dayKey] || [['00:00', '23:59']]}
+                value={transformedTimes[dayKey] || [["00:00", "23:59"]]}
                 onChangeTime={onChangeTime}
                 idx={idx}
               />
@@ -209,34 +212,38 @@ const Timings = props => {
             /> */}
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 3
-              }}>
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
               <Button
                 onClick={handleSaveTiming}
-                className={[globalClasses.button, globalClasses.mb]}>
-                {loading ? t('SavingDots') : t('Save')}
+                className={[globalClasses.button, globalClasses.mb]}
+              >
+                {loading ? t("SavingDots") : t("Save")}
               </Button>
               <Button
-                onClick={e => {
-                  e.preventDefault()
+                onClick={(e) => {
+                  e.preventDefault();
                   mutateDefault({
                     variables: {
-                      id: restaurantId
-                    }
-                  })
+                      id: restaurantId,
+                    },
+                  });
                 }}
-                className={[globalClasses.button, globalClasses.mb]}>
-                {loadingDefaultTiming ? t('SavingDots') : t('restore_default')}
+                className={[globalClasses.button, globalClasses.mb]}
+              >
+                {loadingDefaultTiming ? t("SavingDots") : t("restore_default")}
               </Button>
             </Box>
             {successMessage && (
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
@@ -244,7 +251,8 @@ const Timings = props => {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}
@@ -252,7 +260,7 @@ const Timings = props => {
         )}
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Timings)
+export default withTranslation()(Timings);

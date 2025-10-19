@@ -1,9 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
   plugins: [
+    svgr({
+      svgrOptions: {
+        icon: true,
+      },
+    }),
     react({
       jsxRuntime: "automatic",
       babel: {
@@ -19,6 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      events: "events/",
     },
   },
 });

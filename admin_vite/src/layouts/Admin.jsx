@@ -1,53 +1,66 @@
-import React, { useRef, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import React, { useRef, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 // core components
-import AdminNavbar from '../components/Navbars/AdminNavbar'
-import AdminFooter from '../components/Footers/AdminFooter'
-import Sidebar from '../components/Sidebar/Sidebar'
-import routes from '../routes'
-import { Box } from '@mui/material'
+import AdminNavbar from "../components/Navbars/AdminNavbar";
+import AdminFooter from "../components/Footers/AdminFooter";
+import Sidebar from "../components/Sidebar/Sidebar";
+import routes from "../routes";
+import { Box } from "@mui/material";
 
 function Admin(props) {
-  var divRef = useRef(null)
+  var divRef = useRef(null);
 
   useEffect(() => {
-    document.documentElement.scrollTop = 0
-    document.scrollingElement.scrollTop = 0
-    divRef.current.scrollTop = 0
-  }, [])
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+    divRef.current.scrollTop = 0;
+  }, []);
 
-  const getRoutes = routes => {
-    return routes.map((prop, key) => {
-      if (prop.layout === '/admin') {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        )
-      } else {
-        return null
-      }
-    })
-  }
-  const getBrandText = path => {
-    const location = props.location.pathname.split('/')[2].replace('-', ' ')
-    console.log({ location })
+  // const getRoutes = (routes) => {
+  //   return routes.map((prop, key) => {
+  //     if (prop.layout === "/admin") {
+  //       return (
+  //         <Route
+  //           path={prop.layout + prop.path}
+  //           component={prop.component}
+  //           key={key}
+  //         />
+  //       );
+  //     } else {
+  //       return null;
+  //     }
+  //   });
+  // };
 
-    if (location === 'order details') {
-      return location
+  const getRoutes = (routes) => {
+    return routes
+      .filter((prop) => prop.layout === "/admin")
+      .map((prop, key) => (
+        <Route
+          key={key}
+          path={prop.layout + prop.path}
+          element={<prop.component />}
+        />
+      ));
+  };
+
+  const getBrandText = (path) => {
+    const location = props.location.pathname.split("/")[2].replace("-", " ");
+    console.log({ location });
+
+    if (location === "order details") {
+      return location;
     }
     for (let i = 0; i < routes.length; i++) {
       if (
         props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==
         -1
       ) {
-        return routes[i].name
+        return routes[i].name;
       }
     }
-    return 'Dispatch'
-  }
+    return "Dispatch";
+  };
 
   return (
     <Box>
@@ -56,18 +69,19 @@ function Admin(props) {
         sx={{
           marginLeft: { sx: 0, sm: 30 },
           paddingTop: { xs: 10, sm: 0 },
-          overflow: 'hidden'
+          overflow: "hidden",
         }}
-        ref={divRef}>
+        ref={divRef}
+      >
         <AdminNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
         />
-        <Switch>{getRoutes(routes)}</Switch>
+        <Routes>{getRoutes(routes)}</Routes>
         <AdminFooter />
       </Box>
     </Box>
-  )
+  );
 }
 
-export default Admin
+export default Admin;

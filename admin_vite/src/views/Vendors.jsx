@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { withTranslation } from 'react-i18next'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import Header from '../components/Headers/Header'
-import VendorComponent from '../components/Vendor/Vendor'
-import CustomLoader from '../components/Loader/CustomLoader'
-import { getVendors, deleteVendor } from '../apollo'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import SearchBar from '../components/TableHeader/SearchBar'
-import { customStyles } from '../utils/tableCustomStyles'
-import useGlobalStyles from '../utils/globalStyles'
+import React, { useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation, useQuery } from "@apollo/client/react";
+import Header from "../components/Headers/Header";
+import VendorComponent from "../components/Vendor/Vendor";
+import CustomLoader from "../components/Loader/CustomLoader";
+import { getVendors, deleteVendor } from "../apollo";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import SearchBar from "../components/TableHeader/SearchBar";
+import { customStyles } from "../utils/tableCustomStyles";
+import useGlobalStyles from "../utils/globalStyles";
 import {
   Container,
   Button,
@@ -21,96 +21,100 @@ import {
   ListItemIcon,
   Typography,
   Paper,
-  useTheme
-} from '@mui/material'
-import { ReactComponent as VendorIcon } from '../assets/svg/svg/Vendors.svg'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import TableHeader from '../components/TableHeader'
-import Alert from '../components/Alert'
-import ConfigurableValues from '../config/constants'
+  useTheme,
+} from "@mui/material";
+import vendorIcon from "../assets/svg/svg/Vendors.svg";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TableHeader from "../components/TableHeader";
+import Alert from "../components/Alert";
+import ConfigurableValues from "../config/constants";
+import { gql } from "@apollo/client";
 
 const GET_VENDORS = gql`
   ${getVendors}
-`
+`;
 const DELETE_VENDOR = gql`
   ${deleteVendor}
-`
-const Vendors = props => {
-  const theme = useTheme()
-  const { PAID_VERSION } = ConfigurableValues()
-  const { t } = props
-  const [editModal, setEditModal] = useState(false)
-  const [vendors, setVendor] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const onChangeSearch = e => setSearchQuery(e.target.value)
-  const golbalClasses = useGlobalStyles()
+`;
+const Vendors = (props) => {
+  const theme = useTheme();
+  const { PAID_VERSION } = ConfigurableValues();
+  const { t } = props;
+  const [editModal, setEditModal] = useState(false);
+  const [vendors, setVendor] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
+  const golbalClasses = useGlobalStyles();
 
   const closeEditModal = () => {
-    setEditModal(false)
-  }
+    setEditModal(false);
+  };
 
-  const { loading: loadingQuery, error: errorQuery, data, refetch } = useQuery(
-    GET_VENDORS
-  )
+  const {
+    loading: loadingQuery,
+    error: errorQuery,
+    data,
+    refetch,
+  } = useQuery(GET_VENDORS);
 
-  console.log({ data })
+  console.log({ data });
 
   const [mutate, { loading }] = useMutation(DELETE_VENDOR, {
-    refetchQueries: [{ query: GET_VENDORS }]
-  })
+    refetchQueries: [{ query: GET_VENDORS }],
+  });
 
-  const toggleModal = vendor => {
-    setEditModal(!editModal)
-    console.log({ setVendor: vendor })
-    setVendor(vendor)
-  }
+  const toggleModal = (vendor) => {
+    setEditModal(!editModal);
+    console.log({ setVendor: vendor });
+    setVendor(vendor);
+  };
 
   useEffect(() => {
-    localStorage.removeItem('restaurant_id')
-  }, [])
+    localStorage.removeItem("restaurant_id");
+  }, []);
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Email'),
+      name: t("Email"),
       sortable: true,
-      selector: 'email',
-      cell: row => <>{row.email ? row.email : 'N/A'}</>
+      selector: "email",
+      cell: (row) => <>{row.email ? row.email : "N/A"}</>,
     },
     {
-      name: t('Name'),
+      name: t("Name"),
       sortable: true,
-      selector: 'name',
-      cell: row => <>{row.name ? row.name : 'N/A'}</>
+      selector: "name",
+      cell: (row) => <>{row.name ? row.name : "N/A"}</>,
     },
     {
-      name: t('Phone'),
+      name: t("Phone"),
       sortable: true,
-      selector: 'phone',
-      cell: row => <>{row.phone ? row.phone : 'N/A'}</>
+      selector: "phone",
+      cell: (row) => <>{row.phone ? row.phone : "N/A"}</>,
     },
     {
-      name: t('TotalRestaurants'),
+      name: t("TotalRestaurants"),
       sortable: true,
-      cell: row => <>{row.restaurants.length}</>
+      cell: (row) => <>{row.restaurants.length}</>,
     },
     {
-      name: t('Action'),
-      cell: row => (
+      name: t("Action"),
+      cell: (row) => (
         <>
           {ActionButtons(
             row,
@@ -123,30 +127,30 @@ const Vendors = props => {
             mutate
           )}
         </>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
 
   const filtered =
     searchQuery.length < 3
       ? data && data.vendors
       : data &&
-        data.vendors.filter(vendor => {
+        data.vendors.filter((vendor) => {
           return (
             vendor.email.toLowerCase().search(regex) > -1 ||
             vendor.name?.toLowerCase().search(regex) > -1 ||
             vendor.phone?.toLowerCase().search(regex) > -1
-          )
-        })
+          );
+        });
 
   return (
     <>
       <Header />
       {isOpen && (
-        <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
+        <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
 
       <Container className={golbalClasses.flex}>
@@ -157,12 +161,14 @@ const Vendors = props => {
           </Grid>
 
           <Grid
-            sx={{ display: { xs: 'none', lg: 'block' } }}
+            sx={{ display: { xs: "none", lg: "block" } }}
             item
             mt={5}
             ml={-2}
-            order={{ xs: 1, lg: 2 }}>
-            <VendorIcon />
+            order={{ xs: 1, lg: 2 }}
+          >
+            {/* <VendorIcon /> */}
+            <img src={vendorIcon} alt="Config" width={32} height={32} />
           </Grid>
         </Grid>
         {errorQuery ? <span>{`Error! ${errorQuery.message}`}</span> : null}
@@ -178,7 +184,7 @@ const Vendors = props => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Vendors')} />}
+            title={<TableHeader title={t("Vendors")} />}
             columns={columns}
             data={filtered}
             pagination
@@ -193,19 +199,20 @@ const Vendors = props => {
         <Modal
           open={editModal}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClose={() => {
-            toggleModal()
-          }}>
+            toggleModal();
+          }}
+        >
           <VendorComponent vendor={vendors} onClose={closeEditModal} />
         </Modal>
       </Container>
     </>
-  )
-}
+  );
+};
 
 const ActionButtons = (
   row,
@@ -217,96 +224,101 @@ const ActionButtons = (
   setIsOpen,
   mutate
 ) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <Button
         size="20px"
         variant="contained"
         sx={{
-          color: 'black',
-          fontWeight: 'bold',
+          color: "black",
+          fontWeight: "bold",
           backgroundColor: theme.palette.warning.dark,
           padding: 0,
-          height: '15px',
-          fontSize: '7px',
-          '&:hover': {
-            color: theme.palette.common.white
-          }
+          height: "15px",
+          fontSize: "7px",
+          "&:hover": {
+            color: theme.palette.common.white,
+          },
         }}
-        onClick={e => {
-          e.preventDefault()
-          localStorage.setItem('vendorId', row._id)
+        onClick={(e) => {
+          e.preventDefault();
+          localStorage.setItem("vendorId", row._id);
           props.history.push({
-            pathname: '/restaurant/list',
-            state: { id: row._id }
-          })
-        }}>
-        {t('Restaurants')}
+            pathname: "/restaurant/list",
+            state: { id: row._id },
+          });
+        }}
+      >
+        {t("Restaurants")}
       </Button>
       <div>
         <IconButton
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                if (PAID_VERSION) toggleModal(row)
+              onClick={(e) => {
+                e.preventDefault();
+                if (PAID_VERSION) toggleModal(row);
                 else {
-                  setIsOpen(true)
+                  setIsOpen(true);
                   setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
+                    setIsOpen(false);
+                  }, 5000);
                 }
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                if (PAID_VERSION) mutate({ variables: { id: row._id } })
+              onClick={(e) => {
+                e.preventDefault();
+                if (PAID_VERSION) mutate({ variables: { id: row._id } });
                 else {
-                  setIsOpen(true)
+                  setIsOpen(true);
                   setTimeout(() => {
-                    setIsOpen(false)
-                  }, 5000)
+                    setIsOpen(false);
+                  }, 5000);
                 }
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Vendors)
+export default withTranslation()(Vendors);

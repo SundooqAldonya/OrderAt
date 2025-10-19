@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import useStyles from '../styles'
-import { useTranslation } from 'react-i18next'
-import useGlobalStyles from '../../utils/globalStyles'
+import React, { useEffect, useRef, useState } from "react";
+import useStyles from "../styles";
+import { useTranslation } from "react-i18next";
+import useGlobalStyles from "../../utils/globalStyles";
 import {
   Alert,
   Box,
@@ -10,132 +10,135 @@ import {
   MenuItem,
   Modal,
   Select,
-  Typography
-} from '@mui/material'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { createArea, editArea, getAreas, getCities } from '../../apollo'
-import { GoogleMap, Marker, Polygon } from '@react-google-maps/api'
+  Typography,
+} from "@mui/material";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { createArea, editArea, getAreas, getCities } from "../../apollo";
+import { GoogleMap, Marker, Polygon } from "@react-google-maps/api";
+import { gql } from "@apollo/client";
 
 const CREATE_AREA = gql`
   ${createArea}
-`
+`;
 
 const EDIT_AREA = gql`
   ${editArea}
-`
+`;
 
 const GET_CITIES = gql`
   ${getCities}
-`
+`;
 
 const GET_AREAS = gql`
   ${getAreas}
-`
+`;
 
 const AreaCreate = ({ onClose, area }) => {
-  const { t } = useTranslation()
-  const [title, setTitle] = useState(area ? area.title : '')
-  const [titleError, titleErrorSetter] = useState(null)
-  const [address, setAddress] = useState('')
-  const [addressError, addressErrorSetter] = useState(null)
-  const [success, setSuccess] = useState(false)
-  const [mainError, setMainError] = useState(false)
-  const [selectedCity, setSelectedCity] = useState(area ? area.city._id : '')
-  const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState('marker')
-  const [center, setCenter] = useState({ lat: 31.1107, lng: 30.9388 })
-  const [marker, setMarker] = useState({ lat: 31.1107, lng: 30.9388 })
+  const { t } = useTranslation();
+  const [title, setTitle] = useState(area ? area.title : "");
+  const [titleError, titleErrorSetter] = useState(null);
+  const [address, setAddress] = useState("");
+  const [addressError, addressErrorSetter] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [mainError, setMainError] = useState(false);
+  const [selectedCity, setSelectedCity] = useState(area ? area.city._id : "");
+  const [drawBoundsOrMarker, setDrawBoundsOrMarker] = useState("marker");
+  const [center, setCenter] = useState({ lat: 31.1107, lng: 30.9388 });
+  const [marker, setMarker] = useState({ lat: 31.1107, lng: 30.9388 });
 
-  console.log({ selectedCity })
+  console.log({ selectedCity });
 
-  const { data, loading: loadingCities, error: errorCities } = useQuery(
-    GET_CITIES
-  )
+  const {
+    data,
+    loading: loadingCities,
+    error: errorCities,
+  } = useQuery(GET_CITIES);
 
-  console.log({ area })
+  console.log({ area });
   useEffect(() => {
     if (area) {
       setMarker({
         lng: area.location.location.coordinates[0],
-        lat: area.location.location.coordinates[1]
-      })
+        lat: area.location.location.coordinates[1],
+      });
       setCenter({
         lng: area.location.location.coordinates[0],
-        lat: area.location.location.coordinates[1]
-      })
+        lat: area.location.location.coordinates[1],
+      });
     }
-  }, [area])
+  }, [area]);
 
-  const cities = data?.citiesAdmin || null
+  const cities = data?.citiesAdmin || null;
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
-  const onCompleted = data => {
-    setSuccess('Created an area successfully!')
-    setTitle('')
-  }
+  const onCompleted = (data) => {
+    setSuccess("Created an area successfully!");
+    setTitle("");
+  };
 
   const [mutate] = useMutation(CREATE_AREA, {
     onCompleted,
-    refetchQueries: [{ query: GET_AREAS }]
-  })
+    refetchQueries: [{ query: GET_AREAS }],
+  });
 
   const [mutateUpdate] = useMutation(EDIT_AREA, {
-    onCompleted: data => {
-      console.log({ data })
-      setSuccess(data.editArea.message)
+    onCompleted: (data) => {
+      console.log({ data });
+      setSuccess(data.editArea.message);
     },
-    refetchQueries: [{ query: GET_AREAS }]
-  })
+    refetchQueries: [{ query: GET_AREAS }],
+  });
 
   useEffect(() => {
-    getAddress(marker.lat, marker.lng)
-  }, [])
+    getAddress(marker.lat, marker.lng);
+  }, []);
 
   const getAddress = async (lat, lng) => {
-    const geocoder = new window.google.maps.Geocoder()
-    const location = { lat, lng }
+    const geocoder = new window.google.maps.Geocoder();
+    const location = { lat, lng };
 
     geocoder.geocode({ location }, (results, status) => {
-      console.log({ results })
-      if (status === 'OK') {
+      console.log({ results });
+      if (status === "OK") {
         if (results[0]) {
-          console.log({ results })
-          setAddress(results[0].formatted_address)
+          console.log({ results });
+          setAddress(results[0].formatted_address);
         } else {
-          console.error('No results found')
+          console.error("No results found");
         }
       } else {
-        console.error(`Geocoder failed due to: ${status}`)
+        console.error(`Geocoder failed due to: ${status}`);
       }
-    })
-  }
+    });
+  };
 
-  const onClick = e => {
-    const lat = e.latLng.lat()
-    const lng = e.latLng.lng()
-    if (drawBoundsOrMarker === 'marker') {
-      setMarker({ lat, lng })
-      getAddress(lat, lng)
+  const onClick = (e) => {
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    if (drawBoundsOrMarker === "marker") {
+      setMarker({ lat, lng });
+      getAddress(lat, lng);
     }
-  }
+  };
 
   const removeMarker = () => {
-    setMarker(null)
-  }
+    setMarker(null);
+  };
 
-  const onDragEnd = mapMouseEvent => {
+  const onDragEnd = (mapMouseEvent) => {
     setMarker({
       lat: mapMouseEvent.latLng.lat(),
-      lng: mapMouseEvent.latLng.lng()
-    })
-  }
+      lng: mapMouseEvent.latLng.lng(),
+    });
+  };
 
-  console.log({ marker })
+  console.log({ marker });
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-    const coordinates = [marker.lng, marker.lat]
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const coordinates = [marker.lng, marker.lat];
 
     if (!area) {
       mutate({
@@ -144,10 +147,10 @@ const AreaCreate = ({ onClose, area }) => {
             title,
             address,
             city: selectedCity,
-            coordinates
-          }
-        }
-      })
+            coordinates,
+          },
+        },
+      });
     } else {
       mutateUpdate({
         variables: {
@@ -157,25 +160,25 @@ const AreaCreate = ({ onClose, area }) => {
             title,
             address,
             city: selectedCity,
-            coordinates
-          }
-        }
-      })
+            coordinates,
+          },
+        },
+      });
     }
     // if it's edit modal
     if (onClose) {
       setTimeout(() => {
-        onClose()
-      }, 4000)
+        onClose();
+      }, 4000);
     }
-  }
+  };
 
   return (
     <Box container className={[classes.container, classes.width60]}>
       <Box className={classes.flexRow}>
         <Box item className={classes.headingBlack}>
           <Typography variant="h6" className={classes.textWhite}>
-            {t('Add Area')}
+            {t("Add Area")}
           </Typography>
         </Box>
       </Box>
@@ -184,14 +187,15 @@ const AreaCreate = ({ onClose, area }) => {
           <Box className={classes.form}>
             <GoogleMap
               mapContainerStyle={{
-                height: '500px',
-                width: '100%',
-                borderRadius: 30
+                height: "500px",
+                width: "100%",
+                borderRadius: 30,
               }}
               id="google-map"
               zoom={14}
               center={center}
-              onClick={onClick}>
+              onClick={onClick}
+            >
               {marker && (
                 <Marker
                   position={marker}
@@ -203,15 +207,15 @@ const AreaCreate = ({ onClose, area }) => {
             </GoogleMap>
           </Box>
           <Box>
-            <Typography className={classes.labelText}>{t('Title')}</Typography>
+            <Typography className={classes.labelText}>{t("Title")}</Typography>
             <Input
               style={{ marginTop: -1 }}
               id="input-title"
               name="input-title"
-              placeholder={t('Title')}
+              placeholder={t("Title")}
               type="text"
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               disableUnderline
               className={[
                 globalClasses.input,
@@ -219,22 +223,22 @@ const AreaCreate = ({ onClose, area }) => {
                   ? globalClasses.inputError
                   : titleError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
           <Box>
             <Typography className={classes.labelText}>
-              {t('Address')}
+              {t("Address")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
               id="input-address"
               name="input-address"
-              placeholder={t('Address')}
+              placeholder={t("Address")}
               type="text"
               value={address}
-              onChange={e => setAddress(e.target.value)}
+              onChange={(e) => setAddress(e.target.value)}
               disableUnderline
               className={[
                 globalClasses.input,
@@ -242,7 +246,7 @@ const AreaCreate = ({ onClose, area }) => {
                   ? globalClasses.inputError
                   : addressError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -253,22 +257,24 @@ const AreaCreate = ({ onClose, area }) => {
             <Select
               id="input-city"
               name="input-city"
-              defaultValue={selectedCity || ''}
+              defaultValue={selectedCity || ""}
               value={selectedCity}
-              onChange={e => setSelectedCity(e.target.value)}
+              onChange={(e) => setSelectedCity(e.target.value)}
               displayEmpty
-              inputProps={{ 'aria-label': 'Without label' }}
-              className={[globalClasses.input]}>
+              inputProps={{ "aria-label": "Without label" }}
+              className={[globalClasses.input]}
+            >
               {!selectedCity && (
-                <MenuItem value="" style={{ color: 'black' }}>
-                  {t('Select City')}
+                <MenuItem value="" style={{ color: "black" }}>
+                  {t("Select City")}
                 </MenuItem>
               )}
-              {cities?.map(city => (
+              {cities?.map((city) => (
                 <MenuItem
                   value={city._id}
                   key={city._id}
-                  style={{ color: 'black' }}>
+                  style={{ color: "black" }}
+                >
                   {city.title}
                 </MenuItem>
               ))}
@@ -278,8 +284,9 @@ const AreaCreate = ({ onClose, area }) => {
             <Button
               className={globalClasses.button}
               // disabled={mutateLoading}
-              type="submit">
-              {t('Save')}
+              type="submit"
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -287,7 +294,8 @@ const AreaCreate = ({ onClose, area }) => {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {success}
               </Alert>
             )}
@@ -295,7 +303,8 @@ const AreaCreate = ({ onClose, area }) => {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {mainError}
               </Alert>
             )}
@@ -303,7 +312,7 @@ const AreaCreate = ({ onClose, area }) => {
         </form>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default AreaCreate
+export default AreaCreate;

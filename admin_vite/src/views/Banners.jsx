@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import Header from '../components/Headers/Header'
-import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import { getBanners, editBanner, deleteBanner } from '../apollo'
-import SearchBar from '../components/TableHeader/SearchBar'
-import useGlobalStyles from '../utils/globalStyles'
-import { customStyles } from '../utils/tableCustomStyles'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import Header from "../components/Headers/Header";
+import CustomLoader from "../components/Loader/CustomLoader";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import { getBanners, editBanner, deleteBanner } from "../apollo";
+import SearchBar from "../components/TableHeader/SearchBar";
+import useGlobalStyles from "../utils/globalStyles";
+import { customStyles } from "../utils/tableCustomStyles";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Container,
   Grid,
@@ -21,104 +21,108 @@ import {
   Modal,
   Paper,
   Typography,
-  ListItemIcon
-} from '@mui/material'
-import TableHeader from '../components/TableHeader'
-import BannerComponent from '../components/Banner/Banner'
+  ListItemIcon,
+} from "@mui/material";
+import TableHeader from "../components/TableHeader";
+import BannerComponent from "../components/Banner/Banner";
+import { gql } from "@apollo/client";
 
 const GET_BANNERS = gql`
   ${getBanners}
-`
+`;
 const EDIT_BANNER = gql`
   ${editBanner}
-`
+`;
 const DELETE_BANNER = gql`
   ${deleteBanner}
-`
+`;
 
-const Banners = props => {
-  const { t } = props
-  const [editModal, setEditModal] = useState(false)
-  const [banner, setBanner] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const onChangeSearch = e => setSearchQuery(e.target.value)
-  const [mutateEdit] = useMutation(EDIT_BANNER)
+const Banners = (props) => {
+  const { t } = props;
+  const [editModal, setEditModal] = useState(false);
+  const [banner, setBanner] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
+  const [mutateEdit] = useMutation(EDIT_BANNER);
   const [mutateDelete] = useMutation(DELETE_BANNER, {
-    refetchQueries: [{ query: GET_BANNERS }]
-  })
-  const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
-    GET_BANNERS
-  )
-  const toggleModal = banner => {
-    setEditModal(!editModal)
-    setBanner(banner)
-  }
+    refetchQueries: [{ query: GET_BANNERS }],
+  });
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+    refetch,
+  } = useQuery(GET_BANNERS);
+  const toggleModal = (banner) => {
+    setEditModal(!editModal);
+    setBanner(banner);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field] && isNaN(row[field])) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Image'),
-      cell: row => (
+      name: t("Image"),
+      cell: (row) => (
         <>
           <img
             className="img-responsive"
             style={{ width: 30, height: 30, borderRadius: 15 }}
             src={
               row.file ||
-              'https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp'
+              "https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp"
             }
             alt=""
           />
         </>
-      )
+      ),
     },
     {
-      name: t('Title'),
+      name: t("Title"),
       sortable: true,
-      selector: 'title'
+      selector: "title",
     },
     {
-      name: t('Description'),
+      name: t("Description"),
       sortable: true,
-      selector: 'description'
+      selector: "description",
     },
     {
-      name: t('Screen'),
+      name: t("Screen"),
       sortable: true,
-      selector: 'screen'
+      selector: "screen",
     },
     {
-      name: t('Action'),
+      name: t("Action"),
       sortable: true,
-      selector: 'action'
+      selector: "action",
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal, t, mutateDelete)}</>,
+    },
+  ];
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
   const filtered =
     searchQuery.length < 3
       ? data && data.banners
       : data &&
-        data.banners.filter(banner => {
-          return banner.title.toLowerCase().search(regex) > -1
-        })
+        data.banners.filter((banner) => {
+          return banner.title.toLowerCase().search(regex) > -1;
+        });
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
   return (
     <>
       <Header />
@@ -132,7 +136,7 @@ const Banners = props => {
 
         {errorQuery ? (
           <span>
-            `${t('Error')}! ${errorQuery.message}`
+            `${t("Error")}! ${errorQuery.message}`
           </span>
         ) : null}
         {loadingQuery ? (
@@ -147,7 +151,7 @@ const Banners = props => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Banners')} />}
+            title={<TableHeader title={t("Banners")} />}
             columns={columns}
             data={filtered}
             pagination
@@ -161,29 +165,30 @@ const Banners = props => {
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal(null)
+            toggleModal(null);
           }}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <BannerComponent banner={banner} />
         </Modal>
       </Container>
     </>
-  )
-}
+  );
+};
 
 const ActionButtons = (row, toggleModal, t, mutateDelete) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <div>
@@ -191,45 +196,49 @@ const ActionButtons = (row, toggleModal, t, mutateDelete) => {
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                toggleModal(row)
+              onClick={(e) => {
+                e.preventDefault();
+                toggleModal(row);
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                mutateDelete({ variables: { id: row._id } })
+              onClick={(e) => {
+                e.preventDefault();
+                mutateDelete({ variables: { id: row._id } });
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Banners)
+export default withTranslation()(Banners);

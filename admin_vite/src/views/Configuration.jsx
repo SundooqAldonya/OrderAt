@@ -1,48 +1,51 @@
-import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { useQuery, gql } from '@apollo/client'
-import Header from '../components/Headers/Header'
-import { getConfiguration } from '../apollo'
-import EmailConfiguration from '../components/Configuration/Email/Email'
-import Email from '../components/Configuration/FormEmail/FormEmail'
-import DeliveryRateConfiguration from '../components/Configuration/DeliveryRate/DeliveryRate'
-import PaypalConfiguration from '../components/Configuration/Paypal/Paypal'
-import StripeConfiguration from '../components/Configuration/Stripe/Stripe'
-import CurrencyConfiguration from '../components/Configuration/Currency/Currency'
-import { Grid } from '@mui/material'
-import { ReactComponent as ConfigIcon } from '../assets/svg/svg/Configuration.svg'
-import TwilioConfiguration from '../components/Configuration/Twilio/Twilio'
-import VerificationConfiguration from '../components/Configuration/Verification/Verification'
-import SendGridConfiguration from '../components/Configuration/SendGrid/SendGrid'
-
-import SentryConfiguration from '../components/Configuration/Sentry/Sentry'
-import GoogleApiKeyConfiguration from '../components/Configuration/GoogleApi/GoogleApi'
-import CloudinaryConfiguration from '../components/Configuration/ Cloudinary/ Cloudinary'
-import AmplitudeApiKeyConfiguration from '../components/Configuration/Amplitude/Amplitude'
-import GoogleClientIDConfiguration from '../components/Configuration/GoogleClient/GoogleClient'
-import WebConfiguration from '../components/Configuration/Web/Web'
-import AppConfigurations from '../components/Configuration/App/App'
-import FirebaseConfiguration from '../components/Configuration/FireBase/FireBase'
-import Configuration1 from './Configuration1'
-import RiderAvailabilityTime from '../components/Configuration/RiderAvailabilityTime'
-import DispatchOptions from '../components/Configuration/DispatchOptions'
+import React from "react";
+import { withTranslation } from "react-i18next";
+import { useQuery } from "@apollo/client/react";
+import Header from "../components/Headers/Header";
+import { getConfiguration } from "../apollo";
+import EmailConfiguration from "../components/Configuration/Email/Email";
+import Email from "../components/Configuration/FormEmail/FormEmail";
+import DeliveryRateConfiguration from "../components/Configuration/DeliveryRate/DeliveryRate";
+import PaypalConfiguration from "../components/Configuration/Paypal/Paypal";
+import StripeConfiguration from "../components/Configuration/Stripe/Stripe";
+import CurrencyConfiguration from "../components/Configuration/Currency/Currency";
+import { Grid } from "@mui/material";
+// import { ReactComponent as ConfigIcon } from "../assets/svg/svg/Configuration.svg";
+import configIcon from "../assets/svg/svg/Configuration.svg";
+import TwilioConfiguration from "../components/Configuration/Twilio/Twilio";
+import VerificationConfiguration from "../components/Configuration/Verification/Verification";
+import SendGridConfiguration from "../components/Configuration/SendGrid/SendGrid";
+import SentryConfiguration from "../components/Configuration/Sentry/Sentry";
+import GoogleApiKeyConfiguration from "../components/Configuration/GoogleApi/GoogleApi";
+import CloudinaryConfiguration from "../components/Configuration/ Cloudinary/ Cloudinary";
+import AmplitudeApiKeyConfiguration from "../components/Configuration/Amplitude/Amplitude";
+import GoogleClientIDConfiguration from "../components/Configuration/GoogleClient/GoogleClient";
+import WebConfiguration from "../components/Configuration/Web/Web";
+import AppConfigurations from "../components/Configuration/App/App";
+import FirebaseConfiguration from "../components/Configuration/FireBase/FireBase";
+import Configuration1 from "./Configuration1";
+import RiderAvailabilityTime from "../components/Configuration/RiderAvailabilityTime";
+import DispatchOptions from "../components/Configuration/DispatchOptions";
+import { gql } from "@apollo/client";
 
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
-`
-const Configuration = props => {
-  const { data, error: errorQuery, loading: loadingQuery } = useQuery(
-    GET_CONFIGURATION
-  )
+`;
+const Configuration = (props) => {
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+  } = useQuery(GET_CONFIGURATION);
 
-  const { t } = props
+  const { t } = props;
 
   return (
     <>
       <Header />
-      {errorQuery && t('Error')}
+      {errorQuery && t("Error")}
       {loadingQuery ? (
-        t('LoadingDots')
+        t("LoadingDots")
       ) : data.configuration.isPaidVersion ? (
         <Grid container ml={2} spacing={2}>
           <Grid item sx={12} md={7} lg={7}>
@@ -56,9 +59,11 @@ const Configuration = props => {
           <Grid
             item
             lg={5}
-            sx={{ display: { xs: 'none', lg: 'block' } }}
-            ml={-2}>
-            <ConfigIcon />
+            sx={{ display: { xs: "none", lg: "block" } }}
+            ml={-2}
+          >
+            {/* <ConfigIcon /> */}
+            <img src={configIcon} alt="Config" width={32} height={32} />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
             <DispatchOptions />
@@ -71,9 +76,11 @@ const Configuration = props => {
           <Grid
             item
             lg={5}
-            sx={{ display: { xs: 'none', lg: 'block' } }}
-            ml={-2}>
+            sx={{ display: { xs: "none", lg: "block" } }}
+            ml={-2}
+          >
             <ConfigIcon />
+            <img src={configIcon} alt="Config" width={32} height={32} />
           </Grid>
           <Grid item sx={12} md={12} lg={5}>
             <StripeConfiguration
@@ -201,7 +208,7 @@ const Configuration = props => {
         <Configuration1 t={t} />
       )}
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Configuration)
+export default withTranslation()(Configuration);

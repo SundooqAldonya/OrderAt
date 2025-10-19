@@ -1,21 +1,21 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react'
-import { useTranslation, withTranslation } from 'react-i18next'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import Header from '../components/Headers/Header'
-import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import RiderComponent from '../components/Rider/Rider'
-import SearchBar from '../components/TableHeader/SearchBar'
+import React, { useState } from "react";
+import { useTranslation, withTranslation } from "react-i18next";
+import { useQuery, useMutation } from "@apollo/client/react";
+import Header from "../components/Headers/Header";
+import CustomLoader from "../components/Loader/CustomLoader";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import RiderComponent from "../components/Rider/Rider";
+import SearchBar from "../components/TableHeader/SearchBar";
 import {
   getRiders,
   deleteRider,
   toggleAvailablity,
   getAvailableRiders,
-  toggleActive
-} from '../apollo'
-import useGlobalStyles from '../utils/globalStyles'
+  toggleActive,
+} from "../apollo";
+import useGlobalStyles from "../utils/globalStyles";
 import {
   Container,
   Grid,
@@ -26,191 +26,195 @@ import {
   Paper,
   Switch,
   Typography,
-  ListItemIcon
-} from '@mui/material'
-import { customStyles } from '../utils/tableCustomStyles'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { ReactComponent as RiderIcon } from '../assets/svg/svg/Rider.svg'
-import TableHeader from '../components/TableHeader'
-import Alert from '../components/Alert'
-import ConfigurableValues from '../config/constants'
-import moment from 'moment'
+  ListItemIcon,
+} from "@mui/material";
+import { customStyles } from "../utils/tableCustomStyles";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RiderIcon from "../assets/svg/svg/Rider.svg";
+import TableHeader from "../components/TableHeader";
+import Alert from "../components/Alert";
+import ConfigurableValues from "../config/constants";
+import moment from "moment";
+import { gql } from "@apollo/client";
 
 const GET_RIDERS = gql`
   ${getRiders}
-`
+`;
 const DELETE_RIDER = gql`
   ${deleteRider}
-`
+`;
 const TOGGLE_RIDER = gql`
   ${toggleAvailablity}
-`
+`;
 const TOGGLE_ACTIVE = gql`
   ${toggleActive}
-`
+`;
 const GET_AVAILABLE_RIDERS = gql`
   ${getAvailableRiders}
-`
+`;
 
 function Riders(props) {
   // const { PAID_VERSION } = ConfigurableValues()
-  const [editModal, setEditModal] = useState(false)
-  const [rider, setRider] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const [editModal, setEditModal] = useState(false);
+  const [rider, setRider] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
   const [mutateToggle] = useMutation(TOGGLE_RIDER, {
-    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
-  })
+    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }],
+  });
 
   const [mutateActive] = useMutation(TOGGLE_ACTIVE, {
-    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }]
-  })
+    refetchQueries: [{ query: GET_RIDERS }, { query: GET_AVAILABLE_RIDERS }],
+  });
 
   const [mutateDelete] = useMutation(DELETE_RIDER, {
-    refetchQueries: [{ query: GET_RIDERS }]
-  })
+    refetchQueries: [{ query: GET_RIDERS }],
+  });
 
-  const { data, error: errorQuery, loading: loadingQuery, refetch } = useQuery(
-    GET_RIDERS
-  )
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+    refetch,
+  } = useQuery(GET_RIDERS);
 
-  const toggleModal = rider => {
-    setEditModal(!editModal)
-    setRider(rider)
-  }
+  const toggleModal = (rider) => {
+    setEditModal(!editModal);
+    setRider(rider);
+  };
 
   const closeEditModal = () => {
-    setEditModal(false)
-  }
+    setEditModal(false);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   const handleSort = (column, sortDirection) =>
-    console.log(column.selector, sortDirection)
+    console.log(column.selector, sortDirection);
 
-  const { t } = props
+  const { t } = props;
 
   const columns = [
     {
-      name: t('Name'),
+      name: t("Name"),
       sortable: true,
-      selector: 'name'
+      selector: "name",
     },
     {
-      name: t('Username'),
+      name: t("Username"),
       sortable: true,
-      selector: 'username'
+      selector: "username",
     },
     {
-      name: t('Password'),
+      name: t("Password"),
       sortable: true,
-      selector: 'password'
+      selector: "password",
     },
     {
-      name: t('Phone'),
+      name: t("Phone"),
       sortable: true,
-      selector: 'phone'
+      selector: "phone",
     },
     {
-      name: t('Zone'),
-      selector: 'zone.title'
+      name: t("Zone"),
+      selector: "zone.title",
     },
     {
-      name: t('Available'),
-      cell: row => <>{availableStatus(row)}</>
+      name: t("Available"),
+      cell: (row) => <>{availableStatus(row)}</>,
     },
     {
-      name: t('Active'),
-      cell: row => <>{isActiveStatus(row)}</>
+      name: t("Active"),
+      cell: (row) => <>{isActiveStatus(row)}</>,
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal, mutateDelete)}</>,
     },
     {
-      name: t('start_date'),
-      cell: row => (
+      name: t("start_date"),
+      cell: (row) => (
         <>
           {row.startAvailabilityDate
-            ? moment(row.startAvailabilityDate).format('LLL')
-            : 'N/A'}
+            ? moment(row.startAvailabilityDate).format("LLL")
+            : "N/A"}
         </>
-      )
+      ),
     },
     {
-      name: t('end_date'),
-      cell: row => (
+      name: t("end_date"),
+      cell: (row) => (
         <>
           {row.endAvailabilityDate
-            ? moment(row.endAvailabilityDate).format('LLL')
-            : 'N/A'}
+            ? moment(row.endAvailabilityDate).format("LLL")
+            : "N/A"}
         </>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
-  const availableStatus = row => {
+  const availableStatus = (row) => {
     return (
       <>
         {row.available}
         <Switch
           size="small"
           defaultChecked={row.available}
-          onChange={_event => {
-            mutateToggle({ variables: { id: row._id } })
+          onChange={(_event) => {
+            mutateToggle({ variables: { id: row._id } });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </>
-    )
-  }
+    );
+  };
 
-  const isActiveStatus = row => {
-    console.log({ isActive: row.isActive })
+  const isActiveStatus = (row) => {
+    console.log({ isActive: row.isActive });
     return (
       <>
         {/* {row.isActive} */}
         <Switch
           size="small"
           defaultChecked={row.isActive}
-          onChange={_event => {
-            mutateActive({ variables: { id: row._id } })
+          onChange={(_event) => {
+            mutateActive({ variables: { id: row._id } });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </>
-    )
-  }
+    );
+  };
 
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
   const filtered =
     searchQuery.length < 3
       ? data && data.riders
       : data &&
-        data.riders.filter(rider => {
+        data.riders.filter((rider) => {
           return (
             rider.name.toLowerCase().search(regex) > -1 ||
             rider.username.toLowerCase().search(regex) > -1 ||
             rider.phone.toLowerCase().search(regex) > -1 ||
             rider.zone.title.toLowerCase().search(regex) > -1
-          )
-        })
-  const globalClasses = useGlobalStyles()
+          );
+        });
+  const globalClasses = useGlobalStyles();
   return (
     <>
       <Header />
@@ -221,15 +225,17 @@ function Riders(props) {
             <RiderComponent />
           </Grid>
           <Grid
-            sx={{ display: { xs: 'none', lg: 'block' } }}
+            sx={{ display: { xs: "none", lg: "block" } }}
             item
             mt={5}
-            order={{ xs: 1, lg: 2 }}>
-            <RiderIcon />
+            order={{ xs: 1, lg: 2 }}
+          >
+            {/* <RiderIcon /> */}
+            <img src={RiderIcon} alt="Config" width={32} height={32} />
           </Grid>
         </Grid>
         {isOpen && (
-          <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
+          <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
         )}
         {/* Table */}
         {errorQuery ? (
@@ -249,7 +255,7 @@ function Riders(props) {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Riders')} />}
+            title={<TableHeader title={t("Riders")} />}
             columns={columns}
             data={filtered}
             pagination
@@ -264,30 +270,31 @@ function Riders(props) {
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal()
+            toggleModal();
           }}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <RiderComponent rider={rider} onClose={closeEditModal} />
         </Modal>
       </Container>
     </>
-  )
+  );
 }
 
 const ActionButtons = (row, toggleModal, mutateDelete) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const { t } = useTranslation()
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { t } = useTranslation();
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <div>
@@ -295,47 +302,51 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
 
-                toggleModal(row)
+                toggleModal(row);
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
 
-                mutateDelete({ variables: { id: row._id } })
+                mutateDelete({ variables: { id: row._id } });
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(Riders)
+export default withTranslation()(Riders);

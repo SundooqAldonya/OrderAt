@@ -6,17 +6,24 @@ import AdminLayout from "./layouts/Admin.jsx";
 import RestaurantLayout from "./layouts/Restaurant.jsx";
 import AuthLayout from "./layouts/Auth.jsx";
 import SuperAdminLayout from "./layouts/SuperAdmin.jsx";
-import { PrivateRoute } from "./views/PrivateRoute.jsx";
-import { AdminPrivateRoute } from "./views/AdminPrivateRoute.jsx";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import PrivateRoute from "./views/PrivateRoute.jsx";
+import AdminPrivateRoute from "./views/AdminPrivateRoute.jsx";
+import {
+  BrowserRouter,
+  HashRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 // import * as Sentry from '@sentry/react'
 import { isFirebaseSupported, initialize } from "./firebase.js";
 import { uploadToken } from "./apollo/index.js";
-import { gql, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import ConfigurableValues from "./config/constants.js";
 import { NotificationContainer } from "react-notifications";
-
-require("./i18n.js");
+import { gql } from "@apollo/client";
+import "./i18n.js";
+// require("./i18n.js");
 
 const UPLOAD_TOKEN = gql`
   ${uploadToken}
@@ -128,9 +135,32 @@ const App = () => {
     <Fragment>
       <NotificationContainer />
       {GOOGLE_MAPS_KEY ? (
-        <GoogleMapsLoader GOOGLE_MAPS_KEY={GOOGLE_MAPS_KEY}>
-          <HashRouter basename="/">
-            <Switch>
+        <Fragment>
+          <GoogleMapsLoader GOOGLE_MAPS_KEY={GOOGLE_MAPS_KEY}>
+            <BrowserRouter>
+              <Routes>
+                {/* Super Admin routes */}
+                <Route element={<AdminPrivateRoute />}>
+                  <Route path="/super_admin/*" element={<SuperAdminLayout />} />
+                </Route>
+
+                {/* Restaurant routes */}
+                <Route element={<PrivateRoute />}>
+                  <Route path="/restaurant/*" element={<RestaurantLayout />} />
+                </Route>
+
+                {/* Admin routes */}
+                <Route element={<PrivateRoute />}>
+                  <Route path="/admin/*" element={<AdminLayout />} />
+                </Route>
+
+                {/* Auth routes (public) */}
+                <Route path="/auth/*" element={<AuthLayout />} />
+
+                {/* Default redirect */}
+                <Route path="*" element={<Navigate to={route} replace />} />
+              </Routes>
+              {/* <Switch>
               <AdminPrivateRoute
                 path="/super_admin"
                 component={(props) => <SuperAdminLayout {...props} />}
@@ -148,9 +178,10 @@ const App = () => {
                 component={(props) => <AuthLayout {...props} />}
               />
               <Redirect from="/" to={route} />
-            </Switch>
-          </HashRouter>
-        </GoogleMapsLoader>
+            </Switch> */}
+            </BrowserRouter>
+          </GoogleMapsLoader>
+        </Fragment>
       ) : (
         <Box
           component="div"

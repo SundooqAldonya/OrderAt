@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { withTranslation } from 'react-i18next';
-import { useMutation, gql } from '@apollo/client';
-import { validateFunc } from '../../../constraints/constraints';
-import { saveDeliveryRateConfiguration } from '../../../apollo';
-import { Box, Typography, Input, Button, Alert, Select, MenuItem } from '@mui/material';
-import useStyles from '../styles';
-import useGlobalStyles from '../../../utils/globalStyles';
+import React, { useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveDeliveryRateConfiguration } from "../../../apollo";
+import {
+  Box,
+  Typography,
+  Input,
+  Button,
+  Alert,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { gql } from "@apollo/client";
 
 const SAVE_DELIVERY_RATE_CONFIGURATION = gql`
   ${saveDeliveryRateConfiguration}
@@ -14,21 +23,29 @@ const SAVE_DELIVERY_RATE_CONFIGURATION = gql`
 function Currency(props) {
   const { t } = props;
   const [deliveryRate, setDeliveryRate] = useState(props.deliveryRate || 0);
-  const [minimumDeliveryFee, setMinimumDeliveryFee] = useState(props.minimumDeliveryFee || 0);
-  const [costType, setCostType] = useState(props?.costType || 'perKM');
+  const [minimumDeliveryFee, setMinimumDeliveryFee] = useState(
+    props.minimumDeliveryFee || 0
+  );
+  const [costType, setCostType] = useState(props?.costType || "perKM");
   const [deliveryRateError, setDeliveryRateError] = useState(null);
   const [mutate, { loading }] = useMutation(SAVE_DELIVERY_RATE_CONFIGURATION);
 
   const validateInput = () => {
-    const deliveryRateErrors = !validateFunc({ deliveryRate: deliveryRate }, 'deliveryRate');
-    const minimumDeliveryFeeErrors = !validateFunc({ minimumDeliveryFee: minimumDeliveryFee }, 'minimumDeliveryFee');
+    const deliveryRateErrors = !validateFunc(
+      { deliveryRate: deliveryRate },
+      "deliveryRate"
+    );
+    const minimumDeliveryFeeErrors = !validateFunc(
+      { minimumDeliveryFee: minimumDeliveryFee },
+      "minimumDeliveryFee"
+    );
     setDeliveryRateError(deliveryRateErrors);
     return deliveryRateErrors || minimumDeliveryFeeErrors; // If either validation fails, return true
   };
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
   const handleSuccess = (message) => {
     setSuccessMessage(message);
   };
@@ -39,21 +56,21 @@ function Currency(props) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setSuccessMessage('');
+      setSuccessMessage("");
     }, 3000);
 
     return () => clearTimeout(timeoutId);
   }, [successMessage, setSuccessMessage]);
 
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const handleError = (error) => {
-    setErrorMessage('An error occurred while saving configuration.');
-    console.error('Mutation error:', error);
+    setErrorMessage("An error occurred while saving configuration.");
+    console.error("Mutation error:", error);
   };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setErrorMessage('');
+      setErrorMessage("");
     }, 3000);
 
     return () => clearTimeout(timeoutId);
@@ -64,17 +81,16 @@ function Currency(props) {
       <Box className={classes.flexRow}>
         <Box item className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
-            {t('Delivery Rate')}
+            {t("Delivery Rate")}
           </Typography>
         </Box>
       </Box>
 
       <Box className={classes.form}>
         <form>
-
-        <Box>
+          <Box>
             <Typography className={classes.labelText}>
-              {t('CostType')}
+              {t("CostType")}
             </Typography>
             <Select
               style={{ marginTop: -1 }}
@@ -83,30 +99,34 @@ function Currency(props) {
               value={costType}
               onChange={handleCostTypeChange}
               displayEmpty
-              inputProps={{ 'aria-label': 'Without label' }}
+              inputProps={{ "aria-label": "Without label" }}
               className={[
                 globalClasses.input,
                 deliveryRateError === false
                   ? globalClasses.inputError
                   : deliveryRateError === true
-                    ? globalClasses.inputSuccess
-                    : '',
+                  ? globalClasses.inputSuccess
+                  : "",
               ]}
             >
-              <MenuItem style={{ color: 'black' }} value="perKM">{t('PerKM')}</MenuItem>
-              <MenuItem style={{ color: 'black' }} value="fixed">{t('FixedCost')}</MenuItem>
+              <MenuItem style={{ color: "black" }} value="perKM">
+                {t("PerKM")}
+              </MenuItem>
+              <MenuItem style={{ color: "black" }} value="fixed">
+                {t("FixedCost")}
+              </MenuItem>
             </Select>
           </Box>
 
           <Box>
             <Typography className={classes.labelText}>
-              {t('DeliveryFee')}
+              {t("DeliveryFee")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
               id="input-delivery-fee"
               name="input-delivery-fee"
-              placeholder={t('DeliveryFee')}
+              placeholder={t("DeliveryFee")}
               type="text"
               value={deliveryRate}
               onChange={(e) => {
@@ -118,38 +138,38 @@ function Currency(props) {
                 deliveryRateError === false
                   ? globalClasses.inputError
                   : deliveryRateError === true
-                    ? globalClasses.inputSuccess
-                    : '',
+                  ? globalClasses.inputSuccess
+                  : "",
               ]}
             />
           </Box>
 
           <Box>
             <Typography className={classes.labelText}>
-              {t('MinimumDeliveryFee')}
+              {t("MinimumDeliveryFee")}
             </Typography>
             <Input
               style={{ marginTop: -1 }}
               id="input-minimum-delivery-fee"
               name="input-minimum-delivery-fee"
-              placeholder={t('MinimumDeliveryFee')}
+              placeholder={t("MinimumDeliveryFee")}
               type="number"
               value={minimumDeliveryFee}
               onChange={(e) => {
-                setMinimumDeliveryFee(e.target.value); 
-              }} 
+                setMinimumDeliveryFee(e.target.value);
+              }}
               disableUnderline
               className={[
                 globalClasses.input,
                 deliveryRateError === false
                   ? globalClasses.inputError
                   : deliveryRateError === true
-                    ? globalClasses.inputSuccess
-                    : '',
+                  ? globalClasses.inputSuccess
+                  : "",
               ]}
             />
           </Box>
-         
+
           <Box>
             <Button
               className={globalClasses.button}
@@ -166,7 +186,7 @@ function Currency(props) {
                       },
                     },
                     onCompleted: (data) => {
-                      handleSuccess('Configuration saved successfully!');
+                      handleSuccess("Configuration saved successfully!");
                     },
                     onError: (error) => {
                       handleError(error);
@@ -175,18 +195,26 @@ function Currency(props) {
                 }
               }}
             >
-              {t('Save')}
+              {t("Save")}
             </Button>
           </Box>
 
           <Box mt={2}>
             {successMessage && (
-              <Alert className={globalClasses.alertSuccess} variant="filled" severity="success">
+              <Alert
+                className={globalClasses.alertSuccess}
+                variant="filled"
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
             {errorMessage && (
-              <Alert className={globalClasses.alertError} variant="filled" severity="error">
+              <Alert
+                className={globalClasses.alertError}
+                variant="filled"
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}

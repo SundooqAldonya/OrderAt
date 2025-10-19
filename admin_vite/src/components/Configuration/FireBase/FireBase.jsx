@@ -1,89 +1,90 @@
 // FirebaseConfiguration.jsx
 
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveFirebaseConfiguration } from '../../../apollo' // Assuming you have a corresponding Apollo mutation
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveFirebaseConfiguration } from "../../../apollo"; // Assuming you have a corresponding Apollo mutation
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_FIREBASE_CONFIGURATION = gql`
   ${saveFirebaseConfiguration}
-`
+`;
 
 function FirebaseConfiguration(props) {
-  const formRef = useRef()
-  const [firebaseKey] = useState(props.firebaseKey || '')
-  const [authDomain] = useState(props.authDomain || '')
-  const [projectId] = useState(props.projectId || '')
-  const [storageBucket] = useState(props.storageBucket || '')
-  const [msgSenderId] = useState(props.msgSenderId || '')
-  const [appId] = useState(props.appId || '')
-  const [measurementId] = useState(props.measurementId || '')
-  const [vapidKey] = useState(props.vapidKey || '')
+  const formRef = useRef();
+  const [firebaseKey] = useState(props.firebaseKey || "");
+  const [authDomain] = useState(props.authDomain || "");
+  const [projectId] = useState(props.projectId || "");
+  const [storageBucket] = useState(props.storageBucket || "");
+  const [msgSenderId] = useState(props.msgSenderId || "");
+  const [appId] = useState(props.appId || "");
+  const [measurementId] = useState(props.measurementId || "");
+  const [vapidKey] = useState(props.vapidKey || "");
 
-  const [firebaseKeyError, setFirebaseKeyError] = useState(null)
-  const [authDomainError, setAuthDomainError] = useState(null)
-  const [projectIdError, setProjectIdError] = useState(null)
-  const [storageBucketError, setStorageBucketError] = useState(null)
-  const [msgSenderIdError, setMsgSenderIdError] = useState(null)
-  const [appIdError, setAppIdError] = useState(null)
-  const [measurementIdError, setMeasurementIdError] = useState(null)
-  const [vapidKeyError, setVapidKeyError] = useState(null)
+  const [firebaseKeyError, setFirebaseKeyError] = useState(null);
+  const [authDomainError, setAuthDomainError] = useState(null);
+  const [projectIdError, setProjectIdError] = useState(null);
+  const [storageBucketError, setStorageBucketError] = useState(null);
+  const [msgSenderIdError, setMsgSenderIdError] = useState(null);
+  const [appIdError, setAppIdError] = useState(null);
+  const [measurementIdError, setMeasurementIdError] = useState(null);
+  const [vapidKeyError, setVapidKeyError] = useState(null);
 
-  const [mutate, { loading }] = useMutation(SAVE_FIREBASE_CONFIGURATION)
+  const [mutate, { loading }] = useMutation(SAVE_FIREBASE_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let firebaseKeyResult = true
-    let authDomainResult = true
-    let projectIdResult = true
-    let storageBucketResult = true
-    let msgSenderIdResult = true
-    let appIdResult = true
-    let measurementIdResult = true
+    let firebaseKeyResult = true;
+    let authDomainResult = true;
+    let projectIdResult = true;
+    let storageBucketResult = true;
+    let msgSenderIdResult = true;
+    let appIdResult = true;
+    let measurementIdResult = true;
 
     firebaseKeyResult = !validateFunc(
-      { firebaseKey: formRef.current['input-firebaseKey'].value },
-      'firebaseKey'
-    )
+      { firebaseKey: formRef.current["input-firebaseKey"].value },
+      "firebaseKey"
+    );
     authDomainResult = !validateFunc(
-      { authDomain: formRef.current['input-authDomain'].value },
-      'authDomain'
-    )
+      { authDomain: formRef.current["input-authDomain"].value },
+      "authDomain"
+    );
     projectIdResult = !validateFunc(
-      { projectId: formRef.current['input-projectId'].value },
-      'projectId'
-    )
+      { projectId: formRef.current["input-projectId"].value },
+      "projectId"
+    );
     storageBucketResult = !validateFunc(
-      { storageBucket: formRef.current['input-storageBucket'].value },
-      'storageBucket'
-    )
+      { storageBucket: formRef.current["input-storageBucket"].value },
+      "storageBucket"
+    );
     msgSenderIdResult = !validateFunc(
-      { msgSenderId: formRef.current['input-msgSenderId'].value },
-      'msgSenderId'
-    )
+      { msgSenderId: formRef.current["input-msgSenderId"].value },
+      "msgSenderId"
+    );
     appIdResult = !validateFunc(
-      { appId: formRef.current['input-appId'].value },
-      'appId'
-    )
+      { appId: formRef.current["input-appId"].value },
+      "appId"
+    );
     measurementIdResult = !validateFunc(
-      { measurementId: formRef.current['input-measurementId'].value },
-      'measurementId'
-    )
+      { measurementId: formRef.current["input-measurementId"].value },
+      "measurementId"
+    );
 
-    setFirebaseKeyError(firebaseKeyResult)
-    setAuthDomainError(authDomainResult)
-    setProjectIdError(projectIdResult)
-    setStorageBucketError(storageBucketResult)
-    setMsgSenderIdError(msgSenderIdResult)
-    setAppIdError(appIdResult)
-    setMeasurementIdError(measurementIdResult)
+    setFirebaseKeyError(firebaseKeyResult);
+    setAuthDomainError(authDomainResult);
+    setProjectIdError(projectIdResult);
+    setStorageBucketError(storageBucketResult);
+    setMsgSenderIdError(msgSenderIdResult);
+    setAppIdError(appIdResult);
+    setMeasurementIdError(measurementIdResult);
 
     return (
       firebaseKeyResult &&
@@ -93,11 +94,11 @@ function FirebaseConfiguration(props) {
       msgSenderIdResult &&
       appIdResult &&
       measurementIdResult
-    )
-  }
+    );
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -121,8 +122,8 @@ function FirebaseConfiguration(props) {
                 name="input-firebaseKey"
                 placeholder="Firebase Key"
                 defaultValue={firebaseKey}
-                onBlur={event =>
-                  onBlur(setFirebaseKeyError, 'firebaseKey', event.target.value)
+                onBlur={(event) =>
+                  onBlur(setFirebaseKeyError, "firebaseKey", event.target.value)
                 }
                 disableUnderline
                 className={[
@@ -131,7 +132,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : firebaseKeyError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -143,8 +144,8 @@ function FirebaseConfiguration(props) {
                 name="input-authDomain"
                 placeholder="Auth Domain"
                 defaultValue={authDomain}
-                onBlur={event =>
-                  onBlur(setAuthDomainError, 'authDomain', event.target.value)
+                onBlur={(event) =>
+                  onBlur(setAuthDomainError, "authDomain", event.target.value)
                 }
                 disableUnderline
                 className={[
@@ -153,7 +154,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : authDomainError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -168,8 +169,8 @@ function FirebaseConfiguration(props) {
                 name="input-projectId"
                 placeholder="Project ID"
                 defaultValue={projectId}
-                onBlur={event =>
-                  onBlur(setProjectIdError, 'projectId', event.target.value)
+                onBlur={(event) =>
+                  onBlur(setProjectIdError, "projectId", event.target.value)
                 }
                 disableUnderline
                 className={[
@@ -178,7 +179,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : projectIdError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -192,10 +193,10 @@ function FirebaseConfiguration(props) {
                 name="input-storageBucket"
                 placeholder="Storage Bucket"
                 defaultValue={storageBucket}
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setStorageBucketError,
-                    'storageBucket',
+                    "storageBucket",
                     event.target.value
                   )
                 }
@@ -206,7 +207,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : storageBucketError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -222,8 +223,8 @@ function FirebaseConfiguration(props) {
                 name="input-msgSenderId"
                 placeholder="Message Sender ID"
                 defaultValue={msgSenderId}
-                onBlur={event =>
-                  onBlur(setMsgSenderIdError, 'msgSenderId', event.target.value)
+                onBlur={(event) =>
+                  onBlur(setMsgSenderIdError, "msgSenderId", event.target.value)
                 }
                 disableUnderline
                 className={[
@@ -232,7 +233,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : msgSenderIdError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -244,8 +245,8 @@ function FirebaseConfiguration(props) {
                 name="input-appId"
                 placeholder="App ID"
                 defaultValue={appId}
-                onBlur={event =>
-                  onBlur(setAppIdError, 'appId', event.target.value)
+                onBlur={(event) =>
+                  onBlur(setAppIdError, "appId", event.target.value)
                 }
                 disableUnderline
                 className={[
@@ -254,7 +255,7 @@ function FirebaseConfiguration(props) {
                     ? globalClasses.inputError
                     : appIdError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -269,10 +270,10 @@ function FirebaseConfiguration(props) {
               name="input-measurementId"
               placeholder="Measurement ID"
               defaultValue={measurementId}
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setMeasurementIdError,
-                  'measurementId',
+                  "measurementId",
                   event.target.value
                 )
               }
@@ -283,7 +284,7 @@ function FirebaseConfiguration(props) {
                   ? globalClasses.inputError
                   : measurementIdError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -296,8 +297,8 @@ function FirebaseConfiguration(props) {
               name="input-vapidKey"
               placeholder="Vapid Key"
               defaultValue={vapidKey}
-              onBlur={event =>
-                onBlur(setVapidKeyError, 'vapidKey', event.target.value)
+              onBlur={(event) =>
+                onBlur(setVapidKeyError, "vapidKey", event.target.value)
               }
               disableUnderline
               className={[
@@ -306,7 +307,7 @@ function FirebaseConfiguration(props) {
                   ? globalClasses.inputError
                   : vapidKeyError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -315,34 +316,35 @@ function FirebaseConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
-                        firebaseKey: formRef.current['input-firebaseKey'].value,
-                        authDomain: formRef.current['input-authDomain'].value,
-                        projectId: formRef.current['input-projectId'].value,
+                        firebaseKey: formRef.current["input-firebaseKey"].value,
+                        authDomain: formRef.current["input-authDomain"].value,
+                        projectId: formRef.current["input-projectId"].value,
                         storageBucket:
-                          formRef.current['input-storageBucket'].value,
-                        msgSenderId: formRef.current['input-msgSenderId'].value,
-                        appId: formRef.current['input-appId'].value,
+                          formRef.current["input-storageBucket"].value,
+                        msgSenderId: formRef.current["input-msgSenderId"].value,
+                        appId: formRef.current["input-appId"].value,
                         measurementId:
-                          formRef.current['input-measurementId'].value,
-                        vapidKey: formRef.current['input-vapidKey'].value ?? ''
-                      }
-                    }
-                  })
+                          formRef.current["input-measurementId"].value,
+                        vapidKey: formRef.current["input-vapidKey"].value ?? "",
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(FirebaseConfiguration)
+export default withTranslation()(FirebaseConfiguration);

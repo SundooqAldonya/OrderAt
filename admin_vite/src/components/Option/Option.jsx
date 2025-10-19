@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -6,151 +6,153 @@ import {
   Alert,
   Button,
   Grid,
-  useTheme
-} from '@mui/material'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { createOptions, editOption, getOptions } from '../../apollo'
-import { validateFunc } from '../../constraints/constraints'
-import useStyles from './styles'
-import useGlobalStyles from '../../utils/globalStyles'
-import AddIcon from '@mui/icons-material/Add'
-import RemoveIcon from '@mui/icons-material/Remove'
+  useTheme,
+} from "@mui/material";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { createOptions, editOption, getOptions } from "../../apollo";
+import { validateFunc } from "../../constraints/constraints";
+import useStyles from "./styles";
+import useGlobalStyles from "../../utils/globalStyles";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { gql } from "@apollo/client";
 
 const CREATE_OPTIONS = gql`
   ${createOptions}
-`
+`;
 
 const GET_OPTIONS = gql`
   ${getOptions}
-`
+`;
 const EDIT_OPTION = gql`
   ${editOption}
-`
+`;
 
 function Option(props) {
-  const theme = useTheme()
-  const { t } = props
-  const restaurantId = localStorage.getItem('restaurantId')
+  const theme = useTheme();
+  const { t } = props;
+  const restaurantId = localStorage.getItem("restaurantId");
   const [option, optionSetter] = useState(
     props.option
       ? [{ ...props.option, titleError: false, priceError: false }]
       : [
           {
-            title: '',
-            description: '',
+            title: "",
+            description: "",
             price: 0,
             titleError: false,
-            priceError: false
-          }
+            priceError: false,
+          },
         ]
-  )
-  const [mainError, mainErrorSetter] = useState('')
-  const [success, successSetter] = useState('')
+  );
+  const [mainError, mainErrorSetter] = useState("");
+  const [success, successSetter] = useState("");
   // const mutation = props.option ? EDIT_OPTION : CREATE_OPTIONS
   const onCompleted = ({ createOptions, editOption }) => {
     if (createOptions) {
       optionSetter([
         {
-          title: '',
-          description: '',
+          title: "",
+          description: "",
           price: 0,
           titleError: false,
-          priceError: false
-        }
-      ])
-      successSetter(t('Saved'))
-      mainErrorSetter('')
-      setTimeout(hideAlert, 3000)
+          priceError: false,
+        },
+      ]);
+      successSetter(t("Saved"));
+      mainErrorSetter("");
+      setTimeout(hideAlert, 3000);
     }
     if (editOption) {
-      successSetter(t('Saved'))
-      mainErrorSetter('')
+      successSetter(t("Saved"));
+      mainErrorSetter("");
     }
-  }
-  const onError = error => {
-    mainErrorSetter(`${t('errorWhileSaving')} ${error}`)
-    successSetter('')
-    setTimeout(hideAlert, 3000)
-  }
+  };
+  const onError = (error) => {
+    mainErrorSetter(`${t("errorWhileSaving")} ${error}`);
+    successSetter("");
+    setTimeout(hideAlert, 3000);
+  };
   const [mutate, { loading }] = useMutation(CREATE_OPTIONS, {
     onError,
     onCompleted,
-    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
-  })
+    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }],
+  });
   const [mutateEdit, { loading: EditIsLoading }] = useMutation(EDIT_OPTION, {
     onError,
     onCompleted,
-    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }]
-  })
+    refetchQueries: [{ query: GET_OPTIONS, variables: { id: restaurantId } }],
+  });
   const hideAlert = () => {
-    mainErrorSetter('')
-    successSetter('')
-  }
+    mainErrorSetter("");
+    successSetter("");
+  };
   const onBlur = (index, state) => {
-    const options = option
-    if (state === 'title') {
+    const options = option;
+    if (state === "title") {
       options[index].titleError = !!validateFunc(
         { optionTitle: options[index][state] },
-        'optionTitle'
-      )
+        "optionTitle"
+      );
     }
-    if (state === 'price') {
+    if (state === "price") {
       options[index].priceError = !!validateFunc(
         { optionPrice: options[index][state] },
-        'optionPrice'
-      )
+        "optionPrice"
+      );
     }
-    optionSetter([...options])
-  }
-  const onAdd = index => {
-    const options = option
+    optionSetter([...options]);
+  };
+  const onAdd = (index) => {
+    const options = option;
     if (index === options.length - 1) {
-      options.push({ title: '', description: '', price: 0 })
+      options.push({ title: "", description: "", price: 0 });
     } else {
-      options.splice(index + 1, 0, { title: '', description: '', price: 0 })
+      options.splice(index + 1, 0, { title: "", description: "", price: 0 });
     }
-    optionSetter([...options])
-  }
-  const onRemove = index => {
+    optionSetter([...options]);
+  };
+  const onRemove = (index) => {
     if (option.length === 1 && index === 0) {
-      return
+      return;
     }
-    const options = option
-    options.splice(index, 1)
-    optionSetter([...options])
-  }
+    const options = option;
+    options.splice(index, 1);
+    optionSetter([...options]);
+  };
   const onChange = (event, index, state) => {
-    const options = option
-    options[index][state] = event.target.value
-    optionSetter([...options])
-  }
+    const options = option;
+    options[index][state] = event.target.value;
+    optionSetter([...options]);
+  };
   const validate = () => {
-    const options = option
+    const options = option;
     options.map((option, index) => {
-      onBlur(index, 'title')
-      onBlur(index, 'description')
-      onBlur(index, 'price')
-      return option
-    })
+      onBlur(index, "title");
+      onBlur(index, "description");
+      onBlur(index, "price");
+      return option;
+    });
     const error = options.filter(
-      option => option.titleError || option.priceError
-    )
-    if (!error.length) return true
-    return false
-  }
+      (option) => option.titleError || option.priceError
+    );
+    if (!error.length) return true;
+    return false;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
         <Box
           item
-          className={props.option ? classes.headingBlack : classes.heading}>
+          className={props.option ? classes.headingBlack : classes.heading}
+        >
           <Typography variant="h6" className={classes.textWhite}>
-            {props.option ? t('UpdateOption') : t('AddOption')}
+            {props.option ? t("UpdateOption") : t("AddOption")}
           </Typography>
         </Box>
       </Box>
@@ -162,23 +164,23 @@ function Option(props) {
               <Grid item xs={12} sm={3}>
                 <div>
                   <Typography className={classes.labelText}>
-                    {t('Title')}
+                    {t("Title")}
                   </Typography>
                   <Input
                     style={{ marginTop: -1 }}
                     id={`input-title-${index}`}
-                    placeholder={t('Title')}
+                    placeholder={t("Title")}
                     type="text"
                     value={optionItem.title}
-                    onChange={event => {
-                      onChange(event, index, 'title')
+                    onChange={(event) => {
+                      onChange(event, index, "title");
                     }}
                     disableUnderline
                     className={[
                       globalClasses.input,
                       optionItem.titleError === true
                         ? globalClasses.inputError
-                        : ''
+                        : "",
                     ]}
                   />
                 </div>
@@ -186,23 +188,23 @@ function Option(props) {
               <Grid item xs={12} sm={3}>
                 <div>
                   <Typography className={classes.labelText}>
-                    {t('Description')}
+                    {t("Description")}
                   </Typography>
                   <Input
                     style={{ marginTop: -1 }}
                     id={`input-description-${index}`}
-                    placeholder={t('Description')}
+                    placeholder={t("Description")}
                     type="text"
                     value={optionItem.description}
-                    onChange={event => {
-                      onChange(event, index, 'description')
+                    onChange={(event) => {
+                      onChange(event, index, "description");
                     }}
                     disableUnderline
                     className={[
                       globalClasses.input,
                       optionItem.descriptionError === true
                         ? globalClasses.inputError
-                        : ''
+                        : "",
                     ]}
                   />
                 </div>
@@ -210,23 +212,23 @@ function Option(props) {
               <Grid item xs={12} sm={3}>
                 <div>
                   <Typography className={classes.labelText}>
-                    {t('Price')}
+                    {t("Price")}
                   </Typography>
                   <Input
                     style={{ marginTop: -1 }}
                     id={`input-price-${index}`}
-                    placeholder={t('Price')}
+                    placeholder={t("Price")}
                     type="number"
                     value={optionItem.price}
-                    onChange={event => {
-                      onChange(event, index, 'price')
+                    onChange={(event) => {
+                      onChange(event, index, "price");
                     }}
                     disableUnderline
                     className={[
                       globalClasses.input,
                       optionItem.priceError === true
                         ? globalClasses.inputError
-                        : ''
+                        : "",
                     ]}
                   />
                 </div>
@@ -237,30 +239,31 @@ function Option(props) {
                 sm={3}
                 container
                 justify="center"
-                alignItems="center">
+                alignItems="center"
+              >
                 {!props.option && (
                   <div className={classes.labelText}>
                     <RemoveIcon
                       style={{
                         backgroundColor: theme.palette.common.black,
                         color: theme.palette.warning.dark,
-                        borderRadius: '50%',
+                        borderRadius: "50%",
                         marginTop: 12,
-                        marginRight: 10
+                        marginRight: 10,
                       }}
                       onClick={() => {
-                        onRemove(index)
+                        onRemove(index);
                       }}
                     />
                     <AddIcon
                       style={{
                         backgroundColor: theme.palette.warning.dark,
                         color: theme.palette.common.black,
-                        borderRadius: '50%',
-                        marginTop: 12
+                        borderRadius: "50%",
+                        marginTop: 12,
                       }}
                       onClick={() => {
-                        onAdd(index)
+                        onAdd(index);
                       }}
                     />
                   </div>
@@ -275,12 +278,12 @@ function Option(props) {
               disabled={loading}
               onClick={() => {
                 if (validate()) {
-                  const invalidPrice = option.some(opt => opt.price <= 0)
+                  const invalidPrice = option.some((opt) => opt.price <= 0);
                   if (invalidPrice) {
-                    mainErrorSetter('Price must be greater than 0')
-                    successSetter('')
-                    setTimeout(hideAlert, 3000)
-                    return
+                    mainErrorSetter("Price must be greater than 0");
+                    successSetter("");
+                    setTimeout(hideAlert, 3000);
+                    return;
                   }
                   props.option
                     ? mutateEdit({
@@ -291,10 +294,10 @@ function Option(props) {
                               _id: props.option._id,
                               title: option[0].title,
                               description: option[0].description,
-                              price: +option[0].price
-                            }
-                          }
-                        }
+                              price: +option[0].price,
+                            },
+                          },
+                        },
                       })
                     : mutate({
                         variables: {
@@ -304,21 +307,22 @@ function Option(props) {
                               ({ title, description, price }) => ({
                                 title,
                                 description,
-                                price: +price
+                                price: +price,
                               })
-                            )
+                            ),
                             // restaurant: restaurantId
-                          }
-                        }
-                      })
+                          },
+                        },
+                      });
 
                   // Close the modal after 3 seconds by calling the parent's onClose callback
                   setTimeout(() => {
-                    props.onClose() // Close the modal
-                  }, 4000)
+                    props.onClose(); // Close the modal
+                  }, 4000);
                 }
-              }}>
-              {t('Save')}
+              }}
+            >
+              {t("Save")}
             </Button>
           </Box>
         </form>
@@ -327,7 +331,8 @@ function Option(props) {
             <Alert
               className={globalClasses.alertSuccess}
               variant="filled"
-              severity="success">
+              severity="success"
+            >
               {success}
             </Alert>
           )}
@@ -335,13 +340,14 @@ function Option(props) {
             <Alert
               className={globalClasses.alertError}
               variant="filled"
-              severity="error">
+              severity="error"
+            >
               {mainError}
             </Alert>
           )}
         </Box>
       </Box>
     </Box>
-  )
+  );
 }
-export default withTranslation()(Option)
+export default withTranslation()(Option);

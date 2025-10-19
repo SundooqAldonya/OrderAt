@@ -1,83 +1,84 @@
 // SendGridConfiguration.jsx
 
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveSendGridApiKey } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Switch, Typography, Input, Button, Grid } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveSendGridApiKey } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Switch, Typography, Input, Button, Grid } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_SENDGRID_API_KEY = gql`
   ${saveSendGridApiKey}
-`
+`;
 
 function SendGridConfiguration(props) {
-  const formRef = useRef()
+  const formRef = useRef();
   const [sendGridEnabled, setSendGridEnabled] = useState(
     !!props.sendGridEnabled
-  )
-  const [sendGridApiKey] = useState(props.sendGridApiKey || '')
-  const [apiKeyError, setApiKeyError] = useState(null)
-  const [sendGridEmail] = useState(props.sendGridEmail || '')
-  const [sendGridEmailError, setSendGridEmailError] = useState(null)
-  const [sendGridEmailName] = useState(props.sendGridEmailName || '')
-  const [sendGridEmailNameError, setSendGridEmailNameError] = useState(null)
-  const [sendGridPassword] = useState(props.sendGridPassword || '')
-  const [sendGridPasswordError, setSendGridPasswordError] = useState(null)
+  );
+  const [sendGridApiKey] = useState(props.sendGridApiKey || "");
+  const [apiKeyError, setApiKeyError] = useState(null);
+  const [sendGridEmail] = useState(props.sendGridEmail || "");
+  const [sendGridEmailError, setSendGridEmailError] = useState(null);
+  const [sendGridEmailName] = useState(props.sendGridEmailName || "");
+  const [sendGridEmailNameError, setSendGridEmailNameError] = useState(null);
+  const [sendGridPassword] = useState(props.sendGridPassword || "");
+  const [sendGridPasswordError, setSendGridPasswordError] = useState(null);
 
-  const [mutate, { loading }] = useMutation(SAVE_SENDGRID_API_KEY)
+  const [mutate, { loading }] = useMutation(SAVE_SENDGRID_API_KEY);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const onBlurEmail = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const onBlurEmailName = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const onBlurPassword = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let apiKeyResult = true
-    let emailResult = true
-    let emailNameResult = true
-    let passwordResult = true
+    let apiKeyResult = true;
+    let emailResult = true;
+    let emailNameResult = true;
+    let passwordResult = true;
 
     apiKeyResult = !validateFunc(
-      { sendGridApiKey: formRef.current['input-apiKey'].value },
-      'sendGridApiKey'
-    )
+      { sendGridApiKey: formRef.current["input-apiKey"].value },
+      "sendGridApiKey"
+    );
     emailResult = !validateFunc(
-      { sendGridEmail: formRef.current['input-sendGridEmail'].value },
-      'sendGridEmail'
-    )
+      { sendGridEmail: formRef.current["input-sendGridEmail"].value },
+      "sendGridEmail"
+    );
     emailNameResult = !validateFunc(
-      { sendGridEmailName: formRef.current['input-sendGridEmailName'].value },
-      'sendGridEmailName'
-    )
+      { sendGridEmailName: formRef.current["input-sendGridEmailName"].value },
+      "sendGridEmailName"
+    );
     passwordResult = !validateFunc(
-      { sendGridPassword: formRef.current['input-sendGridPassword'].value },
-      'sendGridPassword'
-    )
+      { sendGridPassword: formRef.current["input-sendGridPassword"].value },
+      "sendGridPassword"
+    );
 
-    setApiKeyError(apiKeyResult)
-    setSendGridEmailError(emailResult)
-    setSendGridEmailNameError(emailNameResult)
-    setSendGridPasswordError(passwordResult)
+    setApiKeyError(apiKeyResult);
+    setSendGridEmailError(emailResult);
+    setSendGridEmailNameError(emailNameResult);
+    setSendGridPasswordError(passwordResult);
 
-    return apiKeyResult && emailResult && emailNameResult && passwordResult
-  }
+    return apiKeyResult && emailResult && emailNameResult && passwordResult;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -88,14 +89,14 @@ function SendGridConfiguration(props) {
           </Typography>
         </Box>
         <Box ml={20} mt={1}>
-          <label>{sendGridEnabled ? 'Disable' : 'Enable'}</label>
+          <label>{sendGridEnabled ? "Disable" : "Enable"}</label>
           <Switch
             defaultChecked={sendGridEnabled}
             value={sendGridEnabled}
-            onChange={e => setSendGridEnabled(e.target.checked)}
+            onChange={(e) => setSendGridEnabled(e.target.checked)}
             id="input-sendGridEnabled"
             name="input-sendGridEnabled"
-            style={{ color: 'black' }}
+            style={{ color: "black" }}
           />
         </Box>
       </Box>
@@ -113,8 +114,8 @@ function SendGridConfiguration(props) {
               placeholder="SendGrid API Key"
               defaultValue={sendGridApiKey}
               type="password"
-              onBlur={event =>
-                onBlur(setApiKeyError, 'sendGridApiKey', event.target.value)
+              onBlur={(event) =>
+                onBlur(setApiKeyError, "sendGridApiKey", event.target.value)
               }
               disableUnderline
               className={[
@@ -123,7 +124,7 @@ function SendGridConfiguration(props) {
                   ? globalClasses.inputError
                   : apiKeyError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -140,10 +141,10 @@ function SendGridConfiguration(props) {
                 placeholder="e.g something@email.com"
                 type="text"
                 defaultValue={sendGridEmail}
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlurEmail(
                     setSendGridEmailError,
-                    'sendGridEmail',
+                    "sendGridEmail",
                     event.target.value
                   )
                 }
@@ -154,7 +155,7 @@ function SendGridConfiguration(props) {
                     ? globalClasses.inputError
                     : sendGridEmailError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -169,10 +170,10 @@ function SendGridConfiguration(props) {
                 placeholder="e.g Enatega"
                 type="text"
                 defaultValue={sendGridEmailName}
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlurEmailName(
                     setSendGridEmailNameError,
-                    'sendGridEmailName',
+                    "sendGridEmailName",
                     event.target.value
                   )
                 }
@@ -183,7 +184,7 @@ function SendGridConfiguration(props) {
                     ? globalClasses.inputError
                     : sendGridEmailNameError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -201,10 +202,10 @@ function SendGridConfiguration(props) {
                 placeholder="e.g FOOD-"
                 type="password"
                 defaultValue={sendGridPassword}
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlurPassword(
                     setSendGridPasswordError,
-                    'sendGridPassword',
+                    "sendGridPassword",
                     event.target.value
                   )
                 }
@@ -215,7 +216,7 @@ function SendGridConfiguration(props) {
                     ? globalClasses.inputError
                     : sendGridPasswordError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -224,32 +225,33 @@ function SendGridConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
-                        sendGridApiKey: formRef.current['input-apiKey'].value,
+                        sendGridApiKey: formRef.current["input-apiKey"].value,
                         sendGridEnabled: sendGridEnabled,
                         sendGridEmail:
-                          formRef.current['input-sendGridEmail'].value,
+                          formRef.current["input-sendGridEmail"].value,
                         sendGridEmailName:
-                          formRef.current['input-sendGridEmailName'].value,
+                          formRef.current["input-sendGridEmailName"].value,
                         sendGridPassword:
-                          formRef.current['input-sendGridPassword'].value
-                      }
-                    }
-                  })
+                          formRef.current["input-sendGridPassword"].value,
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(SendGridConfiguration)
+export default withTranslation()(SendGridConfiguration);

@@ -1,17 +1,17 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import SectionComponent from '../components/Section/Section'
-import CustomLoader from '../components/Loader/CustomLoader'
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import SectionComponent from "../components/Section/Section";
+import CustomLoader from "../components/Loader/CustomLoader";
 
 // core components
-import { deleteSection, editSection, getSections } from '../apollo'
-import Header from '../components/Headers/Header'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import { customStyles } from '../utils/tableCustomStyles'
-import useGlobalStyles from '../utils/globalStyles'
+import { deleteSection, editSection, getSections } from "../apollo";
+import Header from "../components/Headers/Header";
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import { customStyles } from "../utils/tableCustomStyles";
+import useGlobalStyles from "../utils/globalStyles";
 import {
   Container,
   IconButton,
@@ -22,92 +22,96 @@ import {
   Switch,
   Typography,
   ListItemIcon,
-  Grid
-} from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import TableHeader from '../components/TableHeader'
-import SearchBar from '../components/TableHeader/SearchBar'
-import { ReactComponent as SectionIcon } from '../assets/svg/svg/RestaurantSection.svg'
-import Alert from '../components/Alert'
-import ConfigurableValues from '../config/constants'
+  Grid,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TableHeader from "../components/TableHeader";
+import SearchBar from "../components/TableHeader/SearchBar";
+import SectionIcon from "../assets/svg/svg/RestaurantSection.svg";
+import Alert from "../components/Alert";
+import ConfigurableValues from "../config/constants";
+import { gql } from "@apollo/client";
 
 const GET_SECTIONS = gql`
   ${getSections}
-`
+`;
 const EDIT_SECTION = gql`
   ${editSection}
-`
+`;
 const DELETE_SECTION = gql`
   ${deleteSection}
-`
+`;
 
 function Sections(props) {
-  const { t } = props
-  const { PAID_VERSION } = ConfigurableValues()
-  const [editModal, setEditModal] = useState(false)
-  const [sections, setSections] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const toggleModal = section => {
-    setEditModal(!editModal)
-    setSections(section)
-  }
+  const { t } = props;
+  const { PAID_VERSION } = ConfigurableValues();
+  const [editModal, setEditModal] = useState(false);
+  const [sections, setSections] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleModal = (section) => {
+    setEditModal(!editModal);
+    setSections(section);
+  };
 
   // Callback function to close the modal
   const closeEditModal = () => {
-    setEditModal(false)
-  }
+    setEditModal(false);
+  };
 
-  const restaurantId = localStorage.getItem('restaurantId')
+  const restaurantId = localStorage.getItem("restaurantId");
 
-  const [mutateEdit] = useMutation(EDIT_SECTION)
+  const [mutateEdit] = useMutation(EDIT_SECTION);
   const [mutateDelete] = useMutation(DELETE_SECTION, {
-    refetchQueries: [{ query: GET_SECTIONS }]
-  })
-  const { data, error: errorQuery, loading: loadingQuery } = useQuery(
-    GET_SECTIONS,
-    {
-      variables: { id: restaurantId }
-    }
-  )
-  console.log(data)
+    refetchQueries: [{ query: GET_SECTIONS }],
+  });
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+  } = useQuery(GET_SECTIONS, {
+    variables: { id: restaurantId },
+  });
+  console.log(data);
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   const columns = [
     {
-      name: t('Name'),
+      name: t("Name"),
       sortable: true,
-      selector: 'name'
+      selector: "name",
     },
     {
-      name: t('Status'),
+      name: t("Status"),
       sortable: false,
-      cell: row => <>{statusChanged(row)}</>
+      cell: (row) => <>{statusChanged(row)}</>,
     },
     {
-      name: t('Restaurants'),
+      name: t("Restaurants"),
       sortable: true,
-      cell: row => <>{row.restaurants.map(item => `${item.name}`).join(', ')}</>
+      cell: (row) => (
+        <>{row.restaurants.map((item) => `${item.name}`).join(", ")}</>
+      ),
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal, mutateDelete)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal, mutateDelete)}</>,
+    },
+  ];
 
-  const statusChanged = row => {
+  const statusChanged = (row) => {
     return (
       <>
         {row.available}
@@ -122,26 +126,26 @@ function Sections(props) {
                   name: row.name,
                   enabled: !row.enabled,
                   restaurants: row.restaurants
-                    ? row.restaurants.map(r => r._id)
-                    : []
-                }
-              }
-            })
+                    ? row.restaurants.map((r) => r._id)
+                    : [],
+                },
+              },
+            });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </>
-    )
-  }
+    );
+  };
   const ActionButtons = (row, toggleModal, mutateDelete) => {
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
     const handleClose = () => {
-      setAnchorEl(null)
-    }
+      setAnchorEl(null);
+    };
     return (
       <>
         <div>
@@ -149,74 +153,79 @@ function Sections(props) {
             aria-label="more"
             id="long-button"
             aria-haspopup="true"
-            onClick={handleClick}>
+            onClick={handleClick}
+          >
             <MoreVertIcon fontSize="small" />
           </IconButton>
           <Paper>
             <Menu
               id="long-menu"
               MenuListProps={{
-                'aria-labelledby': 'long-button'
+                "aria-labelledby": "long-button",
               }}
               anchorEl={anchorEl}
               open={open}
-              onClose={handleClose}>
+              onClose={handleClose}
+            >
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
+                onClick={(e) => {
+                  e.preventDefault();
 
-                  if (PAID_VERSION) toggleModal(row)
+                  if (PAID_VERSION) toggleModal(row);
                   else {
-                    setIsOpen(true)
+                    setIsOpen(true);
                     setTimeout(() => {
-                      setIsOpen(false)
-                    }, 5000)
+                      setIsOpen(false);
+                    }, 5000);
                   }
                 }}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
+                  <EditIcon fontSize="small" style={{ color: "green" }} />
                 </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
+                <Typography color="green">{t("Edit")}</Typography>
               </MenuItem>
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
+                onClick={(e) => {
+                  e.preventDefault();
 
-                  if (PAID_VERSION) mutateDelete({ variables: { id: row._id } })
+                  if (PAID_VERSION)
+                    mutateDelete({ variables: { id: row._id } });
                   else {
-                    setIsOpen(true)
+                    setIsOpen(true);
                     setTimeout(() => {
-                      setIsOpen(false)
-                    }, 5000)
+                      setIsOpen(false);
+                    }, 5000);
                   }
                 }}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                  <DeleteIcon fontSize="small" style={{ color: "red" }} />
                 </ListItemIcon>
-                <Typography color="red">{t('Delete')}</Typography>
+                <Typography color="red">{t("Delete")}</Typography>
               </MenuItem>
             </Menu>
           </Paper>
         </div>
       </>
-    )
-  }
+    );
+  };
 
-  const [searchQuery, setSearchQuery] = useState('')
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
   const filtered =
     searchQuery.length < 3
       ? data && data.sections
       : data &&
-        data.sections.filter(section => {
-          return section.name.toLowerCase().search(regex) > -1
-        })
+        data.sections.filter((section) => {
+          return section.name.toLowerCase().search(regex) > -1;
+        });
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
 
   return (
     <>
@@ -228,25 +237,27 @@ function Sections(props) {
             <SectionComponent />
           </Grid>
           <Grid
-            sx={{ display: { xs: 'none', lg: 'block' } }}
+            sx={{ display: { xs: "none", lg: "block" } }}
             item
             lg={4}
             mt={5}
-            order={{ xs: 1, lg: 2 }}>
-            <SectionIcon />
+            order={{ xs: 1, lg: 2 }}
+          >
+            {/* <SectionIcon /> */}
+            <img src={SectionIcon} alt="Config" width={32} height={32} />
           </Grid>
         </Grid>
         {isOpen && (
-          <Alert message={t('AvailableAfterPurchasing')} severity="warning" />
+          <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
         )}
 
         {/* Table */}
-        {errorQuery && `${t('Error')}! ${errorQuery.message}`}
+        {errorQuery && `${t("Error")}! ${errorQuery.message}`}
         {loadingQuery ? (
           <CustomLoader />
         ) : (
           <DataTable
-            title={<TableHeader title={t('RestaurantSections')} />}
+            title={<TableHeader title={t("RestaurantSections")} />}
             subHeader={true}
             subHeaderComponent={
               <SearchBar
@@ -269,18 +280,19 @@ function Sections(props) {
         <Modal
           open={editModal}
           onClose={() => {
-            toggleModal(null)
+            toggleModal(null);
           }}
           style={{
-            width: '65%',
-            marginLeft: '18%',
-            overflowY: 'auto'
-          }}>
+            width: "65%",
+            marginLeft: "18%",
+            overflowY: "auto",
+          }}
+        >
           <SectionComponent section={sections} onClose={closeEditModal} />
         </Modal>
       </Container>
     </>
-  )
+  );
 }
 
-export default withTranslation()(Sections)
+export default withTranslation()(Sections);

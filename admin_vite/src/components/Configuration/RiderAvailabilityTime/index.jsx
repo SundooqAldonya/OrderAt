@@ -1,47 +1,47 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
+import React, { useRef, useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
 import {
   saveStripeConfiguration,
-  updateRiderAvailabilityPeriod
-} from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button, Alert } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+  updateRiderAvailabilityPeriod,
+} from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button, Alert } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function RiderAvailabilityTime({ availabilityPeriod }) {
-  const { t } = useTranslation()
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const { t } = useTranslation();
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [mutatePeriod, { loading }] = useMutation(
     updateRiderAvailabilityPeriod,
     {
-      onCompleted: res => {
-        console.log({ res })
+      onCompleted: (res) => {
+        console.log({ res });
       },
-      onError: err => {
-        console.log({ err })
-      }
+      onError: (err) => {
+        console.log({ err });
+      },
     }
-  )
+  );
 
   const [period, setPeriod] = useState(
     availabilityPeriod ? availabilityPeriod : 0
-  )
+  );
 
-  const handleSubmit = e => {
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
     mutatePeriod({
       variables: {
-        period: Number(period)
-      }
-    })
-  }
+        period: Number(period),
+      },
+    });
+  };
 
   return (
     <Box container className={classes.container}>
@@ -68,7 +68,7 @@ function RiderAvailabilityTime({ availabilityPeriod }) {
               value={period}
               disableUnderline
               className={[globalClasses.input]}
-              onChange={e => setPeriod(e.target.value)}
+              onChange={(e) => setPeriod(e.target.value)}
             />
           </Box>
 
@@ -76,8 +76,9 @@ function RiderAvailabilityTime({ availabilityPeriod }) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              type="submit">
-              {t('Save')}
+              type="submit"
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -85,7 +86,8 @@ function RiderAvailabilityTime({ availabilityPeriod }) {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
@@ -93,7 +95,8 @@ function RiderAvailabilityTime({ availabilityPeriod }) {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}
@@ -101,6 +104,6 @@ function RiderAvailabilityTime({ availabilityPeriod }) {
         </form>
       </Box>
     </Box>
-  )
+  );
 }
-export default RiderAvailabilityTime
+export default RiderAvailabilityTime;

@@ -1,11 +1,11 @@
-import React, { useState, useRef, useCallback } from 'react'
-import { useMutation, gql, useQuery } from '@apollo/client'
-import { validateFunc } from '../../constraints/constraints'
-import { useTranslation, withTranslation } from 'react-i18next'
+import React, { useState, useRef, useCallback } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { validateFunc } from "../../constraints/constraints";
+import { useTranslation, withTranslation } from "react-i18next";
 
-import { GoogleMap, Polygon } from '@react-google-maps/api'
-import useStyles from './styles'
-import useGlobalStyles from '../../utils/globalStyles'
+import { GoogleMap, Polygon } from "@react-google-maps/api";
+import useStyles from "./styles";
+import useGlobalStyles from "../../utils/globalStyles";
 import {
   Box,
   Typography,
@@ -14,8 +14,8 @@ import {
   Alert,
   Grid,
   Select,
-  MenuItem
-} from '@mui/material'
+  MenuItem,
+} from "@mui/material";
 
 // core components
 import {
@@ -24,91 +24,94 @@ import {
   getAllDeliveryZones,
   getCities,
   getZones,
-  updateDeliveryZone
-} from '../../apollo'
-import { transformPath, transformPolygon } from '../../utils/coordinates'
-import ConfigurableValues from '../../config/constants'
+  updateDeliveryZone,
+} from "../../apollo";
+import { transformPath, transformPolygon } from "../../utils/coordinates";
+import ConfigurableValues from "../../config/constants";
+import { gql } from "@apollo/client";
 
 const CREATE_ZONE = gql`
   ${createDeliveryZone}
-`
+`;
 const EDIT_ZONE = gql`
   ${editZone}
-`
+`;
 const GET_ZONE = gql`
   ${getAllDeliveryZones}
-`
+`;
 
 const GET_CITIES = gql`
   ${getCities}
-`
+`;
 
 const DeliveryZoneCreate = ({ zone, edit }) => {
-  console.log({ zone })
+  console.log({ zone });
   const [path, setPath] = useState(
     zone ? transformPolygon(zone.location.coordinates[0]) : []
-  )
-  const { PAID_VERSION } = ConfigurableValues()
-  const [title, setTitle] = useState(zone ? zone.title : '')
-  const [description, setDescription] = useState(zone ? zone.description : '')
-  const listenersRef = useRef([])
-  const [errors, setErrors] = useState('')
-  const [success, setSuccess] = useState('')
-  const [titleError, setTitleError] = useState(null)
-  const [descriptionError, setDescriptionError] = useState(null)
+  );
+  const { PAID_VERSION } = ConfigurableValues();
+  const [title, setTitle] = useState(zone ? zone.title : "");
+  const [description, setDescription] = useState(zone ? zone.description : "");
+  const listenersRef = useRef([]);
+  const [errors, setErrors] = useState("");
+  const [success, setSuccess] = useState("");
+  const [titleError, setTitleError] = useState(null);
+  const [descriptionError, setDescriptionError] = useState(null);
   const [selectedCity, setSelectedCity] = useState(
-    edit && zone ? zone.city : ''
-  )
+    edit && zone ? zone.city : ""
+  );
 
-  console.log({ title })
+  console.log({ title });
 
-  const { data, loading: loadingCities, error: errorCities } = useQuery(
-    GET_CITIES
-  )
+  const {
+    data,
+    loading: loadingCities,
+    error: errorCities,
+  } = useQuery(GET_CITIES);
 
-  const cities = data?.citiesAdmin || null
+  const cities = data?.citiesAdmin || null;
 
-  console.log({ cities: data })
+  console.log({ cities: data });
 
-  const onCompleted = data => {
-    if (!zone) clearFields()
+  const onCompleted = (data) => {
+    if (!zone) clearFields();
     const message = zone
-      ? t('ZoneUpdatedSuccessfully')
-      : t('ZoneAddedSuccessfully')
-    setErrors('')
-    setSuccess(message)
-    setTimeout(hideAlert, 3000)
-  }
+      ? t("ZoneUpdatedSuccessfully")
+      : t("ZoneAddedSuccessfully");
+    setErrors("");
+    setSuccess(message);
+    setTimeout(hideAlert, 3000);
+  };
 
-  const onError = error => {
-    setErrors(error.message)
-    setSuccess('')
-    setTimeout(hideAlert, 3000)
-  }
+  const onError = (error) => {
+    setErrors(error.message);
+    setSuccess("");
+    setTimeout(hideAlert, 3000);
+  };
 
   const [mutate] = useMutation(CREATE_ZONE, {
     refetchQueries: [{ query: GET_ZONE }],
     onError,
-    onCompleted
-  })
+    onCompleted,
+  });
 
   const [mutateUpdate] = useMutation(updateDeliveryZone, {
     refetchQueries: [{ query: GET_ZONE }],
     onError,
-    onCompleted
-  })
+    onCompleted,
+  });
 
   const [center] = useState(
     zone
       ? setCenter(zone.location.coordinates[0])
       : { lat: 31.1107, lng: 30.9388 }
-  )
+  );
 
-  const polygonRef = useRef()
+  const polygonRef = useRef();
 
-  const onClick = e => {
-    setPath([...path, { lat: e.latLng.lat(), lng: e.latLng.lng() }])
-  }
+  const onClick = (e) => {
+    setPath([...path, { lat: e.latLng.lat(), lng: e.latLng.lng() }]);
+  };
 
   // Call setPath with new edited path
   const onEdit = useCallback(() => {
@@ -116,71 +119,71 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
       const nextPath = polygonRef.current
         .getPath()
         .getArray()
-        .map(latLng => {
-          return { lat: latLng.lat(), lng: latLng.lng() }
-        })
-      setPath(nextPath)
+        .map((latLng) => {
+          return { lat: latLng.lat(), lng: latLng.lng() };
+        });
+      setPath(nextPath);
     }
-  }, [setPath])
+  }, [setPath]);
 
   const onLoadPolygon = useCallback(
-    polygon => {
-      polygonRef.current = polygon
-      const path = polygon.getPath()
+    (polygon) => {
+      polygonRef.current = polygon;
+      const path = polygon.getPath();
       listenersRef.current.push(
-        path.addListener('set_at', onEdit),
-        path.addListener('insert_at', onEdit),
-        path.addListener('remove_at', onEdit)
-      )
+        path.addListener("set_at", onEdit),
+        path.addListener("insert_at", onEdit),
+        path.addListener("remove_at", onEdit)
+      );
     },
     [onEdit]
-  )
+  );
 
   const onUnmount = useCallback(() => {
-    listenersRef.current.forEach(lis => lis.remove())
-    polygonRef.current = null
-  }, [])
+    listenersRef.current.forEach((lis) => lis.remove());
+    polygonRef.current = null;
+  }, []);
 
   function setCenter(coordinates) {
-    return { lat: coordinates[0][1], lng: coordinates[0][0] }
+    return { lat: coordinates[0][1], lng: coordinates[0][0] };
   }
 
   const onSubmitValidation = () => {
-    setErrors('')
-    const titleErrors = !validateFunc({ title: title }, 'title')
+    setErrors("");
+    const titleErrors = !validateFunc({ title: title }, "title");
     const descriptionErrors = !validateFunc(
       { description: description },
-      'description'
-    )
-    let zoneErrors = true
+      "description"
+    );
+    let zoneErrors = true;
     if (path.length < 3) {
-      zoneErrors = false
-      setErrors(t('SetZoneOnMap'))
-      return false
+      zoneErrors = false;
+      setErrors(t("SetZoneOnMap"));
+      return false;
     }
 
-    setTitleError(titleErrors)
-    setDescriptionError(descriptionErrors)
-    return titleErrors && descriptionErrors && zoneErrors
-  }
+    setTitleError(titleErrors);
+    setDescriptionError(descriptionErrors);
+    return titleErrors && descriptionErrors && zoneErrors;
+  };
 
   const clearFields = () => {
-    setTitle('')
-    setDescription('')
-    setTitleError(null)
-    setDescriptionError(null)
-    setPath([])
-  }
+    setTitle("");
+    setDescription("");
+    setTitleError(null);
+    setDescriptionError(null);
+    setPath([]);
+  };
 
   const hideAlert = () => {
-    setErrors('')
-    setSuccess('')
-  }
+    setErrors("");
+    setSuccess("");
+  };
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -189,8 +192,9 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
           <Typography
             variant="h6"
             className={zone ? classes.textWhite : classes.text}
-            sx={{ textTransform: 'capitalize' }}>
-            {zone ? t('EditDeliveryZone') : t('AddDeliveryZone')}
+            sx={{ textTransform: "capitalize" }}
+          >
+            {zone ? t("EditDeliveryZone") : t("AddDeliveryZone")}
           </Typography>
         </Box>
       </Box>
@@ -201,16 +205,16 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
             <Grid item xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
-                  {t('Title')}
+                  {t("Title")}
                 </Typography>
                 <Input
                   style={{ marginTop: -1 }}
                   id="input-title"
-                  placeholder={t('Title')}
+                  placeholder={t("Title")}
                   type="text"
                   value={title}
-                  onChange={event => {
-                    setTitle(event.target.value)
+                  onChange={(event) => {
+                    setTitle(event.target.value);
                   }}
                   disableUnderline
                   className={[
@@ -219,7 +223,7 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
                       ? globalClasses.inputError
                       : titleError === true
                       ? globalClasses.inputSuccess
-                      : ''
+                      : "",
                   ]}
                 />
               </Box>
@@ -227,16 +231,16 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
             <Grid item xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
-                  {t('Description')}
+                  {t("Description")}
                 </Typography>
                 <Input
                   style={{ marginTop: -1 }}
                   id="input-description"
-                  placeholder={t('Description')}
+                  placeholder={t("Description")}
                   type="text"
                   value={description}
-                  onChange={event => {
-                    setDescription(event.target.value)
+                  onChange={(event) => {
+                    setDescription(event.target.value);
                   }}
                   disableUnderline
                   className={[
@@ -245,33 +249,36 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
                       ? globalClasses.inputError
                       : descriptionError === true
                       ? globalClasses.inputSuccess
-                      : ''
+                      : "",
                   ]}
                 />
               </Box>
             </Grid>
             <Box
-              sx={{ width: '100%', flexDirection: 'column' }}
-              className={globalClasses.flexRow}>
+              sx={{ width: "100%", flexDirection: "column" }}
+              className={globalClasses.flexRow}
+            >
               <Select
                 id="input-city"
                 name="input-city"
-                defaultValue={selectedCity || ''}
+                defaultValue={selectedCity || ""}
                 value={selectedCity}
-                onChange={e => setSelectedCity(e.target.value)}
+                onChange={(e) => setSelectedCity(e.target.value)}
                 displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-                className={[globalClasses.input]}>
+                inputProps={{ "aria-label": "Without label" }}
+                className={[globalClasses.input]}
+              >
                 {!selectedCity && (
-                  <MenuItem value="" style={{ color: 'black' }}>
-                    {t('Select City')}
+                  <MenuItem value="" style={{ color: "black" }}>
+                    {t("Select City")}
                   </MenuItem>
                 )}
-                {cities?.map(city => (
+                {cities?.map((city) => (
                   <MenuItem
                     value={city._id}
                     key={city._id}
-                    style={{ color: 'black' }}>
+                    style={{ color: "black" }}
+                  >
                     {city.title}
                   </MenuItem>
                 ))}
@@ -281,13 +288,14 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
           <Box mt={2} className={globalClasses.flexRow}>
             <GoogleMap
               mapContainerStyle={{
-                height: '500px',
-                width: '100%'
+                height: "500px",
+                width: "100%",
               }}
               id="example-map"
               zoom={14}
               center={center}
-              onClick={onClick}>
+              onClick={onClick}
+            >
               <Polygon
                 // Make the Polygon editable / draggable
                 editable
@@ -306,37 +314,38 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
             <Button
               className={globalClasses.button}
               disabled={!PAID_VERSION}
-              onClick={async e => {
-                e.preventDefault()
+              onClick={async (e) => {
+                e.preventDefault();
                 if (onSubmitValidation()) {
                   if (!edit) {
                     mutate({
                       variables: {
                         deliveryZoneInput: {
-                          _id: '',
+                          _id: "",
                           title,
                           description,
                           coordinates: transformPath(path),
-                          city: selectedCity
-                        }
-                      }
-                    })
+                          city: selectedCity,
+                        },
+                      },
+                    });
                   } else {
                     mutateUpdate({
                       variables: {
                         deliveryZoneInput: {
-                          _id: zone ? zone._id : '',
+                          _id: zone ? zone._id : "",
                           title,
                           description,
                           coordinates: transformPath(path),
-                          city: selectedCity
-                        }
-                      }
-                    })
+                          city: selectedCity,
+                        },
+                      },
+                    });
                   }
                 }
-              }}>
-              {edit ? t('Update') : t('Save')}
+              }}
+            >
+              {edit ? t("Update") : t("Save")}
             </Button>
           </Box>
         </form>
@@ -345,7 +354,8 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
             <Alert
               className={globalClasses.alertSuccess}
               variant="filled"
-              severity="success">
+              severity="success"
+            >
               {success}
             </Alert>
           )}
@@ -353,14 +363,15 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
             <Alert
               className={globalClasses.alertError}
               variant="filled"
-              severity="error">
+              severity="error"
+            >
               {errors}
             </Alert>
           )}
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default withTranslation()(DeliveryZoneCreate)
+export default withTranslation()(DeliveryZoneCreate);

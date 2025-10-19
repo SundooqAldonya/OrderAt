@@ -1,46 +1,47 @@
 // GoogleApiKeyConfiguration.jsx
 
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveGoogleApiKeyConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Typography, Input, Button } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveGoogleApiKeyConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Typography, Input, Button } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_GOOGLE_API_KEY_CONFIGURATION = gql`
   ${saveGoogleApiKeyConfiguration}
-`
+`;
 
 function GoogleApiKeyConfiguration(props) {
-  const formRef = useRef()
+  const formRef = useRef();
 
-  const [googleApiKey] = useState(props.googleApiKey || '')
+  const [googleApiKey] = useState(props.googleApiKey || "");
 
-  const [googleApiKeyError, setGoogleApiKeyError] = useState(null)
+  const [googleApiKeyError, setGoogleApiKeyError] = useState(null);
 
-  const [mutate, { loading }] = useMutation(SAVE_GOOGLE_API_KEY_CONFIGURATION)
+  const [mutate, { loading }] = useMutation(SAVE_GOOGLE_API_KEY_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let googleApiKeyResult = true
+    let googleApiKeyResult = true;
 
     googleApiKeyResult = !validateFunc(
-      { googleApiKey: formRef.current['input-googleApiKey'].value },
-      'googleApiKey'
-    )
+      { googleApiKey: formRef.current["input-googleApiKey"].value },
+      "googleApiKey"
+    );
 
-    setGoogleApiKeyError(googleApiKeyResult)
+    setGoogleApiKeyError(googleApiKeyResult);
 
-    return googleApiKeyResult
-  }
+    return googleApiKeyResult;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -65,8 +66,8 @@ function GoogleApiKeyConfiguration(props) {
               placeholder="Google API Key"
               defaultValue={googleApiKey}
               type="password"
-              onBlur={event =>
-                onBlur(setGoogleApiKeyError, 'googleApiKey', event.target.value)
+              onBlur={(event) =>
+                onBlur(setGoogleApiKeyError, "googleApiKey", event.target.value)
               }
               disableUnderline
               className={[
@@ -75,7 +76,7 @@ function GoogleApiKeyConfiguration(props) {
                   ? globalClasses.inputError
                   : googleApiKeyError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -83,26 +84,27 @@ function GoogleApiKeyConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
                         googleApiKey:
-                          formRef.current['input-googleApiKey'].value
-                      }
-                    }
-                  })
+                          formRef.current["input-googleApiKey"].value,
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(GoogleApiKeyConfiguration)
+export default withTranslation()(GoogleApiKeyConfiguration);

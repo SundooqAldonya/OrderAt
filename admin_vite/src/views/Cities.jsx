@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react'
-import Header from '../components/Headers/Header'
+import React, { Fragment, useState } from "react";
+import Header from "../components/Headers/Header";
 import {
   Alert,
   Container,
@@ -9,141 +9,142 @@ import {
   MenuItem,
   Modal,
   Paper,
-  Typography
-} from '@mui/material'
-import useGlobalStyles from '../utils/globalStyles'
-import { useTranslation } from 'react-i18next'
-import CityForm from '../components/CityForm'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { REMOVE_CITY, getCities, toggleCityActive } from '../apollo'
-import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import SearchBar from '../components/TableHeader/SearchBar'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import orderBy from 'lodash/orderBy'
-import TableHeader from '../components/TableHeader'
-import { customStyles } from '../utils/tableCustomStyles'
-import { Switch } from '@mui/material'
+  Typography,
+} from "@mui/material";
+import useGlobalStyles from "../utils/globalStyles";
+import { useTranslation } from "react-i18next";
+import CityForm from "../components/CityForm";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { REMOVE_CITY, getCities, toggleCityActive } from "../apollo";
+import CustomLoader from "../components/Loader/CustomLoader";
+import DataTable from "react-data-table-component";
+import SearchBar from "../components/TableHeader/SearchBar";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import orderBy from "lodash/orderBy";
+import TableHeader from "../components/TableHeader";
+import { customStyles } from "../utils/tableCustomStyles";
+import { Switch } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const GET_CITIES = gql`
   ${getCities}
-`
+`;
 
 const Cities = () => {
-  const { t } = useTranslation()
-  const [openEdit, setOpenEdit] = useState(false)
-  const [error, setError] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [message, setMessage] = useState('')
-  const [city, setCity] = useState(null)
-  const [type, setType] = useState('')
+  const { t } = useTranslation();
+  const [openEdit, setOpenEdit] = useState(false);
+  const [error, setError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
+  const [city, setCity] = useState(null);
+  const [type, setType] = useState("");
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
 
-  const { data, loading, refetch } = useQuery(GET_CITIES)
+  const { data, loading, refetch } = useQuery(GET_CITIES);
 
   const [removeCity] = useMutation(REMOVE_CITY, {
-    onCompleted: data => {
-      console.log({ dataResponse: data })
-      setSuccess(true)
-      setType('success')
-      setMessage(data.removeCity.message)
+    onCompleted: (data) => {
+      console.log({ dataResponse: data });
+      setSuccess(true);
+      setType("success");
+      setMessage(data.removeCity.message);
     },
-    refetchQueries: [{ query: GET_CITIES }]
-  })
+    refetchQueries: [{ query: GET_CITIES }],
+  });
 
   const [mutateActive] = useMutation(toggleCityActive, {
     refetchQueries: [{ query: GET_CITIES }],
     awaitRefetchQueries: true,
     onCompleted: ({ toggleCityActive }) => {
-      console.log({ toggleCityActive })
+      console.log({ toggleCityActive });
     },
-    onError: err => {
-      console.log({ err })
-    }
-  })
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
 
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
-  const toggleModal = item => {
-    setOpenEdit(!openEdit)
-    setCity(item)
-  }
+  const toggleModal = (item) => {
+    setOpenEdit(!openEdit);
+    setCity(item);
+  };
   const closeEditModal = () => {
-    setOpenEdit(false)
-  }
-  const cities = data?.citiesAdmin || null
+    setOpenEdit(false);
+  };
+  const cities = data?.citiesAdmin || null;
   const columns = [
     {
-      name: t('Title'),
-      selector: 'title',
-      sortable: true
+      name: t("Title"),
+      selector: "title",
+      sortable: true,
     },
     {
-      name: t('Active'),
-      cell: row => <>{isActiveStatus(row)}</>
+      name: t("Active"),
+      cell: (row) => <>{isActiveStatus(row)}</>,
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal)}</>,
+    },
+  ];
 
   const propExists = (obj, path) => {
-    return path.split('.').reduce((obj, prop) => {
-      return obj && obj[prop] ? obj[prop] : ''
-    }, obj)
-  }
+    return path.split(".").reduce((obj, prop) => {
+      return obj && obj[prop] ? obj[prop] : "";
+    }, obj);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (field && isNaN(propExists(row, field))) {
-        return propExists(row, field).toLowerCase()
+        return propExists(row, field).toLowerCase();
       }
 
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
-  const handleRemoveCity = itemId => {
+  const handleRemoveCity = (itemId) => {
     removeCity({
       variables: {
-        id: itemId
-      }
-    })
-  }
+        id: itemId,
+      },
+    });
+  };
 
-  const isActiveStatus = row => {
+  const isActiveStatus = (row) => {
     return (
       <Fragment>
         {/* {row.isActive} */}
         <Switch
           size="small"
           defaultChecked={row.isActive}
-          onChange={_event => {
-            mutateActive({ variables: { id: row._id } })
+          onChange={(_event) => {
+            mutateActive({ variables: { id: row._id } });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </Fragment>
-    )
-  }
+    );
+  };
 
-  const ActionButtons = row => {
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
+  const ActionButtons = (row) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
 
     const handleClose = () => {
-      setAnchorEl(null)
-    }
+      setAnchorEl(null);
+    };
 
     return (
       <>
@@ -152,43 +153,47 @@ const Cities = () => {
             aria-label="more"
             id="long-button"
             aria-haspopup="true"
-            onClick={handleClick}>
+            onClick={handleClick}
+          >
             <MoreVertIcon fontSize="small" />
           </IconButton>
           <Paper>
             <Menu
               id="long-menu"
               MenuListProps={{
-                'aria-labelledby': 'long-button'
+                "aria-labelledby": "long-button",
               }}
               anchorEl={anchorEl}
               open={open}
-              onClose={handleClose}>
+              onClose={handleClose}
+            >
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  toggleModal(row)
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleModal(row);
                 }}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
+                  <EditIcon fontSize="small" style={{ color: "green" }} />
                 </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
+                <Typography color="green">{t("Edit")}</Typography>
               </MenuItem>
               <MenuItem
                 onClick={() => handleRemoveCity(row._id)}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                  <DeleteIcon fontSize="small" style={{ color: "red" }} />
                 </ListItemIcon>
-                <Typography color="red">{t('Delete')}</Typography>
+                <Typography color="red">{t("Delete")}</Typography>
               </MenuItem>
             </Menu>
           </Paper>
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Fragment>
@@ -199,7 +204,8 @@ const Cities = () => {
           <Alert
             className={globalClasses.alertSuccess}
             variant="filled"
-            severity={type}>
+            severity={type}
+          >
             {message}
           </Alert>
         )}
@@ -215,7 +221,7 @@ const Cities = () => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Cities')} />}
+            title={<TableHeader title={t("Cities")} />}
             columns={columns}
             data={cities}
             pagination
@@ -229,20 +235,21 @@ const Cities = () => {
         )}
         <Modal
           style={{
-            width: '70%',
-            marginLeft: '15%',
-            overflowY: 'auto',
-            marginTop: 150
+            width: "70%",
+            marginLeft: "15%",
+            overflowY: "auto",
+            marginTop: 150,
           }}
           open={openEdit}
           onClose={() => {
-            toggleModal()
-          }}>
+            toggleModal();
+          }}
+        >
           <CityForm city={city} onClose={closeEditModal} />
         </Modal>
       </Container>
     </Fragment>
-  )
-}
+  );
+};
 
-export default Cities
+export default Cities;

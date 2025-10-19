@@ -1,31 +1,38 @@
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveFormEmailConfiguration } from '../../../apollo'
-import { Box, Typography, Input, Button, CircularProgress } from '@mui/material'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveFormEmailConfiguration } from "../../../apollo";
+import {
+  Box,
+  Typography,
+  Input,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { gql } from "@apollo/client";
 
 const SAVE_EMAIL_CONFIGURATION = gql`
   ${saveFormEmailConfiguration}
-`
+`;
 
 function EmailConfiguration(props) {
-  const formRef = useRef()
-  const [email, setEmail] = useState(props.formEmail || '')
-  const [emailError, setEmailError] = useState(null)
-  const [mutate, { loading }] = useMutation(SAVE_EMAIL_CONFIGURATION)
+  const formRef = useRef();
+  const [email, setEmail] = useState(props.formEmail || "");
+  const [emailError, setEmailError] = useState(null);
+  const [mutate, { loading }] = useMutation(SAVE_EMAIL_CONFIGURATION);
 
   const validateInput = () => {
-    const emailErrors = !validateFunc({ email: email }, 'email')
+    const emailErrors = !validateFunc({ email: email }, "email");
 
-    setEmailError(emailErrors)
-    return emailErrors
-  }
+    setEmailError(emailErrors);
+    return emailErrors;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -50,8 +57,8 @@ function EmailConfiguration(props) {
               placeholder="Email address"
               type="email"
               value={email}
-              onChange={e => {
-                setEmail(e.target.value)
+              onChange={(e) => {
+                setEmail(e.target.value);
               }}
               disableUnderline
               className={[
@@ -60,7 +67,7 @@ function EmailConfiguration(props) {
                   ? globalClasses.inputError
                   : emailError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -68,37 +75,38 @@ function EmailConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput()) {
                   mutate({
                     variables: {
                       configurationInput: {
-                        formEmail: formRef.current['input-email'].value
-                      }
-                    }
+                        formEmail: formRef.current["input-email"].value,
+                      },
+                    },
                   })
-                    .then(response => {
+                    .then((response) => {
                       // Handle successful response
-                      console.log(response)
+                      console.log(response);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       // Handle GraphQL errors
-                      console.error('GraphQL error:', error.message)
-                    })
+                      console.error("GraphQL error:", error.message);
+                    });
                 }
-              }}>
+              }}
+            >
               {loading ? (
                 <CircularProgress size={24} color="primary" />
               ) : (
-                'SAVE'
+                "SAVE"
               )}
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(EmailConfiguration)
+export default withTranslation()(EmailConfiguration);

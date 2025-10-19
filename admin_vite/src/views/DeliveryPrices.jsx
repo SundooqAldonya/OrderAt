@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState } from "react";
 import {
   Container,
   IconButton,
@@ -7,96 +7,98 @@ import {
   MenuItem,
   Modal,
   Paper,
-  Typography
-} from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import EditIcon from '@mui/icons-material/Edit'
-import { useMutation, useQuery } from '@apollo/client'
+  Typography,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import { useMutation, useQuery } from "@apollo/client/react";
 import {
   allDeliveryPrices,
   createDeliveryPrice,
-  removeDeliveryPrice
-} from '../apollo'
-import DataTable from 'react-data-table-component'
-import CustomLoader from '../components/Loader/CustomLoader'
-import SearchBar from '../components/TableHeader/SearchBar'
-import TableHeader from '../components/TableHeader'
-import { useTranslation } from 'react-i18next'
-import orderBy from 'lodash/orderBy'
-import Header from '../components/Headers/Header'
-import useGlobalStyles from '../utils/globalStyles'
-import { customStyles } from '../utils/tableCustomStyles'
-import DeleteIcon from '@mui/icons-material/Delete'
-import DeliveryPriceCreate from '../components/DeliveryPriceCreate'
+  removeDeliveryPrice,
+} from "../apollo";
+import DataTable from "react-data-table-component";
+import CustomLoader from "../components/Loader/CustomLoader";
+import SearchBar from "../components/TableHeader/SearchBar";
+import TableHeader from "../components/TableHeader";
+import { useTranslation } from "react-i18next";
+import orderBy from "lodash/orderBy";
+import Header from "../components/Headers/Header";
+import useGlobalStyles from "../utils/globalStyles";
+import { customStyles } from "../utils/tableCustomStyles";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DeliveryPriceCreate from "../components/DeliveryPriceCreate";
 
 const DeliveryPrices = () => {
-  const { t } = useTranslation()
-  const globalClasses = useGlobalStyles()
+  const { t } = useTranslation();
+  const globalClasses = useGlobalStyles();
 
-  const [isOpen, setIsOpen] = useState(false)
-  const [editModal, setEditModal] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const { data, loading, error, refetch } = useQuery(allDeliveryPrices)
+  const { data, loading, error, refetch } = useQuery(allDeliveryPrices);
 
-  console.log({ data })
+  console.log({ data });
 
-  const prices = data?.allDeliveryPrices || null
+  const prices = data?.allDeliveryPrices || null;
 
   const columns = [
     {
-      name: t('from'),
+      name: t("from"),
       sortable: true,
-      selector: 'title',
-      cell: row => <>{row.originZone?.title ? row.originZone?.title : 'N/A'}</>
+      selector: "title",
+      cell: (row) => (
+        <>{row.originZone?.title ? row.originZone?.title : "N/A"}</>
+      ),
     },
     {
-      name: t('to'),
+      name: t("to"),
       sortable: true,
-      selector: 'title',
-      cell: row => (
-        <>{row.destinationZone?.title ? row.destinationZone?.title : 'N/A'}</>
-      )
+      selector: "title",
+      cell: (row) => (
+        <>{row.destinationZone?.title ? row.destinationZone?.title : "N/A"}</>
+      ),
     },
     {
-      name: t('cost'),
+      name: t("cost"),
       sortable: true,
-      selector: 'cost'
+      selector: "cost",
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal)}</>,
+    },
+  ];
 
-  console.log({ editModal })
+  console.log({ editModal });
 
-  const toggleModal = item => {
-    console.log({ item })
-    setEditModal(!editModal)
+  const toggleModal = (item) => {
+    console.log({ item });
+    setEditModal(!editModal);
     if (item) {
-      setSelectedItem(item)
+      setSelectedItem(item);
     }
-  }
+  };
 
   const closeEditModal = () => {
-    setEditModal(false)
-  }
+    setEditModal(false);
+  };
 
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (row[field]) {
-        return row[field].toLowerCase()
+        return row[field].toLowerCase();
       }
 
-      return row[field]
-    }
+      return row[field];
+    };
 
-    return orderBy(rows, handleField, direction)
-  }
+    return orderBy(rows, handleField, direction);
+  };
 
   return (
     <Fragment>
@@ -116,7 +118,7 @@ const DeliveryPrices = () => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('delivery_prices')} />}
+            title={<TableHeader title={t("delivery_prices")} />}
             columns={columns}
             data={prices}
             pagination
@@ -128,20 +130,21 @@ const DeliveryPrices = () => {
             selectableRows
           />
         ) : (
-          <Typography sx={{ textAlign: 'center' }}>
+          <Typography sx={{ textAlign: "center" }}>
             No delivery prices have been created yet
           </Typography>
         )}
         <Modal
           style={{
-            width: '70%',
-            marginLeft: '15%',
-            overflowY: 'auto'
+            width: "70%",
+            marginLeft: "15%",
+            overflowY: "auto",
           }}
           open={editModal}
           onClose={() => {
-            closeEditModal()
-          }}>
+            closeEditModal();
+          }}
+        >
           <DeliveryPriceCreate
             edit={true}
             item={selectedItem}
@@ -150,28 +153,28 @@ const DeliveryPrices = () => {
         </Modal>
       </Container>
     </Fragment>
-  )
-}
+  );
+};
 
 const ActionButtons = (row, toggleModal) => {
-  const { t } = useTranslation()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = useState(null);
   const [deletePrice] = useMutation(removeDeliveryPrice, {
     refetchQueries: [{ query: allDeliveryPrices }],
-    onCompleted: res => {
-      console.log({ res })
+    onCompleted: (res) => {
+      console.log({ res });
     },
-    onError: error => {
-      console.log({ error })
-    }
-  })
-  const open = Boolean(anchorEl)
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+    onError: (error) => {
+      console.log({ error });
+    },
+  });
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   return (
     <>
       <div>
@@ -179,47 +182,51 @@ const ActionButtons = (row, toggleModal) => {
           aria-label="more"
           id="long-button"
           aria-haspopup="true"
-          onClick={handleClick}>
+          onClick={handleClick}
+        >
           <MoreVertIcon fontSize="small" />
         </IconButton>
         <Paper>
           <Menu
             id="long-menu"
             MenuListProps={{
-              'aria-labelledby': 'long-button'
+              "aria-labelledby": "long-button",
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}>
+            onClose={handleClose}
+          >
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                console.log('clicked')
-                toggleModal(row)
+              onClick={(e) => {
+                e.preventDefault();
+                console.log("clicked");
+                toggleModal(row);
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <EditIcon fontSize="small" style={{ color: 'green' }} />
+                <EditIcon fontSize="small" style={{ color: "green" }} />
               </ListItemIcon>
-              <Typography color="green">{t('Edit')}</Typography>
+              <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
             <MenuItem
-              onClick={e => {
-                e.preventDefault()
-                console.log({ row })
-                deletePrice({ variables: { id: row._id } })
+              onClick={(e) => {
+                e.preventDefault();
+                console.log({ row });
+                deletePrice({ variables: { id: row._id } });
               }}
-              style={{ height: 25 }}>
+              style={{ height: 25 }}
+            >
               <ListItemIcon>
-                <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                <DeleteIcon fontSize="small" style={{ color: "red" }} />
               </ListItemIcon>
-              <Typography color="red">{t('Delete')}</Typography>
+              <Typography color="red">{t("Delete")}</Typography>
             </MenuItem>
           </Menu>
         </Paper>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DeliveryPrices
+export default DeliveryPrices;

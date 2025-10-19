@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveEmailConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
+import React, { useRef, useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveEmailConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
 import {
   Box,
   Switch,
@@ -13,78 +13,80 @@ import {
   Button,
   Grid,
   Alert,
-  Checkbox
-} from '@mui/material'
-import InputAdornment from '@mui/material/InputAdornment'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+  Checkbox,
+} from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { gql } from "@apollo/client";
+
 const SAVE_EMAIL_CONFIGURATION = gql`
   ${saveEmailConfiguration}
-`
+`;
 
 function Email(props) {
-  const { t } = props
-  const formRef = useRef()
-  const email = props.email || ''
-  const password = props.password || ''
-  const emailName = props.emailName || ''
-  const [emailError, emailErrorSetter] = useState(null)
-  const [passwordError, passwordErrorSetter] = useState(null)
-  const [emailNameError, emailNameErrorSetter] = useState(null)
-  const [enableEmail, setEnabaleEmail] = useState(!!props.enabled)
-  const [showPassword, setShowPassword] = useState(false)
+  const { t } = props;
+  const formRef = useRef();
+  const email = props.email || "";
+  const password = props.password || "";
+  const emailName = props.emailName || "";
+  const [emailError, emailErrorSetter] = useState(null);
+  const [passwordError, passwordErrorSetter] = useState(null);
+  const [emailNameError, emailNameErrorSetter] = useState(null);
+  const [enableEmail, setEnabaleEmail] = useState(!!props.enabled);
+  const [showPassword, setShowPassword] = useState(false);
   //const [isEndAdornmentEnabled, setIsEndAdornmentEnabled] = useState(false);
-  const [mutate, { loading }] = useMutation(SAVE_EMAIL_CONFIGURATION)
+  const [mutate, { loading }] = useMutation(SAVE_EMAIL_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
   const validateInput = () => {
-    let emailResult = true
-    let passwordResult = true
-    let emailNameResult = true
+    let emailResult = true;
+    let passwordResult = true;
+    let emailNameResult = true;
     emailResult = !validateFunc(
-      { email: formRef.current['input-email'].value },
-      'email'
-    )
+      { email: formRef.current["input-email"].value },
+      "email"
+    );
     emailNameResult = !validateFunc(
-      { email: formRef.current['input-emailName'].value },
-      'emailName'
-    )
+      { email: formRef.current["input-emailName"].value },
+      "emailName"
+    );
     passwordResult = !validateFunc(
-      { password: formRef.current['input-password'].value },
-      'password'
-    )
-    emailErrorSetter(emailResult)
-    passwordErrorSetter(passwordResult)
-    emailNameErrorSetter(emailNameResult)
-    return emailResult && passwordResult && emailNameResult
-  }
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const [successMessage, setSuccessMessage] = useState('')
-  const handleSuccess = message => {
-    setSuccessMessage(message)
-  }
+      { password: formRef.current["input-password"].value },
+      "password"
+    );
+    emailErrorSetter(emailResult);
+    passwordErrorSetter(passwordResult);
+    emailNameErrorSetter(emailNameResult);
+    return emailResult && passwordResult && emailNameResult;
+  };
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const [successMessage, setSuccessMessage] = useState("");
+  const handleSuccess = (message) => {
+    setSuccessMessage(message);
+  };
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setSuccessMessage('')
-    }, 3000)
+      setSuccessMessage("");
+    }, 3000);
 
-    return () => clearTimeout(timeoutId)
-  }, [successMessage, setSuccessMessage])
-  const [errorMessage, setErrorMessage] = useState('')
-  const handleError = error => {
-    setErrorMessage('An error occurred while saving configuration.')
-    console.error('Mutation error:', error)
-  }
+    return () => clearTimeout(timeoutId);
+  }, [successMessage, setSuccessMessage]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleError = (error) => {
+    setErrorMessage("An error occurred while saving configuration.");
+    console.error("Mutation error:", error);
+  };
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setErrorMessage('')
-    }, 3000)
+      setErrorMessage("");
+    }, 3000);
 
-    return () => clearTimeout(timeoutId)
-  }, [errorMessage, setErrorMessage])
+    return () => clearTimeout(timeoutId);
+  }, [errorMessage, setErrorMessage]);
 
   return (
     <Box container className={classes.container}>
@@ -95,14 +97,14 @@ function Email(props) {
           </Typography>
         </Box>
         <Box ml={20} mt={1}>
-          <label>{enableEmail ? t('Disable') : t('Enable')}</label>
+          <label>{enableEmail ? t("Disable") : t("Enable")}</label>
           <Switch
             defaultChecked={enableEmail}
             value={enableEmail}
-            onChange={e => setEnabaleEmail(e.target.checked)}
+            onChange={(e) => setEnabaleEmail(e.target.checked)}
             id="input-available"
             name="input-available"
-            style={{ color: 'black' }}
+            style={{ color: "black" }}
           />
         </Box>
       </Box>
@@ -114,17 +116,17 @@ function Email(props) {
             <Grid item xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
-                  {t('Email')}
+                  {t("Email")}
                 </Typography>
                 <Input
                   style={{ marginTop: -1 }}
                   id="input-email"
                   name="input-email"
-                  placeholder={t('PHMail')}
+                  placeholder={t("PHMail")}
                   type="text"
                   defaultValue={email}
-                  onBlur={event =>
-                    onBlur(emailErrorSetter, 'email', event.target.value)
+                  onBlur={(event) =>
+                    onBlur(emailErrorSetter, "email", event.target.value)
                   }
                   disableUnderline
                   className={[
@@ -133,7 +135,7 @@ function Email(props) {
                       ? globalClasses.inputError
                       : emailError === true
                       ? globalClasses.inputSuccess
-                      : ''
+                      : "",
                   ]}
                 />
               </Box>
@@ -141,19 +143,19 @@ function Email(props) {
             <Grid item xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
-                  {t('EmailName')}
+                  {t("EmailName")}
                 </Typography>
                 <Input
                   style={{ marginTop: -1 }}
                   id="input-emailName"
                   name="input-emailName"
-                  placeholder={t('PHEnatega')}
+                  placeholder={t("PHEnatega")}
                   type="text"
                   defaultValue={emailName}
-                  onBlur={event =>
+                  onBlur={(event) =>
                     onBlur(
                       emailNameErrorSetter,
-                      'emailName',
+                      "emailName",
                       event.target.value
                     )
                   }
@@ -164,7 +166,7 @@ function Email(props) {
                       ? globalClasses.inputError
                       : emailNameError === true
                       ? globalClasses.inputSuccess
-                      : ''
+                      : "",
                   ]}
                 />
               </Box>
@@ -172,17 +174,17 @@ function Email(props) {
             <Grid item xs={12}>
               <Box>
                 <Typography className={classes.labelText}>
-                  {t('Password')}
+                  {t("Password")}
                 </Typography>
                 <Input
                   style={{ marginTop: -1 }}
                   id="input-password"
                   name="input-password"
-                  placeholder={t('PHFood')}
-                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t("PHFood")}
+                  type={showPassword ? "text" : "password"}
                   defaultValue={password}
-                  onBlur={event =>
-                    onBlur(passwordErrorSetter, 'password', event.target.value)
+                  onBlur={(event) =>
+                    onBlur(passwordErrorSetter, "password", event.target.value)
                   }
                   disableUnderline
                   className={[
@@ -191,7 +193,7 @@ function Email(props) {
                       ? globalClasses.inputError
                       : passwordError === true
                       ? globalClasses.inputSuccess
-                      : ''
+                      : "",
                   ]}
                   endAdornment={
                     <InputAdornment position="end">
@@ -214,28 +216,29 @@ function Email(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
-                        email: formRef.current['input-email'].value,
-                        emailName: formRef.current['input-emailName'].value,
-                        password: formRef.current['input-password'].value,
-                        enableEmail: enableEmail
-                      }
+                        email: formRef.current["input-email"].value,
+                        emailName: formRef.current["input-emailName"].value,
+                        password: formRef.current["input-password"].value,
+                        enableEmail: enableEmail,
+                      },
                     },
-                    onCompleted: data => {
-                      handleSuccess('Configuration saved successfully!')
+                    onCompleted: (data) => {
+                      handleSuccess("Configuration saved successfully!");
                     },
-                    onError: error => {
-                      handleError(error)
-                    }
-                  })
+                    onError: (error) => {
+                      handleError(error);
+                    },
+                  });
                 }
-              }}>
-              {t('Save')}
+              }}
+            >
+              {t("Save")}
             </Button>
           </Box>
           <Box mt={2}>
@@ -243,7 +246,8 @@ function Email(props) {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {successMessage}
               </Alert>
             )}
@@ -251,7 +255,8 @@ function Email(props) {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {errorMessage}
               </Alert>
             )}
@@ -259,6 +264,6 @@ function Email(props) {
         </form>
       </Box>
     </Box>
-  )
+  );
 }
-export default withTranslation()(Email)
+export default withTranslation()(Email);

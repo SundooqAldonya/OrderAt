@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import useStyles from '../styles'
-import { useTranslation } from 'react-i18next'
-import useGlobalStyles from '../../utils/globalStyles'
+import React, { useEffect, useState } from "react";
+import useStyles from "../styles";
+import { useTranslation } from "react-i18next";
+import useGlobalStyles from "../../utils/globalStyles";
 import {
   Alert,
   Box,
@@ -12,92 +12,92 @@ import {
   Checkbox,
   FormControlLabel,
   Autocomplete,
-  ListItemText
-} from '@mui/material'
-import { gql, useLazyQuery, useMutation } from '@apollo/client'
+  ListItemText,
+} from "@mui/material";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
   createPrepaidDeliveryPackage,
   getPrepaidDeliveryPackages,
   searchRestaurants,
-  updatePrepaidDeliveryPackage
-} from '../../apollo'
-import { debounce } from 'lodash'
-import { useMemo } from 'react'
-import moment from 'moment'
+  updatePrepaidDeliveryPackage,
+} from "../../apollo";
+import { debounce } from "lodash";
+import { useMemo } from "react";
+import moment from "moment";
 
 const PrepaidPackageForm = ({ onClose, item }) => {
-  const { t } = useTranslation()
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const [restaurantOptions, setRestaurantOptions] = useState([])
+  const { t } = useTranslation();
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const [restaurantOptions, setRestaurantOptions] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(
-    item?.business || ''
-  )
+    item?.business || ""
+  );
   const [totalDeliveries, setTotalDeliveries] = useState(
-    item?.totalDeliveries || ''
-  )
-  const [price, setPrice] = useState(item?.price || '')
+    item?.totalDeliveries || ""
+  );
+  const [price, setPrice] = useState(item?.price || "");
   const [maxDeliveryAmount, setMaxDeliveryAmount] = useState(
-    item?.maxDeliveryAmount || ''
-  )
+    item?.maxDeliveryAmount || ""
+  );
   const [expiresAt, setExpiresAt] = useState(
     item?.expiresAt
-      ? moment(Number(item.expiresAt)).format('YYYY-MM-DDTHH:mm')
-      : ''
-  )
-  const [isActive, setIsActive] = useState(item?.isActive || false)
+      ? moment(Number(item.expiresAt)).format("YYYY-MM-DDTHH:mm")
+      : ""
+  );
+  const [isActive, setIsActive] = useState(item?.isActive || false);
 
-  console.log({ item })
-  console.log({ expiresAt })
+  console.log({ item });
+  console.log({ expiresAt });
 
-  const [success, setSuccess] = useState(false)
-  const [mainError, setMainError] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [mainError, setMainError] = useState(false);
 
   const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
     searchRestaurants,
     {
-      fetchPolicy: 'no-cache',
-      onCompleted: data => {
-        console.log({ data })
-        setRestaurantOptions(data?.searchRestaurants || [])
-      }
+      fetchPolicy: "no-cache",
+      onCompleted: (data) => {
+        console.log({ data });
+        setRestaurantOptions(data?.searchRestaurants || []);
+      },
     }
-  )
+  );
 
   const [mutateCreate] = useMutation(createPrepaidDeliveryPackage, {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }],
     onCompleted: () => {
-      setSuccess('Created a package successfully!')
+      setSuccess("Created a package successfully!");
       if (onClose) {
         setTimeout(() => {
-          onClose()
-        }, 2000)
+          onClose();
+        }, 2000);
       }
     },
-    onError: err => {
-      setMainError(err.message)
-    }
-  })
+    onError: (err) => {
+      setMainError(err.message);
+    },
+  });
   const [mutateUpdate] = useMutation(updatePrepaidDeliveryPackage, {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }],
     onCompleted: () => {
-      setSuccess('Updated a package successfully!')
+      setSuccess("Updated a package successfully!");
       if (onClose) {
         setTimeout(() => {
-          onClose()
-        }, 2000)
+          onClose();
+        }, 2000);
       }
     },
-    onError: err => {
-      setMainError(err.message)
-    }
-  })
+    onError: (err) => {
+      setMainError(err.message);
+    },
+  });
 
-  const handleSubmit = e => {
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!selectedRestaurant) {
-      setMainError('Please select a restaurant.')
-      return
+      setMainError("Please select a restaurant.");
+      return;
     }
     if (item) {
       // updating an existing package
@@ -110,10 +110,10 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             price: parseFloat(price),
             maxDeliveryAmount: parseFloat(maxDeliveryAmount),
             isActive,
-            expiresAt: expiresAt || null
-          }
-        }
-      })
+            expiresAt: expiresAt || null,
+          },
+        },
+      });
     } else {
       // creating a new package
       mutateCreate({
@@ -124,34 +124,34 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             price: parseFloat(price),
             maxDeliveryAmount: parseFloat(maxDeliveryAmount),
             isActive,
-            expiresAt: expiresAt || null
-          }
-        }
-      })
+            expiresAt: expiresAt || null,
+          },
+        },
+      });
     }
-    setSelectedRestaurant('')
-    setTotalDeliveries('')
-    setPrice('')
-    setExpiresAt('')
-    setIsActive(true)
-  }
+    setSelectedRestaurant("");
+    setTotalDeliveries("");
+    setPrice("");
+    setExpiresAt("");
+    setIsActive(true);
+  };
 
   const debouncedSearchRestaurants = useMemo(
     () =>
-      debounce(value => {
+      debounce((value) => {
         if (value.trim()) {
-          fetchRestaurants({ variables: { search: value } })
+          fetchRestaurants({ variables: { search: value } });
         }
       }, 300),
     [fetchRestaurants]
-  )
+  );
 
   return (
     <Box container className={[classes.container, classes.width60]}>
       <Box className={classes.flexRow}>
         <Box item className={classes.headingBlack}>
           <Typography variant="h6" className={classes.textWhite}>
-            {t('add_delivery_package')}
+            {t("add_delivery_package")}
           </Typography>
         </Box>
       </Box>
@@ -165,44 +165,44 @@ const PrepaidPackageForm = ({ onClose, item }) => {
               onChange={(e, newValue) => setSelectedRestaurant(newValue)} // ✅ update single item
               isOptionEqualToValue={(option, value) => option._id === value._id}
               onInputChange={(event, inputValue) => {
-                debouncedSearchRestaurants(inputValue)
+                debouncedSearchRestaurants(inputValue);
               }}
-              getOptionLabel={option => option?.name || ''}
-              renderInput={params => (
+              getOptionLabel={(option) => option?.name || ""}
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
                   label="Select Business"
                   className={globalClasses.input}
                   sx={{
-                    '& .MuiInputBase-input': {
-                      color: 'black',
-                      '& fieldset': { border: 'none' },
-                      '&:hover fieldset': { border: 'none' },
-                      '&.Mui-focused fieldset': { border: 'none' }
-                    }
+                    "& .MuiInputBase-input": {
+                      color: "black",
+                      "& fieldset": { border: "none" },
+                      "&:hover fieldset": { border: "none" },
+                      "&.Mui-focused fieldset": { border: "none" },
+                    },
                   }}
                 />
               )}
               sx={{
                 width: 300,
-                '& .MuiAutocomplete-inputRoot': {
-                  paddingRight: '8px',
-                  alignItems: 'center'
+                "& .MuiAutocomplete-inputRoot": {
+                  paddingRight: "8px",
+                  alignItems: "center",
                 },
-                '& .MuiOutlinedInput-root': {
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: 'none'
-                  }
-                }
+                "& .MuiOutlinedInput-root": {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                },
               }}
               slotProps={{
                 paper: {
                   sx: {
-                    color: 'black',
-                    backgroundColor: 'white'
-                  }
-                }
+                    color: "black",
+                    backgroundColor: "white",
+                  },
+                },
               }}
             />
           </Box>
@@ -212,7 +212,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             </Typography>
             <Input
               value={totalDeliveries}
-              onChange={e => setTotalDeliveries(e.target.value)}
+              onChange={(e) => setTotalDeliveries(e.target.value)}
               placeholder="100"
               type="number"
               disableUnderline
@@ -223,7 +223,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             <Typography className={classes.labelText}>Package Price</Typography>
             <Input
               value={price}
-              onChange={e => setPrice(e.target.value)}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="1500"
               type="number"
               disableUnderline
@@ -236,7 +236,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             </Typography>
             <Input
               value={maxDeliveryAmount}
-              onChange={e => setMaxDeliveryAmount(e.target.value)}
+              onChange={(e) => setMaxDeliveryAmount(e.target.value)}
               placeholder="25"
               type="number"
               disableUnderline
@@ -248,13 +248,13 @@ const PrepaidPackageForm = ({ onClose, item }) => {
             <TextField
               type="datetime-local"
               value={expiresAt}
-              onChange={e => setExpiresAt(e.target.value)}
+              onChange={(e) => setExpiresAt(e.target.value)}
               fullWidth
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 sx: {
-                  color: 'black'
-                }
+                  color: "black",
+                },
               }}
             />
           </Box>
@@ -263,7 +263,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
               control={
                 <Checkbox
                   checked={isActive}
-                  onChange={e => setIsActive(e.target.checked)}
+                  onChange={(e) => setIsActive(e.target.checked)}
                   color="primary"
                 />
               }
@@ -272,7 +272,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
           </Box>
 
           <Button className={globalClasses.button} type="submit">
-            {t('Save')}
+            {t("Save")}
           </Button>
 
           <Box mt={2}>
@@ -280,7 +280,8 @@ const PrepaidPackageForm = ({ onClose, item }) => {
               <Alert
                 className={globalClasses.alertSuccess}
                 variant="filled"
-                severity="success">
+                severity="success"
+              >
                 {success}
               </Alert>
             )}
@@ -288,7 +289,8 @@ const PrepaidPackageForm = ({ onClose, item }) => {
               <Alert
                 className={globalClasses.alertError}
                 variant="filled"
-                severity="error">
+                severity="error"
+              >
                 {mainError}
               </Alert>
             )}
@@ -296,7 +298,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
         </form>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default PrepaidPackageForm
+export default PrepaidPackageForm;

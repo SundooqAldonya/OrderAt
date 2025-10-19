@@ -1,9 +1,13 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { useMutation, useQuery, gql } from '@apollo/client'
-import { withTranslation } from 'react-i18next'
-import { validateFunc } from '../../constraints/constraints'
-import { updateOrderStatus, getConfiguration, getCityAreas } from '../../apollo'
-import Loader from 'react-loader-spinner'
+import React, { Fragment, useEffect, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { withTranslation } from "react-i18next";
+import { validateFunc } from "../../constraints/constraints";
+import {
+  updateOrderStatus,
+  getConfiguration,
+  getCityAreas,
+} from "../../apollo";
+// import Loader from "react-loader-spinner";
 import {
   Box,
   Divider,
@@ -12,89 +16,91 @@ import {
   Alert,
   Input,
   Button,
-  useTheme
-} from '@mui/material'
-import useStyles from './styles'
-import useGlobalStyles from '../../utils/globalStyles'
-import useAcceptOrder from '../../context/useAcceptOrder'
+  useTheme,
+} from "@mui/material";
+import useStyles from "./styles";
+import useGlobalStyles from "../../utils/globalStyles";
+import useAcceptOrder from "../../context/useAcceptOrder";
+import { gql } from "@apollo/client";
+import CustomLoader from "../Loader/CustomLoader";
 
 // constants
 const UPDATE_STATUS = gql`
   ${updateOrderStatus}
-`
+`;
 
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
-`
+`;
 
 function Order({ order, t, modal, toggleModal }) {
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
-  const theme = useTheme()
-  const [reason, reasonSetter] = useState('')
-  const [reasonError, reasonErrorSetter] = useState(null)
-  const [error, errorSetter] = useState('')
-  const [success, successSetter] = useState('')
-  const { acceptOrder } = useAcceptOrder()
-  const [selectedTime, setSelectedTime] = useState(30)
-  const restaurantId = localStorage.getItem('restaurantId')
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
+  const theme = useTheme();
+  const [reason, reasonSetter] = useState("");
+  const [reasonError, reasonErrorSetter] = useState(null);
+  const [error, errorSetter] = useState("");
+  const [success, successSetter] = useState("");
+  const { acceptOrder } = useAcceptOrder();
+  const [selectedTime, setSelectedTime] = useState(30);
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const onCompleted = ({ updateOrderStatus }) => {
-    console.log({ updateOrderStatus })
+    console.log({ updateOrderStatus });
     if (updateOrderStatus) {
-      successSetter(t('OrderStatusUpdated'))
-      if (updateOrderStatus.orderStatus === 'ACCEPTED') {
+      successSetter(t("OrderStatusUpdated"));
+      if (updateOrderStatus.orderStatus === "ACCEPTED") {
         acceptOrder(
           updateOrderStatus._id,
           restaurantId,
           selectedTime.toString()
-        )
+        );
       }
     }
-    setTimeout(onDismiss, 5000)
-  }
+    setTimeout(onDismiss, 5000);
+  };
 
-  const onError = error => {
-    errorSetter(error.message)
-    setTimeout(onDismiss, 5000)
-  }
+  const onError = (error) => {
+    errorSetter(error.message);
+    setTimeout(onDismiss, 5000);
+  };
 
-  const { data } = useQuery(GET_CONFIGURATION)
+  const { data } = useQuery(GET_CONFIGURATION);
 
   const [mutate, { loading }] = useMutation(UPDATE_STATUS, {
     onError,
-    onCompleted
-  })
+    onCompleted,
+  });
 
   const validateReason = () => {
-    const reasonError = !validateFunc({ reason }, 'reason')
-    reasonErrorSetter(reasonError)
-    return reasonError
-  }
+    const reasonError = !validateFunc({ reason }, "reason");
+    reasonErrorSetter(reasonError);
+    return reasonError;
+  };
 
   const onDismiss = () => {
-    errorSetter('')
-    successSetter('')
-  }
+    errorSetter("");
+    successSetter("");
+  };
 
-  if (!order) return null
+  if (!order) return null;
   return (
     <Box className={[classes.container, classes.pb]}>
       <Box className={classes.flexRow}>
         <Box item className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
-            {t('Order')} # {order.orderId} - {t(order.orderStatus)}
+            {t("Order")} # {order.orderId} - {t(order.orderStatus)}
           </Typography>
         </Box>
       </Box>
       <Box mt={3} className={[classes.container]}>
         <Typography className={classes.itemHeader} variant="h6">
-          {t('delivery_details')}
+          {t("delivery_details")}
         </Typography>
         <Box container className={classes.innerContainer}>
           <Grid container mb={1} mt={2} spacing={1}>
             <Grid className={classes.textBlack} item lg={10}>
-              {t('name')}:
+              {t("name")}:
             </Grid>
             <Grid className={[classes.textBlack]} item lg={2}>
               {order?.user?.name}
@@ -103,7 +109,7 @@ function Order({ order, t, modal, toggleModal }) {
           <Divider />
           <Grid container mb={1} mt={2} spacing={2}>
             <Grid className={classes.textBlack} item lg={9}>
-              {t('phone')}:
+              {t("phone")}:
             </Grid>
             <Grid className={[classes.textBlack]} item lg={3}>
               {order?.user?.phone}
@@ -112,20 +118,21 @@ function Order({ order, t, modal, toggleModal }) {
           <Divider />
           <Grid container mb={1} mt={2} spacing={1}>
             <Grid className={classes.textBlack} item lg={12}>
-              {t('delivery_address')}:
+              {t("delivery_address")}:
             </Grid>
             <Grid className={[classes.textBlack]} item lg={12}>
-              {order?.deliveryAddress?.deliveryAddress} -{' '}
+              {order?.deliveryAddress?.deliveryAddress} -{" "}
               <span
                 style={{
-                  color: 'red'
-                }}>{`(${order?.deliveryAddress?.label})`}</span>
+                  color: "red",
+                }}
+              >{`(${order?.deliveryAddress?.label})`}</span>
             </Grid>
           </Grid>
           <Divider />
           <Grid container mb={1} mt={2} spacing={1}>
             <Grid className={classes.textBlack} item lg={12}>
-              {t('delivery_details')}:
+              {t("delivery_details")}:
             </Grid>
             <Grid className={[classes.textBlack]} item lg={12}>
               {order?.deliveryAddress?.details}
@@ -138,12 +145,12 @@ function Order({ order, t, modal, toggleModal }) {
       {order?.rider ? (
         <Box className={[classes.container]}>
           <Typography className={classes.itemHeader} variant="h6">
-            {t('rider_information')}
+            {t("rider_information")}
           </Typography>
           <Box container className={classes.innerContainer}>
             <Grid container mb={1} mt={2} spacing={2}>
               <Grid className={classes.textBlack} item lg={9}>
-                {t('name')}:
+                {t("name")}:
               </Grid>
               <Grid className={[classes.textBlack]} item lg={3}>
                 {order?.rider?.name}
@@ -152,7 +159,7 @@ function Order({ order, t, modal, toggleModal }) {
             <Divider />
             <Grid container mb={1} mt={2} spacing={2}>
               <Grid className={classes.textBlack} item lg={9}>
-                {t('phone')}:
+                {t("phone")}:
               </Grid>
               <Grid className={[classes.textBlack]} item lg={3}>
                 {order?.rider?.phone}
@@ -164,29 +171,32 @@ function Order({ order, t, modal, toggleModal }) {
       ) : null}
       <Box className={[classes.container]}>
         <Typography className={classes.itemHeader} variant="h6">
-          {t('items')}
+          {t("items")}
         </Typography>
         <Box container className={classes.innerContainer}>
           {order?.items.length ? (
-            order?.items.map(item => (
+            order?.items.map((item) => (
               <Fragment key={item._id}>
                 <Grid
                   container
                   mb={1}
                   mt={1}
-                  sx={{ justifyContent: 'space-between' }}>
+                  sx={{ justifyContent: "space-between" }}
+                >
                   <Grid
                     item
                     lg={6}
                     sx={{
-                      display: 'flex',
-                      wrap: 'no-wrap',
-                      gap: 1
-                    }}>
+                      display: "flex",
+                      wrap: "no-wrap",
+                      gap: 1,
+                    }}
+                  >
                     <Box>
                       <Typography
                         className={[classes.quantity, classes.textBlack]}
-                        variant="p">
+                        variant="p"
+                      >
                         {item.quantity}
                       </Typography>
                     </Box>
@@ -194,58 +204,60 @@ function Order({ order, t, modal, toggleModal }) {
                       <Typography className={classes.textBlack}>{`${
                         item.title
                       }${
-                        item.variation.title ? `(${item.variation.title})` : ''
+                        item.variation.title ? `(${item.variation.title})` : ""
                       }`}</Typography>
                     </Box>
                   </Grid>
                   <Grid
-                    sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                    sx={{ display: "flex", justifyContent: "flex-end" }}
                     item
                     sm={6}
-                    lg={6}>
-                    <Typography color={'#000'}>
-                      {data && data.configuration.currencySymbol}{' '}
+                    lg={6}
+                  >
+                    <Typography color={"#000"}>
+                      {data && data.configuration.currencySymbol}{" "}
                       {(item.variation.price * item.quantity).toFixed(2)}
                     </Typography>
                   </Grid>
                 </Grid>
                 {item.addons?.length
-                  ? item.addons.map(addon => {
+                  ? item.addons.map((addon) => {
                       return (
                         <Fragment key={addon._id}>
                           <Grid item sx={{ paddingInline: 7 }}>
                             {addon.title}
                           </Grid>
                           {addon?.options.length
-                            ? addon.options.map(option => {
+                            ? addon.options.map((option) => {
                                 return (
                                   <Box
                                     key={option._id}
                                     sx={{
                                       marginInline: 10,
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'space-between'
-                                    }}>
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
                                     <Box>
-                                      <Typography sx={{ color: '#000' }}>
+                                      <Typography sx={{ color: "#000" }}>
                                         {option.title}
                                       </Typography>
                                     </Box>
                                     <Box>
-                                      <Typography sx={{ color: '#000' }}>
+                                      <Typography sx={{ color: "#000" }}>
                                         {data &&
                                           data.configuration
-                                            .currencySymbol}{' '}
+                                            .currencySymbol}{" "}
                                         {option.price}
                                       </Typography>
                                     </Box>
                                   </Box>
-                                )
+                                );
                               })
                             : null}
                         </Fragment>
-                      )
+                      );
                     })
                   : null}
                 {item.specialInstructions.length ? (
@@ -253,9 +265,10 @@ function Order({ order, t, modal, toggleModal }) {
                     <Grid item lg={12} mt={1}>
                       <Typography
                         variant="text"
-                        style={{ fontWeight: 'bold' }}
-                        className={classes.textBlack}>
-                        {t('SpecialInstructions')}:
+                        style={{ fontWeight: "bold" }}
+                        className={classes.textBlack}
+                      >
+                        {t("SpecialInstructions")}:
                       </Typography>
                     </Grid>
                     <Grid item lg={12} mt={1}>
@@ -269,27 +282,28 @@ function Order({ order, t, modal, toggleModal }) {
               </Fragment>
             ))
           ) : (
-            <Typography>{t('no_items')}</Typography>
+            <Typography>{t("no_items")}</Typography>
           )}
         </Box>
       </Box>
 
       <Box mt={3} className={[classes.container]}>
         <Typography className={classes.itemHeader} variant="h6">
-          {t('Charges')}
+          {t("Charges")}
         </Typography>
         <Box className={classes.innerContainer}>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
             mb={1.5}
-            mt={1.5}>
-            <Box className={classes.textBlack}>{t('Subtotal')}</Box>
+            mt={1.5}
+          >
+            <Box className={classes.textBlack}>{t("Subtotal")}</Box>
             <Box className={[classes.textBlack]}>
-              {data && data.configuration.currencySymbol}{' '}
+              {data && data.configuration.currencySymbol}{" "}
               {(
                 order.orderAmount -
                 order.deliveryCharges -
@@ -301,34 +315,36 @@ function Order({ order, t, modal, toggleModal }) {
           <Divider />
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
             mb={1.5}
-            mt={1.5}>
+            mt={1.5}
+          >
             <Box className={classes.textBlack} item lg={10}>
-              {t('DeliveryFee')}
+              {t("DeliveryFee")}
             </Box>
             <Box className={[classes.textBlack]} item lg={2}>
-              {data && data.configuration.currencySymbol}{' '}
+              {data && data.configuration.currencySymbol}{" "}
               {order && order.deliveryCharges.toFixed(2)}
             </Box>
           </Box>
           <Divider />
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
             mb={1.5}
-            mt={1.5}>
+            mt={1.5}
+          >
             <Box className={classes.textBlack} item lg={10}>
-              {t('TaxCharges')}
+              {t("TaxCharges")}
             </Box>
             <Box className={[classes.textBlack]} item lg={2}>
-              {data && data.configuration.currencySymbol}{' '}
+              {data && data.configuration.currencySymbol}{" "}
               {order && order.taxationAmount.toFixed(2)}
             </Box>
           </Box>
@@ -346,39 +362,43 @@ function Order({ order, t, modal, toggleModal }) {
           <Divider /> */}
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
             mb={1.5}
-            mt={1.5}>
+            mt={1.5}
+          >
             <Box
               className={classes.textBlack}
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: "bold" }}
               item
-              lg={10}>
-              {t('Total')}
+              lg={10}
+            >
+              {t("Total")}
             </Box>
             <Box
               className={[classes.textBlack]}
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: "bold" }}
               item
-              lg={2}>
-              {data && data.configuration.currencySymbol}{' '}
+              lg={2}
+            >
+              {data && data.configuration.currencySymbol}{" "}
               {order && order.orderAmount.toFixed(2)}
             </Box>
           </Box>
           <Divider />
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
             mb={1.5}
-            mt={1.5}>
+            mt={1.5}
+          >
             <Box className={classes.textBlack} item lg={10}>
-              {t('PaymentMethod')}
+              {t("PaymentMethod")}
             </Box>
             <Box className={[classes.textBlack]} item lg={2}>
               {order?.paymentMethod}
@@ -419,84 +439,82 @@ function Order({ order, t, modal, toggleModal }) {
       <Input
         name="reason"
         id="input-reason"
-        placeholder={t('PHReasonIfRejected')}
+        placeholder={t("PHReasonIfRejected")}
         type="text"
         disableUnderline
         value={(order && order.reason) || reason}
-        onChange={event => {
-          reasonSetter(event.target.value)
+        onChange={(event) => {
+          reasonSetter(event.target.value);
         }}
         className={[globalClasses.input, classes.inputLength]}
       />
-      {order.orderStatus !== 'CANCELLED' && order.orderStatus !== 'DELIVERED' && (
-        <>
-          {loading && (
-            <Loader
-              className="text-center"
-              type="TailSpin"
-              color={theme.palette.error.lightest}
-              height={40}
-              width={40}
-              visible={loading}
-            />
-          )}
-          <Box className={classes.btnBox}>
-            <Button
-              className={globalClasses.button}
-              disabled={
-                order.orderStatus !== 'CANCELLED' &&
-                order.orderStatus !== 'PENDING'
-              }
-              onClick={() => {
-                mutate({
-                  variables: {
-                    id: order._id,
-                    status: 'ACCEPTED',
-                    reason: ''
-                  }
-                })
-              }}>
-              {order && order.status === true ? t('Accepted') : t('Accept')}
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              className={globalClasses.button}
-              disabled={order.orderStatus === 'CANCELLED'}
-              onClick={() => {
-                if (validateReason()) {
+      {order.orderStatus !== "CANCELLED" &&
+        order.orderStatus !== "DELIVERED" && (
+          <>
+            {loading && <CustomLoader />}
+            <Box className={classes.btnBox}>
+              <Button
+                className={globalClasses.button}
+                disabled={
+                  order.orderStatus !== "CANCELLED" &&
+                  order.orderStatus !== "PENDING"
+                }
+                onClick={() => {
                   mutate({
                     variables: {
                       id: order._id,
-                      status: 'CANCELLED',
-                      reason: order.reason
-                    }
-                  })
-                }
-              }}>
-              {order.orderStatus === 'CANCELLED' ? t('Rejected') : t('Reject')}
-            </Button>
-            {modal ? (
+                      status: "ACCEPTED",
+                      reason: "",
+                    },
+                  });
+                }}
+              >
+                {order && order.status === true ? t("Accepted") : t("Accept")}
+              </Button>
               <Button
                 variant="outlined"
                 color="error"
                 className={globalClasses.button}
+                disabled={order.orderStatus === "CANCELLED"}
                 onClick={() => {
-                  toggleModal()
-                }}>
-                {t('Cancel')}
+                  if (validateReason()) {
+                    mutate({
+                      variables: {
+                        id: order._id,
+                        status: "CANCELLED",
+                        reason: order.reason,
+                      },
+                    });
+                  }
+                }}
+              >
+                {order.orderStatus === "CANCELLED"
+                  ? t("Rejected")
+                  : t("Reject")}
               </Button>
-            ) : null}
-          </Box>
-          {reasonError ? null : null}
-        </>
-      )}
+              {modal ? (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  className={globalClasses.button}
+                  onClick={() => {
+                    toggleModal();
+                  }}
+                >
+                  {t("Cancel")}
+                </Button>
+              ) : null}
+            </Box>
+            {reasonError ? null : null}
+          </>
+        )}
       <Box mt={2}>
         {success && (
           <Alert
             className={globalClasses.alertSuccess}
             variant="filled"
-            severity="success">
+            severity="success"
+          >
             {success}
           </Alert>
         )}
@@ -504,12 +522,13 @@ function Order({ order, t, modal, toggleModal }) {
           <Alert
             className={globalClasses.alertError}
             variant="filled"
-            severity="error">
+            severity="error"
+          >
             {error}
           </Alert>
         )}
       </Box>
     </Box>
-  )
+  );
 }
-export default withTranslation()(Order)
+export default withTranslation()(Order);

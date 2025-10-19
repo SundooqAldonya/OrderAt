@@ -1,251 +1,253 @@
-import React, { useEffect, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { transformToNewline } from '../../utils/stringManipulations'
-import DataTable from 'react-data-table-component'
-import orderBy from 'lodash/orderBy'
-import CustomLoader from '../Loader/CustomLoader'
-import { subscribePlaceOrder, orderCount } from '../../apollo'
-import { useQuery, gql } from '@apollo/client'
-import SearchBar from '../TableHeader/SearchBar'
-import { customStyles } from '../../utils/tableCustomStyles'
-import TableHeader from '../TableHeader'
+import React, { useEffect, useState } from "react";
+import { withTranslation } from "react-i18next";
+// import { transformToNewline } from '../../utils/stringManipulations'
+import DataTable from "react-data-table-component";
+import orderBy from "lodash/orderBy";
+import CustomLoader from "../Loader/CustomLoader";
+import { subscribePlaceOrder, orderCount } from "../../apollo";
+import { useQuery } from "@apollo/client/react";
+import SearchBar from "../TableHeader/SearchBar";
+import { customStyles } from "../../utils/tableCustomStyles";
+import TableHeader from "../TableHeader";
 import {
   IconButton,
   ListItemIcon,
   Menu,
   Paper,
   Typography,
-  useTheme
-} from '@mui/material'
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import { Box } from '@mui/system'
-import AddOrder from './AddOrder'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
+  useTheme,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+// import Grid from '@mui/material/Grid'
+// import TextField from '@mui/material/TextField'
+// import FormControl from '@mui/material/FormControl'
+// import InputLabel from '@mui/material/InputLabel'
+// import Select from '@mui/material/Select'
+import MenuItem from "@mui/material/MenuItem";
+// import { Box } from '@mui/system'
+// import AddOrder from './AddOrder'
+import EditIcon from "@mui/icons-material/Edit";
+// import DeleteIcon from '@mui/icons-material/Delete'
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { gql } from "@apollo/client";
 
 const ORDERCOUNT = gql`
   ${orderCount}
-`
+`;
 const ORDER_PLACED = gql`
   ${subscribePlaceOrder}
-`
+`;
 
-const OrdersDataAdmin = props => {
-  const theme = useTheme()
+const OrdersDataAdmin = (props) => {
+  const theme = useTheme();
   const {
     t,
     refetchOrders,
     isAdminPage,
     handleModalVisible,
     updateSelected,
-    handleEditModal
-  } = props
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false) // Track visibility of the form
+    handleEditModal,
+  } = props;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOrderFormVisible, setIsOrderFormVisible] = useState(false); // Track visibility of the form
   const [orderDetails, setOrderDetails] = useState({
-    items: '',
+    items: "",
     quantity: 1,
-    paymentMethod: '',
-    address: ''
-  })
+    paymentMethod: "",
+    address: "",
+  });
 
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
-  const handleOpenOrderForm = () => setIsOrderFormVisible(true)
-  const handleCloseOrderForm = () => setIsOrderFormVisible(false)
+  const handleOpenOrderForm = () => setIsOrderFormVisible(true);
+  const handleCloseOrderForm = () => setIsOrderFormVisible(false);
 
-  const handleOrderChange = e => {
-    const { name, value } = e.target
-    setOrderDetails(prevState => ({
+  const handleOrderChange = (e) => {
+    const { name, value } = e.target;
+    setOrderDetails((prevState) => ({
       ...prevState,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmitOrder = () => {
-    console.log('Order submitted:', orderDetails)
+    console.log("Order submitted:", orderDetails);
     // Implement the order submission logic here
-    setIsOrderFormVisible(false) // Hide the form and show the table again
-  }
+    setIsOrderFormVisible(false); // Hide the form and show the table again
+  };
 
-  const getItems = items => {
+  const getItems = (items) => {
     return items
       .map(
-        item =>
+        (item) =>
           `${item.quantity}x${item.title}${
-            item.variation.title ? `(${item.variation.title})` : ''
+            item.variation.title ? `(${item.variation.title})` : ""
           }`
       )
-      .join('\n')
-  }
+      .join("\n");
+  };
 
-  const restaurantId = localStorage.getItem('restaurantId')
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const { data, loading: loadingQuery } = useQuery(ORDERCOUNT, {
-    variables: { restaurant: restaurantId }
-  })
+    variables: { restaurant: restaurantId },
+  });
 
   const propExists = (obj, path) => {
-    return path.split('.').reduce((obj, prop) => {
-      return obj && obj[prop] ? obj[prop] : ''
-    }, obj)
-  }
+    return path.split(".").reduce((obj, prop) => {
+      return obj && obj[prop] ? obj[prop] : "";
+    }, obj);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (field && isNaN(propExists(row, field))) {
-        return propExists(row, field).toLowerCase()
+        return propExists(row, field).toLowerCase();
       }
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
   const handlePerRowsChange = (perPage, page) => {
-    props.page(page)
-    props.rows(perPage)
-  }
+    props.page(page);
+    props.rows(perPage);
+  };
 
-  const handlePageChange = async page => {
-    props.page(page)
-  }
+  const handlePageChange = async (page) => {
+    props.page(page);
+  };
 
   const columns = [
     {
-      name: t('OrderID'),
+      name: t("OrderID"),
       sortable: true,
-      selector: 'orderId'
+      selector: "orderId",
     },
     {
-      name: t('business_name'),
-      cell: row => <>{row?.restaurant ? row?.restaurant?.name : 'N/A'}</>
+      name: t("business_name"),
+      cell: (row) => <>{row?.restaurant ? row?.restaurant?.name : "N/A"}</>,
     },
     {
-      name: t('name'),
-      cell: row => <>{row.user && row.user.name ? row.user.name : 'N/A'}</>
+      name: t("name"),
+      cell: (row) => <>{row.user && row.user.name ? row.user.name : "N/A"}</>,
     },
     {
-      name: t('phone'),
-      cell: row => <>{row.user && row.user.phone ? row.user.phone : 'N/A'}</>
+      name: t("phone"),
+      cell: (row) => <>{row.user && row.user.phone ? row.user.phone : "N/A"}</>,
     },
     {
-      name: t('Payment'),
-      selector: 'paymentMethod',
+      name: t("Payment"),
+      selector: "paymentMethod",
       sortable: true,
-      cell: row => <>{t(row.paymentMethod)}</>
+      cell: (row) => <>{t(row.paymentMethod)}</>,
     },
     {
-      name: t('Status'),
-      selector: 'orderStatus',
+      name: t("Status"),
+      selector: "orderStatus",
       sortable: true,
-      cell: row => (
+      cell: (row) => (
         <>
-          {t(row.orderStatus)}{' '}
+          {t(row.orderStatus)}{" "}
           {row.cancelledAt
-            ? new Date(row.cancelledAt).toLocaleString('en-GB', {
-                hour12: true
+            ? new Date(row.cancelledAt).toLocaleString("en-GB", {
+                hour12: true,
               })
             : null}
         </>
-      )
+      ),
     },
     {
-      name: t('Datetime'),
-      selector: 'createdAt',
+      name: t("Datetime"),
+      selector: "createdAt",
       sortable: true,
-      cell: row => (
-        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, '\n')}</>
-      )
+      cell: (row) => (
+        <>{new Date(row.createdAt).toLocaleString().replace(/ /g, "\n")}</>
+      ),
     },
     {
-      name: t('seen_by'),
-      cell: row => (
+      name: t("seen_by"),
+      cell: (row) => (
         <Button
           onClick={() => {
-            handleModalVisible(row)
-          }}>
-          <Typography>{t('seen_by')}</Typography>
+            handleModalVisible(row);
+          }}
+        >
+          <Typography>{t("seen_by")}</Typography>
         </Button>
-      )
+      ),
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal)}</>,
+    },
+  ];
 
   const conditionalRowStyles = [
     {
-      when: row =>
-        row.orderStatus !== 'DELIVERED' && row.orderStatus !== 'CANCELLED',
+      when: (row) =>
+        row.orderStatus !== "DELIVERED" && row.orderStatus !== "CANCELLED",
       style: {
-        backgroundColor: theme.palette.warning.lightest
-      }
-    }
-  ]
+        backgroundColor: theme.palette.warning.lightest,
+      },
+    },
+  ];
 
   useEffect(() => {
     props.subscribeToMore({
       document: ORDER_PLACED,
       variables: { id: restaurantId },
       updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
-        if (subscriptionData.data.subscribePlaceOrder.origin === 'new') {
+        if (!subscriptionData.data) return prev;
+        if (subscriptionData.data.subscribePlaceOrder.origin === "new") {
           return {
             ordersByRestId: [
               subscriptionData.data.subscribePlaceOrder.order,
-              ...prev.ordersByRestId
-            ]
-          }
+              ...prev.ordersByRestId,
+            ],
+          };
         } else {
           const orderIndex = prev.ordersByRestId.findIndex(
-            o => subscriptionData.data.subscribePlaceOrder.order._id === o._id
-          )
+            (o) => subscriptionData.data.subscribePlaceOrder.order._id === o._id
+          );
           prev.ordersByRestId[orderIndex] =
-            subscriptionData.data.subscribePlaceOrder.order
-          return { ordersByRestId: [...prev.ordersByRestId] }
+            subscriptionData.data.subscribePlaceOrder.order;
+          return { ordersByRestId: [...prev.ordersByRestId] };
         }
       },
-      onError: error => {
-        console.log('onError', error)
-      }
-    })
-  }, [])
+      onError: (error) => {
+        console.log("onError", error);
+      },
+    });
+  }, []);
 
   const regex =
-    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), 'g') : null
+    searchQuery.length > 2 ? new RegExp(searchQuery.toLowerCase(), "g") : null;
 
   const filtered =
     searchQuery.length < 3
       ? props && props.orders
       : props.orders &&
-        props.orders.filter(order => {
-          return order.orderId.toLowerCase().search(regex) > -1
-        })
+        props.orders.filter((order) => {
+          return order.orderId.toLowerCase().search(regex) > -1;
+        });
 
-  const toggleModal = item => {
-    updateSelected(item)
-    handleEditModal()
-  }
+  const toggleModal = (item) => {
+    updateSelected(item);
+    handleEditModal();
+  };
 
-  const ActionButtons = row => {
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
+  const ActionButtons = (row) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
 
     const handleClose = () => {
-      setAnchorEl(null)
-    }
+      setAnchorEl(null);
+    };
 
     return (
       <>
@@ -254,28 +256,31 @@ const OrdersDataAdmin = props => {
             aria-label="more"
             id="long-button"
             aria-haspopup="true"
-            onClick={handleClick}>
+            onClick={handleClick}
+          >
             <MoreVertIcon fontSize="small" />
           </IconButton>
           <Paper>
             <Menu
               id="long-menu"
               MenuListProps={{
-                'aria-labelledby': 'long-button'
+                "aria-labelledby": "long-button",
               }}
               anchorEl={anchorEl}
               open={open}
-              onClose={handleClose}>
+              onClose={handleClose}
+            >
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  toggleModal(row)
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleModal(row);
                 }}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
+                  <EditIcon fontSize="small" style={{ color: "green" }} />
                 </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
+                <Typography color="green">{t("Edit")}</Typography>
               </MenuItem>
               {/* <MenuItem
                 onClick={() => handleRemoveCity(row._id)}
@@ -289,8 +294,8 @@ const OrdersDataAdmin = props => {
           </Paper>
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -298,13 +303,14 @@ const OrdersDataAdmin = props => {
 
       {/* Data Table (Slides Up when Order Form is Visible) */}
       <div
-        className={`table-container ${isOrderFormVisible ? 'slide-up' : ''}`}
+        className={`table-container ${isOrderFormVisible ? "slide-up" : ""}`}
         style={{
-          transition: 'transform 0.3s ease-in-out',
-          marginTop: isOrderFormVisible ? '20px' : '0px' // Adds space above table when form is visible
-        }}>
+          transition: "transform 0.3s ease-in-out",
+          marginTop: isOrderFormVisible ? "20px" : "0px", // Adds space above table when form is visible
+        }}
+      >
         <DataTable
-          title={<TableHeader title={t('Orders')} />}
+          title={<TableHeader title={t("Orders")} />}
           columns={columns}
           data={filtered}
           onRowClicked={props.handleClick}
@@ -330,7 +336,7 @@ const OrdersDataAdmin = props => {
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default withTranslation()(OrdersDataAdmin)
+export default withTranslation()(OrdersDataAdmin);

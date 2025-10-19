@@ -1,62 +1,63 @@
 // TwilioConfiguration.jsx
 
-import React, { useRef, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import { useMutation, gql } from '@apollo/client'
-import { validateFunc } from '../../../constraints/constraints'
-import { saveTwilioConfiguration } from '../../../apollo'
-import useStyles from '../styles'
-import useGlobalStyles from '../../../utils/globalStyles'
-import { Box, Switch, Typography, Input, Button } from '@mui/material'
+import React, { useRef, useState } from "react";
+import { withTranslation } from "react-i18next";
+import { useMutation } from "@apollo/client/react";
+import { validateFunc } from "../../../constraints/constraints";
+import { saveTwilioConfiguration } from "../../../apollo";
+import useStyles from "../styles";
+import useGlobalStyles from "../../../utils/globalStyles";
+import { Box, Switch, Typography, Input, Button } from "@mui/material";
+import { gql } from "@apollo/client";
 
 const SAVE_TWILIO_CONFIGURATION = gql`
   ${saveTwilioConfiguration}
-`
+`;
 
 function TwilioConfiguration(props) {
-  const formRef = useRef()
-  const [twilioEnabled, setTwilioEnabled] = useState(!!props.twilioEnabled)
-  const [twilioAccountSid] = useState(props.twilioAccountSid || '')
-  const [twilioAuthToken] = useState(props.twilioAuthToken || '')
-  const [twilioPhoneNumber] = useState(props.twilioPhoneNumber || '')
+  const formRef = useRef();
+  const [twilioEnabled, setTwilioEnabled] = useState(!!props.twilioEnabled);
+  const [twilioAccountSid] = useState(props.twilioAccountSid || "");
+  const [twilioAuthToken] = useState(props.twilioAuthToken || "");
+  const [twilioPhoneNumber] = useState(props.twilioPhoneNumber || "");
 
-  const [accountSidError, setAccountSidError] = useState(null)
-  const [authTokenError, setAuthTokenError] = useState(null)
-  const [phoneNumberError, setPhoneNumberError] = useState(null)
+  const [accountSidError, setAccountSidError] = useState(null);
+  const [authTokenError, setAuthTokenError] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null);
 
-  const [mutate, { loading }] = useMutation(SAVE_TWILIO_CONFIGURATION)
+  const [mutate, { loading }] = useMutation(SAVE_TWILIO_CONFIGURATION);
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
 
   const validateInput = () => {
-    let accountSidResult = true
-    let authTokenResult = true
-    let phoneNumberResult = true
+    let accountSidResult = true;
+    let authTokenResult = true;
+    let phoneNumberResult = true;
 
     accountSidResult = !validateFunc(
-      { twilioAccountSid: formRef.current['input-accountSid'].value },
-      'twilioAccountSid'
-    )
+      { twilioAccountSid: formRef.current["input-accountSid"].value },
+      "twilioAccountSid"
+    );
     authTokenResult = !validateFunc(
-      { twilioAuthToken: formRef.current['input-authToken'].value },
-      'twilioAuthToken'
-    )
+      { twilioAuthToken: formRef.current["input-authToken"].value },
+      "twilioAuthToken"
+    );
     phoneNumberResult = !validateFunc(
-      { twilioPhoneNumber: formRef.current['input-phoneNumber'].value },
-      'twilioPhoneNumber'
-    )
+      { twilioPhoneNumber: formRef.current["input-phoneNumber"].value },
+      "twilioPhoneNumber"
+    );
 
-    setAccountSidError(accountSidResult)
-    setAuthTokenError(authTokenResult)
-    setPhoneNumberError(phoneNumberResult)
+    setAccountSidError(accountSidResult);
+    setAuthTokenError(authTokenResult);
+    setPhoneNumberError(phoneNumberResult);
 
-    return accountSidResult && authTokenResult && phoneNumberResult
-  }
+    return accountSidResult && authTokenResult && phoneNumberResult;
+  };
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
   return (
     <Box container className={classes.container}>
@@ -67,14 +68,14 @@ function TwilioConfiguration(props) {
           </Typography>
         </Box>
         <Box ml={20} mt={1}>
-          <label>{twilioEnabled ? 'Disable' : 'Enable'}</label>
+          <label>{twilioEnabled ? "Disable" : "Enable"}</label>
           <Switch
             defaultChecked={twilioEnabled}
             value={twilioEnabled}
-            onChange={e => setTwilioEnabled(e.target.checked)}
+            onChange={(e) => setTwilioEnabled(e.target.checked)}
             id="input-twilioEnabled"
             name="input-twilioEnabled"
-            style={{ color: 'black' }}
+            style={{ color: "black" }}
           />
         </Box>
       </Box>
@@ -93,10 +94,10 @@ function TwilioConfiguration(props) {
                 placeholder="Twilio Account SID"
                 defaultValue={twilioAccountSid}
                 type="password"
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setAccountSidError,
-                    'twilioAccountSid',
+                    "twilioAccountSid",
                     event.target.value
                   )
                 }
@@ -107,7 +108,7 @@ function TwilioConfiguration(props) {
                     ? globalClasses.inputError
                     : accountSidError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -122,10 +123,10 @@ function TwilioConfiguration(props) {
                 placeholder="Twilio Auth Token"
                 defaultValue={twilioAuthToken}
                 type="password"
-                onBlur={event =>
+                onBlur={(event) =>
                   onBlur(
                     setAuthTokenError,
-                    'twilioAuthToken',
+                    "twilioAuthToken",
                     event.target.value
                   )
                 }
@@ -136,7 +137,7 @@ function TwilioConfiguration(props) {
                     ? globalClasses.inputError
                     : authTokenError === true
                     ? globalClasses.inputSuccess
-                    : ''
+                    : "",
                 ]}
               />
             </Box>
@@ -152,10 +153,10 @@ function TwilioConfiguration(props) {
               placeholder="Twilio Phone Number"
               defaultValue={twilioPhoneNumber}
               type="password"
-              onBlur={event =>
+              onBlur={(event) =>
                 onBlur(
                   setPhoneNumberError,
-                  'twilioPhoneNumber',
+                  "twilioPhoneNumber",
                   event.target.value
                 )
               }
@@ -166,7 +167,7 @@ function TwilioConfiguration(props) {
                   ? globalClasses.inputError
                   : phoneNumberError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
@@ -174,31 +175,32 @@ function TwilioConfiguration(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={e => {
-                e.preventDefault()
+              onClick={(e) => {
+                e.preventDefault();
                 if (validateInput() && !loading) {
                   mutate({
                     variables: {
                       configurationInput: {
                         twilioAccountSid:
-                          formRef.current['input-accountSid'].value,
+                          formRef.current["input-accountSid"].value,
                         twilioAuthToken:
-                          formRef.current['input-authToken'].value,
+                          formRef.current["input-authToken"].value,
                         twilioPhoneNumber:
-                          formRef.current['input-phoneNumber'].value,
-                        twilioEnabled: twilioEnabled
-                      }
-                    }
-                  })
+                          formRef.current["input-phoneNumber"].value,
+                        twilioEnabled: twilioEnabled,
+                      },
+                    },
+                  });
                 }
-              }}>
+              }}
+            >
               SAVE
             </Button>
           </Box>
         </form>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(TwilioConfiguration)
+export default withTranslation()(TwilioConfiguration);

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import {
   Box,
   Typography,
@@ -12,26 +12,26 @@ import {
   InputAdornment,
   CircularProgress,
   IconButton,
-  useTheme
-} from '@mui/material'
-import { validateFunc } from '../../constraints/constraints'
-import Button from '@mui/material/Button'
-import { useQuery, gql, useMutation } from '@apollo/client'
-import { Link } from 'react-router-dom'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import GooglePlacesAutocomplete from 'react-google-autocomplete'
-import DialogTitle from '@mui/material/DialogTitle'
-import Alert from '@mui/material/Alert'
-import useGlobalStyles from '../../utils/globalStyles'
-import { AreaContext } from '../../context/AreaContext'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
-import { UPDATE_USER_ADDRESS } from '../../apollo'
-import { useTranslation } from 'react-i18next'
-import PlacesAutocomplete from 'react-places-autocomplete'
-import ClearIcon from '@mui/icons-material/Clear'
+  useTheme,
+} from "@mui/material";
+import { validateFunc } from "../../constraints/constraints";
+import Button from "@mui/material/Button";
+import { useMutation } from "@apollo/client/react";
+import { Link } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import GooglePlacesAutocomplete from "react-google-autocomplete";
+import DialogTitle from "@mui/material/DialogTitle";
+import Alert from "@mui/material/Alert";
+import useGlobalStyles from "../../utils/globalStyles";
+import { AreaContext } from "../../context/AreaContext";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { UPDATE_USER_ADDRESS } from "../../apollo";
+import { useTranslation } from "react-i18next";
+import PlacesAutocomplete from "react-places-autocomplete";
+import ClearIcon from "@mui/icons-material/Clear";
 
 // const GET_USERS_BY_SEARCH = gql`
 //   query Users($search: String) {
@@ -54,51 +54,51 @@ import ClearIcon from '@mui/icons-material/Clear'
 //   }
 // `
 
-const GOOGLE_MAPS_KEY = 'AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY'
+const GOOGLE_MAPS_KEY = "AIzaSyCaXzEgiEKTtQgQhy0yPuBDA4bD7BFoPOY";
 
 const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
-  const { t } = useTranslation()
-  const globalClasses = useGlobalStyles()
-  const theme = useTheme()
+  const { t } = useTranslation();
+  const globalClasses = useGlobalStyles();
+  const theme = useTheme();
 
-  const [openAddress, setOpenAddress] = useState(false)
-  const [locationAddress, setLocationAddress] = useState('')
-  const [details, setDetails] = useState('')
-  const [latitude, setLatitude] = useState(null)
-  const [longitude, setLongitude] = useState(null)
-  const [selectedArea, setSelectedArea] = useState('')
-  const [locationName, setLocationName] = useState('')
-  const { areas } = useContext(AreaContext)
-  console.log({ areas })
+  const [openAddress, setOpenAddress] = useState(false);
+  const [locationAddress, setLocationAddress] = useState("");
+  const [details, setDetails] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [selectedArea, setSelectedArea] = useState("");
+  const [locationName, setLocationName] = useState("");
+  const { areas } = useContext(AreaContext);
+  console.log({ areas });
   const [updateUserAddress] = useMutation(UPDATE_USER_ADDRESS, {
     // refetchQueries: GET_USERS_BY_SEARCH,
     onCompleted: () => {
-      setLocationAddress('')
-      setDetails('')
-      setLatitude('')
-      setLongitude('')
-      setSelectedArea('')
-      setOpenAddress(false)
-      setOpenModalAddress(false)
-    }
-  })
+      setLocationAddress("");
+      setDetails("");
+      setLatitude("");
+      setLongitude("");
+      setSelectedArea("");
+      setOpenAddress(false);
+      setOpenModalAddress(false);
+    },
+  });
 
-  console.log({ selectedArea })
+  console.log({ selectedArea });
 
-  const handleSubmitAddress = e => {
-    e.preventDefault()
-    console.log('adding new address')
-    let addresses = []
+  const handleSubmitAddress = (e) => {
+    e.preventDefault();
+    console.log("adding new address");
+    let addresses = [];
     if (locationAddress) {
       const addressItem = {
         deliveryAddress: `${locationAddress}`,
-        details: details || 'No address detail is given',
-        label: 'Home',
+        details: details || "No address detail is given",
+        label: "Home",
         selected: true,
         latitude: String(latitude),
-        longitude: String(longitude)
-      }
-      addresses.push(addressItem)
+        longitude: String(longitude),
+      };
+      addresses.push(addressItem);
     }
     // if(selectedArea) {
     //   const addressItem = {
@@ -118,35 +118,35 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
           area: selectedArea,
           details: details,
           addresses,
-          type: locationAddress.length ? 'google_api' : 'area'
-        }
-      }
-    })
-  }
+          type: locationAddress.length ? "google_api" : "area",
+        },
+      },
+    });
+  };
 
   const handleClearClick = () => {
-    setLocationAddress('')
-  }
+    setLocationAddress("");
+  };
 
-  const handleLocationSelection = selectedLocation => {
-    setLocationAddress(selectedLocation)
-    const encodedLocation = encodeURIComponent(selectedLocation)
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${GOOGLE_MAPS_KEY}`
+  const handleLocationSelection = (selectedLocation) => {
+    setLocationAddress(selectedLocation);
+    const encodedLocation = encodeURIComponent(selectedLocation);
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${GOOGLE_MAPS_KEY}`;
     fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'OK' && data.results.length > 0) {
-          const location = data.results[0].geometry.location
-          const latitude = location.lat
-          const longitude = location.lng
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "OK" && data.results.length > 0) {
+          const location = data.results[0].geometry.location;
+          const latitude = location.lat;
+          const longitude = location.lng;
 
-          setLatitude(latitude)
-          setLongitude(longitude)
+          setLatitude(latitude);
+          setLongitude(longitude);
         } else {
-          console.error('Location not found')
+          console.error("Location not found");
         }
-      })
-  }
+      });
+  };
 
   return (
     <Dialog
@@ -154,37 +154,41 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
       onClose={() => setOpenModalAddress(false)}
       fullWidth
       maxWidth="sm"
-      component={'form'}
-      onSubmit={handleSubmitAddress}>
-      <DialogTitle sx={{ color: 'black' }}>Add New Address</DialogTitle>
+      component={"form"}
+      onSubmit={handleSubmitAddress}
+    >
+      <DialogTitle sx={{ color: "black" }}>Add New Address</DialogTitle>
       <DialogContent>
         {/* Areas Field */}
         <Box sx={{ mb: 2 }}>
           <Typography
             variant="subtitle1"
-            sx={{ fontWeight: 'bold', color: 'black' }}>
-            {t('Select Area')}
+            sx={{ fontWeight: "bold", color: "black" }}
+          >
+            {t("Select Area")}
           </Typography>
           <Select
             id="input-area"
             name="input-area"
-            defaultValue={[selectedArea || '']}
+            defaultValue={[selectedArea || ""]}
             value={selectedArea}
-            onChange={e => setSelectedArea(e.target.value)}
+            onChange={(e) => setSelectedArea(e.target.value)}
             displayEmpty
-            inputProps={{ 'aria-label': 'Without label' }}
+            inputProps={{ "aria-label": "Without label" }}
             className={[globalClasses.input]}
-            style={{ height: '70px', width: '100%' }}>
+            style={{ height: "70px", width: "100%" }}
+          >
             {!selectedArea && (
-              <MenuItem value="" style={{ color: 'black' }}>
-                {t('Select Area')}
+              <MenuItem value="" style={{ color: "black" }}>
+                {t("Select Area")}
               </MenuItem>
             )}
-            {areas?.map(area => (
+            {areas?.map((area) => (
               <MenuItem
                 value={area._id}
                 key={area._id}
-                style={{ color: 'black' }}>
+                style={{ color: "black" }}
+              >
                 {area.title}
               </MenuItem>
             ))}
@@ -194,7 +198,8 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
         <Box sx={{ marginBottom: 2 }}>
           <Typography
             variant="subtitle1"
-            sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
+            sx={{ mb: 1, fontWeight: "bold", color: "black" }}
+          >
             Address Free Text
           </Typography>
           <TextField
@@ -202,7 +207,7 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
             fullWidth
             margin="normal"
             sx={{
-              '& .MuiInputBase-input': { color: 'black' }
+              "& .MuiInputBase-input": { color: "black" },
               // '& .MuiOutlinedInput-root': {
               //   borderRadius: 2,
               //   '& fieldset': {
@@ -226,7 +231,7 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
             }}
             name="address_free_text"
             value={details}
-            onChange={e => setDetails(e.target.value)}
+            onChange={(e) => setDetails(e.target.value)}
             // error={
             //   validationErrors.address_free_text ||
             //   (newCustomer.address_free_text &&
@@ -237,48 +242,52 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
         {/* Address Field */}
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center'
-          }}>
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
           <Divider
             orientation="horizontal"
-            sx={{ background: '#6b8d51', width: '40%' }}
+            sx={{ background: "#6b8d51", width: "40%" }}
           />
           <Button
             onClick={() => {
-              setOpenAddress(!openAddress)
-            }}>
+              setOpenAddress(!openAddress);
+            }}
+          >
             {!openAddress ? <AddCircleIcon /> : <RemoveCircleIcon />}
           </Button>
           <Divider
             orientation="horizontal"
-            sx={{ background: '#6b8d51', width: '40%' }}
+            sx={{ background: "#6b8d51", width: "40%" }}
           />
         </Box>
 
         {openAddress && (
-          <Box sx={{ position: 'relative', width: '95%' }}>
+          <Box sx={{ position: "relative", width: "95%" }}>
             <Typography
               variant="subtitle1"
-              sx={{ mb: 1, fontWeight: 'bold', color: 'black' }}>
+              sx={{ mb: 1, fontWeight: "bold", color: "black" }}
+            >
               Address
             </Typography>
             <PlacesAutocomplete
               value={locationAddress}
               onChange={setLocationAddress}
-              onSelect={handleLocationSelection}>
+              onSelect={handleLocationSelection}
+            >
               {({
                 getInputProps,
                 suggestions,
                 getSuggestionItemProps,
-                loading
+                loading,
               }) => (
                 <div>
                   <TextField
                     variant="outlined"
-                    label={t('your_area')}
-                    inputProps={{ style: { color: '#000' } }}
+                    label={t("your_area")}
+                    inputProps={{ style: { color: "#000" } }}
                     fullWidth
                     {...getInputProps()}
                     InputProps={{
@@ -299,27 +308,28 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
                             </>
                           )}
                         </InputAdornment>
-                      )
+                      ),
                     }}
                   />
                   <div>
                     {loading ? <div>Loading...</div> : null}
-                    {suggestions.map(suggestion => {
+                    {suggestions.map((suggestion) => {
                       const style = {
                         backgroundColor: suggestion.active
                           ? theme.palette.primary.main
                           : theme.palette.common.white,
-                        color: 'black',
-                        fontSize: '16px',
-                        padding: '10px 16px'
-                      }
+                        color: "black",
+                        fontSize: "16px",
+                        padding: "10px 16px",
+                      };
                       return (
                         <div
                           {...getSuggestionItemProps(suggestion, { style })}
-                          key={suggestion.placeId}>
+                          key={suggestion.placeId}
+                        >
                           {suggestion.description}
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 </div>
@@ -373,12 +383,13 @@ const AddNewAddress = ({ openModalAddress, setOpenModalAddress, userId }) => {
           // onClick={handleSubmitCustomer}
           type="submit"
           color="primary"
-          variant="contained">
+          variant="contained"
+        >
           Submit
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AddNewAddress
+export default AddNewAddress;

@@ -1,20 +1,21 @@
-import React, { useContext, useState } from 'react'
-import { withTranslation } from 'react-i18next'
-import OrderComponent from '../components/Order/Order'
-import Header from '../components/Headers/Header'
-import { useQuery, gql } from '@apollo/client'
-import { getCityAreas, getOrdersByAdmin, getRestaurantProfile } from '../apollo'
-import useGlobalStyles from '../utils/globalStyles'
-import { Container, Modal, Paper, TablePagination } from '@mui/material'
-import CustomLoader from '../components/Loader/CustomLoader'
-import { AreaContext } from '../context/AreaContext'
-import OrdersDataAdmin from '../components/Order/OrdersDataAdmin'
-import DispatchDrawer from '../components/DispatchDrawer'
-import DispatchForm from '../components/DispatchForm'
+import React, { useContext, useState } from "react";
+import { withTranslation } from "react-i18next";
+// import OrderComponent from '../components/Order/Order'
+import Header from "../components/Headers/Header";
+import { useQuery } from "@apollo/client/react";
+import { getOrdersByAdmin } from "../apollo";
+import useGlobalStyles from "../utils/globalStyles";
+import { Container, Modal, Paper, TablePagination } from "@mui/material";
+// import CustomLoader from '../components/Loader/CustomLoader'
+import { AreaContext } from "../context/AreaContext";
+import OrdersDataAdmin from "../components/Order/OrdersDataAdmin";
+import DispatchDrawer from "../components/DispatchDrawer";
+import DispatchForm from "../components/DispatchForm";
+import { gql } from "@apollo/client";
 
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
-`
+`;
 // const GET_PROFILE = gql`
 //   ${getRestaurantProfile}
 // `
@@ -24,76 +25,76 @@ const GET_ORDERS = gql`
 // `
 
 const OrdersAdmin = () => {
-  const [detailsModal, setDetailModal] = useState(false)
-  const [order, setOrder] = useState(null)
-  const [selectedInteraction, setSelectedInteraction] = useState(null)
-  const [modalVisible, setModalVisible] = useState(false)
-  const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(10)
-  const [openEdit, setOpenEdit] = useState(false)
+  // const [detailsModal, setDetailModal] = useState(false);
+  const [order, setOrder] = useState(null);
+  const [selectedInteraction, setSelectedInteraction] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [openEdit, setOpenEdit] = useState(false);
 
   // const [search] = useState('')
-  const { setAreas } = useContext(AreaContext)
+  const { setAreas } = useContext(AreaContext);
 
   const {
     data,
     error: errorQuery,
     loading: loadingQuery,
     subscribeToMore,
-    refetch: refetchOrders
+    refetch: refetchOrders,
   } = useQuery(GET_ORDERS, {
     variables: {
       page,
-      limit
+      limit,
       // search
-    }
-  })
-  const orders = data?.getOrdersByAdmin?.docs || null
+    },
+  });
+  const orders = data?.getOrdersByAdmin?.docs || null;
 
-  const handleClick = order => {
+  const handleClick = (order) => {
     // console.log({ order })
     // setOrder(order)
     // setDetailModal(!detailsModal)
-    window.open(`/#/admin/order-details/${order._id}`)
-  }
+    window.open(`/#/admin/order-details/${order._id}`);
+  };
 
   const handleChangePage = (e, newPage) => {
-    setPage(newPage)
+    setPage(newPage);
     refetchOrders({
       restaurantId: null,
       page: newPage,
-      limit
-    })
-  }
+      limit,
+    });
+  };
 
-  const handleChangeRowsPerPage = e => {
-    setLimit(e.target.value)
+  const handleChangeRowsPerPage = (e) => {
+    setLimit(e.target.value);
     refetchOrders({
       restaurantId: null,
       page: 1,
-      limit: parseInt(e.target.value, 10)
-    })
-  }
+      limit: parseInt(e.target.value, 10),
+    });
+  };
 
-  const handleModalVisible = item => {
-    setSelectedInteraction(item)
-    setModalVisible(true)
-  }
+  const handleModalVisible = (item) => {
+    setSelectedInteraction(item);
+    setModalVisible(true);
+  };
 
   const handleEditModal = () => {
-    setOpenEdit(!openEdit)
-  }
+    setOpenEdit(!openEdit);
+  };
 
   const toggleDrawer = () => {
-    setSelectedInteraction(null)
-    setModalVisible(false)
-  }
+    setSelectedInteraction(null);
+    setModalVisible(false);
+  };
 
   const toggleModal = () => {
-    setOpenEdit(false)
-  }
+    setOpenEdit(false);
+  };
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
   return (
     <>
       <Header />
@@ -102,10 +103,10 @@ const OrdersAdmin = () => {
       <Container className={globalClasses.flex} fluid>
         {errorQuery && (
           <tr>
-            <td>{`${'Error'} ${errorQuery.message}`}</td>
+            <td>{`${"Error"} ${errorQuery.message}`}</td>
           </tr>
         )}
-        <Paper sx={{ background: '#fff' }}>
+        <Paper sx={{ background: "#fff" }}>
           <DispatchForm refetchOrders={refetchOrders} />
           <OrdersDataAdmin
             orders={data && orders}
@@ -131,48 +132,50 @@ const OrdersAdmin = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             rowsPerPageOptions={[5, 10, 20, 50]}
             sx={{
-              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                color: '#000' // Change text color for labels
+              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+                {
+                  color: "#000", // Change text color for labels
+                },
+              "& .MuiSelect-select": {
+                color: "#000", // Change selected dropdown text color
               },
-              '& .MuiSelect-select': {
-                color: '#000' // Change selected dropdown text color
+              "& .MuiMenuItem-root": {
+                color: "#000 !important", // Change text color inside dropdown list
               },
-              '& .MuiMenuItem-root': {
-                color: '#000 !important' // Change text color inside dropdown list
+              "& .MuiSvgIcon-root": {
+                color: "#000", // Change dropdown arrow color
               },
-              '& .MuiSvgIcon-root': {
-                color: '#000' // Change dropdown arrow color
-              }
             }}
             slotProps={{
               select: {
                 MenuProps: {
                   PaperProps: {
                     sx: {
-                      backgroundColor: '#f5f5f5', // Background color of dropdown
-                      '& .MuiMenuItem-root': {
-                        color: '#000', // Text color of options
-                        '&:hover': {
-                          backgroundColor: '#ddd' // Hover background color
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+                      backgroundColor: "#f5f5f5", // Background color of dropdown
+                      "& .MuiMenuItem-root": {
+                        color: "#000", // Text color of options
+                        "&:hover": {
+                          backgroundColor: "#ddd", // Hover background color
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             }}
           />
         </Paper>
         <Modal
           sx={{
-            width: { sm: '100%', lg: '75%' }, // 90% width on extra-small screens, 75% on small and up
-            marginLeft: { sm: 0, lg: '13%' },
-            overflowY: 'auto'
+            width: { sm: "100%", lg: "75%" }, // 90% width on extra-small screens, 75% on small and up
+            marginLeft: { sm: 0, lg: "13%" },
+            overflowY: "auto",
           }}
           open={openEdit}
           onClose={() => {
-            toggleModal(null)
-          }}>
+            toggleModal(null);
+          }}
+        >
           <DispatchForm order={order} refetchOrders={refetchOrders} />
         </Modal>
 
@@ -183,6 +186,6 @@ const OrdersAdmin = () => {
         />
       </Container>
     </>
-  )
-}
-export default withTranslation()(OrdersAdmin)
+  );
+};
+export default withTranslation()(OrdersAdmin);

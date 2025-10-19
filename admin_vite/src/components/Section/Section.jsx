@@ -1,15 +1,15 @@
-import React, { useState, useRef } from 'react'
-import { useMutation, useQuery, gql } from '@apollo/client'
-import { validateFunc } from '../../constraints/constraints'
-import { withTranslation } from 'react-i18next'
+import React, { useState, useRef } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { validateFunc } from "../../constraints/constraints";
+import { withTranslation } from "react-i18next";
 import {
   editSection,
   restaurantList,
   createSection,
-  getSections
-} from '../../apollo'
-import useStyles from './styles'
-import useGlobalStyles from '../../utils/globalStyles'
+  getSections,
+} from "../../apollo";
+import useStyles from "./styles";
+import useGlobalStyles from "../../utils/globalStyles";
 import {
   Box,
   Switch,
@@ -19,115 +19,118 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  Grid
-} from '@mui/material'
+  Grid,
+} from "@mui/material";
+import { gql } from "@apollo/client";
 
 const CREATE_SECTION = gql`
   ${createSection}
-`
+`;
 const EDIT_SECTION = gql`
   ${editSection}
-`
+`;
 const GET_SECTIONS = gql`
   ${getSections}
-`
+`;
 const GET_RESTAURANT = gql`
   ${restaurantList}
-`
+`;
 
 function Section(props) {
-  const formRef = useRef()
-  const name = props.section ? props.section.name : ''
-  const mutation = props.section ? EDIT_SECTION : CREATE_SECTION
+  const formRef = useRef();
+  const name = props.section ? props.section.name : "";
+  const mutation = props.section ? EDIT_SECTION : CREATE_SECTION;
   const [sectionEnable, setSectionEnable] = useState(
     props.section ? props.section.enabled : false
-  )
+  );
   const [restaurant, restaurantSetter] = useState(
-    props.section ? props.section.restaurants.map(r => r._id) : []
-  )
-  const [error, errorSetter] = useState('')
-  const [success, successSetter] = useState('')
-  const [nameError, nameErrorSetter] = useState(null)
+    props.section ? props.section.restaurants.map((r) => r._id) : []
+  );
+  const [error, errorSetter] = useState("");
+  const [success, successSetter] = useState("");
+  const [nameError, nameErrorSetter] = useState(null);
 
-  const onCompleted = data => {
+  const onCompleted = (data) => {
     const message = props.section
-      ? t('SectionUpdatedSuccessfully')
-      : t('SectionAddeduccessfully')
-    successSetter(message)
-    errorSetter('')
-    if (!props.section) clearFields()
-  }
+      ? t("SectionUpdatedSuccessfully")
+      : t("SectionAddeduccessfully");
+    successSetter(message);
+    errorSetter("");
+    if (!props.section) clearFields();
+  };
   function onError(error) {
-    const message = `${t('ActionFailedTryAgain')} ${error}`
-    successSetter('')
-    errorSetter(message)
+    const message = `${t("ActionFailedTryAgain")} ${error}`;
+    successSetter("");
+    errorSetter(message);
   }
   const [mutate, { loading }] = useMutation(mutation, {
     refetchQueries: [{ query: GET_SECTIONS }],
     onCompleted,
-    onError
-  })
+    onError,
+  });
 
   const {
     data,
     error: errorQuery,
-    loading: loadingQuery
-  } = useQuery(GET_RESTAURANT, { onError })
+    loading: loadingQuery,
+  } = useQuery(GET_RESTAURANT, { onError });
 
-  const onChange = event => {
+  const onChange = (event) => {
     // added this to keep default checked on editing
-    const value = event.target.value
-    const ids = restaurant
+    const value = event.target.value;
+    const ids = restaurant;
     if (event.target.checked) {
-      ids.push(value)
+      ids.push(value);
     } else {
-      const index = ids.indexOf(value)
-      if (index > -1) ids.splice(index, 1)
+      const index = ids.indexOf(value);
+      if (index > -1) ids.splice(index, 1);
     }
-    restaurantSetter([...ids])
-  }
+    restaurantSetter([...ids]);
+  };
 
   const onBlur = (setter, field, state) => {
-    setter(!validateFunc({ [field]: state }, field))
-  }
+    setter(!validateFunc({ [field]: state }, field));
+  };
   const onSubmitValidation = () => {
     const nameErrors = !validateFunc(
-      { name: formRef.current['input-name'].value },
-      'name'
-    )
-    nameErrorSetter(nameErrors)
-    return nameErrors
-  }
+      { name: formRef.current["input-name"].value },
+      "name"
+    );
+    nameErrorSetter(nameErrors);
+    return nameErrors;
+  };
   const clearFields = () => {
-    formRef.current.reset()
-    nameErrorSetter(null)
-  }
+    formRef.current.reset();
+    nameErrorSetter(null);
+  };
 
-  const { t } = props
+  const { t } = props;
 
-  const classes = useStyles()
-  const globalClasses = useGlobalStyles()
+  const classes = useStyles();
+  const globalClasses = useGlobalStyles();
   return (
     <Box container className={classes.container}>
       <Box className={classes.flexRow}>
         <Box
           item
-          className={props.section ? classes.headingBlack : classes.heading}>
+          className={props.section ? classes.headingBlack : classes.heading}
+        >
           <Typography
             variant="h6"
-            className={props.section ? classes.textWhite : classes.text}>
-            {props.section ? t('EditSection') : t('AddSection')}
+            className={props.section ? classes.textWhite : classes.text}
+          >
+            {props.section ? t("EditSection") : t("AddSection")}
           </Typography>
         </Box>
         <Box ml={12} mt={1}>
-          <label>{sectionEnable ? t('Disable') : t('Enable')}</label>
+          <label>{sectionEnable ? t("Disable") : t("Enable")}</label>
           <Switch
             defaultChecked={sectionEnable}
             value={sectionEnable}
-            onChange={e => setSectionEnable(e.target.checked)}
+            onChange={(e) => setSectionEnable(e.target.checked)}
             id="input-enable"
             name="input-enable"
-            style={{ color: 'black' }}
+            style={{ color: "black" }}
           />
         </Box>
       </Box>
@@ -138,11 +141,11 @@ function Section(props) {
             <Input
               id="input-name"
               name="input-name"
-              placeholder={t('SectionName')}
+              placeholder={t("SectionName")}
               type="text"
               defaultValue={name}
-              onBlur={event => {
-                onBlur(nameErrorSetter, 'name', event.target.value)
+              onBlur={(event) => {
+                onBlur(nameErrorSetter, "name", event.target.value);
               }}
               disableUnderline
               className={[
@@ -151,19 +154,19 @@ function Section(props) {
                   ? globalClasses.inputError
                   : nameError === true
                   ? globalClasses.inputSuccess
-                  : ''
+                  : "",
               ]}
             />
           </Box>
           <Grid container spacing={1} mt={1} className={classes.section}>
-            {loadingQuery ? <div>{t('LoadingDots')}</div> : null}
+            {loadingQuery ? <div>{t("LoadingDots")}</div> : null}
             {errorQuery ? (
               <div>
-                {t('ErrorDots')} {JSON.stringify(error)}
+                {t("ErrorDots")} {JSON.stringify(error)}
               </div>
             ) : null}
             {data &&
-              data.restaurantList.map(restaurantItem => (
+              data.restaurantList.map((restaurantItem) => (
                 <Grid item xs={12} md={6} key={restaurantItem._id}>
                   <FormControlLabel
                     control={
@@ -182,28 +185,29 @@ function Section(props) {
             <Button
               className={globalClasses.button}
               disabled={loading}
-              onClick={async e => {
-                e.preventDefault()
+              onClick={async (e) => {
+                e.preventDefault();
                 if (onSubmitValidation() && !loading) {
                   mutate({
                     variables: {
                       section: {
-                        _id: props.section ? props.section._id : '',
-                        name: formRef.current['input-name'].value,
+                        _id: props.section ? props.section._id : "",
+                        name: formRef.current["input-name"].value,
                         enabled: sectionEnable,
-                        restaurants: restaurant
-                      }
-                    }
-                  })
+                        restaurants: restaurant,
+                      },
+                    },
+                  });
                   // Clear the form fields after submission
-                  clearFields()
+                  clearFields();
                   // Close the modal after 3 seconds
                   setTimeout(() => {
-                    props.onClose() // Close the modal
-                  }, 4000)
+                    props.onClose(); // Close the modal
+                  }, 4000);
                 }
-              }}>
-              {props.section ? t('Update') : t('Save')}
+              }}
+            >
+              {props.section ? t("Update") : t("Save")}
             </Button>
           </Box>
         </form>
@@ -212,7 +216,8 @@ function Section(props) {
             <Alert
               className={globalClasses.alertSuccess}
               variant="filled"
-              severity="success">
+              severity="success"
+            >
               {success}
             </Alert>
           )}
@@ -220,14 +225,15 @@ function Section(props) {
             <Alert
               className={globalClasses.alertError}
               variant="filled"
-              severity="error">
+              severity="error"
+            >
               {error}
             </Alert>
           )}
         </Box>
       </Box>
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(Section)
+export default withTranslation()(Section);

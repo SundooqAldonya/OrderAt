@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react'
-import Header from '../components/Headers/Header'
+import React, { Fragment, useState } from "react";
+import Header from "../components/Headers/Header";
 import {
   Alert,
   Container,
@@ -9,169 +9,169 @@ import {
   MenuItem,
   Modal,
   Paper,
-  Typography
-} from '@mui/material'
-import useGlobalStyles from '../utils/globalStyles'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from '@apollo/client'
+  Typography,
+} from "@mui/material";
+import useGlobalStyles from "../utils/globalStyles";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQuery } from "@apollo/client/react";
 import {
   getPrepaidDeliveryPackages,
   removePrepaidDeliveryPackage,
   toggleCityActive,
-  updateActivePrepaidDeliveryPackage
-} from '../apollo'
-import CustomLoader from '../components/Loader/CustomLoader'
-import DataTable from 'react-data-table-component'
-import SearchBar from '../components/TableHeader/SearchBar'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import orderBy from 'lodash/orderBy'
-import TableHeader from '../components/TableHeader'
-import { customStyles } from '../utils/tableCustomStyles'
-import { Switch } from '@mui/material'
-import PrepaidPackageForm from '../components/PrepaidPackageForm'
+  updateActivePrepaidDeliveryPackage,
+} from "../apollo";
+import CustomLoader from "../components/Loader/CustomLoader";
+import DataTable from "react-data-table-component";
+import SearchBar from "../components/TableHeader/SearchBar";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import orderBy from "lodash/orderBy";
+import TableHeader from "../components/TableHeader";
+import { customStyles } from "../utils/tableCustomStyles";
+import { Switch } from "@mui/material";
+import PrepaidPackageForm from "../components/PrepaidPackageForm";
 
 const PrepaidDeliveryPackages = () => {
-  const { t } = useTranslation()
-  const [openEdit, setOpenEdit] = useState(false)
-  const [error, setError] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [message, setMessage] = useState('')
-  const [item, setItem] = useState(null)
-  const [type, setType] = useState('')
+  const { t } = useTranslation();
+  const [openEdit, setOpenEdit] = useState(false);
+  const [error, setError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
+  const [item, setItem] = useState(null);
+  const [type, setType] = useState("");
 
-  const globalClasses = useGlobalStyles()
+  const globalClasses = useGlobalStyles();
 
-  const { data, loading, refetch } = useQuery(getPrepaidDeliveryPackages)
+  const { data, loading, refetch } = useQuery(getPrepaidDeliveryPackages);
 
-  console.log({ data, loading })
+  console.log({ data, loading });
 
   const [removeCity] = useMutation(removePrepaidDeliveryPackage, {
-    onCompleted: res => {
-      console.log({ res })
-      setSuccess(true)
-      setType('success')
-      setMessage(res.removePrepaidDeliveryPackage.message)
+    onCompleted: (res) => {
+      console.log({ res });
+      setSuccess(true);
+      setType("success");
+      setMessage(res.removePrepaidDeliveryPackage.message);
     },
-    refetchQueries: [{ query: getPrepaidDeliveryPackages }]
-  })
+    refetchQueries: [{ query: getPrepaidDeliveryPackages }],
+  });
 
   const [mutateActive] = useMutation(updateActivePrepaidDeliveryPackage, {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }],
     awaitRefetchQueries: true,
     onCompleted: ({ updateActivePrepaidDeliveryPackage }) => {
-      console.log({ updateActivePrepaidDeliveryPackage })
+      console.log({ updateActivePrepaidDeliveryPackage });
     },
-    onError: err => {
-      console.log({ err })
-    }
-  })
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
 
-  const onChangeSearch = e => setSearchQuery(e.target.value)
+  const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
-  const toggleModal = item => {
-    setOpenEdit(!openEdit)
-    setItem(item)
-  }
+  const toggleModal = (item) => {
+    setOpenEdit(!openEdit);
+    setItem(item);
+  };
   const closeEditModal = () => {
-    setOpenEdit(false)
-  }
-  const packages = data?.getPrepaidDeliveryPackages || null
+    setOpenEdit(false);
+  };
+  const packages = data?.getPrepaidDeliveryPackages || null;
   const columns = [
     {
-      name: t('Name'),
-      selector: 'name',
+      name: t("Name"),
+      selector: "name",
       sortable: true,
-      cell: row => <span>{row.business?.name || 'N/A'}</span>
+      cell: (row) => <span>{row.business?.name || "N/A"}</span>,
     },
     {
-      name: t('Total Deliveries'),
-      selector: 'totalDeliveries',
+      name: t("Total Deliveries"),
+      selector: "totalDeliveries",
       sortable: true,
-      cell: row => <span>{row.totalDeliveries}</span>
+      cell: (row) => <span>{row.totalDeliveries}</span>,
     },
     {
-      name: t('Used Deliveries'),
-      selector: 'usedDeliveries',
+      name: t("Used Deliveries"),
+      selector: "usedDeliveries",
       sortable: true,
-      cell: row => <span>{row.usedDeliveries}</span>
+      cell: (row) => <span>{row.usedDeliveries}</span>,
     },
     {
-      name: t('Remaining Deliveries'),
-      selector: 'remainingDeliveries',
+      name: t("Remaining Deliveries"),
+      selector: "remainingDeliveries",
       sortable: true,
-      cell: row => <span>{row.remainingDeliveries || 'N/A'}</span>
+      cell: (row) => <span>{row.remainingDeliveries || "N/A"}</span>,
     },
     {
-      name: t('Amount'),
-      selector: 'amount',
+      name: t("Amount"),
+      selector: "amount",
       sortable: true,
-      cell: row => <span>{row.price || 'N/A'}</span>
+      cell: (row) => <span>{row.price || "N/A"}</span>,
     },
     {
-      name: t('Active'),
-      cell: row => <>{isActiveStatus(row)}</>
+      name: t("Active"),
+      cell: (row) => <>{isActiveStatus(row)}</>,
     },
     {
-      name: t('Action'),
-      cell: row => <>{ActionButtons(row, toggleModal)}</>
-    }
-  ]
+      name: t("Action"),
+      cell: (row) => <>{ActionButtons(row, toggleModal)}</>,
+    },
+  ];
 
   const propExists = (obj, path) => {
-    return path.split('.').reduce((obj, prop) => {
-      return obj && obj[prop] ? obj[prop] : ''
-    }, obj)
-  }
+    return path.split(".").reduce((obj, prop) => {
+      return obj && obj[prop] ? obj[prop] : "";
+    }, obj);
+  };
 
   const customSort = (rows, field, direction) => {
-    const handleField = row => {
+    const handleField = (row) => {
       if (field && isNaN(propExists(row, field))) {
-        return propExists(row, field).toLowerCase()
+        return propExists(row, field).toLowerCase();
       }
 
-      return row[field]
-    }
-    return orderBy(rows, handleField, direction)
-  }
+      return row[field];
+    };
+    return orderBy(rows, handleField, direction);
+  };
 
-  const handleRemoveCity = itemId => {
+  const handleRemoveCity = (itemId) => {
     removeCity({
       variables: {
-        id: itemId
-      }
-    })
-  }
+        id: itemId,
+      },
+    });
+  };
 
-  const isActiveStatus = row => {
+  const isActiveStatus = (row) => {
     return (
       <Fragment>
         {/* {row.isActive} */}
         <Switch
           size="small"
           defaultChecked={row.isActive}
-          onChange={_event => {
-            mutateActive({ variables: { id: row._id } })
+          onChange={(_event) => {
+            mutateActive({ variables: { id: row._id } });
           }}
-          style={{ color: 'black' }}
+          style={{ color: "black" }}
         />
       </Fragment>
-    )
-  }
+    );
+  };
 
-  const ActionButtons = row => {
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
+  const ActionButtons = (row) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
 
     const handleClose = () => {
-      setAnchorEl(null)
-    }
+      setAnchorEl(null);
+    };
 
     return (
       <>
@@ -180,43 +180,47 @@ const PrepaidDeliveryPackages = () => {
             aria-label="more"
             id="long-button"
             aria-haspopup="true"
-            onClick={handleClick}>
+            onClick={handleClick}
+          >
             <MoreVertIcon fontSize="small" />
           </IconButton>
           <Paper>
             <Menu
               id="long-menu"
               MenuListProps={{
-                'aria-labelledby': 'long-button'
+                "aria-labelledby": "long-button",
               }}
               anchorEl={anchorEl}
               open={open}
-              onClose={handleClose}>
+              onClose={handleClose}
+            >
               <MenuItem
-                onClick={e => {
-                  e.preventDefault()
-                  toggleModal(row)
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleModal(row);
                 }}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <EditIcon fontSize="small" style={{ color: 'green' }} />
+                  <EditIcon fontSize="small" style={{ color: "green" }} />
                 </ListItemIcon>
-                <Typography color="green">{t('Edit')}</Typography>
+                <Typography color="green">{t("Edit")}</Typography>
               </MenuItem>
               <MenuItem
                 onClick={() => handleRemoveCity(row._id)}
-                style={{ height: 25 }}>
+                style={{ height: 25 }}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" style={{ color: 'red' }} />
+                  <DeleteIcon fontSize="small" style={{ color: "red" }} />
                 </ListItemIcon>
-                <Typography color="red">{t('Delete')}</Typography>
+                <Typography color="red">{t("Delete")}</Typography>
               </MenuItem>
             </Menu>
           </Paper>
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Fragment>
@@ -227,7 +231,8 @@ const PrepaidDeliveryPackages = () => {
           <Alert
             className={globalClasses.alertSuccess}
             variant="filled"
-            severity={type}>
+            severity={type}
+          >
             {message}
           </Alert>
         )}
@@ -243,7 +248,7 @@ const PrepaidDeliveryPackages = () => {
                 onClick={() => refetch()}
               />
             }
-            title={<TableHeader title={t('Packages')} />}
+            title={<TableHeader title={t("Packages")} />}
             columns={columns}
             data={packages}
             pagination
@@ -257,20 +262,21 @@ const PrepaidDeliveryPackages = () => {
         )}
         <Modal
           style={{
-            width: '70%',
-            marginLeft: '15%',
-            overflowY: 'auto',
-            marginTop: 150
+            width: "70%",
+            marginLeft: "15%",
+            overflowY: "auto",
+            marginTop: 150,
           }}
           open={openEdit}
           onClose={() => {
-            toggleModal()
-          }}>
+            toggleModal();
+          }}
+        >
           <PrepaidPackageForm item={item} onClose={closeEditModal} />
         </Modal>
       </Container>
     </Fragment>
-  )
-}
+  );
+};
 
-export default PrepaidDeliveryPackages
+export default PrepaidDeliveryPackages;
