@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useMemo, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import CustomLoader from "../components/Loader/CustomLoader";
 // core components
 import Header from "../components/Headers/Header";
@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { customStyles } from "../utils/tableCustomStyles";
 import useGlobalStyles from "../utils/globalStyles";
-import RestIcon from "../assets/svg/svg/Restaurant.svg";
+import RestIcon from "../assets/svg/svg/Restaurant.svg?react";
 import TableHeader from "../components/TableHeader";
 import moment from "moment";
 import { gql } from "@apollo/client";
@@ -38,7 +38,7 @@ const DELETE_RESTAURANT = gql`
 `;
 
 const Restaurants = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const onChangeSearch = (e) => setSearchQuery(e.target.value);
@@ -98,12 +98,12 @@ const Restaurants = (props) => {
           {!row.image && "No Image"}
         </>
       ),
-      selector: "image",
+      // selector: "image",
     },
     {
       name: t("Name"),
       // sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
       style: {
         cursor: "pointer",
       },
@@ -117,19 +117,19 @@ const Restaurants = (props) => {
     // },
     {
       name: t("lastOnlineAt"),
-      selector: "lastOnlineAt",
+      // selector: "lastOnlineAt",
       cell: (row) => <>{formattedDate(row.lastOnlineAt)}</>,
     },
     {
       name: t("OrderPrefix"),
-      selector: "orderPrefix",
+      selector: (row) => row.orderPrefix,
       style: {
         cursor: "pointer",
       },
     },
     {
       name: t("Vendor"),
-      selector: "owner",
+      // selector: "owner",
       style: {
         cursor: "pointer",
       },
@@ -139,7 +139,7 @@ const Restaurants = (props) => {
     },
     {
       name: t("city"),
-      selector: "city",
+      // selector: "city",
       style: {
         cursor: "pointer",
       },
@@ -147,7 +147,7 @@ const Restaurants = (props) => {
     },
     {
       name: t("createdAt"),
-      selector: "createdAt",
+      // selector: "createdAt",
       style: {
         cursor: "pointer",
       },
@@ -266,8 +266,7 @@ const Restaurants = (props) => {
     <>
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
-        {/* <RestIcon /> */}
-        <img src={RestIcon} alt="Config" width={32} height={32} />
+        <RestIcon />
       </Box>
       <Container className={globalClasses.flex} fluid>
         {loadingQuery ? (
@@ -313,4 +312,4 @@ const Restaurants = (props) => {
     </>
   );
 };
-export default withTranslation()(Restaurants);
+export default Restaurants;
