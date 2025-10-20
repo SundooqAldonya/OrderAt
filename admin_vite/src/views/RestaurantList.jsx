@@ -29,6 +29,7 @@ import RestIcon from "../assets/svg/svg/Restaurant.svg?react";
 import TableHeader from "../components/TableHeader";
 import moment from "moment";
 import { gql } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 const GET_RESTAURANTS = gql`
   ${restaurants}
@@ -39,6 +40,7 @@ const DELETE_RESTAURANT = gql`
 
 const Restaurants = (props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const onChangeSearch = (e) => setSearchQuery(e.target.value);
@@ -296,7 +298,7 @@ const Restaurants = (props) => {
               localStorage.setItem("restaurant_id", row._id);
               localStorage.setItem("restaurantImage", row.image);
               localStorage.setItem("restaurantName", row.name);
-              props.history.push(`/admin/dashboard/${row.slug}`);
+              navigate(`/admin/dashboard/${row.slug}`);
             }}
             conditionalRowStyles={conditionalRowStyles}
             selectableRows

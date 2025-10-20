@@ -29,7 +29,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import DispatchIcon from "../assets/svg/svg/Dispatch.svg";
+import DispatchIcon from "../assets/svg/svg/Dispatch.svg?react";
 import TableHeader from "../components/TableHeader";
 import {
   NotificationContainer,
@@ -119,7 +119,7 @@ const Orders = (props) => {
         <Select
           id="input-status"
           name="input-status"
-          displayEmpty
+          displayEmpty={true}
           inputProps={{ "aria-label": "Without label" }}
           style={{ width: "50px" }}
           className={globalClasses.selectInput}
@@ -206,21 +206,21 @@ const Orders = (props) => {
     {
       name: t("OrderInformation"),
       sortable: true,
-      selector: "orderId",
+      selector: (row) => row.orderId,
       cell: (row) => (row?.orderId ? row?.orderId : "N/A"),
     },
     {
       name: t("RestaurantCol"),
-      selector: "restaurant.name",
+      selector: (row) => row.restaurant.name,
       cell: (row) => (row?.restaurant ? row.restaurant.name : "N/A"),
     },
     {
       name: t("Payment"),
-      selector: "paymentMethod",
+      selector: (row) => row.paymentMethod,
     },
     {
       name: t("Status"),
-      selector: "orderStatus",
+      selector: (row) => row.orderStatus,
       cell: (row) => (
         <div style={{ overflow: "visible" }}>
           {t(row.orderStatus)}
@@ -232,7 +232,7 @@ const Orders = (props) => {
     },
     {
       name: t("Rider"),
-      selector: "rider",
+      selector: (row) => row.rider,
       cell: (row) => (
         <div style={{ overflow: "visible" }}>
           {row.rider ? row.rider.name : ""}
@@ -245,7 +245,7 @@ const Orders = (props) => {
     },
     {
       name: t("createdAt"),
-      selector: "createdAt",
+      selector: (row) => row.createdAt,
       sortable: true,
       cell: (row) => (
         <>{new Date(row.createdAt).toLocaleString().replace(/ /g, "\n")}</>
@@ -337,8 +337,7 @@ const Orders = (props) => {
       <NotificationContainer />
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
-        {/* <DispatchIcon /> */}
-        <img src={DispatchIcon} alt="Config" width={32} height={32} />
+        <DispatchIcon />
       </Box>
       <Container className={globalClasses.flex} fluid>
         {errorOrders ? (
@@ -346,74 +345,74 @@ const Orders = (props) => {
             <td>{`${"Error"}! ${errorOrders.message}`}</td>
           </tr>
         ) : null}
-        {loadingOrders ? (
+        {/* {loadingOrders ? (
           <CustomLoader />
-        ) : (
-          <Paper>
-            {/* <DispatchForm /> */}
-            <DataTable
-              subHeader={true}
-              subHeaderComponent={
-                <SearchBar
-                  value={searchQuery}
-                  onChange={onChangeSearch}
-                  onClick={() => refetchOrders()}
-                />
-              }
-              title={<TableHeader title={t("Dispatch")} />}
-              columns={columns}
-              data={filtered}
-              onRowClicked={handleGoTo}
-              progressPending={loadingOrders}
-              pointerOnHover
-              progressComponent={<CustomLoader />}
-              conditionalRowStyles={conditionalRowStyles}
-              customStyles={customStyles}
-              selectableRows
-            />
-            <TablePagination
-              component="div"
-              count={dataOrders?.getActiveOrders?.totalDocs}
-              page={dataOrders?.getActiveOrders?.page}
-              onPageChange={handleChangePage}
-              rowsPerPage={dataOrders?.getActiveOrders?.limit}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              rowsPerPageOptions={[5, 10, 20, 50]}
-              sx={{
-                "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
-                  {
-                    color: "#000", // Change text color for labels
-                  },
-                "& .MuiSelect-select": {
-                  color: "#000", // Change selected dropdown text color
+        ) : ( */}
+        <Paper>
+          {/* <DispatchForm /> */}
+          <DataTable
+            subHeader={true}
+            subHeaderComponent={
+              <SearchBar
+                value={searchQuery}
+                onChange={onChangeSearch}
+                onClick={() => refetchOrders()}
+              />
+            }
+            title={<TableHeader title={t("Dispatch")} />}
+            columns={columns}
+            data={filtered}
+            onRowClicked={handleGoTo}
+            // progressPending={loadingOrders}
+            pointerOnHover
+            progressComponent={<CustomLoader />}
+            conditionalRowStyles={conditionalRowStyles}
+            customStyles={customStyles}
+            selectableRows
+          />
+          <TablePagination
+            component="div"
+            count={dataOrders?.getActiveOrders?.totalDocs}
+            page={dataOrders?.getActiveOrders?.page}
+            onPageChange={handleChangePage}
+            rowsPerPage={dataOrders?.getActiveOrders?.limit}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 20, 50]}
+            sx={{
+              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+                {
+                  color: "#000", // Change text color for labels
                 },
-                "& .MuiMenuItem-root": {
-                  color: "#000 !important", // Change text color inside dropdown list
-                },
-                "& .MuiSvgIcon-root": {
-                  color: "#000", // Change dropdown arrow color
-                },
-              }}
-              slotProps={{
-                select: {
-                  MenuProps: {
-                    PaperProps: {
-                      sx: {
-                        backgroundColor: "#f5f5f5", // Background color of dropdown
-                        "& .MuiMenuItem-root": {
-                          color: "#000", // Text color of options
-                          "&:hover": {
-                            backgroundColor: "#ddd", // Hover background color
-                          },
+              "& .MuiSelect-select": {
+                color: "#000", // Change selected dropdown text color
+              },
+              "& .MuiMenuItem-root": {
+                color: "#000 !important", // Change text color inside dropdown list
+              },
+              "& .MuiSvgIcon-root": {
+                color: "#000", // Change dropdown arrow color
+              },
+            }}
+            slotProps={{
+              select: {
+                MenuProps: {
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: "#f5f5f5", // Background color of dropdown
+                      "& .MuiMenuItem-root": {
+                        color: "#000", // Text color of options
+                        "&:hover": {
+                          backgroundColor: "#ddd", // Hover background color
                         },
                       },
                     },
                   },
                 },
-              }}
-            />
-          </Paper>
-        )}
+              },
+            }}
+          />
+        </Paper>
+        {/* )} */}
         <DispatchDrawer
           open={modalVisible}
           order={selectedInteraction}
