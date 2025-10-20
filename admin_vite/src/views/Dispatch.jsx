@@ -39,7 +39,7 @@ import "react-notifications/lib/notifications.css";
 import RiderFunc from "../components/RiderFunc";
 import moment from "moment";
 import DispatchDrawer from "../components/DispatchDrawer";
-import DispatchForm from "../components/DispatchForm";
+// import DispatchForm from "../components/DispatchForm";
 import { gql } from "@apollo/client";
 
 const SUBSCRIPTION_ORDER = gql`
@@ -62,14 +62,6 @@ const Orders = (props) => {
   const [selectedInteraction, setSelectedInteraction] = useState(null);
   const [modalVisible, setModalVisible] = useState(null);
 
-  const [restaurantId, setRestaurantId] = useState(
-    localStorage.getItem("restaurantId")
-  );
-
-  useEffect(() => {
-    if (params.id) setRestaurantId(params.id);
-  }, []);
-
   const {
     data: dataOrders,
     error: errorOrders,
@@ -77,11 +69,13 @@ const Orders = (props) => {
     refetch: refetchOrders,
   } = useQuery(getActiveOrders, {
     variables: { restaurantId: null, page, limit },
-    pollInterval: 3000,
+    // pollInterval: 3000,
   });
 
   const { data: subscriptionData, error: subscriptionError } =
     useSubscription(SUBSCRIBE_DISPATCHER);
+
+  console.log({ subscriptionData });
 
   useEffect(() => {
     if (subscriptionError) {
@@ -329,7 +323,7 @@ const Orders = (props) => {
   };
 
   const handleGoTo = (row) => {
-    window.open(`/#/admin/order-details/${row._id}`);
+    window.open(`/admin/order-details/${row._id}`);
   };
 
   return (

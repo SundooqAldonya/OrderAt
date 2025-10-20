@@ -30,7 +30,9 @@ const {
 module.exports = {
   Subscription: {
     subscriptionDispatcher: {
-      subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER)
+      // subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
+      subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
+      resolve: payload => payload.subscriptionDispatcher
     }
   },
   Query: {

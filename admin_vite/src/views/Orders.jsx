@@ -65,9 +65,7 @@ const Orders = () => {
   });
 
   const toggleModal = (order) => {
-    // setOrder(order)
-    // setDetailModal(!detailsModal)
-    window.open(`/#/admin/order-details/${order._id}`);
+    window.open(`/admin/order-details/${order._id}`);
   };
 
   const globalClasses = useGlobalStyles();

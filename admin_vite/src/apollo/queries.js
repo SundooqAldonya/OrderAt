@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 
 export const getOrders = `query Orders($page:Int){
     allOrders(page:$page){
@@ -59,7 +59,7 @@ export const getOrders = `query Orders($page:Int){
         name
       }
     }
-  }`
+  }`;
 
 export const reviews = `query Reviews($restaurant:String!){
     reviews(restaurant:$restaurant){
@@ -86,7 +86,7 @@ export const reviews = `query Reviews($restaurant:String!){
       createdAt
     }
   }
-`
+`;
 
 export const getOrdersByDateRange = `query GetOrdersByDateRange($startingDate: String!, $endingDate: String!, $restaurant: String!) {
     getOrdersByDateRange(startingDate: $startingDate, endingDate: $endingDate, restaurant: $restaurant) {
@@ -95,7 +95,7 @@ export const getOrdersByDateRange = `query GetOrdersByDateRange($startingDate: S
     }
     
   }
-`
+`;
 
 export const getOrdersByRestaurant = `query ordersByRestId($restaurant:String!,$page:Int,$rows:Int,$search:String){
     ordersByRestId(restaurant:$restaurant,page:$page,rows:$rows,search:$search){
@@ -170,7 +170,7 @@ export const getOrdersByRestaurant = `query ordersByRestId($restaurant:String!,$
         available
       }
     }
-  }`
+  }`;
 
 export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $search:String){
     getOrdersByAdmin(page:$page, limit:$limit, search:$search){
@@ -263,14 +263,14 @@ export const getOrdersByAdmin = `query GetOrdersByAdmin($page:Int, $limit:Int, $
       prevPage
       nextPage
     }
-  }`
+  }`;
 
 export const getDashboardTotal = `query GetDashboardTotal($startingDate: String, $endingDate: String,$restaurant:String!){
     getDashboardTotal(starting_date: $startingDate, ending_date: $endingDate,restaurant:$restaurant){
       totalOrders
       totalSales
     }
-  }`
+  }`;
 export const getDashboardSales = `query GetDashboardSales($startingDate: String, $endingDate: String,$restaurant:String!){
     getDashboardSales(starting_date: $startingDate, ending_date: $endingDate,restaurant:$restaurant){
       orders{
@@ -278,7 +278,7 @@ export const getDashboardSales = `query GetDashboardSales($startingDate: String,
         amount
       }
     }
-  }`
+  }`;
 export const getDashboardOrders = `query GetDashboardOrders($startingDate: String, $endingDate: String,$restaurant:String!){
     getDashboardOrders(starting_date: $startingDate, ending_date: $endingDate,restaurant:$restaurant){
       orders{
@@ -286,7 +286,7 @@ export const getDashboardOrders = `query GetDashboardOrders($startingDate: Strin
         count
       }
     }
-  }`
+  }`;
 
 export const getDashboardData = `query GetDashboardData($startingDate: String, $endingDate: String){
     getDashboardData(starting_date: $startingDate, ending_date: $endingDate){
@@ -299,7 +299,7 @@ export const getDashboardData = `query GetDashboardData($startingDate: String, $
         amount
       }
     }
-  }`
+  }`;
 
 export const getConfiguration = `query GetConfiguration{
     configuration{
@@ -361,15 +361,15 @@ export const getConfiguration = `query GetConfiguration{
       vapidKey
       availabilityPeriod
     }
-  }`
+  }`;
 
 export const orderCount = `
 query OrderCount($restaurant:String!){
   orderCount(restaurant:$restaurant)
-}`
+}`;
 
 export const getActiveOrders = gql`
-  query GetActiveOrders($page: Float, $limit: Float, $restaurantId: ID) {
+  query GetActiveOrders($page: Float, $limit: Float, $restaurantId: String) {
     getActiveOrders(page: $page, limit: $limit, restaurantId: $restaurantId) {
       docs {
         _id
@@ -473,7 +473,7 @@ export const getActiveOrders = gql`
       nextPage
     }
   }
-`
+`;
 
 export const getRidersByZone = `query RidersByZone($id:String!){
   ridersByZone(id:$id){
@@ -488,7 +488,7 @@ export const getRidersByZone = `query RidersByZone($id:String!){
       title
     }
   }
-}`
+}`;
 
 export const getZones = `query Zones{
     zones{
@@ -498,7 +498,7 @@ export const getZones = `query Zones{
     location{coordinates}
     isActive
   }
-}`
+}`;
 
 export const getAllDeliveryZones = `query GetAllDeliveryZones{
     getAllDeliveryZones{
@@ -509,7 +509,7 @@ export const getAllDeliveryZones = `query GetAllDeliveryZones{
     isActive
     city 
   }
-}`
+}`;
 
 export const getVendors = `query Vendors{
     vendors{
@@ -523,7 +523,7 @@ export const getVendors = `query Vendors{
         
       }
     }
-}`
+}`;
 
 export const getVendor = `query GetVendor($id:String!){
     getVendor(id:$id){
@@ -542,7 +542,7 @@ export const getVendor = `query GetVendor($id:String!){
           shopType
         }
     }
-}`
+}`;
 
 export const getTaxation = `query Taxes{
     taxes {
@@ -550,7 +550,7 @@ export const getTaxation = `query Taxes{
       taxationCharges
       enabled
       }
-    }`
+    }`;
 
 export const getCoupons = `query Coupons{
     coupons {
@@ -591,7 +591,7 @@ export const getCoupons = `query Coupons{
       }
       status
     }
-  }`
+  }`;
 
 export const getCuisines = `query Cuisines{
     cuisines {
@@ -601,7 +601,7 @@ export const getCuisines = `query Cuisines{
       image
       shopType
     }
-  }`
+  }`;
 
 export const getBanners = `query Banners{
     banners {
@@ -613,10 +613,10 @@ export const getBanners = `query Banners{
       file
       parameters
     }
-  }`
+  }`;
 export const getBannerActions = `query BannerActions{
     bannerActions
-  }`
+  }`;
 
 export const getTipping = `query Tips{
     tips {
@@ -624,7 +624,7 @@ export const getTipping = `query Tips{
       tipVariations
       enabled
     }
-  }`
+  }`;
 
 export const getAddons = `query Addons($id: String!){
     addons(id: $id){
@@ -634,7 +634,7 @@ export const getAddons = `query Addons($id: String!){
     options
     quantityMinimum
     quantityMaximum
-  }}`
+  }}`;
 
 export const getOptions = `query Options($id: String!){
     options(id: $id) {
@@ -644,10 +644,10 @@ export const getOptions = `query Options($id: String!){
       price
     }
   }
-  `
+  `;
 export const getPaymentStatuses = `query{
     getPaymentStatuses
-  }`
+  }`;
 
 export const restaurantByOwner = `query RestaurantByOwner($id:String){
   restaurantByOwner(id:$id){
@@ -664,7 +664,7 @@ export const restaurantByOwner = `query RestaurantByOwner($id:String){
     location{coordinates}
     shopType
   }
-}`
+}`;
 
 export const restaurantList = `query RestaurantList{
   restaurantList{
@@ -672,7 +672,7 @@ export const restaurantList = `query RestaurantList{
     name
     address
   }
-}`
+}`;
 
 export const restaurants = `query Restaurants{
   restaurants{
@@ -702,7 +702,7 @@ export const restaurants = `query Restaurants{
     lastOnlineAt
   }
 }
-`
+`;
 
 export const getRestaurantProfile = `query Restaurant($id:String){
       restaurant(id:$id)
@@ -762,14 +762,14 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       isVisible
       featured
     }
-}`
+}`;
 
 export const categoriesByRestaurants = `query CategoriesByRestaurant($id:String!){
   categoriesByRestaurant(id: $id){
     _id
     title    
   }  
-}`
+}`;
 
 export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!) {
   foodListByRestaurant(id: $id) {
@@ -795,7 +795,7 @@ export const getFoodListByRestaurant = `query FoodListByRestaurant($id: String!)
     createdAt
     updatedAt
   }
-}`
+}`;
 
 export const getRestaurantDetail = `query Restaurant($id:String){
       restaurant(id:$id){
@@ -812,7 +812,7 @@ export const getRestaurantDetail = `query Restaurant($id:String){
       tax
       shopType
     }
-}`
+}`;
 
 export const getAddonsByRestaurant = `query GetAddonsByRestaurant($id: String!){
   getAddonsByRestaurant(id: $id){
@@ -823,7 +823,7 @@ export const getAddonsByRestaurant = `query GetAddonsByRestaurant($id: String!){
     quantityMinimum
     quantityMaximum
     }
-}`
+}`;
 
 export const getOffers = `query Offers{
   offers{
@@ -835,7 +835,7 @@ export const getOffers = `query Offers{
       name
     }
   }
-}`
+}`;
 
 export const getSections = `query Sections{
   sections{
@@ -847,13 +847,13 @@ export const getSections = `query Sections{
       name
     }
   }
-}`
+}`;
 
 export const pageCount = `
 query PageCount($restaurant:String!){
   pageCount(restaurant:$restaurant)
 }
-`
+`;
 export const getUsers = `query{
     users{
       _id
@@ -865,7 +865,7 @@ export const getUsers = `query{
         deliveryAddress
       }
     }
-  }`
+  }`;
 
 export const getCities = `query {
     citiesAdmin {
@@ -879,7 +879,7 @@ export const getCities = `query {
         }
      }
     }
-  }`
+  }`;
 
 export const getAreas = `query {
     areas {
@@ -896,7 +896,7 @@ export const getAreas = `query {
       }
      }
     }
-  }`
+  }`;
 
 export const getCityAreas = `query AreasByCity($id: String!){
     areasByCity(id: $id){
@@ -908,7 +908,7 @@ export const getCityAreas = `query AreasByCity($id: String!){
         }
       }
     }
-  }`
+  }`;
 
 export const getRiders = `query{
     riders{
@@ -936,7 +936,7 @@ export const getRiders = `query{
         url
       }
     }
-  }`
+  }`;
 
 export const getAvailableRiders = `query{
     availableRiders{
@@ -949,7 +949,7 @@ export const getAvailableRiders = `query{
         _id
       }
     }
-  }`
+  }`;
 
 export const withdrawRequestQuery = `query GetWithdrawRequests($offset:Int){
       getAllWithdrawRequests(offset:$offset){
@@ -971,7 +971,7 @@ export const withdrawRequestQuery = `query GetWithdrawRequests($offset:Int){
             total
           }
       }
-  }`
+  }`;
 
 export const getUsersBySearch = `
   query Users($search: String) {
@@ -990,7 +990,7 @@ export const getUsersBySearch = `
       updatedAt
     }
   }
-`
+`;
 export const getBusinesses = gql`
   query GetBusinesses {
     getBusinesses {
@@ -1001,7 +1001,7 @@ export const getBusinesses = gql`
       address
     }
   }
-`
+`;
 export const getRidersRegistered = gql`
   query GetRidersRegistered {
     getRidersRegistered {
@@ -1011,7 +1011,7 @@ export const getRidersRegistered = gql`
       city
     }
   }
-`
+`;
 
 export const getShopCategories = gql`
   query GetShopCategories {
@@ -1020,7 +1020,7 @@ export const getShopCategories = gql`
       title
     }
   }
-`
+`;
 
 export const singleOrder = gql`
   query SingleOrder($id: String!) {
@@ -1144,7 +1144,7 @@ export const singleOrder = gql`
       }
     }
   }
-`
+`;
 export const allDeliveryPrices = gql`
   query AllDeliveryPrices {
     allDeliveryPrices {
@@ -1160,21 +1160,21 @@ export const allDeliveryPrices = gql`
       cost
     }
   }
-`
+`;
 export const removeDeliveryZone = gql`
   mutation RemoveDeliveryZone($id: String!) {
     removeDeliveryZone(id: $id) {
       message
     }
   }
-`
+`;
 export const updateDeliveryZone = gql`
   mutation UpdateDeliveryZone($deliveryZoneInput: DeliveryZoneInput) {
     updateDeliveryZone(deliveryZoneInput: $deliveryZoneInput) {
       message
     }
   }
-`
+`;
 export const getBusinessCategories = gql`
   query GetBusinessCategories {
     getBusinessCategories {
@@ -1188,7 +1188,7 @@ export const getBusinessCategories = gql`
       isActive
     }
   }
-`
+`;
 export const orderRidersInteractions = gql`
   query orderRidersInteractions($id: String!) {
     orderRidersInteractions(id: $id) {
@@ -1202,7 +1202,7 @@ export const orderRidersInteractions = gql`
       openedAt
     }
   }
-`
+`;
 export const getRidersLocation = gql`
   query getRidersLocation($cityId: String) {
     getRidersLocation(cityId: $cityId) {
@@ -1224,7 +1224,7 @@ export const getRidersLocation = gql`
       assignedOrdersCount
     }
   }
-`
+`;
 
 export const searchRestaurants = gql`
   query SearchRestaurants($search: String) {
@@ -1236,7 +1236,7 @@ export const searchRestaurants = gql`
       }
     }
   }
-`
+`;
 
 export const searchCategories = gql`
   query GetBusinessCategories {
@@ -1245,7 +1245,7 @@ export const searchCategories = gql`
       name
     }
   }
-`
+`;
 export const searchUsers = gql`
   query SearchUsers($search: String) {
     searchUsers(search: $search) {
@@ -1254,7 +1254,7 @@ export const searchUsers = gql`
       phone
     }
   }
-`
+`;
 export const searchFood = gql`
   query SearchFood($search: String) {
     searchFood(search: $search) {
@@ -1262,34 +1262,34 @@ export const searchFood = gql`
       title
     }
   }
-`
+`;
 export const getCouponEnums = gql`
   query GetCouponEnums {
     getCouponEnums
   }
-`
+`;
 export const getCouponDiscountTypeEnums = gql`
   query GetCouponDiscountTypeEnums {
     getCouponDiscountTypeEnums
   }
-`
+`;
 export const getCouponStatuses = gql`
   query GetCouponStatuses {
     getCouponStatuses
   }
-`
+`;
 export const assignedOrders = gql`
   query AssignedOrders($id: String!) {
     assignedOrders(id: $id) {
       _id
     }
   }
-`
+`;
 export const getStockUnits = gql`
   query getStockEnumValues {
     getStockEnumValues
   }
-`
+`;
 export const getAllContactus = gql`
   query GetAllContactus($page: Int, $limit: Int) {
     getAllContactus(page: $page, limit: $limit) {
@@ -1310,7 +1310,7 @@ export const getAllContactus = gql`
       prevPage
     }
   }
-`
+`;
 
 export const getAllNotifications = gql`
   query GetAllNotifications($page: Int, $limit: Int) {
@@ -1353,7 +1353,7 @@ export const getAllNotifications = gql`
       prevPage
     }
   }
-`
+`;
 
 export const getDeliveryCalculation = gql`
   query GetDeliveryCalculation(
@@ -1376,7 +1376,7 @@ export const getDeliveryCalculation = gql`
       originalDiscount
     }
   }
-`
+`;
 
 export const getPrepaidDeliveryPackages = gql`
   query GetPrepaidDeliveryPackages {
@@ -1398,7 +1398,7 @@ export const getPrepaidDeliveryPackages = gql`
       updatedAt
     }
   }
-`
+`;
 export const getDispatchOptions = gql`
   query GetDispatchOptions {
     getDispatchOptions {
@@ -1408,7 +1408,7 @@ export const getDispatchOptions = gql`
       thirdAttemptRiders
     }
   }
-`
+`;
 
 export const searchRiders = gql`
   query SearchRiders($search: String) {
@@ -1418,4 +1418,4 @@ export const searchRiders = gql`
       username
     }
   }
-`
+`;

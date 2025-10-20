@@ -1,6 +1,6 @@
 // const { PubSub } = require('graphql-subscriptions')
 const { RedisPubSub } = require('graphql-redis-subscriptions')
-
+const Order = require('../models/order')
 const PLACE_ORDER = 'PLACE_ORDER'
 const ORDER_STATUS_CHANGED = 'ORDER_STATUS_CHANGED'
 const ASSIGN_RIDER = 'ASSIGN_RIDER'
@@ -135,8 +135,16 @@ const publishOrder = order => {
   pubsub.publish(SUBSCRIPTION_ORDER, { subscriptionOrder: order })
 }
 
-const publishToDispatcher = order => {
-  pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: order })
+const publishToDispatcher = async order => {
+  const newOrder = await Order.findById(order._id)
+    .populate('zone')
+    .populate('restaurant')
+    .populate('user')
+    .lean() // optional: removes Mongoose wrappers
+    .exec()
+
+  console.log('📦 Publishing to dispatcher:', newOrder)
+  pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: newOrder })
 }
 
 const publishNewMessage = message => {
