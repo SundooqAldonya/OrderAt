@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useTranslation, withTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client/react";
 import Header from "../components/Headers/Header";
@@ -93,19 +93,19 @@ const Vendors = (props) => {
     {
       name: t("Email"),
       sortable: true,
-      selector: "email",
+      // selector: "email",
       cell: (row) => <>{row.email ? row.email : "N/A"}</>,
     },
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      // selector: "name",
       cell: (row) => <>{row.name ? row.name : "N/A"}</>,
     },
     {
       name: t("Phone"),
       sortable: true,
-      selector: "phone",
+      // selector: "phone",
       cell: (row) => <>{row.phone ? row.phone : "N/A"}</>,
     },
     {
@@ -176,26 +176,28 @@ const Vendors = (props) => {
         {loadingQuery ? (
           <CustomLoader />
         ) : (
-          <DataTable
-            subHeader={true}
-            subHeaderComponent={
-              <SearchBar
-                value={searchQuery}
-                onChange={onChangeSearch}
-                onClick={() => refetch()}
-              />
-            }
-            title={<TableHeader title={t("Vendors")} />}
-            columns={columns}
-            data={filtered}
-            pagination
-            progressPending={loading}
-            progressComponent={<CustomLoader />}
-            sortFunction={customSort}
-            defaultSortField="email"
-            customStyles={customStyles}
-            selectableRows
-          />
+          <Fragment>
+            <DataTable
+              subHeader={true}
+              subHeaderComponent={
+                <SearchBar
+                  value={searchQuery}
+                  onChange={onChangeSearch}
+                  onClick={() => refetch()}
+                />
+              }
+              title={<TableHeader title={t("Vendors")} />}
+              columns={columns}
+              data={filtered}
+              pagination
+              progressPending={loading}
+              progressComponent={<CustomLoader />}
+              sortFunction={customSort}
+              defaultSortField="email"
+              customStyles={customStyles}
+              selectableRows
+            />
+          </Fragment>
         )}
         <Modal
           open={editModal}

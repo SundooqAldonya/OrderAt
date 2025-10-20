@@ -63,7 +63,7 @@ function AdminSidebar(props) {
               ) : null}
               <Link
                 component={RouterLink}
-                to={prop.layout + prop.path} // Use 'to' instead of 'href'
+                to={prop.layout + prop.path}
                 className={[
                   classes.rowDisplay,
                   classes.sidebarLink,
