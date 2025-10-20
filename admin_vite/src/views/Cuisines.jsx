@@ -92,17 +92,17 @@ const Cuisines = (props) => {
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("shopType"),
       sortable: true,
-      selector: "shopType",
+      selector: (row) => row.shopType,
     },
     {
       name: t("Action"),
@@ -124,9 +124,9 @@ const Cuisines = (props) => {
     <>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <Grid container>
-          <Grid item>
+          <Grid>
             <CuisineComponent />
           </Grid>
           <Grid sx={{ display: { xs: "none", lg: "block" } }} item mt={2}>

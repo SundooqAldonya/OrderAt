@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   createBusinessCategory,
   editBusinessCategory,
@@ -101,17 +101,14 @@ const BusinessCategoryCreate = (props) => {
     setDescriptionError(null);
   };
 
-  const { t } = props;
+  const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.item ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.item ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
             className={props.item ? classes.textWhite : classes.text}
@@ -126,7 +123,7 @@ const BusinessCategoryCreate = (props) => {
         <form ref={formRef}>
           <Box className={globalClasses.flexRow}>
             <Grid container spacing={0}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   {t("Name")}
                 </Typography>
@@ -151,7 +148,7 @@ const BusinessCategoryCreate = (props) => {
                   ]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   {t("Description")}
                 </Typography>
@@ -180,7 +177,7 @@ const BusinessCategoryCreate = (props) => {
                   ]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12 }}>
                 <Typography className={classes.labelText}>
                   {t("order_number")}
                 </Typography>
@@ -199,7 +196,7 @@ const BusinessCategoryCreate = (props) => {
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Box
                   mt={3}
                   style={{ alignItems: "center" }}
@@ -306,4 +303,4 @@ const BusinessCategoryCreate = (props) => {
   );
 };
 
-export default withTranslation()(BusinessCategoryCreate);
+export default BusinessCategoryCreate;

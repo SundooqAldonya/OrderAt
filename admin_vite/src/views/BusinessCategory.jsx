@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import Header from "../components/Headers/Header";
 import CustomLoader from "../components/Loader/CustomLoader";
 import DataTable from "react-data-table-component";
@@ -29,13 +29,13 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
-import CouponsIcon from "../assets/svg/svg/Coupons.svg";
+import CouponsIcon from "../assets/svg/svg/Coupons.svg?react";
 import TableHeader from "../components/TableHeader";
 import BusinessCategoryCreate from "../components/BusinessCategoryCreate";
 import { Fragment } from "react";
 
 const BusinessCategory = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const [editModal, setEditModal] = useState(false);
   const [businessCategory, setBusinessCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,17 +94,17 @@ const BusinessCategory = (props) => {
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("order_number"),
       sortable: true,
-      selector: "order",
+      selector: (row) => row.order,
       cell: (row) => <>{row.order ? row.order : "N/A"}</>,
     },
     {
@@ -148,14 +148,10 @@ const BusinessCategory = (props) => {
     <>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <Grid container>
-          <Grid item>
+          <Grid>
             <BusinessCategoryCreate />
-          </Grid>
-          <Grid sx={{ display: { xs: "none", lg: "block" } }} item mt={2}>
-            {/* <CouponsIcon /> */}
-            <img src={CouponsIcon} alt="Config" width={32} height={32} />
           </Grid>
         </Grid>
 
@@ -266,4 +262,4 @@ const ActionButtons = (row, toggleModal, t, mutateDelete) => {
   );
 };
 
-export default withTranslation()(BusinessCategory);
+export default BusinessCategory;
