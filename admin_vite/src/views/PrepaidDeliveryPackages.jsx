@@ -82,31 +82,31 @@ const PrepaidDeliveryPackages = () => {
   const columns = [
     {
       name: t("Name"),
-      selector: "name",
+      selector: (row) => row.name,
       sortable: true,
       cell: (row) => <span>{row.business?.name || "N/A"}</span>,
     },
     {
       name: t("Total Deliveries"),
-      selector: "totalDeliveries",
+      selector: (row) => row.totalDeliveries,
       sortable: true,
       cell: (row) => <span>{row.totalDeliveries}</span>,
     },
     {
       name: t("Used Deliveries"),
-      selector: "usedDeliveries",
+      selector: (row) => row.usedDeliveries,
       sortable: true,
       cell: (row) => <span>{row.usedDeliveries}</span>,
     },
     {
       name: t("Remaining Deliveries"),
-      selector: "remainingDeliveries",
+      selector: (row) => row.remainingDeliveries,
       sortable: true,
       cell: (row) => <span>{row.remainingDeliveries || "N/A"}</span>,
     },
     {
       name: t("Amount"),
-      selector: "amount",
+      selector: (row) => row.amount,
       sortable: true,
       cell: (row) => <span>{row.price || "N/A"}</span>,
     },
@@ -225,7 +225,7 @@ const PrepaidDeliveryPackages = () => {
   return (
     <Fragment>
       <Header />
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <PrepaidPackageForm />
         {success && (
           <Alert

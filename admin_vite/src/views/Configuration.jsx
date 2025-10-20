@@ -11,7 +11,7 @@ import StripeConfiguration from "../components/Configuration/Stripe/Stripe";
 import CurrencyConfiguration from "../components/Configuration/Currency/Currency";
 import { Grid } from "@mui/material";
 // import { ReactComponent as ConfigIcon } from "../assets/svg/svg/Configuration.svg";
-import configIcon from "../assets/svg/svg/Configuration.svg";
+import ConfigIcon from "../assets/svg/svg/Configuration.svg?react";
 import TwilioConfiguration from "../components/Configuration/Twilio/Twilio";
 import VerificationConfiguration from "../components/Configuration/Verification/Verification";
 import SendGridConfiguration from "../components/Configuration/SendGrid/SendGrid";
@@ -31,6 +31,7 @@ import { gql } from "@apollo/client";
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
 `;
+
 const Configuration = (props) => {
   const {
     data,
@@ -48,7 +49,7 @@ const Configuration = (props) => {
         t("LoadingDots")
       ) : data.configuration.isPaidVersion ? (
         <Grid container ml={2} spacing={2}>
-          <Grid item sx={12} md={7} lg={7}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <EmailConfiguration
               emailName={data && data.configuration.emailName}
               email={data && data.configuration.email}
@@ -56,52 +57,46 @@ const Configuration = (props) => {
               enabled={data && data.configuration.enableEmail}
             />
           </Grid>
-          <Grid
-            item
-            lg={5}
-            sx={{ display: { xs: "none", lg: "block" } }}
-            ml={-2}
-          >
-            {/* <ConfigIcon /> */}
-            <img src={configIcon} alt="Config" width={32} height={32} />
+          <Grid lg={5} sx={{ display: { xs: "none", lg: "block" } }} ml={-2}>
+            <ConfigIcon />
+            {/* <img src={configIcon} alt="Config" width={32} height={32} /> */}
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <DispatchOptions />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <RiderAvailabilityTime
               availabilityPeriod={data && data.configuration.availabilityPeriod}
             />
           </Grid>
           <Grid
-            item
-            lg={5}
+            size={{ lg: 5 }}
             sx={{ display: { xs: "none", lg: "block" } }}
             ml={-2}
           >
             <ConfigIcon />
-            <img src={configIcon} alt="Config" width={32} height={32} />
+            {/* <img src={configIcon} alt="Config" width={32} height={32} /> */}
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <StripeConfiguration
               publishableKey={data && data.configuration.publishableKey}
               secretKey={data && data.configuration.secretKey}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <PaypalConfiguration
               clientId={data && data.configuration.clientId}
               clientSecret={data && data.configuration.clientSecret}
               sandbox={data && data.configuration.sandbox}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <CurrencyConfiguration
               currencyCode={data && data.configuration.currency}
               currencySymbol={data && data.configuration.currencySymbol}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <DeliveryRateConfiguration
               deliveryRate={data && data?.configuration?.deliveryRate}
               costType={data && data?.configuration?.costType}
@@ -110,7 +105,7 @@ const Configuration = (props) => {
               }
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <TwilioConfiguration
               twilioAccountSid={data && data.configuration.twilioAccountSid}
               twilioAuthToken={data && data.configuration.twilioAuthToken}
@@ -118,10 +113,10 @@ const Configuration = (props) => {
               twilioEnabled={data && data.configuration.twilioEnabled}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <Email formEmail={data && data.configuration.formEmail} />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <SendGridConfiguration
               sendGridApiKey={data && data.configuration.sendGridApiKey}
               sendGridEnabled={data && data.configuration.sendGridEnabled}
@@ -131,13 +126,13 @@ const Configuration = (props) => {
             />
           </Grid>
 
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <WebConfiguration
               googleMapLibraries={data && data.configuration.googleMapLibraries}
               googleColor={data && data.configuration.googleColor}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <SentryConfiguration
               dashboardSentryUrl={data && data.configuration.dashboardSentryUrl}
               webSentryUrl={data && data.configuration.webSentryUrl}
@@ -151,12 +146,12 @@ const Configuration = (props) => {
               riderAppSentryUrl={data && data.configuration.riderAppSentryUrl}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <GoogleApiKeyConfiguration
               googleApiKey={data && data.configuration.googleApiKey}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <CloudinaryConfiguration
               cloudinaryUploadUrl={
                 data && data.configuration.cloudinaryUploadUrl
@@ -164,13 +159,13 @@ const Configuration = (props) => {
               cloudinaryApiKey={data && data.configuration.cloudinaryApiKey}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <AmplitudeApiKeyConfiguration
               webAmplitudeApiKey={data && data.configuration.webAmplitudeApiKey}
               appAmplitudeApiKey={data && data.configuration.appAmplitudeApiKey}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <GoogleClientIDConfiguration
               webClientID={data && data.configuration.webClientID}
               androidClientID={data && data.configuration.androidClientID}
@@ -178,7 +173,7 @@ const Configuration = (props) => {
               expoClientID={data && data.configuration.expoClientID}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <FirebaseConfiguration
               firebaseKey={data && data.configuration.firebaseKey}
               authDomain={data && data.configuration.authDomain}
@@ -190,14 +185,14 @@ const Configuration = (props) => {
               vapidKey={data && data.configuration.vapidKey}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <AppConfigurations
               termsAndConditions={data && data.configuration.termsAndConditions}
               privacyPolicy={data && data.configuration.privacyPolicy}
               testOtp={data && data.configuration.testOtp}
             />
           </Grid>
-          <Grid item sx={12} md={12} lg={5}>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <VerificationConfiguration
               skipEmailVerification={data.configuration.skipEmailVerification}
               skipMobileVerification={data.configuration.skipMobileVerification}

@@ -76,12 +76,12 @@ const Coupon = (props) => {
     {
       name: t("Code"),
       sortable: true,
-      selector: "code",
+      selector: (row) => row.code,
     },
     {
       name: t("Discount"),
       sortable: true,
-      selector: "discount",
+      selector: (row) => row.discount,
       cell: (row) => (
         <>
           {`${row.rules.discount_value} ${
@@ -144,7 +144,7 @@ const Coupon = (props) => {
     <>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <Grid container>
           <Grid item>
             <CouponComponent />

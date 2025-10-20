@@ -61,21 +61,21 @@ const ContactUs = () => {
   const columns = [
     {
       name: t("Name"),
-      selector: "name",
+      selector: (row) => row.name,
       sortable: true,
     },
     {
       name: t("Email"),
-      selector: "email",
+      selector: (row) => row.email,
       cell: (row) => <div>{row.email ? row.email : "N/A"}</div>,
     },
     {
       name: t("Phone"),
-      selector: "phone",
+      selector: (row) => row.phone,
     },
     {
       name: t("CreatedAt"),
-      selector: "createdAt",
+      selector: (row) => row.createdAt,
       sortable: true,
       cell: (row) => (
         <div>

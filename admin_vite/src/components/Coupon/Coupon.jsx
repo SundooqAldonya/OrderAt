@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   editCoupon,
   createCoupon,
@@ -63,22 +63,22 @@ const MenuProps = {
   },
 };
 
-function CouponComponent(props) {
-  const { t, coupon } = props;
-  console.log({ coupon });
+function CouponComponent({ coupon, onClose }) {
+  const { t } = useTranslation();
+
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
   const formRef = useRef();
-  // const title = props.coupon ? props.coupon.title : ''
-  // const discount = props.coupon ? props.coupon.discount : ''
+  // const title = coupon ? coupon.title : ''
+  // const discount = coupon ? coupon.discount : ''
   const [code, setCode] = useState(coupon ? coupon.code : "");
   const [discount, setDiscount] = useState(
     coupon ? coupon.rules.discount_value : ""
   );
   // const [enabled, setEnabled] = useState(
-  //   props.coupon ? props.coupon.enabled : false
+  //   coupon ? coupon.enabled : false
   // )
-  const mutation = props.coupon ? EDIT_COUPON : CREATE_COUPON;
+  const mutation = coupon ? EDIT_COUPON : CREATE_COUPON;
   const [mainError, mainErrorSetter] = useState("");
   const [success, successSetter] = useState("");
   const [titleError, titleErrorSetter] = useState(null);
@@ -211,10 +211,10 @@ function CouponComponent(props) {
 
   const onCompleted = (data) => {
     console.log({ data });
-    // const message = props.coupon ? t('CouponUpdated') : t('CouponAdded')
+    // const message = coupon ? t('CouponUpdated') : t('CouponAdded')
     // successSetter(message)
     // mainErrorSetter('')
-    // if (!props.coupon) clearFields()
+    // if (!coupon) clearFields()
   };
 
   const onError = (error) => {
@@ -239,7 +239,7 @@ function CouponComponent(props) {
     onError,
     onCompleted: (res) => {
       console.log({ res });
-      props.onClose();
+      onClose();
     },
   });
 
@@ -383,17 +383,14 @@ function CouponComponent(props) {
   };
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.coupon ? classes.headingBlack : classes.heading}
-        >
+        <Box className={coupon ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
-            className={props.coupon ? classes.textWhite : classes.text}
+            className={coupon ? classes.textWhite : classes.text}
           >
-            {props.coupon ? t("EditCoupon") : t("AddCoupon")}
+            {coupon ? t("EditCoupon") : t("AddCoupon")}
           </Typography>
         </Box>
         {/* <Box ml={10} mt={1}>
@@ -412,7 +409,7 @@ function CouponComponent(props) {
         <form onSubmit={handleSubmit}>
           <Box className={globalClasses.flexRow}>
             <Grid container spacing={0}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   {t("Code")}
                 </Typography>
@@ -422,14 +419,14 @@ function CouponComponent(props) {
                   name="input-code"
                   placeholder={t("PHCode")}
                   type="text"
-                  defaultValue={code}
+                  // defaultValue={code}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   {t("Discount")}
                 </Typography>
@@ -440,14 +437,14 @@ function CouponComponent(props) {
                   placeholder={t("Discount")}
                   type="number"
                   onInput={handleDiscountInput}
-                  defaultValue={discount}
+                  // defaultValue={discount}
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   Minimum order
                 </Typography>
@@ -458,14 +455,14 @@ function CouponComponent(props) {
                   placeholder={t("Minimum Order")}
                   type="number"
                   onInput={handleDiscountInput}
-                  defaultValue={minimumOrder}
+                  // defaultValue={minimumOrder}
                   value={minimumOrder}
                   onChange={(e) => setMinimumOrder(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   Max Discount
                 </Typography>
@@ -476,14 +473,14 @@ function CouponComponent(props) {
                   placeholder={t("Max Discount")}
                   type="number"
                   onInput={handleDiscountInput}
-                  defaultValue={maxDiscount}
+                  // defaultValue={maxDiscount}
                   value={maxDiscount}
                   onChange={(e) => setMaxDiscount(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   Limit Total
                 </Typography>
@@ -494,14 +491,14 @@ function CouponComponent(props) {
                   placeholder={t("Max Discount")}
                   type="number"
                   onInput={handleDiscountInput}
-                  defaultValue={limitTotal}
+                  // defaultValue={limitTotal}
                   value={limitTotal}
                   onChange={(e) => setLimitTotal(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   Limit by user
                 </Typography>
@@ -512,14 +509,14 @@ function CouponComponent(props) {
                   placeholder={t("Max Discount")}
                   type="number"
                   onInput={handleDiscountInput}
-                  defaultValue={limitByUser}
+                  // defaultValue={limitByUser}
                   value={limitByUser}
                   onChange={(e) => setLimitByUser(e.target.value)}
                   disableUnderline
                   className={[globalClasses.input]}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>
                   Start date
                 </Typography>
@@ -532,7 +529,7 @@ function CouponComponent(props) {
                   calendarClassName="custom-calendar"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography className={classes.labelText}>End date</Typography>
                 <DatePicker
                   selected={endDate}
@@ -543,11 +540,11 @@ function CouponComponent(props) {
                   calendarClassName="custom-calendar"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Select
                   id="discountType"
                   name="discountType"
-                  defaultValue={selectedDiscountType || ""}
+                  // defaultValue={selectedDiscountType || ""}
                   value={selectedDiscountType}
                   onChange={(e) => setSelectedDiscountType(e.target.value)}
                   displayEmpty
@@ -566,11 +563,11 @@ function CouponComponent(props) {
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Select
                   id="status"
                   name="status"
-                  defaultValue={selectedStatus || ""}
+                  // defaultValue={selectedStatus || ""}
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   displayEmpty
@@ -589,11 +586,11 @@ function CouponComponent(props) {
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Select
                   id="appliedTo"
                   name="appliedTo"
-                  defaultValue={selectedAppliedTo || ""}
+                  // defaultValue={selectedAppliedTo || ""}
                   value={selectedAppliedTo}
                   onChange={(e) => setSelectedAppliedTo(e.target.value)}
                   displayEmpty
@@ -612,7 +609,7 @@ function CouponComponent(props) {
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box>
                   <Typography className={classes.labelText}>
                     {t("cities")}
@@ -697,7 +694,7 @@ function CouponComponent(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box>
                   <Typography className={classes.labelText}>
                     {t("businesses")}
@@ -784,7 +781,7 @@ function CouponComponent(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box>
                   <Typography className={classes.labelText}>
                     {t("Categories")}
@@ -868,7 +865,7 @@ function CouponComponent(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box>
                   <Typography className={classes.labelText}>
                     {t("Users")}
@@ -956,7 +953,7 @@ function CouponComponent(props) {
                 </Box>
               </Grid>
               {selectedAppliedTo === "items" && (
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Box>
                     <Typography className={classes.labelText}>
                       {t("Food")}
@@ -1090,4 +1087,4 @@ function CouponComponent(props) {
   );
 }
 
-export default withTranslation()(CouponComponent);
+export default CouponComponent;
