@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState } from "react";
-import { useTranslation, withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@apollo/client/react";
 import Header from "../components/Headers/Header";
 import CustomLoader from "../components/Loader/CustomLoader";
@@ -32,7 +32,7 @@ import { customStyles } from "../utils/tableCustomStyles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import RiderIcon from "../assets/svg/svg/Rider.svg";
+import RiderIcon from "../assets/svg/svg/Rider.svg?react";
 import TableHeader from "../components/TableHeader";
 import Alert from "../components/Alert";
 import ConfigurableValues from "../config/constants";
@@ -106,32 +106,32 @@ function Riders(props) {
   const handleSort = (column, sortDirection) =>
     console.log(column.selector, sortDirection);
 
-  const { t } = props;
+  const { t } = useTranslation();
 
   const columns = [
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
     },
     {
       name: t("Username"),
       sortable: true,
-      selector: "username",
+      selector: (row) => row.username,
     },
     {
       name: t("Password"),
       sortable: true,
-      selector: "password",
+      selector: (row) => row.password,
     },
     {
       name: t("Phone"),
       sortable: true,
-      selector: "phone",
+      selector: (row) => row.phone,
     },
     {
       name: t("Zone"),
-      selector: "zone.title",
+      selector: (row) => row.zone.title,
     },
     {
       name: t("Available"),
@@ -230,8 +230,8 @@ function Riders(props) {
             mt={5}
             order={{ xs: 1, lg: 2 }}
           >
-            {/* <RiderIcon /> */}
-            <img src={RiderIcon} alt="Config" width={32} height={32} />
+            <RiderIcon />
+            {/* <img src={RiderIcon} alt="Config" width={32} height={32} /> */}
           </Grid>
         </Grid>
         {isOpen && (
@@ -349,4 +349,4 @@ const ActionButtons = (row, toggleModal, mutateDelete) => {
   );
 };
 
-export default withTranslation()(Riders);
+export default Riders;

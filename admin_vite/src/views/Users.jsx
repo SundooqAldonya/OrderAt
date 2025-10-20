@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withTranslation } from "react-i18next";
 import Header from "../components/Headers/Header";
 import CustomLoader from "../components/Loader/CustomLoader";
 import { useQuery } from "@apollo/client/react";
@@ -152,4 +151,4 @@ const Users = (props) => {
     </>
   );
 };
-export default withTranslation()(Users);
+export default Users;

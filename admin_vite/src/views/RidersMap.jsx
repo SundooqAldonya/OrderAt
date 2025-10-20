@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import Header from "../components/Headers/Header";
 import {
   Box,
@@ -36,9 +36,7 @@ const RidersMap = () => {
   const mapRef = useRef();
 
   const globalClasses = useGlobalStyles();
-  const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRider, setSelectedRider] = useState(null);
   const [trackedRiderId, setTrackedRiderId] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
@@ -66,22 +64,22 @@ const RidersMap = () => {
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
     },
     {
       name: t("Username"),
       sortable: true,
-      selector: "username",
+      selector: (row) => row.username,
     },
     {
       name: t("Phone"),
       sortable: true,
-      selector: "phone",
+      selector: (row) => row.phone,
     },
     {
       name: t("updatedAt"),
       sortable: false,
-      selector: "updatedAt",
+      selector: (row) => row.updatedAt,
       cell: (row) => (
         <div>
           {moment(row.lastUpdatedLocationDate).locale("en-eg").format("LLL")}
