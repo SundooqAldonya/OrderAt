@@ -10,12 +10,12 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
+// import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import Header from "../components/Headers/Header";
 import useGlobalStyles from "../utils/globalStyles";
-import AutocompleteInput from "../components/AutocompleteInput";
-import FromIcon from "../assets/delivery_from.png";
-import ToIcon from "../assets/delivery_to.png";
+// import AutocompleteInput from "../components/AutocompleteInput";
+// import FromIcon from "../assets/delivery_from.png";
+// import ToIcon from "../assets/delivery_to.png";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import {
@@ -27,15 +27,15 @@ import { createDeliveryRequestAdmin } from "../apollo/mutations";
 import { NotificationManager } from "react-notifications";
 import { gql } from "@apollo/client";
 
-const containerStyle = {
-  width: "100%",
-  height: "500px",
-};
+// const containerStyle = {
+//   width: "100%",
+//   height: "500px",
+// };
 
-const defaultCenter = {
-  lat: 30.0444,
-  lng: 31.2357,
-};
+// const defaultCenter = {
+//   lat: 30.0444,
+//   lng: 31.2357,
+// };
 
 const GET_CITIES = gql`
   ${getCities}
@@ -220,7 +220,7 @@ const OtlobMandoob = () => {
       <Container className={globalClasses.flex} sx={{ mt: 4 }}>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               {/* <GoogleMap
               mapContainerStyle={containerStyle}
               center={
@@ -251,8 +251,8 @@ const OtlobMandoob = () => {
               )}
             </GoogleMap> */}
             </Grid>
-
-            <Grid item xs={12} md={12}>
+            {/* xs={12} md={12} */}
+            <Grid size={{ xs: 12, md: 12 }}>
               {/* <Typography variant="h5">City</Typography> */}
               <FormControl sx={{ backgroundColor: "#fff" }} fullWidth>
                 <InputLabel id="demo-simple-select-label">City</InputLabel>
@@ -281,7 +281,7 @@ const OtlobMandoob = () => {
             </Grid>
             {city ? (
               <Fragment>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <FormControl sx={{ backgroundColor: "#fff" }} fullWidth>
                     <InputLabel id="demo-simple-select-label">From</InputLabel>
                     <Select
@@ -308,7 +308,7 @@ const OtlobMandoob = () => {
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <FormControl sx={{ backgroundColor: "#fff" }} fullWidth>
                     <InputLabel id="demo-simple-select-label">To</InputLabel>
                     <Select
@@ -337,7 +337,7 @@ const OtlobMandoob = () => {
               </Fragment>
             ) : null}
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
@@ -353,7 +353,7 @@ const OtlobMandoob = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
@@ -369,7 +369,7 @@ const OtlobMandoob = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline
@@ -386,17 +386,17 @@ const OtlobMandoob = () => {
               />
             </Grid>
             {calcLoading && (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Typography>Calculating price...</Typography>
               </Grid>
             )}
             {deliveryAmount && loaded ? (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Typography>Delivery Amount: {deliveryAmount} EGP</Typography>
               </Grid>
             ) : null}
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 variant="contained"
                 color="primary"
