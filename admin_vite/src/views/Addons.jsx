@@ -11,7 +11,7 @@ import {
 import CustomLoader from "../components/Loader/CustomLoader";
 import DataTable from "react-data-table-component";
 import orderBy from "lodash/orderBy";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@apollo/client/react";
 import SearchBar from "../components/TableHeader/SearchBar";
 import useGlobalStyles from "../utils/globalStyles";
@@ -42,7 +42,7 @@ const DELETE_ADDON = gql`
 `;
 
 const Addon = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const [addon, setAddon] = useState(null);
   const [editModal, setEditModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,22 +95,22 @@ const Addon = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("Minimum"),
       sortable: true,
-      selector: "quantityMinimum",
+      selector: (row) => row.quantityMinimum,
     },
     {
       name: t("Maximum"),
       sortable: true,
-      selector: "quantityMaximum",
+      selector: (row) => row.quantityMaximum,
     },
     {
       name: t("Action"),
@@ -155,7 +155,7 @@ const Addon = (props) => {
         <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <AddonComponent edit={false} />
         {errorQuery && (
           <tr>

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 // core components
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 import AdminFooter from "../components/Footers/AdminFooter";
@@ -8,7 +8,8 @@ import routes from "../routes";
 import { Box } from "@mui/material";
 
 function Admin(props) {
-  var divRef = useRef(null);
+  const divRef = useRef(null);
+  const location = useLocation();
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -32,30 +33,23 @@ function Admin(props) {
   //   });
   // };
 
-  const getRoutes = (routes) => {
+  const getRoutes = () => {
     return routes
       .filter((prop) => prop.layout === "/admin")
-      .map((prop, key) => (
-        <Route
-          key={key}
-          path={prop.layout + prop.path}
-          element={<prop.component />}
-        />
-      ));
+      .map((prop, key) => {
+        const Component = prop.component;
+        return <Route key={key} path={prop.path} element={<Component />} />;
+      });
   };
 
   const getBrandText = (path) => {
-    const location = props.location.pathname.split("/")[2].replace("-", " ");
-    console.log({ location });
+    const location2 = location.pathname.split("/")[2].replace("-", " ");
 
-    if (location === "order details") {
-      return location;
+    if (location2 === "order details") {
+      return location2;
     }
     for (let i = 0; i < routes.length; i++) {
-      if (
-        props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==
-        -1
-      ) {
+      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
         return routes[i].name;
       }
     }
@@ -73,11 +67,8 @@ function Admin(props) {
         }}
         ref={divRef}
       >
-        <AdminNavbar
-          {...props}
-          brandText={getBrandText(props.location.pathname)}
-        />
-        <Routes>{getRoutes(routes)}</Routes>
+        <AdminNavbar {...props} brandText={getBrandText(location.pathname)} />
+        <Routes>{getRoutes()}</Routes>
         <AdminFooter />
       </Box>
     </Box>

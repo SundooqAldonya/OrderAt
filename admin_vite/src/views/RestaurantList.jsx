@@ -298,7 +298,7 @@ const Restaurants = (props) => {
               localStorage.setItem("restaurant_id", row._id);
               localStorage.setItem("restaurantImage", row.image);
               localStorage.setItem("restaurantName", row.name);
-              navigate(`/admin/dashboard/${row.slug}`);
+              navigate(`/admin/dashboard`);
             }}
             conditionalRowStyles={conditionalRowStyles}
             selectableRows

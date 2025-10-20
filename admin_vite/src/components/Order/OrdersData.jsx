@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { transformToNewline } from "../../utils/stringManipulations";
 import DataTable from "react-data-table-component";
 import orderBy from "lodash/orderBy";
@@ -31,7 +31,8 @@ const ORDER_PLACED = gql`
 
 const OrdersData = (props) => {
   const theme = useTheme();
-  const { t, refetchOrders, isAdminPage } = props;
+  const { t } = useTranslation();
+  const { refetchOrders, isAdminPage } = props;
   const [searchQuery, setSearchQuery] = useState("");
   const [isOrderFormVisible, setIsOrderFormVisible] = useState(false);
   const [newFormVisible, setNewFormVisible] = useState(false);
@@ -108,7 +109,7 @@ const OrdersData = (props) => {
     {
       name: t("OrderID"),
       sortable: true,
-      selector: "orderId",
+      selector: (row) => row.orderId,
     },
     // {
     //   name: t('Items'),
@@ -124,13 +125,13 @@ const OrdersData = (props) => {
     },
     {
       name: t("Payment"),
-      selector: "paymentMethod",
+      selector: (row) => row.paymentMethod,
       sortable: true,
       cell: (row) => <>{t(row.paymentMethod)}</>,
     },
     {
       name: t("Status"),
-      selector: "orderStatus",
+      selector: (row) => row.orderStatus,
       sortable: true,
       cell: (row) => <>{t(row.orderStatus)}</>,
     },
@@ -202,8 +203,8 @@ const OrdersData = (props) => {
       {/* Add Order Button on the Right Side */}
       {!isAdminPage ? (
         <Grid container spacing={2} style={{ marginBottom: "20px" }}>
-          <Grid item xs={9}></Grid>{" "}
-          <Grid item xs={3}>
+          <Grid size={{ xs: 9 }}></Grid>{" "}
+          <Grid size={{ xs: 3 }}>
             <Button
               variant="contained"
               color="primary"
@@ -282,4 +283,4 @@ const OrdersData = (props) => {
   );
 };
 
-export default withTranslation()(OrdersData);
+export default OrdersData;

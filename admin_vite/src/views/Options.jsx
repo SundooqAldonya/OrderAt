@@ -87,17 +87,17 @@ const Option = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("Price"),
       sortable: true,
-      selector: "price",
+      selector: (row) => row.price,
     },
     {
       name: t("Action"),
@@ -129,7 +129,7 @@ const Option = (props) => {
         <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <OptionComponent optionsPage={true} onClose={closeEditModal} />
         {errorQuery && (
           <tr>
@@ -150,7 +150,7 @@ const Option = (props) => {
             }
             title={<TableHeader title={t("Options")} />}
             columns={columns}
-            data={data && data.options?.length ? filtered : {}}
+            data={data && data.options?.length ? filtered : []}
             pagination
             progressPending={loadingQuery}
             progressComponent={<CustomLoader />}

@@ -9,7 +9,7 @@ import routes from "../routes";
 import { Box } from "@mui/material";
 
 function SuperAdmin(props) {
-  var divRef = useRef(null);
+  const divRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {

@@ -152,12 +152,8 @@ const Timings = (props) => {
         ) : (
           <Box className={globalClasses.timing}>
             <Grid container className={globalClasses.timingHeader}>
-              <Grid item md={2} lg={2}>
-                {t("Days")}
-              </Grid>
-              <Grid item md={7} lg={7}>
-                {t("OpenTimes")}
-              </Grid>
+              <Grid size={{ md: 2, lg: 2 }}>{t("Days")}</Grid>
+              <Grid size={{ md: 7, lg: 7 }}>{t("OpenTimes")}</Grid>
             </Grid>
             {dayKeys.map((dayKey, idx) => (
               <DayComponent
@@ -263,4 +259,4 @@ const Timings = (props) => {
   );
 };
 
-export default withTranslation()(Timings);
+export default Timings;

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Container } from "@mui/material";
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 import AdminFooter from "../components/Footers/AdminFooter";
@@ -7,7 +7,9 @@ import AdminFooter from "../components/Footers/AdminFooter";
 import routes from "../routes";
 
 function Restaurant(props) {
-  var divRef = useRef(null);
+  const divRef = useRef(null);
+  const location = useLocation();
+
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -33,21 +35,15 @@ function Restaurant(props) {
   const getRoutes = (routes) => {
     return routes
       .filter((prop) => prop.layout === "/restaurant")
-      .map((prop, key) => (
-        <Route
-          key={key}
-          path={prop.layout + prop.path}
-          element={<prop.component />}
-        />
-      ));
+      .map((prop, key) => {
+        const Component = prop.component;
+        return <Route key={key} path={prop.path} element={<Component />} />;
+      });
   };
 
   const getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
-      if (
-        props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==
-        -1
-      ) {
+      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
         return routes[i].name;
       }
     }
@@ -56,10 +52,7 @@ function Restaurant(props) {
   return (
     <>
       <div ref={divRef}>
-        <AdminNavbar
-          {...props}
-          brandText={getBrandText(props.location.pathname)}
-        />
+        <AdminNavbar {...props} brandText={getBrandText(location.pathname)} />
         <Routes>{getRoutes(routes)}</Routes>
         <Container fluid>
           <AdminFooter />

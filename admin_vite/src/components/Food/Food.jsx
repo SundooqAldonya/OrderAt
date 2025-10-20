@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import ConfigurableValues from "../../config/constants";
 import {
   getRestaurantDetail,
@@ -375,16 +375,14 @@ function Food(props) {
     setEditModal(false);
   };
 
-  const { t } = props;
+  const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
+
   return (
-    <Box container className={[classes.container, classes.width60]}>
+    <Box className={[classes.container, classes.width60]}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.food ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.food ? classes.headingBlack : classes.heading}>
           <Typography variant="h6" className={classes.textWhite}>
             {props.food ? t("Edit Food") : t("Add Food")}
           </Typography>
@@ -557,7 +555,7 @@ function Food(props) {
                     <Box key={index} pl={1} pr={1}>
                       <Box className={globalClasses.flexRow}>
                         <Grid container>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <Box mt={2}>
                               <Typography className={classes.labelText}>
                                 {t("UniqueTitle")}
@@ -591,7 +589,7 @@ function Food(props) {
                               />
                             </Box>
                           </Grid>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <Box mt={2}>
                               <Typography className={classes.labelText}>
                                 {t("Price")}
@@ -625,7 +623,7 @@ function Food(props) {
                               />
                             </Box>
                           </Grid>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <Box mt={2}>
                               <Typography className={classes.labelText}>
                                 {t("Discounted")}
@@ -652,7 +650,7 @@ function Food(props) {
                               />
                             </Box>
                           </Grid>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <Box>
                               <Typography className={classes.labelText}>
                                 {t("select_stock")}
@@ -854,4 +852,4 @@ function Food(props) {
     </Box>
   );
 }
-export default withTranslation()(Food);
+export default Food;

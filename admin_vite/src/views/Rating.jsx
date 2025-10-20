@@ -36,35 +36,35 @@ const Ratings = (props) => {
     {
       name: t("Name"),
       sortable: true,
-      selector: "user.name",
-      cell: (row) => <>{row.order.user.name}</>,
+      selector: (row) => row.user.name,
+      cell: (row) => <>{row.order.user?.name}</>,
     },
     {
       name: t("Email"),
       sortable: true,
-      selector: "user.email",
-      cell: (row) => <>{row.order.user.email}</>,
+      selector: (row) => row.user.email,
+      cell: (row) => <>{row.order.user?.email}</>,
     },
-    {
-      name: t("Items"),
-      cell: (row) => (
-        <>
-          {row.order.items.map(({ title }) => {
-            return title + "\t";
-          })}
-        </>
-      ),
-    },
+    // {
+    //   name: t("Items"),
+    //   cell: (row) => (
+    //     <>
+    //       {row.order.items.map(({ title }) => {
+    //         return title + "\t";
+    //       })}
+    //     </>
+    //   ),
+    // },
     {
       name: t("Review"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
       cell: (row) => <>{row.description}</>,
     },
     {
       name: t("Ratings"),
       sortable: true,
-      selector: "rating",
+      selector: (row) => row.rating,
       cell: (row) => <>{row.rating}</>,
     },
   ];

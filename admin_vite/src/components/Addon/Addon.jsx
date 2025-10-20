@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@apollo/client/react";
 import {
   getRestaurantDetail,
@@ -44,7 +44,7 @@ const GET_ADDONS = gql`
 `;
 function Addon(props) {
   const theme = useTheme();
-  const { t } = props;
+  const { t } = useTranslation();
   const restaurantId = localStorage.getItem("restaurantId");
   const onCompleted = ({ createAddons, editAddon }) => {
     if (createAddons) {
@@ -247,12 +247,9 @@ function Addon(props) {
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
   return (
-    <Box container className={[classes.container, classes.width60]}>
+    <Box className={[classes.container, classes.width60]}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.addon ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.addon ? classes.headingBlack : classes.heading}>
           <Typography variant="h6" className={classes.text}>
             {t("Addons")}
           </Typography>

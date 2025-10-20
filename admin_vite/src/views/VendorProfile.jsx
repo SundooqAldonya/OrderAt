@@ -82,8 +82,7 @@ const MenuProps = {
 };
 
 const VendorProfile = () => {
-  const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues();
-  // console.log('here')
+  // const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_FOOD } = ConfigurableValues();
   const { t } = useTranslation();
   const [uploadFile] = useMutation(UPLOAD_FILE);
   const [uploadRestaurantLogo] = useMutation(UPLOAD_LOGO);
@@ -454,10 +453,10 @@ const VendorProfile = () => {
   return (
     <>
       <Header />
-      <Container className={globalClasses.flex} fluid>
-        <Box container className={classes.container}>
+      <Container className={globalClasses.flex}>
+        <Box className={classes.container}>
           <Box style={{ alignItems: "start" }} className={classes.flexRow}>
-            <Box item className={classes.heading2}>
+            <Box className={classes.heading2}>
               <Typography variant="h6" className={classes.textWhite}>
                 {t("UpdateProfile")}
               </Typography>
@@ -470,7 +469,7 @@ const VendorProfile = () => {
             <Box className={classes.form}>
               <form ref={formRef}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("RestaurantUsername")}
@@ -501,7 +500,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Password")}
@@ -539,7 +538,7 @@ const VendorProfile = () => {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Name")}
@@ -563,7 +562,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Address")}
@@ -590,7 +589,7 @@ const VendorProfile = () => {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("DeliveryTime")}
@@ -614,7 +613,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("MinOrder")}
@@ -640,7 +639,7 @@ const VendorProfile = () => {
                   </Grid>
                 </Grid>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("SalesTax")}
@@ -664,7 +663,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("OrderPrefix")}
@@ -688,7 +687,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("sales_person")}
@@ -705,7 +704,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("responsiblePersonName")}
@@ -724,7 +723,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("contactNumber")}
@@ -741,7 +740,7 @@ const VendorProfile = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography className={classes.labelText}>
                       {t("Select City")}
                     </Typography>
@@ -772,7 +771,7 @@ const VendorProfile = () => {
                       ))}
                     </Select>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     {loadingCategories && <Typography>Loading...</Typography>}
                     {errorCategories && (
                       <Typography>Error fetching categories</Typography>
@@ -807,7 +806,7 @@ const VendorProfile = () => {
                       <Typography>Add shop categories</Typography>
                     )}
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Cuisines")}
@@ -843,7 +842,7 @@ const VendorProfile = () => {
                       </Select>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Visibility")}
@@ -869,7 +868,7 @@ const VendorProfile = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("Featured")}
@@ -895,7 +894,7 @@ const VendorProfile = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box>
                       <Typography className={classes.labelText}>
                         {t("business_categories")}
@@ -940,7 +939,7 @@ const VendorProfile = () => {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box
                       mt={3}
                       style={{ alignItems: "center" }}
@@ -972,7 +971,7 @@ const VendorProfile = () => {
                     </Box>
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box
                       mt={3}
                       style={{ alignItems: "center" }}
@@ -1039,4 +1038,4 @@ const VendorProfile = () => {
     </>
   );
 };
-export default withTranslation()(VendorProfile);
+export default VendorProfile;

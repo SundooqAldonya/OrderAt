@@ -66,6 +66,8 @@ const Dashboard = (props) => {
   const theme = useTheme();
   const restaurantId = localStorage.getItem("restaurantId");
 
+  console.log({ restaurantId });
+
   const dataLine = {
     datasets: {
       label: t("SalesAmount"),
@@ -140,11 +142,11 @@ const Dashboard = (props) => {
   return (
     <>
       <Header />
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         {errorTotal ? <span>{`${Error} + ${errorTotal.message}`}</span> : null}
-        <Box container className={classes.container}>
+        <Box className={classes.container}>
           <Box className={classes.flexRow}>
-            <Box item className={classes.heading}>
+            <Box className={classes.heading}>
               <Typography variant="h6" className={classes.textWhite}>
                 {t("GraphFilter")}
               </Typography>
@@ -154,7 +156,7 @@ const Dashboard = (props) => {
           <Box className={classes.form}>
             <form>
               <Grid container sx={{ textAlign: "left" }}>
-                <Grid item md={6} xs={12}>
+                <Grid size={{ md: 6, xs: 12 }} md={6} xs={12}>
                   <Typography sx={{ fontWeight: "bold" }}>
                     {t("StartDate")}
                   </Typography>
@@ -173,7 +175,7 @@ const Dashboard = (props) => {
                     className={[globalClasses.input]}
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                <Grid size={{ md: 6, xs: 12 }} md={6} xs={12}>
                   <Typography sx={{ fontWeight: "bold" }}>
                     {t("EndDate")}
                   </Typography>
@@ -199,7 +201,7 @@ const Dashboard = (props) => {
         </Box>
       </Container>
       <Grid container spacing={2} m={2} p={2}>
-        <Grid item md={8} xs={12}>
+        <Grid size={{ md: 8, xs: 12 }} md={8} xs={12}>
           <Box
             sx={{
               bgcolor: "primary.main2",
@@ -291,7 +293,7 @@ const Dashboard = (props) => {
             }}
           />
         </Grid>
-        <Grid item md={3} ml={2} xs={12}>
+        <Grid size={{ md: 3, xs: 12 }} md={3} ml={2} xs={12}>
           <Box
             sx={{
               p: 2,

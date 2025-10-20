@@ -30,13 +30,10 @@ function Auth() {
   const getRoutes = (routes) => {
     return routes
       .filter((prop) => prop.layout === "/auth")
-      .map((prop, key) => (
-        <Route
-          key={key}
-          path={prop.layout + prop.path}
-          element={<prop.component />}
-        />
-      ));
+      .map((prop, key) => {
+        const Component = prop.component;
+        return <Route key={key} path={prop.path} element={<Component />} />;
+      });
   };
 
   return <Routes>{getRoutes(routes)}</Routes>;

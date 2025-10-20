@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import CategoryComponent from "../components/Category/Category";
 import CustomLoader from "../components/Loader/CustomLoader";
 // core components
@@ -42,7 +42,7 @@ const DELETE_CATEGORY = gql`
   ${deleteCategory}
 `;
 const Category = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const { PAID_VERSION } = ConfigurableValues();
   const [editModal, setEditModal] = useState(false);
   const [category, setCategory] = useState(null);
@@ -91,7 +91,7 @@ const Category = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Action"),
@@ -129,9 +129,9 @@ const Category = (props) => {
         <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <Grid container mb={3}>
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <CategoryComponent />
           </Grid>
         </Grid>
@@ -267,4 +267,4 @@ const ActionButtons = (
   );
 };
 
-export default withTranslation()(Category);
+export default Category;

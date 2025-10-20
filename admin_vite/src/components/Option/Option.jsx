@@ -8,7 +8,7 @@ import {
   Grid,
   useTheme,
 } from "@mui/material";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { useMutation } from "@apollo/client/react";
 import { createOptions, editOption, getOptions } from "../../apollo";
 import { validateFunc } from "../../constraints/constraints";
@@ -31,7 +31,7 @@ const EDIT_OPTION = gql`
 
 function Option(props) {
   const theme = useTheme();
-  const { t } = props;
+  const { t } = useTranslation();
   const restaurantId = localStorage.getItem("restaurantId");
   const [option, optionSetter] = useState(
     props.option
@@ -145,12 +145,9 @@ function Option(props) {
   const globalClasses = useGlobalStyles();
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.option ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.option ? classes.headingBlack : classes.heading}>
           <Typography variant="h6" className={classes.textWhite}>
             {props.option ? t("UpdateOption") : t("AddOption")}
           </Typography>
@@ -161,7 +158,7 @@ function Option(props) {
         <form>
           {option.map((optionItem, index) => (
             <Grid container key={optionItem._id}>
-              <Grid item xs={12} sm={3}>
+              <Grid size={{ xs: 12, sm: 3 }}>
                 <div>
                   <Typography className={classes.labelText}>
                     {t("Title")}
@@ -185,7 +182,7 @@ function Option(props) {
                   />
                 </div>
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid size={{ xs: 12, sm: 3 }}>
                 <div>
                   <Typography className={classes.labelText}>
                     {t("Description")}
@@ -209,7 +206,7 @@ function Option(props) {
                   />
                 </div>
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid size={{ xs: 12, sm: 3 }}>
                 <div>
                   <Typography className={classes.labelText}>
                     {t("Price")}
@@ -234,9 +231,7 @@ function Option(props) {
                 </div>
               </Grid>
               <Grid
-                item
-                xs={12}
-                sm={3}
+                size={{ xs: 12, sm: 3 }}
                 container
                 justify="center"
                 alignItems="center"
@@ -350,4 +345,4 @@ function Option(props) {
     </Box>
   );
 }
-export default withTranslation()(Option);
+export default Option;

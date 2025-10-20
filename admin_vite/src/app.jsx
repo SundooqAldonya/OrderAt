@@ -148,26 +148,26 @@ const App = () => {
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/reset" element={<ResetPassword />} />
                 {/* <Route path="/super_admin/vendors" element={<Vendors />} /> */}
-                <Route path="*" element={<Navigate to="/auth/login" />} />
+                {/* <Route path="*" element={<Navigate to="/auth/login" />} /> */}
                 <Route element={<AdminPrivateRoute />}>
                   <Route path="/super_admin/*" element={<SuperAdminLayout />} />
                 </Route>
 
                 {/* Restaurant routes */}
-                {/* <Route element={<PrivateRoute />}>
+                <Route element={<PrivateRoute />}>
                   <Route path="/restaurant/*" element={<RestaurantLayout />} />
-                </Route> */}
+                </Route>
 
                 {/* Admin routes */}
-                {/* <Route element={<PrivateRoute />}>
+                <Route element={<PrivateRoute />}>
                   <Route path="/admin/*" element={<AdminLayout />} />
-                </Route> */}
+                </Route>
 
                 {/* Auth routes (public) */}
                 {/* <Route path="/auth/*" element={<AuthLayout />} /> */}
 
                 {/* Default redirect */}
-                {/* <Route path="*" element={<Navigate to={route} replace />} /> */}
+                <Route path="*" element={<Navigate to={route} replace />} />
               </Routes>
             </BrowserRouter>
           </GoogleMapsLoader>

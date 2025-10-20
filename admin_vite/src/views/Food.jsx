@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 // core components
 import Header from "../components/Headers/Header";
 import { deleteFood, getFoodListByRestaurant } from "../apollo";
@@ -41,7 +41,7 @@ const DELETE_FOOD = gql`
 `;
 
 const Food = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const { PAID_VERSION } = ConfigurableValues();
   const [editModal, setEditModal] = useState(false);
   const [food, setFood] = useState(null);
@@ -94,19 +94,19 @@ const Food = (props) => {
   const columns = [
     {
       name: t("Title"),
-      selector: "title",
+      selector: (row) => row.title,
       sortable: true,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
       cell: (row) => <>{transformToNewline(row.description, 3)}</>,
     },
     {
       name: t("Category"),
       sortable: true,
-      selector: "category.category",
+      selector: (row) => row.category.category,
       cell: (row) => <>{row.category?.title || "N/A"}</>,
     },
     {
@@ -165,7 +165,7 @@ const Food = (props) => {
       {isOpen && (
         <Alert message={t("AvailableAfterPurchasing")} severity="warning" />
       )}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <MenuFileUpload />
         <FoodComponent onClose={closeEditModal} />
         {errorQuery && <span>`Error! ${errorQuery.message}`</span>}

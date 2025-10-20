@@ -1,6 +1,6 @@
 /*eslint-disable*/
-import React, { Fragment } from 'react'
-import { withTranslation } from 'react-i18next'
+import React, { Fragment } from "react";
+import { withTranslation } from "react-i18next";
 // nodejs library to set properties for components
 
 import {
@@ -12,31 +12,32 @@ import {
   Typography,
   Link,
   SvgIcon,
-  useTheme
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import routes from '../../routes'
-import useStyles from './styles'
+  useTheme,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import routes from "../../routes";
+import useStyles from "./styles";
 // import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
-import { useLocation } from 'react-router-dom'
-import Logo from '../../assets/logo.png'
+import { useLocation } from "react-router-dom";
+import Logo from "../../assets/logo.png";
+import { Link as LinkRouter } from "react-router-dom";
 
-const drawerWidth = 240
+const drawerWidth = 240;
 function Sidebar(props) {
-  const theme = useTheme()
-  const location = useLocation()
-  const classes = useStyles()
-  const restaurantId = localStorage.getItem('restaurantId')
-  const restaurantImage = localStorage.getItem('restaurantImage')
-  const restaurantName = localStorage.getItem('restaurantName')
-  const [mobileOpen, setMobileOpen] = React.useState(false)
-  const { window, t } = props
+  const theme = useTheme();
+  const location = useLocation();
+  const classes = useStyles();
+  const restaurantId = localStorage.getItem("restaurantId");
+  const restaurantImage = localStorage.getItem("restaurantImage");
+  const restaurantName = localStorage.getItem("restaurantName");
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { window, t } = props;
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
+    setMobileOpen(!mobileOpen);
+  };
   const container =
-    window !== undefined ? () => window().document.body : undefined
+    window !== undefined ? () => window().document.body : undefined;
 
   const createLinks = (
     <Box className={classes.sidebarBox}>
@@ -45,9 +46,10 @@ function Sidebar(props) {
         <Box
           style={{
             width: 300,
-            height: 100
-          }}>
-          <img src={Logo} style={{ width: '100%' }} />
+            height: 100,
+          }}
+        >
+          <img src={Logo} style={{ width: "100%" }} />
         </Box>
       </Toolbar>
       {restaurantName && restaurantImage ? (
@@ -61,8 +63,9 @@ function Sidebar(props) {
           />
           <Typography
             variant="h2"
-            sx={{ color: 'common.black' }}
-            className={[classes.restText]}>
+            sx={{ color: "common.black" }}
+            className={[classes.restText]}
+          >
             {restaurantName}
           </Typography>
         </Box>
@@ -71,32 +74,32 @@ function Sidebar(props) {
       <Box className={classes.sidebarList}>
         {routes.map((prop, key) => {
           if (
-            JSON.parse(localStorage.getItem('user-enatega')).userType ===
-            'ADMIN'
+            JSON.parse(localStorage.getItem("user-enatega")).userType ===
+            "ADMIN"
           ) {
             return prop.appearInSidebar && !prop.admin ? (
               <Fragment key={key}>
                 {key === 14 ? (
                   <Typography className={classes.headingText} variant="h3">
-                    {t('RESTAURANT')}
+                    {t("RESTAURANT")}
                   </Typography>
                 ) : null}
                 {key === 19 ? (
                   <Typography className={classes.headingText} variant="h3">
-                    {t('MANAGEMENT')}
+                    {t("MANAGEMENT")}
                   </Typography>
                 ) : null}
                 <Link
+                  component={LinkRouter}
                   className={[
                     classes.rowDisplay,
                     classes.sidebarLink,
                     location.pathname === `${prop.layout}${prop.path}` &&
-                      classes.active
+                      classes.active,
                   ]}
-                  href={
-                    '#' + prop.layout + prop.path.replace(':id', restaurantId)
-                  }
-                  underline="none">
+                  to={prop.layout + prop.path.replace(":id", restaurantId)}
+                  underline="none"
+                >
                   <SvgIcon component={prop.icon} fontSize="small" />
                   <Typography
                     variant="h6"
@@ -104,29 +107,31 @@ function Sidebar(props) {
                       classes.linkText,
                       location.pathname !== `${prop.layout}${prop.path}`
                         ? classes.blackText
-                        : classes.whiteText
-                    ]}>
+                        : classes.whiteText,
+                    ]}
+                  >
                     {t(prop.name)}
                   </Typography>
                 </Link>
               </Fragment>
-            ) : null
+            ) : null;
           } else {
             return prop.appearInSidebar &&
               !prop.admin &&
-              prop.name != t('BackToAdmin') ? (
+              prop.name != t("BackToAdmin") ? (
               <>
                 <Link
                   className={[
                     classes.rowDisplay,
                     classes.sidebarLink,
                     location.pathname === `${prop.layout}${prop.path}` &&
-                      classes.active
+                      classes.active,
                   ]}
                   href={
-                    '#' + prop.layout + prop.path.replace(':id', restaurantId)
+                    "#" + prop.layout + prop.path.replace(":id", restaurantId)
                   }
-                  underline="none">
+                  underline="none"
+                >
                   <SvgIcon component={prop.icon} fontSize="small" />
                   <Typography
                     variant="h6"
@@ -134,18 +139,19 @@ function Sidebar(props) {
                       classes.linkText,
                       location.pathname !== `${prop.layout}${prop.path}`
                         ? classes.blackText
-                        : classes.whiteText
-                    ]}>
+                        : classes.whiteText,
+                    ]}
+                  >
                     {t(prop.name)}
                   </Typography>
                 </Link>
               </>
-            ) : null
+            ) : null;
           }
         })}
       </Box>
     </Box>
-  )
+  );
 
   return (
     <>
@@ -154,15 +160,17 @@ function Sidebar(props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          display: { sm: 'none' }
-        }}>
+          display: { sm: "none" },
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}>
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
             <MenuIcon />
           </IconButton>
         </Toolbar>
@@ -170,7 +178,8 @@ function Sidebar(props) {
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders">
+        aria-label="mailbox folders"
+      >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
@@ -178,31 +187,33 @@ function Sidebar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true // Better open performance on mobile.
+            keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: '70%' }
-          }}>
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "70%" },
+          }}
+        >
           {createLinks}
         </Drawer>
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
               width: drawerWidth,
               background: `linear-gradient(180deg, ${theme.palette.warning.dark} 50%, transparent 50%);`,
-              borderRight: 'none'
-            }
+              borderRight: "none",
+            },
           }}
-          open>
+          open
+        >
           {createLinks}
         </Drawer>
       </Box>
     </>
-  )
+  );
 }
 
-export default withTranslation()(Sidebar)
+export default withTranslation()(Sidebar);
