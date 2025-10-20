@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 // core components
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 import AdminFooter from "../components/Footers/AdminFooter";
@@ -10,6 +10,7 @@ import { Box } from "@mui/material";
 
 function SuperAdmin(props) {
   var divRef = useRef(null);
+  const location = useLocation();
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -33,24 +34,25 @@ function SuperAdmin(props) {
   //   })
   // }
 
-  const getRoutes = (routes) => {
+  const getRoutes = () => {
     return routes
       .filter((prop) => prop.layout === "/super_admin")
-      .map((prop, key) => (
-        <Route
-          key={key}
-          path={prop.layout + prop.path}
-          element={<prop.component />}
-        />
-      ));
+      .map((prop, key) => {
+        const Component = prop.component;
+        return (
+          <Route
+            key={key}
+            // path={prop.layout + prop.path}
+            path={prop.path}
+            element={<Component />}
+          />
+        );
+      });
   };
 
   const getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
-      if (
-        props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==
-        -1
-      ) {
+      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
         return routes[i].name;
       }
     }
@@ -68,11 +70,8 @@ function SuperAdmin(props) {
         }}
         ref={divRef}
       >
-        <AdminNavbar
-          {...props}
-          brandText={getBrandText(props.location.pathname)}
-        />
-        <Routes>{getRoutes(routes)}</Routes>
+        <AdminNavbar brandText={getBrandText(location.pathname)} />
+        <Routes>{getRoutes()}</Routes>
         <AdminFooter />
       </Box>
     </Box>

@@ -6,12 +6,14 @@ import {
   Typography,
   Input,
   Button,
-  Grid,
+  // Grid,
   Link,
   Checkbox,
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
+
+import Grid from "@mui/material/Grid";
 
 import { useMutation } from "@apollo/client/react";
 import { ownerLogin } from "../apollo";
@@ -78,7 +80,7 @@ const Login = (props) => {
         // props.history.replace('/super_admin/vendors')
         navigate("/super_admin/vendors");
       }
-      window.location.reload();
+      // window.location.reload();
     }
   }, [isLogged]);
 
@@ -164,9 +166,9 @@ const Login = (props) => {
       >
         {/* Left Side Image (Hidden on Small Screens) */}
         <Grid
-          item
-          lg={5}
-          sm={12}
+          size={{ xs: 12, lg: 5 }}
+          // lg={5}
+          // sm={12}
           sx={{
             display: { xs: "none", md: "none", lg: "flex" },
             alignItems: "center",
@@ -186,9 +188,9 @@ const Login = (props) => {
 
         {/* Login Form */}
         <Grid
-          item
-          lg={7}
-          sm={12}
+          size={{ xs: 12, lg: 7 }}
+          // lg={7}
+          // sm={12}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -224,7 +226,7 @@ const Login = (props) => {
               <form ref={formRef} onSubmit={loginFunc}>
                 <Grid container>
                   {/* Email Input */}
-                  <Grid item xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <Typography className={classes.labelText}>
                       {t("email_or_phone")}
                     </Typography>
@@ -250,7 +252,7 @@ const Login = (props) => {
                   </Grid>
 
                   {/* Password Input */}
-                  <Grid item xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <Typography className={classes.labelText}>
                       {t("Password")}
                     </Typography>

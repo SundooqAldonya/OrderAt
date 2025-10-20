@@ -27,31 +27,31 @@ import Commission from "./views/Commission";
 import DeliveryBoundsAndLocation from "./views/DeliveryBoundsAndLocation";
 import DispatchRestaurant from "./views/DispatchRestaurant";
 import WithdrawRequest from "./views/WithdrawRequest";
-import VendorIcon from "./assets/svg/vendor.svg";
-import RestaurantIcon from "./assets/svg/restaurant.svg";
-import CommissionsIcon from "./assets/svg/commission.svg";
-import ConfigurationIcon from "./assets/svg/configuration.svg";
-import CouponsIcon from "./assets/svg/coupons.svg";
-import DeliveryIcon from "./assets/svg/delivery.svg";
-import NotificationsIcon from "./assets/svg/notifications.svg";
-import RequestIcon from "./assets/svg/request.svg";
-import RiderIcon from "./assets/svg/riders.svg";
-import TippingsIcon from "./assets/svg/tipping.svg";
-import UserIcon from "./assets/svg/user.svg";
-import ZonesIcon from "./assets/svg/zones.svg";
-import HomeIcon from "./assets/svg/home.svg";
-import AddonsIcon from "./assets/svg/addons.svg";
-import BackIcon from "./assets/svg/back.svg";
-import CategoryIcon from "./assets/svg/category.svg";
-import DashboardIcon from "./assets/svg/dashboard.svg";
-import FoodIcon from "./assets/svg/food.svg";
-import LocationIcon from "./assets/svg/location.svg";
-import OptionIcon from "./assets/svg/option.svg";
-import OrderIcon from "./assets/svg/order.svg";
-import PaymentIcon from "./assets/svg/payment.svg";
-import RatingIcon from "./assets/svg/rating.svg";
-import TimingIcon from "./assets/svg/timings.svg";
-import RestaurantSectionIcon from "./assets/svg/restSection.svg";
+import VendorIcon from "./assets/svg/vendor.svg?react";
+import RestaurantIcon from "./assets/svg/restaurant.svg?react";
+import CommissionsIcon from "./assets/svg/commission.svg?react";
+import ConfigurationIcon from "./assets/svg/configuration.svg?react";
+import CouponsIcon from "./assets/svg/coupons.svg?react";
+import DeliveryIcon from "./assets/svg/delivery.svg?react";
+import NotificationsIcon from "./assets/svg/notifications.svg?react";
+import RequestIcon from "./assets/svg/request.svg?react";
+import RiderIcon from "./assets/svg/riders.svg?react";
+import TippingsIcon from "./assets/svg/tipping.svg?react";
+import UserIcon from "./assets/svg/user.svg?react";
+import ZonesIcon from "./assets/svg/zones.svg?react";
+import HomeIcon from "./assets/svg/home.svg?react";
+import AddonsIcon from "./assets/svg/addons.svg?react";
+import BackIcon from "./assets/svg/back.svg?react";
+import CategoryIcon from "./assets/svg/category.svg?react";
+import DashboardIcon from "./assets/svg/dashboard.svg?react";
+import FoodIcon from "./assets/svg/food.svg?react";
+import LocationIcon from "./assets/svg/location.svg?react";
+import OptionIcon from "./assets/svg/option.svg?react";
+import OrderIcon from "./assets/svg/order.svg?react";
+import PaymentIcon from "./assets/svg/payment.svg?react";
+import RatingIcon from "./assets/svg/rating.svg?react";
+import TimingIcon from "./assets/svg/timings.svg?react";
+import RestaurantSectionIcon from "./assets/svg/restSection.svg?react";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
@@ -492,14 +492,14 @@ var routes = [
   //   appearInSidebar: true,
   //   admin: false
   // },
-  {
-    path: "/vendors",
-    name: "Back to Admin",
-    icon: BackIcon,
-    component: Vendors,
-    layout: "/super_admin",
-    appearInSidebar: true,
-    admin: false,
-  },
+  // {
+  //   path: "/vendors",
+  //   name: "Back to Admin",
+  //   icon: BackIcon,
+  //   component: Vendors,
+  //   layout: "/super_admin",
+  //   appearInSidebar: true,
+  //   admin: false,
+  // },
 ];
 export default routes;

@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { Box } from "@mui/material";
-
 import routes from "../routes";
 
 function Auth() {
@@ -41,13 +39,7 @@ function Auth() {
       ));
   };
 
-  return (
-    <Box>
-      <Box>
-        <Routes>{getRoutes(routes)}</Routes>
-      </Box>
-    </Box>
-  );
+  return <Routes>{getRoutes(routes)}</Routes>;
 }
 
 export default Auth;

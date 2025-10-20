@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import ResetPassword from "../ResetPassword/ResetPassword";
 import { useApolloClient } from "@apollo/client/react";
 import {
@@ -18,8 +18,11 @@ import {
 } from "@mui/material";
 import profileImg from "../../assets/img/theme/team-4-800x800.jpg";
 import { isAuthenticated } from "../../helpers/user";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function AdminNavbar(props) {
+  const location = useLocation();
+  const Navigate = useNavigate();
   const theme = useTheme();
   const client = useApolloClient();
   const [modal, setModal] = useState(false);
@@ -28,7 +31,7 @@ function AdminNavbar(props) {
   );
   const [anchorEl, setAnchorEl] = useState(null); // Define anchorEl state
   const user = isAuthenticated();
-  const { t, i18n } = props;
+  const { t, i18n } = useTranslation();
 
   const toggleModal = () => {
     setModal((prev) => !prev);
@@ -74,7 +77,7 @@ function AdminNavbar(props) {
               textTransform: "capitalize",
             }}
           >
-            {props.match.path === "/restaurant" ? "" : t(props.brandText)}
+            {location.pathname === "/restaurant" ? "" : t(props.brandText)}
           </Typography>
 
           <div>
@@ -179,7 +182,7 @@ function AdminNavbar(props) {
                   localStorage.removeItem("restaurant_id");
                   localStorage.removeItem("restaurantId");
                   client.clearStore();
-                  props.history.push("/auth/login");
+                  Navigate("/auth/login");
                 }}
               >
                 {t("Logout")}
@@ -205,4 +208,4 @@ function AdminNavbar(props) {
   );
 }
 
-export default withTranslation()(AdminNavbar);
+export default AdminNavbar;

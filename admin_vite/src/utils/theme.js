@@ -1,38 +1,38 @@
-import { blue } from '@mui/material/colors'
-import { createTheme } from '@mui/material/styles'
+import { blue } from "@mui/material/colors";
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   overrides: {
     MuiPickersToolbar: {
       toolbar: {
-        backgroundColor: blue.A200
-      }
+        backgroundColor: blue.A200,
+      },
     },
     MuiPickersCalendarHeader: {
       switchHeader: {
         // backgroundColor: blue.A200,
         // color: "white",
-      }
+      },
     },
     MuiPickersDay: {
       day: {
-        color: blue.A700
+        color: blue.A700,
       },
       daySelected: {
-        backgroundColor: blue['400']
+        backgroundColor: blue["400"],
       },
       dayDisabled: {
-        color: blue['100']
+        color: blue["100"],
       },
       current: {
-        color: blue['900']
-      }
+        color: blue["900"],
+      },
     },
     MuiPickersModal: {
       dialogAction: {
-        color: blue['400']
-      }
-    }
+        color: blue["400"],
+      },
+    },
   },
   typography: {
     // fontFamily: ['Inter', 'Open Sans', 'sans-serif'].join(),
@@ -45,87 +45,87 @@ const theme = createTheme({
     fontWeightBold: 700,
     h1: {
       fontWeight: 300,
-      fontSize: '6rem',
+      fontSize: "6rem",
       lineHeight: 1.167,
-      letterSpacing: '-0.01562em'
+      letterSpacing: "-0.01562em",
     },
     h2: {
       fontWeight: 300,
-      fontSize: '3.75rem',
+      fontSize: "3.75rem",
       lineHeight: 1.2,
-      letterSpacing: '-0.00833em'
+      letterSpacing: "-0.00833em",
     },
     h3: {
       fontWeight: 400,
-      fontSize: '3rem',
+      fontSize: "3rem",
       lineHeight: 1.167,
-      letterSpacing: '0em'
+      letterSpacing: "0em",
     },
     h4: {
       fontWeight: 400,
-      fontSize: '2.125rem',
+      fontSize: "2.125rem",
       lineHeight: 1.235,
-      letterSpacing: '0.00735em'
+      letterSpacing: "0.00735em",
     },
     h5: {
       fontWeight: 400,
-      fontSize: '1.5rem',
+      fontSize: "1.5rem",
       lineHeight: 1.334,
-      letterSpacing: '0em'
+      letterSpacing: "0em",
     },
     h6: {
       fontWeight: 500,
-      fontSize: '1.25rem',
+      fontSize: "1.25rem",
       lineHeight: 1.6,
-      letterSpacing: '0.0075em'
+      letterSpacing: "0.0075em",
     },
     subtitle1: {
       fontWeight: 400,
-      fontSize: '1rem',
+      fontSize: "1rem",
       lineHeight: 1.75,
-      letterSpacing: '0.00938em'
+      letterSpacing: "0.00938em",
     },
     subtitle2: {
       fontWeight: 500,
-      fontSize: '0.875rem',
+      fontSize: "0.875rem",
       lineHeight: 1.57,
-      letterSpacing: '0.00714em'
+      letterSpacing: "0.00714em",
     },
     body1: {
       fontWeight: 400,
-      fontSize: '1rem',
+      fontSize: "1rem",
       lineHeight: 1.5,
-      letterSpacing: '0.00938em'
+      letterSpacing: "0.00938em",
     },
     body2: {
       fontWeight: 400,
-      fontSize: '1rem',
+      fontSize: "1rem",
       lineHeight: 1.5,
-      letterSpacing: '0.00938em'
+      letterSpacing: "0.00938em",
     },
     button: {
       fontFamily: ["Roboto", "sans-serif"].join(),
       fontWeight: 600,
-      fontSize: '0.875rem',
+      fontSize: "0.875rem",
       lineHeight: 1.75,
-      letterSpacing: '0.02857em',
-      textTransform: 'uppercase',
+      letterSpacing: "0.02857em",
+      textTransform: "uppercase",
     },
     caption: {
       fontWeight: 400,
-      fontSize: '0.75rem',
+      fontSize: "0.75rem",
       lineHeight: 1.66,
-      letterSpacing: '0.03333em'
+      letterSpacing: "0.03333em",
     },
     overline: {
       fontWeight: 400,
-      fontSize: '0.75rem',
+      fontSize: "0.75rem",
       lineHeight: 2.66,
-      letterSpacing: '0.08333em',
-      textTransform: 'uppercase'
+      letterSpacing: "0.08333em",
+      textTransform: "uppercase",
     },
     shape: {
-      borderRadius: 4
+      borderRadius: 4,
     },
     zIndex: {
       mobileStepper: 1000,
@@ -134,94 +134,94 @@ const theme = createTheme({
       drawer: 1200,
       modal: 1300,
       snackbar: 1400,
-      tooltip: 1500
-    }
+      tooltip: 1500,
+    },
   },
   palette: {
-    mode: 'light',
+    mode: "light",
     common: {
-      black: '#000',
-      blackShade: 'rgba(0, 0, 0, 0.06)',
-      white: '#fff',
-      naviblue:'#232F3E'
+      black: "#000",
+      blackShade: "rgba(0, 0, 0, 0.06)",
+      white: "#fff",
+      naviblue: "#232F3E",
     },
     primary: {
-      main: '#32620e',
-      main2: '#32620e',
-      main3: '#32620e',
-      light: '#fff',
-      dark: '#000',
-      contrastText: '#fff'
+      main: "#32620e",
+      main2: "#32620e",
+      main3: "#32620e",
+      light: "#fff",
+      dark: "#000",
+      contrastText: "#fff",
     },
     secondary: {
-      main: '#F5F5F5',
-      light: '#333333',
-      lightest: '#3C8F7C',
-      dark: '#949393',
-      darkest: '#3EC6DD',
-      contrastText: '#fff'
+      main: "#F5F5F5",
+      light: "#333333",
+      lightest: "#3C8F7C",
+      dark: "#949393",
+      darkest: "#3EC6DD",
+      contrastText: "#fff",
     },
     success: {
-      main: '#32620e',
-      light: '#CDCDCD',
-      lightest: '#EEF4FA',
-      dark: '#6a9b32',
-      darkest: '#DEE6ED',
-      contrastText: '#fff'
+      main: "#32620e",
+      light: "#CDCDCD",
+      lightest: "#EEF4FA",
+      dark: "#6a9b32",
+      darkest: "#DEE6ED",
+      contrastText: "#fff",
     },
     info: {
-      main: 'rgba(39,111,191,0.8)',
-      light: 'rgba(63, 64, 65, 0.66)',
-      lightest: 'rgba(238, 244, 250, 0.66)',
-      dark: 'rgba(0, 0, 0, 0.08)',
-      darkest: 'rgba(0, 0, 0, 0.1)',
-      contrastText: '#fff'
+      main: "rgba(39,111,191,0.8)",
+      light: "rgba(63, 64, 65, 0.66)",
+      lightest: "rgba(238, 244, 250, 0.66)",
+      dark: "rgba(0, 0, 0, 0.08)",
+      darkest: "rgba(0, 0, 0, 0.1)",
+      contrastText: "#fff",
     },
     error: {
-      main: '#fe0000',
-      light: '#BB2124',
-      lightest: '#fb6340',
-      contrastText: '#fff'
+      main: "#fe0000",
+      light: "#BB2124",
+      lightest: "#fb6340",
+      contrastText: "#fff",
     },
     warning: {
-      main: '#FA7751',
-      light: '#FCC54C',
-      lightest: 'rgba(240, 173, 78,0.2)',
-      dark: '#32620e',
-      darkest: 'rgba(111, 207, 151, 0.34)',
-      contrastText: '#fff'
+      main: "#FA7751",
+      light: "#FCC54C",
+      lightest: "rgba(240, 173, 78,0.2)",
+      dark: "#32620e",
+      darkest: "rgba(111, 207, 151, 0.34)",
+      contrastText: "#fff",
     },
     grey: {
-      50: '#fafafa',
-      100: '#f5f5f5',
-      200: '#eeeeee',
-      300: '#e0e0e0',
-      400: '#bdbdbd',
-      500: '#9e9e9e',
-      600: '#757575',
-      700: '#616161',
-      800: '#424242',
-      900: '#212121',
-      A100: '#d5d5d5',
-      A200: '#aaaaaa',
-      A400: '#303030',
-      A700: '#616161'
+      50: "#fafafa",
+      100: "#f5f5f5",
+      200: "#eeeeee",
+      300: "#e0e0e0",
+      400: "#bdbdbd",
+      500: "#9e9e9e",
+      600: "#757575",
+      700: "#616161",
+      800: "#424242",
+      900: "#212121",
+      A100: "#d5d5d5",
+      A200: "#aaaaaa",
+      A400: "#303030",
+      A700: "#616161",
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,
     text: {
-      primary: '#fff',
-      secondary: '#212121',
-      disabled: '#5A5858',
-      hint: '#FFF'
+      primary: "#000",
+      secondary: "#212121",
+      disabled: "#5A5858",
+      hint: "#FFF",
     },
-    divider: 'rgba(0, 0, 0, 0.12)',
+    divider: "rgba(0, 0, 0, 0.12)",
     background: {
-      paper: '#FAFAFA',
-      default: '#fff',
-      primary: '#f9fafc'
-    }
-  }
-})
+      paper: "#FAFAFA",
+      default: "#fff",
+      primary: "#f9fafc",
+    },
+  },
+});
 
-export default theme
+export default theme;

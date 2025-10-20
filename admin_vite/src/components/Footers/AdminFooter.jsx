@@ -1,38 +1,44 @@
-import * as React from 'react'
+import * as React from "react";
 import {
   Box,
   Link,
   BottomNavigation,
   Typography,
-  useTheme
-} from '@mui/material'
-import useStyles from './styles'
-import { withTranslation } from 'react-i18next'
+  useTheme,
+} from "@mui/material";
+import useStyles from "./styles";
+import { withTranslation } from "react-i18next";
 
 function AdminFooter(props) {
-  const theme = useTheme()
-  const { t } = props
-  const [value, setValue] = React.useState(0)
-  const classes = useStyles()
+  const theme = useTheme();
+  const { t } = props;
+  const [value, setValue] = React.useState(0);
+  const classes = useStyles();
 
   return (
     <Box
       sx={{
-        background: `linear-gradient(237.49deg, ${theme.palette.success.lightest} 0.63%, ${theme.palette.success.darkest} 85.49%)`
+        background: `linear-gradient(237.49deg, ${theme.palette.success.lightest} 0.63%, ${theme.palette.success.darkest} 85.49%)`,
       }}
-      className={classes.footer}>
-      <BottomNavigation
+      className={classes.footer}
+    >
+      {/* <BottomNavigation
         sx={{
-          background: `linear-gradient(237.49deg, ${theme.palette.success.lightest} 0.63%, ${theme.palette.success.darkest} 85.49%)`
+          background: `linear-gradient(237.49deg, ${theme.palette.success.lightest} 0.63%, ${theme.palette.success.darkest} 85.49%)`,
         }}
-        showLabels
+        showLabels={false}
         value={value}
         onChange={(event, newValue) => {
-          setValue(newValue)
-        }}>
-        <Typography className={classes.text}>©2022</Typography>
+          setValue(newValue);
+        }}
+      > */}
+      <Box>
+        <Typography className={classes.text} sx={{ textAlign: "center" }}>
+          ©2022
+        </Typography>
+      </Box>
 
-        {/* <Link
+      {/* <Link
           className={classes.link}
           href="https://multivendor.enatega.com/"
           target="_blank"
@@ -53,9 +59,9 @@ function AdminFooter(props) {
           underline="none">
           {t('Blog')}
         </Link> */}
-      </BottomNavigation>
+      {/* </BottomNavigation> */}
     </Box>
-  )
+  );
 }
 
-export default withTranslation()(AdminFooter)
+export default withTranslation()(AdminFooter);

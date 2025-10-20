@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 import {
   AppBar,
   Box,
@@ -8,28 +8,29 @@ import {
   Typography,
   Link,
   SvgIcon,
-  useTheme
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import routes from '../../routes'
-import useStyles from './styles'
+  useTheme,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import routes from "../../routes";
+import useStyles from "./styles";
 // import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
-import { useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import Logo from '../../assets/logo.png'
+import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import Logo from "../../assets/logo.png";
+import { Link as RouterLink } from "react-router-dom";
 
-const drawerWidth = 240
+const drawerWidth = 240;
 function AdminSidebar(props) {
-  const theme = useTheme()
-  const { t } = useTranslation()
-  const location = useLocation()
-  const classes = useStyles()
-  const { window } = props
-  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const theme = useTheme();
+  const { t } = useTranslation();
+  const location = useLocation();
+  const classes = useStyles();
+  const { window } = props;
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
+    setMobileOpen(!mobileOpen);
+  };
 
   const createLinks = (
     // <Box className={classes.sidebarContainer}>
@@ -39,61 +40,67 @@ function AdminSidebar(props) {
         <Box
           style={{
             width: 300,
-            height: 100
-          }}>
-          <img src={Logo} style={{ width: '100%' }} />
+            height: 100,
+          }}
+        >
+          <img src={Logo} style={{ width: "100%" }} />
         </Box>
       </Toolbar>
       <Box className={classes.sidebarList}>
         {routes.map((prop, key) => {
-          console.log({ name: prop.name })
+          console.log({ name: prop.name });
           return prop.appearInSidebar && prop.admin ? (
             <React.Fragment key={key}>
               {key === 1 ? (
                 <Typography className={classes.headingText} variant="h3">
-                  {t('GENERAL')}
+                  {t("GENERAL")}
                 </Typography>
               ) : null}
               {key === 8 ? (
                 <Typography className={classes.headingText} variant="h3">
-                  {t('MANAGEMENT')}
+                  {t("MANAGEMENT")}
                 </Typography>
               ) : null}
               <Link
+                component={RouterLink}
+                to={prop.layout + prop.path} // Use 'to' instead of 'href'
                 className={[
                   classes.rowDisplay,
                   classes.sidebarLink,
                   location.pathname === `${prop.layout}${prop.path}` &&
-                    classes.active
+                    classes.active,
                 ]}
-                href={'#' + prop.layout + prop.path}
-                underline="none">
+                underline="none"
+              >
                 <SvgIcon
                   component={prop.icon}
                   htmlColor="black"
                   fontSize="small"
                 />
+                {/* <img src={prop.icon} alt={prop.name} width={20} height={20} /> */}
+
                 <Typography
                   variant="h6"
                   className={[
                     classes.linkText,
                     location.pathname !== `${prop.layout}${prop.path}`
                       ? classes.blackText
-                      : classes.whiteText
-                  ]}>
+                      : classes.whiteText,
+                  ]}
+                >
                   {t(prop.name)}
                 </Typography>
               </Link>
             </React.Fragment>
-          ) : null
+          ) : null;
         })}
       </Box>
     </Box>
     // </Box>
-  )
+  );
 
   const container =
-    window !== undefined ? () => window().document.body : undefined
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <>
@@ -104,17 +111,19 @@ function AdminSidebar(props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          display: { sm: 'none' },
-          bgcolor: 'primary.main2',
-          marginBottom: '100px'
-        }}>
+          display: { sm: "none" },
+          bgcolor: "primary.main2",
+          marginBottom: "100px",
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}>
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
             <MenuIcon />
           </IconButton>
         </Toolbar>
@@ -122,7 +131,8 @@ function AdminSidebar(props) {
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders">
+        aria-label="mailbox folders"
+      >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
@@ -130,32 +140,34 @@ function AdminSidebar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true // Better open performance on mobile.
+            keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: '70%' }
-          }}>
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "70%" },
+          }}
+        >
           {createLinks}
         </Drawer>
         <Drawer
           variant="permanent"
           sx={{
-            backgroundColor: 'red',
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
+            backgroundColor: "red",
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
               width: drawerWidth,
               background: `linear-gradient(180deg, ${theme.palette.warning.dark} 50%, transparent 50%)`,
-              borderRight: 'none'
-            }
+              borderRight: "none",
+            },
           }}
-          open>
+          open
+        >
           {createLinks}
         </Drawer>
       </Box>
     </>
-  )
+  );
 }
 
-export default AdminSidebar
+export default AdminSidebar;

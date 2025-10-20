@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client/react";
 import Header from "../components/Headers/Header";
 import VendorComponent from "../components/Vendor/Vendor";
@@ -31,6 +31,7 @@ import TableHeader from "../components/TableHeader";
 import Alert from "../components/Alert";
 import ConfigurableValues from "../config/constants";
 import { gql } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 const GET_VENDORS = gql`
   ${getVendors}
@@ -41,7 +42,7 @@ const DELETE_VENDOR = gql`
 const Vendors = (props) => {
   const theme = useTheme();
   const { PAID_VERSION } = ConfigurableValues();
-  const { t } = props;
+  const { t } = useTranslation();
   const [editModal, setEditModal] = useState(false);
   const [vendors, setVendor] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -156,7 +157,7 @@ const Vendors = (props) => {
       <Container className={golbalClasses.flex}>
         <Grid container>
           {/* <Grid item order={{ xs: 2, lg: 1 }}> */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <VendorComponent />
           </Grid>
 
@@ -225,6 +226,7 @@ const ActionButtons = (
   mutate
 ) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const Navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -251,10 +253,7 @@ const ActionButtons = (
         onClick={(e) => {
           e.preventDefault();
           localStorage.setItem("vendorId", row._id);
-          props.history.push({
-            pathname: "/restaurant/list",
-            state: { id: row._id },
-          });
+          Navigate("/restaurant/list", { state: { id: row._id } });
         }}
       >
         {t("Restaurants")}
@@ -299,13 +298,13 @@ const ActionButtons = (
             <MenuItem
               onClick={(e) => {
                 e.preventDefault();
-                if (PAID_VERSION) mutate({ variables: { id: row._id } });
-                else {
-                  setIsOpen(true);
-                  setTimeout(() => {
-                    setIsOpen(false);
-                  }, 5000);
-                }
+                mutate({ variables: { id: row._id } });
+                // else {
+                //   setIsOpen(true);
+                //   setTimeout(() => {
+                //     setIsOpen(false);
+                //   }, 5000);
+                // }
               }}
               style={{ height: 25 }}
             >
@@ -321,4 +320,4 @@ const ActionButtons = (
   );
 };
 
-export default withTranslation()(Vendors);
+export default Vendors;

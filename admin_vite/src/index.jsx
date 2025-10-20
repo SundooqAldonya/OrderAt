@@ -18,7 +18,11 @@ import ConfigurableValues from "./config/constants";
 import { ConfigurationProvider } from "./context/Configuration";
 import App from "./app";
 import { RestProvider } from "./context/Restaurant";
-import { ThemeProvider, StyledEngineProvider } from "@mui/material";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  CssBaseline,
+} from "@mui/material";
 import theme from "./utils/theme";
 // import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
@@ -26,6 +30,9 @@ import { isAuthenticated } from "./helpers/user";
 import AreaProvider from "./context/AreaContext";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { ApolloProvider } from "@apollo/client/react";
+
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { ThemeProvider as LegacyThemeProvider } from "@mui/styles";
 
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues();
@@ -106,30 +113,16 @@ function Main() {
   return (
     <ApolloProvider client={client}>
       <ConfigurationProvider>
-        {/* <LoadScript
-          id="script-loader"
-          googleMapsApiKey={GOOGLE_MAPS_KEY}
-          libraries={[
-            'drawing',
-            'places',
-            'geometry',
-            'localContext',
-            'visualization'
-          ]}> */}
-
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
+        <LegacyThemeProvider theme={theme}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
             <RestProvider>
               <AreaProvider>
-                {/* <GoogleMapsLoader> */}
                 <App />
-                {/* </GoogleMapsLoader> */}
               </AreaProvider>
             </RestProvider>
-          </ThemeProvider>
-        </StyledEngineProvider>
-
-        {/* </LoadScript> */}
+          </MuiThemeProvider>
+        </LegacyThemeProvider>
       </ConfigurationProvider>
     </ApolloProvider>
   );
