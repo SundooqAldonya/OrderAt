@@ -10,18 +10,21 @@ import SearchBar from "../components/TableHeader/SearchBar";
 import { customStyles } from "../utils/tableCustomStyles";
 import useGlobalStyles from "../utils/globalStyles";
 import { Box, Container } from "@mui/material";
-import userIcon from "../assets/svg/svg/User.svg";
+import UserIcon from "../assets/svg/svg/User.svg?react";
 import TableHeader from "../components/TableHeader";
 import { gql } from "@apollo/client";
+import { useTranslation } from "react-i18next";
 
 const GET_USERS = gql`
   ${getUsers}
 `;
+
 const Users = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState("");
   const onChangeSearch = (e) => setSearchQuery(e.target.value);
+
   const {
     data,
     error: errorQuery,
@@ -30,23 +33,26 @@ const Users = (props) => {
   } = useQuery(GET_USERS, {
     variables: { page: 0 },
   });
+
+  console.log({ data });
+
   const columns = [
     {
       name: t("Name"),
       sortable: true,
-      selector: "name",
+      selector: (row) => row.name,
     },
     {
       name: t("Email"),
       sortable: true,
-      selector: "email",
-      cell: (row) => hiddenData(row.email, "EMAIL"),
+      selector: (row) => row.email,
+      // cell: (row) => hiddenData(row.email, "EMAIL"),
     },
     {
       name: t("Phone"),
       sortable: true,
-      selector: "phone",
-      cell: (row) => hiddenData(row.phone, "PHONE"),
+      selector: (row) => row.phone,
+      // cell: (row) => hiddenData(row.phone, "PHONE"),
     },
   ];
 
@@ -65,6 +71,7 @@ const Users = (props) => {
       return star;
     }
   };
+
   const customSort = (rows, field, direction) => {
     const handleField = (row) => {
       if (row[field]) {
@@ -100,15 +107,14 @@ const Users = (props) => {
     filtered = [];
   }
 
-  // console.log('filtered', filtered);
-
   const globalClasses = useGlobalStyles();
+
   return (
     <>
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
-        {/* <UserIcon /> */}
-        <img src={userIcon} alt="Config" width={32} height={32} />
+        <UserIcon />
+        {/* <img src={userIcon} alt="Config" width={32} height={32} /> */}
       </Box>
       <Container classNname={globalClasses.flex} fluid>
         {errorQuery ? (
