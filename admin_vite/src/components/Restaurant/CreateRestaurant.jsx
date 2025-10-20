@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from "react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client/react";
 import {
   createRestaurant,
@@ -84,7 +84,7 @@ const MenuProps = {
 };
 
 const CreateRestaurant = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const owner = props.owner;
   const [showPassword, setShowPassword] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
@@ -367,9 +367,9 @@ const CreateRestaurant = (props) => {
   const globalClasses = useGlobalStyles();
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box style={{ alignItems: "start" }} className={classes.flexRow}>
-        <Box item className={classes.heading}>
+        <Box className={classes.heading}>
           <Typography variant="h6" className={classes.text}>
             {t("AddRestaurant")}
           </Typography>
@@ -389,7 +389,7 @@ const CreateRestaurant = (props) => {
       <Box className={classes.form}>
         <form ref={formRef}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Username")}
@@ -418,7 +418,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Password")}
@@ -453,7 +453,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Name")}
@@ -477,7 +477,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Address")}
@@ -501,7 +501,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("DeliveryTime")}
@@ -524,7 +524,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("MinOrder")}
@@ -547,7 +547,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("SalesTax")}
@@ -570,7 +570,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("sales_person")}
@@ -587,7 +587,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("responsiblePersonName")}
@@ -604,7 +604,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("contactNumber")}
@@ -621,7 +621,7 @@ const CreateRestaurant = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Typography className={classes.labelText}>
                 {t("Select City")}
               </Typography>
@@ -645,7 +645,7 @@ const CreateRestaurant = (props) => {
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               {loadingCategories && <Typography>Loading...</Typography>}
               {errorCategories && (
                 <Typography>Error fetching categories</Typography>
@@ -676,7 +676,7 @@ const CreateRestaurant = (props) => {
                 <Typography>Add shop categories</Typography>
               )}
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Cuisines")}
@@ -706,7 +706,7 @@ const CreateRestaurant = (props) => {
                 </Select>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("business_categories")}
@@ -746,7 +746,7 @@ const CreateRestaurant = (props) => {
                 </Select>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Featured")}
@@ -775,7 +775,7 @@ const CreateRestaurant = (props) => {
           </Grid>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box
                 mt={3}
                 style={{ alignItems: "center" }}
@@ -805,7 +805,7 @@ const CreateRestaurant = (props) => {
               </Box>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }} xs={12} sm={6}>
               <Box
                 mt={3}
                 style={{ alignItems: "center" }}
@@ -912,4 +912,4 @@ const CreateRestaurant = (props) => {
     </Box>
   );
 };
-export default withTranslation()(CreateRestaurant);
+export default CreateRestaurant;

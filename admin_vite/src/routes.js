@@ -492,14 +492,14 @@ var routes = [
   //   appearInSidebar: true,
   //   admin: false
   // },
-  // {
-  //   path: "/vendors",
-  //   name: "Back to Admin",
-  //   icon: BackIcon,
-  //   component: Vendors,
-  //   layout: "/super_admin",
-  //   appearInSidebar: true,
-  //   admin: false,
-  // },
+  {
+    path: "/vendors",
+    name: "Back to Admin",
+    icon: BackIcon,
+    component: Vendors,
+    layout: "/super_admin",
+    appearInSidebar: true,
+    admin: false,
+  },
 ];
 export default routes;

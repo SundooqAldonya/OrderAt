@@ -7,7 +7,7 @@ import CreateRestaurant from "../components/Restaurant/CreateRestaurant";
 import { Box, Button, Modal, Container, Grid, useTheme } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import useGlobalStyles from "../utils/globalStyles";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { isAuthenticated } from "../helpers/user";
 import { gql } from "@apollo/client";
 
@@ -16,7 +16,7 @@ const RESTAURANT_BY_OWNER = gql`
 `;
 const Restaurant = (props) => {
   const theme = useTheme();
-  const { t } = props;
+  const { t } = useTranslation();
   const [owner, setOwner] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const vendorId = localStorage.getItem("vendorId");
@@ -45,7 +45,7 @@ const Restaurant = (props) => {
     data &&
     data.restaurantByOwner.map((rest, index) => {
       return (
-        <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+        <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Link
             underline="none"
             style={{ textDecoration: "none" }}
@@ -55,7 +55,7 @@ const Restaurant = (props) => {
               localStorage.setItem("restaurantImage", rest.image);
               localStorage.setItem("restaurantName", rest.name);
             }}
-            to={`/admin/dashboard/${rest.slug}`}
+            to={`/admin/dashboard`}
           >
             <RestaurantCard key={rest._id} rest={rest} />
           </Link>
@@ -75,7 +75,7 @@ const Restaurant = (props) => {
         }}
       />
       {/* Page content */}
-      <Container fluid>
+      <Container>
         <Box mt={-10}>
           {loadingQuery ? <div>{t("Loading")}</div> : null}
           {errorQuery ? <span>`${errorQuery.message}`</span> : null}
@@ -118,4 +118,4 @@ const Restaurant = (props) => {
     </>
   );
 };
-export default withTranslation()(Restaurant);
+export default Restaurant;

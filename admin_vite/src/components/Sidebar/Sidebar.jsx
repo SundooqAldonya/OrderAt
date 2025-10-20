@@ -121,15 +121,14 @@ function Sidebar(props) {
               prop.name != t("BackToAdmin") ? (
               <>
                 <Link
+                  component={LinkRouter}
                   className={[
                     classes.rowDisplay,
                     classes.sidebarLink,
                     location.pathname === `${prop.layout}${prop.path}` &&
                       classes.active,
                   ]}
-                  href={
-                    "#" + prop.layout + prop.path.replace(":id", restaurantId)
-                  }
+                  to={prop.layout + prop.path.replace(":id", restaurantId)}
                   underline="none"
                 >
                   <SvgIcon component={prop.icon} fontSize="small" />
