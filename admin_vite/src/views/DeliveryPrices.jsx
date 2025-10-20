@@ -48,7 +48,7 @@ const DeliveryPrices = () => {
     {
       name: t("from"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
       cell: (row) => (
         <>{row.originZone?.title ? row.originZone?.title : "N/A"}</>
       ),
@@ -56,7 +56,7 @@ const DeliveryPrices = () => {
     {
       name: t("to"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
       cell: (row) => (
         <>{row.destinationZone?.title ? row.destinationZone?.title : "N/A"}</>
       ),
@@ -64,7 +64,7 @@ const DeliveryPrices = () => {
     {
       name: t("cost"),
       sortable: true,
-      selector: "cost",
+      selector: (row) => row.cost,
     },
     {
       name: t("Action"),
@@ -104,7 +104,7 @@ const DeliveryPrices = () => {
     <Fragment>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <DeliveryPriceCreate edit={false} />
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}

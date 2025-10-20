@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 // import { transformToNewline } from '../../utils/stringManipulations'
 import DataTable from "react-data-table-component";
 import orderBy from "lodash/orderBy";
@@ -40,8 +40,8 @@ const ORDER_PLACED = gql`
 
 const OrdersDataAdmin = (props) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const {
-    t,
     refetchOrders,
     isAdminPage,
     handleModalVisible,
@@ -122,7 +122,7 @@ const OrdersDataAdmin = (props) => {
     {
       name: t("OrderID"),
       sortable: true,
-      selector: "orderId",
+      selector: (row) => row.orderId,
     },
     {
       name: t("business_name"),
@@ -138,13 +138,13 @@ const OrdersDataAdmin = (props) => {
     },
     {
       name: t("Payment"),
-      selector: "paymentMethod",
+      selector: (row) => row.paymentMethod,
       sortable: true,
       cell: (row) => <>{t(row.paymentMethod)}</>,
     },
     {
       name: t("Status"),
-      selector: "orderStatus",
+      selector: (row) => row.orderStatus,
       sortable: true,
       cell: (row) => (
         <>
@@ -159,7 +159,7 @@ const OrdersDataAdmin = (props) => {
     },
     {
       name: t("Datetime"),
-      selector: "createdAt",
+      selector: (row) => row.createdAt,
       sortable: true,
       cell: (row) => (
         <>{new Date(row.createdAt).toLocaleString().replace(/ /g, "\n")}</>
@@ -339,4 +339,4 @@ const OrdersDataAdmin = (props) => {
   );
 };
 
-export default withTranslation()(OrdersDataAdmin);
+export default OrdersDataAdmin;

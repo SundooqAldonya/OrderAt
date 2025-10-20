@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { useMutation } from "@apollo/client/react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 
 import { GoogleMap, Polygon } from "@react-google-maps/api";
 import useStyles from "./styles";
@@ -141,18 +141,15 @@ const Zone = (props) => {
     setSuccess("");
   };
 
-  const { t } = props;
+  const { t } = useTranslation();
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.zone ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.zone ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
             className={props.zone ? classes.textWhite : classes.text}
@@ -165,7 +162,7 @@ const Zone = (props) => {
       <Box className={classes.form}>
         <form>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Title")}
@@ -191,7 +188,7 @@ const Zone = (props) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Description")}
@@ -296,4 +293,4 @@ const Zone = (props) => {
   );
 };
 
-export default withTranslation()(Zone);
+export default Zone;

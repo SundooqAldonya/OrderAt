@@ -68,19 +68,19 @@ const RidersRegistered = () => {
   const columns = [
     {
       name: t("Name"),
-      selector: "name",
+      selector: (row) => row.name,
       sortable: true,
     },
 
     {
       name: t("phone"),
-      selector: "phone",
+      selector: (row) => row.phone,
       sortable: true,
       cell: (row) => <>{row.phone || "N/A"}</>,
     },
     {
       name: t("city"),
-      selector: "city",
+      selector: (row) => row.city,
       sortable: true,
       cell: (row) => <>{row.city || "N/A"}</>,
     },

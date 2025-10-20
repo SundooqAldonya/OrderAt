@@ -82,12 +82,12 @@ const Zones = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("Action"),

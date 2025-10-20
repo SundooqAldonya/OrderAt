@@ -8,7 +8,7 @@ import { Box, Container, MenuItem, Select } from "@mui/material";
 import { customStyles } from "../utils/tableCustomStyles";
 import useGlobalStyles from "../utils/globalStyles";
 import SearchBar from "../components/TableHeader/SearchBar";
-import WithdrawIcon from "../assets/svg/svg/Request.svg";
+import WithdrawIcon from "../assets/svg/svg/Request.svg?react";
 import TableHeader from "../components/TableHeader";
 import { withTranslation, useTranslation } from "react-i18next";
 import { gql } from "@apollo/client";
@@ -34,27 +34,27 @@ function WithdrawRequest() {
   const columns = [
     {
       name: t("RequestID"),
-      selector: "requestId",
+      selector: (row) => row.requestId,
     },
     {
       name: t("Rider"),
       sortable: true,
-      selector: "rider",
+      selector: (row) => row.rider,
       cell: (row) => <>{row.rider ? row.rider.name : null}</>,
     },
 
     {
       name: t("Amount"),
-      selector: "requestAmount",
+      selector: (row) => row.requestAmount,
     },
     {
       name: t("Date"),
-      selector: "requestTime",
+      selector: (row) => row.requestTime,
       cell: (row) => <>{new Date(row.requestTime).toDateString()}</>,
     },
     {
       name: t("Status"),
-      selector: "status",
+      selector: (row) => row.status,
       cell: (row) => (
         <div>
           {row.status}
@@ -151,10 +151,10 @@ function WithdrawRequest() {
     <>
       <Header />
       <Box className={globalClasses.flexRow} mb={3}>
-        {/* <WithdrawIcon /> */}
-        <img src={WithdrawIcon} alt="Config" width={32} height={32} />
+        <WithdrawIcon />
+        {/* <img src={WithdrawIcon} alt="Config" width={32} height={32} /> */}
       </Box>
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         {error ? <span> `Error! ${error.message}`</span> : null}
         {loading ? (
           <CustomLoader />

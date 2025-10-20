@@ -36,7 +36,6 @@ const REMOVE_SHOP_CATEGORY = gql`
 
 const ShopCategories = () => {
   const { t } = useTranslation();
-  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
@@ -74,7 +73,7 @@ const ShopCategories = () => {
   const columns = [
     {
       name: t("Title"),
-      selector: "title",
+      selector: (row) => row.title,
       sortable: true,
     },
 
@@ -178,7 +177,7 @@ const ShopCategories = () => {
     <Fragment>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <ShopCategoryCreate />
         {/* Table */}
         {isOpen && (

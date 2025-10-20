@@ -73,24 +73,24 @@ const Businesses = () => {
   const columns = [
     {
       name: t("Name"),
-      selector: "name",
+      selector: (row) => row.name,
       sortable: true,
     },
     {
       name: t("Business Name"),
-      selector: "businessName",
+      selector: (row) => row.businessName,
       sortable: true,
       cell: (row) => <>{row.businessName || "N/A"}</>,
     },
     {
       name: t("phone"),
-      selector: "phone",
+      selector: (row) => row.phone,
       sortable: true,
       cell: (row) => <>{row.phone || "N/A"}</>,
     },
     {
       name: t("address"),
-      selector: "address",
+      selector: (row) => row.address,
       sortable: true,
       cell: (row) => <>{row.address || "N/A"}</>,
     },
@@ -194,7 +194,7 @@ const Businesses = () => {
     <Fragment>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <BusinessCreate />
         {/* Table */}
         {isOpen && (

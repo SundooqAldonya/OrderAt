@@ -80,7 +80,7 @@ const Cities = () => {
   const columns = [
     {
       name: t("Title"),
-      selector: "title",
+      selector: (row) => row.title,
       sortable: true,
     },
     {

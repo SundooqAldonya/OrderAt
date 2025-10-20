@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState, useEffect } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   Container,
   IconButton,
@@ -37,7 +37,7 @@ const DELETE_ZONE = gql`
 `;
 
 const Zones = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const { PAID_VERSION } = ConfigurableValues();
   const [editModal, setEditModal] = useState(false);
   const [zones, setZone] = useState(null);
@@ -80,12 +80,12 @@ const Zones = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("Action"),
@@ -117,7 +117,7 @@ const Zones = (props) => {
     <>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <ZoneComponent />
         {/* Table */}
         {isOpen && (
@@ -243,4 +243,4 @@ const ActionButtons = (
   );
 };
 
-export default withTranslation()(Zones);
+export default Zones;

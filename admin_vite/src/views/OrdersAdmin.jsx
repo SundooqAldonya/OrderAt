@@ -16,16 +16,8 @@ import { gql } from "@apollo/client";
 const GET_ORDERS = gql`
   ${getOrdersByAdmin}
 `;
-// const GET_PROFILE = gql`
-//   ${getRestaurantProfile}
-// `
-
-// const CITY_AREAS = gql`
-//   ${getCityAreas}
-// `
 
 const OrdersAdmin = () => {
-  // const [detailsModal, setDetailModal] = useState(false);
   const [order, setOrder] = useState(null);
   const [selectedInteraction, setSelectedInteraction] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,7 +25,6 @@ const OrdersAdmin = () => {
   const [limit, setLimit] = useState(10);
   const [openEdit, setOpenEdit] = useState(false);
 
-  // const [search] = useState('')
   const { setAreas } = useContext(AreaContext);
 
   const {
@@ -100,7 +91,7 @@ const OrdersAdmin = () => {
       <Header />
       {/* Page content */}
 
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         {errorQuery && (
           <tr>
             <td>{`${"Error"} ${errorQuery.message}`}</td>

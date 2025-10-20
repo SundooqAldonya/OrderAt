@@ -36,7 +36,6 @@ const REMOVE_AREAS = gql`
 
 const Areas = () => {
   const { t } = useTranslation();
-  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
@@ -74,12 +73,12 @@ const Areas = () => {
   const columns = [
     {
       name: t("Title"),
-      selector: "title",
+      selector: (row) => row.title,
       sortable: true,
     },
     {
       name: t("City"),
-      selector: "city",
+      selector: (row) => row.city,
       sortable: true,
       cell: (row) => <>{row.city?.title || "N/A"}</>,
     },
@@ -131,6 +130,7 @@ const Areas = () => {
     const handleClose = () => {
       setAnchorEl(null);
     };
+
     return (
       <>
         <div>
@@ -184,7 +184,7 @@ const Areas = () => {
     <Fragment>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <AreaCreate />
         {/* Table */}
         {isOpen && (

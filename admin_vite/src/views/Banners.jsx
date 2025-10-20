@@ -90,22 +90,22 @@ const Banners = (props) => {
     {
       name: t("Title"),
       sortable: true,
-      selector: "title",
+      selector: (row) => row.title,
     },
     {
       name: t("Description"),
       sortable: true,
-      selector: "description",
+      selector: (row) => row.description,
     },
     {
       name: t("Screen"),
       sortable: true,
-      selector: "screen",
+      selector: (row) => row.screen,
     },
     {
       name: t("Action"),
       sortable: true,
-      selector: "action",
+      selector: (row) => row.action,
     },
     {
       name: t("Action"),
@@ -127,7 +127,7 @@ const Banners = (props) => {
     <>
       <Header />
       {/* Page content */}
-      <Container className={globalClasses.flex} fluid>
+      <Container className={globalClasses.flex}>
         <Grid container>
           <Grid item xs={12} lg={8}>
             <BannerComponent />

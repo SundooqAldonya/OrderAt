@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { validateFunc } from "../../constraints/constraints";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   createBanner,
   editBanner,
@@ -223,17 +223,14 @@ function Banner(props) {
     }
   };
 
-  const { t } = props;
+  const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
   return (
-    <Box container className={classes.container}>
+    <Box className={classes.container}>
       <Box className={classes.flexRow}>
-        <Box
-          item
-          className={props.banner ? classes.headingBlack : classes.heading}
-        >
+        <Box className={props.banner ? classes.headingBlack : classes.heading}>
           <Typography
             variant="h6"
             className={props.banner ? classes.textWhite : classes.text}
@@ -246,7 +243,7 @@ function Banner(props) {
         <form ref={formRef}>
           <Box className={globalClasses.flexRow}>
             <Grid container spacing={0}>
-              <Grid item xs={12} sm={5}>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <Typography className={classes.labelText}>
                   {t("Title")}
                 </Typography>
@@ -264,7 +261,7 @@ function Banner(props) {
                   ]}
                 />
               </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <Typography className={classes.labelText}>
                   {t("Description")}
                 </Typography>
@@ -288,7 +285,7 @@ function Banner(props) {
           </Box>
           <Box className={globalClasses.flexRow}>
             <Grid container spacing={0}>
-              <Grid item xs={12} sm={5}>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <Typography className={classes.labelText}>
                   {t("Action")}
                 </Typography>
@@ -321,7 +318,7 @@ function Banner(props) {
                   </Select>
                 )}
               </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <Typography className={classes.labelText}>
                   {t("Screen")}
                 </Typography>
@@ -347,8 +344,8 @@ function Banner(props) {
             </Typography>
           </Box>
           {parameter.map((optionItem, index) => (
-            <Grid container key={optionItem._id}>
-              <Grid item xs={12} sm={5}>
+            <Grid key={index} container>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <div>
                   <Typography className={classes.labelText}>
                     {t("Key")}
@@ -372,7 +369,7 @@ function Banner(props) {
                   />
                 </div>
               </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid size={{ xs: 12, sm: 5 }}>
                 <div>
                   <Typography className={classes.labelText}>
                     {t("Value")}
@@ -522,4 +519,4 @@ function Banner(props) {
   );
 }
 
-export default withTranslation()(Banner);
+export default Banner;

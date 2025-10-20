@@ -85,9 +85,9 @@ const DeliveryPriceCreate = ({ onClose, edit, item }) => {
   };
 
   return (
-    <Box container className={[classes.container, classes.width60]}>
+    <Box className={[classes.container, classes.width60]}>
       <Box className={classes.flexRow}>
-        <Box item className={classes.headingBlack}>
+        <Box className={classes.headingBlack}>
           <Typography variant="h6" className={classes.textWhite}>
             {t("create_delivery_price")}
           </Typography>

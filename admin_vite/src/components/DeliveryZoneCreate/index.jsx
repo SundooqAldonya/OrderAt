@@ -202,7 +202,7 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
       <Box className={classes.form}>
         <form>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Title")}
@@ -228,7 +228,7 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Box>
                 <Typography className={classes.labelText}>
                   {t("Description")}
@@ -374,4 +374,4 @@ const DeliveryZoneCreate = ({ zone, edit }) => {
   );
 };
 
-export default withTranslation()(DeliveryZoneCreate);
+export default DeliveryZoneCreate;
