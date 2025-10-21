@@ -113,14 +113,23 @@ const transformFoods = async foodIds => {
 }
 
 const transformOrder = async order => {
+  if (!order) return null
+
+  // Ensure plain IDs
+  if (order.user && typeof order.user === 'object') {
+    order.user = order.user._id || order.user.id
+  }
+  if (order.restaurant && typeof order.restaurant === 'object') {
+    order.restaurant = order.restaurant._id || order.restaurant.id
+  }
   return {
     ...order?._doc,
     _id: order?._id,
     zone: zone(order?.zone),
     review: review.bind(this, order?.review),
     // user: await user.bind(this, order?._doc?.user),
-    user: order?._doc?.user ? await user(order._doc.user) : null,
-    userId: order?._doc?.user?.toString(),
+    user: order?.user ? await user(order.user) : null,
+    userId: order?._doc?.user?._id.toString(),
     orderDate: dateToString(order?._doc?.orderDate) || dateToString(new Date()),
     items: await order?.items?.map(item => {
       return {

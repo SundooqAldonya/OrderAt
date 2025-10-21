@@ -91,22 +91,6 @@ const Orders = (props) => {
   }, [subscriptionData, subscriptionError]);
 
   const statusFunc = (row) => {
-    const handleStatusSuccessNotification = (status) => {
-      NotificationManager.success(
-        t("Status updated to {{status}}", { status: t(status) }),
-        t("StatusUpdated"),
-        3000
-      );
-    };
-
-    const handleStatusErrorNotification = (error) => {
-      NotificationManager.error(
-        t("Error"),
-        t("Failed to update status!"),
-        3000
-      );
-    };
-
     return (
       <>
         <Select
@@ -127,12 +111,10 @@ const Orders = (props) => {
                     orderStatus: "ACCEPTED",
                   },
                   onCompleted: (data) => {
-                    handleStatusSuccessNotification("ACCEPTED");
                     refetchOrders();
                   },
                   onError: (error) => {
                     console.error("Mutation error:", error);
-                    handleStatusErrorNotification("Error");
                   },
                 });
               }}
@@ -152,12 +134,12 @@ const Orders = (props) => {
                     orderStatus: "CANCELLED",
                   },
                   onCompleted: (data) => {
-                    handleStatusSuccessNotification("REJECTED");
+                    // handleStatusSuccessNotification("REJECTED");
                     refetchOrders();
                   },
                   onError: (error) => {
                     console.error("Mutation error:", error);
-                    handleStatusErrorNotification("Error");
+                    // handleStatusErrorNotification("Error");
                   },
                 });
               }}
@@ -177,12 +159,12 @@ const Orders = (props) => {
                     orderStatus: "DELIVERED",
                   },
                   onCompleted: (data) => {
-                    handleStatusSuccessNotification("DELIVERED");
+                    // handleStatusSuccessNotification("DELIVERED");
                     refetchOrders();
                   },
                   onError: (error) => {
                     console.error("Mutation error:", error);
-                    handleStatusErrorNotification("Error");
+                    // handleStatusErrorNotification("Error");
                   },
                 });
               }}

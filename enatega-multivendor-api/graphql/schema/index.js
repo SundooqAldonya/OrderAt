@@ -758,6 +758,7 @@ const typeDefs = gql`
   type SubscriptionOrders {
     restaurantId: String
     userId: String
+    orderId: String
     order: Order!
     origin: String!
   }
@@ -2387,7 +2388,7 @@ const typeDefs = gql`
     toggleAvailablity(id: String): Rider!
     toggleMute(id: String): Rider!
     toggleActive(id: String): Rider!
-    updateStatus(id: String, orderStatus: String!): Order!
+    updateStatus(id: String, orderStatus: String!): Message
     assignRider(id: String!, riderId: String!): Order!
     riderLogin(
       username: String

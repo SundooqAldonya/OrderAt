@@ -167,8 +167,9 @@ module.exports = {
         }
         order.orderStatus = args.orderStatus
         const result = await order.save()
+        console.log({ resultUser: result.user })
         const populatedOrder = await order.populate(['user', 'restaurant'])
-        sendNotificationToUser(result.user, result)
+        // sendNotificationToUser(result.user, result)
         if (
           populatedOrder.user &&
           populatedOrder.user.isOnline &&
@@ -199,12 +200,52 @@ module.exports = {
             sendNotificationToRider(result.rider.toString(), transformedOrder)
           }
         }
-        return transformedOrder
+        return { message: 'updated_status' }
       } catch (error) {
         console.log(error)
         throw error
       }
     },
+    // updateStatus: async (_, args, { req }) => {
+    //   console.log('updateStatuss', args.id, args.orderStatus)
+    //   try {
+    //     if (!req.isAuth) throw new AuthenticationError('Unauthenticated')
+
+    //     const order = await Order.findById(args.id)
+    //     if (!order) throw new Error('Order not found')
+
+    //     // Defensive fix for potential full object
+    //     order.user = order.user?._id || order.user
+    //     order.restaurant = order.restaurant?._id || order.restaurant
+
+    //     const restaurant = await Restaurant.findById(
+    //       order.restaurant?._id || order.restaurant
+    //     )
+
+    //     if (args.orderStatus === 'ACCEPTED') {
+    //       order.completionTime = new Date(
+    //         Date.now() + restaurant.deliveryTime * 60 * 1000
+    //       )
+    //       order.acceptedAt = new Date()
+    //     }
+
+    //     if (args.orderStatus === 'CANCELLED') {
+    //       order.cancelledAt = new Date()
+    //       order.cancellation.kind = 'Owner'
+    //       order.cancellation.cancelledBy = req.userId
+    //     }
+
+    //     order.orderStatus = args.orderStatus
+
+    //     const result = await order.save()
+    //     console.log('✅ Order updated:', result._id)
+
+    //     return { message: 'updated_status' }
+    //   } catch (error) {
+    //     console.log('❌ updateStatus error:', error)
+    //     throw error
+    //   }
+    // },
     assignRider: async (_, args, { req }) => {
       console.log('assignRider', args.id, args.riderId)
       try {
