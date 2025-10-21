@@ -531,7 +531,7 @@ module.exports = {
         //   transformedOrder,
         //   'new'
         // )
-        // publishToDispatcher(transformedOrder)
+        publishToDispatcher(transformedOrder)
         if (user) {
           if (user.isOrderNotification) {
             console.log('through condition')
@@ -598,7 +598,6 @@ module.exports = {
       const populatedOrder = await order.populate('restaurant')
 
       const user = await User.findById(order.user)
-      console.log({ user })
 
       if (user && user.isOrderNotification) {
         console.log('through condition')
@@ -607,7 +606,7 @@ module.exports = {
 
       publishOrder(transformedOrder)
       publishToRestaurant(transformedOrder, 'ASSIGNED')
-
+      publishToDispatcher(transformedOrder)
       return transformedOrder
     },
     // assignOrder: async (_, args, { req }) => {

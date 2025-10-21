@@ -1803,6 +1803,7 @@ module.exports = {
         const user = await User.findById(order.user)
         publishToUser(result.user.toString(), transformedOrder, 'update')
         publishOrder(transformedOrder)
+        publishToDispatcher(transformedOrder)
         sendNotificationToUser(result.user, result)
         sendNotificationToCustomerWeb(
           user.notificationTokenWeb,
