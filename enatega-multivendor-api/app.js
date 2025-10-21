@@ -27,7 +27,8 @@ const Owner = require('./models/owner')
 const Restaurant = require('./models/restaurant')
 const Rider = require('./models/rider')
 const { orderCheckUnassigned } = require('./helpers/orderCheckUnassigned')
-const { pubsub } = require('./helpers/pubsub')
+const { pubsub, DISPATCH_ORDER } = require('./helpers/pubsub')
+const Order = require('./models/order')
 
 async function startApolloServer() {
   const app = express()
@@ -78,6 +79,18 @@ async function startApolloServer() {
           return {
             async drainServer() {
               await serverCleanup.dispose()
+            }
+          }
+        }
+      },
+      {
+        async requestDidStart() {
+          return {
+            async didResolveOperation({ request }) {
+              console.log('\n=== GraphQL Operation ===')
+              console.log('Operation Name:', request.operationName)
+              console.log('Variables:', request.variables)
+              console.log('Query:', request.query?.split('\n')[0])
             }
           }
         }
@@ -178,6 +191,11 @@ async function startApolloServer() {
 
   // ✅ Background jobs
   orderCheckUnassigned()
+  // setTimeout(async () => {
+  //   const sampleOrder = await Order.findOne()
+  //   console.log('🧪 Testing manual publish')
+  //   pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: sampleOrder })
+  // }, 3000)
 
   // ✅ Start Server
   const PORT = config.PORT || 4000

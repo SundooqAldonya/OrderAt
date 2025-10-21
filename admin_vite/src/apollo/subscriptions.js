@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 
 export const subscribePlaceOrder = `subscription SubscribePaceOrder($restaurant:String!){
     subscribePlaceOrder(restaurant:$restaurant){
@@ -74,7 +74,7 @@ export const subscribePlaceOrder = `subscription SubscribePaceOrder($restaurant:
         }
     }
   }
-  }`
+  }`;
 
 export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
     subscriptionOrder(id:$id){
@@ -84,7 +84,7 @@ export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
             _id
         }
     }
-  }`
+  }`;
 
 export const SUBSCRIBE_DISPATCHER = gql`
   subscription {
@@ -100,4 +100,20 @@ export const SUBSCRIBE_DISPATCHER = gql`
       paymentMethod
     }
   }
-`
+`;
+
+export const NEW_ORDER_CREATED = gql`
+  subscription {
+    newOrderCreated {
+      _id
+      orderId
+      orderStatus
+      restaurant {
+        _id
+        name
+      }
+      createdAt
+      paymentMethod
+    }
+  }
+`;

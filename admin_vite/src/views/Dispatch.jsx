@@ -5,8 +5,8 @@ import { useQuery, useMutation, useSubscription } from "@apollo/client/react";
 import DataTable from "react-data-table-component";
 import {
   getActiveOrders,
-  getRidersByZone,
-  subscriptionOrder,
+  // getRidersByZone,
+  // subscriptionOrder,
   updateStatus,
   assignRider,
   SUBSCRIBE_DISPATCHER,
@@ -42,9 +42,10 @@ import DispatchDrawer from "../components/DispatchDrawer";
 // import DispatchForm from "../components/DispatchForm";
 import { gql } from "@apollo/client";
 
-const SUBSCRIPTION_ORDER = gql`
-  ${subscriptionOrder}
-`;
+// const SUBSCRIPTION_ORDER = gql`
+//   ${subscriptionOrder}
+// `;
+
 const UPDATE_STATUS = gql`
   ${updateStatus}
 `;
@@ -81,14 +82,12 @@ const Orders = (props) => {
     if (subscriptionError) {
       console.error("Subscription error:", subscriptionError);
     }
-    if (subscriptionData?.subscriptionDispatcher) {
-      const newOrder = subscriptionData.subscriptionDispatcher;
-      console.log("🟢 New order received via subscription:", newOrder);
-      // Option 1: Refetch your active orders query
-      refetchOrders();
-      // Option 2 (optional): Update local state directly
-      // setOrders(prev => [newOrder, ...prev])
-    }
+
+    const order = subscriptionData?.subscriptionDispatcher;
+    if (!order) return; // Ignore empty or undefined payloads
+
+    console.log("🟢 New order via subscription:", order);
+    refetchOrders();
   }, [subscriptionData, subscriptionError]);
 
   const statusFunc = (row) => {

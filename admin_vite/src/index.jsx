@@ -30,6 +30,7 @@ import { isAuthenticated } from "./helpers/user";
 import AreaProvider from "./context/AreaContext";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { ApolloProvider } from "@apollo/client/react";
+import { createClient } from "graphql-ws";
 
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { ThemeProvider as LegacyThemeProvider } from "@mui/styles";
@@ -37,7 +38,9 @@ import { ThemeProvider as LegacyThemeProvider } from "@mui/styles";
 function Main() {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues();
   console.log("ahmed elselly");
+
   const cache = new InMemoryCache();
+
   const httpLink = createHttpLink({
     uri: `${SERVER_URL}/graphql`,
   });
@@ -47,54 +50,84 @@ function Main() {
   //     reconnect: true,
   //   },
   // });
-  const wsLink = new GraphQLWsLink({
-    uri: `${WS_SERVER_URL}/graphql`,
-    options: {
-      reconnect: true,
-    },
-  });
+
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: `${WS_SERVER_URL}/graphql`,
+      connectionParams: () => {
+        const token = isAuthenticated() ? isAuthenticated().token : null;
+        return {
+          headers: {
+            authorization: token ? `Bearer ${token}` : "",
+          },
+        };
+      },
+      retryAttempts: 10,
+      shouldRetry: () => true,
+    })
+  );
   // const token = localStorage.getItem('user-enatega')
   //   ? JSON.parse(localStorage.getItem('user-enatega')).token
   //   : null
 
   const token = isAuthenticated() ? isAuthenticated().token : null;
 
-  const request = async (operation) => {
-    console.log({ token });
+  // const request = async (operation) => {
+  //   console.log({ token });
 
+  //   operation.setContext({
+  //     headers: {
+  //       authorization: token ? `Bearer ${token}` : "",
+  //     },
+  //   });
+  // };
+
+  // const requestLink = new ApolloLink((operation, forward) => {
+  //   console.log({ operation });
+  //   console.log("requestLink executed");
+  //   // return forward(operation)
+  //   return new Observable((observer) => {
+  //     let handle;
+  //     Promise.resolve(operation)
+  //       .then((oper) => request(oper))
+  //       .then(() => {
+  //         handle = forward(operation).subscribe({
+  //           next: observer.next.bind(observer),
+  //           error: observer.error.bind(observer),
+  //           complete: observer.complete.bind(observer),
+  //         });
+  //       })
+  //       .catch(observer.error.bind(observer));
+
+  //     return () => {
+  //       if (handle) handle.unsubscribe();
+  //     };
+  //   });
+  // });
+
+  const authLink = new ApolloLink((operation, forward) => {
+    const token = isAuthenticated() ? isAuthenticated().token : null;
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : "",
       },
     });
-  };
-
-  const requestLink = new ApolloLink((operation, forward) => {
-    console.log({ operation });
-    console.log("requestLink executed");
-    // return forward(operation)
-    return new Observable((observer) => {
-      let handle;
-      Promise.resolve(operation)
-        .then((oper) => request(oper))
-        .then(() => {
-          handle = forward(operation).subscribe({
-            next: observer.next.bind(observer),
-            error: observer.error.bind(observer),
-            complete: observer.complete.bind(observer),
-          });
-        })
-        .catch(observer.error.bind(observer));
-
-      return () => {
-        if (handle) handle.unsubscribe();
-      };
-    });
+    return forward(operation);
   });
-  const terminatingLink = split(({ query }) => {
-    const { kind, operation } = getMainDefinition(query);
-    return kind === "OperationDefinition" && operation === "subscription";
-  }, wsLink);
+
+  // const terminatingLink = split(({ query }) => {
+  //   const { kind, operation } = getMainDefinition(query);
+  //   return kind === "OperationDefinition" && operation === "subscription";
+  // }, wsLink);
+
+  // const terminatingLink = split(
+  //   ({ query }) => {
+  //     const { kind, operation } = getMainDefinition(query);
+  //     return kind === "OperationDefinition" && operation === "subscription";
+  //   },
+  //   wsLink, // if true → subscription
+  //   httpLink // if false → regular query/mutation
+  // );
 
   const uploadLink = new UploadHttpLink({
     uri: `${SERVER_URL}/graphql`,
@@ -103,8 +136,21 @@ function Main() {
     },
   });
 
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink, // subscriptions
+    uploadLink // queries/mutations
+  );
+
   const client = new ApolloClient({
-    link: ApolloLink.from([requestLink, uploadLink, terminatingLink, httpLink]),
+    // link: ApolloLink.from([requestLink, uploadLink, terminatingLink, httpLink]),
+    link: concat(authLink, splitLink),
     cache,
     resolvers: {},
     connectToDevTools: true,

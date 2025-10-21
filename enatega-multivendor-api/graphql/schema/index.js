@@ -1679,7 +1679,7 @@ const typeDefs = gql`
       businessCategoryId: String
     ): [RestaurantPreview]
     getRidersLocation(cityId: String): [Rider]
-    orderRidersInteractions(id: String!): [RiderInteractions]
+    orderRidersInteractions(id: String): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
     featuredRestaurants(
@@ -2487,8 +2487,9 @@ const typeDefs = gql`
     subscriptionRiderLocation(riderId: String!): Rider!
     subscriptionZoneOrders(zoneId: String!): Subscription_Zone_Orders!
     subscriptionOrder(id: String!): Order!
-    subscriptionDispatcher: Order!
+    subscriptionDispatcher: Order
     subscriptionNewMessage(order: ID!): ChatMessageOutput!
+    # newOrderCreated: Order
   }
 `
 module.exports = typeDefs

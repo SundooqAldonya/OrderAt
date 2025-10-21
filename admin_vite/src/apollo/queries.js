@@ -1190,7 +1190,7 @@ export const getBusinessCategories = gql`
   }
 `;
 export const orderRidersInteractions = gql`
-  query orderRidersInteractions($id: String!) {
+  query orderRidersInteractions($id: String) {
     orderRidersInteractions(id: $id) {
       _id
       rider {

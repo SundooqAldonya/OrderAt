@@ -9,7 +9,7 @@ const Order = require('../../models/order')
 const Rider = require('../../models/rider')
 const Restaurant = require('../../models/restaurant')
 const {
-  pubsub,
+  // pubsub,
   DISPATCH_ORDER,
   publishOrder,
   publishToAssignedRider,
@@ -29,11 +29,39 @@ const {
 
 module.exports = {
   Subscription: {
+    // subscriptionDispatcher: {
+    //   // subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
+    //   subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
+    //   resolve: payload => {
+    //     console.log({ payload })
+    //     if (!payload || !payload.subscriptionDispatcher) {
+    //       console.log('⚠️ Ignoring empty initial payload')
+    //       return null
+    //     }
+    //     return payload.subscriptionDispatcher
+    //   }
+    // }
     subscriptionDispatcher: {
-      // subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
-      subscribe: () => pubsub.asyncIterator(DISPATCH_ORDER),
-      resolve: payload => payload.subscriptionDispatcher
+      subscribe: async (_, __, { pubsub }) => {
+        console.log('🟢 Subscribed to dispatcher updates')
+        return pubsub.asyncIterator(DISPATCH_ORDER)
+      },
+      resolve: payload => {
+        // Defensive guard against undefined payload
+        if (!payload || typeof payload !== 'object') {
+          console.log('⚠️ Received undefined payload')
+          return null
+        }
+
+        const data = payload.subscriptionDispatcher
+        console.log('📦 Resolving payload:', data ? data._id : 'no order')
+        return data || null
+      }
     }
+
+    // newOrderCreated: {
+    //   subscribe: () => pubsub.asyncIterator([NEW_ORDER_CREATED])
+    // }
   },
   Query: {
     getActiveOrders: async (_, args, { req, res }) => {

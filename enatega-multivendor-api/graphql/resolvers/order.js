@@ -36,7 +36,8 @@ const {
   ORDER_STATUS_CHANGED,
   ASSIGN_RIDER,
   SUBSCRIPTION_ORDER,
-  ORDER_STATUS_CHANGED_RESTAURANT
+  ORDER_STATUS_CHANGED_RESTAURANT,
+  publishNewOrderDispatch
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -436,8 +437,10 @@ module.exports = {
           populate: { path: 'rider' }
         })
         console.log({ orderRiderInteractions: order })
-        if (!order?.riderInteractions?.length)
-          throw new Error('no_rider_interactions')
+        if (!order?.riderInteractions?.length) {
+          // throw new Error('no_rider_interactions')
+          return null
+        }
         return order.riderInteractions
       } catch (err) {
         throw err
@@ -844,6 +847,7 @@ module.exports = {
         const transformedOrder = await transformOrder(savedOrder)
         publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
         publishToDispatcher(transformedOrder)
+        // publishNewOrderDispatch(transformedOrder)
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,

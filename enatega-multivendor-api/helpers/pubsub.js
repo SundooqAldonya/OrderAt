@@ -11,6 +11,7 @@ const SUBSCRIPTION_ORDER = 'SUBSCRIPTION_ORDER'
 const DISPATCH_ORDER = 'DISPATCH_ORDER'
 const SUBSCRIPTION_MESSAGE = 'SUBSCRIPTION_MESSAGE'
 const ORDER_STATUS_CHANGED_RESTAURANT = 'ORDER_STATUS_CHANGED_RESTAURANT'
+const NEW_ORDER_CREATED = 'NEW_ORDER_CREATED'
 
 // const pubsub = new PubSub()
 
@@ -135,16 +136,33 @@ const publishOrder = order => {
   pubsub.publish(SUBSCRIPTION_ORDER, { subscriptionOrder: order })
 }
 
-const publishToDispatcher = async order => {
-  const newOrder = await Order.findById(order._id)
-    .populate('zone')
-    .populate('restaurant')
-    .populate('user')
-    .lean() // optional: removes Mongoose wrappers
-    .exec()
+// const publishNewOrderDispatch = order => {
+//   pubsub.publish('NEW_ORDER_CREATED', {
+//     newOrderCreated: {
+//       order
+//     }
+//   })
+// }
 
-  console.log('📦 Publishing to dispatcher:', newOrder)
-  pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: newOrder })
+const publishToDispatcher = async order => {
+  try {
+    const newOrder = await Order.findById(order._id)
+      .populate('zone')
+      .populate('restaurant')
+      .populate('user')
+      .lean()
+      .exec()
+
+    if (!newOrder) {
+      console.warn('⚠️ No order found for publishToDispatcher')
+      return
+    }
+
+    console.log('📦 Publishing to dispatcher:', newOrder._id)
+    await pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: newOrder })
+  } catch (err) {
+    console.error('❌ Error in publishToDispatcher:', err)
+  }
 }
 
 const publishNewMessage = message => {
@@ -162,6 +180,7 @@ module.exports = {
   ZONE_ORDER,
   SUBSCRIPTION_ORDER,
   DISPATCH_ORDER,
+  NEW_ORDER_CREATED,
   SUBSCRIPTION_MESSAGE,
   publishToUser,
   publishToAssignedRider,
@@ -172,4 +191,5 @@ module.exports = {
   publishToDispatcher,
   publishNewMessage,
   publishToRestaurant
+  // publishNewOrderDispatch
 }
