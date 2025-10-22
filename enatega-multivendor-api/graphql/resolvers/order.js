@@ -848,6 +848,13 @@ module.exports = {
         publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
         publishToDispatcher(transformedOrder)
         // publishNewOrderDispatch(transformedOrder)
+        acceptOrderHandler({
+          user,
+          restaurant,
+          time: preparationTime,
+          orderId: order._id,
+          rider: null
+        })
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,
