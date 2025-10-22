@@ -17,7 +17,7 @@ import VerificationConfiguration from "../components/Configuration/Verification/
 import SendGridConfiguration from "../components/Configuration/SendGrid/SendGrid";
 import SentryConfiguration from "../components/Configuration/Sentry/Sentry";
 import GoogleApiKeyConfiguration from "../components/Configuration/GoogleApi/GoogleApi";
-import CloudinaryConfiguration from "../components/Configuration/ Cloudinary/ Cloudinary";
+import CloudinaryConfiguration from "../components/Configuration/Cloudinary/Cloudinary";
 import AmplitudeApiKeyConfiguration from "../components/Configuration/Amplitude/Amplitude";
 import GoogleClientIDConfiguration from "../components/Configuration/GoogleClient/GoogleClient";
 import WebConfiguration from "../components/Configuration/Web/Web";
