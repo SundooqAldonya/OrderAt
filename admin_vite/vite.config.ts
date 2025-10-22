@@ -5,6 +5,13 @@ import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
   // base: "./",
+  server: {
+    host: true, // allow external connections
+    port: 3000, // or your preferred port
+    allowedHosts: [
+      "admintest.orderat.ai", // ✅ allow your staging domain
+    ],
+  },
   plugins: [
     svgr(),
     react({
