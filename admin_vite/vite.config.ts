@@ -11,6 +11,11 @@ export default defineConfig({
     allowedHosts: [
       "admintest.orderat.ai", // ✅ allow your staging domain
     ],
+    hmr: {
+      protocol: "wss", // ✅ use secure WebSocket
+      host: "admintest.orderat.ai", // ✅ match your domain
+      port: 443, // ✅ HTTPS port
+    },
   },
   plugins: [
     svgr(),
