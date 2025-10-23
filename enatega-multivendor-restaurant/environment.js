@@ -2,7 +2,7 @@ import * as Updates from 'expo-updates'
 import { useContext } from 'react'
 import Configuration from './src/ui/context/configuration'
 
-const channel = Updates.channel || process.env.API_ENV || 'development'
+const channel = Updates.channel || process.env.API_ENV || 'staging'
 
 const getEnvVars = () => {
   console.log('Active channel:', channel)
@@ -21,9 +21,12 @@ const getEnvVars = () => {
 
   if (channel === 'staging') {
     return {
-      GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
-      WS_GRAPHQL_URL: 'wss://querytest.orderat.ai/graphql',
-      SERVER_URL: 'https://querytest.orderat.ai/',
+      GRAPHQL_URL: 'https://service.orderatco.com/graphql',
+      WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
+      SERVER_URL: 'https://service.orderatco.com/',
+      // GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
+      // WS_GRAPHQL_URL: 'wss://querytest.orderat.ai/graphql',
+      // SERVER_URL: 'https://querytest.orderat.ai/',
       SENTRY_DSN: configuration.restaurantAppSentryUrl
     }
   }

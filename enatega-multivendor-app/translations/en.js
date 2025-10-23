@@ -747,5 +747,6 @@ export const en = {
   no_search_result: 'No search result found',
   results: 'Results',
   clear_filters: 'Clear Filters',
-  order: 'Order'
+  order: 'Order',
+  try_request_delivery: 'Try Khedmet Mashaweer'
 }

@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import OrderComponent from "../components/Order/Order";
 import OrdersData from "../components/Order/OrdersData";
 import Header from "../components/Headers/Header";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery } from "@apollo/client/react";
 import {
   getCityAreas,
   getOrdersByRestaurant,
@@ -55,14 +55,30 @@ const Orders = () => {
     variables: { id: restaurantId },
   });
 
-  useQuery(CITY_AREAS, {
-    skip: !dataProfile?.restaurant?.city?._id,
-    variables: { id: dataProfile?.restaurant?.city?._id },
-    onCompleted: (fetchedData) => {
-      console.log({ fetchedData });
-      setAreas(fetchedData ? fetchedData.areasByCity : null);
+  // useQuery(CITY_AREAS, {
+  //   skip: !dataProfile?.restaurant?.city?._id,
+  //   variables: { id: dataProfile?.restaurant?.city?._id },
+  //   onCompleted: (fetchedData) => {
+  //     console.log({ fetchedData });
+  //     setAreas(fetchedData ? fetchedData.areasByCity : null);
+  //   },
+  // });
+
+  const [fetchAreas] = useLazyQuery(CITY_AREAS, {
+    onCompleted: (res) => {
+      console.log({ res });
     },
   });
+
+  useEffect(() => {
+    if (dataProfile) {
+      fetchAreas({
+        variables: {
+          id: dataProfile?.restaurant?.city?._id,
+        },
+      });
+    }
+  }, [dataProfile]);
 
   const toggleModal = (order) => {
     window.open(`/admin/order-details/${order._id}`);

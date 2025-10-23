@@ -626,7 +626,7 @@ export default function FoodTab() {
           </View>
 
           {/* Categories */}
-          <BusinessCategories />
+          {!allErrorsZone && !error && <BusinessCategories />}
 
           {allErrorsZone ? (
             <ErrorView
