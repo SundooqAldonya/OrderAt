@@ -3,7 +3,7 @@ import { MenuItem, Select } from "@mui/material";
 import { assignRider, getRidersByZone } from "../../apollo";
 import { useMutation, useQuery } from "@apollo/client/react";
 import useGlobalStyles from "../../utils/globalStyles";
-import { NotificationManager } from "react-notifications";
+// import { NotificationManager } from "react-notifications";
 import { gql } from "@apollo/client";
 
 const GET_RIDERS_BY_ZONE = gql`
@@ -13,11 +13,29 @@ const GET_RIDERS_BY_ZONE = gql`
 const ASSIGN_RIDER = gql`
   ${assignRider}
 `;
+
 const RiderFunc = (row) => {
   const { data: dataZone } = useQuery(GET_RIDERS_BY_ZONE, {
     variables: { id: row.zone._id },
   });
-  const [mutateAssign] = useMutation(ASSIGN_RIDER);
+  const [mutateAssign] = useMutation(ASSIGN_RIDER, {
+    onCompleted: (res) => {
+      console.log("Mutation success res:", res);
+      // NotificationManager.success(
+      //   "Successful",
+      //   "Rider updated!",
+      //   3000
+      // );
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      // NotificationManager.error(
+      //   "Error",
+      //   "Failed to update rider!",
+      //   3000
+      // );
+    },
+  });
   const globalClasses = useGlobalStyles();
 
   return (
@@ -39,22 +57,6 @@ const RiderFunc = (row) => {
                 variables: {
                   id: row._id,
                   riderId: rider._id,
-                },
-                onCompleted: (data) => {
-                  console.error("Mutation success data:", data);
-                  NotificationManager.success(
-                    "Successful",
-                    "Rider updated!",
-                    3000
-                  );
-                },
-                onError: (error) => {
-                  console.error("Mutation error:", error);
-                  NotificationManager.error(
-                    "Error",
-                    "Failed to update rider!",
-                    3000
-                  );
                 },
               });
             }}

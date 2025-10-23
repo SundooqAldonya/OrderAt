@@ -60,8 +60,8 @@ const AddNewOrder = ({ navigation }) => {
   const [cost, setCost] = useState(0)
   const [selectedTime, setSelectedTime] = useState(TIMES[1])
   const [overlayVisible, setOverlayVisible] = useState(false)
-  const { acceptOrder } = useAcceptOrder()
-  const { muteRing } = useOrderRing()
+  // const { acceptOrder } = useAcceptOrder()
+  // const { muteRing } = useOrderRing()
   const { data: restaurantData } = useAccount()
   const { currencySymbol } = useContext(Configuration.Context)
 
@@ -69,8 +69,8 @@ const AddNewOrder = ({ navigation }) => {
     newCheckoutPlaceOrder,
     {
       onCompleted: data => {
-        acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
-        muteRing(data.newCheckoutPlaceOrder.orderId)
+        // acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
+        // muteRing(data.newCheckoutPlaceOrder.orderId)
         navigation.navigate('Orders')
         Alert.alert(
           `${t('ordersuccessfullycreated')}`,

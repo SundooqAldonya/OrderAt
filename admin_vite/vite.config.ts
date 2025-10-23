@@ -5,20 +5,20 @@ import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
   // base: "./",
-  server: {
-    host: true,
-    port: 3000,
-    allowedHosts: ["admintest.orderat.ai"],
-    hmr: {
-      protocol: "wss",
-      host: "admintest.orderat.ai",
-      port: 443, // standard HTTPS port
-    },
-  },
-  preview: {
-    port: 3000,
-    allowedHosts: ["admintest.orderat.ai"],
-  },
+  // server: {
+  //   host: true,
+  //   port: 3000,
+  //   allowedHosts: ["admintest.orderat.ai"],
+  //   hmr: {
+  //     protocol: "wss",
+  //     host: "admintest.orderat.ai",
+  //     port: 443, // standard HTTPS port
+  //   },
+  // },
+  // preview: {
+  //   port: 3000,
+  //   allowedHosts: ["admintest.orderat.ai"],
+  // },
   plugins: [
     svgr(),
     react({
