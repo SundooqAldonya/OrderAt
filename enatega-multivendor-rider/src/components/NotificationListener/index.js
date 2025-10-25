@@ -6,7 +6,7 @@ import {
   refreshFirebaseToken
 } from '../../apollo/mutations'
 import messaging from '@react-native-firebase/messaging'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { AuthContext } from '../../context/auth'
 import * as Notifications from 'expo-notifications'
 import { setupNotificationChannel } from '../../utilities/pushNotifications'

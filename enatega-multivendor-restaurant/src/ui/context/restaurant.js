@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { subscribePlaceOrder, orders } from '../../apollo'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import { MAX_TIME } from '../../utilities'
+import { gql } from '@apollo/client'
 
 const Context = React.createContext({})
 const Provider = props => {
@@ -36,7 +37,7 @@ const Provider = props => {
     `,
     {
       fetchPolicy: 'network-only',
-      pollInterval: 15000,
+      // pollInterval: 15000,
       onError
     }
   )
@@ -100,18 +101,18 @@ const Provider = props => {
         const { origin, order } = subscriptionData.data.subscribePlaceOrder
         const updatedOrders = [order, ...restaurantOrders]
         console.log('navigating to NewOrderScreenNotification')
-        navigation.navigate('NewOrderScreenNotification', {
-          activeBar: 0,
-          orderData: order,
-          rider: order.rider,
-          remainingTime: moment(order.createdAt)
-            .add(MAX_TIME, 'seconds')
-            .diff(moment(), 'seconds'),
-          createdAt: order.createdAt,
-          MAX_TIME,
-          acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
-          preparationTime: new Date(order.preparationTime).toISOString()
-        })
+        // navigation.navigate('NewOrderScreenNotification', {
+        //   activeBar: 0,
+        //   orderData: order,
+        //   rider: order.rider,
+        //   remainingTime: moment(order.createdAt)
+        //     .add(MAX_TIME, 'seconds')
+        //     .diff(moment(), 'seconds'),
+        //   createdAt: order.createdAt,
+        //   MAX_TIME,
+        //   acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
+        //   preparationTime: new Date(order.preparationTime).toISOString()
+        // })
         if (origin === 'new') {
           return {
             restaurantOrders: [...updatedOrders]

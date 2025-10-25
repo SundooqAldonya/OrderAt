@@ -7,7 +7,7 @@ import gql from 'graphql-tag'
 import { chat } from '../../apollo/queries'
 import { subscriptionNewMessage } from '../../apollo/subscriptions'
 import { sendChatMessage } from '../../apollo/mutations'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { Alert, Platform, StatusBar, View } from 'react-native'
 import { useUserContext } from '../../context/User'
 import { useTranslation } from 'react-i18next'
@@ -42,7 +42,7 @@ export const useChatScreen = ({ navigation, route }) => {
   useEffect(() => {
     if (chatData) {
       setMessages(
-        chatData.chat.map(message => ({
+        chatData.chat.map((message) => ({
           _id: message.id,
           text: message.message,
           createdAt: message.createdAt,
@@ -91,9 +91,10 @@ export const useChatScreen = ({ navigation, route }) => {
             borderWidth: 1,
             borderColor: currentTheme.fontFourthColor,
             ...alignment.MLmedium
-          }}>
+          }}
+        >
           <Entypo
-            name="cross"
+            name='cross'
             size={20}
             color={currentTheme.fontFourthColor}
             onPress={() => navigation.goBack()}
@@ -104,9 +105,10 @@ export const useChatScreen = ({ navigation, route }) => {
         <View
           style={{
             ...alignment.MRmedium
-          }}>
+          }}
+        >
           <Ionicons
-            name="call-outline"
+            name='call-outline'
             size={24}
             color={currentTheme.fontFourthColor}
             onPress={() => callNumber('+923159499378')}

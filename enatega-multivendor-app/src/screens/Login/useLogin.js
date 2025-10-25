@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import _ from 'lodash'
 import * as Device from 'expo-device'
 import Constants from 'expo-constants'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import {
   login,

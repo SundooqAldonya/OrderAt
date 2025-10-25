@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview'
 import { myOrders } from '../../apollo/queries'
 import gql from 'graphql-tag'
 import useEnvVars from '../../../environment'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient } from '@apollo/client/react'
 import UserContext from '../../context/User'
 import analytics from '../../utils/analytics'
 
@@ -48,7 +48,7 @@ function StripeCheckout(props) {
         query: MYORDERS,
         fetchPolicy: 'network-only'
       })
-      const order = result.data.orders.find(order => order.orderId === _id)
+      const order = result.data.orders.find((order) => order.orderId === _id)
       await clearCart()
       props.navigation.reset({
         routes: [
@@ -78,7 +78,7 @@ function StripeCheckout(props) {
           uri: `${SERVER_URL}stripe/create-checkout-session?id=${_id}`
         }}
         scalesPageToFit={true}
-        onNavigationStateChange={data => {
+        onNavigationStateChange={(data) => {
           handleResponse(data)
         }}
       />

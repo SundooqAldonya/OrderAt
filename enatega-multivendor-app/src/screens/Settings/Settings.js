@@ -21,7 +21,7 @@ import {
 } from '../../apollo/mutations'
 
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import styles from './styles'
 import CheckboxBtn from '../../ui/FdCheckbox/CheckboxBtn'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'

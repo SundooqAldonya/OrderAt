@@ -27,13 +27,14 @@ import { Image } from 'react-native'
 import { getCities, getGovernate } from '../../utilities/apiServices'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { FIND_OR_CREATE_USER, getCityAreas } from '../../apollo'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RestaurantContext } from '../../contexts/restaurant'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { useSelector } from 'react-redux'
 import 'react-native-get-random-values'
+import { gql } from '@apollo/client'
 
 // const { width, height } = Dimensions.get('window')
 

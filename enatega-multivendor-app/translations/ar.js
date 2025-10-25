@@ -694,7 +694,7 @@ export const ar = {
   browse_available_areas: 'تصفح المناطق المتاحة',
   citySelect: 'قم بتغيير المدينة',
   city_location_no_deliveryzone:
-    'نحن لا نخدم هذه المنطقة حالياً، ولكننا نتوسع!',
+    'قريبًا في منطقتكم… كل خدمات أوردرات لتسهيل حياتكم اليومية!',
   required: 'مطلوب *',
   enter_your_name: 'قم بإدخال اسمك',
   your_name: 'اسمك',
@@ -734,5 +734,7 @@ export const ar = {
   rider_review_added: 'تم إضافة تقييم السائق بنجاح',
   no_search_result: 'لا توجد نتائج بحث',
   results: 'النتائج',
-  clear_filters: 'مسح الفلاتر'
+  clear_filters: 'مسح الفلاتر',
+  order: 'طلب',
+  try_request_delivery: 'جرب خدمة مشاوير الآن'
 }

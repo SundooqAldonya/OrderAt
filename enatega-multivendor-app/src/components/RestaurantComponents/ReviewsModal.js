@@ -12,7 +12,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AntDesign } from '@expo/vector-icons'
 import { getReviews } from '../../apollo/queries'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import ReviewCard from './ReviewCard'
 
 const ReviewsModal = ({

@@ -15,7 +15,7 @@ import { Spinner, TextDefault } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { useAccount } from '../../ui/hooks'
 import { colors, scale } from '../../utilities'
-import { useMutation } from '@apollo/client'
+// import { useMutation } from '@apollo/client/react'
 import { deactivateRestaurant } from '../../apollo'
 import {
   AntDesign,

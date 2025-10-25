@@ -1068,6 +1068,7 @@ export const singleOrder = `query SingleOrder($id: String!){
       }
     }
     deliveryAddress{
+      id
       location{coordinates}
       deliveryAddress
       label

@@ -1,5 +1,6 @@
-import { useSubscription, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { subscribeOrderStatus, orders } from '../../apollo'
+import { useSubscription } from '@apollo/client/react'
 
 export default function useOrderStatus(_id) {
   // remove this later

@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper' // optional
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { areasCalculatedList } from '../../apollo'
 import { useAccount } from '../../ui/hooks'
 import { TextDefault } from '../../components'

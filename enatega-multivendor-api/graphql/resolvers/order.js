@@ -35,7 +35,9 @@ const {
   PLACE_ORDER,
   ORDER_STATUS_CHANGED,
   ASSIGN_RIDER,
-  SUBSCRIPTION_ORDER
+  SUBSCRIPTION_ORDER,
+  ORDER_STATUS_CHANGED_RESTAURANT,
+  publishNewOrderDispatch
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -75,11 +77,13 @@ module.exports = {
   Subscription: {
     subscribePlaceOrder: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(PLACE_ORDER),
-        (payload, args, context) => {
-          const restaurantId = payload.subscribePlaceOrder.restaurantId
-          console.log('restaurantId', restaurantId)
-          return restaurantId === args.restaurant
+        () => {
+          console.log('Subscribing to PLACE_ORDER...')
+          return pubsub.asyncIterator(PLACE_ORDER)
+        },
+        (payload, args) => {
+          console.log('Subscription payload received:', payload)
+          return payload.subscribePlaceOrder.restaurantId === args.restaurant
         }
       )
     },
@@ -87,8 +91,10 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(ORDER_STATUS_CHANGED),
         (payload, args, context) => {
-          const userId = payload.orderStatusChanged.userId.toString()
-          return userId === args.userId
+          const orderId = payload.orderStatusChanged.order._id.toString()
+          return orderId === args.orderId
+          // const userId = payload.orderStatusChanged.userId.toString()
+          // return userId === args.userId
         }
       )
     },
@@ -105,20 +111,30 @@ module.exports = {
       subscribe: withFilter(
         (_, args, { pubsub }) => {
           const asyncIterator = pubsub.asyncIterator(SUBSCRIPTION_ORDER)
-          // Override return() to remove listener when unsubscribed
-          const originalReturn = asyncIterator.return
+          const originalReturn = asyncIterator.return?.bind(asyncIterator)
+
           asyncIterator.return = async () => {
             console.log(`Cleaning up subscription for ORDER ID: ${args.id}`)
-            if (originalReturn) await originalReturn.call(asyncIterator)
+            if (originalReturn) {
+              await originalReturn()
+            }
+            // Always return a valid iterator result
+            return { value: undefined, done: true }
           }
 
           return asyncIterator
         },
         (payload, args) => {
           if (!payload?.subscriptionOrder?._id) return false
-          const orderId = payload?.subscriptionOrder?._id?.toString()
-          return orderId === args.id
+          return payload.subscriptionOrder._id.toString() === args.id
         }
+      )
+    },
+    orderStatusChangedRestaurant: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(ORDER_STATUS_CHANGED_RESTAURANT),
+        (payload, variables) =>
+          payload.orderStatusChangedRestaurant.orderId === variables.orderId
       )
     }
   },
@@ -138,8 +154,8 @@ module.exports = {
       }
     },
     singleOrder: async (_, args, { req }) => {
+      console.log('singleOrder', { args })
       try {
-        console.log('singleOrder')
         if (!req.isAuth) {
           throw new Error('Unauthenticated!')
         }
@@ -421,8 +437,10 @@ module.exports = {
           populate: { path: 'rider' }
         })
         console.log({ orderRiderInteractions: order })
-        if (!order?.riderInteractions?.length)
-          throw new Error('no_rider_interactions')
+        if (!order?.riderInteractions?.length) {
+          // throw new Error('no_rider_interactions')
+          return null
+        }
         return order.riderInteractions
       } catch (err) {
         throw err
@@ -826,6 +844,17 @@ module.exports = {
         //   restaurantId: savedOrder.resId,
         //   time: preparationTime
         // })
+        const transformedOrder = await transformOrder(savedOrder)
+        publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
+        publishToDispatcher(transformedOrder)
+        // publishNewOrderDispatch(transformedOrder)
+        acceptOrderHandler({
+          user,
+          restaurant,
+          time: preparationTime,
+          orderId: order._id,
+          rider: null
+        })
         return {
           _id: savedOrder._id,
           orderId: savedOrder.orderId,
@@ -1781,6 +1810,7 @@ module.exports = {
         const user = await User.findById(order.user)
         publishToUser(result.user.toString(), transformedOrder, 'update')
         publishOrder(transformedOrder)
+        publishToDispatcher(transformedOrder)
         sendNotificationToUser(result.user, result)
         sendNotificationToCustomerWeb(
           user.notificationTokenWeb,

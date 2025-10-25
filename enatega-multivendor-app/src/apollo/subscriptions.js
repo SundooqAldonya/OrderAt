@@ -17,8 +17,8 @@ export const subscriptionRiderLocation = `subscription SubscriptionRiderLocation
     }
   }`
 
-export const orderStatusChanged = `subscription OrderStatusChanged($userId:String!){
-    orderStatusChanged(userId:$userId){
+export const orderStatusChanged = `subscription OrderStatusChanged($orderId:String!){
+    orderStatusChanged(orderId:$orderId){
       userId
       origin
       order{

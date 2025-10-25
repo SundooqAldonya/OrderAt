@@ -1,5 +1,6 @@
-const { PubSub } = require('graphql-subscriptions')
-
+// const { PubSub } = require('graphql-subscriptions')
+const { RedisPubSub } = require('graphql-redis-subscriptions')
+const Order = require('../models/order')
 const PLACE_ORDER = 'PLACE_ORDER'
 const ORDER_STATUS_CHANGED = 'ORDER_STATUS_CHANGED'
 const ASSIGN_RIDER = 'ASSIGN_RIDER'
@@ -9,17 +10,94 @@ const ZONE_ORDER = 'ZONE_ORDER'
 const SUBSCRIPTION_ORDER = 'SUBSCRIPTION_ORDER'
 const DISPATCH_ORDER = 'DISPATCH_ORDER'
 const SUBSCRIPTION_MESSAGE = 'SUBSCRIPTION_MESSAGE'
-const pubsub = new PubSub()
-// pubsub.setMaxListeners(50)
+const ORDER_STATUS_CHANGED_RESTAURANT = 'ORDER_STATUS_CHANGED_RESTAURANT'
+const NEW_ORDER_CREATED = 'NEW_ORDER_CREATED'
+
+// const pubsub = new PubSub()
+
 // pubsub.asyncIterator
 
-const publishToUser = (userId, order, origin) => {
+const Redis = require('ioredis')
+
+const options = {
+  host: '127.0.0.1', // or your Redis host
+  port: 6379,
+  retryStrategy: times => Math.min(times * 50, 2000)
+}
+
+const pubsub = new RedisPubSub({
+  publisher: new Redis(options),
+  subscriber: new Redis(options)
+})
+
+// // optional: increase listener cap
+// if (pubsub.setMaxListeners) pubsub.setMaxListeners(100)
+
+// class SafePubSub extends PubSub {
+//   asyncIterator(triggers) {
+//     const baseIterator = super.asyncIterator(triggers)
+
+//     let isClosed = false
+
+//     const safeIterator = {
+//       next: async () => {
+//         if (isClosed) return { value: undefined, done: true }
+//         try {
+//           return await baseIterator.next()
+//         } catch (err) {
+//           console.error('SafePubSub.next() error:', err)
+//           return { value: undefined, done: true }
+//         }
+//       },
+
+//       return: async () => {
+//         if (isClosed) return { value: undefined, done: true }
+//         isClosed = true
+//         try {
+//           if (baseIterator.return) await baseIterator.return()
+//         } catch (err) {
+//           console.warn('SafePubSub.return() cleanup failed:', err)
+//         }
+//         return { value: undefined, done: true }
+//       },
+
+//       throw: async error => {
+//         console.error('SafePubSub.throw() called with:', error)
+//         return { value: undefined, done: true }
+//       },
+
+//       [Symbol.asyncIterator]() {
+//         return this
+//       }
+//     }
+
+//     return safeIterator
+//   }
+// }
+// const pubsub = new SafePubSub()
+// pubsub.ee.setMaxListeners(100)
+
+const publishToUser = (order, origin) => {
   const orderStatusChanged = {
-    userId,
+    // userId,
+    orderId: order._id,
     order,
     origin
   }
+  console.log({ orderStatusChanged })
   pubsub.publish(ORDER_STATUS_CHANGED, { orderStatusChanged })
+}
+
+// 🔹 For restaurant app — filtered by orderId
+const publishToRestaurant = (order, origin) => {
+  const orderStatusChangedRestaurant = {
+    orderId: order._id,
+    order,
+    origin
+  }
+  pubsub.publish(ORDER_STATUS_CHANGED_RESTAURANT, {
+    orderStatusChangedRestaurant
+  })
 }
 
 const publishToAssignedRider = (userId, order, origin) => {
@@ -37,6 +115,7 @@ const publishToDashboard = (restaurantId, order, origin) => {
     order,
     origin
   }
+  console.log('Publishing PLACE_ORDER:', subscribePlaceOrder)
   pubsub.publish(PLACE_ORDER, { subscribePlaceOrder })
 }
 
@@ -57,8 +136,33 @@ const publishOrder = order => {
   pubsub.publish(SUBSCRIPTION_ORDER, { subscriptionOrder: order })
 }
 
-const publishToDispatcher = order => {
-  pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: order })
+// const publishNewOrderDispatch = order => {
+//   pubsub.publish('NEW_ORDER_CREATED', {
+//     newOrderCreated: {
+//       order
+//     }
+//   })
+// }
+
+const publishToDispatcher = async order => {
+  try {
+    const newOrder = await Order.findById(order._id)
+      .populate('zone')
+      .populate('restaurant')
+      .populate('user')
+      .lean()
+      .exec()
+
+    if (!newOrder) {
+      console.warn('⚠️ No order found for publishToDispatcher')
+      return
+    }
+
+    console.log('📦 Publishing to dispatcher:', newOrder._id)
+    await pubsub.publish(DISPATCH_ORDER, { subscriptionDispatcher: newOrder })
+  } catch (err) {
+    console.error('❌ Error in publishToDispatcher:', err)
+  }
 }
 
 const publishNewMessage = message => {
@@ -69,12 +173,14 @@ module.exports = {
   pubsub,
   PLACE_ORDER,
   ORDER_STATUS_CHANGED,
+  ORDER_STATUS_CHANGED_RESTAURANT,
   ASSIGN_RIDER,
   UNASSIGNED_ORDER,
   RIDER_LOCATION,
   ZONE_ORDER,
   SUBSCRIPTION_ORDER,
   DISPATCH_ORDER,
+  NEW_ORDER_CREATED,
   SUBSCRIPTION_MESSAGE,
   publishToUser,
   publishToAssignedRider,
@@ -83,5 +189,7 @@ module.exports = {
   publishToZoneRiders,
   publishOrder,
   publishToDispatcher,
-  publishNewMessage
+  publishNewMessage,
+  publishToRestaurant
+  // publishNewOrderDispatch
 }

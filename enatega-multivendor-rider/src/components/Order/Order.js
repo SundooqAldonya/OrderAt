@@ -8,7 +8,7 @@ import Spinner from '../Spinner/Spinner'
 import { useTranslation } from 'react-i18next'
 import { useSoundContext } from '../../context/sound'
 import { orderOpenedByRider } from '../../apollo/mutations'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { useContext } from 'react'
 import UserContext from '../../context/user'
 

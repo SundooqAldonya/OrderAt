@@ -15,7 +15,7 @@ import { colors } from '../../../utils/colors'
 import { openGoogleMaps } from '../../../utils/callMaps'
 import ReviewModal from './ReviewModal'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import {
   getRiderOrderReview,
   userHasOrderReview
@@ -76,7 +76,8 @@ export default function Detail({
     variables: {
       orderId: _id,
       riderId: rider?._id
-    }
+    },
+    skip: !rider
     // pollInterval: 10000
   })
 

@@ -9,7 +9,7 @@ import {
   Dimensions,
   TextInput
 } from 'react-native'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { getFoodListByRestaurant } from '../../apollo'
 import { useAccount } from '../../ui/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'

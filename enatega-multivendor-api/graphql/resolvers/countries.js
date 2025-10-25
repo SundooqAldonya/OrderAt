@@ -1,10 +1,10 @@
-const { ApolloError } = require('apollo-server-express')
+const { ApolloError } = require('@apollo/server/errors')
 const Country = require('../../models/country')
 
 const resolvers = {
   Query: {
     // Get all countries
-    getCountries: async() => {
+    getCountries: async () => {
       try {
         const countries = await Country.find()
         return countries
@@ -14,7 +14,7 @@ const resolvers = {
     },
 
     // Get a single country by iso
-    getCountryByIso: async(_, { iso }) => {
+    getCountryByIso: async (_, { iso }) => {
       try {
         const country = await Country.findOne({ iso2: iso.toUpperCase() })
         return country

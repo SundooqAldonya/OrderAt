@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const subscribePlaceOrder = `subscription SubscribePaceOrder($restaurant:String!){
     subscribePlaceOrder(restaurant:$restaurant){
       userId
@@ -83,3 +85,19 @@ export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
         }
     }
   }`
+
+export const SUBSCRIBE_DISPATCHER = gql`
+  subscription {
+    subscriptionDispatcher {
+      _id
+      orderId
+      orderStatus
+      restaurant {
+        _id
+        name
+      }
+      createdAt
+      paymentMethod
+    }
+  }
+`

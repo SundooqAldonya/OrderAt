@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { View, TouchableOpacity, Image } from 'react-native'
-import { useSubscription } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { subscriptionOrder } from '../../apollo/subscriptions'
 import Heading from '../../components/MyOrders/Heading'
@@ -32,7 +32,7 @@ const ActiveOrders = ({
   return (
     <React.Fragment>
       {showActiveHeader && (
-        <Heading headerName={t('ActiveOrder')} textWidth="90%" />
+        <Heading headerName={t('ActiveOrder')} textWidth='90%' />
       )}
       {activeOrders.map((item, index) => (
         <Item
@@ -43,7 +43,7 @@ const ActiveOrders = ({
         />
       ))}
       {showPastHeader && (
-        <Heading headerName={t('PastOrder')} textWidth="90%" />
+        <Heading headerName={t('PastOrder')} textWidth='90%' />
       )}
     </React.Fragment>
   )
@@ -60,11 +60,12 @@ const Item = ({ item, navigation, currentTheme }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => navigation.navigate('OrderDetail', { _id: item._id })}>
+      onPress={() => navigation.navigate('OrderDetail', { _id: item._id })}
+    >
       <View style={styles(currentTheme).container}>
         <Image
           style={styles(currentTheme).image}
-          resizeMode="cover"
+          resizeMode='cover'
           source={{ uri: item.restaurant.image }}
         />
         <View style={styles(currentTheme).textContainer}>
@@ -73,14 +74,16 @@ const Item = ({ item, navigation, currentTheme }) => {
               textColor={currentTheme.fontMainColor}
               large
               bolder
-              style={alignment.MBxSmall}>
+              style={alignment.MBxSmall}
+            >
               {item.restaurant.name}
             </TextDefault>
             <TextDefault
               line={3}
               textColor={currentTheme.fontMainColor}
               small
-              bold>
+              bold
+            >
               {item.orderStatus === 'PENDING'
                 ? t('PenddingText')
                 : t('PenddingText1')}

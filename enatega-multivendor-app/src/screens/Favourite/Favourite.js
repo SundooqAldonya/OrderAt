@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import gql from 'graphql-tag'
 import React, { useContext, useEffect, useLayoutEffect } from 'react'
@@ -94,7 +94,7 @@ function Favourite() {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: 10}}>
+            <View style={{ paddingLeft: 10 }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(22)}

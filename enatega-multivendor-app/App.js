@@ -16,7 +16,7 @@ import {
   Text,
   AppState
 } from 'react-native'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import { exitAlert } from './src/utils/androidBackButton'
 import FlashMessage from 'react-native-flash-message'
 import setupApolloClient from './src/apollo/index'
@@ -100,6 +100,8 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const reviewModalRef = useRef()
+  const client = setupApolloClient()
+
   const [isConnected, setIsConnected] = useState(true)
   const [exitVisible, setExitVisible] = useState(false)
 
@@ -301,7 +303,6 @@ export default function App() {
     saveLocation()
   }, [location])
 
-  const client = setupApolloClient()
   const shouldBeRTL = false
   if (shouldBeRTL !== I18nManager.isRTL && Platform.OS !== 'web') {
     I18nManager.allowRTL(shouldBeRTL)

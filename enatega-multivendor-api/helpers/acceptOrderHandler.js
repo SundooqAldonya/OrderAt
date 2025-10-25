@@ -13,9 +13,15 @@ const {
 const { publishToZoneRiders, publishToUser, publishOrder } = require('./pubsub')
 
 module.exports = {
-  async acceptOrderHandler({ restaurant, user, time = 20, orderId, rider }) {
+  async acceptOrderHandler({
+    restaurant,
+    user,
+    time = 20,
+    orderId,
+    rider = null
+  }) {
     try {
-      var newDateObj = new Date(Date.now() + (parseInt(time) || 0) * 60000)
+      const newDateObj = new Date(Date.now() + (parseInt(time) || 0) * 60000)
       console.log('preparation', newDateObj)
 
       const status = rider ? order_status[6] : order_status[1] // 'ASSIGNED' : 'ACCEPTED'
@@ -37,15 +43,15 @@ module.exports = {
       // const user = await User.findById(result.user)
       const transformedOrder = await transformOrder(result)
       const populatedOrder = await result.populate('user')
-      console.log({ transformedOrder })
+      // console.log({ transformedOrder })
       if (!transformedOrder.isPickedUp) {
         publishToZoneRiders(result.zone.toString(), transformedOrder, 'new')
         if (transformedOrder.rider) {
           await sendPushNotificationSingleRider(result.rider, result)
         } else {
-          await sendPushNotification(result.zone.toString(), result)
+          // await sendPushNotification(result.zone.toString(), result)
+          await dispatchQueue.add({ orderId: populatedOrder._id, attempt: 0 })
         }
-        // await dispatchQueue.add({ orderId: populatedOrder._id, attempt: 0 })
       }
       if (
         user &&
@@ -63,7 +69,6 @@ module.exports = {
       //   `Order ID ${result.orderId}`
       // )
       publishOrder(transformedOrder)
-      // return transformedOrder
     } catch (error) {
       throw error
     }

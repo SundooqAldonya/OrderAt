@@ -1,23 +1,29 @@
 import { TouchableOpacity, View, ScrollView, Dimensions } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+// import { MaterialIcons } from '@expo/vector-icons'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
 import styles from './styles'
-import React, { useContext, useEffect, useState, useRef } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect
+} from 'react'
 import Spinner from '../../components/Spinner/Spinner'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import TextError from '../../components/Text/TextError/TextError'
 import ConfigurationContext from '../../context/Configuration'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
-import analytics from '../../utils/analytics'
+// import analytics from '../../utils/analytics'
 import Detail from '../../components/OrderDetail/Detail/Detail'
 import RestaurantMarker from '../../assets/SVG/restaurant-marker'
 import CustomerMarker from '../../assets/SVG/customer-marker'
 import TrackingRider from '../../components/OrderDetail/TrackingRider/TrackingRider'
 import OrdersContext from '../../context/Orders'
-import { mapStyle } from '../../utils/mapStyle'
+// import { mapStyle } from '../../utils/mapStyle'
 import { useTranslation } from 'react-i18next'
 import { HelpButton } from '../../components/Header/HeaderIcons/HeaderIcons'
 import {
@@ -29,16 +35,19 @@ import { PriceRow } from '../../components/OrderDetail/PriceRow'
 import { ORDER_STATUS_ENUM } from '../../utils/enums'
 import { CancelModal } from '../../components/OrderDetail/CancelModal'
 import Button from '../../components/Button/Button'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { cancelOrder as cancelOrderMutation } from '../../apollo/mutations'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { calulateRemainingTime } from '../../utils/customFunctions'
 import { Instructions } from '../../components/Checkout/Instructions'
-import MapViewDirections from 'react-native-maps-directions'
-import useEnvVars from '../../../environment'
+// import MapViewDirections from 'react-native-maps-directions'
+// import useEnvVars from '../../../environment'
 import LottieView from 'lottie-react-native'
 import { singleOrder } from '../../apollo/queries'
-import JSONTree from 'react-native-json-tree'
+// import JSONTree from 'react-native-json-tree'
+import gql from 'graphql-tag'
+import { orderStatusChanged } from '../../apollo/subscriptions'
+import UserContext from '../../context/User'
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
 
@@ -50,13 +59,19 @@ const ORDER = gql`
   ${singleOrder}
 `
 
+const ORDER_STATUS_CHANGED = gql`
+  ${orderStatusChanged}
+`
+
 function OrderDetail(props) {
   const [cancelModalVisible, setCancelModalVisible] = useState(false)
   // const Analytics = analytics()
   const id = props.route.params ? props.route.params._id : null
   // const user = props.route.params ? props.route.params.user : null
-  const { orders } = useContext(OrdersContext)
+  // const { orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
+  const { userId } = useContext(UserContext)
+  console.log({ userId })
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const { i18n, t } = useTranslation()
@@ -66,6 +81,7 @@ function OrderDetail(props) {
   // const headerRef = useRef(false)
   // const { GOOGLE_MAPS_KEY } = useEnvVars()
   const mapView = useRef(null)
+
   const [cancelOrder, { loading: loadingCancel }] = useMutation(CANCEL_ORDER, {
     onError,
     variables: { abortOrderId: id }
@@ -75,22 +91,54 @@ function OrderDetail(props) {
     data,
     // called: calledOrders,
     loading: loadingOrders,
-    error: errorOrders
+    error: errorOrders,
     // networkStatus: networkStatusOrders,
     // fetchMore: fetchMoreOrders,
-    // subscribeToMore: subscribeToMoreOrders
+    subscribeToMore: subscribeToMoreOrders
   } = useQuery(ORDER, {
     variables: { id },
-    fetchPolicy: 'network-only',
-    onError,
-    pollInterval: 10000
+    fetchPolicy: 'cache-and-network',
+    onError: (err) => {
+      console.log({ err })
+    },
+    onCompleted: () => console.log('✅ Order fetched once')
+
+    // pollInterval: 10000
   })
 
-  const order = data?.singleOrder
+  const order = data?.singleOrder || null
 
   const cancelModalToggle = () => {
     setCancelModalVisible(!cancelModalVisible)
   }
+
+  useEffect(() => {
+    if (!order?._id) return
+
+    const unsubscribe = subscribeToMoreOrders({
+      document: ORDER_STATUS_CHANGED,
+      // variables: { userId },
+      variables: { orderId: order._id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+
+        const newOrder = subscriptionData.data.orderStatusChanged.order
+
+        // Only update if it's the same order
+        if (newOrder._id !== prev.singleOrder._id) return prev
+
+        return {
+          ...prev,
+          singleOrder: {
+            ...prev.singleOrder,
+            ...newOrder
+          }
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [userId, subscribeToMoreOrders])
 
   function onError(error) {
     FlashMessage({
@@ -99,18 +147,23 @@ function OrderDetail(props) {
   }
 
   useEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () =>
-        HelpButton({
-          iconBackground: currentTheme.main,
-          navigation,
-          t
-        }),
-      headerTitle: `${order ? order?.deliveryAddress?.deliveryAddress?.substr(0, 15) : ''}...`,
-      headerTitleStyle: { color: currentTheme.newFontcolor },
+    navigation.setOptions({
+      headerRight: () => (
+        <HelpButton
+          iconBackground={currentTheme.main}
+          navigation={navigation}
+          t={t}
+        />
+      ),
+      headerTitle: `${t('order')} `,
+      headerTitleStyle: {
+        color: currentTheme.newFontcolor,
+        marginInlineEnd: scale(50)
+      },
+      headerTitleAlign: 'center',
       headerStyle: { backgroundColor: currentTheme.newheaderBG }
     })
-  }, [orders])
+  }, [currentTheme.main])
 
   if (loadingOrders || !order) {
     return (

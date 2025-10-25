@@ -11,10 +11,10 @@ import { useTranslation } from 'react-i18next'
 import { callNumber } from '../../../utilities/callNumber'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { openGoogleMaps } from '../../../utilities/callMaps'
-import { CameraView, useCameraPermissions } from 'expo-camera'
-import { useRef } from 'react'
+// import { CameraView, useCameraPermissions } from 'expo-camera'
+// import { useRef } from 'react'
 import { StyleSheet } from 'react-native'
-import { Image } from 'react-native'
+// import { Image } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
   const [captureCamera, setCaptureCamera] = useState(false)
@@ -178,6 +178,22 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
                     <Spinner size="small" color="transparent" />
                   ) : (
                     t('markAsDelivered')
+                  )}
+                </TextDefault>
+              </TouchableOpacity>
+            </View>
+          ) : order.orderStatus === 'CANCELLED' ? (
+            <View style={styles.btnContainer}>
+              {/* <ChatWithCustomerButton navigation={navigation} order={order} /> */}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                disabled={true}
+                style={[styles.btn, { backgroundColor: 'rgba(255,0,0,0.5)' }]}>
+                <TextDefault center H5 bold textColor={colors.black}>
+                  {loadingOrderStatus ? (
+                    <Spinner size="small" color="transparent" />
+                  ) : (
+                    t('cancelled')
                   )}
                 </TextDefault>
               </TouchableOpacity>

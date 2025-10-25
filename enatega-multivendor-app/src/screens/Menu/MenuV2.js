@@ -16,7 +16,7 @@ import {
   FlatList
 } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client/react'
 import {
   useCollapsibleSubHeader,
   CollapsibleSubHeaderAnimator

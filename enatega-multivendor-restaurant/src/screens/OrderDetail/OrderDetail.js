@@ -27,12 +27,23 @@ import SpriteCapture, {
 import PrinterManager from '../../utilities/printers/printerManager'
 import fs from 'react-native-fs'
 
-import * as htmlToImage from 'html-to-image'
-import { toPng } from 'html-to-image'
+// import * as htmlToImage from 'html-to-image'
+// import { toPng } from 'html-to-image'
 import RenderHtml from '@builder.io/react-native-render-html'
 import { loadPrinterInfo } from '../../utilities/printers'
-import * as ImageManipulator from 'expo-image-manipulator'
-import { Asset } from 'expo-asset'
+// import * as ImageManipulator from 'expo-image-manipulator'
+// import { Asset } from 'expo-asset'
+import { useQuery } from '@apollo/client/react'
+import {
+  ORDER_STATUS_CHANGED_RESTAURANT,
+  orderStatusChanged,
+  singleOrder
+} from '../../apollo'
+import { gql } from '@apollo/client'
+
+const ORDER_STATUS_CHANGED = gql`
+  ${orderStatusChanged}
+`
 
 const ReceiptViewer = ({ receipt_HTML, width }) => {
   return <RenderHtml contentWidth={width} source={{ html: receipt_HTML }} />
@@ -41,16 +52,63 @@ const ReceiptViewer = ({ receipt_HTML, width }) => {
 export default function OrderDetail({ navigation, route }) {
   const { currency } = useContext(Configuration.Context)
   const receiptRef = useRef(null)
-  // let b64 = ''
+  const { itemId } = route.params
+  // const _id = itemId
   const [b64, setB64] = useState(null)
-
+  console.log({ itemId })
   const { t, i18n } = useTranslation()
+
+  const { data: dataOrderDetail, loading, error, subscribeToMore } = useQuery(
+    singleOrder,
+    {
+      variables: { id: itemId }
+    }
+  )
+
+  console.log({ dataOrderDetail })
+
+  const orderData = dataOrderDetail?.singleOrder || null
+
+  console.log({ orderData })
+  const order = orderData || null
+
+  useEffect(() => {
+    if (!itemId) return
+
+    const unsubscribe = subscribeToMore({
+      // document: ORDER_STATUS_CHANGED, // your gql subscription
+      document: ORDER_STATUS_CHANGED_RESTAURANT, // your gql subscription
+      variables: { orderId: itemId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+
+        const updatedOrder =
+          subscriptionData.data.orderStatusChangedRestaurant.order
+
+        console.log({ updatedOrder: updatedOrder.orderStatus })
+
+        // only update if same order
+        if (updatedOrder._id !== prev.singleOrder._id) return prev
+
+        return {
+          ...prev,
+          singleOrder: {
+            ...prev.singleOrder,
+            ...updatedOrder
+          }
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [itemId, subscribeToMore])
+
   const {
-    activeBar,
-    orderData,
-    rider,
-    preparationTime,
-    createdAt
+    activeBar
+    // orderData,
+    // rider,
+    // preparationTime,
+    // createdAt
   } = route.params
 
   useEffect(() => {
@@ -68,18 +126,19 @@ export default function OrderDetail({ navigation, route }) {
     PrinterManager.setNavigationRef(navigation)
   }, [navigation])
 
-  const { _id, orderDate } = orderData
+  const { orderDate } = orderData || {}
+
   const { cancelOrder, loading: cancelLoading } = useCancelOrder()
-  const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
+  // const { pickedUp, loading: loadingPicked } = useOrderPickedUp()
   const { muteRing } = useOrderRing()
   const [overlayVisible, setOverlayVisible] = useState(false)
   const isAcceptButtonVisible = !moment().isBefore(orderDate)
   const [print, setPrint] = useState(false)
 
-  const { data } = useRestaurantContext()
+  // const { data } = useRestaurantContext()
   const timeNow = new Date()
 
-  const createdTime = new Date(createdAt)
+  const createdTime = orderData ? new Date(orderData.createdAt) : null
   const remainingTime = moment(createdTime)
     .add(MAX_TIME, 'seconds')
     .diff(timeNow, 'seconds')
@@ -87,7 +146,7 @@ export default function OrderDetail({ navigation, route }) {
   const date = new Date(orderDate)
   const acceptTime = moment(date).diff(timeNow, 'seconds')
 
-  const prep = new Date(preparationTime)
+  const prep = orderData ? new Date(orderData.preparationTime) : null
   const diffTime = prep - timeNow
   const totalPrep = diffTime > 0 ? diffTime / 1000 : 0
 
@@ -97,8 +156,8 @@ export default function OrderDetail({ navigation, route }) {
     ? remainingTime
     : 0
 
-  const order = data?.restaurantOrders?.find(o => o._id === _id)
-  const receiptHTML = formatReceipt(order, currency)
+  // const order = data?.restaurantOrders?.find(o => o._id === _id)
+  const receiptHTML = order ? formatReceipt(order, currency) : null
   const imagePath = require('../../assets/bowl.png')
 
   const toggleOverlay = () => {
@@ -114,25 +173,25 @@ export default function OrderDetail({ navigation, route }) {
     }
   }
 
-  const getImageBase64 = async () => {
-    try {
-      const image = require('../../assets/logo_2.png')
-      const asset = Asset.fromModule(image)
-      await asset.downloadAsync()
-      const fileUri = asset.localUri || asset.uri
+  // const getImageBase64 = async () => {
+  //   try {
+  //     const image = require('../../assets/logo_2.png')
+  //     const asset = Asset.fromModule(image)
+  //     await asset.downloadAsync()
+  //     const fileUri = asset.localUri || asset.uri
 
-      const manipulated = await ImageManipulator.manipulateAsync(
-        fileUri,
-        [{ resize: { width: 300, height: 200 } }],
-        { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
-      )
+  //     const manipulated = await ImageManipulator.manipulateAsync(
+  //       fileUri,
+  //       [{ resize: { width: 300, height: 200 } }],
+  //       { compress: 1, format: ImageManipulator.SaveFormat.PNG, base64: true }
+  //     )
 
-      return manipulated.base64
-    } catch (err) {
-      console.error('Error reading image:', err)
-      return null
-    }
-  }
+  //     return manipulated.base64
+  //   } catch (err) {
+  //     console.error('Error reading image:', err)
+  //     return null
+  //   }
+  // }
 
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
@@ -166,8 +225,8 @@ export default function OrderDetail({ navigation, route }) {
   }
 
   const cancelOrderFunc = () => {
-    cancelOrder(order._id, 'not available')
-    muteRing(order.orderId)
+    cancelOrder(order?._id, 'not available')
+    muteRing(order?.orderId)
     if (cancelLoading) {
       return <Spinner />
     } else {
@@ -241,7 +300,7 @@ export default function OrderDetail({ navigation, route }) {
                   style={{
                     textAlign: isArabic ? 'right' : 'left'
                   }}>
-                  {t(orderData.orderStatus)}
+                  {t(orderData?.orderStatus)}
                 </TextDefault>
               </View>
             </View>
@@ -385,7 +444,7 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )} */}
-              {activeBar !== 2 && (
+              {order.orderStatus !== 'DELIVERED' && (
                 <>
                   <Button
                     title={t('reject')}
@@ -407,7 +466,7 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )}
-              {activeBar === 2 && (
+              {order.orderStatus === 'DELIVERED' && (
                 <>
                   <TextDefault H3 textColor={colors.darkgreen} bold>
                     {t('delivered')}
@@ -425,7 +484,9 @@ export default function OrderDetail({ navigation, route }) {
               </TextDefault>
             </View>
             {/* order details */}
-            <OrderDetails orderData={orderData} isArabic={isArabic} />
+            {orderData ? (
+              <OrderDetails orderData={orderData} isArabic={isArabic} />
+            ) : null}
             {/* order status */}
             <Status
               order={orderData}

@@ -12,10 +12,11 @@ import { TouchableOpacity } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useTranslation } from 'react-i18next'
 import { Audio } from 'expo-av'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { updateOrderStatusRider } from '../../apollo/mutations'
 import { useRoute } from '@react-navigation/native'
 import { ReactNativeFile } from 'apollo-upload-client'
+import { gql } from '@apollo/client'
 
 const UPDATE_ORDER_STATUS = gql`
   ${updateOrderStatusRider}

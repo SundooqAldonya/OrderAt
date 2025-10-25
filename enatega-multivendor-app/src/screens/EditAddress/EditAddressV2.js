@@ -21,7 +21,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import gql from 'graphql-tag'
 import { editAddress } from '../../apollo/mutations'
 import * as Location from 'expo-location'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
@@ -46,17 +46,17 @@ const labelValues = [
   {
     title: 'Home',
     value: 'Home',
-    icon: <Entypo name="home" size={24} />
+    icon: <Entypo name='home' size={24} />
   },
   {
     title: 'Work',
     value: 'Work',
-    icon: <MaterialIcons name="work" size={24} />
+    icon: <MaterialIcons name='work' size={24} />
   },
   {
     title: 'Other',
     value: 'Other',
-    icon: <Foundation name="heart" size={24} />
+    icon: <Foundation name='heart' size={24} />
   }
 ]
 
@@ -128,7 +128,7 @@ function EditAddress(props) {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View
               style={{
@@ -137,8 +137,9 @@ function EditAddress(props) {
                 marginLeft: 10,
                 width: 55,
                 alignItems: 'center'
-              }}>
-              <MaterialIcons name="arrow-back" size={30} color="black" />
+              }}
+            >
+              <MaterialIcons name='arrow-back' size={30} color='black' />
             </View>
           )}
           onPress={() => {
@@ -159,17 +160,17 @@ function EditAddress(props) {
   }, [])
   function regionChange(region) {
     Location.reverseGeocodeAsync({ ...region })
-      .then(data => {
+      .then((data) => {
         if (data.length) {
           const location = data[0]
           const deliveryAddress = Object.keys(location)
-            .map(key => location[key])
+            .map((key) => location[key])
             .join(' ')
           setDeliveryAddress(deliveryAddress)
           addressRef.current.setValue(deliveryAddress)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
       })
     setRegion(region)
@@ -220,7 +221,8 @@ function EditAddress(props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'android' ? 20 : 0}
         style={styles(currentTheme).flex}
-        enabled={!modalVisible}>
+        enabled={!modalVisible}
+      >
         <View style={styles(currentTheme).flex}>
           <View style={styles().mapContainer}>
             <MapView
@@ -249,7 +251,8 @@ function EditAddress(props) {
                   longitude: region.longitude,
                   currentScreen: 'EditAddress'
                 })
-              }}></MapView>
+              }}
+            ></MapView>
             <View style={styles().editAddressImageContainer}>
               <Image
                 source={require('../../assets/images/user.png')}
@@ -261,7 +264,8 @@ function EditAddress(props) {
           <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles(currentTheme).subContainer}>
               <View style={styles().upperContainer}>
                 <View style={styles().addressContainer}>
@@ -278,7 +282,7 @@ function EditAddress(props) {
                         renderRightAccessory={() => (
                           <TouchableOpacity onPress={onOpen}>
                             <MaterialIcons
-                              name="edit"
+                              name='edit'
                               size={18}
                               color={currentTheme.darkBgFont}
                             />
@@ -297,7 +301,7 @@ function EditAddress(props) {
                           fontSize: scale(12),
                           paddingTop: scale(1)
                         }}
-                        onChangeText={text => {
+                        onChangeText={(text) => {
                           setDeliveryAddress(text)
                         }}
                         onBlur={() => {
@@ -317,7 +321,7 @@ function EditAddress(props) {
                     label={t('deliveryDetails')}
                     labelFontSize={scale(12)}
                     fontSize={scale(12)}
-                    textAlignVertical="top"
+                    textAlignVertical='top'
                     multiline={false}
                     maxLength={30}
                     textColor={currentTheme.fontMainColor}
@@ -332,7 +336,7 @@ function EditAddress(props) {
                       paddingTop: scale(1)
                     }}
                     value={deliveryDetails}
-                    onChangeText={text => {
+                    onChangeText={(text) => {
                       setDeliveryDetails(text)
                     }}
                     onBlur={() => {
@@ -351,7 +355,8 @@ function EditAddress(props) {
                     <TextDefault
                       textColor={currentTheme.fontMainColor}
                       H5
-                      bolder>
+                      bolder
+                    >
                       {t('addLabel')}
                     </TextDefault>
                   </View>
@@ -368,7 +373,8 @@ function EditAddress(props) {
                           }
                           onPress={() => {
                             setSelectedLabel(label.value)
-                          }}>
+                          }}
+                        >
                           <TextDefault
                             textColor={
                               selectedLabel === label.value
@@ -376,7 +382,8 @@ function EditAddress(props) {
                                 : currentTheme.fontMainColor
                             }
                             bold
-                            center>
+                            center
+                          >
                             {label.icon}
                           </TextDefault>
                         </TouchableOpacity>
@@ -391,7 +398,8 @@ function EditAddress(props) {
                           style={styles().titlebuttonInline}
                           textColor={currentTheme.black}
                           bold
-                          center>
+                          center
+                        >
                           {t(label.title)}
                         </TextDefault>
                       </>
@@ -433,7 +441,8 @@ function EditAddress(props) {
                 }
               }}
               activeOpacity={0.5}
-              style={styles(currentTheme).saveBtnContainer}>
+              style={styles(currentTheme).saveBtnContainer}
+            >
               <TextDefault textColor={currentTheme.black} H5 bold>
                 {t('saveContBtn')}
               </TextDefault>

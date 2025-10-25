@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
+// import ReactDOM from 'react-dom'
 import {
   ApolloProvider,
   ApolloClient,
@@ -82,7 +82,10 @@ function Main() {
   }, wsLink)
 
   const uploadLink = createUploadLink({
-    uri: `${SERVER_URL}/graphql`
+    uri: `${SERVER_URL}/graphql`,
+    headers: {
+      'apollo-require-preflight': 'true'
+    }
   })
 
   const client = new ApolloClient({
@@ -125,9 +128,15 @@ function Main() {
 }
 
 // eslint-disable-next-line react/no-deprecated
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'))
+root.render(
   <React.StrictMode>
     <Main />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <Main />
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// )

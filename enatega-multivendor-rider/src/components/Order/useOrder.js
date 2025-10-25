@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 import { TabsContext } from '../../context/tabs'
 import { useNavigation } from '@react-navigation/native'
-import { gql, useMutation, useSubscription } from '@apollo/client'
+import { useMutation, useSubscription } from '@apollo/client/react'
 import { assignOrder } from '../../apollo/mutations'
 import { FlashMessage } from '../FlashMessage/FlashMessage'
 import { subscriptionOrder } from '../../apollo/subscriptions'
 import { getRemainingAcceptingTime } from '../../utilities/utils'
 import UserContext from '../../context/user'
+import { gql } from '@apollo/client'
 
 const ASSIGN_ORDER = gql`
   ${assignOrder}

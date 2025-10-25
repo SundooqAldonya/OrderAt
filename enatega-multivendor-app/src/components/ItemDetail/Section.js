@@ -7,11 +7,12 @@ import {
   relatedItems as relatedItemsQuery,
   restaurant as restaurantQuery
 } from '../../apollo/queries'
-import { gql, useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { useRestaurant } from '../../ui/hooks'
+import gql from 'graphql-tag'
 
 const RELATED_ITEMS = gql`
   ${relatedItemsQuery}

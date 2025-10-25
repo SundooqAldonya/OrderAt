@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, View } from 'react-native'
-import { useQuery, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import styles from './styles'
 import { profile } from '../../../apollo/queries'
 import TextDefault from '../../Text/TextDefault/TextDefault'
@@ -9,6 +9,7 @@ import Spinner from '../../Spinner/Spinner'
 import TextError from '../../Text/TextError/TextError'
 import { useTranslation } from 'react-i18next'
 import { verticalScale } from '../../../utilities/scaling'
+import { useQuery } from '@apollo/client/react'
 
 const PROFILE = gql`
   ${profile}

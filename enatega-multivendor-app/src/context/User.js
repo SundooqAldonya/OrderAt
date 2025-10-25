@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { v5 as uuidv5 } from 'uuid'
 import { v1 as uuidv1 } from 'uuid'
@@ -12,6 +12,7 @@ import analytics from '../utils/analytics'
 
 import { useTranslation } from 'react-i18next'
 import { useRestaurant } from '../ui/hooks'
+import { setUserId } from '@amplitude/analytics-react-native'
 
 const v1options = {
   random: [
@@ -38,6 +39,9 @@ export const UserProvider = (props) => {
   const [restaurant, setRestaurant] = useState(null)
   const [isPickup, setIsPickup] = useState(false)
   const [instructions, setInstructions] = useState('')
+  const [userId, setUserId] = useState(null)
+
+  console.log({ token })
 
   const {
     called: calledProfile,
@@ -53,6 +57,12 @@ export const UserProvider = (props) => {
     skip: !token,
     pollInterval: 10000
   })
+
+  useEffect(() => {
+    if (dataProfile) {
+      setUserId(dataProfile.profile._id)
+    }
+  }, [dataProfile])
 
   const { loading, data } = useRestaurant(restaurant)
   const restaurantCustomer = data?.restaurantCustomer || null
@@ -267,7 +277,8 @@ export const UserProvider = (props) => {
   return (
     <UserContext.Provider
       value={{
-        isLoggedIn: !!token && dataProfile && !!dataProfile.profile,
+        // isLoggedIn: !!token && dataProfile && !!dataProfile.profile,
+        isLoggedIn: !!token,
         loadingProfile: loadingProfile && calledProfile,
         errorProfile,
         profile:
@@ -291,7 +302,8 @@ export const UserProvider = (props) => {
         instructions,
         setInstructions,
         calculatePrice,
-        populateFood
+        populateFood,
+        userId
       }}
     >
       {props.children}

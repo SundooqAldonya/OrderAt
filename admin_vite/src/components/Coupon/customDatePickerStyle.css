@@ -1,0 +1,55 @@
+/* Style input field */
+.react-datepicker-wrapper {
+    margin-inline-start: -230px;
+}
+/* Input field style */
+.custom_datepicker {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border 0.2s ease-in-out;
+}
+
+.custom_datepicker input {
+    width: 100%;
+}
+
+/* Remove blue outline on focus and add custom border */
+.custom_datepicker:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Placeholder style */
+.custom_datepicker::placeholder {
+  color: #aaa;
+}
+
+/* Calendar popup styling */
+.custom-calendar {
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+}
+
+/* Selected date */
+.react-datepicker__day--selected {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Today’s date */
+.react-datepicker__day--today {
+  border: 1px solid #1976d2;
+  font-weight: bold;
+}
+
+/* Hovered day */
+.react-datepicker__day:hover {
+  background-color: #e3f2fd;
+  cursor: pointer;
+}

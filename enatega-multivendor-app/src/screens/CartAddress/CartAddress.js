@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useLayoutEffect } from 'react'
 import { View, TouchableOpacity, FlatList } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { EvilIcons, MaterialIcons } from '@expo/vector-icons'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { moderateScale } from '../../utils/scaling'
 import RadioButton from '../../ui/FdRadioBtn/RadioBtn'
@@ -52,14 +52,18 @@ function CartAddresses(props) {
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,
-        elevation: 0,
+        elevation: 0
       },
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: moderateScale(10)}}>
-              <MaterialIcons name="arrow-back" size={moderateScale(24)} color={currentTheme.newIconColor} />
+            <View style={{ paddingLeft: moderateScale(10) }}>
+              <MaterialIcons
+                name='arrow-back'
+                size={moderateScale(24)}
+                color={currentTheme.newIconColor}
+              />
             </View>
           )}
           onPress={() => {
@@ -79,7 +83,7 @@ function CartAddresses(props) {
     console.log(error)
   }
 
-  const onSelectAddress = address => {
+  const onSelectAddress = (address) => {
     setLocation({
       _id: address._id,
       label: address.label,
@@ -136,15 +140,14 @@ function CartAddresses(props) {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     style={styles().width10}
-                    onPress={() =>{
-                        const latitude = location.latitude
-                        const longitude = location.longitude
-                        props.navigation.navigate('AddNewAddress', {
-                          longitude: +longitude,
-                          latitude: +latitude
-                        })
-                      }
-                    }
+                    onPress={() => {
+                      const latitude = location.latitude
+                      const longitude = location.longitude
+                      props.navigation.navigate('AddNewAddress', {
+                        longitude: +longitude,
+                        latitude: +latitude
+                      })
+                    }}
                   >
                     <TextDefault
                       textColor={currentTheme.darkBgFont}

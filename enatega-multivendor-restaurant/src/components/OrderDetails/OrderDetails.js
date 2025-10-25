@@ -33,7 +33,8 @@ export default function OrderDetails({ orderData }) {
                 textTransform: 'capitalize'
               }
             ]}>
-            {t('name')}: {orderData.rider.name ? orderData.rider.name : null}
+            {t('name')}:{' '}
+            {orderData?.rider?.name ? orderData?.rider?.name : null}
           </TextDefault>
           <TouchableOpacity
             style={{
@@ -109,7 +110,7 @@ export default function OrderDetails({ orderData }) {
           </Text>
         </View>
       </View>
-      <OrderItems orderData={orderData} />
+      {orderData ? <OrderItems orderData={orderData} /> : null}
     </View>
   )
 }
@@ -262,9 +263,9 @@ function OrderItems({ orderData }) {
         <View
           style={{ flexDirection: isArabic ? 'row' : 'row-reverse', gap: 10 }}>
           <TextDefault bold style={[styles.itemText, textAlignStyle]}>
-            {formatAmount(subTotal.toFixed(2))}
+            {formatAmount(subTotal?.toFixed(2))}
           </TextDefault>
-          {originalSubtotal > subTotal ? (
+          {subTotal && originalSubtotal > subTotal ? (
             <TextDefault
               bold
               style={[
@@ -272,7 +273,7 @@ function OrderItems({ orderData }) {
                 textAlignStyle,
                 { textDecorationLine: 'line-through' }
               ]}>
-              {formatAmount(originalSubtotal.toFixed(2))}
+              {formatAmount(originalSubtotal?.toFixed(2))}
             </TextDefault>
           ) : null}
         </View>
@@ -297,9 +298,11 @@ function OrderItems({ orderData }) {
           style={[styles.itemHeading, textAlignStyle]}>
           {t('taxCharges')}
         </TextDefault>
-        <TextDefault bold style={[styles.itemText, textAlignStyle]}>
-          {formatAmount(taxationAmount)}
-        </TextDefault>
+        {taxationAmount ? (
+          <TextDefault bold style={[styles.itemText, textAlignStyle]}>
+            {formatAmount(taxationAmount)}
+          </TextDefault>
+        ) : null}
       </View>
       <View style={[styles.itemRow, directionStyle]}>
         <TextDefault
@@ -322,7 +325,7 @@ function OrderItems({ orderData }) {
                 textAlignStyle,
                 { textDecorationLine: 'line-through' }
               ]}>
-              {formatAmount(originalDeliveryCharges.toFixed(2))}
+              {formatAmount(originalDeliveryCharges?.toFixed(2))}
             </TextDefault>
           ) : null}
         </View>
@@ -349,7 +352,7 @@ function OrderItems({ orderData }) {
                 textAlignStyle,
                 { textDecorationLine: 'line-through' }
               ]}>
-              {formatAmount(originalPrice.toFixed(2))}
+              {formatAmount(originalPrice?.toFixed(2))}
             </TextDefault>
           ) : null}
         </View>

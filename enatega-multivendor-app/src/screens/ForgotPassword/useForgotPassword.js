@@ -1,18 +1,18 @@
 import { useState, useContext } from 'react'
 import { forgotPassword } from '../../apollo/mutations'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const FORGOT_PASSWORD = gql`
   ${forgotPassword}
 `
 export const useForgotPassword = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const navigation = useNavigation()
   const route = useRoute()
   const [email, setEmail] = useState(route.params?.email || '')

@@ -14,11 +14,10 @@ import { profile } from '../../../apollo/queries'
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import Spinner from '../../Spinner/Spinner'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
-import {useTranslation} from 'react-i18next'
-
+import { useTranslation } from 'react-i18next'
 
 const ADD_FAVOURITE = gql`
   ${addFavouriteRestaurant}
@@ -28,12 +27,12 @@ const PROFILE = gql`
 `
 
 function Item(props) {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const navigation = useNavigation()
   const { profile } = useContext(UserContext)
   const heart = profile ? profile.favourite.includes(props.item._id) : false
   const item = props.item
-  const category = item.categories.map(category => category.title)
+  const category = item.categories.map((category) => category.title)
   const configuration = useContext(ConfigurationContext)
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
@@ -47,10 +46,10 @@ function Item(props) {
     const day = date.getDay()
     const hours = date.getHours()
     const minutes = date.getMinutes()
-    const todaysTimings = openingTimes.find(o => o.day === DAYS[day])
+    const todaysTimings = openingTimes.find((o) => o.day === DAYS[day])
     if (todaysTimings === undefined) return false
     const times = todaysTimings.times.filter(
-      t =>
+      (t) =>
         hours >= Number(t.startTime[0]) &&
         minutes >= Number(t.startTime[1]) &&
         hours <= Number(t.endTime[0]) &&
@@ -66,12 +65,13 @@ function Item(props) {
     <TouchableOpacity
       style={{ padding: scale(10) }}
       activeOpacity={1}
-      onPress={() => navigation.navigate('Restaurant', { ...item })}>
+      onPress={() => navigation.navigate('Restaurant', { ...item })}
+    >
       <View key={item._id} style={styles().mainContainer}>
         <View style={[styles(currentTheme).restaurantContainer]}>
           <View style={styles().imageContainer}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               source={{ uri: item.image }}
               style={styles().img}
             />
@@ -82,14 +82,15 @@ function Item(props) {
                 style={styles(currentTheme).favOverlay}
                 onPress={() =>
                   profile ? mutate({ variables: { id: item._id } }) : null
-                }>
+                }
+              >
                 {loadingMutation ? (
                   <Spinner size={'small'} backColor={'transparent'} />
                 ) : (
                   <AntDesign
                     name={heart ? 'heart' : 'hearto'}
                     size={scale(15)}
-                    color="black"
+                    color='black'
                   />
                 )}
               </TouchableOpacity>
@@ -110,7 +111,8 @@ function Item(props) {
                     numberOfLines={1}
                     small
                     bold
-                    uppercase>
+                    uppercase
+                  >
                     {t('Closed')}
                   </TextDefault>
                 </View>
@@ -121,7 +123,8 @@ function Item(props) {
                   numberOfLines={1}
                   small
                   bolder
-                  center>
+                  center
+                >
                   {item.deliveryTime + ' '}
                   {t('min')}
                 </TextDefault>
@@ -134,12 +137,13 @@ function Item(props) {
                 style={{ width: '77%' }}
                 numberOfLines={1}
                 textColor={currentTheme.fontMainColor}
-                bolder>
+                bolder
+              >
                 {item.name}
               </TextDefault>
               <View style={[styles().aboutRestaurant, { width: '23%' }]}>
                 <Ionicons
-                  name="md-star"
+                  name='md-star'
                   size={scale(15)}
                   color={currentTheme.primary}
                 />
@@ -147,14 +151,16 @@ function Item(props) {
                   textColor={currentTheme.fontMainColor}
                   style={{ marginLeft: scale(2), fontSize: 12 }}
                   bolder
-                  smaller>
+                  smaller
+                >
                   {item.reviewData.ratings}
                 </TextDefault>
                 <TextDefault
                   textColor={currentTheme.fontSecondColor}
                   style={{ marginLeft: scale(2), fontSize: 12 }}
                   bold
-                  smaller>
+                  smaller
+                >
                   ({item.reviewData.reviews.length})
                 </TextDefault>
               </View>
@@ -163,7 +169,8 @@ function Item(props) {
               style={styles().offerCategoty}
               textColor={currentTheme.fontSecondColor}
               numberOfLines={1}
-              small>
+              small
+            >
               {category.toString()}
             </TextDefault>
             <View style={styles().priceRestaurant}>
@@ -172,7 +179,8 @@ function Item(props) {
                 textColor={currentTheme.fontMainColor}
                 numberOfLines={1}
                 small
-                bold>
+                bold
+              >
                 {configuration.currencySymbol + ' ' + item.minimumOrder}{' '}
                 <TextDefault textColor={currentTheme.fontSecondColor} small>
                   {' '}

@@ -9,14 +9,14 @@ import { scale } from '../../../utils/scaling'
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 import TextError from '../../Text/TextError/TextError'
-import { useSubscription } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { subscriptionOrder } from '../../../apollo/subscriptions'
 import gql from 'graphql-tag'
 import RandomShape from '../../../assets/SVG/RandomShape'
 import analytics from '../../../utils/analytics'
 import OrdersContext from '../../../context/Orders'
 import Spinner from '../../Spinner/Spinner'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const orderStatuses = [
   {
@@ -54,13 +54,12 @@ const orderStatuses = [
 const orderStatusActive = ['PENDING', 'PICKED', 'ACCEPTED', 'ASSIGNED']
 
 const ActiveOrders = () => {
-
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const { loadingOrders, errorOrders, orders } = useContext(OrdersContext)
   const configuration = useContext(ConfigurationContext)
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
-  const activeOrders = orders.filter(o =>
+  const activeOrders = orders.filter((o) =>
     orderStatusActive.includes(o.orderStatus)
   )
 
@@ -78,7 +77,7 @@ const ActiveOrders = () => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={displayOrders}
-        keyExtractor={item => item._id}
+        keyExtractor={(item) => item._id}
         renderItem={({ item, index }) => (
           <Item
             key={index}
@@ -95,7 +94,8 @@ const ActiveOrders = () => {
             <View style={styles().btncontainer}>
               <TouchableOpacity
                 onPress={() => setShowAll(!showAll)}
-                style={styles().button}>
+                style={styles().button}
+              >
                 <Text style={styles().buttonText}>
                   {showAll ? t('viewLess') : t('viewAll')}
                 </Text>
@@ -115,9 +115,9 @@ const Item = ({ navigation, configuration, currentTheme, item }) => {
     `,
     { variables: { id: item._id } }
   )
-  const {t} = useTranslation()
-  const checkStatus = status => {
-    const obj = orderStatuses.filter(x => {
+  const { t } = useTranslation()
+  const checkStatus = (status) => {
+    const obj = orderStatuses.filter((x) => {
       return x.key === status
     })
     return obj[0]
@@ -133,7 +133,8 @@ const Item = ({ navigation, configuration, currentTheme, item }) => {
           _id: item._id,
           currencySymbol: configuration.currencySymbol
         })
-      }}>
+      }}
+    >
       <View>
         <View style={styles(currentTheme).statusContainer}>
           <View style={styles().randomShapeContainer}>
@@ -142,9 +143,9 @@ const Item = ({ navigation, configuration, currentTheme, item }) => {
           <View style={styles().textContainer}>
             <View style={styles().textInnerContainer}>
               <MaterialIcons
-                name="radio-button-checked"
+                name='radio-button-checked'
                 size={30}
-                color="black"
+                color='black'
               />
               <Text style={styles(currentTheme).description}>
                 {item.restaurant.name}
@@ -156,7 +157,7 @@ const Item = ({ navigation, configuration, currentTheme, item }) => {
                 .map((item, index) => (
                   <FontAwesome
                     key={index}
-                    name="circle"
+                    name='circle'
                     size={15}
                     color={currentTheme.iconColorPink}
                     style={styles().statusCircle}
@@ -167,7 +168,7 @@ const Item = ({ navigation, configuration, currentTheme, item }) => {
                 .map((item, index) => (
                   <FontAwesome
                     key={index}
-                    name="circle"
+                    name='circle'
                     size={15}
                     color={currentTheme.radioOuterColor}
                     style={styles().statusCircle}

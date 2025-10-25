@@ -37,84 +37,67 @@ import { Alert } from 'react-native'
 import { setupNotificationChannel } from '../utilities/pushNotifications'
 import beep1 from '../assets/beep1.wav'
 import CameraCaptureReceipt from '../screens/CameraCaptureReceipt'
-import { useMutation } from '@apollo/client'
-import { refreshFirebaseToken } from '../apollo/mutations'
-import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
+// import { useMutation } from '@apollo/client'
+// import { refreshFirebaseToken } from '../apollo/mutations'
+// import { startBackgroundUpdate } from '../utilities/backgroundLocationTask'
 import NotificationListener from '../components/NotificationListener'
 import { initBackgroundLocation } from '../utilities/transistorBackgroundTracking'
 import useRiderAppState from '../utilities/useRiderAppState'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
-const Tab = createBottomTabNavigator()
+// const Tab = createBottomTabNavigator()
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async notification => {
-//     console.log('✅ Notification received in handler:', notification)
-
-//     // // Check if notification includes sound
-//     // if (notification.request.content.sound) {
-//     //   await playCustomSound()
-//     // }
-
-//     return {
-//       shouldShowAlert: true,
-//       shouldPlaySound: true, // We play it manually
-//       shouldSetBadge: false
-//     }
-//   }
-// })
-
-function MyTabs() {
-  const { t } = useTranslation()
-  return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({ route }) => ({
-        ...tabIcon(route),
-        ...tabOptions()
-      })}>
-      <Tab.Screen
-        name="Home"
-        component={NewOrders}
-        options={{ title: t('home') }}
-      />
-      <Tab.Screen
-        name="MyOrders"
-        component={Orders}
-        options={{ title: t('orders') }}
-      />
-      <Tab.Screen
-        name="Wallet"
-        component={Wallet}
-        options={{ title: t('wallet') }}
-      />
-      {/* {
-        Platform.OS === 'ios'? null : <Tab.Screen
-        name="Language"
-        component={Language}
-        options={{ title: t('language') }}
-      />
-      } */}
-      <Tab.Screen
-        name="Language"
-        component={Language}
-        options={{ title: t('language') }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={NoDrawer}
-        options={{ title: t('profile') }}
-        listeners={({ navigation }) => ({
-          tabPress: e => {
-            e.preventDefault()
-            navigation.openDrawer()
-          }
-        })}
-      />
-    </Tab.Navigator>
-  )
-}
+// function MyTabs() {
+//   const { t } = useTranslation()
+//   return (
+//     <Tab.Navigator
+//       initialRouteName="Home"
+//       screenOptions={({ route }) => ({
+//         ...tabIcon(route),
+//         ...tabOptions()
+//       })}>
+//       <Tab.Screen
+//         name="Home"
+//         component={NewOrders}
+//         options={{ title: t('home') }}
+//       />
+//       <Tab.Screen
+//         name="MyOrders"
+//         component={Orders}
+//         options={{ title: t('orders') }}
+//       />
+//       <Tab.Screen
+//         name="Wallet"
+//         component={Wallet}
+//         options={{ title: t('wallet') }}
+//       />
+//       {/* {
+//         Platform.OS === 'ios'? null : <Tab.Screen
+//         name="Language"
+//         component={Language}
+//         options={{ title: t('language') }}
+//       />
+//       } */}
+//       <Tab.Screen
+//         name="Language"
+//         component={Language}
+//         options={{ title: t('language') }}
+//       />
+//       <Tab.Screen
+//         name="Profile"
+//         component={NoDrawer}
+//         options={{ title: t('profile') }}
+//         listeners={({ navigation }) => ({
+//           tabPress: e => {
+//             e.preventDefault()
+//             navigation.openDrawer()
+//           }
+//         })}
+//       />
+//     </Tab.Navigator>
+//   )
+// }
 
 function Auth() {
   return (

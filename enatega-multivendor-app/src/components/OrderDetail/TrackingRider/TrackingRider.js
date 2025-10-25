@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Marker } from 'react-native-maps'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { rider } from '../../../apollo/queries'
 import { subscriptionRiderLocation } from '../../../apollo/subscriptions'
@@ -15,8 +15,8 @@ const RIDER_LOCATION = gql`
 const TrackingRider = ({ id }) => {
   const { loading, error, data, subscribeToMore } = useQuery(RIDER, {
     variables: { id },
-    fetchPolicy: 'network-only',
-    pollInterval: 60000
+    fetchPolicy: 'network-only'
+    // pollInterval: 60000
   })
   useEffect(() => {
     const unsubscribe = subscribeToMore({

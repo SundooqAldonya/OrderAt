@@ -16,7 +16,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { isRestaurantOpenNow, profile } from '../../../apollo/queries'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'

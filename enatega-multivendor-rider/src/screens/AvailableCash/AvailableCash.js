@@ -5,19 +5,20 @@ import Amount from '../../components/Amount/Amount'
 import WalletCard from '../../components/WalletCard/WalletCard'
 import styles from './style'
 import { riderEarnings } from '../../apollo/queries'
-import { gql, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
 import Spinner from '../../components/Spinner/Spinner'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import colors from '../../utilities/colors'
 import UserContext from '../../context/user'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from '@apollo/client/react'
 
 const AVAILABLE_CASH = gql`
   ${riderEarnings}
 `
 
 const AvailableCash = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const { loadingProfile, errorProfile, dataProfile } = useContext(UserContext)
   const { loading, error, data, refetch, networkStatus, fetchMore } = useQuery(
     AVAILABLE_CASH,

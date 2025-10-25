@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from 'react'
-import { useMutation, gql, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { FlashMessage } from '../../components'
 import { login as loginQuery, defaultRestaurantCreds } from '../../apollo'
 import { validateLogin } from '../validate'
@@ -9,6 +9,7 @@ import { setCity } from '../../../store/citySlice'
 import { useTranslation } from 'react-i18next'
 import useNotification from './useNotification'
 import { Linking, Platform } from 'react-native'
+import { gql } from '@apollo/client'
 
 export default function useLogin() {
   const dispatch = useDispatch()

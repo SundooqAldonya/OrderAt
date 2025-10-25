@@ -12,7 +12,7 @@ import {
   relatedItems as relatedItemsQuery,
   restaurant as restaurantQuery
 } from '../../apollo/queries'
-import { gql, useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import { alignment } from '../../utils/alignment'
 import styles from './styles'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
@@ -22,6 +22,7 @@ import { useNavigation } from '@react-navigation/native'
 import ConfigurationContext from '../../context/Configuration'
 import { useTranslation } from 'react-i18next'
 import { IMAGE_LINK } from '../../utils/constants'
+import gql from 'graphql-tag'
 
 const RELATED_ITEMS = gql`
   ${relatedItemsQuery}

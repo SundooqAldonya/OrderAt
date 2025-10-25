@@ -18,7 +18,7 @@ import moment from 'moment'
 import { colors } from '../../utilities'
 import { Calendar } from 'react-native-calendars'
 import { eachDayOfInterval, format } from 'date-fns'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { restaurantOrdersHistory } from '../../apollo'
 
 export default function OrderHistory() {

@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { myOrders } from '../apollo/queries'
 import { orderStatusChanged } from '../apollo/subscriptions'
@@ -29,8 +29,8 @@ export const OrdersProvider = ({ children }) => {
   } = useQuery(ORDERS, {
     fetchPolicy: 'network-only',
     onError,
-    skip: !profile,
-    pollInterval: 10000
+    skip: !profile
+    // pollInterval: 10000
   })
 
   function onError(error) {

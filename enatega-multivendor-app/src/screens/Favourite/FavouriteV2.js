@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import gql from 'graphql-tag'
 import React, { useContext, useEffect, useLayoutEffect } from 'react'
@@ -89,7 +89,7 @@ function Favourite() {
       headerRight: null,
       headerLeft: () => (
         <HeaderBackButton
-          truncatedLabel=""
+          truncatedLabel=''
           backImage={() => (
             <View
               style={{
@@ -98,8 +98,9 @@ function Favourite() {
                 marginLeft: 10,
                 width: 55,
                 alignItems: 'center'
-              }}>
-              <MaterialIcons name="arrow-back" size={25} color="black" />
+              }}
+            >
+              <MaterialIcons name='arrow-back' size={25} color='black' />
             </View>
           )}
           onPress={() => {
@@ -122,7 +123,8 @@ function Favourite() {
               textColor={currentTheme.fontMainColor}
               bolder
               center
-              B700>
+              B700
+            >
               {t('titleEmptyFav')}
             </TextDefault>
             <TextDefault textColor={currentTheme.fontSecondColor} center>
@@ -137,13 +139,9 @@ function Favourite() {
                 name: 'Main',
                 merge: true
               })
-            }>
-            <TextDefault
-              textColor={colors.dark}
-              bolder
-              B700
-              center
-              uppercase>
+            }
+          >
+            <TextDefault textColor={colors.dark} bolder B700 center uppercase>
               {t('emptyFavBtn')}
             </TextDefault>
           </TouchableOpacity>

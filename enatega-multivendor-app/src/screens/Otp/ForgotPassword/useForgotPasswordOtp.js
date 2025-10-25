@@ -1,19 +1,19 @@
 import { useState, useContext, useEffect, useRef } from 'react'
 import { forgotPassword } from '../../../apollo/mutations'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import { useRoute, useNavigation } from '@react-navigation/native'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const FORGOT_PASSWORD = gql`
   ${forgotPassword}
 `
 
 export const useForgotPasswordOtp = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const route = useRoute()
   const navigation = useNavigation()
   const [otp, setOtp] = useState('')
@@ -47,7 +47,7 @@ export const useForgotPasswordOtp = () => {
     onError
   })
 
-  const onCodeFilled = code => {
+  const onCodeFilled = (code) => {
     if (code === otpFrom.current) {
       navigation.navigate('SetYourPassword', { email })
     } else {

@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express')
+const { default: gql } = require('graphql-tag')
 
 const typeDefs = gql`
   type Location {
@@ -758,6 +758,7 @@ const typeDefs = gql`
   type SubscriptionOrders {
     restaurantId: String
     userId: String
+    orderId: String
     order: Order!
     origin: String!
   }
@@ -1679,7 +1680,7 @@ const typeDefs = gql`
       businessCategoryId: String
     ): [RestaurantPreview]
     getRidersLocation(cityId: String): [Rider]
-    orderRidersInteractions(id: String!): [RiderInteractions]
+    orderRidersInteractions(id: String): [RiderInteractions]
     isRestaurantOpenNow(id: String!): Boolean!
     areasCalculatedList(restaurantId: String!): [DeliveryFeeList]
     featuredRestaurants(
@@ -1801,7 +1802,11 @@ const typeDefs = gql`
       search: String
     ): [Order!]
     getOrdersByAdmin(page: Int, limit: Int, search: String): OrdersPaginate
-    getActiveOrders(page: Float, limit: Float, restaurantId: ID): OrdersPaginate
+    getActiveOrders(
+      page: Float
+      limit: Float
+      restaurantId: String
+    ): OrdersPaginate
     getOrdersByDateRange(
       startingDate: String!
       endingDate: String!
@@ -2383,7 +2388,7 @@ const typeDefs = gql`
     toggleAvailablity(id: String): Rider!
     toggleMute(id: String): Rider!
     toggleActive(id: String): Rider!
-    updateStatus(id: String, orderStatus: String!): Order!
+    updateStatus(id: String, orderStatus: String!): Message
     assignRider(id: String!, riderId: String!): Order!
     riderLogin(
       username: String
@@ -2477,13 +2482,15 @@ const typeDefs = gql`
   }
   type Subscription {
     subscribePlaceOrder(restaurant: String!): SubscriptionOrders!
-    orderStatusChanged(userId: String!): SubscriptionOrders!
+    orderStatusChanged(orderId: String!): SubscriptionOrders!
+    orderStatusChangedRestaurant(orderId: String!): SubscriptionOrders!
     subscriptionAssignRider(riderId: String!): SubscriptionOrders!
     subscriptionRiderLocation(riderId: String!): Rider!
     subscriptionZoneOrders(zoneId: String!): Subscription_Zone_Orders!
     subscriptionOrder(id: String!): Order!
-    subscriptionDispatcher: Order!
+    subscriptionDispatcher: Order
     subscriptionNewMessage(order: ID!): ChatMessageOutput!
+    # newOrderCreated: Order
   }
 `
 module.exports = typeDefs

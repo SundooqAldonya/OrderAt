@@ -19,7 +19,7 @@ import useRegister from './useRegister'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
 import { useSelector } from 'react-redux'
-import { gql, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { createUser, validatePhoneUnauth } from '../../apollo/mutations'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
@@ -27,6 +27,7 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native'
 import { useContext } from 'react'
 import AuthContext from '../../context/Auth'
+import gql from 'graphql-tag'
 
 const CREATEUSER = gql`
   ${createUser}

@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect } from 'react'
 import UserContext from '../../../context/user'
-import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { configuration, riderOrders } from '../../../apollo/queries'
 import { assignOrder, updateOrderStatusRider } from '../../../apollo/mutations'
 import { TabsContext } from '../../../context/tabs'
 import { FlashMessage } from '../../FlashMessage/FlashMessage'
 import { subscriptionOrder } from '../../../apollo/subscriptions'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery, useSubscription } from '@apollo/client/react'
 
 const CONFIGURATION = gql`
   ${configuration}
@@ -25,7 +26,7 @@ const useDetails = orderData => {
   const { active, setActive } = useContext(TabsContext)
   const { assignedOrders, loadingAssigned } = useContext(UserContext)
   const [order, setOrder] = useState(orderData)
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   useEffect(() => {
     if (!loadingAssigned && order) {
       setOrder(assignedOrders.find(o => o._id === order?._id))
@@ -81,7 +82,9 @@ const useDetails = orderData => {
   async function onCompleted(result) {
     if (result.updateOrderStatusRider) {
       FlashMessage({
-        message: `${t('orderMarkedAs')} ${t(result.updateOrderStatusRider.orderStatus)}`
+        message: `${t('orderMarkedAs')} ${t(
+          result.updateOrderStatusRider.orderStatus
+        )}`
       })
     }
     if (result.assignOrder) {

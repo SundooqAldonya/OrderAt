@@ -45,9 +45,6 @@ const ScreenBackground = ({ children }) => {
       />
       <TouchableOpacity style={styles.hamburger} onPress={handleOpenDrawer}>
         <Feather name="menu" size={34} color="black" />
-        {/* <View style={styles.line}></View>
-        <View style={styles.line}></View>
-        <View style={styles.line}></View> */}
       </TouchableOpacity>
       <View style={styles.container}>
         <View
@@ -67,6 +64,7 @@ const ScreenBackground = ({ children }) => {
             {isEnabled ? t('available') : t('notAvailable')}
           </TextDefault>
         </View>
+
         {/* <Image
           source={RiderLogin}
           style={[styles.image]}

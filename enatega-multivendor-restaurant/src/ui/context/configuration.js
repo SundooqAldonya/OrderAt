@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
+import { gql } from '@apollo/client'
+
 import { configuration } from '../../apollo'
 
 const Context = React.createContext({})
 
 export const Provider = props => {
-  const [addressToken, setAddressToken] = useState("")
+  const [addressToken, setAddressToken] = useState('')
 
   const { loading, data, error } = useQuery(
     gql`

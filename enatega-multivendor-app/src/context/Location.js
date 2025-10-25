@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { cities, getCities } from '../apollo/queries'
 

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 import { resetPassword } from '../../apollo/mutations'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'

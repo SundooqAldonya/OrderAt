@@ -45,7 +45,7 @@ import { alignment } from '../../utils/alignment'
 import TextError from '../../components/Text/TextError/TextError'
 import { MaterialIcons } from '@expo/vector-icons'
 import analytics from '../../utils/analytics'
-import { gql, useApolloClient, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { popularItems, food, getSingleFood } from '../../apollo/queries'
 
 import { useTranslation } from 'react-i18next'
@@ -57,6 +57,7 @@ import PopularIcon from '../../assets/SVG/popular'
 import { escapeRegExp } from '../../utils/regex'
 import { colors } from '../../utils/colors'
 import { Fragment } from 'react'
+import gql from 'graphql-tag'
 
 const { height } = Dimensions.get('screen')
 

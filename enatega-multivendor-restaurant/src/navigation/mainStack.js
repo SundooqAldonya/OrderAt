@@ -10,7 +10,7 @@ import { OrdersScreen } from '../screens/Orders'
 import SideBar from '../components/SideBar/SideBar'
 import { screenOptions, tabIcon } from './screenOptions'
 import { colors } from '../utilities/colors'
-import { gql, useApolloClient, useMutation } from '@apollo/client'
+// import { gql, useApolloClient, useMutation } from '@apollo/client'
 import { acknowledgeNotification, orders } from '../apollo'
 import { useNavigation } from '@react-navigation/native'
 import { SelectLanguage } from '../screens/Setting'
@@ -35,6 +35,7 @@ import FoodListing from '../screens/FoodListing'
 import OrdersHistory from '../screens/OrdersHistory'
 import DeactivateAccount from '../screens/DeleteAccount'
 import PrinterSettings from '../screens/PrinterSettings'
+import { useMutation } from '@apollo/client/react'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

@@ -12,7 +12,10 @@ const {
   publishRiderLocation,
   RIDER_LOCATION,
   ZONE_ORDER,
-  publishOrder
+  publishOrder,
+  publishToDashboard,
+  publishToDispatcher,
+  publishToRestaurant
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -51,6 +54,7 @@ module.exports = {
         () => pubsub.asyncIterator(ZONE_ORDER),
         (payload, args) => {
           const zoneId = payload.subscriptionZoneOrders.zoneId
+          console.log({ zoneId, args })
           return zoneId === args.zoneId
         }
       )
@@ -520,7 +524,14 @@ module.exports = {
         const user = await User.findById(order.user)
         const transformedOrder = await transformOrder(result)
         publishOrder(transformedOrder)
+        publishToRestaurant(transformedOrder, 'ASSIGNED')
         // sendNotificationToUser(result.user, result)
+        // publishToDashboard(
+        //   result.restaurant.toString(),
+        //   transformedOrder,
+        //   'new'
+        // )
+        publishToDispatcher(transformedOrder)
         if (user) {
           if (user.isOrderNotification) {
             console.log('through condition')
@@ -542,6 +553,7 @@ module.exports = {
       const session = await mongoose.startSession()
       session.startTransaction()
       console.log('assignment session started for transaction')
+
       try {
         const order = await Order.findOneAndUpdate(
           {
@@ -559,35 +571,97 @@ module.exports = {
           { new: true, session }
         )
 
-        if (!order) {
-          throw new Error('تم تعيين الطلب لشخص آخر!')
-        }
-        // check when last time assigned to order
+        if (!order) throw new Error('تم تعيين الطلب لشخص آخر!')
+
         await Rider.findByIdAndUpdate(
           req.userId,
           { lastOrderAt: new Date() },
           { session }
         )
-        await session.commitTransaction()
-        session.endSession() // ending transaction
 
-        const transformedOrder = await transformOrder(order)
-        const populatedOrder = await order.populate('restaurant')
-        // sendNotificationToUser(order.user.toString(), transformedOrder)
-        const user = await User.findById(order.user)
-        console.log({ user })
-        if (user && user.isOrderNotification) {
-          console.log('through condition')
-          sendCustomerNotifications(user, populatedOrder)
+        // ✅ Commit the transaction
+        await session.commitTransaction()
+      } catch (err) {
+        // ✅ Only abort if still active
+        if (session.inTransaction()) {
+          await session.abortTransaction()
         }
-        publishOrder(transformedOrder)
-        return transformedOrder
-      } catch (error) {
-        await session.abortTransaction()
+        throw err
+      } finally {
+        // ✅ Always end the session
         session.endSession()
-        throw error
       }
+
+      // ✅ Everything below runs *after* the transaction is safely closed
+      const order = await Order.findById(args.id)
+      const transformedOrder = await transformOrder(order)
+      const populatedOrder = await order.populate('restaurant')
+
+      const user = await User.findById(order.user)
+
+      if (user && user.isOrderNotification) {
+        console.log('through condition')
+        sendCustomerNotifications(user, populatedOrder)
+      }
+
+      publishOrder(transformedOrder)
+      publishToRestaurant(transformedOrder, 'ASSIGNED')
+      publishToDispatcher(transformedOrder)
+      return transformedOrder
     },
+    // assignOrder: async (_, args, { req }) => {
+    //   console.log('assignOrder', args.id, req.userId)
+    //   const session = await mongoose.startSession()
+    //   session.startTransaction()
+    //   console.log('assignment session started for transaction')
+    //   try {
+    //     const order = await Order.findOneAndUpdate(
+    //       {
+    //         _id: args.id,
+    //         $or: [{ rider: null }, { rider: { $exists: false } }]
+    //       },
+    //       {
+    //         $set: {
+    //           rider: req.userId,
+    //           orderStatus: order_status[6],
+    //           assignedAt: new Date(),
+    //           isRiderRinged: false
+    //         }
+    //       },
+    //       { new: true, session }
+    //     )
+
+    //     if (!order) {
+    //       throw new Error('تم تعيين الطلب لشخص آخر!')
+    //     }
+    //     // check when last time assigned to order
+    //     await Rider.findByIdAndUpdate(
+    //       req.userId,
+    //       { lastOrderAt: new Date() },
+    //       { session }
+    //     )
+    //     await session.commitTransaction()
+    //     session.endSession() // ending transaction
+
+    //     const transformedOrder = await transformOrder(order)
+    //     const populatedOrder = await order.populate('restaurant')
+    //     // sendNotificationToUser(order.user.toString(), transformedOrder)
+    //     console.log('transformedOrder.restaurant:', transformedOrder.restaurant)
+    //     const user = await User.findById(order.user)
+    //     console.log({ user })
+    //     if (user && user.isOrderNotification) {
+    //       console.log('through condition')
+    //       sendCustomerNotifications(user, populatedOrder)
+    //     }
+    //     publishOrder(transformedOrder)
+    //     publishToRestaurant(transformedOrder, 'ASSIGNED')
+    //     return transformedOrder
+    //   } catch (error) {
+    //     await session.abortTransaction()
+    //     session.endSession()
+    //     throw error
+    //   }
+    // },
     updateRiderLocation: async (_, args, { req }) => {
       console.log('updateRiderLocation', args)
       if (!req.userId) {

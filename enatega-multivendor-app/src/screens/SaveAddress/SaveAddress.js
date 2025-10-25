@@ -29,7 +29,7 @@ import {
 } from '@react-navigation/native'
 import { createAddress, editAddress } from '../../apollo/mutations'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../components/Spinner/Spinner'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'

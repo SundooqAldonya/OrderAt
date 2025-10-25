@@ -12,7 +12,7 @@ import {
   Dimensions,
   StyleSheet
 } from 'react-native'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import gql from 'graphql-tag'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import {

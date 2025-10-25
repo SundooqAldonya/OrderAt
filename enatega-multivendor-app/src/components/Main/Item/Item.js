@@ -18,7 +18,7 @@ import {
 import { addFavouriteRestaurant } from '../../../apollo/mutations'
 import UserContext from '../../../context/User'
 import gql from 'graphql-tag'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import Spinner from '../../Spinner/Spinner'
 import { FlashMessage } from '../../../ui/FlashMessage/FlashMessage'
 import { useTranslation } from 'react-i18next'
@@ -273,7 +273,12 @@ function Item(props) {
                 </TextDefault>
               </View>
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginLeft: 10 }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 5,
+                  marginLeft: 10
+                }}
               >
                 <MaterialIcons
                   name='directions-bike'

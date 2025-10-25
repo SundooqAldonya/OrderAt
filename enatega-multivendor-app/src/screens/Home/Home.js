@@ -25,7 +25,7 @@ import {
   AntDesign,
   MaterialCommunityIcons
 } from '@expo/vector-icons'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import {
   useCollapsibleSubHeader,
   CollapsibleSubHeaderAnimator
