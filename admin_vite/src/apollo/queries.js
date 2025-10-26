@@ -611,7 +611,12 @@ export const getBanners = `query Banners{
       action
       screen
       file
+      image {
+        url
+        publicId
+      }
       parameters
+      isActive
     }
   }`;
 export const getBannerActions = `query BannerActions{

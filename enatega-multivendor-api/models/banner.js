@@ -10,8 +10,12 @@ const bannerSchema = new Schema(
       type: String
     },
     // Can be image, video, or gif
-    file: {
-      type: String
+    // file: {
+    //   type: String
+    // },
+    image: {
+      url: String,
+      publicId: String
     },
     action: {
       type: String

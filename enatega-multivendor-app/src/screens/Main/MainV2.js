@@ -28,6 +28,7 @@ import {
   checkDeliveryZone,
   featuredRestaurants,
   getBusinessCategoriesCustomer,
+  getCustomerAppBanner,
   highestRatingRestaurant,
   nearestRestaurants,
   restaurantListPreview,
@@ -109,6 +110,14 @@ export default function FoodTab() {
   } = useContext(UserContext)
 
   console.log({ location })
+
+  const {
+    data: dataBanner,
+    loading: loadingBanner,
+    error: errorBanner
+  } = useQuery(getCustomerAppBanner)
+
+  const banner = dataBanner?.getCustomerAppBanner || null
 
   const { loading: loadingZone, error: errorZone } = useQuery(
     checkDeliveryZone,
@@ -628,12 +637,17 @@ export default function FoodTab() {
           </View>
 
           {/* Banners */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('RequestDelivery')}
-            style={{ width: '100%', height: 150 }}
-          >
-            <Image source={Banner} style={{ width: '100%', height: '100%' }} />
-          </TouchableOpacity>
+          {banner ? (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('RequestDelivery')}
+              style={{ width: '100%', height: 150 }}
+            >
+              <Image
+                source={{ uri: banner.image.url }}
+                style={{ width: '100%', height: '100%' }}
+              />
+            </TouchableOpacity>
+          ) : null}
 
           {/* Categories */}
           {!allErrorsZone && !error && <BusinessCategories />}

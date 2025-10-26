@@ -1281,6 +1281,8 @@ const typeDefs = gql`
     action: String
     screen: String
     parameters: String
+    image: Image
+    isActive: Boolean
   }
 
   input BannerInput {
@@ -1291,6 +1293,7 @@ const typeDefs = gql`
     action: String
     screen: String
     parameters: String
+    image: Upload
   }
 
   type FormSubmissionResponse {
@@ -1637,6 +1640,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getCustomerAppBanner: Banner!
     filterRestaurants(
       longitude: Float!
       latitude: Float!
@@ -2161,6 +2165,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    toggleActiveBanner(id: String): Message
     adminOrderUpdate(id: String!, input: AdminUpdateOrder!): Message
     adminCheckout(input: AdminCheckoutInput): Message
     createRiderReview(input: RiderReviewInput!): Message
@@ -2412,7 +2417,7 @@ const typeDefs = gql`
     cuisine(cuisine: String!): Cuisine!
     createBanner(bannerInput: BannerInput!): Banner!
     editBanner(bannerInput: BannerInput!): Banner!
-    deleteBanner(id: String!): String!
+    deleteBanner(id: String!): Message!
     banner(banner: String!): Banner!
     createTipping(tippingInput: TippingInput!): Tipping!
     editTipping(tippingInput: TippingInput!): Tipping!

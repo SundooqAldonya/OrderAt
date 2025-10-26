@@ -25,6 +25,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ConfigurableValues from "../../config/constants";
 import { gql } from "@apollo/client";
+import { useEffect } from "react";
 
 const CREATE_BANNER = gql`
   ${createBanner}
@@ -50,6 +51,8 @@ function Banner(props) {
   const [mainError, mainErrorSetter] = useState("");
   const [success, successSetter] = useState("");
   const [file, setFile] = useState(props.banner ? props.banner.file : "");
+  const [image, setImage] = useState(props.banner ? props.banner.image : {});
+
   const [fileLoading, setFileLoading] = useState(false);
   const [data, setData] = useState({
     title: props.banner ? props.banner.title : "",
@@ -226,6 +229,8 @@ function Banner(props) {
   const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
+
+  console.log({ image });
 
   return (
     <Box className={classes.container}>
@@ -440,10 +445,14 @@ function Banner(props) {
               className={classes.image}
               alt="..."
               src={
-                file ||
-                "https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp"
+                file
+                  ? file
+                  : image.url
+                  ? image.url
+                  : "https://enatega.com/wp-content/uploads/2023/11/man-suit-having-breakfast-kitchen-side-view.webp"
               }
             />
+
             <label
               htmlFor={props.banner ? "edit-banner-image" : "add-banner-image"}
               className={classes.fileUpload}
@@ -455,8 +464,9 @@ function Banner(props) {
               id={props.banner ? "edit-banner-image" : "add-banner-image"}
               type="file"
               accept="image/*"
-              onChange={(event) => {
-                selectImage(event, "imgMenu");
+              onChange={(e) => {
+                selectImage(e, "imgMenu");
+                setImage(e.target.files[0]);
               }}
             />
           </Box>
@@ -475,8 +485,9 @@ function Banner(props) {
                     description: data.description,
                     action: data.action,
                     screen: data.screen,
-                    file: await uploadImageToCloudinary(),
+                    // file: await uploadImageToCloudinary(),
                     parameters: JSON.stringify(parameter),
+                    image,
                   };
                   console.log("onSubmitValidaiton inputData => ", inputData);
                   mutate({

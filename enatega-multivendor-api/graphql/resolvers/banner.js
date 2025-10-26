@@ -1,12 +1,13 @@
+const { uploadImage } = require('../../helpers/cloudinary')
 const { BANNER_ACTIONS } = require('../../helpers/enum')
 const Banner = require('../../models/banner')
 
 module.exports = {
   Query: {
-    banners: async() => {
+    banners: async () => {
       console.log('banners')
       try {
-        const banners = await Banner.find({ isActive: true }).sort({
+        const banners = await Banner.find().sort({
           createdAt: -1
         })
         return banners.map(banner => ({
@@ -18,7 +19,7 @@ module.exports = {
         throw err
       }
     },
-    bannerActions: async() => {
+    bannerActions: async () => {
       console.log('bannerActions')
       try {
         const actions = Object.keys(BANNER_ACTIONS).map(
@@ -29,11 +30,23 @@ module.exports = {
         console.log(err)
         throw err
       }
+    },
+
+    async getCustomerAppBanner(_, args) {
+      try {
+        const banner = await Banner.findOne({
+          screen: 'khedmet_mashaweer',
+          isActive: true
+        })
+        return banner
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {
-    createBanner: async(_, args, context) => {
-      console.log('createBanner')
+    createBanner: async (_, args, context) => {
+      console.log('createBanner', { bannerInput: args.bannerInput })
       try {
         const count = await Banner.countDocuments({
           title: args.bannerInput.title,
@@ -43,11 +56,20 @@ module.exports = {
         const banner = new Banner({
           title: args.bannerInput.title,
           description: args.bannerInput.description,
-          file: args.bannerInput.file,
+          // file: args.bannerInput.file,
           action: args.bannerInput.action,
           screen: args.bannerInput.screen,
           parameters: args.bannerInput.parameters
         })
+
+        if (args.bannerInput.image?.file) {
+          const profileUpload = await uploadImage({
+            file: args.bannerInput.image
+          })
+          banner.image.url = profileUpload.secure_url
+          banner.image.publicId = profileUpload.public_id
+        }
+
         const result = await banner.save()
         return {
           ...result._doc,
@@ -58,7 +80,7 @@ module.exports = {
         throw err
       }
     },
-    editBanner: async(_, args, context) => {
+    editBanner: async (_, args, context) => {
       console.log('editBanner')
       try {
         const banner = await Banner.findById(args.bannerInput._id)
@@ -67,10 +89,19 @@ module.exports = {
         }
         banner.title = args.bannerInput.title
         banner.description = args.bannerInput.description
-        banner.file = args.bannerInput.file
+        // banner.file = args.bannerInput.file
         banner.action = args.bannerInput.action
         banner.screen = args.bannerInput.screen
         banner.parameters = args.bannerInput.parameters
+
+        if (args.bannerInput.image) {
+          const profileUpload = await uploadImage({
+            file: args.bannerInput.image
+          })
+          banner.image.url = profileUpload.secure_url
+          banner.image.publicId = profileUpload.public_id
+        }
+
         const result = await banner.save()
         return {
           ...result._doc,
@@ -81,19 +112,38 @@ module.exports = {
         throw err
       }
     },
-    deleteBanner: async(_, args, context) => {
+
+    async toggleActiveBanner(_, args) {
+      try {
+        const banner = await Banner.findById(args.id)
+        if (banner.isActive) {
+          banner.isActive = false
+        } else {
+          banner.isActive = true
+        }
+        await banner.save()
+        return { message: 'updated active banner' }
+      } catch (err) {
+        throw err
+      }
+    },
+
+    deleteBanner: async (_, args, context) => {
       console.log('deleteBanner')
       try {
         const banner = await Banner.findById(args.id)
-        banner.isActive = false
-        const result = await banner.save()
-        return result.id
+        await banner.deleteOne()
+        return { message: 'banner is deleted' }
+        // const banner = await Banner.findById(args.id)
+        // banner.isActive = false
+        // const result = await banner.save()
+        // return result.id
       } catch (err) {
         console.log(err)
         throw err
       }
     },
-    banner: async(_, args, context) => {
+    banner: async (_, args, context) => {
       console.log('banner', args)
       try {
         const getBanner = await Banner.findOne({

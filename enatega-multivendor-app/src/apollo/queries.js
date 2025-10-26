@@ -1954,3 +1954,14 @@ export const filterRestaurants = gql`
     }
   }
 `
+export const getCustomerAppBanner = gql`
+  query GetCustomerAppBanner {
+    getCustomerAppBanner {
+      _id
+      image {
+        publicId
+        url
+      }
+    }
+  }
+`

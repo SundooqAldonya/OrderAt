@@ -532,7 +532,9 @@ export const editBanner = `mutation editBanner($bannerInput:BannerInput!){
 }`;
 
 export const deleteBanner = `mutation DeleteBanner($id:String!){
-  deleteBanner(id:$id)
+  deleteBanner(id:$id) {
+    message
+  }
 }`;
 
 export const createTipping = `mutation CreateTipping($tippingInput:TippingInput!){
@@ -1068,6 +1070,14 @@ export const adminCheckout = gql`
 export const adminOrderUpdate = gql`
   mutation AdminOrderUpdate($id: String!, $input: AdminUpdateOrder!) {
     adminOrderUpdate(id: $id, input: $input) {
+      message
+    }
+  }
+`;
+
+export const toggleActiveBanner = gql`
+  mutation toggleActiveBanner($id: String) {
+    toggleActiveBanner(id: $id) {
       message
     }
   }

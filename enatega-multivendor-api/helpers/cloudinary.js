@@ -95,6 +95,7 @@ module.exports = {
   },
 
   async uploadImage({ file }) {
+    if (!file.file) return null
     try {
       const { createReadStream } = await file.file
       const stream = createReadStream()
