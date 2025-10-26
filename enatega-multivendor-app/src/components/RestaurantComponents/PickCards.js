@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import ConfigurationContext from '../../context/Configuration'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +18,7 @@ import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import { colors } from '../../utils/colors'
 import { formatNumber } from '../../utils/formatNumber'
 import { scale } from '../../utils/scaling'
+import ItemModal from './ItemModal'
 
 const PickCards = ({ item, restaurantCustomer, cat }) => {
   const navigation = useNavigation()
@@ -33,6 +34,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
     clearCart,
     checkItemCart
   } = useContext(UserContext)
+  const [showItem, setShowItem] = useState(false)
 
   const scaleValue = useSharedValue(1)
 
@@ -70,11 +72,12 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
       food?.variations?.length === 1 &&
       food?.variations[0].addons?.length === 0
     ) {
-      await setCartRestaurant(food.restaurant)
-      const result = checkItemCart(food._id)
-      if (result.exist) await addQuantity(result.key)
-      else await addCartItem(food._id, food.variations[0]._id, 1, [], clearFlag)
-      animate()
+      setShowItem(true)
+      // await setCartRestaurant(food.restaurant)
+      // const result = checkItemCart(food._id)
+      // if (result.exist) await addQuantity(result.key)
+      // else await addCartItem(food._id, food.variations[0]._id, 1, [], clearFlag)
+      // animate()
     } else {
       if (clearFlag) await clearCart()
       navigation.navigate('ItemDetail', {
@@ -137,114 +140,150 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
     }
   }
 
+  const modalAddToCart = async (food, clearFlag) => {
+    console.log('pressed item: ', food)
+    await setCartRestaurant(food.restaurant)
+    const result = checkItemCart(food._id)
+    if (result.exist) await addQuantity(result.key)
+    else await addCartItem(food._id, food.variations[0]._id, 1, [], clearFlag)
+    animate()
+    onCloseModal()
+  }
+
+  const onCloseModal = () => {
+    setShowItem(false)
+  }
+
   return (
-    <TouchableOpacity
-      onPress={() => {
-        onPressItem({
-          ...item,
-          restaurant: restaurantCustomer?._id,
-          restaurantName: restaurantCustomer?.name
-        })
-      }}
-      style={[
-        styles.card,
-        cat._id === 'picks'
-          ? styles.cardVertical
-          : {
-              ...styles.cardHorizontal,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
-            }
-      ]}
-    >
-      <View
-        style={
+    <Fragment>
+      <TouchableOpacity
+        onPress={() => {
+          console.log('pressed item')
+          onPressItem({
+            ...item,
+            restaurant: restaurantCustomer?._id,
+            restaurantName: restaurantCustomer?.name
+          })
+        }}
+        style={[
+          styles.card,
           cat._id === 'picks'
-            ? styles.cartTop
-            : isArabic
-              ? { ...styles.cartIconArabic }
-              : { ...styles.cartIcon }
-        }
+            ? styles.cardVertical
+            : {
+                ...styles.cardHorizontal,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }
+        ]}
       >
-        <FontAwesome5 name='cart-plus' size={moderateScale(18)} color={colors.primary} />
-      </View>
-      <Image
-        source={
-          item.image?.trim()
-            ? { uri: item.image }
-            : require('../../assets/food_placeholder.jpeg')
-        }
-        style={cat === 'picks' ? styles.imageVertical : styles.imageHorizontal}
-      />
-      <View style={styles.cardContent}>
-        <Text
-          style={{ ...styles.foodName, textAlign: isArabic ? 'right' : 'left' }}
-        >
-          {item?.title}
-        </Text>
-        <View style={{ maxWidth: 200 }}>
-          {item.description ? (
-            <Text
-              style={{
-                ...styles.foodDescription,
-                textAlign: isArabic ? 'right' : 'left'
-              }}
-            >
-              {isArabic
-                ? `...${item?.description?.substring(0, 60)}`
-                : `${item?.description?.substring(0, 60)}...`}
-            </Text>
-          ) : (
-            <Text style={styles.foodDescription}></Text>
-          )}
-        </View>
         <View
-          style={{
-            flexDirection: isArabic ? 'row-reverse' : 'row',
-            gap: 5
-          }}
+          style={
+            cat._id === 'picks'
+              ? styles.cartTop
+              : isArabic
+                ? { ...styles.cartIconArabic }
+                : { ...styles.cartIcon }
+          }
         >
-          {item?.variations[0]?.discounted > 0 && (
-            <Fragment>
-              {isArabic ? (
-                <Text
-                  style={{
-                    color: '#9CA3AF',
-                    fontSize: moderateScale(12),
-                    textDecorationLine: 'line-through',
-                    textAlign: 'right'
-                  }}
-                >
-                  {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
-                </Text>
-              ) : (
-                <Text
-                  style={{
-                    color: '#9CA3AF',
-                    fontSize: moderateScale(12),
-                    textDecorationLine: 'line-through',
-                    textAlign: 'left'
-                  }}
-                >
-                  {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
-                </Text>
-              )}
-            </Fragment>
-          )}
-          <View
+          <FontAwesome5
+            name='cart-plus'
+            size={moderateScale(18)}
+            color={colors.primary}
+          />
+        </View>
+        <Image
+          source={
+            item.image?.trim()
+              ? { uri: item.image }
+              : require('../../assets/food_placeholder.jpeg')
+          }
+          style={
+            cat === 'picks' ? styles.imageVertical : styles.imageHorizontal
+          }
+        />
+        <View style={styles.cardContent}>
+          <Text
             style={{
-              ...styles.priceContainer
+              ...styles.foodName,
+              textAlign: isArabic ? 'right' : 'left'
             }}
           >
-            <Text style={{ ...styles.foodPrice }}>
-              {isArabic ? configuration.currencySymbol : configuration.currency}
-            </Text>
-            <Text style={{ ...styles.foodPrice }}>
-              {parseFloat(item.variations[0].price).toFixed(2)}
-            </Text>
+            {item?.title}
+          </Text>
+          <View style={{ maxWidth: 200 }}>
+            {item.description ? (
+              <Text
+                style={{
+                  ...styles.foodDescription,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {isArabic
+                  ? `...${item?.description?.substring(0, 60)}`
+                  : `${item?.description?.substring(0, 60)}...`}
+              </Text>
+            ) : (
+              <Text style={styles.foodDescription}></Text>
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: isArabic ? 'row-reverse' : 'row',
+              gap: 5
+            }}
+          >
+            {item?.variations[0]?.discounted > 0 && (
+              <Fragment>
+                {isArabic ? (
+                  <Text
+                    style={{
+                      color: '#9CA3AF',
+                      fontSize: moderateScale(12),
+                      textDecorationLine: 'line-through',
+                      textAlign: 'right'
+                    }}
+                  >
+                    {` ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))} ${configuration?.currencySymbol}`}
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      color: '#9CA3AF',
+                      fontSize: moderateScale(12),
+                      textDecorationLine: 'line-through',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {`${configuration?.currencySymbol} ${formatNumber(parseFloat(item?.variations[0]?.price + item?.variations[0]?.discounted).toFixed(0))}`}
+                  </Text>
+                )}
+              </Fragment>
+            )}
+            <View
+              style={{
+                ...styles.priceContainer
+              }}
+            >
+              <Text style={{ ...styles.foodPrice }}>
+                {isArabic
+                  ? configuration.currencySymbol
+                  : configuration.currency}
+              </Text>
+              <Text style={{ ...styles.foodPrice }}>
+                {parseFloat(item.variations[0].price).toFixed(2)}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <ItemModal
+        visible={showItem}
+        onClose={onCloseModal}
+        item={item}
+        currency={configuration.currency}
+        modalAddToCart={modalAddToCart}
+        restaurantCustomer={restaurantCustomer}
+      />
+    </Fragment>
   )
 }
 

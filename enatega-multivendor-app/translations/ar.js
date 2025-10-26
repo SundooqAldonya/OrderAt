@@ -370,6 +370,7 @@ export const ar = {
   SUN: 'الأحد',
   DeliveryAddressIsRequired: 'عنوان التوصيل مطلوب',
   SelectVariation: 'اختار النوع',
+  variations: 'الأنواع',
   SelectOne: 'اختر واحدة',
   Required: 'مطلوب',
   howWasMeal: 'كيف كانت وجبتك؟',
@@ -736,5 +737,6 @@ export const ar = {
   results: 'النتائج',
   clear_filters: 'مسح الفلاتر',
   order: 'طلب',
-  try_request_delivery: 'جرب خدمة مشاوير الآن'
+  try_request_delivery: 'جرب خدمة مشاوير الآن',
+  close: 'إغلاق'
 }

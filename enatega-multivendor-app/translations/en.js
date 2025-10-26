@@ -378,6 +378,7 @@ export const en = {
   SUN: 'SUN',
   DeliveryAddressIsRequired: 'Delivery address is required',
   SelectVariation: 'Select Variation',
+  variations: 'Variations',
   SelectOne: 'Select one',
   Required: 'Required',
   howWasMeal: 'How was your meal?',
@@ -748,5 +749,6 @@ export const en = {
   results: 'Results',
   clear_filters: 'Clear Filters',
   order: 'Order',
-  try_request_delivery: 'Try Khedmet Mashaweer'
+  try_request_delivery: 'Try Khedmet Mashaweer',
+  close: 'Close'
 }

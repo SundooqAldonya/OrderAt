@@ -517,7 +517,7 @@ const CustomSearchButton = ({ children, onPress }) => (
   >
     <View
       style={{
-        width: moderateScale(65),
+        width: moderateScale(70),
         height: moderateScale(65),
         borderRadius: moderateScale(65) / 2,
         backgroundColor: colors.primary, // 👈 main color

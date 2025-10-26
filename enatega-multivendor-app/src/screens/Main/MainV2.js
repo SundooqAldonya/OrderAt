@@ -68,6 +68,7 @@ import { setRestaurant } from '../../store/restaurantSlice'
 import { useDispatch } from 'react-redux'
 import ConfigurationContext from '../../context/Configuration'
 import gql from 'graphql-tag'
+import Banner from '../../assets/khedmet_mashaweer_banner.png'
 
 const RESTAURANTS = gql`
   ${restaurantListPreview}
@@ -570,15 +571,17 @@ export default function FoodTab() {
   }
 
   const allErrorsZone =
-    errorZone &&
-    !restaurantsWithOffersData?.length &&
-    !loadingWithOffers &&
-    !allRestaurants?.length &&
-    !loading &&
-    !featuredRestaurantsVar?.length &&
-    !loadingFeatured &&
-    !mostOrderedRestaurantsVar?.length &&
-    !orderLoading
+    errorZone ||
+    (!restaurantsWithOffersData?.length &&
+      !loadingWithOffers &&
+      !allRestaurants?.length &&
+      !loading &&
+      !featuredRestaurantsVar?.length &&
+      !loadingFeatured &&
+      !mostOrderedRestaurantsVar?.length &&
+      !orderLoading)
+
+  console.log({ allErrorsZone })
 
   return (
     <SafeAreaView style={styles.flex}>
@@ -623,6 +626,14 @@ export default function FoodTab() {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Banners */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('RequestDelivery')}
+            style={{ width: '100%', height: 150 }}
+          >
+            <Image source={Banner} style={{ width: '100%', height: '100%' }} />
+          </TouchableOpacity>
 
           {/* Categories */}
           {!allErrorsZone && !error && <BusinessCategories />}
@@ -786,7 +797,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: moderateScale(16),
-     fontWeight: '600'
+    fontWeight: '600'
   },
   categoryChip: {
     flexDirection: 'row',
