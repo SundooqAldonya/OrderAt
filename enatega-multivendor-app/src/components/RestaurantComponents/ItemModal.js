@@ -33,14 +33,16 @@ const ItemModal = ({
     <Modal visible={visible} transparent animationType='slide'>
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Image
-            source={
-              item.image?.trim()
-                ? { uri: item.image }
-                : require('../../assets/food_placeholder.jpeg')
-            }
-            style={styles.imageHorizontal}
-          />
+          <View style={styles.imageContainer}>
+            <Image
+              source={
+                item.image?.trim()
+                  ? { uri: item.image }
+                  : require('../../assets/food_placeholder.jpeg')
+              }
+              style={styles.imageHorizontal}
+            />
+          </View>
 
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -193,10 +195,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center'
   },
-  imageHorizontal: {
-    width: 100,
-    height: 100,
+  imageContainer: {
+    width: 300,
+    height: 150,
     marginInlineStart: 12
+  },
+  imageHorizontal: {
+    width: '100%',
+    height: 150
   },
   btnContainer: {
     gap: 10

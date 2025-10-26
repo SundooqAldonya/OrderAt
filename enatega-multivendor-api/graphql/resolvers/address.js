@@ -8,6 +8,7 @@ module.exports = {
       // delivery address is not passed
       // details is not passed
       console.log('createAddress', { addressInput })
+      delete addressInput._id
       try {
         if (!req.isAuth) throw new Error('Unauthenticated')
 
@@ -27,10 +28,14 @@ module.exports = {
             coordinates: [addressInput.longitude, addressInput.latitude]
           })
         })
+        await address.save()
         user.addresses.push(address)
-        const updatedUser = await user.save()
-        const data = await transformUser(updatedUser)
-        return data
+        await user.save()
+        // const updatedUser = await user.save()
+        return address
+        // return address
+        // const data = await transformUser(updatedUser)
+        // return data
       } catch (e) {
         throw e
       }

@@ -164,10 +164,18 @@ const AddressNewVersion = () => {
   }, [chooseFromMap, selectedCityAndArea])
 
   const [mutate] = useMutation(CREATE_ADDRESS, {
-    onCompleted: (data) => {
-      console.log({ data })
+    onCompleted: ({ createAddress }) => {
+      console.log({ createAddress })
       refetchProfile()
       dispatch(resetAddNewAddress())
+      setLocation({
+        _id: createAddress._id,
+        label: createAddress.label,
+        latitude: Number(createAddress.location.coordinates[1]),
+        longitude: Number(createAddress.location.coordinates[0]),
+        deliveryAddress: createAddress.deliveryAddress,
+        details: createAddress.details
+      })
       navigation.navigate('Main')
     },
     onError: (err) => {

@@ -126,19 +126,29 @@ export const deleteAddress = `mutation DeleteAddress($id:ID!){
     }
   }`
 
+// export const createAddress = `mutation CreateAddress($addressInput:AddressInput!){
+//     createAddress(addressInput:$addressInput){
+//       _id
+//       addresses{
+//         _id
+//         label
+//         deliveryAddress
+//         details
+//         location{coordinates}
+//         selected
+//       }
+//     }
+//   }`
 export const createAddress = `mutation CreateAddress($addressInput:AddressInput!){
-    createAddress(addressInput:$addressInput){
-      _id
-      addresses{
-        _id
-        label
-        deliveryAddress
-        details
-        location{coordinates}
-        selected
-      }
-    }
-  }`
+  createAddress(addressInput:$addressInput){
+    _id
+    label
+    deliveryAddress
+    details
+    location{coordinates}
+    selected
+  }
+}`
 
 export const editAddress = `mutation EditAddress($addressInput:AddressInput!){
     editAddress(addressInput:$addressInput){

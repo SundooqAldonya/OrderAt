@@ -2427,7 +2427,8 @@ const typeDefs = gql`
     createReview(review: ReviewInput!): Restaurant!
     deleteRestaurant(id: String!): Restaurant!
     editRestaurant(restaurant: RestaurantProfileInput!): Restaurant!
-    createAddress(addressInput: AddressInput!): User!
+    # createAddress(addressInput: AddressInput!): User!
+    createAddress(addressInput: AddressInput!): Address!
     editAddress(addressInput: AddressInput!): User!
     deleteAddress(id: ID!): User!
     deleteBulkAddresses(ids: [ID!]!): User!
