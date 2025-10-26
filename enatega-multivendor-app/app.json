@@ -52,7 +52,7 @@
       "androidCollapsedTitle": "Customer Multivendor"
     },
     "android": {
-      "versionCode": 98,
+      "versionCode": 99,
       "package": "com.orderatcustomer.app",
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "automatic",
@@ -116,6 +116,8 @@
         "expo-build-properties",
         {
           "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
             "extraProguardRules": "-keep class com.google.firebase.** { *; }",
             "gradleProperties": {
               "android.useAndroidX": "true",

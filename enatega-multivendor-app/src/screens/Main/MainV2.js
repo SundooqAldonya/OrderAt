@@ -639,7 +639,14 @@ export default function FoodTab() {
           {/* Banners */}
           {banner ? (
             <TouchableOpacity
-              onPress={() => navigation.navigate('RequestDelivery')}
+              onPress={() => {
+                if (!isLoggedIn) {
+                  e.preventDefault() // prevent tab from switching
+                  navigation.navigate('CreateAccount') // redirect to Login screen
+                } else {
+                  navigation.navigate('RequestDelivery')
+                }
+              }}
               style={{ width: '100%', height: 150 }}
             >
               <Image
