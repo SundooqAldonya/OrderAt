@@ -35,9 +35,6 @@
       "channel": "production",
       "env": {
         "API_ENV": "production"
-      },
-      "android": {
-            "buildType": "apk"
       }
     },
     "development-simulator": {

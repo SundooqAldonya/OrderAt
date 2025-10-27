@@ -198,7 +198,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 300,
     height: 150,
-    marginInlineStart: 12
+    // marginInlineStart: 12,
+    overflow: 'hidden'
   },
   imageHorizontal: {
     width: '100%',

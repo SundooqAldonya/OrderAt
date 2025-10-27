@@ -641,7 +641,6 @@ export default function FoodTab() {
             <TouchableOpacity
               onPress={() => {
                 if (!isLoggedIn) {
-                  e.preventDefault() // prevent tab from switching
                   navigation.navigate('CreateAccount') // redirect to Login screen
                 } else {
                   navigation.navigate('RequestDelivery')

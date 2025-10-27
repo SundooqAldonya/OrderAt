@@ -23,7 +23,6 @@ const ErrorView = ({ wentWrong, message, children }) => {
     if (isLoggedIn) {
       navigation.navigate('RequestDelivery')
     } else {
-      e.preventDefault() // prevent tab from switching
       navigation.navigate('CreateAccount') // redirect to Login screen
     }
   }
