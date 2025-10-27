@@ -46,7 +46,7 @@ const OrdersAdmin = () => {
     // console.log({ order })
     // setOrder(order)
     // setDetailModal(!detailsModal)
-    window.open(`/#/admin/order-details/${order._id}`);
+    window.open(`/admin/order-details/${order._id}`);
   };
 
   const handleChangePage = (e, newPage) => {
