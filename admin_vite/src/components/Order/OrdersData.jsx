@@ -12,13 +12,13 @@ import TableHeader from "../TableHeader";
 import { Alert, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Box } from "@mui/system";
-import AddOrder from "./AddOrder";
+// import TextField from "@mui/material/TextField";
+// import FormControl from "@mui/material/FormControl";
+// import InputLabel from "@mui/material/InputLabel";
+// import Select from "@mui/material/Select";
+// import MenuItem from "@mui/material/MenuItem";
+// import { Box } from "@mui/system";
+// import AddOrder from "./AddOrder";
 import AddNewOrder from "./AddNewOrder";
 import { gql } from "@apollo/client";
 
@@ -57,22 +57,22 @@ const OrdersData = (props) => {
     }));
   };
 
-  const handleSubmitOrder = () => {
-    console.log("Order submitted:", orderDetails);
-    // Implement the order submission logic here
-    setIsOrderFormVisible(false); // Hide the form and show the table again
-  };
+  // const handleSubmitOrder = () => {
+  //   console.log("Order submitted:", orderDetails);
+  //   // Implement the order submission logic here
+  //   setIsOrderFormVisible(false); // Hide the form and show the table again
+  // };
 
-  const getItems = (items) => {
-    return items
-      .map(
-        (item) =>
-          `${item.quantity}x${item.title}${
-            item.variation.title ? `(${item.variation.title})` : ""
-          }`
-      )
-      .join("\n");
-  };
+  // const getItems = (items) => {
+  //   return items
+  //     .map(
+  //       (item) =>
+  //         `${item.quantity}x${item.title}${
+  //           item.variation.title ? `(${item.variation.title})` : ""
+  //         }`
+  //     )
+  //     .join("\n");
+  // };
 
   const restaurantId = localStorage.getItem("restaurantId");
 

@@ -78,6 +78,8 @@ const RestaurantDetailsV2 = () => {
   const [showReviewsModal, setShowReviewsModal] = useState(false)
   const [allFoods, setAllFoods] = useState([])
 
+  // console.log({ allFoods })
+
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false)
   const categoriesLayoutY = useRef(0)
   const [categoryOffsets, setCategoryOffsets] = useState({})
@@ -245,51 +247,51 @@ const RestaurantDetailsV2 = () => {
       })
     }
   }
-  const STICKY_HEADER_HEIGHT = 50; // your sticky header height
+  const STICKY_HEADER_HEIGHT = 50 // your sticky header height
 
-const handleScroll = (event) => {
-  const scrollY = event.nativeEvent.contentOffset.y;
+  const handleScroll = (event) => {
+    const scrollY = event.nativeEvent.contentOffset.y
 
-  // Existing sticky header animation logic
-  const shouldShow =
-    scrollY > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT;
-  setShowStickyHeader(shouldShow);
-  Animated.timing(stickyHeaderAnim, {
-    toValue: shouldShow ? 1 : 0,
-    duration: 250,
-    useNativeDriver: true,
-  }).start();
+    // Existing sticky header animation logic
+    const shouldShow =
+      scrollY > HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT
+    setShowStickyHeader(shouldShow)
+    Animated.timing(stickyHeaderAnim, {
+      toValue: shouldShow ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true
+    }).start()
 
-  if (categoriesLayoutY.current) {
-    setIsCategoriesSticky(scrollY >= categoriesLayoutY.current - 60);
-  }
+    if (categoriesLayoutY.current) {
+      setIsCategoriesSticky(scrollY >= categoriesLayoutY.current - 60)
+    }
 
-  const adjustedScrollY = scrollY + STICKY_HEADER_HEIGHT;
+    const adjustedScrollY = scrollY + STICKY_HEADER_HEIGHT
 
-  const sortedCategories = Object.entries(categoryOffsets).sort(
-    (a, b) => a[1] - b[1]
-  );
+    const sortedCategories = Object.entries(categoryOffsets).sort(
+      (a, b) => a[1] - b[1]
+    )
 
-  let currentCategory = activeCategory;
+    let currentCategory = activeCategory
 
-  for (let i = 0; i < sortedCategories.length; i++) {
-    const [categoryId, offset] = sortedCategories[i];
-    const nextOffset = sortedCategories[i + 1]?.[1] ?? Infinity;
+    for (let i = 0; i < sortedCategories.length; i++) {
+      const [categoryId, offset] = sortedCategories[i]
+      const nextOffset = sortedCategories[i + 1]?.[1] ?? Infinity
 
-    // 💡 This ensures category changes *only when the next one touches sticky header*
-    if (
-      adjustedScrollY >= offset &&
-      adjustedScrollY < nextOffset - STICKY_HEADER_HEIGHT
-    ) {
-      currentCategory = categoryId;
-      break;
+      // 💡 This ensures category changes *only when the next one touches sticky header*
+      if (
+        adjustedScrollY >= offset &&
+        adjustedScrollY < nextOffset - STICKY_HEADER_HEIGHT
+      ) {
+        currentCategory = categoryId
+        break
+      }
+    }
+
+    if (currentCategory !== activeCategory) {
+      setActiveCategory(currentCategory)
     }
   }
-
-  if (currentCategory !== activeCategory) {
-    setActiveCategory(currentCategory);
-  }
-};
   const [mutateAddToFavorites, { loading: loadingMutation }] = useMutation(
     ADD_FAVOURITE,
     {
@@ -497,51 +499,50 @@ const handleScroll = (event) => {
         </View>
 
         {/* scroll view for included food categories */}
-          {categories?.map((cat) => {
-            return (
-              <View
-                key={cat._id}
-                ref={(ref) => {
-                  if (ref) sectionRefs.current[cat._id] = ref
+        {categories?.map((cat) => {
+          return (
+            <View
+              key={cat._id}
+              ref={(ref) => {
+                if (ref) sectionRefs.current[cat._id] = ref
+              }}
+              style={styles.menuSection}
+            >
+              <Text
+                style={{
+                  ...styles.sectionTitle,
+                  textAlign: isArabic ? 'right' : 'left'
                 }}
-                style={styles.menuSection}
               >
+                {cat.title} {cat.icon ? cat.icon : null}
+              </Text>
+              {cat.desceription ? (
                 <Text
                   style={{
-                    ...styles.sectionTitle,
+                    ...styles.sectionSubtitle,
                     textAlign: isArabic ? 'right' : 'left'
                   }}
                 >
-                  {cat.title} {cat.icon ? cat.icon : null}
+                  {cat.desceription}
                 </Text>
-                {cat.desceription ? (
-                  <Text
-                    style={{
-                      ...styles.sectionSubtitle,
-                      textAlign: isArabic ? 'right' : 'left'
-                    }}
-                  >
-                    {cat.desceription}
-                  </Text>
-                ) : null}
-                {/* render items for that section */}
-                {cat?.food?.length ? (
-                  cat?.food?.map((item) => (
-                   renderItem({ item, cat })
-                  ))) : (
-                  <Text
-                    style={{
-                      color: '#999',
-                      marginTop: 10,
-                      textAlign: 'center'
-                    }}
-                  >
-                    {t('no_items_in_category')}
-                  </Text>
-                )}
-              </View>
-            )
-          })}
+              ) : null}
+              {/* render items for that section */}
+              {cat?.food?.length ? (
+                cat?.food?.map((item) => renderItem({ item, cat }))
+              ) : (
+                <Text
+                  style={{
+                    color: '#999',
+                    marginTop: 10,
+                    textAlign: 'center'
+                  }}
+                >
+                  {t('no_items_in_category')}
+                </Text>
+              )}
+            </View>
+          )
+        })}
       </Animated.ScrollView>
       {cartCount > 0 ? (
         <ViewCart

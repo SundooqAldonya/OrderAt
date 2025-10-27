@@ -35,6 +35,7 @@ const {
 } = require('../../helpers/customerNotifications')
 const dateScalar = require('../../helpers/dateScalar')
 const mongoose = require('mongoose')
+const { Types } = require('mongoose')
 
 module.exports = {
   Date: dateScalar,
@@ -240,7 +241,7 @@ module.exports = {
     async getRidersLocation(_, args) {
       console.log('getRidersLocation', { args })
       try {
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+        // const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
         const match = {
           available: true

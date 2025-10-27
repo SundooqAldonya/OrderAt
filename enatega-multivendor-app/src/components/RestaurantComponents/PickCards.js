@@ -20,7 +20,7 @@ import { formatNumber } from '../../utils/formatNumber'
 import { scale } from '../../utils/scaling'
 import ItemModal from './ItemModal'
 
-const PickCards = ({ item, restaurantCustomer, cat }) => {
+const PickCards = ({ item, restaurantCustomer, cat = null }) => {
   const navigation = useNavigation()
   const { i18n, t } = useTranslation()
   const isArabic = i18n.language === 'ar'
@@ -167,7 +167,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
         }}
         style={[
           styles.card,
-          cat._id === 'picks'
+          cat?._id === 'picks'
             ? styles.cardVertical
             : {
                 ...styles.cardHorizontal,
@@ -177,7 +177,7 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
       >
         <View
           style={
-            cat._id === 'picks'
+            cat?._id === 'picks'
               ? styles.cartTop
               : isArabic
                 ? { ...styles.cartIconArabic }
@@ -197,7 +197,9 @@ const PickCards = ({ item, restaurantCustomer, cat }) => {
               : require('../../assets/food_placeholder.jpeg')
           }
           style={
-            cat === 'picks' ? styles.imageVertical : styles.imageHorizontal
+            cat && cat === 'picks'
+              ? styles.imageVertical
+              : styles.imageHorizontal
           }
         />
         <View style={styles.cardContent}>

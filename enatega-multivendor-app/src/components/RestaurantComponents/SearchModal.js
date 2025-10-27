@@ -12,6 +12,7 @@ import React, { useState } from 'react'
 import PickCards from './PickCards'
 import { useTranslation } from 'react-i18next'
 import { AntDesign } from '@expo/vector-icons'
+import SearchCard from './SearchCard'
 
 const SearchModal = ({
   searchModalVisible,
@@ -24,7 +25,8 @@ const SearchModal = ({
   const [searchQuery, setSearchQuery] = useState('')
 
   const renderItem = ({ item }) => {
-    return <PickCards item={item} restaurantCustomer={restaurant} />
+    // return <PickCards item={item} restaurantCustomer={restaurant} />
+    return <SearchCard item={item} restaurantCustomer={restaurant} />
   }
   return (
     <Modal

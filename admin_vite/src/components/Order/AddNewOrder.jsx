@@ -13,6 +13,7 @@ import {
 import React, { useEffect } from "react";
 import { useState } from "react";
 import {
+  getCityAreas,
   getDeliveryCalculation,
   getRestaurantProfile,
   newCheckoutPlaceOrder,
@@ -28,6 +29,10 @@ import { gql } from "@apollo/client";
 
 const GET_PROFILE = gql`
   ${getRestaurantProfile}
+`;
+
+const GET_CITY_AREAS = gql`
+  ${getCityAreas}
 `;
 
 const AddNewOrder = ({
@@ -50,7 +55,7 @@ const AddNewOrder = ({
     addressDetails: "",
   });
   const [loaded, setLoaded] = useState(false);
-  const { areas } = useContext(AreaContext);
+  // const { areas, setAreas } = useContext(AreaContext);
   const { acceptOrder } = useAcceptOrder();
   const {
     data,
@@ -63,6 +68,23 @@ const AddNewOrder = ({
   const restaurantData = data?.restaurant || null;
 
   console.log({ data });
+
+  const [fetchAreas, { data: dataAreas }] = useLazyQuery(GET_CITY_AREAS);
+
+  console.log({ dataAreas });
+
+  const areas = dataAreas?.areasByCity || null;
+  console.log({ areas });
+
+  useEffect(() => {
+    if (restaurantData) {
+      fetchAreas({
+        variables: {
+          id: restaurantData?.city?._id,
+        },
+      });
+    }
+  }, [restaurantData]);
 
   const [
     fetchDeliveryCost,
