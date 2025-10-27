@@ -93,14 +93,17 @@ const OtlobMandoob = () => {
   const [
     fetchDeliveryCost,
     { data: calcData, loading: calcLoading, error: errorCalc },
-  ] = useLazyQuery(getDeliveryCalculation, {
-    onCompleted: (res) => {
-      setLoaded(true);
-    },
-  });
+  ] = useLazyQuery(getDeliveryCalculation);
 
   console.log({ calcData });
   const deliveryAmount = calcData?.getDeliveryCalculation?.amount || null;
+  console.log({ deliveryAmount });
+
+  useEffect(() => {
+    if (deliveryAmount) {
+      setLoaded(true);
+    }
+  }, [deliveryAmount]);
 
   useEffect(() => {
     if (from.length && to.length) {
@@ -147,6 +150,7 @@ const OtlobMandoob = () => {
     if (e.target.name === "city") {
       getCityAreas1({ variables: { id: e.target.value } });
       getCityAreas2({ variables: { id: e.target.value } });
+      setLoaded(true);
     }
   };
 

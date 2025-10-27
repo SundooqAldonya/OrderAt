@@ -29,7 +29,7 @@ const PrepaidPackageForm = ({ onClose, item }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
-  const [restaurantOptions, setRestaurantOptions] = useState([]);
+  // const [restaurantOptions, setRestaurantOptions] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(
     item?.business || ""
   );
@@ -53,16 +53,14 @@ const PrepaidPackageForm = ({ onClose, item }) => {
   const [success, setSuccess] = useState(false);
   const [mainError, setMainError] = useState(false);
 
-  const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
+  const [fetchRestaurants, { data: dataSearch }] = useLazyQuery(
     searchRestaurants,
     {
       fetchPolicy: "no-cache",
-      onCompleted: (data) => {
-        console.log({ data });
-        setRestaurantOptions(data?.searchRestaurants || []);
-      },
     }
   );
+
+  const restaurantOptions = dataSearch?.searchRestaurants || null;
 
   const [mutateCreate] = useMutation(createPrepaidDeliveryPackage, {
     refetchQueries: [{ query: getPrepaidDeliveryPackages }],

@@ -1151,7 +1151,10 @@ module.exports = {
           }
         }
 
+        console.log({ query })
+
         const restaurants = await Restaurant.find(query).limit(10)
+        console.log({ restaurants })
         return restaurants
       } catch (err) {
         throw err
