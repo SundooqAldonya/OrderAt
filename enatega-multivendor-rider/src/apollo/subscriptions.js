@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client'
+
 export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
   subscriptionOrder(id:$id){
       _id
@@ -169,3 +171,26 @@ export const subscriptionNewMessage = `subscription SubscriptionNewMessage($orde
       createdAt
     }
   }`
+
+export const RIDER_AVAILABILITY_UPDATED = gql`
+  subscription RiderAvailabilityUpdated($riderId: String!) {
+    riderAvailabilityUpdated(riderId: $riderId) {
+      _id
+      name
+      available
+      isActive
+      muted
+    }
+  }
+`
+export const RIDER_ACTIVITY_UPDATED = gql`
+  subscription RiderActivityUpdated($riderId: String!) {
+    riderActivityUpdated(riderId: $riderId) {
+      _id
+      name
+      available
+      isActive
+      muted
+    }
+  }
+`

@@ -12,6 +12,8 @@ const DISPATCH_ORDER = 'DISPATCH_ORDER'
 const SUBSCRIPTION_MESSAGE = 'SUBSCRIPTION_MESSAGE'
 const ORDER_STATUS_CHANGED_RESTAURANT = 'ORDER_STATUS_CHANGED_RESTAURANT'
 const NEW_ORDER_CREATED = 'NEW_ORDER_CREATED'
+const RIDER_AVAILABILITY_UPDATED = 'RIDER_AVAILABILITY_UPDATED'
+const RIDER_ACTIVITY_UPDATED = 'RIDER_ACTIVITY_UPDATED'
 
 // const pubsub = new PubSub()
 
@@ -136,6 +138,18 @@ const publishOrder = order => {
   pubsub.publish(SUBSCRIPTION_ORDER, { subscriptionOrder: order })
 }
 
+const publishRiderAvailability = rider => {
+  pubsub.publish(RIDER_AVAILABILITY_UPDATED, {
+    riderAvailabilityUpdated: rider
+  })
+}
+
+const publishRiderActivity = rider => {
+  pubsub.publish(RIDER_ACTIVITY_UPDATED, {
+    riderActivityUpdated: rider
+  })
+}
+
 // const publishNewOrderDispatch = order => {
 //   pubsub.publish('NEW_ORDER_CREATED', {
 //     newOrderCreated: {
@@ -181,6 +195,8 @@ module.exports = {
   SUBSCRIPTION_ORDER,
   DISPATCH_ORDER,
   NEW_ORDER_CREATED,
+  RIDER_AVAILABILITY_UPDATED,
+  RIDER_ACTIVITY_UPDATED,
   SUBSCRIPTION_MESSAGE,
   publishToUser,
   publishToAssignedRider,
@@ -190,6 +206,8 @@ module.exports = {
   publishOrder,
   publishToDispatcher,
   publishNewMessage,
-  publishToRestaurant
+  publishToRestaurant,
+  publishRiderAvailability,
+  publishRiderActivity
   // publishNewOrderDispatch
 }

@@ -2496,6 +2496,9 @@ const typeDefs = gql`
     subscriptionOrder(id: String!): Order!
     subscriptionDispatcher: Order
     subscriptionNewMessage(order: ID!): ChatMessageOutput!
+    riderAvailabilityUpdated(riderId: String!): Rider
+    riderActivityUpdated(riderId: String!): Rider
+
     # newOrderCreated: Order
   }
 `

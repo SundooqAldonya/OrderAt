@@ -9,14 +9,16 @@ import { profile, riderOrders } from '../apollo/queries'
 import { updateLocation } from '../apollo/mutations'
 import {
   subscriptionZoneOrders,
-  subscriptionAssignRider
+  subscriptionAssignRider,
+  RIDER_AVAILABILITY_UPDATED,
+  RIDER_ACTIVITY_UPDATED
 } from '../apollo/subscriptions'
 import { useLocationContext } from './location'
 import {
   initBackgroundLocation,
   stopBackgroundLocation
 } from '../utilities/transistorBackgroundTracking'
-import { useQuery } from '@apollo/client/react'
+import { useQuery, useSubscription } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 
 const PROFILE = gql`
@@ -42,13 +44,43 @@ export const UserProvider = props => {
   const {
     loading: loadingProfile,
     error: errorProfile,
-    data: dataProfile
+    data: dataProfile,
+    refetch
   } = useQuery(PROFILE, {
     fetchPolicy: 'network-only',
     onCompleted,
     // pollInterval: 10000,
     onError: error1
   })
+
+  const { data } = useSubscription(RIDER_AVAILABILITY_UPDATED, {
+    variables: { riderId: dataProfile?.rider._id },
+    skip: !dataProfile
+  })
+
+  useEffect(() => {
+    if (data) {
+      console.log('Rider availability changed:', data.riderAvailabilityUpdated)
+      // Optionally refetch or update local state
+      refetch()
+    }
+  }, [data])
+
+  const { data: dataActivity } = useSubscription(RIDER_ACTIVITY_UPDATED, {
+    variables: { riderId: dataProfile?.rider._id },
+    skip: !dataProfile
+  })
+
+  useEffect(() => {
+    if (dataActivity) {
+      console.log(
+        'Rider availability changed:',
+        dataActivity.riderAvailabilityUpdated
+      )
+      // Optionally refetch or update local state
+      refetch()
+    }
+  }, [dataActivity])
 
   // console.log({ dataProfile })
 

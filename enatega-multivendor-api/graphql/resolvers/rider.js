@@ -15,7 +15,11 @@ const {
   publishOrder,
   publishToDashboard,
   publishToDispatcher,
-  publishToRestaurant
+  publishToRestaurant,
+  publishRiderAvailability,
+  RIDER_AVAILABILITY_UPDATED,
+  publishRiderActivity,
+  RIDER_ACTIVITY_UPDATED
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -57,6 +61,27 @@ module.exports = {
           const zoneId = payload.subscriptionZoneOrders.zoneId
           console.log({ zoneId, args })
           return zoneId === args.zoneId
+        }
+      )
+    },
+    riderAvailabilityUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([RIDER_AVAILABILITY_UPDATED]),
+        (payload, variables) => {
+          return (
+            payload.riderAvailabilityUpdated._id.toString() ===
+            variables.riderId
+          )
+        }
+      )
+    },
+    riderActivityUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([RIDER_ACTIVITY_UPDATED]),
+        (payload, variables) => {
+          return (
+            payload.riderActivityUpdated._id.toString() === variables.riderId
+          )
         }
       )
     }
@@ -437,7 +462,12 @@ module.exports = {
           }
         }
         const result = await rider.save()
-        return transformRider(result)
+        const transformed = transformRider(result)
+
+        // ✅ Publish real-time event
+        publishRiderAvailability(transformed)
+
+        return transformed
       } catch (err) {
         throw err
       }
@@ -459,7 +489,12 @@ module.exports = {
         }
         const result = await rider.save()
         console.log({ result })
-        return transformRider(result)
+        const transformed = transformRider(result)
+
+        // ✅ Publish real-time event
+        publishRiderActivity(transformed)
+
+        return transformed
       } catch (err) {
         throw err
       }
