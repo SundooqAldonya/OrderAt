@@ -170,10 +170,11 @@ function Riders(props) {
   const availableStatus = (row) => {
     return (
       <>
-        {row.available}
+        {/* {row.available} */}
         <Switch
           size="small"
-          defaultChecked={row.available}
+          // defaultChecked={row.available}
+          checked={!!row.available}
           onChange={(_event) => {
             mutateToggle({ variables: { id: row._id } });
           }}
@@ -190,7 +191,8 @@ function Riders(props) {
         {/* {row.isActive} */}
         <Switch
           size="small"
-          defaultChecked={row.isActive}
+          // defaultChecked={row.isActive}
+          checked={!!row.isActive}
           onChange={(_event) => {
             mutateActive({ variables: { id: row._id } });
           }}
