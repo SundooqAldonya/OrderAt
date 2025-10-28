@@ -54,8 +54,8 @@ export const UserProvider = (props) => {
     fetchPolicy: 'network-only',
     onError,
     onCompleted,
-    skip: !token,
-    pollInterval: 10000
+    skip: !token
+    // pollInterval: 10000
   })
 
   useEffect(() => {
