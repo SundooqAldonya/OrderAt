@@ -229,5 +229,10 @@ export const en = {
   loading: 'Loading...',
   order_assigned_someone_else: 'Order is assigned to someone else!',
   privacy: 'Privacy',
-  businessPhone: 'Business Phone'
+  businessPhone: 'Business Phone',
+  pickup: 'Pickup',
+  delivery: 'Delivery',
+  navigate: 'Navigate',
+  call: 'Call',
+  khedmet_mashaweer: 'Khedmet Mashaweer'
 }

@@ -35,7 +35,7 @@ const OrderDetail = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ ...styles.container, paddingTop: 50 }}>
-        <MapViewOrderDetails />
+        {/* <MapViewOrderDetails /> */}
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}
@@ -45,7 +45,6 @@ const OrderDetail = () => {
             style={styles.icon}
           />
         </View>
-
         <View style={styles.status}>
           <Status
             orderData={route.params?.order}

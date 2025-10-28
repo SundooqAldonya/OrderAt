@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   ScrollView,
   View,
@@ -8,32 +8,83 @@ import {
   Linking
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
-import MapViewDirections from 'react-native-maps-directions'
+// import MapViewDirections from 'react-native-maps-directions'
 import styles from '../../screens/OrderDetail/styles'
-import colors from '../../utilities/colors'
+// import colors from '../../utilities/colors'
 import useOrderDetail from '../../screens/OrderDetail/useOrderDetail'
 import { MapStyles } from '../../utilities/mapStyles'
 import { linkToMapsApp } from '../../utilities/links'
+import FromIcon from '../../assets/delivery_from.png'
+import ToIcon from '../../assets/delivery_to.png'
 
-const RestIcon = require('../../assets/rest_icon.png')
+// const RestIcon = require('../../assets/rest_icon.png')
 const HomeIcon = require('../../assets/home_icon.png')
-const RiderIcon = require('../../assets/rider_icon.png')
+// const RiderIcon = require('../../assets/rider_icon.png')
 
 const MapViewOrderDetails = () => {
   const {
     locationPin,
     restaurantAddressPin,
     deliveryAddressPin,
+    pickupLocation,
     // GOOGLE_MAPS_KEY,
     // setDistance,
     // setDuration,
     order
   } = useOrderDetail()
 
+  const mapRef = useRef(null)
+
+  useEffect(() => {
+    // Create an array of coordinates you want to fit
+    if (order?.type !== 'delivery_request') {
+      const coordinates = [
+        restaurantAddressPin?.location,
+        deliveryAddressPin?.location,
+        locationPin?.location
+      ].filter(Boolean) // remove undefined/null
+
+      if (coordinates.length > 0 && mapRef.current) {
+        // Fit the map to the coordinates with padding
+        mapRef.current.fitToCoordinates(coordinates, {
+          edgePadding: {
+            top: 100,
+            right: 100,
+            bottom: 100,
+            left: 100
+          },
+          animated: true
+        })
+      }
+    } else {
+      const coordinates = [
+        pickupLocation.location,
+        deliveryAddressPin?.location,
+        locationPin?.location
+      ].filter(Boolean) // remove undefined/null
+
+      console.log({ pickupLocation, deliveryAddressPin })
+
+      if (coordinates.length > 0 && mapRef.current) {
+        // Fit the map to the coordinates with padding
+        mapRef.current.fitToCoordinates(coordinates, {
+          edgePadding: {
+            top: 100,
+            right: 100,
+            bottom: 100,
+            left: 100
+          },
+          animated: true
+        })
+      }
+    }
+  }, [restaurantAddressPin, deliveryAddressPin, locationPin, pickupLocation])
+
   return (
     <View style={styles.mapView}>
       {locationPin && (
         <MapView
+          ref={mapRef}
           style={styles.map}
           showsUserLocation
           zoomEnabled={true}
@@ -61,7 +112,7 @@ const MapViewOrderDetails = () => {
               <Image source={HomeIcon} style={{ height: 35, width: 32 }} />
             </Marker>
           )}
-          {restaurantAddressPin && (
+          {order.type !== 'delivery_request' && restaurantAddressPin ? (
             <Marker
               coordinate={restaurantAddressPin.location}
               title="Restaurant"
@@ -71,7 +122,18 @@ const MapViewOrderDetails = () => {
                   restaurantAddressPin.label
                 )
               }}>
-              <Image source={RestIcon} style={{ height: 35, width: 32 }} />
+              {/* <Image source={RestIcon} style={{ height: 35, width: 32 }} /> */}
+              <Image source={FromIcon} style={{ height: 35, width: 32 }} />
+            </Marker>
+          ) : (
+            <Marker
+              coordinate={pickupLocation.location}
+              title="Restaurant"
+              onPress={() => {
+                linkToMapsApp(pickupLocation.location, pickupLocation.label)
+              }}>
+              {/* <Image source={RestIcon} style={{ height: 35, width: 32 }} /> */}
+              <Image source={FromIcon} style={{ height: 35, width: 32 }} />
             </Marker>
           )}
           {locationPin && (
@@ -81,7 +143,7 @@ const MapViewOrderDetails = () => {
               onPress={() => {
                 linkToMapsApp(locationPin.location, locationPin.label)
               }}>
-              <Image source={RiderIcon} style={{ height: 35, width: 32 }} />
+              <Image source={ToIcon} style={{ height: 35, width: 32 }} />
             </Marker>
           )}
           {/* {order?.orderStatus === 'ACCEPTED' ? (

@@ -54,6 +54,15 @@ const useOrderDetail = () => {
       longitude: +order?.restaurant?.location?.coordinates[0] || 0
     }
   }
+
+  const pickupLocation = {
+    label: 'Restaurant Address',
+    location: {
+      latitude: +order?.pickupLocation?.coordinates[1] || 0,
+      longitude: +order?.pickupLocation?.coordinates[0] || 0
+    }
+  }
+
   const locationPin = {
     label: 'Current Location',
     location: {
@@ -64,6 +73,7 @@ const useOrderDetail = () => {
   return {
     locationPin,
     restaurantAddressPin,
+    pickupLocation,
     deliveryAddressPin,
     GOOGLE_MAPS_KEY,
     distance,

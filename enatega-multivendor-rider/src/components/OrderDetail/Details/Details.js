@@ -14,6 +14,7 @@ import { openGoogleMaps } from '../../../utilities/callMaps'
 // import { CameraView, useCameraPermissions } from 'expo-camera'
 // import { useRef } from 'react'
 import { StyleSheet } from 'react-native'
+import NewOrderDetails from '../NewOrderDetails'
 // import { Image } from 'react-native'
 
 const Details = ({ orderData, navigation, itemId, distance, duration }) => {
@@ -203,11 +204,15 @@ const Details = ({ orderData, navigation, itemId, distance, duration }) => {
       ) : null}
 
       <View style={styles.heading}>
-        <TextDefault bolder H1 center textColor={colors.primary}>
+        <TextDefault bolder H4 center textColor={colors.primary}>
           {t('OrderDetail')}
         </TextDefault>
+        <TextDefault bolder H4 center textColor={colors.primary}>
+          {order.orderId}
+        </TextDefault>
       </View>
-      <OrderDetails order={order} />
+      <NewOrderDetails order={order} />
+      {/* <OrderDetails order={order} /> */}
       <ItemDetails
         order={order}
         dataConfig={dataConfig}
@@ -641,7 +646,7 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
         </TextDefault>
       </View>
 
-      <View
+      {/* <View
         style={[
           styles.rowDisplay,
           { flexDirection: isArabic ? 'row-reverse' : 'row' }
@@ -662,7 +667,7 @@ const ItemDetails = ({ order, dataConfig, loading, error }) => {
             ? `${order.tipping} ${dataConfig.configuration.currencySymbol}`
             : `${dataConfig.configuration.currencySymbol} ${order.tipping}`}
         </TextDefault>
-      </View>
+      </View> */}
 
       <View
         style={[

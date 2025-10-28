@@ -226,5 +226,10 @@ export const ar = {
   loading: 'جاري التحميل...',
   order_assigned_someone_else: 'تم تعيين الطلب لشخص آخر!',
   privacy: 'الخصوصية',
-  businessPhone: 'رقم المتجر'
+  businessPhone: 'رقم المتجر',
+  pickup: 'الاستلام - من',
+  delivery: 'التسليم - إلى',
+  navigate: 'الاتجاهات',
+  call: 'الاتصال',
+  khedmet_mashaweer: 'خدمة مشاوير'
 }
