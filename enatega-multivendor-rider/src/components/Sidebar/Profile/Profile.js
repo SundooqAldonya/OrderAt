@@ -36,14 +36,10 @@ function Profile() {
             }}
             resizeMode="cover"
           />
-        ) : (
-          <TextDefault textColor={colors.black} bold H2 center>
-            {data?.rider?.name}
-          </TextDefault>
-        )}
+        ) : null}
       </View>
       <TextDefault center H3 textColor={colors.white}>
-        {t('welcomeText')}
+        {data?.rider?.name}
       </TextDefault>
     </View>
   )
