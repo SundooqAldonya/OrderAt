@@ -150,7 +150,7 @@ const Order = ({ order, orderAmount }) => {
                   {t('paymentMethod')}:
                 </TextDefault>
               </View>
-              {active === 'MyOrders' && (
+              {/* {active === 'MyOrders' && (
                 <View style={styles.row}>
                   <TextDefault style={styles.rowItem2} bolder H5>
                     {new Date(order?.createdAt).toLocaleDateString()}{' '}
@@ -164,7 +164,7 @@ const Order = ({ order, orderAmount }) => {
                     {t('deliveryTime')}:
                   </TextDefault>
                 </View>
-              )}
+              )} */}
             </>
           ) : (
             <>

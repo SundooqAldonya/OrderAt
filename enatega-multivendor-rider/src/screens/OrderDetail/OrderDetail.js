@@ -35,7 +35,7 @@ const OrderDetail = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ ...styles.container, paddingTop: 50 }}>
-        {/* <MapViewOrderDetails /> */}
+        <MapViewOrderDetails />
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}

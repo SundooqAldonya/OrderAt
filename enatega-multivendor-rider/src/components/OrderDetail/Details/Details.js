@@ -234,7 +234,7 @@ const OrderDetails = ({ order }) => {
           bold
           H5
           style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-          {t('customer_name')}
+          {t('customer_name')}:
         </TextDefault>
         <TextDefault
           bolder
@@ -254,14 +254,14 @@ const OrderDetails = ({ order }) => {
           textColor={colors.fontSecondColor}
           bold
           H5
-          style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-          {t('user_phone')}
+          style={{ flex: 1, textAlign: isArabic ? 'right' : 'left' }}>
+          {t('user_phone')}:
         </TextDefault>
         <View
           style={{
             display: 'flex',
-            flex: 2.5,
-            flexDirection: isArabic ? 'row' : 'row-reverse',
+            flex: 3,
+            flexDirection: isArabic ? 'row-reverse' : 'row-reverse',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
@@ -303,7 +303,7 @@ const OrderDetails = ({ order }) => {
             bold
             H5
             style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-            {t('yourOrderFrom')}
+            {t('yourOrderFrom')}:
           </TextDefault>
           <TextDefault bolder H5 textColor={colors.black} style={styles.col2}>
             {order?.type && order.type === 'delivery_request'
@@ -322,7 +322,7 @@ const OrderDetails = ({ order }) => {
           bold
           H5
           style={{ ...styles.col1, textAlign: isArabic ? 'right' : 'left' }}>
-          {t('orderNo')}
+          {t('orderNo')}:
         </TextDefault>
         <TextDefault
           bolder
@@ -332,6 +332,67 @@ const OrderDetails = ({ order }) => {
           {order.orderId}
         </TextDefault>
       </View>
+      <TouchableOpacity
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}
+        onPress={() => callNumber(order.restaurant?.contactNumber)}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {t('businessPhone')}:
+        </TextDefault>
+        <View
+          style={{
+            display: 'flex',
+            flex: 3,
+            // flexDirection: isArabic ? 'row' : 'row-reverse',
+            flexDirection: isArabic ? 'row-reverse' : 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ ...styles.col2, textTransform: 'capitalize' }}>
+            {order.restaurant?.contactNumber
+              ? order.restaurant?.contactNumber
+              : 'N/A'}
+          </TextDefault>
+          <EvilIcons
+            size={24}
+            name="external-link"
+            style={{
+              color: '#000',
+              marginTop: -20
+            }}
+          />
+        </View>
+      </TouchableOpacity>
+      {/* <View
+        style={[
+          styles.rowDisplay,
+          { flexDirection: isArabic ? 'row-reverse' : 'row' }
+        ]}>
+        <TextDefault
+          textColor={colors.fontSecondColor}
+          bold
+          H5
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {t('businessPhone')}:
+        </TextDefault>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={[styles.col2, isArabic ? { paddingLeft: 80 } : null]}>
+          {order.restaurant?.contactNumber}
+        </TextDefault>
+      </View> */}
       <View
         style={{
           height: 1,
@@ -383,7 +444,7 @@ const OrderDetails = ({ order }) => {
           {order.deliveryAddress.label ? order.deliveryAddress.label : 'N/A'}
         </TextDefault>
       </View>
-      <View
+      {/* <View
         style={[
           styles.rowDisplay,
           { flexDirection: isArabic ? 'row-reverse' : 'row' }
@@ -410,7 +471,7 @@ const OrderDetails = ({ order }) => {
             {order.deliveryAddress.deliveryAddress}
           </TextDefault>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={[styles.rowDisplay, { flexDirection: 'column' }]}>
         <TextDefault
           textColor={colors.fontSecondColor}

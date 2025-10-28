@@ -548,6 +548,7 @@ const typeDefs = gql`
     reviewAverage: Float
     tax: Float
     city: CityArea
+    contactNumber: String
   }
 
   type AuthData {

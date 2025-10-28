@@ -55,6 +55,7 @@ export const riderOrders = `query RiderOrders{
         name
         address
         location{coordinates}
+        contactNumber
       }
       deliveryAddress{
         location{coordinates}

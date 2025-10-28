@@ -225,5 +225,6 @@ export const ar = {
   click_here_location: 'أضغط لرؤية المكان',
   loading: 'جاري التحميل...',
   order_assigned_someone_else: 'تم تعيين الطلب لشخص آخر!',
-  privacy: 'الخصوصية'
+  privacy: 'الخصوصية',
+  businessPhone: 'رقم المتجر'
 }

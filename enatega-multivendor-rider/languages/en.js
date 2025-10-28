@@ -228,5 +228,6 @@ export const en = {
   click_here_location: 'Click here to reveal the location',
   loading: 'Loading...',
   order_assigned_someone_else: 'Order is assigned to someone else!',
-  privacy: 'Privacy'
+  privacy: 'Privacy',
+  businessPhone: 'Business Phone'
 }

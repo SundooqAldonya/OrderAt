@@ -13,6 +13,7 @@ import RadioButton from '../../components/FdRadioBtn/RadioBtn'
 import { useNavigation } from '@react-navigation/native'
 import i18next from '../../../i18next'
 import { useTranslation } from 'react-i18next'
+import { Feather } from '@expo/vector-icons'
 
 const languageTypes = [
   { value: 'English', code: 'en', index: 0 },
@@ -84,6 +85,11 @@ function Language() {
           alignSelf: 'center'
         }
       ]}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{ marginTop: -10, marginBottom: 10 }}>
+        <Feather name="arrow-left" size={28} color="black" />
+      </TouchableOpacity>
       <View style={[styles.languageContainer, styles.shadow]}>
         <View style={styles.changeLanguage}>
           <View style={styles.headingLanguage}>

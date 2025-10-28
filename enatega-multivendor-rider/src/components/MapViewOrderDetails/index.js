@@ -24,9 +24,9 @@ const MapViewOrderDetails = () => {
     locationPin,
     restaurantAddressPin,
     deliveryAddressPin,
-    GOOGLE_MAPS_KEY,
-    setDistance,
-    setDuration,
+    // GOOGLE_MAPS_KEY,
+    // setDistance,
+    // setDuration,
     order
   } = useOrderDetail()
 
@@ -84,7 +84,7 @@ const MapViewOrderDetails = () => {
               <Image source={RiderIcon} style={{ height: 35, width: 32 }} />
             </Marker>
           )}
-          {order?.orderStatus === 'ACCEPTED' ? (
+          {/* {order?.orderStatus === 'ACCEPTED' ? (
             <MapViewDirections
               origin={locationPin.location}
               destination={restaurantAddressPin.location}
@@ -121,7 +121,7 @@ const MapViewOrderDetails = () => {
                 setDuration(result.duration)
               }}
             />
-          )}
+          )} */}
         </MapView>
       )}
     </View>
