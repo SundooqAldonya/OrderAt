@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000",
-    "start:staging": "vite --mode staging --port 3000",
-    "start:prod": "vite --mode production --port 3000",
-    "build": "vite build",
-    "build:staging": "vite build --mode staging",
-    "build:production": "vite build --mode production",
+    "dev": "node init && vite --port 3000",
+    "start:staging": "node init && vite --mode staging --port 3000",
+    "start:prod": "node init && vite --mode production --port 3000",
+    "build": "node init && vite build",
+    "build:staging": "node init && vite build --mode staging",
+    "build:production": "node init && vite build --mode production",
     "preview": "vite preview --port 3000"
   },
   "dependencies": {
