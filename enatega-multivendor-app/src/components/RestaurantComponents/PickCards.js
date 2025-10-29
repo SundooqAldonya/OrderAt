@@ -167,21 +167,24 @@ const PickCards = ({ item, restaurantCustomer, cat = null }) => {
         }}
         style={[
           styles.card,
-          cat?._id === 'picks'
-            ? styles.cardVertical
-            : {
-                ...styles.cardHorizontal,
-                flexDirection: isArabic ? 'row-reverse' : 'row'
-              }
+          {
+            ...styles.cardHorizontal,
+            flexDirection: isArabic ? 'row-reverse' : 'row'
+          }
+          // cat?._id === 'picks'
+          //   ? styles.cardVertical
+          //   : {
+          //       ...styles.cardHorizontal,
+          //       flexDirection: isArabic ? 'row-reverse' : 'row'
+          //     }
         ]}
       >
         <View
           style={
-            cat?._id === 'picks'
-              ? styles.cartTop
-              : isArabic
-                ? { ...styles.cartIconArabic }
-                : { ...styles.cartIcon }
+            // cat?._id === 'picks'
+            //   ? styles.cartTop
+            //   :
+            isArabic ? { ...styles.cartIconArabic } : { ...styles.cartIcon }
           }
         >
           <FontAwesome5
@@ -197,9 +200,9 @@ const PickCards = ({ item, restaurantCustomer, cat = null }) => {
               : require('../../assets/food_placeholder.jpeg')
           }
           style={
-            cat && cat === 'picks'
-              ? styles.imageVertical
-              : styles.imageHorizontal
+            // cat && cat === 'picks'
+            //   ? styles.imageVertical
+            styles.imageHorizontal
           }
         />
         <View style={styles.cardContent}>
