@@ -12,7 +12,11 @@ import {
 } from '@apollo/client'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
+import { RetryLink } from '@apollo/client/link/retry'
+
 export let clientRef = null
+export let wsClient = null
+export let createWsClient = null
 
 function setupApolloClient() {
   const { GRAPHQL_URL, WS_GRAPHQL_URL } = getEnvVars()
@@ -24,27 +28,57 @@ function setupApolloClient() {
   })
 
   // ✅ WebSocket link for subscriptions
-  const wsLink = new GraphQLWsLink(
+  // const wsLink = new GraphQLWsLink(
+  //   createClient({
+  //     url: WS_GRAPHQL_URL.replace('http', 'ws'),
+  //     retryAttempts: Infinity, // ✅ reconnect forever
+  //     lazy: false,
+  //     shouldRetry: () => true,
+  //     retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000), // exponential backoff
+  //     on: {
+  //       connected: () => console.log('🔌 Connected to WS server'),
+  //       closed: event => console.log('❌ Disconnected', event),
+  //       error: err => console.error('WebSocket error', err),
+  //       opened: () => console.log('🌐 WS connection opened')
+  //     },
+  //     connectionParams: async () => {
+  //       const token = await SecureStore.getItemAsync('token')
+  //       return {
+  //         authorization: token ? `Bearer ${token}` : ''
+  //       }
+  //     }
+  //   })
+  // )
+
+  createWsClient = () =>
     createClient({
       url: WS_GRAPHQL_URL.replace('http', 'ws'),
-      retryAttempts: Infinity, // ✅ reconnect forever
-      lazy: false,
+      retryAttempts: Infinity,
       shouldRetry: () => true,
-      retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000), // exponential backoff
-      on: {
-        connected: () => console.log('🔌 Connected to WS server'),
-        closed: event => console.log('❌ Disconnected', event),
-        error: err => console.error('WebSocket error', err),
-        opened: () => console.log('🌐 WS connection opened')
-      },
+      retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000),
+      lazy: false,
       connectionParams: async () => {
         const token = await SecureStore.getItemAsync('token')
         return {
           authorization: token ? `Bearer ${token}` : ''
         }
+      },
+      on: {
+        connected: () => console.log('🔌 Connected to WS server'),
+        closed: event =>
+          console.log('❌ Disconnected', event.code, event.reason),
+        error: err => console.error('WebSocket error', err),
+        opened: () => console.log('🌐 WS connection opened')
       }
     })
-  )
+
+  wsClient = createWsClient()
+  const wsLink = new GraphQLWsLink(wsClient)
+
+  const retryLink = new RetryLink({
+    delay: { initial: 500, max: 5000, jitter: true },
+    attempts: { max: 5, retryIf: error => !!error }
+  })
 
   // ✅ Split link for subscription vs query/mutation
   const splitLink = split(
@@ -87,7 +121,7 @@ function setupApolloClient() {
 
   // ✅ Combine links properly (auth → split)
   const client = new ApolloClient({
-    link: ApolloLink.from([authLink, splitLink]),
+    link: ApolloLink.from([authLink, splitLink, retryLink]),
     cache: new InMemoryCache()
   })
 

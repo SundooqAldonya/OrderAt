@@ -8,14 +8,14 @@ const getEnvVars = () => {
   console.log('Active channel:', channel)
   console.log('Updates.channel:', Updates?.channel)
   console.log('process.env.API_ENV:', process.env.API_ENV)
-  const configuration = useContext(Configuration.Context)
+  // const configuration = useContext(Configuration.Context)
 
   if (channel === 'production') {
     return {
       GRAPHQL_URL: 'https://service.orderatco.com/graphql',
       WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
-      SERVER_URL: 'https://service.orderatco.com/',
-      SENTRY_DSN: configuration.restaurantAppSentryUrl
+      SERVER_URL: 'https://service.orderatco.com/'
+      // SENTRY_DSN: configuration.restaurantAppSentryUrl
     }
   }
 
@@ -23,19 +23,19 @@ const getEnvVars = () => {
     return {
       GRAPHQL_URL: 'https://service.orderatco.com/graphql',
       WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
-      SERVER_URL: 'https://service.orderatco.com/',
+      SERVER_URL: 'https://service.orderatco.com/'
       // GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
       // WS_GRAPHQL_URL: 'wss://querytest.orderat.ai/graphql',
       // SERVER_URL: 'https://querytest.orderat.ai/',
-      SENTRY_DSN: configuration.restaurantAppSentryUrl
+      // SENTRY_DSN: configuration.restaurantAppSentryUrl
     }
   }
 
   return {
     GRAPHQL_URL: 'http://192.168.1.4:8001/graphql',
     WS_GRAPHQL_URL: 'ws://192.168.1.4:8001/graphql',
-    SERVER_URL: 'http://192.168.1.4:8001/',
-    SENTRY_DSN: configuration.restaurantAppSentryUrl
+    SERVER_URL: 'http://192.168.1.4:8001/'
+    // SENTRY_DSN: configuration.restaurantAppSentryUrl
   }
 }
 

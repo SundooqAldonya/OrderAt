@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, Fragment } from 'react'
+import React, { useState, useEffect, useContext, Fragment, useRef } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 // import {
 //   ApolloClient,
@@ -23,7 +23,8 @@ import {
   View,
   LogBox,
   I18nManager,
-  Text
+  Text,
+  AppState
 } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import {
@@ -47,20 +48,21 @@ import {
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
-import { useTranslation } from 'react-i18next'
-import { RestaurantContext } from './src/contexts/restaurant'
+// import { useTranslation } from 'react-i18next'
+// import { RestaurantContext } from './src/contexts/restaurant'
 import { Provider } from 'react-redux'
 // import { store } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './store/presistor'
 import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
-import { restaurantLogout } from './src/apollo'
+// import { restaurantLogout } from './src/apollo'
 import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
 import NoInternetConnection from './src/components/NoInternetConnection'
-import TestMutation from './MutationTest'
+// import TestMutation from './MutationTest'
+import { useWsReconnect } from './src/apollo/useWsReconnect'
 // console.log('AppContainer type:', typeof AppContainer)
 
 LogBox.ignoreLogs([
@@ -77,6 +79,7 @@ export default function App() {
   // const [isAppReady, setIsAppReady] = useState(false)
   // const { isAppReady } = useContext(AuthContext)
   const [isUpdating, setIsUpdating] = useState(false)
+  const appState = useRef(AppState.currentState)
 
   const client = setupApolloClient()
 
@@ -156,6 +159,39 @@ export default function App() {
 
     return () => unsubscribe()
   }, [])
+
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('🔄 App resumed. Listening to network changes...')
+
+        let unsubscribeNetInfo = () => {}
+
+        unsubscribeNetInfo = NetInfo.addEventListener(state => {
+          console.log('🌐 NetInfo state on resume:', state)
+          setIsConnected(state.isConnected)
+
+          if (state.isConnected) {
+            client.reFetchObservableQueries()
+            unsubscribeNetInfo() // ✅ now it’s defined and safe to call
+          }
+        })
+      }
+
+      appState.current = nextAppState
+    }
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    )
+    return () => subscription.remove()
+  }, [])
+
+  useWsReconnect()
 
   const [fontLoaded] = useFonts({
     MuseoSans300: require('./assets/font/MuseoSans/MuseoSans300.ttf'),
