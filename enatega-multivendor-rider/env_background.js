@@ -3,8 +3,10 @@ import * as Updates from 'expo-updates'
 export const getEnvVars = (env = Updates.channel) => {
   if (env && (env === 'production' || env === 'staging')) {
     return {
-      GRAPHQL_URL: 'https://query.orderat.ai/graphql',
-      WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
+      GRAPHQL_URL: 'https://service.orderatco.com/graphql',
+      WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
+      // GRAPHQL_URL: 'https://query.orderat.ai/graphql',
+      // WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
       // Load values manually or inject them using constants or AsyncStorage
       SENTRY_DSN: process.env.SENTRY_DSN,
       GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY

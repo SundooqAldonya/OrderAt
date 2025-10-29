@@ -31,15 +31,15 @@ const RIDER_ORDERS = gql`
 const SUBSCRIPTION_UNASSIGNED_ORDER = gql`
   ${subscriptionZoneOrders}
 `
-const UPDATE_LOCATION = gql`
-  ${updateLocation}
-`
+// const UPDATE_LOCATION = gql`
+//   ${updateLocation}
+// `
 
 const UserContext = React.createContext({})
 
 export const UserProvider = props => {
-  const locationListener = useRef(null)
-  const { locationPermission } = useLocationContext()
+  // const locationListener = useRef(null)
+  // const { locationPermission } = useLocationContext()
 
   const {
     loading: loadingProfile,

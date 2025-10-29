@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   ActivityIndicator,
   View,
@@ -6,8 +6,9 @@ import {
   StyleSheet,
   LogBox,
   I18nManager,
-  Alert,
-  BackHandler
+  AppState
+  // Alert,
+  // BackHandler
 } from 'react-native'
 import * as Font from 'expo-font'
 import { ApolloProvider } from '@apollo/client/react'
@@ -16,7 +17,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import * as Updates from 'expo-updates'
 import AppContainer from './src/routes/index'
 import colors from './src/utilities/colors'
-import setupApolloClient from './src/apollo/index'
+import setupApolloClient from './src/apollo'
 import { ConfigurationProvider } from './src/context/configuration'
 import { AuthProvider } from './src/context/auth'
 import { TabsContext } from './src/context/tabs'
@@ -26,6 +27,7 @@ import moment from 'moment-timezone'
 import { useKeepAwake } from 'expo-keep-awake'
 import RNRestart from 'react-native-restart'
 import * as Notifications from 'expo-notifications'
+import NetInfo from '@react-native-community/netinfo'
 
 import {
   useFonts,
@@ -49,7 +51,7 @@ import {
   Montserrat_900Black_Italic
 } from '@expo-google-fonts/montserrat'
 import { PaperProvider } from 'react-native-paper'
-import Constants from 'expo-constants'
+// import Constants from 'expo-constants'
 
 moment.tz.setDefault('Africa/Cairo')
 LogBox.ignoreLogs([
@@ -62,7 +64,6 @@ LogBox.ignoreAllLogs() // Ignore all log notifications
 Notifications.setNotificationHandler({
   handleNotification: async notification => {
     console.log('✅ Notification received in handler:', notification)
-
     return {
       shouldShowAlert: true,
       shouldPlaySound: true, // We play it manually
@@ -72,12 +73,12 @@ Notifications.setNotificationHandler({
 })
 
 export default function App() {
-  console.log('moment', moment().format())
   useKeepAwake()
-  console.log({ projectId: Constants.expoConfig.extra.firebaseProjectId })
   const [appIsReady, setAppIsReady] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [active, setActive] = useState('NewOrder')
+  const appState = useRef(AppState.currentState)
+  const [isConnected, setIsConnected] = useState(false)
 
   const client = setupApolloClient()
   let [fontsLoaded] = useFonts({
@@ -110,40 +111,73 @@ export default function App() {
   }, [I18nManager.isRTL])
 
   useEffect(() => {
-    ;(async () => {
-      await SplashScreen.preventAutoHideAsync()
-
-      await Font.loadAsync({
-        MuseoSans300: require('./src/assets/font/MuseoSans/MuseoSans300.ttf'),
-        MuseoSans500: require('./src/assets/font/MuseoSans//MuseoSans500.ttf'),
-        MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf')
-      })
-
-      setAppIsReady(true)
-      await SplashScreen.hideAsync()
-    })()
+    loadApp()
   }, [])
+
+  const loadApp = async () => {
+    await SplashScreen.preventAutoHideAsync()
+    await Font.loadAsync({
+      MuseoSans300: require('./src/assets/font/MuseoSans/MuseoSans300.ttf'),
+      MuseoSans500: require('./src/assets/font/MuseoSans//MuseoSans500.ttf'),
+      MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf')
+    })
+    setAppIsReady(true)
+    await SplashScreen.hideAsync()
+  }
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
-    ;(async () => {
-      const { isAvailable } = await Updates.checkForUpdateAsync()
-      if (isAvailable) {
-        try {
-          setIsUpdating(true)
-          const { isNew } = await Updates.fetchUpdateAsync()
-          if (isNew) {
-            await Updates.reloadAsync()
-          }
-        } catch (error) {
-          console.log('error while updating app', JSON.stringify(error))
-        } finally {
-          setIsUpdating(false)
-        }
-      }
-    })()
+    checkForUpdates()
   }, [])
+
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('🔄 App resumed. Listening to network changes...')
+
+        let unsubscribeNetInfo = () => {}
+
+        unsubscribeNetInfo = NetInfo.addEventListener(state => {
+          console.log('🌐 NetInfo state on resume:', state)
+          setIsConnected(state.isConnected)
+
+          if (state.isConnected) {
+            client.reFetchObservableQueries()
+            unsubscribeNetInfo() // ✅ now it’s defined and safe to call
+          }
+        })
+      }
+
+      appState.current = nextAppState
+    }
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    )
+    return () => subscription.remove()
+  }, [])
+
+  const checkForUpdates = async () => {
+    const { isAvailable } = await Updates.checkForUpdateAsync()
+    if (isAvailable) {
+      try {
+        setIsUpdating(true)
+        const { isNew } = await Updates.fetchUpdateAsync()
+        if (isNew) {
+          await Updates.reloadAsync()
+        }
+      } catch (error) {
+        console.log('error while updating app', JSON.stringify(error))
+      } finally {
+        setIsUpdating(false)
+      }
+    }
+  }
 
   if (isUpdating) {
     return (

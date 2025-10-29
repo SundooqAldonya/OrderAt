@@ -80,6 +80,7 @@ const NewOrders = ({ navigation }) => {
   console.log({ riderIsActive })
 
   const noNewOrders = orders.length === 0
+
   useEffect(() => {
     // Trigger refetch when orders length changes
     if (noNewOrders) {
@@ -149,11 +150,11 @@ const NewOrders = ({ navigation }) => {
             <Spinner />
           </View>
         )}
-        {errorAssigned && (
+        {/* {errorAssigned && (
           <View style={styles.margin500}>
             <TextError text={t('errorText')} />
           </View>
-        )}
+        )} */}
         {!riderIsActive ? (
           <View>
             <TextDefault
