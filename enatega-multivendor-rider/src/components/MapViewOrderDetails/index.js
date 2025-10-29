@@ -90,16 +90,38 @@ const MapViewOrderDetails = () => {
           zoomEnabled={true}
           zoomControlEnabled={true}
           rotateEnabled={false}
-          initialRegion={{
-            latitude: locationPin.location.latitude,
-            longitude: locationPin.location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
+          // initialRegion={{
+          //   latitude: locationPin.location.latitude,
+          //   longitude: locationPin.location.longitude,
+          //   latitudeDelta: 0.0922,
+          //   longitudeDelta: 0.0421
+          // }}
           customMapStyle={MapStyles}
           provider={PROVIDER_GOOGLE}
           language="ar">
-          {deliveryAddressPin && (
+          {order.type === 'delivery_request' ? (
+            <>
+              <Marker coordinate={pickupLocation.location} title="Pickup">
+                <Image source={FromIcon} style={{ height: 35, width: 32 }} />
+              </Marker>
+              <Marker coordinate={deliveryAddressPin.location} title="Delivery">
+                <Image source={ToIcon} style={{ height: 35, width: 32 }} />
+              </Marker>
+            </>
+          ) : (
+            <>
+              <Marker
+                coordinate={restaurantAddressPin.location}
+                title="Restaurant">
+                <Image source={FromIcon} style={{ height: 35, width: 32 }} />
+              </Marker>
+              <Marker coordinate={deliveryAddressPin.location} title="Delivery">
+                <Image source={ToIcon} style={{ height: 35, width: 32 }} />
+              </Marker>
+            </>
+          )}
+
+          {/* {deliveryAddressPin && (
             <Marker
               coordinate={deliveryAddressPin.location}
               title="Delivery Address"
@@ -111,8 +133,8 @@ const MapViewOrderDetails = () => {
               }}>
               <Image source={HomeIcon} style={{ height: 35, width: 32 }} />
             </Marker>
-          )}
-          {order.type !== 'delivery_request' && restaurantAddressPin ? (
+          )} */}
+          {/* {order.type !== 'delivery_request' && restaurantAddressPin ? (
             <Marker
               coordinate={restaurantAddressPin.location}
               title="Restaurant"
@@ -122,7 +144,6 @@ const MapViewOrderDetails = () => {
                   restaurantAddressPin.label
                 )
               }}>
-              {/* <Image source={RestIcon} style={{ height: 35, width: 32 }} /> */}
               <Image source={FromIcon} style={{ height: 35, width: 32 }} />
             </Marker>
           ) : (
@@ -132,11 +153,10 @@ const MapViewOrderDetails = () => {
               onPress={() => {
                 linkToMapsApp(pickupLocation.location, pickupLocation.label)
               }}>
-              {/* <Image source={RestIcon} style={{ height: 35, width: 32 }} /> */}
               <Image source={FromIcon} style={{ height: 35, width: 32 }} />
             </Marker>
-          )}
-          {locationPin && (
+          )} */}
+          {/* {locationPin && (
             <Marker
               coordinate={locationPin.location}
               title="Rider"
@@ -145,7 +165,7 @@ const MapViewOrderDetails = () => {
               }}>
               <Image source={ToIcon} style={{ height: 35, width: 32 }} />
             </Marker>
-          )}
+          )} */}
           {/* {order?.orderStatus === 'ACCEPTED' ? (
             <MapViewDirections
               origin={locationPin.location}

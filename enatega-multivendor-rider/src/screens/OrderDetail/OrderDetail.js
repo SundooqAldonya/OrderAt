@@ -34,8 +34,8 @@ const OrderDetail = () => {
     <SafeAreaView>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ ...styles.container, paddingTop: 50 }}>
-        {/* <MapViewOrderDetails /> */}
+        style={{ ...styles.container, paddingTop: 0 }}>
+        <MapViewOrderDetails />
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}
@@ -45,15 +45,7 @@ const OrderDetail = () => {
             style={styles.icon}
           />
         </View>
-        <View style={styles.status}>
-          <Status
-            orderData={route.params?.order}
-            itemId={orderID}
-            pickedAt={order?.pickedAt}
-            deliveredAt={order?.deliveredAt}
-            assignedAt={order?.assignedAt}
-          />
-        </View>
+
         <View>
           <Details
             orderData={route.params?.order}
@@ -61,6 +53,16 @@ const OrderDetail = () => {
             distance={distance}
             duration={duration}
             navigation={navigation}
+          />
+        </View>
+
+        <View style={styles.status}>
+          <Status
+            orderData={route.params?.order}
+            itemId={orderID}
+            pickedAt={order?.pickedAt}
+            deliveredAt={order?.deliveredAt}
+            assignedAt={order?.assignedAt}
           />
         </View>
       </ScrollView>
