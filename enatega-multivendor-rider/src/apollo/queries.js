@@ -113,6 +113,8 @@ export const riderOrders = `query RiderOrders{
         coordinates
       }
       pickupAddress
+      pickupAddressFreeText
+      pickupLabel
       type
       mandoobSpecialInstructions
     }

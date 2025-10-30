@@ -234,5 +234,8 @@ export const en = {
   delivery: 'Delivery',
   navigate: 'Navigate',
   call: 'Call',
-  khedmet_mashaweer: 'Khedmet Mashaweer'
+  khedmet_mashaweer: 'Khedmet Mashaweer',
+  pickup_section: 'Pickup info',
+  pickup_label: 'Pickup label',
+  pickup_details: 'Pickup details'
 }

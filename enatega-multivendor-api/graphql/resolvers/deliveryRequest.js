@@ -145,8 +145,8 @@ module.exports = {
           pickupAddress: delivery.pickup_address_text
             ? delivery.pickup_address_text
             : delivery.pickup_address_free_text,
-          pickupAddressFreeText: delivery.pickup_address_free_text,
-          pickupLabel: delivery.pickup_label,
+          pickupAddressFreeText: input.pickupAddressFreeText,
+          pickupLabel: input.pickupLabel,
           type: 'delivery_request',
           mandoobSpecialInstructions: delivery.notes
         })

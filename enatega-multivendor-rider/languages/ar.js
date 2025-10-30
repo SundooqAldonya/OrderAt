@@ -231,5 +231,8 @@ export const ar = {
   delivery: 'التسليم - إلى',
   navigate: 'الاتجاهات',
   call: 'الاتصال',
-  khedmet_mashaweer: 'خدمة مشاوير'
+  khedmet_mashaweer: 'خدمة مشاوير',
+  pickup_section: 'معلومات الاستلام',
+  pickup_label: 'اسم المكان',
+  pickup_details: 'تفاصيل الاستلام'
 }

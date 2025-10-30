@@ -172,6 +172,10 @@ const transformOrder = async order => {
       : '',
     pickupLocation: order?.pickupLocation ? order.pickupLocation : null,
     pickupAddress: order?.pickupAddress ? order.pickupAddress : null,
+    pickupLabel: order?.pickupLabel ? order.pickupLabel : null,
+    pickupAddressFreeText: order?.pickupAddressFreeText
+      ? order.pickupAddressFreeText
+      : null,
     type: order?.type ? order.type : null,
     riderInteractions: order?.riderInteractions?.length
       ? order.riderInteractions

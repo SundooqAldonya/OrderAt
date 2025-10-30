@@ -8,12 +8,32 @@ import { callNumber } from '../../../utilities/callNumber'
 import { openGoogleMaps } from '../../../utilities/callMaps'
 
 const NewOrderDetails = ({ order }) => {
+  console.log({ order })
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language === 'ar'
   if (!order) return null
 
   return (
     <View style={styles.container}>
+      {/* ===== NOTES ===== */}
+      {order?.type === 'delivery_request' && (
+        <View style={styles.section}>
+          <TextDefault
+            bold
+            H4
+            textColor={colors.primary}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {t('customer_notes')}
+          </TextDefault>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {order?.mandoobSpecialInstructions || 'N/A'}
+          </TextDefault>
+        </View>
+      )}
       {/* ===== RESTAURANT SECTION ===== */}
       {order.type !== 'delivery_request' ? (
         <View style={styles.section}>
@@ -104,7 +124,7 @@ const NewOrderDetails = ({ order }) => {
             {/* Call */}
             <TouchableOpacity
               style={styles.buttonNumber}
-              onPress={() => callNumber(order?.restaurant?.contactNumber)}>
+              onPress={() => callNumber(order?.user?.phone)}>
               {/* <EvilIcons name="phone" size={22} color={colors.black} /> */}
               <FontAwesome name="phone" size={18} color="black" />
               <TextDefault bolder H5 textColor={colors.black}>
@@ -168,55 +188,111 @@ const NewOrderDetails = ({ order }) => {
       </View>
 
       {/* ===== DELIVERY SECTION ===== */}
-      <View style={styles.section}>
-        <TextDefault bold H4 textColor={colors.primary}>
-          {t('delivery_section')}
-        </TextDefault>
-
-        <TextDefault bold H5 textColor={colors.fontSecondColor}>
-          {t('delivery_label')}
-        </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black}>
-          {order?.deliveryAddress?.label || 'N/A'}
-        </TextDefault>
-
-        <TextDefault bold H5 textColor={colors.fontSecondColor}>
-          {t('delivery_details')}
-        </TextDefault>
-        <TextDefault bolder H5 textColor={colors.black}>
-          {order?.deliveryAddress?.details || 'N/A'}
-        </TextDefault>
-
-        {/* <TouchableOpacity
-          style={styles.row}
-          onPress={() =>
-            openGoogleMaps({
-              latitude: order?.deliveryAddress?.location?.coordinates
-                ? order.deliveryAddress.location.coordinates[1]
-                : null,
-              longitude: order?.deliveryAddress?.location?.coordinates
-                ? order.deliveryAddress.location.coordinates[0]
-                : null
-            })
-          }>
-          <EvilIcons name="location" size={22} color={colors.black} />
-          <TextDefault bolder H5 textColor={colors.black}>
-            {t('navigate')}
-          </TextDefault>
-        </TouchableOpacity> */}
-      </View>
-
-      {/* ===== NOTES ===== */}
-      {order?.type === 'delivery_request' && (
+      {order.type === 'delivery_request' ? (
         <View style={styles.section}>
-          <TextDefault bold H4 textColor={colors.primary}>
-            {t('customer_notes')}
+          <TextDefault
+            bold
+            H4
+            textColor={colors.primary}
+            style={{ textAlign: 'center' }}>
+            {t('pickup_section')}
           </TextDefault>
-          <TextDefault bolder H5 textColor={colors.black}>
-            {order?.mandoobSpecialInstructions || 'N/A'}
+
+          <TextDefault
+            bold
+            H5
+            textColor={colors.fontSecondColor}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {t('pickup_label')}:
+          </TextDefault>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {order?.pickupLabel || 'N/A'}
+          </TextDefault>
+
+          <TextDefault
+            bold
+            H5
+            textColor={colors.fontSecondColor}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {t('pickup_details')}:
+          </TextDefault>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {order?.pickupAddressFreeText || 'N/A'}
+          </TextDefault>
+        </View>
+      ) : (
+        <View style={styles.section}>
+          <TextDefault
+            bold
+            H4
+            textColor={colors.primary}
+            style={{ textAlign: 'center' }}>
+            {t('pickup_section')}
+          </TextDefault>
+
+          <TextDefault
+            bold
+            H5
+            textColor={colors.fontSecondColor}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {order?.restaurant?.name}:
+          </TextDefault>
+          <TextDefault
+            bolder
+            H5
+            textColor={colors.black}
+            style={{ textAlign: isArabic ? 'right' : 'left' }}>
+            {order?.restaurant?.address || 'N/A'}
           </TextDefault>
         </View>
       )}
+      <View style={styles.section}>
+        <TextDefault
+          bold
+          H4
+          textColor={colors.primary}
+          style={{ textAlign: 'center' }}>
+          {t('delivery_section')}
+        </TextDefault>
+
+        <TextDefault
+          bold
+          H5
+          textColor={colors.fontSecondColor}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {t('delivery_label')}
+        </TextDefault>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {order?.deliveryAddress?.label || 'N/A'}
+        </TextDefault>
+
+        <TextDefault
+          bold
+          H5
+          textColor={colors.fontSecondColor}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {t('delivery_details')}
+        </TextDefault>
+        <TextDefault
+          bolder
+          H5
+          textColor={colors.black}
+          style={{ textAlign: isArabic ? 'right' : 'left' }}>
+          {order?.deliveryAddress?.details || 'N/A'}
+        </TextDefault>
+      </View>
     </View>
   )
 }
