@@ -1,8 +1,8 @@
 import * as Updates from 'expo-updates'
-import { useContext } from 'react'
-import Configuration from './src/ui/context/configuration'
+// import { useContext } from 'react'
+// import Configuration from './src/ui/context/configuration'
 
-const channel = Updates.channel || process.env.API_ENV || 'development'
+const channel = Updates.channel || process.env.API_ENV || 'staging'
 
 const getEnvVars = () => {
   console.log('Active channel:', channel)
