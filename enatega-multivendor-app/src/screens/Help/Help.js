@@ -67,7 +67,7 @@ const Help = (props) => {
   const currentTheme = theme[themeContext.ThemeValue]
 
   const openWhatsAppChat = () => {
-    Linking.openURL('whatsapp://send?phone=+201501662775')
+    Linking.openURL('whatsapp://send?phone=+201092493424')
   }
 
   useFocusEffect(() => {
@@ -112,7 +112,7 @@ const Help = (props) => {
         <HeaderBackButton
           truncatedLabel=''
           backImage={() => (
-            <View style={{paddingLeft: 10}}>
+            <View style={{ paddingLeft: 10 }}>
               <MaterialIcons
                 name='arrow-back'
                 size={moderateScale(24)}
@@ -140,7 +140,9 @@ const Help = (props) => {
         <FlatList
           data={FAQs}
           keyExtractor={(item) => 'Faq-' + item.id}
-          ItemSeparatorComponent={() => <View style={{ height: moderateScale(10) }} />}
+          ItemSeparatorComponent={() => (
+            <View style={{ height: moderateScale(10) }} />
+          )}
           renderItem={({ item }) => (
             <Accordion heading={t(item.heading)}>
               <TextDefault textColor={currentTheme.newFontcolor}>
