@@ -51,6 +51,7 @@ const ReceiptViewer = ({ receipt_HTML, width }) => {
 
 export default function OrderDetail({ navigation, route }) {
   const { currency } = useContext(Configuration.Context)
+  const [isPrintingReady, setIsPrintingReady] = useState(false)
   const receiptRef = useRef(null)
   const { itemId } = route.params
   // const _id = itemId
@@ -112,14 +113,17 @@ export default function OrderDetail({ navigation, route }) {
   } = route.params
 
   useEffect(() => {
-    async function fetchData() {
-      let base64 = await receiptRef.current.captureBase64()
-      base64 = await fs.readFile(base64, 'base64')
-      setB64(base64.replace(/\r?\n|\r/g, ''))
-      console.log('fetched', b64?.substring(0, 40))
+    if (receiptRef?.current) {
+      fetchData()
     }
-    fetchData()
-  }, [receiptRef])
+  }, [isPrintingReady])
+
+  const fetchData = async () => {
+    let base64 = await receiptRef.current.captureBase64()
+    base64 = await fs.readFile(base64, 'base64')
+    setB64(base64.replace(/\r?\n|\r/g, ''))
+    console.log('fetched', b64?.substring(0, 40))
+  }
 
   // Set navigation reference for PrinterManager
   useEffect(() => {
@@ -193,6 +197,8 @@ export default function OrderDetail({ navigation, route }) {
   //   }
   // }
 
+  console.log({ receiptRef })
+
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
     console.log({ printerInfo: lastPrinter })
@@ -250,7 +256,10 @@ export default function OrderDetail({ navigation, route }) {
   return (
     <View style={{ flex: 1 }}>
       {orderData ? (
-        <SpriteCapture ref={receiptRef} width={250}>
+        <SpriteCapture
+          onReady={() => setIsPrintingReady(true)}
+          ref={receiptRef}
+          width={250}>
           <ReceiptViewer receipt_HTML={receiptHTML} width={384}></ReceiptViewer>
         </SpriteCapture>
       ) : null}

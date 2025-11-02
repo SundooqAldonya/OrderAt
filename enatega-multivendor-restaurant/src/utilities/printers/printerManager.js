@@ -221,7 +221,7 @@ export class PrinterManager {
           [
             {
               text: 'Go to Settings',
-              onPress: () => navigationRef.navigate('Profile')
+              onPress: () => navigationRef.navigate('PrinterSettings')
             },
             {
               text: 'Cancel',
@@ -277,7 +277,7 @@ export class PrinterManager {
           [
             {
               text: 'Go to Settings',
-              onPress: () => navigationRef.navigate('Profile')
+              onPress: () => navigationRef.navigate('PrinterSettings')
             },
             {
               text: 'Cancel',
