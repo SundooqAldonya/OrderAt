@@ -14,7 +14,7 @@ import FlashMessage from 'react-native-flash-message'
 import * as Updates from 'expo-updates'
 import { AuthContext, Configuration } from './src/ui/context'
 import AppContainer from './src/navigation'
-import setupApolloClient from './src/apollo/client'
+import setupApolloClient, { recreateWsClient } from './src/apollo/client'
 import { Spinner, TextDefault } from './src/components'
 import { colors } from './src/utilities'
 import {
@@ -62,7 +62,6 @@ import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
 import NoInternetConnection from './src/components/NoInternetConnection'
 // import TestMutation from './MutationTest'
-import { useWsReconnect } from './src/apollo/useWsReconnect'
 // console.log('AppContainer type:', typeof AppContainer)
 
 LogBox.ignoreLogs([
@@ -191,7 +190,39 @@ export default function App() {
     return () => subscription.remove()
   }, [])
 
-  useWsReconnect()
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      const wasBackground =
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+
+      if (wasBackground) {
+        console.log('🔄 App resumed. Listening to network changes...')
+
+        let unsubscribeNetInfo = () => {}
+
+        unsubscribeNetInfo = NetInfo.addEventListener(state => {
+          console.log('🌐 NetInfo state on resume:', state)
+
+          if (state.isConnected) {
+            console.log('♻️ Internet restored — refetching active queries...')
+            client.reFetchObservableQueries()
+
+            unsubscribeNetInfo() // ✅ unsubscribe safely
+          }
+        })
+      }
+
+      appState.current = nextAppState
+    }
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    )
+
+    return () => subscription.remove()
+  }, [])
 
   const [fontLoaded] = useFonts({
     MuseoSans300: require('./assets/font/MuseoSans/MuseoSans300.ttf'),
@@ -199,9 +230,9 @@ export default function App() {
     MuseoSans700: require('./assets/font/MuseoSans/MuseoSans700.ttf')
   })
 
-  // if (!isConnected) {
-  //   return <NoInternetConnection />
-  // }
+  if (!isConnected) {
+    return <NoInternetConnection />
+  }
 
   if (isUpdating) {
     return (

@@ -1,132 +1,108 @@
-// import { WebSocketLink } from '@apollo/client/link/ws'
-import { getMainDefinition } from '@apollo/client/utilities'
-import getEnvVars from '../../environment'
+// src/apollo/index.js
 import * as SecureStore from 'expo-secure-store'
 import {
   ApolloClient,
   InMemoryCache,
   ApolloLink,
   split,
-  Observable,
-  HttpLink
+  HttpLink,
+  Observable
 } from '@apollo/client'
+import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { RetryLink } from '@apollo/client/link/retry'
+import getEnvVars from '../../environment'
 
-export let clientRef = null
-export let wsClient = null
-export let createWsClient = null
+let clientRef = null
 
-function setupApolloClient() {
+export default function setupApolloClient() {
+  if (clientRef) return clientRef
+
   const { GRAPHQL_URL, WS_GRAPHQL_URL } = getEnvVars()
-  console.log('GraphQL URLs:', GRAPHQL_URL, WS_GRAPHQL_URL)
+  console.log('[Apollo] GraphQL URLs:', GRAPHQL_URL, WS_GRAPHQL_URL)
 
-  // ✅ Correct link creation
-  const httpLink = new HttpLink({
-    uri: GRAPHQL_URL
-  })
+  // ----- HTTP link (queries + mutations) -----
+  const httpLink = new HttpLink({ uri: GRAPHQL_URL })
 
-  // ✅ WebSocket link for subscriptions
-  // const wsLink = new GraphQLWsLink(
-  //   createClient({
-  //     url: WS_GRAPHQL_URL.replace('http', 'ws'),
-  //     retryAttempts: Infinity, // ✅ reconnect forever
-  //     lazy: false,
-  //     shouldRetry: () => true,
-  //     retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000), // exponential backoff
-  //     on: {
-  //       connected: () => console.log('🔌 Connected to WS server'),
-  //       closed: event => console.log('❌ Disconnected', event),
-  //       error: err => console.error('WebSocket error', err),
-  //       opened: () => console.log('🌐 WS connection opened')
-  //     },
-  //     connectionParams: async () => {
-  //       const token = await SecureStore.getItemAsync('token')
-  //       return {
-  //         authorization: token ? `Bearer ${token}` : ''
-  //       }
-  //     }
-  //   })
-  // )
-
-  createWsClient = () =>
-    createClient({
-      url: WS_GRAPHQL_URL.replace('http', 'ws'),
-      retryAttempts: Infinity,
-      shouldRetry: () => true,
-      retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000),
-      lazy: false,
-      connectionParams: async () => {
-        const token = await SecureStore.getItemAsync('token')
-        return {
-          authorization: token ? `Bearer ${token}` : ''
-        }
-      },
-      on: {
-        connected: () => console.log('🔌 Connected to WS server'),
-        closed: event =>
-          console.log('❌ Disconnected', event.code, event.reason),
-        error: err => console.error('WebSocket error', err),
-        opened: () => console.log('🌐 WS connection opened')
-      }
-    })
-
-  wsClient = createWsClient()
-  const wsLink = new GraphQLWsLink(wsClient)
-
+  // ----- Retry link for HTTP operations -----
   const retryLink = new RetryLink({
     delay: { initial: 500, max: 5000, jitter: true },
     attempts: { max: 5, retryIf: error => !!error }
   })
 
-  // ✅ Split link for subscription vs query/mutation
+  // ----- Auth link (inject token for HTTP) -----
+  const authLink = new ApolloLink((operation, forward) => {
+    return new Observable(observer => {
+      let sub
+      Promise.resolve()
+        .then(async () => {
+          const token = await SecureStore.getItemAsync('token')
+          operation.setContext({
+            headers: {
+              authorization: token ? `Bearer ${token}` : ''
+            }
+          })
+        })
+        .then(() => {
+          sub = forward(operation).subscribe({
+            next: v => observer.next(v),
+            error: e => observer.error(e),
+            complete: () => observer.complete()
+          })
+        })
+        .catch(err => observer.error(err))
+
+      return () => sub && sub.unsubscribe()
+    })
+  })
+
+  // ----- WebSocket (subscriptions) -----
+  // Use the WS_GRAPHQL_URL as-is (don't replace 'http' -> 'ws')
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: WS_GRAPHQL_URL,
+      // Let graphql-ws handle reconnection
+      lazy: false,
+      retryAttempts: Infinity,
+      shouldRetry: () => true,
+      retryWait: attempt => Math.min(1000 * 2 ** attempt, 30000),
+      keepAlive: 10000, // optional helpful ping
+      connectionParams: async () => {
+        const token = await SecureStore.getItemAsync('token')
+        return { authorization: token ? `Bearer ${token}` : '' }
+      },
+      on: {
+        connecting: () => console.log('[WS] connecting...'),
+        connected: () => console.log('[WS] connected'),
+        closed: e => console.log('[WS] closed', e?.code, e?.reason),
+        error: err => console.log('[WS] error', err?.message || err),
+        opened: () => console.log('[WS] opened')
+      }
+    })
+  )
+
+  // ----- Split link: subscriptions -> ws, others -> (retry -> auth -> http) -----
+  const httpSide = ApolloLink.from([retryLink, authLink, httpLink])
+
   const splitLink = split(
     ({ query }) => {
-      const definition = getMainDefinition(query)
+      const def = getMainDefinition(query)
       return (
-        definition.kind === 'OperationDefinition' &&
-        definition.operation === 'subscription'
+        def.kind === 'OperationDefinition' && def.operation === 'subscription'
       )
     },
     wsLink,
-    httpLink
+    httpSide
   )
 
-  // ✅ Attach auth token to all operations
-  const authLink = new ApolloLink(
-    (operation, forward) =>
-      new Observable(observer => {
-        let handle
-        Promise.resolve()
-          .then(async () => {
-            const token = await SecureStore.getItemAsync('token')
-            operation.setContext({
-              headers: {
-                authorization: token ? `Bearer ${token}` : ''
-              }
-            })
-          })
-          .then(() => {
-            handle = forward(operation).subscribe({
-              next: observer.next.bind(observer),
-              error: observer.error.bind(observer),
-              complete: observer.complete.bind(observer)
-            })
-          })
-          .catch(observer.error.bind(observer))
-        return () => handle && handle.unsubscribe()
-      })
-  )
-
-  // ✅ Combine links properly (auth → split)
+  // ----- final client: use splitLink as the main link -----
   const client = new ApolloClient({
-    link: ApolloLink.from([authLink, splitLink, retryLink]),
-    cache: new InMemoryCache()
+    link: splitLink,
+    cache: new InMemoryCache(),
+    connectToDevTools: true
   })
 
   clientRef = client
   return client
 }
-
-export default setupApolloClient

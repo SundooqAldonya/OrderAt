@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Text, StyleSheet, StatusBar } from 'react-native'
 import { colors } from '../../utilities'
+import LottieView from 'lottie-react-native'
 
 export default function NoInternetConnection() {
   const { t } = useTranslation()
@@ -10,6 +11,14 @@ export default function NoInternetConnection() {
     <View>
       <View style={styles.banner}>
         <Text style={styles.bannerText}>{t('no_internet')}</Text>
+      </View>
+      <View style={styles.animationContainer}>
+        <LottieView
+          source={require('../../assets/no_internet.json')}
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        />
       </View>
     </View>
   )
@@ -28,5 +37,11 @@ const styles = StyleSheet.create({
   bannerText: {
     color: 'white',
     fontWeight: '600'
+  },
+  animationContainer: {
+    flex: 1,
+    marginTop: 250,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
