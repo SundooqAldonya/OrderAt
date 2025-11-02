@@ -5,7 +5,9 @@ const initialState = {
   printerIP: null,
   printers: [],
   connectedDevice: null,
-  isScanning: false
+  isScanning: false,
+  pendingConnection: false,
+  pendingPrinterInfo: null
 }
 
 export const printerSlice = createSlice({
@@ -30,6 +32,20 @@ export const printerSlice = createSlice({
     },
     clearConnectedDevice: state => {
       state.connectedDevice = null
+    },
+    restartRequired: state => {
+      state.restartRequired = true
+    },
+    clearRestartRequired: state => {
+      state.restartRequired = false
+    },
+    setPendingConnection: (state, action) => {
+      state.pendingConnection = true
+      state.pendingPrinterInfo = action.payload // should be { address, port, name, type }
+    },
+    clearPendingConnection: state => {
+      state.pendingConnection = false
+      state.pendingPrinterInfo = null
     }
   }
 })
@@ -40,7 +56,9 @@ export const {
   showPrintersFn,
   setConnectedDevice,
   setIsScanning,
-  clearConnectedDevice
+  clearConnectedDevice,
+  setPendingConnection,
+  clearPendingConnection
 } = printerSlice.actions
 const printerReducer = printerSlice.reducer
 export default printerReducer

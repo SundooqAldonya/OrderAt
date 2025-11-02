@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import * as Notifications from 'expo-notifications'
-import { Restaurant, SoundContextProvider } from '../ui/context'
+import { AuthContext, Restaurant, SoundContextProvider } from '../ui/context'
 import { OrderDetailScreen } from '../screens/OrderDetail'
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
@@ -36,6 +36,7 @@ import OrdersHistory from '../screens/OrdersHistory'
 import DeactivateAccount from '../screens/DeleteAccount'
 import PrinterSettings from '../screens/PrinterSettings'
 import { useMutation } from '@apollo/client/react'
+import { useDispatch, useSelector } from 'react-redux'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -115,7 +116,23 @@ function DrawerNavigator() {
 
 function StackNavigator() {
   const navigation = useNavigation()
-  const timeNow = new Date()
+  const { isLoggedIn } = useContext(AuthContext)
+
+  const pendingConnection = useSelector(
+    state => state.printers.pendingConnection
+  )
+
+  useEffect(() => {
+    if (isLoggedIn && pendingConnection) {
+      // Show loader briefly, then navigate to PrinterSettings
+      // We prefer to show a full-screen loader inside this root until PrinterSettings mounted
+      Toast.show({
+        text1: 'Finishing connecting to printer',
+        text2: 'Wait till we finish connecting to the printer'
+      })
+      navigation.navigate('PrinterSettings')
+    }
+  }, [pendingConnection])
 
   const [mutateAcknowledgeNotification] = useMutation(acknowledgeNotification, {
     onCompleted: res => {

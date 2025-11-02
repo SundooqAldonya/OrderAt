@@ -31,7 +31,9 @@ import {
   setPrinters,
   setConnectedDevice,
   setIsScanning,
-  clearConnectedDevice
+  clearConnectedDevice,
+  clearPendingConnection,
+  setPendingConnection
 } from '../../../store/printersSlice'
 import PrinterManager from '../../utilities/printers/printerManager'
 import { loadPrinterInfo, savePrinterInfo } from '../../utilities/printers'
@@ -41,12 +43,14 @@ import { Asset } from 'expo-asset'
 import * as FileSystem from 'expo-file-system'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { ScrollView } from 'react-native'
+import Toast from 'react-native-toast-message'
+import RNRestart from 'react-native-restart' // if RN CLI
+import { withTimeout } from '../../utilities/printers/utils'
 
 const PrinterSettings = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const { data, loading } = useAccount()
-  // const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [printersLoaded, setPrintersLoaded] = useState(false)
   // Printer related state from Redux
   const printer = useSelector(state => state.printers.printerIP)
@@ -59,9 +63,62 @@ const PrinterSettings = () => {
   const [networkPrinters, setNetworkPrinters] = useState([])
   // Local state
   const [printerIP, setPrinterIP] = useState(printer ? printer : '')
+  const pendingConnection = useSelector(
+    state => state.printers.pendingConnection
+  )
+  const pendingPrinterInfo = useSelector(
+    state => state.printers.pendingPrinterInfo
+  )
+  const [isAutoConnecting, setIsAutoConnecting] = useState(false)
   const dispatch = useDispatch()
 
-  // const restaurant = data?.restaurant || null
+  useEffect(() => {
+    // If app restarted and flag set, try one auto-reconnect attempt
+    const run = async () => {
+      if (!pendingConnection || !pendingPrinterInfo) return
+
+      setIsAutoConnecting(true)
+
+      try {
+        console.log(
+          'Auto-reconnect attempt for printer (after restart):',
+          pendingPrinterInfo
+        )
+        // Attempt one connect; no timeout here because we already restarted the native module
+        await PrinterManager.connect(pendingPrinterInfo)
+
+        // If connect succeeded: update redux so UI shows connected
+        dispatch(setConnectedDevice(pendingPrinterInfo))
+        // Clear the pending flag (successful)
+        dispatch(clearPendingConnection())
+        console.log('Auto-reconnect successful')
+        // Optionally show Toast or small success alert
+      } catch (err) {
+        console.warn('Auto-reconnect failed after restart:', err)
+        // Clear the pending flag and show an alert so user can try manually
+        dispatch(clearPendingConnection())
+        Alert.alert(
+          'Reconnect failed',
+          'Could not finish connection after restart. Please try again manually.'
+        )
+      } finally {
+        setIsAutoConnecting(false)
+      }
+    }
+
+    run()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingConnection])
+
+  useEffect(() => {
+    if (isAutoConnecting) {
+      Toast.show({
+        text1: 'Finalizing',
+        text2: 'Connecting to the printer',
+        visibilityTime: 6000
+      })
+    }
+  }, [isAutoConnecting])
 
   // Set navigation reference for PrinterManager
   useEffect(() => {
@@ -98,50 +155,6 @@ const PrinterSettings = () => {
     dispatch(setPrinters({ printers: foundPrinters }))
   }
 
-  // const [deactivate, { loading: deactivateLoading }] = useMutation(
-  //   deactivateRestaurant,
-  //   {
-  //     onCompleted: data => {
-  //       console.log({ data })
-  //     },
-  //     onError: error => {
-  //       console.log({ error })
-  //     }
-  //   }
-  // )
-
-  // async function deactivateRestaurantById() {
-  //   try {
-  //     await deactivate({
-  //       variables: { id: restaurant?._id }
-  //     })
-  //   } catch (error) {
-  //     console.error('Error during deactivation mutation:', error)
-  //   }
-  // }
-
-  // const handleSave = () => {
-  //   dispatch(setPrinter({ printerIP }))
-  //   navigation.navigate('Orders')
-  // }
-
-  // Scan for printers
-  // const scanPrinters = async () => {
-  //   try {
-  //     dispatch(setIsScanning(true))
-  //     const foundPrinters = await PrinterManager.scanAll(printerIP)
-  //     dispatch(setPrinters({ printers: foundPrinters }))
-  //   } catch (error) {
-  //     console.error('Error scanning printers:', error)
-  //     Alert.alert(
-  //       'Scan Error',
-  //       'Failed to scan for printers. Please try again.'
-  //     )
-  //   } finally {
-  //     dispatch(setIsScanning(false))
-  //   }
-  // }
-
   const scanPrinters = async () => {
     dispatch(setIsScanning(true))
     try {
@@ -154,30 +167,100 @@ const PrinterSettings = () => {
   }
 
   // Connect to a printer with confirmation
+  // const connectToPrinter = printer => {
+  //   Alert.alert(
+  //     'Connect to Printer',
+  //     `Do you want to connect to ${printer.name}?`,
+  //     [
+  //       {
+  //         text: 'Cancel',
+  //         style: 'cancel'
+  //       },
+  //       {
+  //         text: 'Connect',
+  //         onPress: async () => {
+  //           try {
+  //             await savePrinterInfo(printer)
+  //             await PrinterManager.connect(printer)
+  //             dispatch(setConnectedDevice(printer))
+  //             Alert.alert('Success', `Connected to ${printer.name}`)
+  //             dispatch(setIsScanning(false))
+  //           } catch (error) {
+  //             console.error('Connection error:', error)
+  //             Alert.alert(
+  //               'Connection Error',
+  //               `Failed to connect to ${printer.name}`
+  //             )
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   )
+  // }
+
   const connectToPrinter = printer => {
     Alert.alert(
       'Connect to Printer',
       `Do you want to connect to ${printer.name}?`,
       [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
+        { text: 'Cancel', style: 'cancel' },
         {
           text: 'Connect',
           onPress: async () => {
             try {
-              await savePrinterInfo(printer)
-              await PrinterManager.connect(printer)
-              dispatch(setConnectedDevice(printer))
-              Alert.alert('Success', `Connected to ${printer.name}`)
-              dispatch(setIsScanning(false))
+              // Start spinner
+              dispatch(setIsScanning(true))
+
+              // Attempt to connect but enforce a 4s timeout
+              // Note: PrinterManager.connect returns a promise resolving when connection completes.
+              // We race it with a 4s timeout.
+              const connectPromise = PrinterManager.connect(printer)
+
+              try {
+                await withTimeout(connectPromise, 4000)
+                // connected quickly -> save & setConnectedDevice
+                await savePrinterInfo(printer)
+                dispatch(setConnectedDevice(printer))
+                Alert.alert('Success', `Connected to ${printer.name}`)
+              } catch (err) {
+                // timed out (err.message === 'timeout') or failed
+                console.warn('Connect timed out or failed:', err)
+
+                // Save pending info so after restart we can continue
+                await savePrinterInfo(printer) // persist the printer data
+                dispatch(setPendingConnection(printer))
+
+                // Show restart alert (blocking on user choice)
+                Alert.alert(
+                  'Restart Required',
+                  'To finish configuring the printer, the app needs to restart. Press Continue to restart now.',
+                  [
+                    // {
+                    //   text: 'Cancel',
+                    //   style: 'cancel',
+                    //   onPress: () => dispatch(setIsScanning(false))
+                    // },
+                    {
+                      text: 'Continue',
+                      onPress: () => {
+                        // restart the app
+                        // RNRestart.restart()
+                        // If using Expo Managed: await Updates.reloadAsync()
+                        RNRestart.restart()
+                      }
+                    }
+                  ],
+                  { cancelable: false }
+                )
+              }
             } catch (error) {
               console.error('Connection error:', error)
               Alert.alert(
                 'Connection Error',
                 `Failed to connect to ${printer.name}`
               )
+            } finally {
+              dispatch(setIsScanning(false))
             }
           }
         }

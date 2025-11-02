@@ -14,6 +14,7 @@ import {
   CENTER
 } from 'react-native-thermal-receipt-printer-image-qr'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Ping from 'react-native-ping'
 
 let connectedDevice = null
 
@@ -145,37 +146,70 @@ export class PrinterManager {
 
   /** Connect & remember the device */
   static async connect(device) {
-    console.log({ device })
+    console.log('🖨️ PrinterManager.connect →', device)
+
     try {
+      // 1️⃣ Disconnect any previous active connection
+      if (connectedDevice) {
+        console.log('🔁 Existing device found — disconnecting first')
+        await PrinterManager.disconnect()
+      }
+
+      // 2️⃣ Save this as the new active device
       connectedDevice = device
       await savePrinterInfo(device)
-      switch (device.type) {
-        case 'bluetooth':
-          return Bluetooth.connect(device.address)
-        case 'usb':
-          return USB.connect(device.address)
-        case 'network':
-          return Network.connect(device.address)
+
+      // 3️⃣ Connect based on type
+      if (device.type === 'network') {
+        checkPrinterReachable(device.address)
+        await Network.connect(device.address, device.port || 9100)
+      } else if (device.type === 'bluetooth') {
+        await Bluetooth.connect(device.address)
+      } else if (device.type === 'usb') {
+        await USB.connect(device.address)
       }
-      await delay(300)
 
-      // ✅ send ESC @ init sequence if supported
-      // await this.escPrint()
-      // try {
-      //   let PrinterAPI = BLEPrinter
-      //   if (device.type === 'usb') PrinterAPI = USBPrinter
-      //   if (device.type === 'network') PrinterAPI = NetPrinter
-
-      //   const initCmd = '\x1B\x40' // ESC @
-      //   await PrinterAPI.printText(initCmd)
-      // } catch (e) {
-      //   console.warn('Printer init failed:', e)
-      // }
+      console.log('✅ Printer connected & stored in memory:', connectedDevice)
+      return connectedDevice
     } catch (err) {
-      console.error(err)
+      console.error('❌ PrinterManager.connect failed:', err)
       connectedDevice = null
+      throw err
     }
   }
+
+  // static async connect(device) {
+  //   console.log({ device })
+  //   try {
+  //     connectedDevice = device
+  //     await savePrinterInfo(device)
+  //     switch (device.type) {
+  //       case 'bluetooth':
+  //         return Bluetooth.connect(device.address)
+  //       case 'usb':
+  //         return USB.connect(device.address)
+  //       case 'network':
+  //         return Network.connect(device.address)
+  //     }
+  //     await delay(300)
+
+  //     // ✅ send ESC @ init sequence if supported
+  //     // await this.escPrint()
+  //     // try {
+  //     //   let PrinterAPI = BLEPrinter
+  //     //   if (device.type === 'usb') PrinterAPI = USBPrinter
+  //     //   if (device.type === 'network') PrinterAPI = NetPrinter
+
+  //     //   const initCmd = '\x1B\x40' // ESC @
+  //     //   await PrinterAPI.printText(initCmd)
+  //     // } catch (e) {
+  //     //   console.warn('Printer init failed:', e)
+  //     // }
+  //   } catch (err) {
+  //     console.error(err)
+  //     connectedDevice = null
+  //   }
+  // }
 
   static async escPrint(printerAPI) {
     await delay(300)
@@ -310,6 +344,17 @@ export class PrinterManager {
 
     // await this.escPrint(PrinterAPI)
 
+    // if (connectedDevice.type === 'network') {
+    //   try {
+    //     // Test if still connected
+    //     await PrinterAPI.printText('') // ping
+    //   } catch {
+    //     console.log('⚠️ NetPrinter lost connection, reconnecting...')
+    //     await Network.connect(connectedDevice.address)
+    //     await new Promise(res => setTimeout(res, 300))
+    //   }
+    // }
+
     try {
       await PrinterAPI.printImageBase64(rawBase64, opts)
     } catch (err) {
@@ -319,6 +364,17 @@ export class PrinterManager {
         'Failed to print image. Please check printer connection.'
       )
     }
+  }
+}
+
+async function checkPrinterReachable(ip) {
+  try {
+    const ms = await Ping.start(ip, { timeout: 1000 }) // 1 second timeout
+    console.log(`📶 Ping ${ip} succeeded in ${ms}ms`)
+    return true
+  } catch (err) {
+    console.warn(`📶 Ping ${ip} failed:`, err)
+    return false
   }
 }
 
