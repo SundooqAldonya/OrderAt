@@ -224,17 +224,24 @@ export const useLogin = () => {
   }
 
   function checkPhoneExists() {
-    if (phone.length > 11) {
+    if (!phone.startsWith('01')) {
+      Toast.show({
+        type: 'error',
+        text1: t('error'),
+        text2: t('phone_must_start_with_01'),
+        text1Style: { textAlign: isArabic ? 'right' : 'left' },
+        text2Style: { textAlign: isArabic ? 'right' : 'left' }
+      })
+      return
+    }
+
+    if (phone.length !== 11) {
       Toast.show({
         type: 'error',
         text1: t('error'),
         text2: t('eleven_digits_number'),
-        text1Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        },
-        text2Style: {
-          textAlign: isArabic ? 'right' : 'left'
-        }
+        text1Style: { textAlign: isArabic ? 'right' : 'left' },
+        text2Style: { textAlign: isArabic ? 'right' : 'left' }
       })
       return
     }

@@ -661,7 +661,7 @@ export const en = {
   phone_placeholder: 'Phone number: ex; 010234567891',
   wrong_credentials: 'Wrong credentials',
   password_not_match: 'Passwords do not match!',
-  eleven_digits_number: 'Should not exceed 11 digits',
+  eleven_digits_number: 'Phone number must be 11 digits',
   voucherDiscountSubtotal: 'Voucher Discount Subtotal',
   voucherDiscountDelivery: 'Voucher Discount Delivery',
   discount_on: 'discount on',
@@ -750,5 +750,7 @@ export const en = {
   clear_filters: 'Clear Filters',
   order: 'Order',
   try_request_delivery: 'Try Khedmet Mashaweer',
-  close: 'Close'
+  close: 'Close',
+  digits_error: 'Should be not less than 11 digits. Starting with 01',
+  phone_must_start_with_01: 'Phone number must start with 01'
 }

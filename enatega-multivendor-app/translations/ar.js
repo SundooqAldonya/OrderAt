@@ -649,7 +649,7 @@ export const ar = {
   phone_placeholder: 'رقم التليفون: 010234567891',
   wrong_credentials: 'خطأ في الرقم المحمول او الرقم السري',
   password_not_match: 'كلمات المرور لا تتطابق',
-  eleven_digits_number: 'لا ينبغي أن يتجاوز 11 رقمًا',
+  eleven_digits_number: 'يجب أن يكون رقم الهاتف 11 رقمًا',
   voucherDiscountSubtotal: 'خصم من الاجمالي الفرعي',
   voucherDiscountDelivery: 'خصم من رسوم التوصيل',
   discount_on: 'خصم على',
@@ -738,5 +738,7 @@ export const ar = {
   clear_filters: 'مسح الفلاتر',
   order: 'طلب',
   try_request_delivery: 'جرب خدمة مشاوير الآن',
-  close: 'إغلاق'
+  close: 'إغلاق',
+  digits_error: 'يجب ألا يقل عن 11 رقمًا، ويبدأ بـ 01',
+  phone_must_start_with_01: 'يجب أن يبدأ رقم الهاتف بـ 01'
 }
