@@ -6,7 +6,7 @@ import {
   StatusBar,
   Platform
 } from 'react-native'
-import { NetworkStatus, useMutation, useQuery } from '@apollo/client/react'
+import { useMutation, useQuery } from '@apollo/client/react'
 import {
   AntDesign,
   EvilIcons,
@@ -40,6 +40,7 @@ import { LocationContext } from '../../context/Location'
 import { restaurantListPreview } from '../../apollo/queries'
 import { setAddress } from '../../store/addNewAddressSlice'
 import { useDispatch } from 'react-redux'
+import { NetworkStatus } from '@apollo/client'
 
 const DELETE_ADDRESS = gql`
   ${deleteAddress}

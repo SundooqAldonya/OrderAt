@@ -65,7 +65,7 @@ const PickupFromMap = () => {
             onPress={handleCurrentPosition}
             style={{ paddingRight: 30 }}
           >
-            <FontAwesome6 name='location-crosshairs' size={20} color='#fff' />
+            <FontAwesome6 name='location-crosshairs' size={20} color='#000' />
           </TouchableOpacity>
         )
       },

@@ -63,7 +63,7 @@ const DropoffFromMap = () => {
             onPress={handleCurrentPosition}
             style={{ paddingRight: 25 }}
           >
-            <FontAwesome6 name='location-crosshairs' size={24} color='#fff' />
+            <FontAwesome6 name='location-crosshairs' size={24} color='#000' />
           </TouchableOpacity>
         )
       },

@@ -42,14 +42,19 @@ const CityListScreen = () => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          flexDirection: isArabic ? 'row-reverse' : 'row',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          paddingHorizontal: 20,
+          paddingHorizontal: 20
         }}
       >
         {isLoggedIn ? (
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name={'arrowleft'} size={moderateScale(20)} color='black' />
+            <AntDesign
+              name={'arrowleft'}
+              size={moderateScale(20)}
+              color='black'
+            />
           </TouchableOpacity>
         ) : null}
         <Text
@@ -87,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 10
   },
   title: {
     fontSize: moderateScale(18),
@@ -97,7 +102,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 20,
-     paddingHorizontal: 20,
+    paddingHorizontal: 20
   },
   cityItem: {
     paddingVertical: 15,
