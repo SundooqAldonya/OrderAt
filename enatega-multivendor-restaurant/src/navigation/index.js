@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react-native'
 // import getEnvVars from '../../environment'
 // import ToastManager from 'toastify-react-native'
 import Toast from 'react-native-toast-message'
+import { navigationRef } from '../utilities/rootNavigation'
 
 function AppContainer() {
   const { isLoggedIn } = useContext(AuthContext)
@@ -28,7 +29,7 @@ function AppContainer() {
   }, [SENTRY_DSN])
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {/* {isLoggedIn ? <AuthStack />:<MainStack />  } */}
       {isLoggedIn ? <MainStack /> : <AuthStack />}
       <Toast />

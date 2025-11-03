@@ -21,7 +21,8 @@ const NewOrderScreenNotification = ({ route }) => {
     orderData,
     rider,
     preparationTime,
-    createdAt
+    createdAt,
+    itemId
   } = route.params
   const createdTime = new Date(createdAt)
   const date = new Date(createdAt)
@@ -37,6 +38,7 @@ const NewOrderScreenNotification = ({ route }) => {
     navigation.navigate('OrderDetail', {
       activeBar,
       orderData: orderData,
+      itemId,
       rider: rider,
       remainingTime,
       createdAt,

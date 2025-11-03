@@ -203,21 +203,11 @@ export default function OrderDetail({ navigation, route }) {
     const lastPrinter = await loadPrinterInfo()
     console.log({ printerInfo: lastPrinter })
     console.log({ b64: b64?.substring(0, 40) })
-    // await PrinterManager.disconnect(lastPrinter)
     await PrinterManager.connect(lastPrinter)
-    // await new Promise(res => setTimeout(res, 300))
-    // const imageBase64 = await getImageBase64()
-    // await PrinterManager.printBase64(imageBase64, {
-    //   align: 'center',
-    //   width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
-    //   height: 200
-    // })
+
     if (receiptRef.current) {
       try {
-        // b64 = b64.replace(/\r?\n|\r/g, '')
         await new Promise(res => setTimeout(res, 1000))
-        // console.log({ b64 })
-        // await PrinterManager.escPrint()
         await PrinterManager.printBase64(b64, { width: 384 })
         await PrinterManager.print('\n', { align: 'center', cutPaper: true })
         return true

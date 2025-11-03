@@ -173,6 +173,20 @@ export class PrinterManager {
       return connectedDevice
     } catch (err) {
       console.error('❌ PrinterManager.connect failed:', err)
+      Alert.alert(
+        'No Printer Connected',
+        'Please go to settings to select and connect a printer first.',
+        [
+          {
+            text: 'Go to Settings',
+            onPress: () => navigationRef.navigate('PrinterSettings')
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ]
+      )
       connectedDevice = null
       throw err
     }

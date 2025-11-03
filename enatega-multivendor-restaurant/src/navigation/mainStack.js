@@ -37,6 +37,7 @@ import DeactivateAccount from '../screens/DeleteAccount'
 import PrinterSettings from '../screens/PrinterSettings'
 import { useMutation } from '@apollo/client/react'
 import { useDispatch, useSelector } from 'react-redux'
+import { navigate } from '../utilities/rootNavigation'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -122,15 +123,19 @@ function StackNavigator() {
     state => state.printers.pendingConnection
   )
 
+  console.log({ pendingConnection })
+
   useEffect(() => {
     if (isLoggedIn && pendingConnection) {
       // Show loader briefly, then navigate to PrinterSettings
       // We prefer to show a full-screen loader inside this root until PrinterSettings mounted
-      Toast.show({
-        text1: 'Finishing connecting to printer',
-        text2: 'Wait till we finish connecting to the printer'
-      })
-      navigation.navigate('PrinterSettings')
+      setTimeout(() => {
+        Toast.show({
+          text1: 'Finishing connecting to printer',
+          text2: 'Wait till we finish connecting to the printer'
+        })
+        navigate('PrinterSettings')
+      }, 300)
     }
   }, [pendingConnection])
 
@@ -160,6 +165,7 @@ function StackNavigator() {
         if (notificationId) {
           mutateAcknowledgeNotification({ variables: { notificationId } })
         }
+        // navigate('NewOrderScreenNotification', { activeBar: 1 })
       } catch (error) {
         console.error('Error handling FCM message:', error)
       }

@@ -316,26 +316,61 @@ const PrinterSettings = () => {
     }
   }
 
-  const handleTestPrinter = async item => {
+  const loadAssetBase64 = async assetModule => {
+    const asset = Asset.fromModule(assetModule)
+    await asset.downloadAsync() // Ensures it's available in release
+    return await FileSystem.readAsStringAsync(asset.localUri, {
+      encoding: FileSystem.EncodingType.Base64
+    })
+  }
+
+  const handleTestPrinter = async printer => {
     try {
-      const b64 = await getImageBase64()
-      await PrinterManager.connect(item)
+      // 1. Load logo from assets → Base64
+      const base64 = await loadAssetBase64(require('../../assets/logo_2.png'))
+      // const base64 = await getImageBase64()
+
+      // 2. Connect to printer
+      await PrinterManager.connect(printer)
+
+      // 3. Small wait to avoid "printText undefined" race
       await new Promise(res => setTimeout(res, 1000))
-      await PrinterManager.printBase64(b64, {
+
+      // 4. Print the Base64 image
+      await PrinterManager.printBase64(base64, {
         align: 'center',
-        width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
+        width: 300, // keep <= 384 for 58mm, <= 576 for 80mm
         height: 200
       })
-      await PrinterManager.print('\n', {
-        align: 'center',
-        cutPaper: true
-      })
-      // alert(t('test_print_working'))
+
+      // 5. Feed + cut
+      await PrinterManager.print('\n', { align: 'center', cutPaper: true })
     } catch (err) {
-      console.error('Test print failed:', err)
-      alert('❌ Could not print')
+      console.error('❌ Test print failed:', err)
+      alert('❌ Could not print test receipt')
     }
   }
+
+  // const handleTestPrinter = async item => {
+  //   try {
+  //     const b64 = await getImageBase64()
+  //     await PrinterManager.connect(item)
+  //     await new Promise(res => setTimeout(res, 1000))
+  //     await PrinterManager.printBase64(b64, {
+  //       align: 'center',
+  //       width: 300, // make sure to fit printer width (≤ 384 for 58mm, ≤ 576 for 80mm)
+  //       height: 200
+  //     })
+  //     await PrinterManager.print('\n', {
+  //       align: 'center',
+  //       cutPaper: true
+  //     })
+  //     // alert(t('test_print_working'))
+  //   } catch (err) {
+  //     console.error('Test print failed:', err)
+  //     alert('❌ Could not print')
+  //   }
+  // }
 
   // Render printer item
   const renderPrinterItem = ({ item }) => {

@@ -1713,7 +1713,7 @@ module.exports = {
           user.isOrderNotification &&
           user.notificationToken
         ) {
-          await sendCustomerNotifications(populatedOrder.user, result)
+          await sendCustomerNotifications(populatedOrder.user, transformedOrder)
         }
         console.log('restaurant accepted order')
         publishToUser(result.user.toString(), transformedOrder, 'update')

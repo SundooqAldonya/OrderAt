@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import useNotification from './useNotification'
 import { Linking, Platform } from 'react-native'
 import { gql } from '@apollo/client'
+import messaging from '@react-native-firebase/messaging'
 
 export default function useLogin() {
   const dispatch = useDispatch()
@@ -36,6 +37,36 @@ export default function useLogin() {
     {
       onCompleted: async data => {
         console.log('Mutation Success:', data)
+        const permissionStatus = await getPermission()
+        if (permissionStatus.granted) {
+          // setNotificationStatus(true)
+          const token = await messaging().getToken()
+          // const token = (
+          //   await getDevicePushTokenAsync({
+          //     projectId: Constants.expoConfig.extra.eas.projectId
+          //   })
+          // ).data
+          console.log({ token })
+          sendTokenToBackend({ variables: { token, isEnabled: true } })
+        } else if (permissionStatus.canAskAgain) {
+          const result = await requestPermission()
+          if (result.granted) {
+            // setNotificationStatus(true)
+            const token = await messaging().getToken()
+            // const token = (
+            //   await getDevicePushTokenAsync({
+            //     projectId: Constants.expoConfig.extra.eas.projectId
+            //   })
+            // ).data
+            console.log({ token })
+            sendTokenToBackend({ variables: { token, isEnabled: true } })
+          }
+        } else {
+          openSettingsRef.current = true
+          Platform.OS === 'ios'
+            ? Linking.openURL('app-settings:')
+            : Linking.openSettings()
+        }
         // const permissionStatus = await getPermission()
         // if (permissionStatus.granted) {
         //   // setNotificationStatus(true)
