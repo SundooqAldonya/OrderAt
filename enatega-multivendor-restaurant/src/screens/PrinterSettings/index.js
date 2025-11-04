@@ -327,7 +327,7 @@ const PrinterSettings = () => {
   const handleTestPrinter = async printer => {
     try {
       // 1. Load logo from assets → Base64
-      const base64 = await loadAssetBase64(require('../../assets/logo_2.png'))
+      // const base64 = await loadAssetBase64(require('../../assets/logo_2.png'))
       // const base64 = await getImageBase64()
 
       // 2. Connect to printer
@@ -337,11 +337,14 @@ const PrinterSettings = () => {
       await new Promise(res => setTimeout(res, 1000))
 
       // 4. Print the Base64 image
-      await PrinterManager.printBase64(base64, {
-        align: 'center',
-        width: 300, // keep <= 384 for 58mm, <= 576 for 80mm
-        height: 200
+      await PrinterManager.print('*** TEST PRINT SUCCESSFUL ***\n', {
+        align: 'center'
       })
+      // await PrinterManager.printBase64(base64, {
+      //   align: 'center',
+      //   width: 300, // keep <= 384 for 58mm, <= 576 for 80mm
+      //   height: 200
+      // })
 
       // 5. Feed + cut
       await PrinterManager.print('\n', { align: 'center', cutPaper: true })

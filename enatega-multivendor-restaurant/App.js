@@ -61,6 +61,7 @@ import { AuthProvider } from './src/ui/context/auth'
 import { loadPrinterInfo, PrinterManager } from './src/utilities/printers'
 import NetInfo from '@react-native-community/netinfo'
 import NoInternetConnection from './src/components/NoInternetConnection'
+import { checkPrinterReachable } from './src/utilities/printers/printerManager'
 // import TestMutation from './MutationTest'
 // console.log('AppContainer type:', typeof AppContainer)
 
@@ -137,7 +138,10 @@ export default function App() {
   useEffect(() => {
     const reconnectLastPrinter = async () => {
       const lastPrinter = await loadPrinterInfo()
-      if (lastPrinter) {
+      console.log({ lastPrinter })
+      const printerIsOnline = await checkPrinterReachable(lastPrinter.address)
+      console.log({ printerIsOnline })
+      if (lastPrinter && printerIsOnline) {
         try {
           console.log('Reconnecting to last used printer:', lastPrinter)
           await PrinterManager.setConnectedDevice(lastPrinter)

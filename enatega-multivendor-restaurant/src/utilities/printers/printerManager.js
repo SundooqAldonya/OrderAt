@@ -381,7 +381,7 @@ export class PrinterManager {
   }
 }
 
-async function checkPrinterReachable(ip) {
+export async function checkPrinterReachable(ip) {
   try {
     const ms = await Ping.start(ip, { timeout: 1000 }) // 1 second timeout
     console.log(`📶 Ping ${ip} succeeded in ${ms}ms`)

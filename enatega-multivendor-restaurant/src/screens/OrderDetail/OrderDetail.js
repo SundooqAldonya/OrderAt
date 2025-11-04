@@ -24,7 +24,9 @@ import { formatReceipt } from '../../utilities/formatReceipt'
 import SpriteCapture, {
   SpriteCaptureHandle
 } from '../../utilities/SpriteCapture'
-import PrinterManager from '../../utilities/printers/printerManager'
+import PrinterManager, {
+  checkPrinterReachable
+} from '../../utilities/printers/printerManager'
 import fs from 'react-native-fs'
 
 // import * as htmlToImage from 'html-to-image'
@@ -197,10 +199,14 @@ export default function OrderDetail({ navigation, route }) {
   //   }
   // }
 
-  console.log({ receiptRef })
-
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
+    const printerIsOnline = await checkPrinterReachable(lastPrinter.address)
+    console.log({ printerIsOnline })
+    if (!printerIsOnline) {
+      Alert.alert('Error', 'Make sure your printer is turned on')
+      return
+    }
     console.log({ printerInfo: lastPrinter })
     console.log({ b64: b64?.substring(0, 40) })
     await PrinterManager.connect(lastPrinter)
