@@ -347,7 +347,13 @@ const PrinterSettings = () => {
       // })
 
       // 5. Feed + cut
-      await PrinterManager.print('\n', { align: 'center', cutPaper: true })
+      await PrinterManager.print(
+        'TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL...TEST PRINT SUCCESSFUL\n',
+        {
+          align: 'center',
+          cutPaper: true
+        }
+      )
     } catch (err) {
       console.error('❌ Test print failed:', err)
       alert('❌ Could not print test receipt')
