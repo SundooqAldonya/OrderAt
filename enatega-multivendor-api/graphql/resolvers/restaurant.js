@@ -32,7 +32,8 @@ const {
 const {
   publishToZoneRiders,
   publishOrder,
-  publishToUser
+  publishToUser,
+  publishToDispatcher
 } = require('../../helpers/pubsub')
 const { sendNotificationToZoneRiders } = require('../../helpers/notifications')
 const {
@@ -1800,7 +1801,7 @@ module.exports = {
         const transformedOrder = await transformOrder(result)
         publishToUser(result.user.toString(), transformedOrder, 'update')
         publishOrder(transformedOrder)
-
+        publishToDispatcher(transformedOrder)
         if (result.rider) {
           sendNotificationToRider(result.rider.toString(), transformedOrder)
         }
