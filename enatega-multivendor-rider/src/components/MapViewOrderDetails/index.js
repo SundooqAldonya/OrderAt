@@ -99,7 +99,7 @@ const MapViewOrderDetails = () => {
           customMapStyle={MapStyles}
           provider={PROVIDER_GOOGLE}
           language="ar">
-          {order.type === 'delivery_request' ? (
+          {order?.type === 'delivery_request' ? (
             <>
               <Marker coordinate={pickupLocation.location} title="Pickup">
                 <Image source={FromIcon} style={{ height: 35, width: 32 }} />

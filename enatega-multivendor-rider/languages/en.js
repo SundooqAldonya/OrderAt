@@ -237,5 +237,7 @@ export const en = {
   khedmet_mashaweer: 'Khedmet Mashaweer',
   pickup_section: 'Pickup info',
   pickup_label: 'Pickup label',
-  pickup_details: 'Pickup details'
+  pickup_details: 'Pickup details',
+  orderCancelled: 'Order is cancelled',
+  go_home: 'Go Home'
 }

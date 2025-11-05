@@ -17,6 +17,7 @@ import Status from '../../components/OrderDetail/Status/Status'
 import Details from '../../components/OrderDetail/Details/Details'
 import useOrderDetail from './useOrderDetail'
 import MapViewOrderDetails from '../../components/MapViewOrderDetails'
+import NoOrder from './NoOrder'
 
 const OrderDetail = () => {
   const {
@@ -25,17 +26,22 @@ const OrderDetail = () => {
     order,
     route,
     navigation,
-    orderID
+    orderID,
+    loadingAssigned
   } = useOrderDetail()
 
   console.log({ order })
+
+  if (!order && !loadingAssigned) {
+    return <NoOrder />
+  }
 
   return (
     <SafeAreaView>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ ...styles.container, paddingTop: 0 }}>
-        <MapViewOrderDetails />
+        style={{ ...styles.container, paddingTop: order ? 0 : 50 }}>
+        {order ? <MapViewOrderDetails /> : null}
         <View style={styles.iconView}>
           <Ionicons
             onPress={() => navigation.goBack()}

@@ -128,8 +128,6 @@ export default function App() {
 
   const appState = useRef(AppState.currentState)
 
-  console.log({ appState })
-
   useEffect(() => {
     checkLang()
   }, [])
@@ -169,7 +167,7 @@ export default function App() {
         let unsubscribeNetInfo = () => {}
 
         unsubscribeNetInfo = NetInfo.addEventListener((state) => {
-          console.log('🌐 NetInfo state on resume:', state)
+          console.log('🌐 NetInfo state on resume:', state.isConnected)
           setIsConnected(state.isConnected)
 
           if (state.isConnected) {

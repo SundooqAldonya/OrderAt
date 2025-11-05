@@ -559,14 +559,14 @@ export default function FoodTab() {
     )
   }
 
-  if (error) {
-    return (
-      <ErrorView
-        wentWrong={t('somethingWentWrong')}
-        message={t('checkInternet')}
-      />
-    )
-  }
+  // if (error) {
+  //   return (
+  //     <ErrorView
+  //       wentWrong={t('somethingWentWrong')}
+  //       message={t('checkInternet')}
+  //     />
+  //   )
+  // }
 
   const onRefresh = () => {
     setRefreshing(true)

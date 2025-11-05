@@ -2,7 +2,7 @@ import * as Updates from 'expo-updates'
 // import { useContext } from 'react'
 // import Configuration from './src/ui/context/configuration'
 
-const channel = Updates.channel || process.env.API_ENV || 'staging'
+const channel = Updates.channel || process.env.API_ENV || 'development'
 
 const getEnvVars = () => {
   console.log('Active channel:', channel)
@@ -32,9 +32,9 @@ const getEnvVars = () => {
   }
 
   return {
-    GRAPHQL_URL: 'http://192.168.1.4:8001/graphql',
-    WS_GRAPHQL_URL: 'ws://192.168.1.4:8001/graphql',
-    SERVER_URL: 'http://192.168.1.4:8001/'
+    GRAPHQL_URL: 'http://192.168.1.9:8001/graphql',
+    WS_GRAPHQL_URL: 'ws://192.168.1.9:8001/graphql',
+    SERVER_URL: 'http://192.168.1.9:8001/'
     // SENTRY_DSN: configuration.restaurantAppSentryUrl
   }
 }

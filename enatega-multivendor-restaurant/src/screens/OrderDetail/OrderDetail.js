@@ -42,6 +42,7 @@ import {
   singleOrder
 } from '../../apollo'
 import { gql } from '@apollo/client'
+import { formatReceiptTable } from '../../utilities/formatReceipt_table'
 
 const ORDER_STATUS_CHANGED = gql`
   ${orderStatusChanged}
@@ -164,6 +165,7 @@ export default function OrderDetail({ navigation, route }) {
 
   // const order = data?.restaurantOrders?.find(o => o._id === _id)
   const receiptHTML = order ? formatReceipt(order, currency) : null
+  // const receiptHTML = order ? formatReceiptTable(order, currency) : null
   const imagePath = require('../../assets/bowl.png')
 
   const toggleOverlay = () => {
@@ -201,11 +203,13 @@ export default function OrderDetail({ navigation, route }) {
 
   const printOrder = async () => {
     const lastPrinter = await loadPrinterInfo()
-    const printerIsOnline = await checkPrinterReachable(lastPrinter.address)
-    console.log({ printerIsOnline })
-    if (!printerIsOnline) {
-      Alert.alert('Error', 'Make sure your printer is turned on')
-      return
+    if (lastPrinter) {
+      const printerIsOnline = await checkPrinterReachable(lastPrinter.address)
+      console.log({ printerIsOnline })
+      if (!printerIsOnline) {
+        Alert.alert('Error', 'Make sure your printer is turned on')
+        return
+      }
     }
     console.log({ printerInfo: lastPrinter })
     console.log({ b64: b64?.substring(0, 40) })
@@ -449,32 +453,44 @@ export default function OrderDetail({ navigation, route }) {
                   />
                 </>
               )} */}
-              {order.orderStatus !== 'DELIVERED' && (
-                <>
-                  <Button
-                    title={t('reject')}
-                    buttonStyle={{
-                      borderColor: colors.orderUncomplete,
-                      borderWidth: 1.5,
-                      borderRadius: 10,
-                      padding: 15
-                    }}
-                    type="outline"
-                    titleStyle={{
-                      color: colors.orderUncomplete,
-                      fontWeight: '500'
-                    }}
-                    containerStyle={{
-                      width: 250
-                    }}
-                    onPress={cancelOrderFunc}
-                  />
-                </>
-              )}
-              {order.orderStatus === 'DELIVERED' && (
+              {order?.orderStatus &&
+                !['DELIVERED', 'CANCELLED'].includes(order?.orderStatus) && (
+                  <>
+                    <Button
+                      title={t('reject')}
+                      buttonStyle={{
+                        borderColor: colors.orderUncomplete,
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                        padding: 15
+                      }}
+                      type="outline"
+                      titleStyle={{
+                        color: colors.orderUncomplete,
+                        fontWeight: '500'
+                      }}
+                      containerStyle={{
+                        width: 250
+                      }}
+                      onPress={cancelOrderFunc}
+                    />
+                  </>
+                )}
+              {order?.orderStatus === 'DELIVERED' && (
                 <>
                   <TextDefault H3 textColor={colors.darkgreen} bold>
                     {t('delivered')}
+                  </TextDefault>
+                </>
+              )}
+              {order?.orderStatus === 'CANCELLED' && (
+                <>
+                  <TextDefault
+                    H3
+                    textColor={'red'}
+                    bold
+                    style={{ marginTop: 10 }}>
+                    {t('CANCELLED')}
                   </TextDefault>
                 </>
               )}

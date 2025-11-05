@@ -234,5 +234,7 @@ export const ar = {
   khedmet_mashaweer: 'خدمة مشاوير',
   pickup_section: 'معلومات الاستلام',
   pickup_label: 'اسم المكان',
-  pickup_details: 'تفاصيل الاستلام'
+  pickup_details: 'تفاصيل الاستلام',
+  orderCancelled: 'تم إلغاء الطلب',
+  go_home: 'الرجوع للرئيسية'
 }
