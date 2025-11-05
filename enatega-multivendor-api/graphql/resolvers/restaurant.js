@@ -1785,38 +1785,98 @@ module.exports = {
     },
     cancelOrder: async (_, args, { req }) => {
       console.log('cancelOrder')
+
       if (!req.restaurantId) {
         throw new Error('Unauthenticated!')
       }
+
       try {
-        const order = await Order.findById(args._id)
-        const status = order_status[4] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
-        order.orderStatus = status
-        order.reason = args.reason
-        order.cancelledAt = new Date()
-        order.cancellation.kind = 'Restaurant'
-        order.cancellation.cancelledBy = req.restaurantId
-        const result = await order.save()
-        const user = await User.findById(result.user)
-        const transformedOrder = await transformOrder(result)
-        publishToUser(result.user.toString(), transformedOrder, 'update')
-        publishOrder(transformedOrder)
-        publishToDispatcher(transformedOrder)
-        if (result.rider) {
-          sendNotificationToRider(result.rider.toString(), transformedOrder)
+        const status = order_status[4] // CANCELED (TODO: rename constants later)
+
+        // Update order without optimistic concurrency issues
+        const updatedOrder = await Order.findOneAndUpdate(
+          { _id: args._id },
+          {
+            $set: {
+              orderStatus: status,
+              reason: args.reason,
+              cancelledAt: new Date(),
+              'cancellation.kind': 'Restaurant',
+              'cancellation.cancelledBy': req.restaurantId
+            }
+          },
+          { new: true } // return updated document
+        )
+
+        if (!updatedOrder) {
+          throw new Error('Order not found!')
         }
 
-        sendNotificationToUser(result.user, transformedOrder)
+        const user = await User.findById(updatedOrder.user)
+
+        const transformedOrder = await transformOrder(updatedOrder)
+
+        // 🔥 Publish events
+        publishToUser(updatedOrder.user.toString(), transformedOrder, 'update')
+        publishOrder(transformedOrder)
+        publishToDispatcher(transformedOrder)
+
+        if (updatedOrder.rider) {
+          sendNotificationToRider(
+            updatedOrder.rider.toString(),
+            transformedOrder
+          )
+        }
+
+        sendNotificationToUser(updatedOrder.user, transformedOrder)
+
         sendNotificationToCustomerWeb(
           user.notificationTokenWeb,
-          `Order status: ${result.orderStatus}`,
-          `Order ID ${result.orderId}`
+          `Order status: ${updatedOrder.orderStatus}`,
+          `Order ID ${updatedOrder.orderId}`
         )
+
         return transformedOrder
       } catch (err) {
+        console.error('❌ cancelOrder error:', err)
         throw err
       }
     },
+
+    // cancelOrder: async (_, args, { req }) => {
+    //   console.log('cancelOrder')
+    //   if (!req.restaurantId) {
+    //     throw new Error('Unauthenticated!')
+    //   }
+    //   try {
+    //     const order = await Order.findById(args._id)
+    //     const status = order_status[4] // TODO: we should make variables named status instead. e.g const ACCEPTED="ACCEPTED"
+    //     order.orderStatus = status
+    //     order.reason = args.reason
+    //     order.cancelledAt = new Date()
+    //     order.cancellation.kind = 'Restaurant'
+    //     order.cancellation.cancelledBy = req.restaurantId
+    //     const result = await order.save()
+    //     const user = await User.findById(result.user)
+    //     const transformedOrder = await transformOrder(result)
+    //     publishToUser(result.user.toString(), transformedOrder, 'update')
+    //     publishOrder(transformedOrder)
+    //     publishToDispatcher(transformedOrder)
+    //     if (result.rider) {
+    //       sendNotificationToRider(result.rider.toString(), transformedOrder)
+    //     }
+
+    //     sendNotificationToUser(result.user, transformedOrder)
+    //     sendNotificationToCustomerWeb(
+    //       user.notificationTokenWeb,
+    //       `Order status: ${result.orderStatus}`,
+    //       `Order ID ${result.orderId}`
+    //     )
+    //     return transformedOrder
+    //   } catch (err) {
+    //     throw err
+    //   }
+    // },
     saveRestaurantToken: async (_, args, { req }) => {
       console.log('saveRestaurantToken', req.restaurantId, args)
       try {

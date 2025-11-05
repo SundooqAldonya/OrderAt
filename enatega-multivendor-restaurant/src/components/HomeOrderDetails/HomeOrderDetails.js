@@ -304,6 +304,7 @@ function HomeOrderDetails(props) {
             ]}
             onPress={() =>
               navigation.navigate('OrderDetail', {
+                itemId: props?.order?._id,
                 activeBar,
                 orderData: props?.order,
                 remainingTime,
