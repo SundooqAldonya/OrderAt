@@ -6,6 +6,20 @@
     "slug": "enatega-rider-app-latest",
     "plugins": [
       [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "extraProguardRules": "-keep class com.google.firebase.** { *; }",
+            "gradleProperties": {
+              "android.useAndroidX": "true",
+              "android.enableJetifier": "true"
+            }
+          }
+        }
+      ],
+      [
         "expo-updates",
         {
           "username": "mahmoudattia"

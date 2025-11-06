@@ -251,6 +251,10 @@ export default function OrderDetail({ navigation, route }) {
 
   const isArabic = i18n.language === 'ar'
 
+  if (loading) {
+    return <Spinner />
+  }
+
   if (!order) return <TextDefault>⚠️ Order not available</TextDefault>
 
   return (

@@ -31,7 +31,7 @@ export const formatReceipt = (order, currency) => {
           <div style="font-size: 14px; margin-left: 20px;">
             ${addon.options
               .map((o, index) => {
-                return `<div style="text-align: right;"> - ${o.title}: ${o.price}</div>`
+                return `<div style="text-align: right;"> - ${o.title}: ${o.price} ${currency}</div>`
               })
               .join('')}
             
@@ -61,7 +61,7 @@ export const formatReceipt = (order, currency) => {
             </span>)
         <span style="text-align: right;">${
           item.variation.price ? ` ${item.variation.price.toFixed(2)} ` : ''
-        }</span> 
+        } ${currency}</span> 
           </div>
         </div>
        
@@ -176,17 +176,21 @@ export const formatReceipt = (order, currency) => {
 
         <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>الضريبة</div>
-          <div style="margin-right: 100px;">${tax?.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${tax?.toFixed(2)} ${currency}</div>
         </div>
 
         <div style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>رسوم التوصيل</div>
-          <div style="margin-right: 100px;">${deliveryCharges?.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${deliveryCharges?.toFixed(
+            2
+          )} ${currency}</div>
         </div>
 
         <div class="row bold" style="text-align: right; display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;">
           <div>الإجمالي</div>
-          <div style="margin-right: 100px;">${orderAmount?.toFixed(2)}</div>
+          <div style="margin-right: 100px;">${orderAmount?.toFixed(
+            2
+          )} ${currency}</div>
         </div>
 
         <div class="line"></div>
