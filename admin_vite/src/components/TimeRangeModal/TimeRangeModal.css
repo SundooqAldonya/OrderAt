@@ -1,0 +1,129 @@
+.trm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.trm-modal {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: trm-slide-in 0.25s ease;
+  font-family: sans-serif;
+}
+
+@keyframes trm-slide-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.trm-header, .trm-footer {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trm-footer {
+  border-bottom: none;
+  border-top: 1px solid #e5e5e5;
+}
+
+.trm-header h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.trm-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #555;
+}
+
+.trm-body {
+  padding: 20px;
+}
+
+.trm-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.trm-row label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.trm-row input[type="time"] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.trm-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.trm-presets button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.trm-presets button:hover {
+  background: #f5f5f5;
+}
+
+.trm-error {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.trm-note {
+  font-size: 12px;
+  color: #555;
+}
+
+.trm-footer button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+}
+
+.trm-footer .trm-cancel {
+  background: #ddd;
+}
+
+.trm-footer .trm-confirm {
+  background: #007bff;
+  color: white;
+}
+
+.trm-footer .trm-confirm:hover {
+  background: #0069d9;
+}

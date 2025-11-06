@@ -12,6 +12,15 @@ const polygonSchema = new Schema({
   }
 })
 
+const timeRangeSchema = new Schema(
+  {
+    from: { type: String, required: true }, // "09:00"
+    to: { type: String, required: true }, // "17:00"
+    allowAcrossMidnight: { type: Boolean, default: true }
+  },
+  { _id: false }
+)
+
 const deliveryZoneSchema = new Schema(
   {
     title: {
@@ -34,7 +43,8 @@ const deliveryZoneSchema = new Schema(
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'
-    }
+    },
+    timeRange: timeRangeSchema
   },
   { timestamps: true }
 )

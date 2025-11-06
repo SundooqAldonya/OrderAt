@@ -307,6 +307,21 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+
+    async getSingleDeliveryZoneTimeRange(_, args) {
+      console.log('getSingleDeliveryTimeRange', { args })
+      try {
+        const zone = await DeliveryZone.findById(args.id)
+        console.log({ zoneTimeRange: zone })
+        return {
+          _id: zone._id.toString(),
+          from: zone.timeRange.from,
+          to: zone.timeRange.to
+        }
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {
@@ -344,6 +359,22 @@ module.exports = {
         return { message: 'delivery_zone_updated' }
       } catch (err) {
         throw new Error(err)
+      }
+    },
+
+    async adjustDeliveryZoneTime(_, args) {
+      console.log('adjustDeliveryZoneTime', { args })
+      try {
+        const zone = await DeliveryZone.findById(args.id)
+        zone.timeRange = {
+          from: args.from,
+          to: args.to,
+          allowAcrossMidnight: true
+        }
+        await zone.save()
+        return { message: 'Time adjusted' }
+      } catch (err) {
+        throw err
       }
     },
 

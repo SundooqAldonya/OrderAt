@@ -1082,3 +1082,10 @@ export const toggleActiveBanner = gql`
     }
   }
 `;
+export const adjustDeliveryZoneTime = gql`
+  mutation adjustDeliveryZoneTime($id: String, $from: String, $to: String) {
+    adjustDeliveryZoneTime(id: $id, from: $from, to: $to) {
+      message
+    }
+  }
+`;

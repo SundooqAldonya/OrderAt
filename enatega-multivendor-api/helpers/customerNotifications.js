@@ -46,6 +46,98 @@ const notifications = {
         console.error('Error sending multicast message:', error)
       })
   },
+  async sendCustomerLateOrderWarning({ customer, order }) {
+    console.log('⚠️ Sending late-order warning notification', { customer })
+
+    if (!customer?.notificationToken) {
+      console.log('🚫 Customer has no notification token.')
+      return
+    }
+
+    const newChannelId = 'late_orders'
+
+    const title =
+      order.type !== 'delivery_request'
+        ? `تنبيه بشأن طلبك من ${order.restaurant?.name || ''}`
+        : 'تنبيه بشأن طلبك. قد لا نتمكن من ضمان توصيله'
+
+    const body = `تم استلام طلبك، ولكن خارج مواعيد العمل الرسمية.`
+
+    const message = {
+      token: customer.notificationToken,
+      notification: {
+        title,
+        body
+      },
+      data: {
+        channelId: newChannelId,
+        type: 'late_order',
+        playSound: 'true',
+        sound: 'beep1.wav',
+        orderId: order._id.toString()
+      },
+      android: {
+        notification: {
+          sound: 'beep1',
+          channelId: newChannelId
+        }
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'beep1.wav'
+          }
+        }
+      }
+    }
+
+    const notification = await Notification.create({
+      title,
+      body,
+      data: {
+        orderId: order._id,
+        type: 'User'
+      },
+      recipients: [
+        {
+          kind: 'User',
+          item: customer._id,
+          token: customer.notificationToken,
+          phone: customer.phone,
+          status: 'pending',
+          lastAttempt: new Date()
+        }
+      ],
+      createdAt: new Date()
+    })
+
+    try {
+      const response = await admin.messaging().send(message)
+      console.log('✅ Late-order warning sent:', response)
+
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'sent',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
+    } catch (error) {
+      console.error('🔥 Error sending late-order warning:', error)
+
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'failed',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
+    }
+  },
   async sendCustomerNotifications(customer, order) {
     console.log('📣 Sending notification to customer app', { customer })
 

@@ -1,5 +1,6 @@
 const {
-  sendCustomerNotifications
+  sendCustomerNotifications,
+  sendCustomerLateOrderWarning
 } = require('../../helpers/customerNotifications')
 const {
   calculateDistance,
@@ -12,8 +13,10 @@ const {
   publishToDispatcher,
   publishToZoneRiders
 } = require('../../helpers/pubsub')
+const { deliveryTimeRangeExceeds } = require('../../helpers/zoneDeliveryTime')
 const Coupon = require('../../models/coupon')
 const DeliveryRequest = require('../../models/deliveryRequest')
+const DeliveryZone = require('../../models/deliveryZone')
 const Order = require('../../models/order')
 const User = require('../../models/user')
 const Zone = require('../../models/zone')
@@ -97,6 +100,17 @@ module.exports = {
 
         console.log({ zone })
 
+        // get delivery zone time range
+        const deliveryZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: pickupLocation
+            }
+          }
+        })
+
+        console.log({ deliveryZone })
+
         const couponCode = await Coupon.findOne({ code: input.couponId })
         console.log({ couponCode })
         if (couponCode) {
@@ -164,13 +178,29 @@ module.exports = {
             populatedOrder
           )
         }
-        if (
-          (input.requestChannel === 'customer_app' ||
-            input.requestChannel === 'web_portal') &&
-          user &&
-          user.isOrderNotification
-        ) {
-          sendCustomerNotifications(populatedOrder.user, populatedOrder)
+
+        if (deliveryZone?.timeRange) {
+          const exceedsTimeRange = await deliveryTimeRangeExceeds({
+            timeRange: deliveryZone?.timeRange
+          })
+          console.log({ exceedsTimeRange })
+          if (exceedsTimeRange) {
+            sendCustomerLateOrderWarning({
+              customer: user,
+              order: populatedOrder
+            })
+          } else {
+            sendCustomerNotifications(populatedOrder.user, populatedOrder)
+          }
+        } else {
+          if (
+            (input.requestChannel === 'customer_app' ||
+              input.requestChannel === 'web_portal') &&
+            user &&
+            user.isOrderNotification
+          ) {
+            sendCustomerNotifications(populatedOrder.user, populatedOrder)
+          }
         }
         console.log({ populatedOrder })
         return { message: 'created_request_delivery_successfully' }

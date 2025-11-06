@@ -1424,3 +1424,13 @@ export const searchRiders = gql`
     }
   }
 `;
+
+export const getSingleDeliveryZoneTimeRange = gql`
+  query GetSingleDeliveryZoneTimeRange($id: String) {
+    getSingleDeliveryZoneTimeRange(id: $id) {
+      _id
+      from
+      to
+    }
+  }
+`;

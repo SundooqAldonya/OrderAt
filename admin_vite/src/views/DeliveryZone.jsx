@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState, useEffect } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   Container,
   IconButton,
@@ -11,10 +11,16 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
-import { useQuery, useMutation } from "@apollo/client/react";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client/react";
 import Header from "../components/Headers/Header";
 import CustomLoader from "../components/Loader/CustomLoader";
-import { deleteZone, getAllDeliveryZones, removeDeliveryZone } from "../apollo";
+import {
+  adjustDeliveryZoneTime,
+  deleteZone,
+  getAllDeliveryZones,
+  getSingleDeliveryZoneTimeRange,
+  removeDeliveryZone,
+} from "../apollo";
 import DataTable from "react-data-table-component";
 import orderBy from "lodash/orderBy";
 import SearchBar from "../components/TableHeader/SearchBar";
@@ -28,6 +34,8 @@ import Alert from "../components/Alert";
 import ConfigurableValues from "../config/constants";
 import DeliveryZoneCreate from "../components/DeliveryZoneCreate";
 import { gql } from "@apollo/client";
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import TimeRangeModal from "../components/TimeRangeModal";
 
 const GET_ZONES = gql`
   ${getAllDeliveryZones}
@@ -37,21 +45,57 @@ const DELETE_ZONE = gql`
 `;
 
 const Zones = (props) => {
-  const { t } = props;
+  const { t } = useTranslation();
   const { PAID_VERSION } = ConfigurableValues();
   const [editModal, setEditModal] = useState(false);
   const [zone, setZone] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [openTimeTableModal, setOpenTimeTableModal] = useState(false);
+  const [range, setRange] = useState(null);
+  const [from, setFrom] = useState("08:30");
+  const [to, setTo] = useState("12:30");
+
+  console.log({ range });
+
   const onChangeSearch = (e) => setSearchQuery(e.target.value);
 
   const [mutate, { error, loading }] = useMutation(DELETE_ZONE, {
     refetchQueries: [{ query: GET_ZONES }],
   });
 
+  const [
+    mutateDeliveryTime,
+    { error: errorDeliveryTime, loading: loadingDeliveryTime },
+  ] = useMutation(adjustDeliveryZoneTime, {
+    refetchQueries: [{ query: GET_ZONES }],
+    onCompleted: (res) => {
+      console.log({ res });
+    },
+    onError: (err) => {
+      console.log({ err });
+    },
+  });
+
+  const [fetchTimeRange] = useLazyQuery(getSingleDeliveryZoneTimeRange);
+
+  useEffect(() => {
+    if (zone && openTimeTableModal) {
+      fetchTimeRange({ variables: { id: zone._id } }).then(({ data }) => {
+        console.log({ resTimeRange: data });
+        setRange({
+          from: data?.getSingleDeliveryZoneTimeRange.from,
+          to: data?.getSingleDeliveryZoneTimeRange.to,
+        });
+        setFrom(data?.getSingleDeliveryZoneTimeRange.from);
+        setTo(data?.getSingleDeliveryZoneTimeRange.to);
+      });
+    }
+  }, [zone]);
+
   const { data, loading: loadingQuery, refetch } = useQuery(GET_ZONES);
 
-  console.log({ data });
+  console.log({ zone });
 
   const toggleModal = (zone) => {
     setEditModal(!editModal);
@@ -78,6 +122,22 @@ const Zones = (props) => {
     return orderBy(rows, handleField, direction);
   };
 
+  const handleTimeTableOpen = (item) => {
+    setZone(item);
+    setOpenTimeTableModal(true);
+  };
+
+  const handleConfirm = ({ from, to }) => {
+    setRange({ from, to });
+    mutateDeliveryTime({
+      variables: {
+        id: zone._id,
+        from,
+        to,
+      },
+    });
+  };
+
   const columns = [
     {
       name: t("Title"),
@@ -93,7 +153,15 @@ const Zones = (props) => {
       name: t("Action"),
       cell: (row) => (
         <>
-          {ActionButtons(row, PAID_VERSION, toggleModal, setIsOpen, t, mutate)}
+          {ActionButtons(
+            row,
+            PAID_VERSION,
+            toggleModal,
+            setIsOpen,
+            t,
+            mutate,
+            handleTimeTableOpen
+          )}
         </>
       ),
     },
@@ -160,6 +228,16 @@ const Zones = (props) => {
         >
           <DeliveryZoneCreate edit={true} zone={zone} />
         </Modal>
+
+        <TimeRangeModal
+          isOpen={openTimeTableModal}
+          onClose={() => setOpenTimeTableModal(false)}
+          onConfirm={handleConfirm}
+          initialFrom={from}
+          initialTo={to}
+          minGapMinutes={15}
+          allowAcrossMidnight={true}
+        />
       </Container>
     </>
   );
@@ -171,7 +249,8 @@ const ActionButtons = (
   toggleModal,
   setIsOpen,
   t,
-  mutate
+  mutate,
+  handleTimeTableOpen
 ) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -205,6 +284,21 @@ const ActionButtons = (
             <MenuItem
               onClick={(e) => {
                 e.preventDefault();
+                handleTimeTableOpen(row);
+              }}
+              style={{ height: 25 }}
+            >
+              <ListItemIcon>
+                <AccessAlarmIcon
+                  fontSize="small"
+                  style={{ color: "#4615b2" }}
+                />
+              </ListItemIcon>
+              <Typography color="#4615b2">{t("time_table")}</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={(e) => {
+                e.preventDefault();
                 if (PAID_VERSION) toggleModal(row);
                 else {
                   setIsOpen(true);
@@ -220,6 +314,7 @@ const ActionButtons = (
               </ListItemIcon>
               <Typography color="green">{t("Edit")}</Typography>
             </MenuItem>
+
             <MenuItem
               onClick={(e) => {
                 e.preventDefault();

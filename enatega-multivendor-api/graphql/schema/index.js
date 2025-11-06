@@ -1641,7 +1641,14 @@ const typeDefs = gql`
     search: String
   }
 
+  type RangeFromTo {
+    _id: String
+    from: String
+    to: String
+  }
+
   type Query {
+    getSingleDeliveryZoneTimeRange(id: String): RangeFromTo
     getCustomerAppBanner: Banner!
     filterRestaurants(
       longitude: Float!
@@ -2167,6 +2174,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    adjustDeliveryZoneTime(id: String, from: String, to: String): Message
     toggleActiveBanner(id: String): Message
     adminOrderUpdate(id: String!, input: AdminUpdateOrder!): Message
     adminCheckout(input: AdminCheckoutInput): Message
