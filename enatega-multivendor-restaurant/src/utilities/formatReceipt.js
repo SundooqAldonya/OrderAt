@@ -61,7 +61,7 @@ export const formatReceipt = (order, currency) => {
             </span>)
         <span style="text-align: right;">${
           item.variation.price ? ` ${item.variation.price.toFixed(2)} ` : ''
-        } ${currency}</span> 
+        }</span> 
           </div>
         </div>
        
