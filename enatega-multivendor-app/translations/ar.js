@@ -740,5 +740,8 @@ export const ar = {
   try_request_delivery: 'جرب خدمة مشاوير الآن',
   close: 'إغلاق',
   digits_error: 'يجب ألا يقل عن 11 رقمًا، ويبدأ بـ 01',
-  phone_must_start_with_01: 'يجب أن يبدأ رقم الهاتف بـ 01'
+  phone_must_start_with_01: 'يجب أن يبدأ رقم الهاتف بـ 01',
+  warning: 'تحذير',
+  warning_mashweer:
+    'تم إنشاء الطلب خارج مواعيد العمل، قد لا نتمكن من ضمان التوصيل. هل تريد المتابعة؟'
 }

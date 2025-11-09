@@ -179,29 +179,38 @@ module.exports = {
           )
         }
 
-        if (deliveryZone?.timeRange) {
-          const exceedsTimeRange = await deliveryTimeRangeExceeds({
-            timeRange: deliveryZone?.timeRange
-          })
-          console.log({ exceedsTimeRange })
-          if (exceedsTimeRange) {
-            sendCustomerLateOrderWarning({
-              customer: user,
-              order: populatedOrder
-            })
-          } else {
-            sendCustomerNotifications(populatedOrder.user, populatedOrder)
-          }
-        } else {
-          if (
-            (input.requestChannel === 'customer_app' ||
-              input.requestChannel === 'web_portal') &&
-            user &&
-            user.isOrderNotification
-          ) {
-            sendCustomerNotifications(populatedOrder.user, populatedOrder)
-          }
+        if (
+          (input.requestChannel === 'customer_app' ||
+            input.requestChannel === 'web_portal') &&
+          user &&
+          user.isOrderNotification
+        ) {
+          sendCustomerNotifications(populatedOrder.user, populatedOrder)
         }
+
+        // if (deliveryZone?.timeRange) {
+        //   const exceedsTimeRange = await deliveryTimeRangeExceeds({
+        //     timeRange: deliveryZone?.timeRange
+        //   })
+        //   console.log({ exceedsTimeRange })
+        //   if (exceedsTimeRange) {
+        //     sendCustomerLateOrderWarning({
+        //       customer: user,
+        //       order: populatedOrder
+        //     })
+        //   } else {
+        //     sendCustomerNotifications(populatedOrder.user, populatedOrder)
+        //   }
+        // } else {
+        //   if (
+        //     (input.requestChannel === 'customer_app' ||
+        //       input.requestChannel === 'web_portal') &&
+        //     user &&
+        //     user.isOrderNotification
+        //   ) {
+        //     sendCustomerNotifications(populatedOrder.user, populatedOrder)
+        //   }
+        // }
         console.log({ populatedOrder })
         return { message: 'created_request_delivery_successfully' }
       } catch (err) {

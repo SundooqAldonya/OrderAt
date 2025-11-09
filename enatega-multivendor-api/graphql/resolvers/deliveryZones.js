@@ -3,6 +3,7 @@ const {
   calculateAmount,
   calculateDistance
 } = require('../../helpers/utilities')
+const { deliveryTimeRangeExceeds } = require('../../helpers/zoneDeliveryTime')
 const Configuration = require('../../models/configuration')
 const Coupon = require('../../models/coupon')
 const DeliveryPrice = require('../../models/DeliveryPrice')
@@ -322,6 +323,38 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+
+    async getSingleDeliveryZoneTimeRangeMashaweer(_, args) {
+      console.log('getSingleDeliveryTimeRange', { args })
+      try {
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [args.lng, args.lat]
+        }
+        const zone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: pickupLocation
+            }
+          }
+        })
+        console.log({ zoneTimeRange: zone })
+        if (zone?.timeRange) {
+          const exceedsTimeRange = await deliveryTimeRangeExceeds({
+            timeRange: zone?.timeRange
+          })
+          console.log({ exceedsTimeRange })
+          if (exceedsTimeRange) {
+            return true
+          } else {
+            return false
+          }
+        }
+        return false
+      } catch (err) {
+        throw err
+      }
     }
   },
   Mutation: {
@@ -336,7 +369,7 @@ module.exports = {
           title: args.deliveryZoneInput.title,
           city: args.deliveryZoneInput.city,
           description: args.deliveryZoneInput.description,
-          location: location
+          location
         })
         return { message: 'delivery_zone_created' }
       } catch (err) {

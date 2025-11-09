@@ -1965,3 +1965,8 @@ export const getCustomerAppBanner = gql`
     }
   }
 `
+export const getSingleDeliveryZoneTimeRangeMashaweer = gql`
+  query GetSingleDeliveryZoneTimeRangeMashaweer($lat: Float, $lng: Float) {
+    getSingleDeliveryZoneTimeRangeMashaweer(lat: $lat, lng: $lng)
+  }
+`

@@ -29,7 +29,11 @@ import useGeocoding from '../../ui/hooks/useGeocoding'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client/react'
-import { getDeliveryCalculationV2, myOrders } from '../../apollo/queries'
+import {
+  getDeliveryCalculationV2,
+  getSingleDeliveryZoneTimeRangeMashaweer,
+  myOrders
+} from '../../apollo/queries'
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import FromIcon from '../../assets/delivery_from.png'
 import ToIcon from '../../assets/delivery_to.png'
@@ -58,6 +62,7 @@ import Modal from 'react-native-modal'
 import UserContext from '../../context/User'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import gql from 'graphql-tag'
+import LateOrderWarningModal from '../../components/LateOrderWarningModal'
 
 const ORDERS = gql`
   ${myOrders}
@@ -87,6 +92,7 @@ const RequestDelivery = () => {
   const [customerName, setCustomerName] = useState('')
   const [layoutReset, setLayoutReset] = useState(false) // Used to reset layout when coupon modal closed
   const [couponOpen, setCouponOpen] = useState(false)
+  const [timeRangeWarningVisible, setTimeRangeWarningVisible] = useState(false)
 
   console.log({ regionFrom: addressInfo.regionFrom })
   console.log({ pickupCoords })
@@ -97,6 +103,23 @@ const RequestDelivery = () => {
 
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
+
+  const {
+    data: dataTimeRange,
+    loading: loadingTimeRange,
+    error: errorTimeRange
+  } = useQuery(getSingleDeliveryZoneTimeRangeMashaweer, {
+    variables: {
+      lng: pickupCoords?.longitude,
+      lat: pickupCoords?.latitude
+    },
+    skip: !pickupCoords
+  })
+
+  console.log({ dataTimeRange })
+
+  const timeRangeExceeds =
+    dataTimeRange?.getSingleDeliveryZoneTimeRangeMashaweer || false
 
   const [mutateUserName, { loading: usernameLoading, error: usernameError }] =
     useMutation(updateUserName, {
@@ -395,35 +418,46 @@ const RequestDelivery = () => {
   const handleSubmit = () => {
     if (validate()) {
       setDisabled(true)
-      const payload = {
-        pickupLat: +pickupCoords?.latitude,
-        pickupLng: +pickupCoords?.longitude,
-        pickupAddressText: addressInfo.addressFrom,
-        pickupAddressFreeText: addressInfo.addressFreeTextFrom,
-        pickupLabel: addressInfo.labelFrom,
-        dropoffLat: +dropOffCoords?.latitude,
-        dropoffLng: +dropOffCoords?.longitude,
-        dropoffAddressText: addressInfo.addressTo,
-        dropoffAddressFreeText: addressInfo.addressFreeTextTo,
-        dropoffLabel: addressInfo.labelTo,
-        deliveryFee,
-        requestChannel: 'customer_app',
-        is_urgent: isUrgent,
-        notes,
-        couponId: coupon?.code || null
-      }
-      console.log({ pickupCoords, dropOffCoords })
       if (notes?.length) {
         setNotesError(false)
       }
-      mutate({
-        variables: {
-          input: {
-            ...payload
-          }
-        }
-      })
+      if (timeRangeExceeds) {
+        setTimeRangeWarningVisible(true)
+      } else {
+        handleProceed()
+      }
     }
+  }
+
+  const handleProceed = () => {
+    const payload = {
+      pickupLat: +pickupCoords?.latitude,
+      pickupLng: +pickupCoords?.longitude,
+      pickupAddressText: addressInfo.addressFrom,
+      pickupAddressFreeText: addressInfo.addressFreeTextFrom,
+      pickupLabel: addressInfo.labelFrom,
+      dropoffLat: +dropOffCoords?.latitude,
+      dropoffLng: +dropOffCoords?.longitude,
+      dropoffAddressText: addressInfo.addressTo,
+      dropoffAddressFreeText: addressInfo.addressFreeTextTo,
+      dropoffLabel: addressInfo.labelTo,
+      deliveryFee,
+      requestChannel: 'customer_app',
+      is_urgent: isUrgent,
+      notes,
+      couponId: coupon?.code || null
+    }
+    mutate({
+      variables: {
+        input: {
+          ...payload
+        }
+      }
+    })
+  }
+
+  const handleCancel = () => {
+    setTimeRangeWarningVisible(false)
   }
 
   const toggleSwitch = () => {
@@ -820,6 +854,20 @@ const RequestDelivery = () => {
               )}
             </View>
 
+            {timeRangeExceeds ? (
+              <View
+                style={{
+                  ...styles.warningContainer,
+                  flexDirection: isArabic ? 'row-reverse' : 'row'
+                }}
+              >
+                <AntDesign name='warning' size={24} color='orange' />
+                <TextDefault style={{ color: '#000', width: '80%' }}>
+                  {t('warning_mashweer')}
+                </TextDefault>
+              </View>
+            ) : null}
+
             <TouchableOpacity
               disabled={disabled}
               style={{
@@ -831,6 +879,13 @@ const RequestDelivery = () => {
               <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
             </TouchableOpacity>
           </View>
+
+          <LateOrderWarningModal
+            visible={timeRangeWarningVisible}
+            message={t('warning_mashweer')}
+            onProceed={handleProceed}
+            onCancel={handleCancel}
+          />
 
           <Modal
             isVisible={nameFormAppear}
@@ -1149,6 +1204,16 @@ const styles = StyleSheet.create({
     width: moderateScale(34),
     height: moderateScale(34),
     resizeMode: 'contain'
+  },
+  warningContainer: {
+    alignItems: 'center',
+    gap: 8,
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    marginBottom: 10
   }
 })
 

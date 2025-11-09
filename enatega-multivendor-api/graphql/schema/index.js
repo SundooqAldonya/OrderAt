@@ -1648,6 +1648,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getSingleDeliveryZoneTimeRangeMashaweer(lat: Float, lng: Float): Boolean
     getSingleDeliveryZoneTimeRange(id: String): RangeFromTo
     getCustomerAppBanner: Banner!
     filterRestaurants(
