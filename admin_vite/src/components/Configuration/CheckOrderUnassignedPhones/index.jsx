@@ -14,14 +14,19 @@ import useGlobalStyles from "../../../utils/globalStyles";
 import { useMutation } from "@apollo/client/react";
 import { phonesUncheckedOrdersUpdate } from "../../../apollo";
 
-function CheckOrderUnassignedPhones() {
+function CheckOrderUnassignedPhones({ oldPhones }) {
   const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [phones, setPhones] = useState([""]); // start with one field
+  const [phones, setPhones] = useState(
+    oldPhones.length ? [...oldPhones] : [""]
+  ); // start with one field
+
+  console.log({ oldPhones });
+  console.log({ phones });
 
   const [mutatePhones] = useMutation(phonesUncheckedOrdersUpdate, {
     onCompleted: (res) => {

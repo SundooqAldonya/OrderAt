@@ -360,6 +360,7 @@ export const getConfiguration = `query GetConfiguration{
       costType
       vapidKey
       availabilityPeriod
+      phonesUncheckedOrders
     }
   }`;
 

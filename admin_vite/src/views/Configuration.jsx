@@ -40,6 +40,8 @@ const Configuration = (props) => {
     loading: loadingQuery,
   } = useQuery(GET_CONFIGURATION);
 
+  console.log(data?.configuration);
+
   const { t } = props;
 
   return (
@@ -63,7 +65,9 @@ const Configuration = (props) => {
             {/* <img src={configIcon} alt="Config" width={32} height={32} /> */}
           </Grid>
           <Grid size={{ sx: 12, md: 12, lg: 5 }}>
-            <CheckOrderUnassignedPhones />
+            <CheckOrderUnassignedPhones
+              oldPhones={data?.configuration?.phonesUncheckedOrders}
+            />
           </Grid>
           <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <DispatchOptions />

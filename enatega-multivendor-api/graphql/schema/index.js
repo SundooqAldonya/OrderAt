@@ -450,6 +450,7 @@ const typeDefs = gql`
     costType: String
     vapidKey: String
     availabilityPeriod: Float
+    phonesUncheckedOrders: [String]
   }
   type OrderStatus {
     pending: String!
