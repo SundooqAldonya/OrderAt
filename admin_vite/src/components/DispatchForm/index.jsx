@@ -97,7 +97,6 @@ const DispatchForm = ({ order, refetchOrders }) => {
   }, [order]);
 
   useEffect(() => {
-    // when areas arrive, validate current area id
     if (areas?.length && order?.area) {
       const found = areas.some((a) => a._id === order.area);
       setSelectedArea(found ? order.area : "");
@@ -109,27 +108,16 @@ const DispatchForm = ({ order, refetchOrders }) => {
     { data: dataRestaurants, loading: loadingRestaurants },
   ] = useLazyQuery(searchRestaurants, {
     fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      console.log({ data });
-      setRestaurantOptions(data?.searchRestaurants || []);
-    },
   });
+
   const [fetchRiders, { loading: loadingRiders }] = useLazyQuery(searchRiders, {
     fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      console.log({ data });
-      setRidersOptions(data?.searchRiders || []);
-    },
   });
 
   const [
     fetchDeliveryCost,
     { data: calcData, loading: calcLoading, error: errorCalc },
   ] = useLazyQuery(getDeliveryCalculation, {
-    onCompleted: (res) => {
-      console.log({ resDelivery: res });
-      setLoaded(true);
-    },
     nextFetchPolicy: "network-only",
     pollInterval: 10000,
   });
@@ -160,7 +148,7 @@ const DispatchForm = ({ order, refetchOrders }) => {
           restaurantId: selectedRestaurants?._id,
           // }
         },
-      });
+      }).then((res) => setLoaded(true));
     }
   }, [selectedArea, selectedRestaurants]);
 
@@ -168,7 +156,9 @@ const DispatchForm = ({ order, refetchOrders }) => {
     () =>
       debounce((value) => {
         if (value.trim()) {
-          fetchRestaurants({ variables: { search: value } });
+          fetchRestaurants({ variables: { search: value } }).then((res) => {
+            setRestaurantOptions(res.data?.searchRestaurants || []);
+          });
         }
       }, 300),
     [fetchRestaurants]
@@ -183,7 +173,10 @@ const DispatchForm = ({ order, refetchOrders }) => {
     () =>
       debounce((value) => {
         if (value.trim()) {
-          fetchRiders({ variables: { search: value } });
+          fetchRiders({ variables: { search: value } }).then((res) => {
+            console.log({ resRiders: res });
+            setRidersOptions(res.data?.searchRiders || []);
+          });
         }
       }, 300),
     [fetchRiders]
@@ -453,6 +446,7 @@ const DispatchForm = ({ order, refetchOrders }) => {
               onChange={(e, newValue) => handleRiderselect(newValue)}
               isOptionEqualToValue={(option, value) => option._id === value._id}
               onInputChange={(event, inputValue) => {
+                console.log({ inputValue });
                 debouncedSearchRiders(inputValue);
               }}
               getOptionLabel={(option) =>

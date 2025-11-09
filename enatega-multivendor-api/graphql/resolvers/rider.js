@@ -97,6 +97,7 @@ module.exports = {
             { phone: { $regex: search, $options: 'i' } }
           ]
         }).limit(10)
+        console.log({ searchedRiders: riders })
         return riders.map(transformRider)
       } catch (err) {
         console.log(err)

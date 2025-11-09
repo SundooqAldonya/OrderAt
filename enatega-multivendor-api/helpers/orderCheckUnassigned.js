@@ -24,6 +24,8 @@ module.exports = {
           select: 'city name' // only get city from restaurant
         })
 
+        const conf = await Configuration.findOne()
+
         // console.log({ orders })
         // console.log({ city: orders[0].restaurant.city })
 
@@ -38,20 +40,40 @@ module.exports = {
 
           const expiration = order.preparationTime
           console.log('now is larger than expiration time? ', now >= expiration)
-          if (now >= expiration) {
-            const body = {
-              username: 'w8pRT869',
-              password: 'Oqo48lklp',
-              sendername: 'Kayan',
-              phone: '+201065258980',
-              message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
-            }
-            await sendSMS({
-              body
-            })
 
-            order.notifiedUnassigned = true
-            await order.save()
+          if (now >= expiration) {
+            if (conf?.phonesUncheckedOrders?.length) {
+              const phones = conf?.phonesUncheckedOrders
+              phones?.forEach(async phone => {
+                const body = {
+                  username: 'w8pRT869',
+                  password: 'Oqo48lklp',
+                  sendername: 'Kayan',
+                  phone: `+2${phone}`,
+                  message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
+                }
+                await sendSMS({
+                  body
+                })
+
+                order.notifiedUnassigned = true
+                await order.save()
+              })
+            } else {
+              const body = {
+                username: 'w8pRT869',
+                password: 'Oqo48lklp',
+                sendername: 'Kayan',
+                phone: '+201065258980',
+                message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
+              }
+              await sendSMS({
+                body
+              })
+
+              order.notifiedUnassigned = true
+              await order.save()
+            }
           }
         }
       })

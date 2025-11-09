@@ -196,7 +196,12 @@ const configurationSchema = new Schema(
     },
     availabilityPeriod: {
       type: Number
-    }
+    },
+    phonesUncheckedOrders: [
+      {
+        type: String
+      }
+    ]
   },
   { timestamps: true }
 )

@@ -2175,6 +2175,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    phonesUncheckedOrdersUpdate(phones: [String!]!): Message
     adjustDeliveryZoneTime(id: String, from: String, to: String): Message
     toggleActiveBanner(id: String): Message
     adminOrderUpdate(id: String!, input: AdminUpdateOrder!): Message

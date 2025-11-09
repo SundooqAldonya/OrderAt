@@ -361,6 +361,20 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+
+    async phonesUncheckedOrdersUpdate(_, args) {
+      console.log('phonesUncheckedOrdersUpdate', { args })
+      try {
+        const conf = await Configuration.findOneAndUpdate(
+          {},
+          { $set: { phonesUncheckedOrders: args.phones } },
+          { new: true, upsert: true }
+        )
+        return { message: 'updated_phones_successfully!' }
+      } catch (err) {
+        throw err
+      }
     }
   }
 }

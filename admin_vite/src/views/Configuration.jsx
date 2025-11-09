@@ -27,6 +27,7 @@ import Configuration1 from "./Configuration1";
 import RiderAvailabilityTime from "../components/Configuration/RiderAvailabilityTime";
 import DispatchOptions from "../components/Configuration/DispatchOptions";
 import { gql } from "@apollo/client";
+import CheckOrderUnassignedPhones from "../components/Configuration/CheckOrderUnassignedPhones";
 
 const GET_CONFIGURATION = gql`
   ${getConfiguration}
@@ -60,6 +61,9 @@ const Configuration = (props) => {
           <Grid lg={5} sx={{ display: { xs: "none", lg: "block" } }} ml={-2}>
             <ConfigIcon />
             {/* <img src={configIcon} alt="Config" width={32} height={32} /> */}
+          </Grid>
+          <Grid size={{ sx: 12, md: 12, lg: 5 }}>
+            <CheckOrderUnassignedPhones />
           </Grid>
           <Grid size={{ sx: 12, md: 12, lg: 5 }}>
             <DispatchOptions />
