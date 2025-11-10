@@ -1733,7 +1733,7 @@ const typeDefs = gql`
     areasByCity(id: String!): [Area!]
     areas: [Area!]
     cities: [CityArea!]
-    citiesAdmin: [CityArea!]
+    citiesAdmin(search: String): [CityArea!]
     withdrawRequests: [WithdrawRequest!]!
     earnings: [Earnings!]!
     categories: [Categories!]

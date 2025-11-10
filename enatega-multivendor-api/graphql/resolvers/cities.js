@@ -1,19 +1,25 @@
 const City = require('../../models/city')
-const DeliveryZone = require('../../models/deliveryZone')
-const Zone = require('../../models/zone')
 const Location = require('../../models/location')
-const { transformZone } = require('./merge')
+
 module.exports = {
   Query: {
-    async citiesAdmin(_, args, { req, res }) {
-      try {
-        const cities = await City.find().populate('location')
-        return cities
-      } catch (err) {
-        throw new Error('Something went wrong', err)
+    async citiesAdmin(_, args) {
+      console.log({ args })
+      // try {
+      let query = {}
+      if (args.search) {
+        query = {
+          title: { $regex: args.search, $options: 'i' }
+        }
       }
+      const cities = await City.find(query).populate('location')
+      console.log({ cities })
+      return cities
+      // } catch (err) {
+      //   throw new Error('Something went wrong', err)
+      // }
     },
-    async cities(_, args, { req, res }) {
+    async cities(_, args) {
       try {
         const cities = await City.find({ isActive: true }).populate('location')
         return cities

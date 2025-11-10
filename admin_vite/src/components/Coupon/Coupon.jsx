@@ -87,6 +87,7 @@ function CouponComponent({ coupon, onClose }) {
     coupon && coupon.target.cities?.length ? [...coupon.target.cities] : []
   );
   const [restaurantOptions, setRestaurantOptions] = useState([]);
+  const [citiesOptions, setCitiesOptions] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState(
     coupon && coupon.target.businesses?.length
       ? [...coupon.target.businesses]
@@ -133,11 +134,13 @@ function CouponComponent({ coupon, onClose }) {
     coupon ? coupon.status : ""
   );
 
-  const {
-    data: dataCities,
-    loading: loadingCities,
-    error: errorCities,
-  } = useQuery(GET_CITIES);
+  // const {
+  //   data: dataCities,
+  //   loading: loadingCities,
+  //   error: errorCities,
+  // } = useQuery(GET_CITIES);
+
+  const [fetchCities, { data: dataCities }] = useLazyQuery(GET_CITIES);
 
   const {
     data: dataCategories,
@@ -174,29 +177,29 @@ function CouponComponent({ coupon, onClose }) {
 
   const [fetchUsers, { loading: loadingUsers }] = useLazyQuery(searchUsers, {
     fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      console.log({ data });
-      setUserOptions(data?.searchUsers || []);
-    },
+    // onCompleted: (data) => {
+    //   console.log({ data });
+    //   setUserOptions(data?.searchUsers || []);
+    // },
   });
 
   const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
     searchRestaurants,
     {
       fetchPolicy: "no-cache",
-      onCompleted: (data) => {
-        console.log({ data });
-        setRestaurantOptions(data?.searchRestaurants || []);
-      },
+      // onCompleted: (data) => {
+      //   console.log({ data });
+      //   setRestaurantOptions(data?.searchRestaurants || []);
+      // },
     }
   );
 
   const [fetchFoods, { loading: loadingFoods }] = useLazyQuery(searchFood, {
     fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      console.log({ data });
-      setFoodOptions(data?.searchFood || []);
-    },
+    // onCompleted: (data) => {
+    //   console.log({ data });
+    //   setFoodOptions(data?.searchFood || []);
+    // },
   });
 
   const cities = dataCities?.cities || null;
@@ -276,10 +279,25 @@ function CouponComponent({ coupon, onClose }) {
     () =>
       debounce((value) => {
         if (value.trim()) {
-          fetchRestaurants({ variables: { search: value } });
+          fetchRestaurants({ variables: { search: value } }).then((res) => {
+            setRestaurantOptions(res.data?.searchRestaurants || []);
+          });
         }
       }, 300),
     [fetchRestaurants]
+  );
+
+  const debouncedSearchCities = useMemo(
+    () =>
+      debounce((value) => {
+        if (value.trim()) {
+          fetchCities({ variables: { search: value } }).then((res) => {
+            console.log({ res });
+            setCitiesOptions(res.data?.citiesAdmin || []);
+          });
+        }
+      }, 300),
+    [fetchCities]
   );
 
   const handleRestaurantSelect = (newValue) => {
@@ -296,7 +314,9 @@ function CouponComponent({ coupon, onClose }) {
     () =>
       debounce((value) => {
         if (value.trim()) {
-          fetchUsers({ variables: { search: value } });
+          fetchUsers({ variables: { search: value } }).then((res) => {
+            setUserOptions(res.data?.searchUsers || []);
+          });
         }
       }, 300),
     [fetchUsers]
@@ -310,7 +330,9 @@ function CouponComponent({ coupon, onClose }) {
     () =>
       debounce((value) => {
         if (value.trim()) {
-          fetchFoods({ variables: { search: value } });
+          fetchFoods({ variables: { search: value } }).then((res) => {
+            setFoodOptions(data?.searchFood || []);
+          });
         }
       }, 300),
     [fetchFoods]
@@ -616,12 +638,95 @@ function CouponComponent({ coupon, onClose }) {
                   </Typography>
                   <Autocomplete
                     multiple
-                    options={cities || []}
+                    options={citiesOptions || []}
                     value={selectedCities}
                     onChange={(e, newValue) => handleCitiesSelect(newValue)}
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }
+                    onInputChange={(event, inputValue) => {
+                      debouncedSearchCities(inputValue);
+                    }}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select City"
+                        className={globalClasses.input}
+                        sx={{
+                          "& .MuiInputBase-input": {
+                            color: "black",
+                            "& fieldset": { border: "none" }, // ❌ remove border
+                            "&:hover fieldset": { border: "none" },
+                            "&.Mui-focused fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props} key={option._id}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        <ListItemText
+                          primary={option.title}
+                          style={{ textTransform: "capitalize", color: "#000" }}
+                        />
+                      </li>
+                    )}
+                    disableCloseOnSelect
+                    sx={{
+                      width: 300, // ✅ or a fixed width like '300px'
+                      "& .MuiAutocomplete-inputRoot": {
+                        flexWrap: "wrap",
+                        paddingRight: "8px",
+                        alignItems: "flex-start", // keeps label up
+                      },
+                      "& .MuiAutocomplete-tag": {
+                        maxWidth: "100%", // ensures long chip labels wrap or truncate
+                      },
+                      margin: "0 0 0 0",
+                      padding: "0px 0px",
+                      "& .MuiOutlinedInput-root": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "none", // ✅ remove border including on focus
+                        },
+                      },
+                      "& .MuiChip-root": {
+                        backgroundColor: "#f0f0f0", // ✅ light background
+                        color: "#000", // ✅ black text
+                        fontWeight: 500,
+                        margin: "2px", // spacing between chips
+                      },
+                      "& .MuiChip-deleteIcon": {
+                        color: "#888", // Optional: change delete icon color
+                        "&:hover": {
+                          color: "#000",
+                        },
+                      },
+                    }}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          color: "black", // Text color
+                          backgroundColor: "white", // Optional: background for contrast
+                        },
+                      },
+                    }}
+                  />
+                  {/* <Autocomplete
+                    multiple
+                    options={citiesOptions || []}
+                    value={selectedCities}
+                    onChange={(e, newValue) => handleCitiesSelect(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    onInputChange={(event, inputValue) => {
+                      debouncedSearchCities(inputValue);
+                    }}
                     getOptionLabel={(option) => option.title}
                     renderInput={(params) => (
                       <TextField
@@ -691,7 +796,7 @@ function CouponComponent({ coupon, onClose }) {
                         },
                       },
                     }}
-                  />
+                  /> */}
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>

@@ -873,8 +873,8 @@ export const getUsers = `query{
     }
   }`;
 
-export const getCities = `query {
-    citiesAdmin {
+export const getCities = `query CitiesAdmin($search: String) {
+    citiesAdmin(search: $search) {
       _id
       title    
       isActive

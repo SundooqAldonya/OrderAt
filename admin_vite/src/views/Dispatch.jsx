@@ -190,8 +190,12 @@ const Orders = (props) => {
       cell: (row) => (row?.restaurant ? row.restaurant.name : "N/A"),
     },
     {
-      name: t("Payment"),
-      selector: (row) => row.paymentMethod,
+      name: t("Phone"),
+      selector: (row) => row.user?.phone,
+    },
+    {
+      name: t("Name"),
+      selector: (row) => row.user?.name,
     },
     {
       name: t("Status"),
