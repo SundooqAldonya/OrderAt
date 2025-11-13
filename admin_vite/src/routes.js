@@ -75,6 +75,7 @@ import ContactUs from "./views/Contactus";
 import NotificationsScreen from "./views/NotificationsScreen";
 import OtlobMandoob from "./views/OtlobMandoob";
 import PrepaidDeliveryPackages from "./views/PrepaidDeliveryPackages";
+import MultiStepperForm from "./views/MultiStepperForm";
 
 var routes = [
   {
@@ -244,6 +245,15 @@ var routes = [
     name: "Delivery Zones",
     icon: ZonesIcon,
     component: DeliveryZone,
+    layout: "/super_admin",
+    appearInSidebar: true,
+    admin: true,
+  },
+  {
+    path: "/multi-stepper",
+    name: "MultiStepper",
+    icon: ZonesIcon,
+    component: MultiStepperForm,
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
