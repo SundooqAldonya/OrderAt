@@ -186,6 +186,13 @@ export const getDeliveryCalculationV2 = gql`
     }
   }
 `
+export const getDeliveryCalculationV3 = gql`
+  query GetDeliveryCalculationV3($input: DeliveryCalculationInput!) {
+    getDeliveryCalculationV3(input: $input) {
+      amount
+    }
+  }
+`
 
 export const getRestaurantCity = gql`
   query GetRestaurantCity($id: String!) {

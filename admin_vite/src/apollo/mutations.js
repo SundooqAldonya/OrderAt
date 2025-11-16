@@ -1097,3 +1097,11 @@ export const phonesUncheckedOrdersUpdate = gql`
     }
   }
 `;
+
+export const CREATE_ZONE_PRICING = gql`
+  mutation CreateZonePricing($input: CreateZonePricingInput!) {
+    createZonePricing(input: $input) {
+      message
+    }
+  }
+`;

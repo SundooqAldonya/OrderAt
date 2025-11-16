@@ -1,4 +1,7 @@
-const { calculateDeliveryFee } = require('../../helpers/calculateDeliveryFee')
+const {
+  calculateDeliveryFee,
+  calculateDeliveryFeeV3
+} = require('../../helpers/calculateDeliveryFee')
 const {
   calculateAmount,
   calculateDistance
@@ -19,6 +22,18 @@ module.exports = {
         return deliveryZones
       } catch (err) {
         throw new Error(err)
+      }
+    },
+    async getAllDeliveryZonesByCity(_, args) {
+      try {
+        const deliveryZones = await DeliveryZone.find({ city: args.cityId })
+        console.log({ deliveryZones })
+        if (!deliveryZones?.length) {
+          throw new Error('no_delivery_zones_for_that_city')
+        }
+        return deliveryZones
+      } catch (err) {
+        throw err
       }
     },
 
@@ -180,131 +195,34 @@ module.exports = {
         })
         console.log({ amount })
         return amount
-        //   const {
-        //     originLong,
-        //     originLat,
-        //     destLong,
-        //     destLat,
-        //     code,
-        //     restaurantId
-        //   } = args.input
-        //   console.log('args.input', { restaurantId })
-
-        //   // get zone charges from delivery prices
-        //   const distance = calculateDistance(
-        //     originLat,
-        //     originLong,
-        //     destLat,
-        //     destLong
-        //   )
-
-        //   const configuration = await Configuration.findOne()
-        //   const costType = configuration.costType
-
-        //   const originZone = await DeliveryZone.findOne({
-        //     location: {
-        //       $geoIntersects: {
-        //         $geometry: {
-        //           type: 'Point',
-        //           coordinates: [originLong, originLat]
-        //         }
-        //       }
-        //     }
-        //   })
-
-        //   const destinationZone = await DeliveryZone.findOne({
-        //     location: {
-        //       $geoIntersects: {
-        //         $geometry: {
-        //           type: 'Point',
-        //           coordinates: [destLong, destLat]
-        //         }
-        //       }
-        //     }
-        //   })
-
-        //   console.log({ originZone, destinationZone })
-        //   let deliveryPrice
-        //   if (originZone && destinationZone) {
-        //     deliveryPrice = await DeliveryPrice.findOne({
-        //       $or: [
-        //         {
-        //           originZone: originZone._id,
-        //           destinationZone: destinationZone._id
-        //         },
-        //         {
-        //           originZone: destinationZone._id,
-        //           destinationZone: originZone._id
-        //         }
-        //       ]
-        //     })
-        //   }
-
-        //   console.log({ deliveryPrice })
-
-        //   let amount
-        //   if (deliveryPrice) {
-        //     amount = deliveryPrice.cost
-        //   } else {
-        //     amount = calculateAmount(
-        //       costType,
-        //       configuration.deliveryRate,
-        //       distance
-        //     )
-        //     console.log({ distance, amount })
-        //   }
-
-        //   if (
-        //     parseFloat(amount) <= configuration.minimumDeliveryFee ||
-        //     distance <= 0.1
-        //   ) {
-        //     amount = configuration.minimumDeliveryFee
-        //   }
-
-        //   let deliveryDiscount = 0
-        //   let originalDiscount = amount
-        //   const coupon = await Coupon.findOne({ code })
-        //   console.log({ coupon })
-        //   if (coupon) {
-        //     const { discount_type, discount_value, max_discount } = coupon.rules
-        //     if (discount_type === 'percent') {
-        //       const discount = (discount_value / 100) * amount
-        //       deliveryDiscount = Math.min(discount, max_discount || discount)
-        //     } else if (discount_type === 'flat') {
-        //       deliveryDiscount = Math.min(
-        //         discount_value,
-        //         max_discount || discount_value
-        //       )
-        //     }
-        //   }
-        //   amount -= deliveryDiscount
-
-        //   console.log({ amount, originalDiscount, deliveryDiscount })
-        //   // ===== CHECK PREPAID DELIVERY PACKAGE =====
-        //   let isPrepaid = false
-        //   if (restaurantId || req.restaurantId) {
-        //     const prepaidPackage = await PrepaidDeliveryPackage.findOne({
-        //       business: restaurantId || req.restaurantId,
-        //       isActive: true,
-        //       expiresAt: { $gte: new Date() },
-        //       $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
-        //     })
-        //     console.log({ prepaidPackage })
-        //     if (
-        //       prepaidPackage?.maxDeliveryAmount &&
-        //       amount <= prepaidPackage?.maxDeliveryAmount
-        //     ) {
-        //       isPrepaid = true
-        //       console.log('✅ Prepaid package found. Delivery is free.')
-        //       return {
-        //         amount: 0,
-        //         originalDiscount,
-        //         isPrepaid: true
-        //       }
-        //     }
-        //   }
-
-        //   return { amount, originalDiscount }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    async getDeliveryCalculationV3(_, args, { req }) {
+      console.log({
+        getDeliveryCalculationArgs: args,
+        restaurantId: req.restaurantId
+      })
+      try {
+        const {
+          originLat,
+          originLong,
+          destLat,
+          destLong,
+          code,
+          restaurantId
+        } = args.input
+        const amount = await calculateDeliveryFeeV3({
+          originLat,
+          originLong,
+          destLat,
+          destLong,
+          code,
+          restaurantId
+        })
+        console.log({ amount })
+        return amount
       } catch (err) {
         throw new Error(err)
       }
@@ -358,6 +276,12 @@ module.exports = {
     }
   },
   Mutation: {
+    async createZonePricing(_, args) {
+      try {
+      } catch (err) {
+        throw err
+      }
+    },
     async createDeliveryZone(_, args) {
       console.log({ args })
       try {

@@ -1725,6 +1725,8 @@ const typeDefs = gql`
       restaurantId: String
     ): Amount
     getDeliveryCalculationV2(input: DeliveryCalculationInput!): Amount
+    getDeliveryCalculationV3(input: DeliveryCalculationInput!): Amount
+    getAllDeliveryZonesByCity(cityId: String!): [DeliveryZone!]
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
     getShopCategories: [ShopCategory!]
@@ -2175,7 +2177,21 @@ const typeDefs = gql`
     cost: Float!
   }
 
+  input CreateZonePricingInput {
+    originZone: String!
+    destinationZone: String!
+    pricingRule: PricingRule
+  }
+
+  input PricingRule {
+    baseFare: Float
+    perKmRate: Float
+    minFare: Float
+    surgeMultiplier: Float
+  }
+
   type Mutation {
+    createZonePricing(input: CreateZonePricingInput): Message
     phonesUncheckedOrdersUpdate(phones: [String!]!): Message
     adjustDeliveryZoneTime(id: String, from: String, to: String): Message
     toggleActiveBanner(id: String): Message

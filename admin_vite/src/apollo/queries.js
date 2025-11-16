@@ -502,7 +502,7 @@ export const getZones = `query Zones{
 }`;
 
 export const getAllDeliveryZones = `query GetAllDeliveryZones{
-    getAllDeliveryZones{
+  getAllDeliveryZones{
     _id
     title
     description
@@ -1432,6 +1432,20 @@ export const getSingleDeliveryZoneTimeRange = gql`
       _id
       from
       to
+    }
+  }
+`;
+export const getAllDeliveryZonesByCity = gql`
+  query GetAllDeliveryZonesByCity($cityId: String!) {
+    getAllDeliveryZonesByCity(cityId: $cityId) {
+      _id
+      title
+      description
+      location {
+        coordinates
+      }
+      isActive
+      city
     }
   }
 `;

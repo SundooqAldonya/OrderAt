@@ -44,6 +44,7 @@ const xlsx = require('./xlsx')
 const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
 const dispatchOptions = require('./dispatchOptions')
 const riderReviews = require('./riderReviews')
+const deliveryZonePricing = require('./deliveryZonePricing')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -90,7 +91,8 @@ const rootResolver = {
     ...xlsx.Query,
     ...prepaidDeliveryPackage.Query,
     ...dispatchOptions.Query,
-    ...riderReviews.Query
+    ...riderReviews.Query,
+    ...deliveryZonePricing.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -136,7 +138,8 @@ const rootResolver = {
     ...xlsx.Mutation,
     ...prepaidDeliveryPackage.Mutation,
     ...dispatchOptions.Mutation,
-    ...riderReviews.Mutation
+    ...riderReviews.Mutation,
+    ...deliveryZonePricing.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

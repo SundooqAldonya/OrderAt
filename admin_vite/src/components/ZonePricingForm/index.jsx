@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,12 +12,18 @@ import {
   Alert,
   MenuItem,
   Select,
+  Stepper,
 } from "@mui/material";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { debounce } from "lodash";
 import { gql } from "@apollo/client";
 import useGlobalStyles from "../../utils/globalStyles";
 import { useTranslation } from "react-i18next";
+import {
+  getAllDeliveryZonesByCity,
+  getCities,
+  CREATE_ZONE_PRICING,
+} from "../../apollo";
 
 // GraphQL queries/mutations
 const GET_ZONES = gql`
@@ -27,26 +33,6 @@ const GET_ZONES = gql`
       title
       city {
         title
-      }
-    }
-  }
-`;
-
-const CREATE_ZONE_PRICING = gql`
-  mutation CreateZonePricing($input: ZonePricingInput!) {
-    createZonePricing(input: $input) {
-      _id
-      originZone {
-        title
-      }
-      destinationZone {
-        title
-      }
-      pricingRule {
-        baseFare
-        perKmRate
-        minFare
-        surgeMultiplier
       }
     }
   }
@@ -72,6 +58,10 @@ const GET_ZONE_PRICINGS = gql`
   }
 `;
 
+const GET_CITIES = gql`
+  ${getCities}
+`;
+
 export default function ZonePricingForm({ onClose }) {
   const { t } = useTranslation();
   const globalClasses = useGlobalStyles();
@@ -85,18 +75,47 @@ export default function ZonePricingForm({ onClose }) {
   const [minFare, setMinFare] = useState("");
   const [surgeMultiplier, setSurgeMultiplier] = useState("");
 
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  console.log({ selectedCity });
+  console.log({ selectedOrigin });
+  console.log({ selectedDestination });
+
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  const [fetchZones] = useLazyQuery(GET_ZONES, {
+  const {
+    data,
+    loading: loadingCities,
+    error: errorCities,
+  } = useQuery(GET_CITIES);
+
+  const cities = data?.citiesAdmin || null;
+
+  console.log({ cities });
+
+  const [fetchZones] = useLazyQuery(getAllDeliveryZonesByCity, {
     fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      setZonesOptions(data?.deliveryZonesAdmin || []);
-    },
+    // onCompleted: (data) => {
+    //   setZonesOptions(data?.getAllDeliveryZonesByCity || []);
+    // },
   });
 
+  useEffect(() => {
+    if (selectedCity) {
+      fetchZones({
+        variables: {
+          cityId: selectedCity,
+        },
+      }).then((res) => {
+        console.log({ res });
+        setZonesOptions(res?.data?.getAllDeliveryZonesByCity || []);
+      });
+    }
+  }, [selectedCity]);
+
   const [mutate, { loading }] = useMutation(CREATE_ZONE_PRICING, {
-    refetchQueries: [{ query: GET_ZONE_PRICINGS }],
+    // refetchQueries: [{ query: GET_ZONE_PRICINGS }],
     onCompleted: (res) => {
       setSuccess("Zone pricing created successfully!");
       setError("");
@@ -109,19 +128,10 @@ export default function ZonePricingForm({ onClose }) {
     },
   });
 
-  const debouncedSearchZones = useMemo(
-    () =>
-      debounce((value) => {
-        if (value.trim()) {
-          fetchZones({ variables: { search: value } });
-        }
-      }, 300),
-    [fetchZones]
-  );
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log({ selectedOrigin });
+    console.log({ selectedDestination });
     if (!selectedOrigin || !selectedDestination) {
       setError("Please select both origin and destination zones.");
       return;
@@ -130,8 +140,8 @@ export default function ZonePricingForm({ onClose }) {
     mutate({
       variables: {
         input: {
-          originZone: selectedOrigin._id,
-          destinationZone: selectedDestination._id,
+          originZone: selectedOrigin,
+          destinationZone: selectedDestination,
           pricingRule: {
             baseFare: parseFloat(baseFare),
             perKmRate: parseFloat(perKmRate),
@@ -162,53 +172,95 @@ export default function ZonePricingForm({ onClose }) {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           {/* Origin Zone */}
-          <Grid item xs={12} sm={6}>
-            <Typography>Origin Zone</Typography>
-            <Autocomplete
-              options={zonesOptions}
-              value={selectedOrigin}
-              onChange={(e, newValue) => setSelectedOrigin(newValue)}
-              onInputChange={(e, val) => debouncedSearchZones(val)}
-              getOptionLabel={(option) =>
-                `${option.title} (${option.city?.title || "No City"})`
-              }
-              isOptionEqualToValue={(opt, val) => opt._id === val._id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Search origin zone"
-                  className={globalClasses.input}
-                />
+          <Grid size={{ xs: 12 }}>
+            <Typography>City</Typography>
+            <Select
+              id="input-city"
+              name="input-city"
+              defaultValue={selectedCity || ""}
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              className={[globalClasses.input]}
+            >
+              {!selectedCity && (
+                <MenuItem value="" style={{ color: "black" }}>
+                  {t("Select City")}
+                </MenuItem>
               )}
-            />
+              {cities?.map((city) => (
+                <MenuItem
+                  value={city._id}
+                  key={city._id}
+                  style={{ color: "black" }}
+                >
+                  {city.title}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Typography>Origin Zone</Typography>
+            <Select
+              id="input-city"
+              name="input-city"
+              defaultValue={selectedOrigin || ""}
+              value={selectedOrigin}
+              onChange={(e) => setSelectedOrigin(e.target.value)}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              className={[globalClasses.input]}
+            >
+              {!selectedOrigin && (
+                <MenuItem value="" style={{ color: "black" }}>
+                  {t("Select Origin Zone")}
+                </MenuItem>
+              )}
+              {zonesOptions?.map((zone) => (
+                <MenuItem
+                  value={zone._id}
+                  key={zone._id}
+                  style={{ color: "black" }}
+                >
+                  {zone.title}
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
 
           {/* Destination Zone */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Typography>Destination Zone</Typography>
-            <Autocomplete
-              options={zonesOptions}
+            <Select
+              id="input-city"
+              name="input-city"
+              defaultValue={selectedDestination || ""}
               value={selectedDestination}
-              onChange={(e, newValue) => setSelectedDestination(newValue)}
-              onInputChange={(e, val) => debouncedSearchZones(val)}
-              getOptionLabel={(option) =>
-                `${option.title} (${option.city?.title || "No City"})`
-              }
-              isOptionEqualToValue={(opt, val) => opt._id === val._id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Search destination zone"
-                  className={globalClasses.input}
-                />
+              onChange={(e) => setSelectedDestination(e.target.value)}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              className={[globalClasses.input]}
+            >
+              {!selectedDestination && (
+                <MenuItem value="" style={{ color: "black" }}>
+                  {t("Select Origin Zone")}
+                </MenuItem>
               )}
-            />
+              {zonesOptions?.map((zone) => (
+                <MenuItem
+                  value={zone._id}
+                  key={zone._id}
+                  style={{ color: "black" }}
+                >
+                  {zone.title}
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
 
           {/* Base Fare */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12 }} sx={{ mt: 3 }}>
             <Typography>Base Fare</Typography>
             <Input
               type="number"
@@ -221,7 +273,7 @@ export default function ZonePricingForm({ onClose }) {
           </Grid>
 
           {/* Per Km Rate */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12 }}>
             <Typography>Per Km Rate</Typography>
             <Input
               type="number"
@@ -234,7 +286,7 @@ export default function ZonePricingForm({ onClose }) {
           </Grid>
 
           {/* Min Fare */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12 }}>
             <Typography>Minimum Fare</Typography>
             <Input
               type="number"
@@ -247,7 +299,7 @@ export default function ZonePricingForm({ onClose }) {
           </Grid>
 
           {/* Surge Multiplier */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12 }}>
             <Typography>Surge Multiplier</Typography>
             <Input
               type="number"
@@ -268,7 +320,7 @@ export default function ZonePricingForm({ onClose }) {
             disabled={loading}
             className={globalClasses.button}
           >
-            {loading ? t("Saving...") : t("Save")}
+            {loading ? t("Saving...") : t("save")}
           </Button>
         </Box>
 

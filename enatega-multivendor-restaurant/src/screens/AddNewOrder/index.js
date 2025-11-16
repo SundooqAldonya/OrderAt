@@ -23,6 +23,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
   getCityAreas,
   getDeliveryCalculation,
+  getDeliveryCalculationV3,
   getRestaurantCity,
   muteRingOrder,
   newCheckoutPlaceOrder
@@ -102,27 +103,32 @@ const AddNewOrder = ({ navigation }) => {
 
   console.log({ selectedLocation: restaurantData?.restaurant?.location })
 
-  const { data, loading, error } = useQuery(getDeliveryCalculation, {
+  // const { data, loading, error } = useQuery(getDeliveryCalculation, {
+  const { data, loading, error } = useQuery(getDeliveryCalculationV3, {
     variables: {
-      destLong: selectedLocation?.coordinates
-        ? Number(selectedLocation?.coordinates[0])
-        : null,
-      destLat: selectedLocation?.coordinates
-        ? Number(selectedLocation?.coordinates[1])
-        : null,
-      originLong: restaurantData?.restaurant?.location?.coordinates
-        ? Number(restaurantData?.restaurant?.location?.coordinates[0])
-        : null,
-      originLat: restaurantData?.restaurant?.location?.coordinates
-        ? Number(restaurantData?.restaurant?.location?.coordinates[1])
-        : null
+      input: {
+        destLong: selectedLocation?.coordinates
+          ? Number(selectedLocation?.coordinates[0])
+          : null,
+        destLat: selectedLocation?.coordinates
+          ? Number(selectedLocation?.coordinates[1])
+          : null,
+        originLong: restaurantData?.restaurant?.location?.coordinates
+          ? Number(restaurantData?.restaurant?.location?.coordinates[0])
+          : null,
+        originLat: restaurantData?.restaurant?.location?.coordinates
+          ? Number(restaurantData?.restaurant?.location?.coordinates[1])
+          : null
+      }
     },
     skip: shouldSkip,
     // pollInterval: 10000,
     fetchPolicy: 'network-only'
   })
 
-  const deliveryFee = data?.getDeliveryCalculation?.amount || 0
+  const deliveryFee = data?.getDeliveryCalculationV3?.amount || 0
+
+  console.log({ deliveryFee: data?.getDeliveryCalculationV3 })
 
   const validated = () => {
     // if (!userData.phone) {

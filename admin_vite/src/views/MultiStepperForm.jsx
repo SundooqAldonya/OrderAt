@@ -28,6 +28,7 @@ import { customStyles } from "../utils/tableCustomStyles";
 import { Switch } from "@mui/material";
 import { gql } from "@apollo/client";
 import ZonePricingForm from "../components/ZonePricingForm";
+import HorizontalLinearStepper from "../components/ZonePricingForm/HorizontalLinearStepper";
 
 const GET_CITIES = gql`
   ${getCities}
@@ -200,7 +201,8 @@ const MultiStepperForm = () => {
     <Fragment>
       <Header />
       <Container className={globalClasses.flex} fluid>
-        <ZonePricingForm />
+        {/* <ZonePricingForm /> */}
+        <HorizontalLinearStepper />
         {success && (
           <Alert
             className={globalClasses.alertSuccess}
