@@ -2266,6 +2266,7 @@ const typeDefs = gql`
       email: String!
       sub: String
     ): GoogleUserLogin
+    newCheckoutPlaceOrderV3(input: NewCheckoutOrderInput): Order!
     newCheckoutPlaceOrder(input: NewCheckoutOrderInput): Order!
     googleAuth(code: String!): GoogleUserLogin
     createShopCategory(shopCategoryInput: ShopCategoryInput!): Message
@@ -2335,6 +2336,19 @@ const typeDefs = gql`
     createFood(foodInput: FoodInput): NewFood!
     editFood(foodInput: FoodInput): NewFood!
     placeOrder(
+      restaurant: String!
+      orderInput: [OrderInput!]!
+      paymentMethod: String!
+      couponCode: String
+      address: AddressInput!
+      tipping: Float!
+      orderDate: String!
+      isPickedUp: Boolean!
+      taxationAmount: Float!
+      deliveryCharges: Float!
+      instructions: String # total: Float!
+    ): Order!
+    placeOrderV3(
       restaurant: String!
       orderInput: [OrderInput!]!
       paymentMethod: String!

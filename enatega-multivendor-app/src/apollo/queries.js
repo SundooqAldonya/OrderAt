@@ -1970,3 +1970,10 @@ export const getSingleDeliveryZoneTimeRangeMashaweer = gql`
     getSingleDeliveryZoneTimeRangeMashaweer(lat: $lat, lng: $lng)
   }
 `
+export const getDeliveryCalculationV3 = gql`
+  query GetDeliveryCalculationV3($input: DeliveryCalculationInput!) {
+    getDeliveryCalculationV3(input: $input) {
+      amount
+    }
+  }
+`

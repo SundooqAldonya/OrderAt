@@ -61,7 +61,7 @@ const Variation = require('../../models/variation')
 const { GraphQLError } = require('graphql')
 const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
 const { acceptOrderHandler } = require('../../helpers/acceptOrderHandler')
-const Owner = require('../../models/owner')
+const DeliveryPriceV2 = require('../../models/deliveryPriceV2')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -730,6 +730,7 @@ module.exports = {
         })
 
         console.log({ originZone, destinationZone })
+
         let deliveryPrice
         if (originZone && destinationZone) {
           deliveryPrice = await DeliveryPrice.findOne({
@@ -760,6 +761,309 @@ module.exports = {
           console.log({ amount, distance })
         }
 
+        let deliveryCharges = amount
+
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.1 + Number.EPSILON
+        ) {
+          deliveryCharges = configuration.minimumDeliveryFee
+        }
+
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        console.log({ restaurantId: req.restaurantId })
+        if (restaurantId || req.restaurantId) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurantId || req.restaurantId,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            deliveryCharges <= prepaidPackage?.maxDeliveryAmount
+          ) {
+            deliveryCharges = 0 // Delivery is free with prepaid package
+            prepaidPackage.usedDeliveries += 1
+            await prepaidPackage.save()
+            console.log('✅ Used prepaid delivery package.')
+            console.log('✅ Prepaid package found. Delivery is free.')
+          }
+        }
+
+        let taxationAmount = 0
+        const taxRate = restaurant.tax / 100 || 0
+        taxationAmount = (orderAmount + deliveryCharges) * taxRate
+        let tipping = 0
+        let totalOrderAmount = 0
+        if (orderAmount) {
+          totalOrderAmount =
+            orderAmount + deliveryCharges + taxationAmount + tipping
+        }
+
+        console.log({ zone: zone?._id })
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [
+            restaurant.location.coordinates[0],
+            restaurant.location.coordinates[1]
+          ]
+        }
+
+        console.log({ totalOrderAmount, deliveryCharges })
+
+        const order = new Order({
+          orderId: newOrderId,
+          user: user._id,
+          resId: restaurantId,
+          orderStatus: 'PENDING',
+          orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
+          deliveryAddress: { ...address },
+          items: [], // Add items logic if applicable
+          isActive: true,
+          tipping: 0, // Store tipping amount
+          taxationAmount: 0, // Store taxation amount
+          deliveryCharges: deliveryCharges, // Store delivery charges
+          //totalAmount: totalOrderAmount, // The final total amount including all fees
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          restaurant: restaurantId, // Adding restaurant ID to order
+          zone: zone._id, // Adding zone ID to order
+          completionTime: new Date(
+            Date.now() + restaurant.deliveryTime * 60 * 1000
+          ),
+          preparationTime: preparationTime
+            ? new Date(Date.now() + preparationTime * 60 * 1000)
+            : new Date(Date.now() + 20 * 60 * 1000),
+          pickupLocation
+        })
+
+        const savedOrder = await order.save()
+        // await acceptOrder({
+        //   orderId: savedOrder._id,
+        //   restaurantId: savedOrder.resId,
+        //   time: preparationTime
+        // })
+        const transformedOrder = await transformOrder(savedOrder)
+        publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
+        publishToDispatcher(transformedOrder)
+        // publishNewOrderDispatch(transformedOrder)
+        acceptOrderHandler({
+          user,
+          restaurant,
+          time: preparationTime,
+          orderId: order._id,
+          rider: null
+        })
+        return {
+          _id: savedOrder._id,
+          orderId: savedOrder.orderId,
+          resId: savedOrder.resId,
+          paidAmount: 0,
+          orderStatus: savedOrder.orderStatus,
+          paymentMethod: 'COD',
+          isPickedUp: false,
+          taxationAmount: 0,
+          orderDate: savedOrder.createdAt,
+          user: {
+            _id: user._id,
+            name: user.name,
+            phone: user.phone
+          },
+          deliveryAddress: savedOrder.deliveryAddress,
+          //orderAmount: savedOrder.orderAmount,
+          orderAmount: savedOrder.totalOrderAmount,
+          //totalAmount: savedOrder.totalAmount,
+          paymentStatus: savedOrder.paymentStatus,
+          deliveryCharges: savedOrder.deliveryCharges,
+          taxationAmount: savedOrder.taxationAmount,
+          tipping: 0, // Return tipping amount
+          totalAmount: savedOrder.orderAmount, // Return total order amount including all fees
+          isActive: savedOrder.isActive,
+          createdAt: savedOrder.createdAt,
+          updatedAt: savedOrder.updatedAt,
+          restaurant: {
+            _id: savedOrder.restaurant, // Returning restaurant details
+            name: restaurant.name,
+            address: restaurant.address
+          },
+          zone: {
+            _id: savedOrder.zone, // Returning zone details
+            name: zone.name,
+            region: zone.region
+          }
+        }
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    async newCheckoutPlaceOrderV3(_, args, { req }) {
+      console.log('newCheckoutPlaceOrderV3', { args })
+      try {
+        const {
+          phone,
+          areaId,
+          orderAmount,
+          restaurantId,
+          addressDetails,
+          preparationTime,
+          name,
+          deliveryFee
+        } = args.input
+
+        const phoneNumber = normalizeAndValidatePhoneNumber(phone)
+        console.log({ phoneNumber })
+        if (!phoneNumber) throw new Error('invalid_number')
+        let user = await User.findOne({
+          phone: normalizeAndValidatePhoneNumber(phone)
+        })
+        // console.log({ user })
+        if (user && !user.name && name) {
+          user.name = name
+          await user.save()
+        }
+        const area = await Area.findById(areaId).populate('location')
+        // console.log({ areaId, area })
+        let address = {}
+        address['deliveryAddress'] = area.address
+        address['details'] = addressDetails ? addressDetails : area.address
+        address['label'] = area.title
+        address['location'] = {
+          type: 'Point',
+          coordinates: [
+            area.location.location.coordinates[0],
+            area.location.location.coordinates[1]
+          ]
+        }
+        delete address['latitude']
+        delete address['longitude']
+
+        if (!user) {
+          user = new User({
+            name: name ? name : 'N/A',
+            phone: normalizeAndValidatePhoneNumber(phone),
+            governate: 'N/A',
+            address_free_text: address.details,
+            addresses: address || [],
+            email: '',
+            userType: 'default',
+            emailIsVerified: true,
+            phoneIsVerified: false,
+            isActive: true,
+            area: area || null,
+            firstTimeLogin: true
+          })
+          await user.save()
+        }
+
+        // console.log({ address })
+
+        const restaurant = await Restaurant.findById(restaurantId)
+        // Generate dynamic orderId
+        const newOrderId = `${restaurant.orderPrefix}-${
+          Number(restaurant.orderId) + 1
+        }`
+        restaurant.orderId = Number(restaurant.orderId) + 1
+        await restaurant.save()
+
+        const zone = await Zone.findOne({
+          location: { $geoIntersects: { $geometry: restaurant.location } }
+        })
+        const latOrigin = +restaurant.location.coordinates[1]
+        const lonOrigin = +restaurant.location.coordinates[0]
+
+        const latDest = address['location']
+          ? +address?.location.coordinates[1]
+          : +area.location.location.coordinates[1]
+        const longDest = address['location']
+          ? +address?.location.coordinates[0]
+          : +area.location.location.coordinates[0]
+
+        const distance = calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+
+        console.log({ distance })
+
+        let configuration = await Configuration.findOne()
+        const costType = configuration.costType
+
+        // get zone charges from delivery prices
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: restaurant.location.coordinates
+              }
+            }
+          }
+        })
+
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: address.location.coordinates
+              }
+            }
+          }
+        })
+
+        console.log({ originZone, destinationZone })
+
+        // 2) Try to find NEW zone-pricing rule
+        let deliveryPrice = null
+
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPriceV2.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
+
+        console.log({ deliveryPrice })
+
+        // 3) Calculate amount using new rules
+        function calculateZonePrice(rule, distance) {
+          const base = rule.baseFare || 0
+          const perKm = rule.perKmRate || 0
+          const surge = rule.surgeMultiplier || 1
+          const minFare = rule.minFare || 0
+
+          const rawPrice = (base + perKm * distance) * surge
+          return Math.max(rawPrice, minFare)
+        }
+
+        let amount
+
+        if (deliveryPrice) {
+          amount = calculateZonePrice(deliveryPrice, distance)
+          console.log('Using zone pricing:', amount)
+        } else {
+          // 4) Fall back to configuration cost calculation
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          )
+          console.log('Using fallback pricing:', amount)
+        }
+
+        // 5) Minimum fee override
         let deliveryCharges = amount
 
         if (
@@ -1149,6 +1453,471 @@ module.exports = {
     },
 
     placeOrder: async (_, args, { req, res }) => {
+      console.log('orderInput', { argsOrderInput: args.orderInput })
+      console.log('placeOrder', { args: args })
+      if (!req.isAuth) {
+        throw new Error('Unauthenticated!')
+      }
+      try {
+        const restaurant = await Restaurant.findById(args.restaurant)
+
+        const location = new Point({
+          type: 'Point',
+          coordinates: [+args.address.longitude, +args.address.latitude]
+        })
+        const checkZone = await Restaurant.findOne({
+          _id: args.restaurant,
+          deliveryBounds: { $geoIntersects: { $geometry: location } }
+        })
+        if (!checkZone && args.isPickedUp !== true) {
+          throw new Error("Sorry! we can't deliver to your address.")
+        }
+        const zone = await Zone.findOne({
+          isActive: true,
+          location: {
+            $geoIntersects: { $geometry: restaurant.location }
+          }
+        })
+        if (!zone) {
+          throw new Error('Delivery zone not found')
+        }
+
+        const foods = await Food.find({ restaurant }).populate('variations')
+        const availableAddons = await Addon.find({ restaurant })
+        const availableOptions = await Option.find({ restaurant })
+        console.log({ foods })
+
+        console.log({ argsOrder: args })
+        console.log({ argsOrderInput: args.orderInput })
+
+        const items = args.orderInput.map(item => {
+          const food = foods.find(
+            element => element._id.toString() === item.food
+          )
+          if (food.stock && food.stock === 'Out of Stock') {
+            // throw new Error(`${food.title} out_of_stock`)
+            throw new GraphQLError('Out of stock', {
+              extensions: {
+                code: 'out_of_stock',
+                foodTitle: food.title
+              }
+            })
+          }
+          const variation = food.variations.find(
+            v => v._id.toString() === item.variation
+          )
+          if (variation.stock && variation.stock === 'Out of Stock') {
+            // throw new Error(`${variation.title} out_of_stock`)
+            throw new GraphQLError('Out of stock', {
+              extensions: {
+                code: 'out_of_stock',
+                variationTitle: variation?.title
+              }
+            })
+          }
+          const addonList = []
+          item.addons.forEach((data, index) => {
+            const selectedOptions = []
+            data.options.forEach((option, inx) => {
+              selectedOptions.push(
+                availableOptions.find(op => op._id.toString() === option)
+              )
+            })
+            const adds = availableAddons.find(
+              addon => addon._id.toString() === data._id.toString()
+            )
+
+            addonList.push({
+              ...adds._doc,
+              options: selectedOptions
+            })
+          })
+          return new Item({
+            food: item.food,
+            title: food.title,
+            description: food.description,
+            image: food.image,
+            variation,
+            addons: addonList,
+            quantity: item.quantity,
+            specialInstructions: item.specialInstructions
+          })
+        })
+
+        const user = await User.findById(req.userId)
+        if (!user) {
+          throw new Error('invalid request')
+        }
+        // get previous orderid from db
+        let configuration = await Configuration.findOne()
+        if (!configuration) {
+          configuration = new Configuration()
+          await configuration.save()
+        }
+
+        const orderid =
+          restaurant.orderPrefix + '-' + (Number(restaurant.orderId) + 1)
+        restaurant.orderId = Number(restaurant.orderId) + 1
+        await restaurant.save()
+
+        const latOrigin = +restaurant.location.coordinates[1]
+        const lonOrigin = +restaurant.location.coordinates[0]
+        const latDest = +args.address.latitude
+        const longDest = +args.address.longitude
+
+        // Calculate distance
+        const distance = calculateDistance(
+          latOrigin,
+          lonOrigin,
+          latDest,
+          longDest
+        )
+        console.log(`Calculated Distance: ${distance} km`)
+
+        const costType = configuration.costType
+
+        // get zone charges from delivery prices
+        const originZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: restaurant.location.coordinates
+            }
+          }
+        })
+
+        const destinationZone = await DeliveryZone.findOne({
+          location: {
+            $geoIntersects: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [longDest, latDest]
+              }
+            }
+          }
+        })
+
+        console.log({ originZone, destinationZone })
+        // 2) Try to find NEW zone-pricing rule
+        let deliveryPrice = null
+
+        if (originZone && destinationZone) {
+          deliveryPrice = await DeliveryPriceV2.findOne({
+            $or: [
+              {
+                originZone: originZone._id,
+                destinationZone: destinationZone._id
+              },
+              {
+                originZone: destinationZone._id,
+                destinationZone: originZone._id
+              }
+            ]
+          })
+        }
+
+        console.log({ deliveryPrice })
+
+        // 3) Calculate amount using new rules
+        function calculateZonePrice(rule, distance) {
+          const base = rule.baseFare || 0
+          const perKm = rule.perKmRate || 0
+          const surge = rule.surgeMultiplier || 1
+          const minFare = rule.minFare || 0
+
+          const rawPrice = (base + perKm * distance) * surge
+          return Math.max(rawPrice, minFare)
+        }
+
+        let amount
+
+        if (deliveryPrice) {
+          amount = calculateZonePrice(deliveryPrice, distance)
+          console.log('Using zone pricing:', amount)
+        } else {
+          // 4) Fall back to configuration cost calculation
+          amount = calculateAmount(
+            costType,
+            configuration.deliveryRate,
+            distance
+          )
+          console.log('Using fallback pricing:', amount)
+        }
+
+        let DELIVERY_CHARGES = amount
+        if (
+          parseFloat(amount) <= configuration.minimumDeliveryFee ||
+          distance <= 0.1 + Number.EPSILON
+        ) {
+          DELIVERY_CHARGES = configuration.minimumDeliveryFee
+        }
+
+        console.log(`Delivery Charges: ${DELIVERY_CHARGES}`)
+        let price = 0.0
+
+        let itemTotal = 0
+        let deliveryDiscount = 0
+        let finalDeliveryCharges = args.isPickedUp ? 0 : DELIVERY_CHARGES
+        let originalTotalPrice = 0
+        let coupon = null
+        if (args.couponCode) {
+          coupon = await Coupon.findOne({ code: args.couponCode }).lean()
+        }
+
+        for (const item of items) {
+          const quantity = item.quantity || 1
+          let originalPrice = item.variation.price
+
+          if (item.addons?.length > 0) {
+            for (const addon of item.addons) {
+              for (const option of addon.options) {
+                originalPrice += option.price
+              }
+            }
+          }
+
+          let discountedPrice = originalPrice
+          originalTotalPrice = originalPrice * quantity
+          console.log({ originalPrice, originalTotalPrice })
+
+          const isEligible =
+            coupon?.rules?.applies_to?.includes('items') &&
+            coupon?.target?.foods?.some(
+              food => food.toString() === item.food.toString()
+            )
+
+          if (coupon && coupon.rules && isEligible) {
+            const { discount_type, discount_value, max_discount } = coupon.rules
+
+            if (discount_type === 'percent') {
+              const discount = (discount_value / 100) * originalPrice
+              const appliedItemDiscount = Math.min(
+                discount,
+                max_discount || discount
+              )
+              discountedPrice = originalPrice - appliedItemDiscount
+            } else if (discount_type === 'flat') {
+              const appliedItemDiscount = Math.min(
+                discount_value,
+                max_discount || discount_value
+              )
+              discountedPrice = originalPrice - appliedItemDiscount
+            }
+          }
+          itemTotal += discountedPrice * quantity
+        }
+        console.log({
+          itemTotal,
+          coupon,
+          applies_to: coupon?.rules?.applies_to[0]
+        })
+        // Apply subtotal-level discount
+        if (coupon?.rules?.applies_to?.includes('subtotal')) {
+          console.log('inside_subtotal')
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            console.log('inside_percent')
+            const discount = (discount_value / 100) * itemTotal
+            const appliedDiscount = Math.min(discount, max_discount || discount)
+            itemTotal -= appliedDiscount
+          } else if (discount_type === 'flat') {
+            console.log('inside_flat')
+            const appliedDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+            console.log({ appliedDiscount })
+            itemTotal -= appliedDiscount
+          }
+        }
+
+        console.log({ itemTotal })
+
+        // Apply delivery discount
+        if (coupon?.rules?.applies_to?.includes('delivery')) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * finalDeliveryCharges
+            deliveryDiscount = Math.min(discount, max_discount || discount)
+          } else if (discount_type === 'flat') {
+            deliveryDiscount = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+          }
+          finalDeliveryCharges -= deliveryDiscount
+        }
+
+        const couponCode = await Coupon.findById(coupon?._id)
+        if (couponCode) {
+          if (!couponCode.tracking.user_usage) {
+            couponCode.tracking.user_usage = new Map()
+          }
+
+          // Convert to Map if it's a plain object (can happen when using `.lean()` or from Mongo)
+          if (!(couponCode.tracking.user_usage instanceof Map)) {
+            couponCode.tracking.user_usage = new Map(
+              Object.entries(couponCode.tracking.user_usage)
+            )
+          }
+        }
+
+        const previousCount =
+          couponCode?.tracking.user_usage.get(req.userId) || 0
+        console.log({ previousCount })
+        if (couponCode) {
+          couponCode.tracking.user_usage.set(req.userId, previousCount + 1)
+          couponCode.tracking.usage_count += 1
+          console.log({
+            nextCount: couponCode.tracking.user_usage.get(req.userId),
+            usage_count: couponCode.tracking.usage_count
+          })
+          await couponCode.save()
+        }
+
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [
+            restaurant.location.coordinates[0],
+            restaurant.location.coordinates[1]
+          ]
+        }
+
+        // ===== CHECK PREPAID DELIVERY PACKAGE =====
+        if (restaurant?._id) {
+          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
+            business: restaurant._id,
+            isActive: true,
+            expiresAt: { $gte: new Date() },
+            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
+          })
+          let isPrepaid = false
+          if (
+            prepaidPackage?.maxDeliveryAmount &&
+            finalDeliveryCharges <= prepaidPackage?.maxDeliveryAmount
+          ) {
+            isPrepaid = true
+            finalDeliveryCharges = 0
+            console.log('✅ Prepaid package found. Delivery is free.')
+          }
+          // reduce the amount of used prepaid deliveries
+          if (isPrepaid) {
+            prepaidPackage.usedDeliveries += 1
+            await prepaidPackage.save()
+            console.log('✅ Used prepaid delivery package.')
+          }
+        }
+
+        const orderObj = {
+          zone: zone._id,
+          restaurant: args.restaurant,
+          user: req.userId,
+          items: items,
+          deliveryAddress: {
+            ...args.address,
+            location: location
+          },
+          orderId: orderid,
+          paidAmount: 0,
+          orderStatus: 'PENDING',
+          deliveryCharges: args.isPickedUp ? 0 : finalDeliveryCharges,
+          originalDeliveryCharges:
+            finalDeliveryCharges < DELIVERY_CHARGES ? DELIVERY_CHARGES : 0,
+          tipping: args.tipping,
+          taxationAmount: args.taxationAmount,
+          orderDate: args.orderDate,
+          isPickedUp: args.isPickedUp,
+          orderAmount: (
+            itemTotal +
+            finalDeliveryCharges +
+            args.taxationAmount +
+            args.tipping
+          ).toFixed(2),
+          originalPrice: coupon
+            ? originalTotalPrice +
+              DELIVERY_CHARGES +
+              args.taxationAmount +
+              args.tipping
+            : 0,
+          originalSubtotal: coupon ? originalTotalPrice : 0,
+          paymentStatus: payment_status[0],
+          coupon: coupon,
+          completionTime: new Date(
+            Date.now() + restaurant.deliveryTime * 60 * 1000
+          ),
+          instructions: args.instructions,
+          pickupLocation
+        }
+
+        let result = null
+        if (args.paymentMethod === 'COD') {
+          const order = new Order(orderObj)
+          result = await order.save()
+
+          // const placeOrder_template = await placeOrderTemplate([
+          //   result.orderId,
+          //   items,
+          //   args.isPickedUp
+          //     ? restaurant.address
+          //     : result.deliveryAddress.deliveryAddress,
+          //   `${configuration.currencySymbol} ${Number(price).toFixed(2)}`,
+          //   `${configuration.currencySymbol} ${order.tipping.toFixed(2)}`,
+          //   `${configuration.currencySymbol} ${order.taxationAmount.toFixed(
+          //     2
+          //   )}`,
+          //   `${configuration.currencySymbol} ${order.deliveryCharges.toFixed(
+          //     2
+          //   )}`,
+          //   `${configuration.currencySymbol} ${order.orderAmount.toFixed(2)}`,
+          //   configuration.currencySymbol
+          // ])
+          const transformedOrder = await transformOrder(result)
+
+          publishToDashboard(
+            order.restaurant.toString(),
+            transformedOrder,
+            'new'
+          )
+          publishToDispatcher(transformedOrder)
+          // const attachment = path.join(
+          //   __dirname,
+          //   '../../public/assets/tempImages/enatega.png'
+          // )
+          // sendEmail(
+          //   user.email,
+          //   'Order Placed',
+          //   '',
+          //   placeOrder_template,
+          //   attachment
+          // )
+          // sendNotification(result.orderId)
+          // sendNotificationToCustomerWeb(
+          //   user.notificationTokenWeb,
+          //   'Order placed',
+          //   `Order ID ${result.orderId}`
+          // )
+          await sendRestaurantNotifications(restaurant, transformedOrder)
+
+          // sendNotificationToRestaurant(result.restaurant, result)
+        } else if (args.paymentMethod === 'PAYPAL') {
+          orderObj.paymentMethod = args.paymentMethod
+          const paypal = new Paypal(orderObj)
+          result = await paypal.save()
+        } else if (args.paymentMethod === 'STRIPE') {
+          console.log('stripe')
+          orderObj.paymentMethod = args.paymentMethod
+          const stripe = new Stripe(orderObj)
+          result = await stripe.save()
+          console.log(result)
+        } else {
+          throw new Error('Invalid Payment Method')
+        }
+        const orderResult = await transformOrder(result)
+        return orderResult
+      } catch (err) {
+        throw err
+      }
+    },
+    placeOrderV3: async (_, args, { req, res }) => {
       console.log('orderInput', { argsOrderInput: args.orderInput })
       console.log('placeOrder', { args: args })
       if (!req.isAuth) {

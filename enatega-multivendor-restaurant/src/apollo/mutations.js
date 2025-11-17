@@ -174,6 +174,31 @@ export const newCheckoutPlaceOrder = gql`
     }
   }
 `
+export const newCheckoutPlaceOrderV3 = gql`
+  mutation NewCheckoutPlaceOrderV3($input: NewCheckoutOrderInput) {
+    newCheckoutPlaceOrderV3(input: $input) {
+      _id
+      orderId
+      user {
+        _id
+        name
+        phone
+      }
+      deliveryAddress {
+        id
+        deliveryAddress
+        details
+        label
+      }
+      orderAmount
+      paymentStatus
+      orderStatus
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`
 export const deactivateRestaurant = gql`
   mutation DeactivateRestaurant($id: String!) {
     deactivateRestaurant(id: $id) {

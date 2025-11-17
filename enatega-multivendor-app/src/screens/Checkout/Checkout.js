@@ -29,6 +29,7 @@ import moment from 'moment'
 import {
   checkoutCalculatePrice,
   getDeliveryCalculationV2,
+  getDeliveryCalculationV3,
   getTipping,
   myOrders,
   orderFragment
@@ -179,7 +180,8 @@ function Checkout(props) {
     data: calcData,
     loading: calcLoading,
     error: errorCalc
-  } = useQuery(getDeliveryCalculationV2, {
+    // } = useQuery(getDeliveryCalculationV2, {
+  } = useQuery(getDeliveryCalculationV3, {
     skip: !data,
     variables: {
       input: {
@@ -194,7 +196,7 @@ function Checkout(props) {
   })
 
   const restaurant = data?.restaurantCustomer || null
-  const amount = calcData?.getDeliveryCalculationV2.amount || 0
+  const amount = calcData?.getDeliveryCalculationV3.amount || 0
   console.log({ amount })
   const {
     data: dataCalculatePrice,

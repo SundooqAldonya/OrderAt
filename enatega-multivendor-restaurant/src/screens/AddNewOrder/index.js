@@ -26,7 +26,8 @@ import {
   getDeliveryCalculationV3,
   getRestaurantCity,
   muteRingOrder,
-  newCheckoutPlaceOrder
+  newCheckoutPlaceOrder,
+  newCheckoutPlaceOrderV3
 } from '../../apollo'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
 import { useSelector } from 'react-redux'
@@ -66,8 +67,10 @@ const AddNewOrder = ({ navigation }) => {
   const { data: restaurantData } = useAccount()
   const { currencySymbol } = useContext(Configuration.Context)
 
+  // const [mutateCreateOrder, { loading: loadingMutation }] = useMutation(
+  //   newCheckoutPlaceOrder,
   const [mutateCreateOrder, { loading: loadingMutation }] = useMutation(
-    newCheckoutPlaceOrder,
+    newCheckoutPlaceOrderV3,
     {
       onCompleted: data => {
         // acceptOrder(data.newCheckoutPlaceOrder._id, selectedTime.toString())
@@ -75,7 +78,7 @@ const AddNewOrder = ({ navigation }) => {
         navigation.navigate('Orders')
         Alert.alert(
           `${t('ordersuccessfullycreated')}`,
-          `${t('ordernumber')} ${data?.newCheckoutPlaceOrder?.orderId}`
+          `${t('ordernumber')} ${data?.newCheckoutPlaceOrderV3?.orderId}`
         )
       },
       onError: error => {
