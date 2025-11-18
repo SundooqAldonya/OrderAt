@@ -1452,7 +1452,7 @@ module.exports = {
       }
     },
 
-    placeOrder: async (_, args, { req, res }) => {
+    placeOrderV3: async (_, args, { req, res }) => {
       console.log('orderInput', { argsOrderInput: args.orderInput })
       console.log('placeOrder', { args: args })
       if (!req.isAuth) {
@@ -1917,7 +1917,7 @@ module.exports = {
         throw err
       }
     },
-    placeOrderV3: async (_, args, { req, res }) => {
+    placeOrder: async (_, args, { req, res }) => {
       console.log('orderInput', { argsOrderInput: args.orderInput })
       console.log('placeOrder', { args: args })
       if (!req.isAuth) {

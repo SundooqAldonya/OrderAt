@@ -13,12 +13,12 @@ const useEnvVars = (env = Updates.channel) => {
   console.log({ apiEnv })
   if (apiEnv === 'staging') {
     return {
-      GRAPHQL_URL: 'https://service.orderatco.com/graphql',
-      WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
-      SERVER_URL: 'https://service.orderatco.com',
-      // GRAPHQL_URL: 'https://querytest.orderat.ai/graphql',
-      // WS_GRAPHQL_URL: 'wss://querytest.orderat.ai/graphql',
-      // SERVER_URL: 'https://querytest.orderat.ai',
+      // GRAPHQL_URL: 'https://service.orderatco.com/graphql',
+      // WS_GRAPHQL_URL: 'wss://service.orderatco.com/graphql',
+      // SERVER_URL: 'https://service.orderatco.com',
+      GRAPHQL_URL: 'https://query.orderat.ai/graphql',
+      WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
+      SERVER_URL: 'https://query.orderat.ai',
       SENTRY_DSN: configuration.riderAppSentryUrl,
       GOOGLE_MAPS_KEY: configuration.googleApiKey,
       IOS_CLIENT_ID_GOOGLE: configuration.iOSClientID,
