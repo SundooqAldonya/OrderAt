@@ -15,6 +15,9 @@ export const Provider = props => {
       ${configuration}
     `
   )
+
+  console.log({ dataConfig: data })
+
   const value =
     loading || error || !data.configuration ? {} : data.configuration
 

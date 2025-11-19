@@ -26,8 +26,8 @@ const getEnvVars = () => {
       // SERVER_URL: 'https://service.orderatco.com/'
       GRAPHQL_URL: 'https://query.orderat.ai/graphql',
       WS_GRAPHQL_URL: 'wss://query.orderat.ai/graphql',
-      SERVER_URL: 'https://query.orderat.ai/',
-      SENTRY_DSN: configuration.restaurantAppSentryUrl
+      SERVER_URL: 'https://query.orderat.ai/'
+      // SENTRY_DSN: configuration.restaurantAppSentryUrl
     }
   }
 

@@ -14,7 +14,7 @@ import FlashMessage from 'react-native-flash-message'
 import * as Updates from 'expo-updates'
 import { AuthContext, Configuration } from './src/ui/context'
 import AppContainer from './src/navigation'
-import setupApolloClient, { recreateWsClient } from './src/apollo/client'
+import setupApolloClient from './src/apollo/client'
 import { Spinner, TextDefault } from './src/components'
 import { colors } from './src/utilities'
 import {
