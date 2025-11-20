@@ -2,6 +2,7 @@ const {
   calculateDeliveryFee,
   calculateDeliveryFeeV3
 } = require('../../helpers/calculateDeliveryFee')
+const { calculateUnifiedDeliveryFee } = require('../../helpers/pricing')
 const {
   calculateAmount,
   calculateDistance
@@ -213,12 +214,20 @@ module.exports = {
           code,
           restaurantId
         } = args.input
-        const amount = await calculateDeliveryFeeV3({
+        // const amount = await calculateDeliveryFeeV3({
+        //   originLat,
+        //   originLong,
+        //   destLat,
+        //   destLong,
+        //   code,
+        //   restaurantId
+        // })
+        const amount = await calculateUnifiedDeliveryFee({
           originLat,
           originLong,
           destLat,
           destLong,
-          code,
+          // code,
           restaurantId
         })
         console.log({ amount })
