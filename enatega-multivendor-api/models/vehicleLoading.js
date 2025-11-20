@@ -1,21 +1,39 @@
-// models/VehicleLoading.js
 const mongoose = require('mongoose')
-const { Schema } = mongoose
 
-const VehicleLoadingSchema = new Schema(
+const VehicleLoadingSchema = new mongoose.Schema(
   {
-    service: { type: String, required: true },
-    vehicle_type: {
-      type: String,
-      enum: ['BIKE', 'MOTORCYCLE', 'CAR'],
-      required: true
+    country: { type: String, required: true },
+    city: { type: String, default: null },
+
+    services: {
+      type: Map,
+      of: new mongoose.Schema(
+        {
+          BIKE: { type: mongoose.Schema.Types.Mixed, default: 0 },
+          MOTORCYCLE: {
+            type: mongoose.Schema.Types.Mixed,
+            default: { per_km: 0 }
+          },
+          CAR: { type: mongoose.Schema.Types.Mixed, default: { per_km: 0 } }
+        },
+        { _id: false }
+      )
     },
-    per_km: { type: Number, default: 0 },
-    country: { type: Schema.Types.ObjectId, ref: 'Country' },
-    city: { type: Schema.Types.ObjectId, ref: 'City' },
-    source_level: { type: String, enum: ['COUNTRY', 'CITY'], required: true }
+
+    effective: {
+      from: { type: Date, default: null },
+      to: { type: Date, default: null }
+    },
+
+    status: {
+      type: String,
+      enum: ['ACTIVE', 'INACTIVE'],
+      default: 'ACTIVE'
+    }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 )
 
 module.exports = mongoose.model('VehicleLoading', VehicleLoadingSchema)
