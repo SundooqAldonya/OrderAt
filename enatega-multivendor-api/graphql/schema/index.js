@@ -1653,7 +1653,7 @@ const typeDefs = gql`
     country: String
     city: String
     requestor_type: String
-    requestor_id: String
+    requestor_id: Restaurant
     service: String
     model: String
     params: RequestorOverrideParams
@@ -1677,6 +1677,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    getRestaurantRequestorOverrideList: [RequestorOverride]
     getRestaurantRequestorOverride(id: String!): RequestorOverride
     getSingleDeliveryZoneTimeRangeMashaweer(lat: Float, lng: Float): Boolean
     getSingleDeliveryZoneTimeRange(id: String): RangeFromTo

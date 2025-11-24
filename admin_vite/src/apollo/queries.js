@@ -1478,3 +1478,33 @@ export const getRestaurantRequestorOverride = gql`
     }
   }
 `;
+export const getRestaurantRequestorOverrideList = gql`
+  query GetRestaurantRequestorOverrideList {
+    getRestaurantRequestorOverrideList {
+      _id
+      country
+      city
+      requestor_type
+      requestor_id {
+        _id
+        name
+      }
+      service
+      model
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      effective {
+        from
+        to
+      }
+      status
+      priority
+      createdAt
+      updatedAt
+    }
+  }
+`;

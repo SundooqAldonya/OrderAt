@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useStyles from "../styles";
 import { useTranslation } from "react-i18next";
 import useGlobalStyles from "../../utils/globalStyles";
@@ -17,13 +17,21 @@ import {
 } from "@mui/material";
 
 import { gql } from "@apollo/client";
-import { useMutation } from "@apollo/client/react";
-import { createRequestorOverride, updateRequestorOverride } from "../../apollo";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
+import {
+  createRequestorOverride,
+  getRestaurantRequestorOverrideList,
+  searchRestaurants,
+  updateRequestorOverride,
+} from "../../apollo";
+import { debounce } from "lodash";
 
-const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
+const RestaurantDeliveryForm = ({ onClose, restaurant }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
+  const [restaurantOptions, setRestaurantOptions] = useState([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
 
   const [values, setValues] = useState({
     // country: "",
@@ -44,30 +52,35 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
 
   const [success, setSuccess] = useState("");
   const [mainError, setMainError] = useState("");
-  const restaurantId = localStorage.getItem("restaurantId");
-  console.log({ restaurantId });
+
+  console.log({ values });
 
   // Load edit mode
   useEffect(() => {
-    if (overrideData) {
+    if (restaurant) {
       setValues({
         ...values,
-        // country: overrideData.country,
-        // city: overrideData.city || "",
-        requestor_id: overrideData.requestor_id?._id || "",
-        service: overrideData.service,
-        model: overrideData.model,
-        fixed: overrideData.params?.fixed || "",
-        per_km: overrideData.params?.per_km || "",
-        min_fee: overrideData.params?.min_fee || "",
-        included_km: overrideData.params?.included_km || "",
-        effective_from: overrideData.effective?.from || "",
-        effective_to: overrideData.effective?.to || "",
-        status: overrideData.status,
-        priority: overrideData.priority,
+        // country: restaurant.country,
+        // city: restaurant.city || "",
+        requestor_id: restaurant.requestor_id?._id || "",
+        service: restaurant.service,
+        model: restaurant.model,
+        fixed: restaurant.params?.fixed || "",
+        per_km: restaurant.params?.per_km || "",
+        min_fee: restaurant.params?.min_fee || "",
+        included_km: restaurant.params?.included_km || "",
+        effective_from: restaurant.effective?.from
+          ? restaurant.effective.from.substring(0, 10) // ⬅ RIGHT HERE
+          : "",
+        effective_to: restaurant.effective?.to
+          ? restaurant.effective.to.substring(0, 10) // ⬅ AND HERE
+          : "",
+        status: restaurant.status,
+        priority: restaurant.priority,
       });
+      setSelectedRestaurant(restaurant.requestor_id);
     }
-  }, [overrideData]);
+  }, [restaurant]);
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -84,6 +97,7 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
   });
 
   const [mutateUpdate] = useMutation(updateRequestorOverride, {
+    refetchQueries: [{ query: getRestaurantRequestorOverrideList }],
     onCompleted: (res) => {
       console.log({ res });
       setSuccess("Override saved successfully!");
@@ -93,7 +107,33 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
     },
   });
 
-  console.log({ values });
+  console.log({ selectedRestaurant });
+
+  const [fetchRestaurants, { loading: loadingRestaurants }] = useLazyQuery(
+    searchRestaurants,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
+
+  const handleRestaurantSelect = (newValue) => {
+    console.log({ newValue });
+    setSelectedRestaurant(newValue);
+  };
+
+  const debouncedSearchRestaurants = useMemo(
+    () =>
+      debounce((value) => {
+        if (value.trim()) {
+          fetchRestaurants({ variables: { search: value } }).then((res) => {
+            setRestaurantOptions(res.data?.searchRestaurants || []);
+          });
+        }
+      }, 300),
+    [fetchRestaurants]
+  );
+
+  console.log({ restaurant });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -105,16 +145,17 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
       ])
     );
 
-    if (overrideData) {
+    if (restaurant) {
       mutateUpdate({
         variables: {
-          id: restaurantId,
+          id: restaurant._id,
           input: {
             ...cleanedInput,
-            requestor_id: restaurantId,
+            requestor_id: restaurant.requestor_id._id,
             fixed: parseFloat(values.fixed),
             min_fee: parseFloat(values.min_fee),
             included_km: parseFloat(values.included_km),
+            per_km: parseFloat(values.per_km),
           },
         },
       });
@@ -123,10 +164,11 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
         variables: {
           input: {
             ...cleanedInput,
-            requestor_id: restaurantId,
+            requestor_id: selectedRestaurant._id,
             fixed: parseFloat(values.fixed),
             min_fee: parseFloat(values.min_fee),
             included_km: parseFloat(values.included_km),
+            per_km: parseFloat(values.per_km),
           },
         },
       });
@@ -142,15 +184,101 @@ const RestaurantDeliveryForm = ({ onClose, overrideData }) => {
       <Box className={classes.flexRow}>
         <Box item className={classes.headingBlack}>
           <Typography variant="h6" className={classes.textWhite}>
-            {!overrideData
+            {!restaurant
               ? t("Add Requestor Override")
-              : t("Edit Requestor Override")}
+              : `${t("Edit Requestor Override")} for ${
+                  restaurant?.requestor_id?.name
+                }`}
           </Typography>
         </Box>
       </Box>
 
       <Box className={classes.form}>
         <form onSubmit={handleSubmit}>
+          {!restaurant ? (
+            <Box>
+              <Typography className={classes.labelText}>
+                {t("businesses")}
+              </Typography>
+              <Autocomplete
+                // multiple
+                options={restaurantOptions || []}
+                value={selectedRestaurant}
+                onChange={(e, newValue) => handleRestaurantSelect(newValue)}
+                isOptionEqualToValue={(option, value) =>
+                  option._id === value._id
+                }
+                onInputChange={(event, inputValue) => {
+                  debouncedSearchRestaurants(inputValue);
+                }}
+                getOptionLabel={(option) => option.name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Select Business"
+                    className={globalClasses.input}
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        color: "black",
+                        "& fieldset": { border: "none" }, // ❌ remove border
+                        "&:hover fieldset": { border: "none" },
+                        "&.Mui-focused fieldset": { border: "none" },
+                      },
+                    }}
+                  />
+                )}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props} key={option._id}>
+                    <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                    <ListItemText
+                      primary={option.name}
+                      style={{ textTransform: "capitalize", color: "#000" }}
+                    />
+                  </li>
+                )}
+                disableCloseOnSelect
+                sx={{
+                  width: "100%", // ✅ or a fixed width like '300px'
+                  "& .MuiAutocomplete-inputRoot": {
+                    flexWrap: "wrap",
+                    paddingRight: "8px",
+                    alignItems: "flex-start", // keeps label up
+                  },
+                  "& .MuiAutocomplete-tag": {
+                    maxWidth: "100%", // ensures long chip labels wrap or truncate
+                  },
+                  margin: "0 0 0 0",
+                  padding: "0px 0px",
+                  "& .MuiOutlinedInput-root": {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none", // ✅ remove border including on focus
+                    },
+                  },
+                  "& .MuiChip-root": {
+                    backgroundColor: "#f0f0f0", // ✅ light background
+                    color: "#000", // ✅ black text
+                    fontWeight: 500,
+                    margin: "2px", // spacing between chips
+                  },
+                  "& .MuiChip-deleteIcon": {
+                    color: "#888", // Optional: change delete icon color
+                    "&:hover": {
+                      color: "#000",
+                    },
+                  },
+                }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      color: "black", // Text color
+                      backgroundColor: "white", // Optional: background for contrast
+                    },
+                  },
+                }}
+              />
+            </Box>
+          ) : null}
           {/* Service */}
           <Box mt={2}>
             <Typography className={classes.labelText}>

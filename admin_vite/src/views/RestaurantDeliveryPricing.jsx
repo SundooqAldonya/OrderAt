@@ -19,6 +19,7 @@ import {
   REMOVE_CITY,
   getCities,
   getRestaurantRequestorOverride,
+  getRestaurantRequestorOverrideList,
   toggleCityActive,
 } from "../apollo";
 import CustomLoader from "../components/Loader/CustomLoader";
@@ -45,17 +46,14 @@ const RestaurantDeliveryPricing = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
-  const [city, setCity] = useState(null);
+  const [restaurant, setRestaurant] = useState(null);
   const [type, setType] = useState("");
   const restaurantId = localStorage.getItem("restaurantId");
   const globalClasses = useGlobalStyles();
 
-  const { data, loading, refetch } = useQuery(getRestaurantRequestorOverride, {
-    variables: {
-      id: restaurantId,
-    },
-    skip: !restaurantId,
-  });
+  const { data, loading, refetch } = useQuery(
+    getRestaurantRequestorOverrideList
+  );
 
   console.log({ data });
 
@@ -84,18 +82,18 @@ const RestaurantDeliveryPricing = () => {
 
   const toggleModal = (item) => {
     setOpenEdit(!openEdit);
-    setCity(item);
+    setRestaurant(item);
   };
   const closeEditModal = () => {
     setOpenEdit(false);
   };
 
-  const overrideData = data?.getRestaurantRequestorOverride || null;
+  const dataList = data?.getRestaurantRequestorOverrideList || null;
 
   const columns = [
     {
-      name: t("Title"),
-      selector: (row) => row.title,
+      name: t("Name"),
+      selector: (row) => row.requestor_id.name,
       sortable: true,
     },
     {
@@ -139,7 +137,7 @@ const RestaurantDeliveryPricing = () => {
         {/* {row.isActive} */}
         <Switch
           size="small"
-          defaultChecked={row.isActive}
+          defaultChecked={row.status === "ACTIVE"}
           onChange={(_event) => {
             mutateActive({ variables: { id: row._id } });
           }}
@@ -214,7 +212,7 @@ const RestaurantDeliveryPricing = () => {
     <Fragment>
       <Header />
       <Container className={globalClasses.flex} fluid>
-        <RestaurantDeliveryForm overrideData={overrideData} />
+        <RestaurantDeliveryForm />
         {success && (
           <Alert
             className={globalClasses.alertSuccess}
@@ -226,7 +224,7 @@ const RestaurantDeliveryPricing = () => {
         )}
         {error ? <span>{`Error! ${error.message}`}</span> : null}
         {loading ? <CustomLoader /> : null}
-        {/* {data && (
+        {data && (
           <DataTable
             subHeader={true}
             subHeaderComponent={
@@ -238,7 +236,7 @@ const RestaurantDeliveryPricing = () => {
             }
             title={<TableHeader title={t("Cities")} />}
             columns={columns}
-            data={cities}
+            data={dataList}
             pagination
             progressPending={loading}
             progressComponent={<CustomLoader />}
@@ -247,7 +245,7 @@ const RestaurantDeliveryPricing = () => {
             customStyles={customStyles}
             selectableRows
           />
-        )} */}
+        )}
         <Modal
           style={{
             width: "70%",
@@ -260,7 +258,10 @@ const RestaurantDeliveryPricing = () => {
             toggleModal();
           }}
         >
-          <CityForm city={city} onClose={closeEditModal} />
+          <RestaurantDeliveryForm
+            restaurant={restaurant}
+            onClose={closeEditModal}
+          />
         </Modal>
       </Container>
     </Fragment>

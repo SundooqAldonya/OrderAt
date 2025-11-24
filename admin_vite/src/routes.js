@@ -471,12 +471,12 @@ const routes = [
   },
   {
     path: "/delivery-pricing",
-    name: "Delivery Pricing",
+    name: "Business Pricing",
     icon: LocationIcon,
     component: RestaurantDeliveryPricing,
-    layout: "/admin",
+    layout: "/super_admin",
     appearInSidebar: true,
-    admin: false,
+    admin: true,
   },
   {
     path: "/deliveryPrices",

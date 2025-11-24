@@ -2,6 +2,16 @@ const RequestorOverride = require('../../models/RequestorOverride')
 
 module.exports = {
   Query: {
+    async getRestaurantRequestorOverrideList(_, args) {
+      try {
+        const reqOverride = await RequestorOverride.find().populate(
+          'requestor_id'
+        )
+        return reqOverride
+      } catch (err) {
+        throw err
+      }
+    },
     async getRestaurantRequestorOverride(_, args) {
       try {
         const reqOverride = await RequestorOverride.findOne({
@@ -43,36 +53,72 @@ module.exports = {
         throw err
       }
     },
-    async updateRequestorOverride(_, { input }) {
+    async updateRequestorOverride(_, { id, input }) {
       try {
-        await RequestorOverride.updateOne(
-          { _id: args.id },
+        // const result = await RequestorOverride.findById(id)
+        // console.log({ result })
+        const normalizedParams = normalizeParams(input.model, input)
+        const result = await RequestorOverride.updateOne(
+          { _id: id },
           {
-            // country: input.country,
-            // city: input.city,
-            requestor_type: input.requestor_type,
-            requestor_id: input.requestor_id,
-            service: input.service,
-            model: input.model,
-            params: {
-              fixed: input.fixed,
-              per_km: input.per_km,
-              min_fee: input.min_fee,
-              included_km: input.included_km
-            },
-            effective: {
-              from: input.effective_from,
-              to: input.effective_to
-            },
-            status: input.status,
-            priority: input.priority
+            $set: {
+              requestor_type: input.requestor_type,
+              // requestor_id: input.requestor_id,
+              service: input.service,
+              model: input.model,
+              params: normalizedParams,
+              'effective.from': input.effective_from
+                ? new Date(input.effective_from)
+                : null,
+              'effective.to': input.effective_to
+                ? new Date(input.effective_to)
+                : null,
+              status: input.status,
+              priority: input.priority
+            }
           }
         )
+
+        if (result.matchedCount === 0) {
+          throw new Error('No document found with this ID')
+        }
 
         return { message: 'request_override_created_successfully' }
       } catch (err) {
         throw err
       }
     }
+  }
+}
+
+// helpers
+function normalizeParams(model, input) {
+  switch (model) {
+    case 'FIXED':
+      return {
+        fixed: input.fixed ?? null,
+        per_km: null,
+        min_fee: null,
+        included_km: null
+      }
+
+    case 'PER_KM':
+      return {
+        fixed: null,
+        per_km: input.per_km ?? null,
+        min_fee: input.min_fee ?? null,
+        included_km: null
+      }
+
+    case 'HYBRID':
+      return {
+        fixed: input.fixed ?? null,
+        per_km: input.per_km ?? null,
+        min_fee: input.min_fee ?? null,
+        included_km: input.included_km ?? null
+      }
+
+    default:
+      throw new Error('Invalid pricing model selected.')
   }
 }
