@@ -1105,3 +1105,22 @@ export const CREATE_ZONE_PRICING = gql`
     }
   }
 `;
+
+export const createRequestorOverride = gql`
+  mutation createRequestorOverride($input: RequestorOverrideInput!) {
+    createRequestorOverride(input: $input) {
+      message
+    }
+  }
+`;
+
+export const updateRequestorOverride = gql`
+  mutation updateRequestorOverride(
+    $id: String!
+    $input: RequestorOverrideInput!
+  ) {
+    updateRequestorOverride(id: $id, input: $input) {
+      message
+    }
+  }
+`;

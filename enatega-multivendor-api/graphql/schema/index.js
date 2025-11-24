@@ -1648,7 +1648,36 @@ const typeDefs = gql`
     to: String
   }
 
+  type RequestorOverride {
+    _id: String
+    country: String
+    city: String
+    requestor_type: String
+    requestor_id: String
+    service: String
+    model: String
+    params: RequestorOverrideParams
+    effective: RequestorOverrideEffective
+    status: String
+    priority: Int
+    createdAt: Date
+    updatedAt: Date
+  }
+
+  type RequestorOverrideParams {
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+  }
+
+  type RequestorOverrideEffective {
+    from: Date
+    to: Date
+  }
+
   type Query {
+    getRestaurantRequestorOverride(id: String!): RequestorOverride
     getSingleDeliveryZoneTimeRangeMashaweer(lat: Float, lng: Float): Boolean
     getSingleDeliveryZoneTimeRange(id: String): RangeFromTo
     getCustomerAppBanner: Banner!
@@ -2190,7 +2219,29 @@ const typeDefs = gql`
     surgeMultiplier: Float
   }
 
+  input RequestorOverrideInput {
+    country: String
+    city: String
+    requestor_id: ID!
+    requestor_type: String!
+    service: String!
+    model: String!
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+    effective_from: Date
+    effective_to: Date
+    status: String
+    priority: Int
+  }
+
   type Mutation {
+    updateRequestorOverride(
+      id: String!
+      input: RequestorOverrideInput!
+    ): Message
+    createRequestorOverride(input: RequestorOverrideInput!): Message
     createZonePricing(input: CreateZonePricingInput): Message
     phonesUncheckedOrdersUpdate(phones: [String!]!): Message
     adjustDeliveryZoneTime(id: String, from: String, to: String): Message

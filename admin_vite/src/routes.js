@@ -76,8 +76,10 @@ import NotificationsScreen from "./views/NotificationsScreen";
 import OtlobMandoob from "./views/OtlobMandoob";
 import PrepaidDeliveryPackages from "./views/PrepaidDeliveryPackages";
 import MultiStepperForm from "./views/MultiStepperForm";
+import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
+import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 
-var routes = [
+const routes = [
   {
     path: "/dashboard",
     name: "Home",
@@ -468,9 +470,18 @@ var routes = [
     admin: false,
   },
   {
+    path: "/delivery-pricing",
+    name: "Delivery Pricing",
+    icon: LocationIcon,
+    component: RestaurantDeliveryPricing,
+    layout: "/admin",
+    appearInSidebar: true,
+    admin: false,
+  },
+  {
     path: "/deliveryPrices",
     name: "Delivery Prices",
-    icon: LocationIcon,
+    icon: DeliveryDiningIcon,
     component: DeliveryPrices,
     layout: "/super_admin",
     appearInSidebar: true,

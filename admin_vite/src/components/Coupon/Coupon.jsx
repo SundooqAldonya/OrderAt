@@ -187,10 +187,6 @@ function CouponComponent({ coupon, onClose }) {
     searchRestaurants,
     {
       fetchPolicy: "no-cache",
-      // onCompleted: (data) => {
-      //   console.log({ data });
-      //   setRestaurantOptions(data?.searchRestaurants || []);
-      // },
     }
   );
 

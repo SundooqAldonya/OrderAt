@@ -45,6 +45,7 @@ const prepaidDeliveryPackage = require('./prepaidDeliveryPackage')
 const dispatchOptions = require('./dispatchOptions')
 const riderReviews = require('./riderReviews')
 const deliveryZonePricing = require('./deliveryZonePricing')
+const requestorOverride = require('./requestorOverride')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -92,7 +93,8 @@ const rootResolver = {
     ...prepaidDeliveryPackage.Query,
     ...dispatchOptions.Query,
     ...riderReviews.Query,
-    ...deliveryZonePricing.Query
+    ...deliveryZonePricing.Query,
+    ...requestorOverride.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -139,7 +141,8 @@ const rootResolver = {
     ...prepaidDeliveryPackage.Mutation,
     ...dispatchOptions.Mutation,
     ...riderReviews.Mutation,
-    ...deliveryZonePricing.Mutation
+    ...deliveryZonePricing.Mutation,
+    ...requestorOverride.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

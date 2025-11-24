@@ -1435,6 +1435,7 @@ export const getSingleDeliveryZoneTimeRange = gql`
     }
   }
 `;
+
 export const getAllDeliveryZonesByCity = gql`
   query GetAllDeliveryZonesByCity($cityId: String!) {
     getAllDeliveryZonesByCity(cityId: $cityId) {
@@ -1446,6 +1447,34 @@ export const getAllDeliveryZonesByCity = gql`
       }
       isActive
       city
+    }
+  }
+`;
+
+export const getRestaurantRequestorOverride = gql`
+  query GetRestaurantRequestorOverride($id: String!) {
+    getRestaurantRequestorOverride(id: $id) {
+      _id
+      country
+      city
+      requestor_type
+      requestor_id
+      service
+      model
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      effective {
+        from
+        to
+      }
+      status
+      priority
+      createdAt
+      updatedAt
     }
   }
 `;
