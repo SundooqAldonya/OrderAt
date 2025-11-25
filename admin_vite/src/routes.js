@@ -78,6 +78,7 @@ import PrepaidDeliveryPackages from "./views/PrepaidDeliveryPackages";
 import MultiStepperForm from "./views/MultiStepperForm";
 import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
+import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
 
 const routes = [
   {
@@ -470,7 +471,7 @@ const routes = [
     admin: false,
   },
   {
-    path: "/delivery-pricing",
+    path: "/business-delivery-pricing",
     name: "Business Pricing",
     icon: LocationIcon,
     component: RestaurantDeliveryPricing,
@@ -482,7 +483,8 @@ const routes = [
     path: "/deliveryPrices",
     name: "Delivery Prices",
     icon: DeliveryDiningIcon,
-    component: DeliveryPrices,
+    // component: DeliveryPrices,
+    component: DeliveryZonePricingV2,
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,

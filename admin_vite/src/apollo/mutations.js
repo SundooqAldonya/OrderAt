@@ -1124,3 +1124,11 @@ export const updateRequestorOverride = gql`
     }
   }
 `;
+
+export const upsertZonePricing = gql`
+  mutation upsertZonePricing($input: DeliveryPriceV2Input!) {
+    upsertZonePricing(input: $input) {
+      message
+    }
+  }
+`;

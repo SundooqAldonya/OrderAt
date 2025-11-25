@@ -46,6 +46,7 @@ const dispatchOptions = require('./dispatchOptions')
 const riderReviews = require('./riderReviews')
 const deliveryZonePricing = require('./deliveryZonePricing')
 const requestorOverride = require('./requestorOverride')
+const deliveryZonePricingV2 = require('./deliveryZonePricingV2')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -94,7 +95,8 @@ const rootResolver = {
     ...dispatchOptions.Query,
     ...riderReviews.Query,
     ...deliveryZonePricing.Query,
-    ...requestorOverride.Query
+    ...requestorOverride.Query,
+    ...deliveryZonePricingV2.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -142,7 +144,8 @@ const rootResolver = {
     ...dispatchOptions.Mutation,
     ...riderReviews.Mutation,
     ...deliveryZonePricing.Mutation,
-    ...requestorOverride.Mutation
+    ...requestorOverride.Mutation,
+    ...deliveryZonePricingV2.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

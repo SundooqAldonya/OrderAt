@@ -1508,3 +1508,57 @@ export const getRestaurantRequestorOverrideList = gql`
     }
   }
 `;
+
+export const getAllZonePricing = gql`
+  query GetAllZonePricing {
+    getAllZonePricing {
+      _id
+      city {
+        _id
+        title
+      }
+      originZone {
+        _id
+        title
+        city
+        isActive
+      }
+      destinationZone {
+        _id
+        title
+        city
+        isActive
+      }
+      baseFare
+      perKmRate
+      minFare
+      surgeMultiplier
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const getZonePricingById = gql`
+  query GetZonePricingById($id: String!) {
+    getZonePricingById(id: $id) {
+      _id
+      originZone {
+        _id
+        title
+      }
+      destinationZone {
+        _id
+        title
+      }
+      baseFare
+      perKmRate
+      minFare
+      surgeMultiplier
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;

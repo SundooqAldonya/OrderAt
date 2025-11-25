@@ -28,28 +28,63 @@ module.exports = {
 
         // console.log({ orders })
         // console.log({ city: orders[0].restaurant.city })
+        if (orders?.length) {
+          for (const order of orders) {
+            const restaurant = order.restaurant
 
-        for (const order of orders) {
-          const restaurant = order.restaurant
+            // if (!restaurant || !restaurant.city) continue
 
-          // if (!restaurant || !restaurant.city) continue
+            const cityId = restaurant.city.toString()
 
-          const cityId = restaurant.city.toString()
+            if (cityId !== TARGET_CITY_ID) continue
 
-          if (cityId !== TARGET_CITY_ID) continue
+            const expiration = order.preparationTime
+            console.log(
+              'now is larger than expiration time? ',
+              now >= expiration
+            )
 
-          const expiration = order.preparationTime
-          console.log('now is larger than expiration time? ', now >= expiration)
+            if (now >= expiration) {
+              if (conf?.phonesUncheckedOrders?.length) {
+                const phones = conf?.phonesUncheckedOrders
+                if (phones?.length) {
+                  for (const phone of phones) {
+                    const body = {
+                      username: 'w8pRT869',
+                      password: 'Oqo48lklp',
+                      sendername: 'Kayan',
+                      phone: `+2${phone}`,
+                      message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
+                    }
 
-          if (now >= expiration) {
-            if (conf?.phonesUncheckedOrders?.length) {
-              const phones = conf?.phonesUncheckedOrders
-              phones?.forEach(async phone => {
+                    await sendSMS({ body })
+                  }
+
+                  // Save ONCE at the end
+                  order.notifiedUnassigned = true
+                  await order.save()
+                }
+                // phones?.forEach(async phone => {
+                //   const body = {
+                //     username: 'w8pRT869',
+                //     password: 'Oqo48lklp',
+                //     sendername: 'Kayan',
+                //     phone: `+2${phone}`,
+                //     message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
+                //   }
+                //   await sendSMS({
+                //     body
+                //   })
+
+                //   order.notifiedUnassigned = true
+                //   await order.save()
+                // })
+              } else {
                 const body = {
                   username: 'w8pRT869',
                   password: 'Oqo48lklp',
                   sendername: 'Kayan',
-                  phone: `+2${phone}`,
+                  phone: '+201065258980',
                   message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
                 }
                 await sendSMS({
@@ -58,21 +93,7 @@ module.exports = {
 
                 order.notifiedUnassigned = true
                 await order.save()
-              })
-            } else {
-              const body = {
-                username: 'w8pRT869',
-                password: 'Oqo48lklp',
-                sendername: 'Kayan',
-                phone: '+201065258980',
-                message: `⚠️ اوردرات - ${order.orderId}: لقد تجاوز الطلب وقت تحضيره ولا يزال غير مخصص لأي سائق.`
               }
-              await sendSMS({
-                body
-              })
-
-              order.notifiedUnassigned = true
-              await order.save()
             }
           }
         }

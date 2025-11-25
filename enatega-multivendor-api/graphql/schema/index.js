@@ -1676,7 +1676,23 @@ const typeDefs = gql`
     to: Date
   }
 
+  type DeliveryPriceV2 {
+    _id: String!
+    city: CityArea
+    originZone: DeliveryZone!
+    destinationZone: DeliveryZone!
+    baseFare: Float!
+    perKmRate: Float!
+    minFare: Float!
+    surgeMultiplier: Float!
+    isActive: Boolean!
+    createdAt: Date
+    updatedAt: Date
+  }
+
   type Query {
+    getAllZonePricing: [DeliveryPriceV2!]!
+    getZonePricingById(id: String!): DeliveryPriceV2
     getRestaurantRequestorOverrideList: [RequestorOverride]
     getRestaurantRequestorOverride(id: String!): RequestorOverride
     getSingleDeliveryZoneTimeRangeMashaweer(lat: Float, lng: Float): Boolean
@@ -2237,7 +2253,21 @@ const typeDefs = gql`
     priority: Int
   }
 
+  input DeliveryPriceV2Input {
+    id: String
+    city: String
+    originZone: String!
+    destinationZone: String!
+    baseFare: Float!
+    perKmRate: Float!
+    minFare: Float!
+    surgeMultiplier: Float
+    isActive: Boolean
+  }
+
   type Mutation {
+    upsertZonePricing(id: String, input: DeliveryPriceV2Input!): Message
+    deleteZonePricing(id: String!): Message
     updateRequestorOverride(
       id: String!
       input: RequestorOverrideInput!

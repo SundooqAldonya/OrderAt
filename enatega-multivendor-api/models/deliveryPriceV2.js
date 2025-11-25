@@ -2,6 +2,12 @@ const { Schema, model } = require('mongoose')
 
 const deliveryPriceSchema = new Schema(
   {
+    city: {
+      type: Schema.Types.ObjectId,
+      ref: 'City',
+      required: true
+    },
+
     originZone: {
       type: Schema.Types.ObjectId,
       ref: 'DeliveryZone',
