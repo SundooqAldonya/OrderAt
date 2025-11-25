@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 
 const CountryPricingSchema = new mongoose.Schema(
   {
-    country: { type: String, required: true },
+    country: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Country',
+      required: true
+    }, // e.g. "EG", "SA", "AE"
 
     service: {
       type: String,
@@ -12,7 +16,7 @@ const CountryPricingSchema = new mongoose.Schema(
 
     model: {
       type: String,
-      enum: ['FIXFIXED', 'PER_KM', 'HYBRID'],
+      enum: ['FIXED', 'PER_KM', 'HYBRID'],
       required: true
     },
 
@@ -21,13 +25,6 @@ const CountryPricingSchema = new mongoose.Schema(
       per_km: Number,
       min_fee: Number,
       included_km: Number
-    },
-
-    surgeMultiplier: { type: Number, default: 1 },
-
-    effective: {
-      from: { type: Date, default: null },
-      to: { type: Date, default: null }
     },
 
     status: {

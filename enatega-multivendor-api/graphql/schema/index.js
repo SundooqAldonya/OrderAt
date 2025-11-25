@@ -1708,7 +1708,27 @@ const typeDefs = gql`
     included_km: Float
   }
 
+  type CountryPricing {
+    _id: ID!
+    country: String!
+    service: String!
+    model: String!
+    params: CountryPricingParams
+    status: String!
+    createdAt: Date
+    updatedAt: Date
+  }
+
+  type CountryPricingParams {
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+  }
+
   type Query {
+    getAllCountryPricing(country: String): [CountryPricing!]!
+    getCountryPricingById(id: String!): CountryPricing
     getAllCityPricing(city: String): [CityPricing!]!
     getCityPricingById(id: String!): CityPricing
     getAllZonePricing: [DeliveryPriceV2!]!
@@ -2297,7 +2317,20 @@ const typeDefs = gql`
     status: String
   }
 
+  input CountryPricingInput {
+    country: String!
+    service: String!
+    model: String!
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+    status: String
+  }
+
   type Mutation {
+    upsertCountryPricing(id: ID, input: CountryPricingInput!): Message!
+    deleteCountryPricing(id: ID!): Boolean!
     upsertCityPricing(id: ID, input: CityPricingInput!): Message!
     deleteCityPricing(id: ID!): Boolean!
     upsertZonePricing(id: String, input: DeliveryPriceV2Input!): Message
