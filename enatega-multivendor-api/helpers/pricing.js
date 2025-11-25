@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
 const RequestorOverride = require('../models/RequestorOverride')
 const Configuration = require('../models/configuration')
 const DeliveryZone = require('../models/deliveryZone')
-const DeliveryPriceV2 = require('../models/deliveryPriceV2')
+// const DeliveryPriceV2 = require('../models/deliveryPriceV2')
+const DeliveryPrice = require('../models/DeliveryPrice')
 const PrepaidDeliveryPackage = require('../models/prepaidDeliveryPackage')
 const CityPricing = require('../models/CityPricing')
 const CountryPricing = require('../models/CountryPricing')
@@ -161,34 +161,49 @@ async function calculateUnifiedDeliveryFee({
   // --------------------------------------------------
   // 3. ZONE → ZONE PRICING
   // --------------------------------------------------
-  if (!amount && originZone && destinationZone) {
-    const zoneRule = await DeliveryPriceV2.findOne({
+  // OLD model zone pricing
+  if (originZone && destinationZone) {
+    const zoneRule = await DeliveryPrice.findOne({
       $or: [
         { originZone: originZone._id, destinationZone: destinationZone._id },
         { originZone: destinationZone._id, destinationZone: originZone._id }
-      ],
-      isActive: true
-    }).lean()
+      ]
+    })
 
     if (zoneRule) {
-      const base = zoneRule.baseFare || 0
-      const perKm = zoneRule.perKmRate || 0
-      const surge = zoneRule.surgeMultiplier || 1
-
-      let total = (base + perKm * distanceKm) * surge
-      if (total < zoneRule.minFare) total = zoneRule.minFare
-
-      amount = total
-      matchedRuleId = zoneRule._id
-
+      amount = zoneRule.cost
       breakdown.modelSource = 'AREA_TO_AREA'
-      breakdown.params = {
-        baseFare: base,
-        perKmRate: perKm,
-        surgeMultiplier: surge
-      }
+      matchedRuleId = zoneRule._id
     }
   }
+  // if (!amount && originZone && destinationZone) {
+  //   const zoneRule = await DeliveryPriceV2.findOne({
+  //     $or: [
+  //       { originZone: originZone._id, destinationZone: destinationZone._id },
+  //       { originZone: destinationZone._id, destinationZone: originZone._id }
+  //     ],
+  //     isActive: true
+  //   }).lean()
+
+  //   if (zoneRule) {
+  //     const base = zoneRule.baseFare || 0
+  //     const perKm = zoneRule.perKmRate || 0
+  //     const surge = zoneRule.surgeMultiplier || 1
+
+  //     let total = (base + perKm * distanceKm) * surge
+  //     if (total < zoneRule.minFare) total = zoneRule.minFare
+
+  //     amount = total
+  //     matchedRuleId = zoneRule._id
+
+  //     breakdown.modelSource = 'AREA_TO_AREA'
+  //     breakdown.params = {
+  //       baseFare: base,
+  //       perKmRate: perKm,
+  //       surgeMultiplier: surge
+  //     }
+  //   }
+  // }
 
   // --------------------------------------------------
   // 4. CITY PRICING
