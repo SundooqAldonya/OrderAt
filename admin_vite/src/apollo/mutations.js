@@ -1132,3 +1132,17 @@ export const upsertZonePricing = gql`
     }
   }
 `;
+
+export const upsertCityPricing = gql`
+  mutation UpsertCityPricing($id: ID, $input: CityPricingInput!) {
+    upsertCityPricing(id: $id, input: $input) {
+      message
+    }
+  }
+`;
+
+export const deleteCityPricing = gql`
+  mutation DeleteCityPricing($id: ID!) {
+    deleteCityPricing(id: $id)
+  }
+`;

@@ -62,6 +62,12 @@ async function getConfig() {
   }
 }
 
+function legacyCalculateAmount(costType, deliveryRate, distance) {
+  if (!distance) return deliveryRate || 0
+  if (costType === 'PER_KM') return (deliveryRate || 0) * distance
+  return deliveryRate || 0
+}
+
 // -------------------------
 // MAIN FUNCTION
 // -------------------------

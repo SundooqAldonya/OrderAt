@@ -1562,3 +1562,46 @@ export const getZonePricingById = gql`
     }
   }
 `;
+
+export const getAllCityPricing = gql`
+  query GetAllCityPricing($city: String) {
+    getAllCityPricing(city: $city) {
+      _id
+      city {
+        _id
+        title
+      }
+      service
+      model
+      status
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const getCityPricingById = gql`
+  query GetCityPricingById($id: ID!) {
+    getCityPricingById(id: $id) {
+      _id
+      city
+      service
+      model
+      status
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

@@ -1690,7 +1690,27 @@ const typeDefs = gql`
     updatedAt: Date
   }
 
+  type CityPricing {
+    _id: String!
+    city: CityArea!
+    service: String!
+    model: String!
+    params: CityPricingParams
+    status: String!
+    createdAt: Date
+    updatedAt: Date
+  }
+
+  type CityPricingParams {
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+  }
+
   type Query {
+    getAllCityPricing(city: String): [CityPricing!]!
+    getCityPricingById(id: String!): CityPricing
     getAllZonePricing: [DeliveryPriceV2!]!
     getZonePricingById(id: String!): DeliveryPriceV2
     getRestaurantRequestorOverrideList: [RequestorOverride]
@@ -2265,7 +2285,21 @@ const typeDefs = gql`
     isActive: Boolean
   }
 
+  input CityPricingInput {
+    id: String
+    city: String!
+    service: String!
+    model: String!
+    fixed: Float
+    per_km: Float
+    min_fee: Float
+    included_km: Float
+    status: String
+  }
+
   type Mutation {
+    upsertCityPricing(id: ID, input: CityPricingInput!): Message!
+    deleteCityPricing(id: ID!): Boolean!
     upsertZonePricing(id: String, input: DeliveryPriceV2Input!): Message
     deleteZonePricing(id: String!): Message
     updateRequestorOverride(

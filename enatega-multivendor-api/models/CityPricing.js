@@ -2,8 +2,12 @@ const mongoose = require('mongoose')
 
 const CityPricingSchema = new mongoose.Schema(
   {
-    country: { type: String, required: true },
-    city: { type: String, required: true },
+    city: {
+      // e.g. Cairo, Alexandria, Kafr
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'City',
+      required: true
+    },
 
     service: {
       type: String,
@@ -22,13 +26,6 @@ const CityPricingSchema = new mongoose.Schema(
       per_km: Number,
       min_fee: Number,
       included_km: Number
-    },
-
-    surgeMultiplier: { type: Number, default: 1 },
-
-    effective: {
-      from: { type: Date, default: null },
-      to: { type: Date, default: null }
     },
 
     status: {

@@ -79,6 +79,7 @@ import MultiStepperForm from "./views/MultiStepperForm";
 import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
+import CitiesPricing from "./views/CitiesPricing";
 
 const routes = [
   {
@@ -239,6 +240,15 @@ const routes = [
     name: "Cities",
     icon: ZonesIcon,
     component: Cities,
+    layout: "/super_admin",
+    appearInSidebar: true,
+    admin: true,
+  },
+  {
+    path: "/cities-pricing",
+    name: "Cities Pricing",
+    icon: ZonesIcon,
+    component: CitiesPricing,
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
