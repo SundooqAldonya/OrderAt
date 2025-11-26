@@ -80,6 +80,7 @@ import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
 import CitiesPricing from "./views/CitiesPricing";
+import CountriesPricing from "./views/countriesPricing";
 
 const routes = [
   {
@@ -240,6 +241,15 @@ const routes = [
     name: "Cities",
     icon: ZonesIcon,
     component: Cities,
+    layout: "/super_admin",
+    appearInSidebar: true,
+    admin: true,
+  },
+  {
+    path: "/countries-pricing",
+    name: "Countries Pricing",
+    icon: ZonesIcon,
+    component: CountriesPricing,
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,

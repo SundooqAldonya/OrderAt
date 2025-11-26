@@ -1146,3 +1146,17 @@ export const deleteCityPricing = gql`
     deleteCityPricing(id: $id)
   }
 `;
+
+export const upsertCountryPricing = gql`
+  mutation UpsertCountryPricing($id: ID, $input: CountryPricingInput!) {
+    upsertCountryPricing(id: $id, input: $input) {
+      message
+    }
+  }
+`;
+
+export const deleteCountryPricing = gql`
+  mutation DeleteCountryPricing($id: ID!) {
+    deleteCountryPricing(id: $id)
+  }
+`;

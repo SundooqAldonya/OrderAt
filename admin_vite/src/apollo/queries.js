@@ -1605,3 +1605,55 @@ export const getCityPricingById = gql`
     }
   }
 `;
+
+export const getAllCountryPricing = gql`
+  query GetAllCountryPricing($country: String) {
+    getAllCountryPricing(country: $country) {
+      _id
+      country {
+        _id
+        name
+      }
+      service
+      model
+      status
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const getCountryPricingById = gql`
+  query GetCountryPricingById($id: ID!) {
+    getCountryPricingById(id: $id) {
+      _id
+      country
+      service
+      model
+      status
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const getCountries = gql`
+  query GetCountries {
+    getCountries {
+      id
+      name
+    }
+  }
+`;

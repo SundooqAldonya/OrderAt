@@ -1,6 +1,7 @@
-const CountryPricing = require('../models/CountryPricing')
+const CountryPricing = require('../../models/CountryPricing')
 
 function normalizeParams(model, input) {
+  console.log({ model, input })
   switch (model) {
     case 'FIXED':
       return {
@@ -36,7 +37,10 @@ module.exports = {
     async getAllCountryPricing(_, { country }) {
       try {
         const filter = country ? { country } : {}
-        return await CountryPricing.find(filter).sort({ country: 1 }).lean()
+        return await CountryPricing.find(filter)
+          .populate('country')
+          .sort({ country: 1 })
+          .lean()
       } catch (err) {
         throw new Error(err.message)
       }
@@ -44,7 +48,9 @@ module.exports = {
 
     async getCountryPricingById(_, { id }) {
       try {
-        const rule = await CountryPricing.findById(id).lean()
+        const rule = await CountryPricing.findById(id)
+          .populate('country')
+          .lean()
         if (!rule) throw new Error('country_pricing_not_found')
         return rule
       } catch (err) {
@@ -55,6 +61,7 @@ module.exports = {
 
   Mutation: {
     async upsertCountryPricing(_, { id, input }) {
+      console.log('upsertCountryPricing', { id, input })
       try {
         const params = normalizeParams(input.model, input)
 
@@ -66,11 +73,14 @@ module.exports = {
           status: input.status || 'ACTIVE'
         }
 
+        console.log('here')
+
         if (id) {
+          console.log('updating country delivery pricing')
           await CountryPricing.updateOne({ _id: id }, { $set: data })
           return { message: 'country_pricing_updated_successfully' }
         }
-
+        console.log('creating country delivery pricing')
         await CountryPricing.create(data)
         return { message: 'country_pricing_created_successfully' }
       } catch (err) {

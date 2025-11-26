@@ -6,7 +6,7 @@ const CountryPricingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Country',
       required: true
-    }, // e.g. "EG", "SA", "AE"
+    },
 
     service: {
       type: String,

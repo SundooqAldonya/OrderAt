@@ -1378,6 +1378,7 @@ const typeDefs = gql`
   }
 
   type Country {
+    _id: String
     id: Int
     name: String
     latitude: String
@@ -1710,7 +1711,7 @@ const typeDefs = gql`
 
   type CountryPricing {
     _id: ID!
-    country: String!
+    country: Country
     service: String!
     model: String!
     params: CountryPricingParams
@@ -2318,7 +2319,7 @@ const typeDefs = gql`
   }
 
   input CountryPricingInput {
-    country: String!
+    country: ID!
     service: String!
     model: String!
     fixed: Float
@@ -2329,7 +2330,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    upsertCountryPricing(id: ID, input: CountryPricingInput!): Message!
+    upsertCountryPricing(id: ID, input: CountryPricingInput!): Message
     deleteCountryPricing(id: ID!): Boolean!
     upsertCityPricing(id: ID, input: CityPricingInput!): Message!
     deleteCityPricing(id: ID!): Boolean!
