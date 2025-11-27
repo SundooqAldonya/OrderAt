@@ -1160,3 +1160,11 @@ export const deleteCountryPricing = gql`
     deleteCountryPricing(id: $id)
   }
 `;
+
+export const UPDATE_GLOBAL_DELIVERY_PRICING = gql`
+  mutation UpdateGlobalDeliveryPricing($input: GlobalDeliveryPricingInput!) {
+    updateGlobalDeliveryPricing(input: $input) {
+      message
+    }
+  }
+`;

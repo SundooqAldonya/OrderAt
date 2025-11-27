@@ -49,6 +49,7 @@ const requestorOverride = require('./requestorOverride')
 const deliveryZonePricingV2 = require('./deliveryZonePricingV2')
 const cityPricing = require('./cityPricing')
 const countriesPricing = require('./countriesPricing')
+const globalDeliveryPricing = require('./globalDeliveryPricing')
 
 const rootResolver = {
   RestaurantCustomer: {
@@ -100,7 +101,8 @@ const rootResolver = {
     ...requestorOverride.Query,
     ...deliveryZonePricingV2.Query,
     ...cityPricing.Query,
-    ...countriesPricing.Query
+    ...countriesPricing.Query,
+    ...globalDeliveryPricing.Query
   },
   Mutation: {
     ...dashboardResolver.Mutation,
@@ -151,7 +153,8 @@ const rootResolver = {
     ...requestorOverride.Mutation,
     ...deliveryZonePricingV2.Mutation,
     ...cityPricing.Mutation,
-    ...countriesPricing.Mutation
+    ...countriesPricing.Mutation,
+    ...globalDeliveryPricing.Mutation
   },
   Subscription: {
     ...orderResolver.Subscription,

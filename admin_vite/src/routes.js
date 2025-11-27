@@ -78,7 +78,7 @@ import PrepaidDeliveryPackages from "./views/PrepaidDeliveryPackages";
 import MultiStepperForm from "./views/MultiStepperForm";
 import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
-import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
+// import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
 import CitiesPricing from "./views/CitiesPricing";
 import CountriesPricing from "./views/countriesPricing";
 

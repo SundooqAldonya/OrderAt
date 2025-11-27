@@ -1657,3 +1657,20 @@ export const getCountries = gql`
     }
   }
 `;
+
+export const getGlobalDeliveryPricing = gql`
+  query GetGlobalDeliveryPricing {
+    getGlobalDeliveryPricing {
+      _id
+      model
+      minimumDeliveryFee
+      params {
+        fixed
+        per_km
+        min_fee
+        included_km
+        baseFare
+      }
+    }
+  }
+`;
