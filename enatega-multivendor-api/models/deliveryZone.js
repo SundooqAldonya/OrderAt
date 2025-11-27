@@ -40,6 +40,10 @@ const deliveryZoneSchema = new Schema(
       type: Boolean,
       default: true
     },
+    country: {
+      type: Schema.Types.ObjectId,
+      ref: 'Country'
+    },
     city: {
       type: Schema.Types.ObjectId,
       ref: 'City'
