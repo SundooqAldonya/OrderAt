@@ -81,6 +81,7 @@ import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 // import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
 import CitiesPricing from "./views/CitiesPricing";
 import CountriesPricing from "./views/countriesPricing";
+import GlobalDeliveryPricing from "./views/GlobalDeliveryPricing";
 
 const routes = [
   {
@@ -250,6 +251,15 @@ const routes = [
     name: "Countries Pricing",
     icon: ZonesIcon,
     component: CountriesPricing,
+    layout: "/super_admin",
+    appearInSidebar: true,
+    admin: true,
+  },
+  {
+    path: "/global-delivery-pricing",
+    name: "Global Delivery Pricing",
+    icon: ZonesIcon,
+    component: GlobalDeliveryPricing,
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,

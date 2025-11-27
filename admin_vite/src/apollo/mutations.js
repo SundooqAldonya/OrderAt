@@ -1161,7 +1161,7 @@ export const deleteCountryPricing = gql`
   }
 `;
 
-export const UPDATE_GLOBAL_DELIVERY_PRICING = gql`
+export const updateGlobalDeliveryPricing = gql`
   mutation UpdateGlobalDeliveryPricing($input: GlobalDeliveryPricingInput!) {
     updateGlobalDeliveryPricing(input: $input) {
       message
