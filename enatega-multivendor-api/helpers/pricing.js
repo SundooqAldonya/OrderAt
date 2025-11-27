@@ -71,7 +71,7 @@ async function calculateUnifiedDeliveryFee({
   originLong,
   destLat,
   destLong,
-  serviceType = 'MASHAWEER',
+  serviceType = 'FOOD',
   requestorId = null, // business id for overrides or prepaid (restaurant)
   couponCode = null,
   clientProvidedAmount = null
@@ -130,6 +130,7 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   // 1) Requestor Override (highest priority)
   // -------------------------
+  console.log({ requestorId })
   if (requestorId) {
     try {
       const override = await RequestorOverride.findOne({
@@ -137,12 +138,14 @@ async function calculateUnifiedDeliveryFee({
         service: serviceType,
         status: 'ACTIVE'
       }).lean()
+      console.log({ override })
       if (override) {
         const computed = applyModel(
           override.model,
           override.params || {},
           distanceKm
         )
+        console.log({ computed })
         if (computed !== null) {
           amount = computed
           matchedRuleId = override._id

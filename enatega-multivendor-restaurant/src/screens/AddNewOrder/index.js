@@ -121,7 +121,8 @@ const AddNewOrder = ({ navigation }) => {
           : null,
         originLat: restaurantData?.restaurant?.location?.coordinates
           ? Number(restaurantData?.restaurant?.location?.coordinates[1])
-          : null
+          : null,
+        serviceType: 'MASHAWEER'
       }
     },
     skip: shouldSkip,

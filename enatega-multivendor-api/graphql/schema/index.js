@@ -1623,6 +1623,7 @@ const typeDefs = gql`
     destLat: Float!
     code: String
     restaurantId: String
+    serviceType: String
   }
 
   type DispatchOptions {

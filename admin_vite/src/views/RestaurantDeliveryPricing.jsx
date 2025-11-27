@@ -97,6 +97,11 @@ const RestaurantDeliveryPricing = () => {
       sortable: true,
     },
     {
+      name: t("Service"),
+      selector: (row) => row.service,
+      sortable: true,
+    },
+    {
       name: t("Active"),
       cell: (row) => <>{isActiveStatus(row)}</>,
     },

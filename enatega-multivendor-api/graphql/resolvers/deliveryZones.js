@@ -212,7 +212,8 @@ module.exports = {
           destLat,
           destLong,
           code,
-          restaurantId
+          restaurantId,
+          serviceType
         } = args.input
         // const amount = await calculateDeliveryFeeV3({
         //   originLat,
@@ -227,8 +228,8 @@ module.exports = {
           originLong,
           destLat,
           destLong,
-          // code,
-          restaurantId
+          serviceType,
+          requestorId: restaurantId || req.restaurantId
         })
         console.log({ amount })
         return amount

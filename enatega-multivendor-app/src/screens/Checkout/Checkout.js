@@ -189,7 +189,8 @@ function Checkout(props) {
         destLat: Number(location.latitude),
         originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
         originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
-        restaurantId: data?.restaurantCustomer._id
+        restaurantId: data?.restaurantCustomer._id,
+        serviceType: 'FOOD'
       }
     },
     fetchPolicy: 'network-only'
