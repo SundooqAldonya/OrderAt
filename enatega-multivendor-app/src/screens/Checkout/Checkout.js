@@ -39,6 +39,7 @@ import {
   getCoupon,
   phoneIsVerified,
   placeOrder,
+  placeOrderV3,
   updateUserName
 } from '../../apollo/mutations'
 import { moderateScale } from '../../utils/scaling'
@@ -336,7 +337,8 @@ function Checkout(props) {
     fetchPolicy: 'network-only'
   })
 
-  const [mutateOrder] = useMutation(PLACEORDER, {
+  // const [mutateOrder] = useMutation(PLACEORDER, {
+  const [mutateOrder] = useMutation(placeOrderV3, {
     onCompleted,
     onError,
     update
@@ -513,14 +515,14 @@ function Checkout(props) {
     )
   }
 
-  function update(cache, { data: { placeOrder } }) {
+  function update(cache, { data: { placeOrderV3 } }) {
     try {
-      if (placeOrder && placeOrder.paymentMethod === 'COD') {
+      if (placeOrderV3 && placeOrderV3.paymentMethod === 'COD') {
         cache.modify({
           fields: {
             orders(existingOrders = []) {
               const newOrder = cache.writeFragment({
-                data: placeOrder,
+                data: placeOrderV3,
                 fragment: gql`
                   ${orderFragment}
                 `
@@ -537,19 +539,19 @@ function Checkout(props) {
 
   async function onCompleted(data) {
     // await Analytics.track(Analytics.events.ORDER_PLACED, {
-    //   userId: data.placeOrder.user._id,
-    //   orderId: data.placeOrder.orderId,
-    //   name: data.placeOrder.user.name,
-    //   email: data.placeOrder.user.email,
-    //   restaurantName: data.placeOrder.restaurant.name,
-    //   restaurantAddress: data.placeOrder.restaurant.address,
-    //   orderPaymentMethod: data.placeOrder.paymentMethod,
-    //   orderItems: data.placeOrder.items,
-    //   orderAmount: data.placeOrder.orderAmount,
-    //   orderPaidAmount: data.placeOrder.paidAmount,
-    //   tipping: data.placeOrder.tipping,
-    //   orderStatus: data.placeOrder.orderStatus,
-    //   orderDate: data.placeOrder.orderDate
+    //   userId: data.placeOrderV3.user._id,
+    //   orderId: data.placeOrderV3.orderId,
+    //   name: data.placeOrderV3.user.name,
+    //   email: data.placeOrderV3.user.email,
+    //   restaurantName: data.placeOrderV3.restaurant.name,
+    //   restaurantAddress: data.placeOrderV3.restaurant.address,
+    //   orderPaymentMethod: data.placeOrderV3.paymentMethod,
+    //   orderItems: data.placeOrderV3.items,
+    //   orderAmount: data.placeOrderV3.orderAmount,
+    //   orderPaidAmount: data.placeOrderV3.paidAmount,
+    //   tipping: data.placeOrderV3.tipping,
+    //   orderStatus: data.placeOrderV3.orderStatus,
+    //   orderDate: data.placeOrderV3.orderDate
     // })
     if (paymentMode === 'COD') {
       // props.navigation.reset({
@@ -557,7 +559,7 @@ function Checkout(props) {
       //     { name: 'Main' },
       //     {
       //       name: 'OrderDetail',
-      //       params: { _id: data?.placeOrder?._id }
+      //       params: { _id: data?.placeOrderV3?._id }
       //     }
       //   ]
       // })
@@ -565,14 +567,14 @@ function Checkout(props) {
       clearCart()
     } else if (paymentMode === 'PAYPAL') {
       props.navigation.replace('Paypal', {
-        _id: data.placeOrder.orderId,
+        _id: data.placeOrderV3.orderId,
         currency: configuration.currency
       })
     } else if (paymentMode === 'STRIPE') {
       props.navigation.replace('StripeCheckout', {
-        _id: data.placeOrder.orderId,
-        amount: data.placeOrder.orderAmount,
-        email: data.placeOrder.user.email,
+        _id: data.placeOrderV3.orderId,
+        amount: data.placeOrderV3.orderAmount,
+        email: data.placeOrderV3.user.email,
         currency: configuration.currency
       })
     }

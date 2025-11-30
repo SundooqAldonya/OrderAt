@@ -94,6 +94,112 @@ export const placeOrder = `
     }
   }`
 
+export const placeOrderV3 = gql`
+  mutation PlaceOrderV3(
+    $restaurant: String!
+    $orderInput: [OrderInput!]!
+    $paymentMethod: String!
+    $couponCode: String
+    $tipping: Float!
+    $taxationAmount: Float!
+    $address: AddressInput!
+    $orderDate: String!
+    $isPickedUp: Boolean!
+    $deliveryCharges: Float!
+    $instructions: String
+  ) {
+    placeOrderV3(
+      restaurant: $restaurant
+      orderInput: $orderInput
+      paymentMethod: $paymentMethod
+      couponCode: $couponCode
+      tipping: $tipping
+      taxationAmount: $taxationAmount
+      address: $address
+      orderDate: $orderDate
+      isPickedUp: $isPickedUp
+      deliveryCharges: $deliveryCharges
+      instructions: $instructions
+    ) {
+      _id
+      orderId
+      restaurant {
+        _id
+        name
+        image
+        address
+        location {
+          coordinates
+        }
+      }
+      deliveryAddress {
+        location {
+          coordinates
+        }
+        deliveryAddress
+        id
+      }
+      items {
+        _id
+        title
+        food
+        description
+        quantity
+        variation {
+          _id
+          title
+          price
+          discounted
+        }
+        addons {
+          _id
+          options {
+            _id
+            title
+            description
+            price
+          }
+          title
+          description
+          quantityMinimum
+          quantityMaximum
+        }
+      }
+      user {
+        _id
+        name
+        phone
+      }
+      rider {
+        _id
+        name
+      }
+      review {
+        _id
+      }
+      paymentMethod
+      paidAmount
+      orderAmount
+      orderStatus
+      orderDate
+      expectedTime
+      isPickedUp
+      tipping
+      taxationAmount
+      createdAt
+      completionTime
+      preparationTime
+      deliveryCharges
+      acceptedAt
+      pickedAt
+      deliveredAt
+      cancelledAt
+      assignedAt
+      instructions
+    }
+  }
+`
+
 export const pushToken = `mutation PushToken($token:String){
     pushToken(token:$token){
       _id
