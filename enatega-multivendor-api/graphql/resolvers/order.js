@@ -610,6 +610,169 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    },
+
+    async checkoutCalculatePriceV3(_, args) {
+      const { cart } = args
+      const { items, tax, code, restaurantId, customerLat, customerLng } = cart
+
+      try {
+        // ===============================
+        // 1. BUILD ITEMS SUBTOTAL
+        // ===============================
+        let originalSubtotal = 0
+        let subtotal = 0
+        let subtotalDiscount = 0
+
+        let coupon = null
+        if (code) {
+          coupon = await Coupon.findOne({ code }).lean()
+        }
+
+        for (const item of items) {
+          const quantity = Number(item.quantity || 1)
+
+          const variation = await Variation.findById(item.variation._id).lean()
+          if (!variation) continue
+
+          let basePrice = variation.price
+
+          // Add addon prices
+          if (item.addons?.length > 0) {
+            for (const addon of item.addons) {
+              for (const optionSelected of addon.options) {
+                const option = await Option.findById(optionSelected._id).lean()
+                basePrice += option?.price || 0
+              }
+            }
+          }
+
+          const itemOriginalTotal = basePrice * quantity
+          originalSubtotal += itemOriginalTotal
+
+          let discountedPrice = basePrice
+
+          // -------- ITEM-LEVEL COUPON --------
+          const isItemEligible =
+            coupon?.rules?.applies_to?.includes('items') &&
+            coupon?.target?.foods?.some(
+              f => f.toString() === item._id.toString()
+            )
+
+          if (coupon && isItemEligible) {
+            const {
+              discount_type,
+              discount_value,
+              max_discount = 0
+            } = coupon.rules
+
+            if (discount_type === 'percent') {
+              const discountAmount = (discount_value / 100) * basePrice
+              const applied =
+                max_discount > 0
+                  ? Math.min(discountAmount, max_discount)
+                  : discountAmount
+              discountedPrice -= applied
+              subtotalDiscount += applied
+            } else if (discount_type === 'flat') {
+              const applied =
+                max_discount > 0
+                  ? Math.min(discount_value, max_discount)
+                  : discount_value
+              discountedPrice -= applied
+              subtotalDiscount += applied
+            }
+          }
+
+          subtotal += discountedPrice * quantity
+        }
+
+        // -------- SUBTOTAL COUPON --------
+        if (coupon?.rules?.applies_to?.includes('subtotal')) {
+          const { discount_type, discount_value, max_discount } = coupon.rules
+          if (discount_type === 'percent') {
+            const discount = (discount_value / 100) * subtotal
+            const applied = Math.min(discount, max_discount || discount)
+            subtotalDiscount += applied
+            subtotal -= applied
+          } else if (discount_type === 'flat') {
+            const applied = Math.min(
+              discount_value,
+              max_discount || discount_value
+            )
+            subtotalDiscount += applied
+            subtotal -= applied
+          }
+        }
+
+        // ===============================
+        // 2. UNIFIED DELIVERY FEE
+        // ===============================
+        const restaurant = await Restaurant.findById(restaurantId)
+
+        console.log({
+          restaurantId,
+          customerLat,
+          customerLng,
+          restaurantLoc: restaurant?.location
+        })
+
+        const {
+          amount: deliveryFee,
+          originalAmountBeforeDiscounts: originalDeliveryCharges
+        } = await calculateUnifiedDeliveryFee({
+          originLat: restaurant.location.coordinates[1],
+          originLong: restaurant.location.coordinates[0],
+          destLat: customerLat,
+          destLong: customerLng,
+          serviceType: 'FOOD',
+          requestorId: restaurantId,
+          couponCode: code || null,
+          clientProvidedAmount: null
+        })
+
+        const finalDeliveryCharges = deliveryFee
+
+        // -------- DELIVERY COUPON (already applied by unified pricing) --------
+
+        // ===============================
+        // 3. TAX CALCULATION
+        // ===============================
+        const calculatedTax = ((subtotal + finalDeliveryCharges) * tax) / 100
+
+        // ===============================
+        // 4. TOTAL
+        // ===============================
+        const total = subtotal + finalDeliveryCharges + calculatedTax
+
+        const originalTax =
+          ((originalSubtotal + originalDeliveryCharges) * tax) / 100
+
+        const originalTotal =
+          originalSubtotal + originalDeliveryCharges + originalTax
+
+        // ===============================
+        // 5. RETURN PRICING BREAKDOWN
+        // ===============================
+        const result = {
+          originalSubtotal,
+          subtotal,
+          total,
+          originalTotal,
+          tax,
+          originalDeliveryCharges,
+          finalDeliveryCharges,
+          subtotalDiscount,
+          deliveryDiscount: originalDeliveryCharges - finalDeliveryCharges // unified applied it
+        }
+        console.log({ result })
+        return {
+          ...result
+        }
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
     }
   },
   Mutation: {

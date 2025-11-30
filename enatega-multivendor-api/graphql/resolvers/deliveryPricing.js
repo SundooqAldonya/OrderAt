@@ -3,10 +3,9 @@ module.exports = {
   Query: {
     async allDeliveryPrices(_, args) {
       try {
-        const deliveryPrices = await DeliveryPrice.find().populate([
-          'originZone',
-          'destinationZone'
-        ])
+        const deliveryPrices = await DeliveryPrice.find()
+          .populate(['originZone', 'destinationZone'])
+          .sort({ _id: -1 })
         return deliveryPrices
       } catch (err) {
         throw new Error(err)

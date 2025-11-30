@@ -31,6 +31,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client/react'
 import {
   getDeliveryCalculationV2,
+  getDeliveryCalculationV3,
   getSingleDeliveryZoneTimeRangeMashaweer,
   myOrders
 } from '../../apollo/queries'
@@ -80,6 +81,7 @@ const RequestDelivery = () => {
   const regionFrom = useSelector((state) => state.requestDelivery.regionFrom)
   const regionTo = useSelector((state) => state.requestDelivery.regionTo)
   const city = useSelector((state) => state.city.city)
+  console.log({ city })
   const isArabic = i18n.language === 'ar'
   const [pickupCoords, setPickupCoords] = useState(addressInfo.regionFrom)
   const [dropOffCoords, setDropOffCoords] = useState(addressInfo.regionTo)
@@ -324,7 +326,8 @@ const RequestDelivery = () => {
   })
 
   const [fetchCalculateDelivery, { data, loading, error, refetch }] =
-    useLazyQuery(getDeliveryCalculationV2)
+    useLazyQuery(getDeliveryCalculationV3)
+  // useLazyQuery(getDeliveryCalculationV2)
 
   useEffect(() => {
     if (addressInfo.regionTo && addressInfo.regionFrom) {
@@ -335,16 +338,20 @@ const RequestDelivery = () => {
             destLong: Number(addressInfo.regionTo.longitude),
             destLat: Number(addressInfo.regionTo.latitude),
             originLong: Number(addressInfo.regionFrom.longitude),
-            originLat: Number(addressInfo.regionFrom.latitude)
+            originLat: Number(addressInfo.regionFrom.latitude),
+            serviceType: 'MASHAWEER',
+            city: city?._id
           }
         }
       })
     }
   }, [addressInfo, coupon])
 
-  const deliveryFee = data?.getDeliveryCalculationV2?.amount || null
+  console.log({ deliveryCalc: data?.getDeliveryCalculationV3 })
+
+  const deliveryFee = data?.getDeliveryCalculationV3?.amount || null
   const originalDiscount =
-    data?.getDeliveryCalculationV2?.originalDiscount || null
+    data?.getDeliveryCalculationV3?.originalAmountBeforeDiscounts || null
 
   console.log({ deliveryFee })
   console.log({ addressInfo })
@@ -445,7 +452,8 @@ const RequestDelivery = () => {
       requestChannel: 'customer_app',
       is_urgent: isUrgent,
       notes,
-      couponId: coupon?.code || null
+      couponId: coupon?.code || null,
+      city: city?._id
     }
     mutate({
       variables: {
@@ -983,6 +991,7 @@ const RequestDelivery = () => {
                   value={voucherCode}
                   onChangeText={(text) => setVoucherCode(text)}
                   style={couponStyles.modalInput}
+                  autoCapitalize='characters'
                 />
               </View>
               <TouchableOpacity

@@ -1477,6 +1477,11 @@ const typeDefs = gql`
     originalDiscount: Float
     isPrepaid: Boolean
   }
+  type AmountV3 {
+    amount: Float
+    originalAmountBeforeDiscounts: Float
+    isPrepaid: Boolean
+  }
 
   type Image {
     url: String
@@ -1528,6 +1533,15 @@ const typeDefs = gql`
     items: [ItemCart]
     deliveryCharges: Float
     tax: Float
+  }
+  input CartV3 {
+    code: String
+    items: [ItemCart]
+    deliveryCharges: Float
+    tax: Float
+    restaurantId: String
+    customerLat: Float
+    customerLng: Float
   }
 
   type CalculatePriceResult {
@@ -1624,6 +1638,7 @@ const typeDefs = gql`
     code: String
     restaurantId: String
     serviceType: String
+    city: String
   }
 
   type DispatchOptions {
@@ -1781,6 +1796,7 @@ const typeDefs = gql`
     getAllContactus(page: Int, limit: Int): PaginatedContactus
     getStockEnumValues: [String]
     checkoutCalculatePrice(cart: Cart): CalculatePriceResult
+    checkoutCalculatePriceV3(cart: CartV3): CalculatePriceResult
     coupons: [Coupon!]!
     getCouponStatuses: [String]
     getCouponDiscountTypeEnums: [String]
@@ -1829,7 +1845,7 @@ const typeDefs = gql`
       restaurantId: String
     ): Amount
     getDeliveryCalculationV2(input: DeliveryCalculationInput!): Amount
-    getDeliveryCalculationV3(input: DeliveryCalculationInput!): Amount
+    getDeliveryCalculationV3(input: DeliveryCalculationInput!): AmountV3
     getAllDeliveryZonesByCity(cityId: String!): [DeliveryZone!]
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
@@ -2157,6 +2173,7 @@ const typeDefs = gql`
     phone: String
     name: String
     couponId: String
+    city: String
   }
 
   input BusinessCategoryInput {
@@ -2431,6 +2448,7 @@ const typeDefs = gql`
     editBusinessCategory(input: BusinessCategoryInput!, id: String!): Message
     removeBusinessCategory(id: String!): Message
     createDeliveryRequestAdmin(input: CreateDeliveryRequestInput!): Message
+    createDeliveryRequestV3(input: CreateDeliveryRequestInput!): Message
     createDeliveryRequest(input: CreateDeliveryRequestInput!): Message
     createDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message

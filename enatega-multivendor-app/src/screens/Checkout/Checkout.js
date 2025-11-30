@@ -28,6 +28,7 @@ import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
 import {
   checkoutCalculatePrice,
+  checkoutCalculatePriceV3,
   getDeliveryCalculationV2,
   getDeliveryCalculationV3,
   getTipping,
@@ -186,8 +187,8 @@ function Checkout(props) {
     skip: !data,
     variables: {
       input: {
-        destLong: Number(location.longitude),
-        destLat: Number(location.latitude),
+        destLong: Number(location?.longitude),
+        destLat: Number(location?.latitude),
         originLong: Number(data?.restaurantCustomer.location.coordinates[0]),
         originLat: Number(data?.restaurantCustomer.location.coordinates[1]),
         restaurantId: data?.restaurantCustomer._id,
@@ -205,29 +206,60 @@ function Checkout(props) {
     loading: loadingCalculatePrice,
     error: errorCalculatePrice,
     refetch
-  } = useQuery(checkoutCalculatePrice, {
+  } = useQuery(checkoutCalculatePriceV3, {
     variables: {
       cart: {
         code: coupon?.code,
         tax: restaurant?.tax || 0,
-        items: cart?.map((item) => {
-          return {
-            _id: item._id,
-            price: parseFloat(item.price),
-            quantity: parseFloat(item.quantity),
-            variation: item.variation,
-            addons: item.addons
-          }
-        }),
-        deliveryCharges: amount
+        restaurantId: restaurant?._id,
+        customerLat: +location?.latitude,
+        customerLng: +location?.longitude,
+        items: cart.map((item) => ({
+          _id: item._id,
+          price: parseFloat(item.price),
+          quantity: parseFloat(item.quantity),
+          variation: item.variation,
+          addons: item.addons
+        }))
         // deliveryCharges:
         //   amount >= configuration.minimumDeliveryFee
         //     ? amount
         //     : configuration.minimumDeliveryFee
       }
     },
-    nextFetchPolicy: 'no-cache'
+    nextFetchPolicy: 'no-cache',
+    skip: !restaurant
   })
+  // const {
+  //   data: dataCalculatePrice,
+  //   loading: loadingCalculatePrice,
+  //   error: errorCalculatePrice,
+  //   refetch
+  // } = useQuery(checkoutCalculatePrice, {
+  //   variables: {
+  //     cart: {
+  //       code: coupon?.code,
+  //       tax: restaurant?.tax || 0,
+  //       items: cart?.map((item) => {
+  //         return {
+  //           _id: item._id,
+  //           price: parseFloat(item.price),
+  //           quantity: parseFloat(item.quantity),
+  //           variation: item.variation,
+  //           addons: item.addons
+  //         }
+  //       }),
+  //       deliveryCharges: amount
+  //       // deliveryCharges:
+  //       //   amount >= configuration.minimumDeliveryFee
+  //       //     ? amount
+  //       //     : configuration.minimumDeliveryFee
+  //     }
+  //   },
+  //   nextFetchPolicy: 'no-cache'
+  // })
+
+  const calculatedPrice = dataCalculatePrice?.checkoutCalculatePriceV3 || null
 
   const [mutateUserName, { loading: usernameLoading, error: usernameError }] =
     useMutation(updateUserName, {
@@ -263,8 +295,6 @@ function Checkout(props) {
         })
       }
     })
-
-  const calculatedPrice = dataCalculatePrice?.checkoutCalculatePrice || null
 
   useEffect(() => {
     if (calcData) {

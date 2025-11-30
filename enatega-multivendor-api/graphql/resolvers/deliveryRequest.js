@@ -217,6 +217,238 @@ module.exports = {
         throw new Error(err)
       }
     },
+    async createDeliveryRequestV3(_, { input }, { req }) {
+      console.log('createDeliveryRequest', { input })
+      console.log('createDeliveryUser', { user: req.user })
+
+      if (!req.user) {
+        throw new Error('User is not authenticated!')
+      }
+
+      try {
+        // =========================================
+        // 1. Calculate distance & estimate time
+        // =========================================
+        const distanceKm = calculateDistance(
+          input.pickupLat,
+          input.pickupLng,
+          input.dropoffLat,
+          input.dropoffLng
+        )
+
+        const estimatedTime = Math.ceil(distanceKm * 5)
+
+        // =========================================
+        // 2. Generate incremental requestId
+        // =========================================
+        const lastDelivery = await DeliveryRequest.findOne().sort({ _id: -1 })
+        const nextId = lastDelivery
+          ? parseInt(lastDelivery.requestId.split('-')[1]) + 1
+          : 1
+
+        // =========================================
+        // 3. UNIFIED DELIVERY PRICING
+        // =========================================
+        const {
+          amount: unifiedDeliveryCharges,
+          originalAmountBeforeDiscounts,
+          isPrepaid,
+          breakdown,
+          matchedRuleId
+        } = await calculateUnifiedDeliveryFee({
+          originLat: input.pickupLat,
+          originLong: input.pickupLng,
+          destLat: input.dropoffLat,
+          destLong: input.dropoffLng,
+          serviceType: 'MASHAWEER',
+          requestorId: req.user._id, // optional; business can override if needed
+          couponCode: input.couponId || null,
+          clientProvidedAmount: null,
+          city: input.city
+        })
+
+        console.log('UNIFIED MASHAWEER DELIVERY:', {
+          unifiedDeliveryCharges,
+          originalAmountBeforeDiscounts,
+          matchedRuleId,
+          breakdown
+        })
+
+        // =========================================
+        // 4. Create the Delivery Request record
+        // =========================================
+        const delivery = await DeliveryRequest.create({
+          customer_id: req.user._id,
+          pickup_lat: input.pickupLat,
+          pickup_lng: input.pickupLng,
+          pickup_address_text: input.pickupAddressText,
+          pickup_address_free_text: input.pickupAddressFreeText,
+          pickup_label: input.pickupLabel || 'Home',
+
+          dropoff_lat: input.dropoffLat,
+          dropoff_lng: input.dropoffLng,
+          dropoff_address_text: input.dropoffAddressText,
+          dropoff_address_free_text: input.dropoffAddressFreeText,
+          dropoff_label: input.dropoffLabel || 'Home',
+
+          notes: input.notes,
+          fare: unifiedDeliveryCharges,
+          estimated_time: estimatedTime,
+          distance_km: distanceKm,
+          request_channel: input.requestChannel,
+          priority_level: input.priorityLevel || 'standard',
+          is_urgent: input.isUrgent || false,
+          requestId: `PRIV-${nextId}`
+        })
+
+        console.log({ delivery })
+
+        // =========================================
+        // 5. Build Address & Pickup Location
+        // =========================================
+        const address = {
+          deliveryAddress: delivery.dropoff_address_text,
+          details: delivery.dropoff_address_free_text,
+          label: delivery.dropoff_label,
+          location: {
+            type: 'Point',
+            coordinates: [delivery.dropoff_lng, delivery.dropoff_lat]
+          }
+        }
+
+        const pickupLocation = {
+          type: 'Point',
+          coordinates: [delivery.pickup_lng, delivery.pickup_lat]
+        }
+
+        // =========================================
+        // 6. Find Zone via pickup location
+        // =========================================
+        const zone = await Zone.findOne({
+          location: {
+            $geoIntersects: { $geometry: pickupLocation }
+          }
+        })
+
+        if (!zone) {
+          throw new Error('no_zone')
+        }
+
+        // =========================================
+        // 7. Optional Delivery Zone Metadata
+        // =========================================
+        const deliveryZone = await DeliveryZone.findOne({
+          location: { $geoIntersects: { $geometry: pickupLocation } }
+        })
+
+        console.log({ deliveryZone })
+
+        // =========================================
+        // 8. Update coupon usage tracking
+        // =========================================
+        let couponCode = null
+        if (input.couponId) {
+          couponCode = await Coupon.findOne({ code: input.couponId })
+
+          if (couponCode) {
+            if (!couponCode.tracking.user_usage) {
+              couponCode.tracking.user_usage = new Map()
+            }
+
+            if (!(couponCode.tracking.user_usage instanceof Map)) {
+              couponCode.tracking.user_usage = new Map(
+                Object.entries(couponCode.tracking.user_usage)
+              )
+            }
+
+            const previousCount =
+              couponCode.tracking.user_usage.get(req.user._id) || 0
+            couponCode.tracking.user_usage.set(req.user._id, previousCount + 1)
+            couponCode.tracking.usage_count += 1
+            await couponCode.save()
+          }
+        }
+
+        // =========================================
+        // 9. Create ORDER (Mashaweer)
+        // =========================================
+        const order = new Order({
+          orderId: delivery.requestId,
+          user: req.user._id,
+          orderStatus: 'ACCEPTED',
+          orderAmount: unifiedDeliveryCharges,
+
+          deliveryCharges: unifiedDeliveryCharges,
+          originalDeliveryCharges: originalAmountBeforeDiscounts,
+
+          deliveryAddress: address,
+          items: [],
+
+          isActive: true,
+          tipping: 0,
+          taxationAmount: 0,
+
+          zone: zone._id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+
+          completionTime: new Date(Date.now() + 20 * 60 * 1000),
+          preparationTime: new Date(Date.now() + 10 * 60 * 1000),
+
+          pickupLocation,
+          pickupAddress:
+            delivery.pickup_address_text || delivery.pickup_address_free_text,
+          pickupAddressFreeText: input.pickupAddressFreeText,
+          pickupLabel: input.pickupLabel,
+
+          type: 'delivery_request',
+          mandoobSpecialInstructions: delivery.notes,
+
+          coupon: couponCode
+            ? {
+                _id: couponCode._id,
+                code: couponCode.code,
+                rules: couponCode.rules,
+                target: couponCode.target
+              }
+            : null
+        })
+
+        await order.save()
+
+        // =========================================
+        // 10. Dispatch / Notifications
+        // =========================================
+        const user = await User.findById(req.user._id)
+        const populatedOrder = await order.populate('user')
+
+        publishToZoneRiders(
+          populatedOrder.zone.toString(),
+          populatedOrder,
+          'new'
+        )
+        await sendPushNotification(
+          populatedOrder.zone.toString(),
+          populatedOrder
+        )
+
+        if (
+          (input.requestChannel === 'customer_app' ||
+            input.requestChannel === 'web_portal') &&
+          user &&
+          user.isOrderNotification
+        ) {
+          sendCustomerNotifications(populatedOrder.user, populatedOrder)
+        }
+
+        console.log({ populatedOrder })
+        return { message: 'created_request_delivery_successfully' }
+      } catch (err) {
+        console.error(err)
+        throw new Error(err)
+      }
+    },
+
     async createDeliveryRequestAdmin(_, { input }, { req }) {
       console.log('createDeliveryRequest', { input })
       console.log('createDeliveryUser', { user: req.user })

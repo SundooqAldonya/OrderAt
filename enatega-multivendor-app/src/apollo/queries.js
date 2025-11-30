@@ -1717,6 +1717,21 @@ export const checkoutCalculatePrice = gql`
     }
   }
 `
+export const checkoutCalculatePriceV3 = gql`
+  query CheckoutCalculatePriceV3($cart: CartV3) {
+    checkoutCalculatePriceV3(cart: $cart) {
+      total
+      subtotal
+      finalDeliveryCharges
+      subtotalDiscount
+      deliveryDiscount
+      tax
+      originalSubtotal
+      originalTotal
+      originalDeliveryCharges
+    }
+  }
+`
 export const checkDeliveryZone = gql`
   query CheckDeliveryZone($latitude: Float!, $longitude: Float!) {
     checkDeliveryZone(latitude: $latitude, longitude: $longitude) {
@@ -1974,6 +1989,7 @@ export const getDeliveryCalculationV3 = gql`
   query GetDeliveryCalculationV3($input: DeliveryCalculationInput!) {
     getDeliveryCalculationV3(input: $input) {
       amount
+      originalAmountBeforeDiscounts
     }
   }
 `

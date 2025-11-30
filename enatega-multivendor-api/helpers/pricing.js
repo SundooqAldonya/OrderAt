@@ -7,6 +7,7 @@ const CountryPricing = require('../models/CountryPricing')
 const GlobalDeliveryPricing = require('../models/globalDeliveryPricing')
 const Coupon = require('../models/coupon')
 const DeliveryZone = require('../models/deliveryZone')
+const Restaurant = require('../models/restaurant')
 
 function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   // Haversine (digit-by-digit arithmetic style)
@@ -31,7 +32,9 @@ function applyModel(model, params = {}, distanceKm) {
   const per_km = Number(params.per_km || 0)
   const min_fee = Number(params.min_fee || 0)
   const included_km = Number(params.included_km || 0)
-  const baseFare = Number(params.baseFare || params.base_fare || 0)
+  const baseFare = Number(
+    params.baseFare || params.base_fare || params.fixed || 0
+  )
 
   switch ((model || '').toUpperCase()) {
     case 'FIXED':
@@ -74,7 +77,8 @@ async function calculateUnifiedDeliveryFee({
   serviceType = 'FOOD',
   requestorId = null, // business id for overrides or prepaid (restaurant)
   couponCode = null,
-  clientProvidedAmount = null
+  clientProvidedAmount = null,
+  city = null
 }) {
   if (
     originLat === undefined ||
@@ -127,6 +131,11 @@ async function calculateUnifiedDeliveryFee({
     destinationZone = destinationZone || null
   }
 
+  console.log({ dropoffPoint, originZone, destinationZone })
+
+  // find restaurant if exists can get the city -> works with food delivery only
+  const restaurant = await Restaurant.findById(requestorId)
+
   // -------------------------
   // 1) Requestor Override (highest priority)
   // -------------------------
@@ -169,7 +178,7 @@ async function calculateUnifiedDeliveryFee({
     String(serviceType).toUpperCase() === 'FOOD'
   ) {
     try {
-      console.log('Checking business prepaid package')
+      console.log('Checking prepaid package')
       const pkg = await PrepaidDeliveryPackage.findOne({
         business: requestorId,
         isActive: true,
@@ -205,6 +214,7 @@ async function calculateUnifiedDeliveryFee({
           { originZone: destinationZone._id, destinationZone: originZone._id }
         ]
       }).lean()
+      console.log({ zoneRule })
       if (zoneRule) {
         console.log('Delivery zones pricing applied')
         amount = Number(zoneRule.cost || 0)
@@ -218,10 +228,11 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   // 4) City Pricing (originZone.city)
   // -------------------------
-  if ((amount === null || amount === undefined) && originZone?.city) {
+  const cityId = restaurant?.city || city
+  if ((amount === null || amount === undefined) && cityId) {
     try {
       const cityRule = await CityPricing.findOne({
-        city: originZone.city,
+        city: cityId,
         service: serviceType,
         status: 'ACTIVE'
       }).lean()
@@ -232,7 +243,7 @@ async function calculateUnifiedDeliveryFee({
           cityRule.params || {},
           distanceKm
         )
-        console.log('Checking business delivery config applied')
+        console.log('Checking city delivery config applied')
         amount = computed
         matchedRuleId = cityRule._id
         breakdown.modelSource = 'CITY_DEFAULT'
@@ -335,6 +346,8 @@ async function calculateUnifiedDeliveryFee({
       coupon = null
     }
 
+    console.log('Applying coupon delivery pricing config')
+
     if (coupon && coupon.rules) {
       // normalize applies_to to array of lowercase strings (defensive)
       const applies = Array.isArray(coupon.rules.applies_to)
@@ -345,6 +358,7 @@ async function calculateUnifiedDeliveryFee({
 
       // check membership
       if (applies.includes('delivery')) {
+        console.log('Coupon delivery pricing config applied')
         const discount_type = coupon.rules.discount_type
         const discount_value = Number(coupon.rules.discount_value || 0)
         const max_discount = coupon.rules.max_discount
