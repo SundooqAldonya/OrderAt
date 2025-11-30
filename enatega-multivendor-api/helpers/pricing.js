@@ -133,6 +133,7 @@ async function calculateUnifiedDeliveryFee({
   console.log({ requestorId })
   if (requestorId) {
     try {
+      console.log('Checking business delivery config')
       const override = await RequestorOverride.findOne({
         requestor_id: requestorId,
         service: serviceType,
@@ -147,6 +148,7 @@ async function calculateUnifiedDeliveryFee({
         )
         console.log({ computed })
         if (computed !== null) {
+          console.log('Business has delivery config')
           amount = computed
           matchedRuleId = override._id
           breakdown.modelSource = 'REQUESTOR_OVERRIDE'
@@ -167,6 +169,7 @@ async function calculateUnifiedDeliveryFee({
     String(serviceType).toUpperCase() === 'FOOD'
   ) {
     try {
+      console.log('Checking business prepaid package')
       const pkg = await PrepaidDeliveryPackage.findOne({
         business: requestorId,
         isActive: true,
@@ -175,6 +178,7 @@ async function calculateUnifiedDeliveryFee({
       if (pkg) {
         const remaining = (pkg.totalDeliveries || 0) - (pkg.usedDeliveries || 0)
         if (remaining > 0) {
+          console.log('Business has a prepaid package config ... applied!')
           isPrepaid = true
           amount = 0 // business covers
           matchedRuleId = pkg._id
@@ -194,6 +198,7 @@ async function calculateUnifiedDeliveryFee({
     destinationZone
   ) {
     try {
+      console.log('Checking delivery zones...')
       const zoneRule = await DeliveryPrice.findOne({
         $or: [
           { originZone: originZone._id, destinationZone: destinationZone._id },
@@ -201,6 +206,7 @@ async function calculateUnifiedDeliveryFee({
         ]
       }).lean()
       if (zoneRule) {
+        console.log('Delivery zones pricing applied')
         amount = Number(zoneRule.cost || 0)
         matchedRuleId = zoneRule._id
         breakdown.modelSource = 'AREA_TO_AREA'
@@ -219,12 +225,14 @@ async function calculateUnifiedDeliveryFee({
         service: serviceType,
         status: 'ACTIVE'
       }).lean()
+      console.log('Checking city delivery config')
       if (cityRule) {
         const computed = applyModel(
           cityRule.model,
           cityRule.params || {},
           distanceKm
         )
+        console.log('Checking business delivery config applied')
         amount = computed
         matchedRuleId = cityRule._id
         breakdown.modelSource = 'CITY_DEFAULT'
@@ -248,7 +256,7 @@ async function calculateUnifiedDeliveryFee({
       } else {
         countryFilter.country = originZone.country
       }
-
+      console.log('Checking country delivery pricing')
       const countryRule = await CountryPricing.findOne({
         ...countryFilter,
         service: serviceType,
@@ -260,6 +268,7 @@ async function calculateUnifiedDeliveryFee({
           countryRule.params || {},
           distanceKm
         )
+        console.log('Country delivery pricing applied')
         amount = computed
         matchedRuleId = countryRule._id
         breakdown.modelSource = 'COUNTRY_DEFAULT'
@@ -273,6 +282,7 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   if (amount === null || amount === undefined) {
     try {
+      console.log('Checking global delivery pricing config')
       const global = await GlobalDeliveryPricing.findOne().lean()
       // if not present, fallback to simple default
       const globalDoc = global || {
@@ -292,6 +302,7 @@ async function calculateUnifiedDeliveryFee({
       // store minimum for later guard
       breakdown.minimumDeliveryFee = globalDoc.minimumDeliveryFee || 0
       // for FIXED don't apply minimumDeliveryFee
+      console.log('Global delivery pricing applied')
       if ((globalDoc.model || '').toUpperCase() !== 'FIXED') {
         if (
           breakdown.minimumDeliveryFee &&

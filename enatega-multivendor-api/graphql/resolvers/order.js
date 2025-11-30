@@ -62,6 +62,7 @@ const { GraphQLError } = require('graphql')
 const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
 const { acceptOrderHandler } = require('../../helpers/acceptOrderHandler')
 const DeliveryPriceV2 = require('../../models/deliveryPriceV2')
+const { calculateUnifiedDeliveryFee } = require('../../helpers/pricing')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -900,306 +901,219 @@ module.exports = {
     },
     async newCheckoutPlaceOrderV3(_, args, { req }) {
       console.log('newCheckoutPlaceOrderV3', { args })
-      try {
-        const {
-          phone,
-          areaId,
-          orderAmount,
-          restaurantId,
-          addressDetails,
-          preparationTime,
-          name,
-          deliveryFee
-        } = args.input
+      // try {
+      const {
+        phone,
+        areaId,
+        orderAmount,
+        restaurantId,
+        addressDetails,
+        preparationTime,
+        name,
+        deliveryFee
+      } = args.input
 
-        const phoneNumber = normalizeAndValidatePhoneNumber(phone)
-        console.log({ phoneNumber })
-        if (!phoneNumber) throw new Error('invalid_number')
-        let user = await User.findOne({
-          phone: normalizeAndValidatePhoneNumber(phone)
-        })
-        // console.log({ user })
-        if (user && !user.name && name) {
-          user.name = name
-          await user.save()
-        }
-        const area = await Area.findById(areaId).populate('location')
-        // console.log({ areaId, area })
-        let address = {}
-        address['deliveryAddress'] = area.address
-        address['details'] = addressDetails ? addressDetails : area.address
-        address['label'] = area.title
-        address['location'] = {
-          type: 'Point',
-          coordinates: [
-            area.location.location.coordinates[0],
-            area.location.location.coordinates[1]
-          ]
-        }
-        delete address['latitude']
-        delete address['longitude']
-
-        if (!user) {
-          user = new User({
-            name: name ? name : 'N/A',
-            phone: normalizeAndValidatePhoneNumber(phone),
-            governate: 'N/A',
-            address_free_text: address.details,
-            addresses: address || [],
-            email: '',
-            userType: 'default',
-            emailIsVerified: true,
-            phoneIsVerified: false,
-            isActive: true,
-            area: area || null,
-            firstTimeLogin: true
-          })
-          await user.save()
-        }
-
-        // console.log({ address })
-
-        const restaurant = await Restaurant.findById(restaurantId)
-        // Generate dynamic orderId
-        const newOrderId = `${restaurant.orderPrefix}-${
-          Number(restaurant.orderId) + 1
-        }`
-        restaurant.orderId = Number(restaurant.orderId) + 1
-        await restaurant.save()
-
-        const zone = await Zone.findOne({
-          location: { $geoIntersects: { $geometry: restaurant.location } }
-        })
-        const latOrigin = +restaurant.location.coordinates[1]
-        const lonOrigin = +restaurant.location.coordinates[0]
-
-        const latDest = address['location']
-          ? +address?.location.coordinates[1]
-          : +area.location.location.coordinates[1]
-        const longDest = address['location']
-          ? +address?.location.coordinates[0]
-          : +area.location.location.coordinates[0]
-
-        const distance = calculateDistance(
-          latOrigin,
-          lonOrigin,
-          latDest,
-          longDest
-        )
-
-        console.log({ distance })
-
-        let configuration = await Configuration.findOne()
-        const costType = configuration.costType
-
-        // get zone charges from delivery prices
-        const originZone = await DeliveryZone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: {
-                type: 'Point',
-                coordinates: restaurant.location.coordinates
-              }
-            }
-          }
-        })
-
-        const destinationZone = await DeliveryZone.findOne({
-          location: {
-            $geoIntersects: {
-              $geometry: {
-                type: 'Point',
-                coordinates: address.location.coordinates
-              }
-            }
-          }
-        })
-
-        console.log({ originZone, destinationZone })
-
-        // 2) Try to find NEW zone-pricing rule
-        let deliveryPrice = null
-
-        if (originZone && destinationZone) {
-          deliveryPrice = await DeliveryPriceV2.findOne({
-            $or: [
-              {
-                originZone: originZone._id,
-                destinationZone: destinationZone._id
-              },
-              {
-                originZone: destinationZone._id,
-                destinationZone: originZone._id
-              }
-            ]
-          })
-        }
-
-        console.log({ deliveryPrice })
-
-        // 3) Calculate amount using new rules
-        function calculateZonePrice(rule, distance) {
-          const base = rule.baseFare || 0
-          const perKm = rule.perKmRate || 0
-          const surge = rule.surgeMultiplier || 1
-          const minFare = rule.minFare || 0
-
-          const rawPrice = (base + perKm * distance) * surge
-          return Math.max(rawPrice, minFare)
-        }
-
-        let amount
-
-        if (deliveryPrice) {
-          amount = calculateZonePrice(deliveryPrice, distance)
-          console.log('Using zone pricing:', amount)
-        } else {
-          // 4) Fall back to configuration cost calculation
-          amount = calculateAmount(
-            costType,
-            configuration.deliveryRate,
-            distance
-          )
-          console.log('Using fallback pricing:', amount)
-        }
-
-        // 5) Minimum fee override
-        let deliveryCharges = amount
-
-        if (
-          parseFloat(amount) <= configuration.minimumDeliveryFee ||
-          distance <= 0.1 + Number.EPSILON
-        ) {
-          deliveryCharges = configuration.minimumDeliveryFee
-        }
-
-        // ===== CHECK PREPAID DELIVERY PACKAGE =====
-        console.log({ restaurantId: req.restaurantId })
-        if (restaurantId || req.restaurantId) {
-          const prepaidPackage = await PrepaidDeliveryPackage.findOne({
-            business: restaurantId || req.restaurantId,
-            isActive: true,
-            expiresAt: { $gte: new Date() },
-            $expr: { $lt: ['$usedDeliveries', '$totalDeliveries'] }
-          })
-
-          if (
-            prepaidPackage?.maxDeliveryAmount &&
-            deliveryCharges <= prepaidPackage?.maxDeliveryAmount
-          ) {
-            deliveryCharges = 0 // Delivery is free with prepaid package
-            prepaidPackage.usedDeliveries += 1
-            await prepaidPackage.save()
-            console.log('✅ Used prepaid delivery package.')
-            console.log('✅ Prepaid package found. Delivery is free.')
-          }
-        }
-
-        let taxationAmount = 0
-        const taxRate = restaurant.tax / 100 || 0
-        taxationAmount = (orderAmount + deliveryCharges) * taxRate
-        let tipping = 0
-        let totalOrderAmount = 0
-        if (orderAmount) {
-          totalOrderAmount =
-            orderAmount + deliveryCharges + taxationAmount + tipping
-        }
-
-        console.log({ zone: zone?._id })
-        const pickupLocation = {
-          type: 'Point',
-          coordinates: [
-            restaurant.location.coordinates[0],
-            restaurant.location.coordinates[1]
-          ]
-        }
-
-        console.log({ totalOrderAmount, deliveryCharges })
-
-        const order = new Order({
-          orderId: newOrderId,
-          user: user._id,
-          resId: restaurantId,
-          orderStatus: 'PENDING',
-          orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
-          deliveryAddress: { ...address },
-          items: [], // Add items logic if applicable
-          isActive: true,
-          tipping: 0, // Store tipping amount
-          taxationAmount: 0, // Store taxation amount
-          deliveryCharges: deliveryCharges, // Store delivery charges
-          //totalAmount: totalOrderAmount, // The final total amount including all fees
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          restaurant: restaurantId, // Adding restaurant ID to order
-          zone: zone._id, // Adding zone ID to order
-          completionTime: new Date(
-            Date.now() + restaurant.deliveryTime * 60 * 1000
-          ),
-          preparationTime: preparationTime
-            ? new Date(Date.now() + preparationTime * 60 * 1000)
-            : new Date(Date.now() + 20 * 60 * 1000),
-          pickupLocation
-        })
-
-        const savedOrder = await order.save()
-        // await acceptOrder({
-        //   orderId: savedOrder._id,
-        //   restaurantId: savedOrder.resId,
-        //   time: preparationTime
-        // })
-        const transformedOrder = await transformOrder(savedOrder)
-        publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
-        publishToDispatcher(transformedOrder)
-        // publishNewOrderDispatch(transformedOrder)
-        acceptOrderHandler({
-          user,
-          restaurant,
-          time: preparationTime,
-          orderId: order._id,
-          rider: null
-        })
-        return {
-          _id: savedOrder._id,
-          orderId: savedOrder.orderId,
-          resId: savedOrder.resId,
-          paidAmount: 0,
-          orderStatus: savedOrder.orderStatus,
-          paymentMethod: 'COD',
-          isPickedUp: false,
-          taxationAmount: 0,
-          orderDate: savedOrder.createdAt,
-          user: {
-            _id: user._id,
-            name: user.name,
-            phone: user.phone
-          },
-          deliveryAddress: savedOrder.deliveryAddress,
-          //orderAmount: savedOrder.orderAmount,
-          orderAmount: savedOrder.totalOrderAmount,
-          //totalAmount: savedOrder.totalAmount,
-          paymentStatus: savedOrder.paymentStatus,
-          deliveryCharges: savedOrder.deliveryCharges,
-          taxationAmount: savedOrder.taxationAmount,
-          tipping: 0, // Return tipping amount
-          totalAmount: savedOrder.orderAmount, // Return total order amount including all fees
-          isActive: savedOrder.isActive,
-          createdAt: savedOrder.createdAt,
-          updatedAt: savedOrder.updatedAt,
-          restaurant: {
-            _id: savedOrder.restaurant, // Returning restaurant details
-            name: restaurant.name,
-            address: restaurant.address
-          },
-          zone: {
-            _id: savedOrder.zone, // Returning zone details
-            name: zone.name,
-            region: zone.region
-          }
-        }
-      } catch (err) {
-        throw new Error(err)
+      const phoneNumber = normalizeAndValidatePhoneNumber(phone)
+      console.log({ phoneNumber })
+      if (!phoneNumber) throw new Error('invalid_number')
+      let user = await User.findOne({
+        phone: normalizeAndValidatePhoneNumber(phone)
+      })
+      // console.log({ user })
+      if (user && !user.name && name) {
+        user.name = name
+        await user.save()
       }
+      const area = await Area.findById(areaId).populate('location')
+      // console.log({ areaId, area })
+      let address = {}
+      address['deliveryAddress'] = area.address
+      address['details'] = addressDetails ? addressDetails : area.address
+      address['label'] = area.title
+      address['location'] = {
+        type: 'Point',
+        coordinates: [
+          area.location.location.coordinates[0],
+          area.location.location.coordinates[1]
+        ]
+      }
+      delete address['latitude']
+      delete address['longitude']
+
+      if (!user) {
+        user = new User({
+          name: name ? name : 'N/A',
+          phone: normalizeAndValidatePhoneNumber(phone),
+          governate: 'N/A',
+          address_free_text: address.details,
+          addresses: address || [],
+          email: '',
+          userType: 'default',
+          emailIsVerified: true,
+          phoneIsVerified: false,
+          isActive: true,
+          area: area || null,
+          firstTimeLogin: true
+        })
+        await user.save()
+      }
+
+      // console.log({ address })
+
+      const restaurant = await Restaurant.findById(restaurantId)
+      // Generate dynamic orderId
+      const newOrderId = `${restaurant.orderPrefix}-${
+        Number(restaurant.orderId) + 1
+      }`
+      restaurant.orderId = Number(restaurant.orderId) + 1
+      await restaurant.save()
+
+      const zone = await Zone.findOne({
+        location: { $geoIntersects: { $geometry: restaurant.location } }
+      })
+      const latOrigin = +restaurant.location.coordinates[1]
+      const lonOrigin = +restaurant.location.coordinates[0]
+
+      const latDest = address['location']
+        ? +address?.location.coordinates[1]
+        : +area.location.location.coordinates[1]
+      const longDest = address['location']
+        ? +address?.location.coordinates[0]
+        : +area.location.location.coordinates[0]
+
+      const distance = calculateDistance(
+        latOrigin,
+        lonOrigin,
+        latDest,
+        longDest
+      )
+
+      console.log({ distance })
+
+      // let configuration = await Configuration.findOne()
+
+      const {
+        amount: deliveryCharges,
+        originalAmountBeforeDiscounts,
+        isPrepaid,
+        mismatch,
+        breakdown,
+        matchedRuleId
+      } = await calculateUnifiedDeliveryFee({
+        originLat: latOrigin,
+        originLong: lonOrigin,
+        destLat: latDest,
+        destLong: longDest,
+        serviceType: 'FOOD',
+        requestorId: restaurantId, // restaurant acts as the business
+        couponCode: null, // you can pass coupon later
+        clientProvidedAmount: deliveryFee || null
+      })
+
+      console.log('UNIFIED DELIVERY RESULT:', {
+        deliveryCharges,
+        isPrepaid,
+        matchedRuleId,
+        breakdown,
+        originalAmountBeforeDiscounts,
+        mismatch
+      })
+
+      const taxRate = restaurant.tax / 100 || 0
+
+      const taxationAmount = orderAmount
+        ? (orderAmount + deliveryCharges) * taxRate
+        : 0
+
+      const tipping = 0
+      const totalOrderAmount = orderAmount
+        ? orderAmount + deliveryCharges + taxationAmount + tipping
+        : deliveryCharges
+
+      const order = new Order({
+        orderId: newOrderId,
+        user: user._id,
+        resId: restaurantId,
+        orderStatus: 'PENDING',
+        orderAmount: orderAmount ? totalOrderAmount : deliveryCharges,
+        deliveryAddress: { ...address },
+        items: [], // Add items logic if applicable
+        isActive: true,
+        tipping: 0, // Store tipping amount
+        taxationAmount: 0, // Store taxation amount
+        deliveryCharges: deliveryCharges, // Store delivery charges
+        //totalAmount: totalOrderAmount, // The final total amount including all fees
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        restaurant: restaurantId, // Adding restaurant ID to order
+        zone: zone._id, // Adding zone ID to order
+        completionTime: new Date(
+          Date.now() + restaurant.deliveryTime * 60 * 1000
+        ),
+        preparationTime: preparationTime
+          ? new Date(Date.now() + preparationTime * 60 * 1000)
+          : new Date(Date.now() + 20 * 60 * 1000)
+        // pickupLocation
+      })
+
+      const savedOrder = await order.save()
+      // await acceptOrder({
+      //   orderId: savedOrder._id,
+      //   restaurantId: savedOrder.resId,
+      //   time: preparationTime
+      // })
+      const transformedOrder = await transformOrder(savedOrder)
+      publishToDashboard(order.restaurant.toString(), transformedOrder, 'new')
+      publishToDispatcher(transformedOrder)
+      // publishNewOrderDispatch(transformedOrder)
+      acceptOrderHandler({
+        user,
+        restaurant,
+        time: preparationTime,
+        orderId: order._id,
+        rider: null
+      })
+      return {
+        _id: savedOrder._id,
+        orderId: savedOrder.orderId,
+        resId: savedOrder.resId,
+        paidAmount: 0,
+        orderStatus: savedOrder.orderStatus,
+        paymentMethod: 'COD',
+        isPickedUp: false,
+        taxationAmount: 0,
+        orderDate: savedOrder.createdAt,
+        user: {
+          _id: user._id,
+          name: user.name,
+          phone: user.phone
+        },
+        deliveryAddress: savedOrder.deliveryAddress,
+        //orderAmount: savedOrder.orderAmount,
+        orderAmount: savedOrder.totalOrderAmount,
+        //totalAmount: savedOrder.totalAmount,
+        paymentStatus: savedOrder.paymentStatus,
+        deliveryCharges: savedOrder.deliveryCharges,
+        taxationAmount: savedOrder.taxationAmount,
+        tipping: 0, // Return tipping amount
+        totalAmount: savedOrder.orderAmount, // Return total order amount including all fees
+        isActive: savedOrder.isActive,
+        createdAt: savedOrder.createdAt,
+        updatedAt: savedOrder.updatedAt,
+        restaurant: {
+          _id: savedOrder.restaurant, // Returning restaurant details
+          name: restaurant.name,
+          address: restaurant.address
+        },
+        zone: {
+          _id: savedOrder.zone, // Returning zone details
+          name: zone.name,
+          region: zone.region
+        }
+      }
+      // } catch (err) {
+      //   throw new Error(err)
+      // }
     },
 
     CheckOutPlaceOrder: async (

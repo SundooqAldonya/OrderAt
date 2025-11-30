@@ -170,7 +170,8 @@ const AddNewOrder = ({ navigation }) => {
           addressDetails: userData?.addressDetails,
           orderAmount: parseFloat(cost) ? parseFloat(cost) : 0,
           restaurantId,
-          preparationTime: selectedTime
+          preparationTime: selectedTime,
+          serviceType: 'MASHAWEER'
           // deliveryFee: parseFloat(deliveryFee)
         }
       }

@@ -2034,6 +2034,7 @@ const typeDefs = gql`
     orderAmount: Int
     restaurantId: String
     preparationTime: Int
+    serviceType: String
     # deliveryFee: Float
   }
 
