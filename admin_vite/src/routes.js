@@ -80,7 +80,7 @@ import RestaurantDeliveryPricing from "./views/RestaurantDeliveryPricing";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 // import DeliveryZonePricingV2 from "./views/DeliveryZonePricingV2";
 import CitiesPricing from "./views/CitiesPricing";
-import CountriesPricing from "./views/countriesPricing";
+import CountriesPricing from "./views/CountriesPricing";
 import GlobalDeliveryPricing from "./views/GlobalDeliveryPricing";
 
 const routes = [
