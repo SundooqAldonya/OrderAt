@@ -41,12 +41,12 @@ function applyModel(model, params = {}, distanceKm) {
     case 'FIXED':
       return fixed
     case 'PER_KM': {
-      const raw = per_km * distanceKm
+      const raw = per_km * Math.round(distanceKm)
       return Math.max(min_fee || 0, raw)
     }
     case 'HYBRID': {
       // baseFare + per_km * max(0, distance - included_km)
-      const extraKm = Math.max(0, distanceKm - included_km)
+      const extraKm = Math.max(0, Math.round(distanceKm) - included_km)
       const raw = baseFare + per_km * extraKm
       return Math.max(min_fee || 0, raw)
     }
@@ -75,7 +75,7 @@ async function calculateUnifiedDeliveryFee({
   originLong,
   destLat,
   destLong,
-  serviceType = 'FOOD',
+  serviceType = 'MASHAWEER',
   requestorId = null, // business id for overrides or prepaid (restaurant)
   couponCode = null,
   clientProvidedAmount = null,
@@ -141,7 +141,7 @@ async function calculateUnifiedDeliveryFee({
   // 1) Requestor Override (highest priority)
   // -------------------------
   console.log({ requestorId })
-  // const no = false // for testing the flow
+  // const no = false
   if (requestorId) {
     try {
       console.log('Checking business delivery config')
