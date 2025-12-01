@@ -123,6 +123,7 @@ const restaurantSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'City'
     },
+
     shopCategory: {
       type: Schema.Types.ObjectId,
       ref: 'ShopCategory'
@@ -172,6 +173,10 @@ const restaurantSchema = new Schema(
     openingTimes: {
       type: [timingsSchema],
       default: defaultOpeningTimes
+    },
+    country: {
+      type: Schema.Types.ObjectId,
+      ref: 'Country'
     }
   },
 

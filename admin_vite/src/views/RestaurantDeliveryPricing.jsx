@@ -101,10 +101,10 @@ const RestaurantDeliveryPricing = () => {
       selector: (row) => row.service,
       sortable: true,
     },
-    {
-      name: t("Active"),
-      cell: (row) => <>{isActiveStatus(row)}</>,
-    },
+    // {
+    //   name: t("Active"),
+    //   cell: (row) => <>{isActiveStatus(row)}</>,
+    // },
     {
       name: t("Action"),
       cell: (row) => <>{ActionButtons(row, toggleModal)}</>,

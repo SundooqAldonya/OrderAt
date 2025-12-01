@@ -767,6 +767,7 @@ export const getRestaurantProfile = `query Restaurant($id:String){
       contactNumber
       isVisible
       featured
+      country
     }
 }`;
 
@@ -1652,6 +1653,7 @@ export const getCountryPricingById = gql`
 export const getCountries = gql`
   query GetCountries {
     getCountries {
+      _id
       id
       name
     }

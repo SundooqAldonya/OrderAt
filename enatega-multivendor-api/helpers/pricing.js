@@ -8,6 +8,7 @@ const GlobalDeliveryPricing = require('../models/globalDeliveryPricing')
 const Coupon = require('../models/coupon')
 const DeliveryZone = require('../models/deliveryZone')
 const Restaurant = require('../models/restaurant')
+const User = require('../models/user')
 
 function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   // Haversine (digit-by-digit arithmetic style)
@@ -140,6 +141,7 @@ async function calculateUnifiedDeliveryFee({
   // 1) Requestor Override (highest priority)
   // -------------------------
   console.log({ requestorId })
+  // const no = false // for testing the flow
   if (requestorId) {
     try {
       console.log('Checking business delivery config')
@@ -255,17 +257,22 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   // 5) Country Pricing (originZone.country)
   // -------------------------
-  if ((amount === null || amount === undefined) && originZone?.country) {
+
+  // console.log({ user: req.user })
+  // const user = await User.findById(req.user._id)
+  // const countryId = restaurant?.country || user.country
+  const countryId = restaurant?.country
+  if ((amount === null || amount === undefined) && countryId) {
     try {
       // originZone.country may be ObjectId or string; search accordingly
       const countryFilter = {}
       // If originZone.country is an object or id-like, allow both
-      if (typeof originZone.country === 'string') {
-        countryFilter.country = originZone.country
-      } else if (originZone.country && originZone.country._id) {
-        countryFilter.country = originZone.country._id
+      if (typeof countryId === 'string') {
+        countryFilter.country = countryId
+      } else if (countryId && countryId) {
+        countryFilter.country = countryId
       } else {
-        countryFilter.country = originZone.country
+        countryFilter.country = countryId
       }
       console.log('Checking country delivery pricing')
       const countryRule = await CountryPricing.findOne({

@@ -1548,6 +1548,7 @@ module.exports = {
         restaurant.contactNumber = args.restaurant.contactNumber
         restaurant.isVisible = args.restaurant.isVisible
         restaurant.featured = args.restaurant.featured
+        restaurant.country = args.restaurant.country
         await restaurant.save()
         const result = await restaurant.populate('city')
         return transformRestaurant(result)

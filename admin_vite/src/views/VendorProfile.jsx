@@ -10,6 +10,7 @@ import {
   getCities,
   getShopCategories,
   getBusinessCategories,
+  getCountries,
 } from "../apollo";
 import ConfigurableValues from "../config/constants";
 import useStyles from "../components/Restaurant/styles";
@@ -106,6 +107,7 @@ const VendorProfile = () => {
   const [restaurantCategories, setRestaurantCategories] = useState([]);
   const [image, setImage] = useState(null);
   const [logo, setLogo] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [category, setCategory] = useState("");
   const [salesPersonName, setSalesPersonName] = useState("");
@@ -150,6 +152,10 @@ const VendorProfile = () => {
     setErrors("");
     setSuccess("");
   };
+
+  const { data: dataCountries } = useQuery(getCountries);
+
+  const countries = dataCountries?.getCountries || null;
 
   const {
     data,
@@ -203,7 +209,13 @@ const VendorProfile = () => {
     if (data?.restaurant?.featured) {
       setFeatured(data?.restaurant?.featured);
     }
-  }, [data?.restaurant]);
+    let timeout = setTimeout(() => {
+      if (dataCountries && data?.restaurant?.country) {
+        setSelectedCountry(data?.restaurant?.country);
+      }
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [data?.restaurant, dataCountries]);
 
   const formRef = useRef(null);
 
@@ -413,6 +425,7 @@ const VendorProfile = () => {
             contactNumber,
             isVisible,
             featured,
+            country: selectedCountry,
           },
         },
       });
@@ -739,6 +752,39 @@ const VendorProfile = () => {
                         className={[globalClasses.input]}
                       />
                     </Box>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography className={classes.labelText}>
+                      {t("Select Country")}
+                    </Typography>
+                    <Select
+                      id="input-country"
+                      name="input-country"
+                      defaultValue={data?.restaurant?.country?._id || ""}
+                      value={
+                        selectedCountry || data?.restaurant?.country?._id || ""
+                      }
+                      onChange={(e) => setSelectedCountry(e.target.value)}
+                      displayEmpty
+                      inputProps={{ "aria-label": "Without label" }}
+                      className={[globalClasses.input]}
+                    >
+                      {!selectedCountry && !data?.restaurant.country?._id && (
+                        <MenuItem value="" style={{ color: "black" }}>
+                          {t("Select Country")}
+                        </MenuItem>
+                      )}
+                      {console.log({ countries })}
+                      {countries?.map((country) => (
+                        <MenuItem
+                          value={country._id}
+                          key={country._id}
+                          style={{ color: "black" }}
+                        >
+                          {country.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography className={classes.labelText}>

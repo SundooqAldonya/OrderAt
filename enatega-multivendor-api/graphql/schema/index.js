@@ -172,6 +172,7 @@ const typeDefs = gql`
     isVisible: Boolean
     featured: Boolean
     lastOnlineAt: Date
+    country: String
   }
 
   type RestaurantCustomer {
@@ -1099,6 +1100,7 @@ const typeDefs = gql`
     contactNumber: String
     isVisible: Boolean
     featured: Boolean
+    country: String
   }
 
   input OptionInput {
