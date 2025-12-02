@@ -209,12 +209,12 @@ async function calculateUnifiedDeliveryFee({
   if (
     (amount === null || amount === undefined) &&
     originZone &&
-    destinationZone &&
-    no
+    destinationZone
   ) {
     try {
       console.log('Checking delivery zones...')
       const zoneRule = await DeliveryPrice.findOne({
+        service: serviceType,
         $or: [
           { originZone: originZone._id, destinationZone: destinationZone._id },
           { originZone: destinationZone._id, destinationZone: originZone._id }
@@ -258,7 +258,7 @@ async function calculateUnifiedDeliveryFee({
           cityRule.params || {},
           distanceKm
         )
-        console.log('Checking city delivery config applied', { computed })
+        console.log('City delivery config applied', { computed })
         amount = computed
         matchedRuleId = cityRule._id
         breakdown.modelSource = 'CITY_DEFAULT'

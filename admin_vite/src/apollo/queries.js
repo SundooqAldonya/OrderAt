@@ -1169,6 +1169,7 @@ export const allDeliveryPrices = gql`
         title
       }
       cost
+      service
     }
   }
 `;
@@ -1678,5 +1679,10 @@ export const getGlobalDeliveryPricing = gql`
         baseFare
       }
     }
+  }
+`;
+export const getEnumDeliveryPrices = gql`
+  query GetEnumDeliveryPrices {
+    getEnumDeliveryPrices
   }
 `;

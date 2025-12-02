@@ -942,8 +942,8 @@ export const createDeliveryPrice = gql`
   }
 `;
 export const updateDeliveryPrice = gql`
-  mutation UpdateDeliveryPrice($id: String!, $cost: Float!) {
-    updateDeliveryPrice(id: $id, cost: $cost) {
+  mutation UpdateDeliveryPrice($id: String!, $cost: Float!, $service: String) {
+    updateDeliveryPrice(id: $id, cost: $cost, service: $service) {
       message
     }
   }

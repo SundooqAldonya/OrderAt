@@ -10,6 +10,15 @@ module.exports = {
       } catch (err) {
         throw new Error(err)
       }
+    },
+    async getEnumDeliveryPrices(_, args) {
+      try {
+        const enumValues = DeliveryPrice.schema.path('service').enumValues
+        console.log({ enumValues })
+        return enumValues
+      } catch (err) {
+        throw new Error(err)
+      }
     }
   },
   Mutation: {
@@ -19,6 +28,7 @@ module.exports = {
         deliveryPrice.originZone = args.deliveryPriceInput.originZone
         deliveryPrice.destinationZone = args.deliveryPriceInput.destinationZone
         deliveryPrice.cost = args.deliveryPriceInput.cost
+        deliveryPrice.service = args.deliveryPriceInput.service
         await deliveryPrice.save()
         return { message: 'delivery_price_created' }
       } catch (err) {
@@ -29,9 +39,8 @@ module.exports = {
     async updateDeliveryPrice(_, args) {
       try {
         const deliveryPrice = await DeliveryPrice.findById(args.id)
-        // deliveryPrice.originZone = args.deliveryPriceInput.originZone
-        // deliveryPrice.destinationZone = args.deliveryPriceInput.destinationZone
         deliveryPrice.cost = args.cost
+        deliveryPrice.service = args.service
         await deliveryPrice.save()
         return { message: 'delivery_price_updated' }
       } catch (err) {

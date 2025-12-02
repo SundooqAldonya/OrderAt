@@ -15,6 +15,11 @@ const DeliveryPriceSchema = new Schema({
   cost: {
     type: Number,
     required: true
+  },
+  service: {
+    type: String,
+    enum: ['FOOD', 'GROCERY', 'PHARMACY', 'MASHAWEER'],
+    required: true
   }
 })
 

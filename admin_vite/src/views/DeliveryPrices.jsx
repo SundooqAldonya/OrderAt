@@ -62,6 +62,11 @@ const DeliveryPrices = () => {
       ),
     },
     {
+      name: t("service"),
+      sortable: true,
+      selector: (row) => row.service,
+    },
+    {
       name: t("cost"),
       sortable: true,
       selector: (row) => row.cost,

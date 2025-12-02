@@ -1468,6 +1468,7 @@ const typeDefs = gql`
     originZone: Zone
     destinationZone: Zone
     cost: Float!
+    service: String
   }
 
   type DeliveryZone {
@@ -1857,6 +1858,7 @@ const typeDefs = gql`
     getAllDeliveryZonesByCity(cityId: String!): [DeliveryZone!]
     getAllDeliveryZones: [DeliveryZone!]
     allDeliveryPrices: [DeliveryPrice!]
+    getEnumDeliveryPrices: [String!]
     getShopCategories: [ShopCategory!]
     getBusinesses: [Business!]
     getRidersRegistered: [RiderRegister!]
@@ -2066,6 +2068,7 @@ const typeDefs = gql`
     originZone: String!
     destinationZone: String!
     cost: Float!
+    service: String
   }
 
   input DeliveryZoneInput {
@@ -2467,7 +2470,7 @@ const typeDefs = gql`
     updateDeliveryZone(deliveryZoneInput: DeliveryZoneInput): Message
     removeDeliveryZone(id: String!): Message
     createDeliveryPrice(deliveryPriceInput: DeliveryPriceInput): Message
-    updateDeliveryPrice(id: String!, cost: Float!): Message
+    updateDeliveryPrice(id: String!, cost: Float!, service: String): Message
     removeDeliveryPrice(id: String!): Message
     submitEmailOTP(email: String!, otp: String!): Message
     deactivateRestaurant(id: String!): Message

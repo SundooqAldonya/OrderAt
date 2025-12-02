@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Input,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,10 +34,14 @@ const DeliveryPriceCreate = ({ onClose, edit, item }) => {
   const [success, setSuccess] = useState(null);
   const [mainError, setMainError] = useState(null);
 
-  const [cost, setCost] = useState(edit && item ? item.cost : 15);
+  const [cost, setCost] = useState(edit && item ? item.cost : 0);
 
   const [originZone, setOriginZone] = useState("");
   const [destinationZone, setDestinationZone] = useState("");
+
+  const [serviceType, setServiceType] = useState(
+    edit && item ? item.service : ""
+  );
 
   const { data, loading, error } = useQuery(GET_ZONES);
 
@@ -75,12 +81,13 @@ const DeliveryPriceCreate = ({ onClose, edit, item }) => {
           deliveryPriceInput: {
             originZone,
             destinationZone,
+            service: serviceType,
             cost,
           },
         },
       });
     } else {
-      mutateUpdate({ variables: { id: item._id, cost } });
+      mutateUpdate({ variables: { id: item._id, cost, service: serviceType } });
     }
   };
 
@@ -168,6 +175,24 @@ const DeliveryPriceCreate = ({ onClose, edit, item }) => {
               </Box>
             </Box>
           ) : null}
+          {/* Service Type */}
+          <Box mt={2}>
+            <Typography className={classes.labelText}>Service</Typography>
+            <Select
+              name="service"
+              value={serviceType}
+              onChange={(e) => setServiceType(e.target.value)}
+              fullWidth
+              className={globalClasses.input}
+            >
+              <MenuItem value="FOOD">Food</MenuItem>
+              <MenuItem value="MASHAWEER">Mashaweer</MenuItem>
+              <MenuItem value="GROCERY">Grocery</MenuItem>
+              <MenuItem value="PHARMACY">Pharmacy</MenuItem>
+            </Select>
+          </Box>
+
+          {/* Cost */}
           <Box>
             <Typography className={classes.labelText}>{t("cost")}</Typography>
             <Input
