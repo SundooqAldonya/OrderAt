@@ -92,6 +92,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/vendors",
@@ -101,6 +102,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/restaurants",
@@ -110,6 +112,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/sections",
@@ -119,6 +122,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/users",
@@ -128,6 +132,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/riders",
@@ -137,6 +142,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/riders-map",
@@ -146,6 +152,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/otlob-mandoob",
@@ -155,6 +162,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/notifications",
@@ -164,6 +172,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "GENERAL",
   },
   {
     path: "/configuration",
@@ -173,6 +182,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/contact-us",
@@ -182,6 +192,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/delivery-packages",
@@ -191,6 +202,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
   {
     path: "/coupons",
@@ -200,6 +212,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/cuisines",
@@ -209,6 +222,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/businessCategory",
@@ -218,6 +232,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/banner",
@@ -227,6 +242,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/tipping",
@@ -236,6 +252,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/cities",
@@ -245,6 +262,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/countries-pricing",
@@ -254,6 +272,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
   {
     path: "/global-delivery-pricing",
@@ -263,6 +282,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
   {
     path: "/cities-pricing",
@@ -272,6 +292,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
   {
     path: "/delivery-zones",
@@ -281,6 +302,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/multi-stepper",
@@ -290,6 +312,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/areas",
@@ -299,6 +322,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/shop-categories",
@@ -308,6 +332,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/businesses",
@@ -317,6 +342,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/riders-registered",
@@ -326,6 +352,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
 
   {
@@ -336,6 +363,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/dispatch",
@@ -345,6 +373,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/orders",
@@ -354,6 +383,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/order-details/:id",
@@ -363,6 +393,7 @@ const routes = [
     layout: "/admin",
     appearInSidebar: false,
     admin: true,
+    group: "MANAGEMENT",
   },
   // {
   //   path: "/notifications",
@@ -372,6 +403,7 @@ const routes = [
   //   layout: "/super_admin",
   //   appearInSidebar: true,
   //   admin: true,
+  //   group: 'MANAGEMENT'
   // },
   {
     path: "/commission",
@@ -381,6 +413,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/withdraw/",
@@ -390,6 +423,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "MANAGEMENT",
   },
   {
     path: "/list",
@@ -508,6 +542,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
   {
     path: "/deliveryPrices",
@@ -518,6 +553,7 @@ const routes = [
     layout: "/super_admin",
     appearInSidebar: true,
     admin: true,
+    group: "PRICING",
   },
 
   {

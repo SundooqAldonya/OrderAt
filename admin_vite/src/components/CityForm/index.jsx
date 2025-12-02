@@ -241,16 +241,6 @@ const CityForm = ({ onClose, city }) => {
             </Button>
           </Box>
 
-          {/* Clear polygon */}
-          {polygonCoords.length > 0 && (
-            <Button
-              onClick={clearPolygon}
-              style={{ marginTop: 10, backgroundColor: "red", color: "white" }}
-            >
-              {t("Clear Polygon")}
-            </Button>
-          )}
-
           <Box>
             <Typography className={classes.labelText}>{t("Title")}</Typography>
             <Input

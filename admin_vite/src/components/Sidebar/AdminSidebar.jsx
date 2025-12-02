@@ -32,6 +32,15 @@ function AdminSidebar(props) {
     setMobileOpen(!mobileOpen);
   };
 
+  const groupedRoutes = routes.reduce((acc, route) => {
+    if (route.appearInSidebar && route.admin) {
+      const group = route.group || "UNGROUPED";
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(route);
+    }
+    return acc;
+  }, {});
+
   const createLinks = (
     // <Box className={classes.sidebarContainer}>
     <Box className={classes.sidebarBox}>
@@ -47,7 +56,46 @@ function AdminSidebar(props) {
         </Box>
       </Toolbar>
       <Box className={classes.sidebarList}>
-        {routes.map((prop, key) => {
+        {Object.entries(groupedRoutes).map(([group, items]) => (
+          <React.Fragment key={group}>
+            <Typography className={classes.headingText} variant="h3">
+              {t(group)}
+            </Typography>
+
+            {items.map((prop, key) => (
+              <Link
+                component={RouterLink}
+                to={prop.layout + prop.path}
+                className={[
+                  classes.rowDisplay,
+                  classes.sidebarLink,
+                  location.pathname === `${prop.layout}${prop.path}` &&
+                    classes.active,
+                ]}
+                underline="none"
+              >
+                <SvgIcon
+                  component={prop.icon}
+                  htmlColor="black"
+                  fontSize="small"
+                />
+
+                <Typography
+                  variant="h6"
+                  className={[
+                    classes.linkText,
+                    location.pathname !== `${prop.layout}${prop.path}`
+                      ? classes.blackText
+                      : classes.whiteText,
+                  ]}
+                >
+                  {t(prop.name)}
+                </Typography>
+              </Link>
+            ))}
+          </React.Fragment>
+        ))}
+        {/* {routes.map((prop, key) => {
           console.log({ name: prop.name });
           return prop.appearInSidebar && prop.admin ? (
             <React.Fragment key={key}>
@@ -77,7 +125,6 @@ function AdminSidebar(props) {
                   htmlColor="black"
                   fontSize="small"
                 />
-                {/* <img src={prop.icon} alt={prop.name} width={20} height={20} /> */}
 
                 <Typography
                   variant="h6"
@@ -93,7 +140,7 @@ function AdminSidebar(props) {
               </Link>
             </React.Fragment>
           ) : null;
-        })}
+        })} */}
       </Box>
     </Box>
     // </Box>
