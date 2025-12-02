@@ -9,6 +9,7 @@ const Coupon = require('../models/coupon')
 const DeliveryZone = require('../models/deliveryZone')
 const Restaurant = require('../models/restaurant')
 const User = require('../models/user')
+const City = require('../models/city')
 
 function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   // Haversine (digit-by-digit arithmetic style)
@@ -116,6 +117,7 @@ async function calculateUnifiedDeliveryFee({
   // 1. resolve origin & destination zones if possible
   const pickupPoint = { type: 'Point', coordinates: [originLong, originLat] }
   const dropoffPoint = { type: 'Point', coordinates: [destLong, destLat] }
+  console.log({ pickupPoint })
 
   let originZone = null
   let destinationZone = null
@@ -141,8 +143,8 @@ async function calculateUnifiedDeliveryFee({
   // 1) Requestor Override (highest priority)
   // -------------------------
   console.log({ requestorId })
-  // const no = false
-  if (requestorId) {
+  const no = false
+  if (requestorId && no) {
     try {
       console.log('Checking business delivery config')
       const override = await RequestorOverride.findOne({
@@ -177,7 +179,8 @@ async function calculateUnifiedDeliveryFee({
   if (
     (amount === null || amount === undefined) &&
     requestorId &&
-    String(serviceType).toUpperCase() === 'FOOD'
+    String(serviceType).toUpperCase() === 'FOOD' &&
+    no
   ) {
     try {
       console.log('Checking prepaid package')
@@ -206,7 +209,8 @@ async function calculateUnifiedDeliveryFee({
   if (
     (amount === null || amount === undefined) &&
     originZone &&
-    destinationZone
+    destinationZone &&
+    no
   ) {
     try {
       console.log('Checking delivery zones...')
@@ -230,22 +234,31 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   // 4) City Pricing (originZone.city)
   // -------------------------
-  const cityId = restaurant?.city || city
-  if ((amount === null || amount === undefined) && cityId) {
+  // const cityId = restaurant?.city || city
+  const cityMatch = await City.findOne({
+    isActive: true,
+    geometry: {
+      $geoIntersects: { $geometry: pickupPoint }
+    }
+  }).lean()
+
+  console.log({ cityMatch })
+
+  if ((amount === null || amount === undefined) && cityMatch?._id) {
     try {
       const cityRule = await CityPricing.findOne({
-        city: cityId,
+        city: cityMatch?._id,
         service: serviceType,
         status: 'ACTIVE'
       }).lean()
-      console.log('Checking city delivery config')
+      console.log('Checking city delivery config', { cityRule })
       if (cityRule) {
         const computed = applyModel(
           cityRule.model,
           cityRule.params || {},
           distanceKm
         )
-        console.log('Checking city delivery config applied')
+        console.log('Checking city delivery config applied', { computed })
         amount = computed
         matchedRuleId = cityRule._id
         breakdown.modelSource = 'CITY_DEFAULT'

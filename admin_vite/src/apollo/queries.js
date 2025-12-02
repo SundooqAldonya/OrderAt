@@ -884,7 +884,11 @@ export const getCities = `query CitiesAdmin($search: String) {
         location {
           coordinates
         }
-     }
+      }
+      geometry {
+        type
+        coordinates
+      }
     }
   }`;
 

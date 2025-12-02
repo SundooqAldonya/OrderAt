@@ -10,6 +10,17 @@ const citySchema = new Schema(
     location: {
       type: Schema.Types.ObjectId,
       ref: 'Location'
+    },
+    geometry: {
+      type: {
+        type: String,
+        enum: ['Polygon'], // ONLY Polygon
+        required: false
+      },
+      coordinates: {
+        type: Array, // [[[lon, lat], [lon, lat], ...]]
+        required: false
+      }
     }
   },
   { timestamps: true }

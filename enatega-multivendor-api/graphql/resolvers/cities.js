@@ -31,11 +31,57 @@ module.exports = {
   Mutation: {
     async createCity(_, args) {
       console.log({ createCityArgs: args })
+
       try {
-        const location = await Location.create({
-          location: { coordinates: args.coordinates }
-        })
-        const city = await City.create({ ...args, location })
+        const { title, coordinates, geometry } = args
+
+        let locationDoc = null
+
+        // Save POINT location only if marker is provided
+        if (
+          coordinates &&
+          Array.isArray(coordinates) &&
+          coordinates.length === 2
+        ) {
+          locationDoc = await Location.create({
+            location: {
+              type: 'Point',
+              coordinates: coordinates // [lng, lat]
+            }
+          })
+        }
+
+        // Prepare polygon only if geometry exists
+        let polygonGeometry = null
+
+        if (geometry?.type === 'Polygon' && geometry?.coordinates?.length) {
+          // Extract ring
+          let ring = geometry.coordinates[0]
+
+          // 🔥 CLOSE POLYGON (required by MongoDB)
+          const first = ring[0]
+          const last = ring[ring.length - 1]
+
+          if (first[0] !== last[0] || first[1] !== last[1]) {
+            ring.push(first)
+          }
+
+          polygonGeometry = {
+            type: 'Polygon',
+            coordinates: [ring]
+          }
+        }
+
+        const cityPayload = {
+          title,
+          isActive: true
+        }
+
+        if (locationDoc) cityPayload.location = locationDoc._id
+        if (polygonGeometry) cityPayload.geometry = polygonGeometry
+
+        await City.create(cityPayload)
+
         return { message: 'Created the city' }
       } catch (err) {
         console.log({ err })
@@ -58,6 +104,26 @@ module.exports = {
         }
         const city = await City.findById(args.id)
         city.title = args.title
+
+        if (
+          args.geometry?.type === 'Polygon' &&
+          args.geometry.coordinates?.length
+        ) {
+          let ring = args.geometry.coordinates[0]
+
+          // Close polygon if required
+          const first = ring[0]
+          const last = ring[ring.length - 1]
+          if (first[0] !== last[0] || first[1] !== last[1]) {
+            ring.push(first)
+          }
+
+          city.geometry = {
+            type: 'Polygon',
+            coordinates: [ring]
+          }
+        }
+
         if (!args.locationId || !city.location) {
           city.location = location
         }

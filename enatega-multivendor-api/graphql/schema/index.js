@@ -1406,6 +1406,12 @@ const typeDefs = gql`
     address: String
     isActive: Boolean
     location: LocationArea
+    geometry: Geometry
+  }
+
+  type Geometry {
+    type: String
+    coordinates: [[[Float]]]
   }
 
   type InsideLocationArea {
@@ -2376,6 +2382,11 @@ const typeDefs = gql`
     minimumDeliveryFee: Float!
   }
 
+  input CoordinatesCity {
+    type: String! # "Polygon"
+    coordinates: [[[Float]]]! # 3D array: [[[lng, lat], ...]]
+  }
+
   type Mutation {
     updateGlobalDeliveryPricing(input: GlobalDeliveryPricingInput!): Message
     upsertCountryPricing(id: ID, input: CountryPricingInput!): Message
@@ -2481,12 +2492,17 @@ const typeDefs = gql`
     createArea(areaInput: AreaInput!): Message
     editArea(id: String!, locationId: String!, areaInput: AreaInput!): Message
     removeArea(id: String!): Message
-    createCity(title: String!, coordinates: [Float]): Message
+    createCity(
+      title: String!
+      coordinates: [Float]
+      geometry: CoordinatesCity
+    ): Message
     editCity(
       id: String!
       title: String!
       coordinates: [Float]
       locationId: String
+      geometry: CoordinatesCity
     ): Message
     toggleCityActive(id: String!): Message
     removeCity(id: String!): Message

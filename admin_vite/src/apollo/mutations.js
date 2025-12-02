@@ -642,14 +642,14 @@ export const deleteZone = `mutation DeleteZone($id:String!){
   }
 }`;
 
-export const createCity = `mutation CreateCity($title:String!, $coordinates: [Float]){
-  createCity(title:$title, coordinates: $coordinates){
+export const createCity = `mutation CreateCity($title:String!, $coordinates: [Float], $geometry: CoordinatesCity){
+  createCity(title:$title, coordinates: $coordinates, geometry: $geometry){
     message
   }
 }`;
 
-export const editCity = `mutation EditCity($id: String!, $title: String!, $coordinates: [Float], $locationId: String){
-  editCity(id: $id, title: $title, coordinates: $coordinates, locationId: $locationId){
+export const editCity = `mutation EditCity($id: String!, $title: String!, $coordinates: [Float], $locationId: String, $geometry: CoordinatesCity){
+  editCity(id: $id, title: $title, coordinates: $coordinates, locationId: $locationId, geometry: $geometry){
     message
   }
 }`;
