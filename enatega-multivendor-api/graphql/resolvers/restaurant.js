@@ -469,7 +469,9 @@ module.exports = {
       return orders.map(transformOrder)
     },
     restaurantOrdersHistory: async (_, args, { req }) => {
+      if (!req.restaurantId) throw new Error('restaurant_unauthenticated')
       console.log('restaurantOrdersHistory', req.restaurantId, { args })
+
       try {
         const { startDate, endDate } = args
 
@@ -492,7 +494,7 @@ module.exports = {
         const orders = await Order.find({ ...filter }).sort({
           createdAt: 'descending'
         })
-        console.log({ orders })
+        console.log({ orders: orders ? orders[0].items : null })
         return orders.map(transformOrder)
       } catch (err) {
         throw err

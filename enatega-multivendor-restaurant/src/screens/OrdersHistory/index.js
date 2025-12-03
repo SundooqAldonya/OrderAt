@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -19,7 +19,8 @@ import { colors } from '../../utilities'
 import { Calendar } from 'react-native-calendars'
 import { eachDayOfInterval, format } from 'date-fns'
 import { useQuery } from '@apollo/client/react'
-import { restaurantOrdersHistory } from '../../apollo'
+import { restaurantOrdersHistory, subscribePlaceOrder } from '../../apollo'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function OrderHistory() {
   const { t } = useTranslation()
@@ -28,26 +29,79 @@ export default function OrderHistory() {
   const [showPicker1, setShowPicker1] = useState(false)
   const [date1UI, setDate1UI] = useState(null)
   const [date2UI, setDate2UI] = useState(null)
+  const unsubscribeRef = useRef(null)
 
-  // const {
-  //   loading,
-  //   error,
-  //   data,
-  //   activeOrders,
-  //   processingOrders,
-  //   deliveredOrders,
-  //   active,
-  //   refetch,
-  //   setActive
-  // } = useOrders()
+  const { data, loading, error, subscribeToMore } = useQuery(
+    restaurantOrdersHistory,
+    {
+      variables: {
+        startDate: date1UI,
+        endDate: date2UI
+      },
+      pollInterval: 10000,
+      nextFetchPolicy: 'no-cache'
+    }
+  )
 
-  const { data, loading, error } = useQuery(restaurantOrdersHistory, {
-    variables: {
-      startDate: date1UI,
-      endDate: date2UI
-    },
-    pollInterval: 10000
-  })
+  console.log({ data: data?.restaurantOrdersHistory[0] })
+
+  useEffect(() => {
+    console.log('runnnnnnnnnnnnnnnnn')
+    subscribeToMoreOrders()
+    return () => {
+      console.log('Cleaning up subscription')
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current()
+        unsubscribeRef.current = null
+      }
+    }
+  }, [])
+
+  const subscribeToMoreOrders = async () => {
+    console.log('subscribeToMoreOrders calledddd')
+    const restaurant = await AsyncStorage.getItem('restaurantId')
+    console.log('restaurant@@@@@@@@', restaurant)
+    if (!restaurant) return
+    if (unsubscribeRef.current) {
+      console.log('Unsubscribing from previous subscription')
+      unsubscribeRef.current()
+    }
+    unsubscribeRef.current = subscribeToMore({
+      document: gql`
+        ${subscribePlaceOrder}
+      `,
+      variables: { restaurant },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+        const { restaurantOrders } = prev
+        const { origin, order } = subscriptionData.data.subscribePlaceOrder
+        const updatedOrders = [order, ...restaurantOrders]
+        console.log('navigating to NewOrderScreenNotification')
+        navigation.navigate('NewOrderScreenNotification', {
+          activeBar: 0,
+          orderData: order,
+          itemId: order._id,
+          rider: order.rider,
+          remainingTime: moment(order.createdAt)
+            .add(MAX_TIME, 'seconds')
+            .diff(moment(), 'seconds'),
+          createdAt: order.createdAt,
+          MAX_TIME,
+          acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
+          preparationTime: new Date(order.preparationTime).toISOString()
+        })
+        if (origin === 'new') {
+          return {
+            restaurantOrders: [...updatedOrders]
+          }
+        }
+        return prev
+      },
+      onError: error => {
+        console.log('onError', error)
+      }
+    })
+  }
 
   console.log({ data })
 
@@ -56,7 +110,7 @@ export default function OrderHistory() {
 
     // Group orders into sections
     const inProgress = data?.restaurantOrdersHistory?.filter(order =>
-      ['ACCEPTED', 'ASSIGNED', 'PICKED'].includes(order.orderStatus)
+      ['PENDING', 'ACCEPTED', 'ASSIGNED', 'PICKED'].includes(order.orderStatus)
     )
 
     const completed = data?.restaurantOrdersHistory.filter(
@@ -65,9 +119,27 @@ export default function OrderHistory() {
 
     return [
       {
+        title: 'Pending',
+        data: inProgress?.map(o => ({
+          _id: o._id,
+          orderId: o.orderId,
+          customer: o.user?.name || 'Unknown',
+          total: o.paidAmount || o.orderAmount,
+          items: o.items?.length || 0,
+          status: 'Pending',
+          phone: o.user.phone || null,
+          eta: o.preparationTime
+            ? `Est. delivery ${moment(o.createdAt)
+                .add(o.preparationTime, 'minutes')
+                .format('h:mm a')}`
+            : null
+        }))
+      },
+      {
         title: 'Delivery in progress',
         data: inProgress?.map(o => ({
-          orderId: o.orderId || o._id,
+          _id: o._id,
+          orderId: o.orderId,
           customer: o.user?.name || 'Unknown',
           total: o.paidAmount || o.orderAmount,
           items: o.items?.length || 0,
@@ -83,6 +155,7 @@ export default function OrderHistory() {
       {
         title: 'Completed',
         data: completed?.map(o => ({
+          _id: o._id,
           orderId: o.orderId || o._id,
           customer: o.user?.name ?? 'Unknown',
           total: o.paidAmount || o.orderAmount,
@@ -226,7 +299,7 @@ export default function OrderHistory() {
         keyExtractor={item => item.orderId}
         renderSectionHeader={({ section: { title, data } }) => (
           <Text style={styles.sectionHeader}>
-            {title} {data?.length}
+            {title} ({data?.length})
           </Text>
         )}
         renderItem={renderItems}

@@ -1576,7 +1576,7 @@ module.exports = {
         const availableAddons = await Addon.find({ restaurant })
         const availableOptions = await Option.find({ restaurant })
 
-        const items = args.orderInput.map(item => {
+        const items = args.orderInput.map(async item => {
           const food = foods.find(f => f._id.toString() === item.food)
 
           if (food.stock === 'Out of Stock') {
@@ -1612,7 +1612,7 @@ module.exports = {
             }
           })
 
-          return new Item({
+          return await Item.create({
             food: item.food,
             title: food.title,
             description: food.description,
@@ -2611,6 +2611,16 @@ module.exports = {
           }
         )
         return { message: 'seen' }
+      } catch (err) {
+        throw err
+      }
+    },
+
+    async updateOrderItem(_, args) {
+      try {
+        const order = await Order.findById(args.id)
+        console.log({ orderItems: order?.items })
+        return order
       } catch (err) {
         throw err
       }

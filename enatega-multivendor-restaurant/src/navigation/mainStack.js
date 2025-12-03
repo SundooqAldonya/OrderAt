@@ -38,6 +38,7 @@ import PrinterSettings from '../screens/PrinterSettings'
 import { useMutation } from '@apollo/client/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { navigate } from '../utilities/rootNavigation'
+import OrderEditScreen from '../screens/OrderEditScreen'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -189,6 +190,7 @@ function StackNavigator() {
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
       <Stack.Screen name="Orders" component={OrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="OrderEditScreen" component={OrderEditScreen} />
       <Stack.Screen name="RegisterUser" component={RegisterUser} />
       <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
       <Stack.Screen name="Checkout" component={Checkout} />

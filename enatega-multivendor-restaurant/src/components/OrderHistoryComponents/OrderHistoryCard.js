@@ -3,12 +3,21 @@ import React, { useContext } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { Configuration } from '../../ui/context'
 import { callNumber } from '../../utilities/callNumber'
+import { useNavigation } from '@react-navigation/native'
 
 const OrderHistoryCard = ({ item }) => {
   const configuration = useContext(Configuration.Context)
+  const navigation = useNavigation()
+
+  const handlePress = () => {
+    // handle navigation
+    navigation.navigate('OrderEditScreen', {
+      orderId: item?._id
+    })
+  }
 
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity onPress={handlePress} style={styles.card}>
       <View style={styles.row}>
         <Text style={styles.customer}>{item.customer}</Text>
         <Text style={styles.total}>
@@ -68,7 +77,7 @@ const styles = StyleSheet.create({
   status: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#444'
+    color: 'green'
   },
   icons: {
     flexDirection: 'row',

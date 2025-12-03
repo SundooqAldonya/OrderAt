@@ -227,3 +227,63 @@ export const heartbeatRestaurant = gql`
     }
   }
 `
+
+// -------------------------------
+// GraphQL mutations (replace with your actual queries)
+// -------------------------------
+export const SUBMIT_BUSINESS_EDITS = gql`
+  mutation SubmitBusinessEdits($orderId: ID!, $changes: [BusinessEditInput!]!) {
+    submitBusinessEdits(orderId: $orderId, changes: $changes) {
+      _id
+      businessEdits {
+        isEdited
+        customerApproved
+        changes {
+          itemId
+          action
+          oldValue
+          newValue
+          timestamp
+        }
+      }
+    }
+  }
+`
+
+// Optional individual item update/remove mutations (you may prefer server-side batch)
+export const UPDATE_ORDER_ITEM = gql`
+  mutation UpdateOrderItem(
+    $orderId: ID!
+    $itemId: ID!
+    $newUnitPrice: Float
+    $newQuantity: Float
+    $note: String
+  ) {
+    updateOrderItem(
+      orderId: $orderId
+      itemId: $itemId
+      newUnitPrice: $newUnitPrice
+      newQuantity: $newQuantity
+      note: $note
+    ) {
+      _id
+      items {
+        _id
+        unitPrice
+        quantity
+        totalPrice
+      }
+    }
+  }
+`
+
+export const REMOVE_ORDER_ITEM = gql`
+  mutation RemoveOrderItem($orderId: ID!, $itemId: ID!) {
+    removeOrderItem(orderId: $orderId, itemId: $itemId) {
+      _id
+      items {
+        _id
+      }
+    }
+  }
+`
