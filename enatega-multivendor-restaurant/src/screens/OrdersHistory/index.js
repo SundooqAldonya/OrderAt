@@ -38,7 +38,7 @@ export default function OrderHistory() {
         startDate: date1UI,
         endDate: date2UI
       },
-      pollInterval: 10000,
+      // pollInterval: 10000,
       nextFetchPolicy: 'no-cache'
     }
   )

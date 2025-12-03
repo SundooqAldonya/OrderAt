@@ -253,8 +253,8 @@ export const SUBMIT_BUSINESS_EDITS = gql`
 // Optional individual item update/remove mutations (you may prefer server-side batch)
 export const UPDATE_ORDER_ITEM = gql`
   mutation UpdateOrderItem(
-    $orderId: ID!
-    $itemId: ID!
+    $orderId: String!
+    $itemId: String!
     $newUnitPrice: Float
     $newQuantity: Float
     $note: String
@@ -267,12 +267,12 @@ export const UPDATE_ORDER_ITEM = gql`
       note: $note
     ) {
       _id
-      items {
-        _id
-        unitPrice
-        quantity
-        totalPrice
-      }
+      # items {
+      #   _id
+      #   unitPrice
+      #   quantity
+      #   totalPrice
+      # }
     }
   }
 `

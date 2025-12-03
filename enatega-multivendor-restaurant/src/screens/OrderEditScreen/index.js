@@ -69,42 +69,49 @@ function OrderEditScreen({ route }) {
   }
 
   const applyLocalEdit = () => {
+    console.log({ editingItem })
     if (!editingItem) return
-    const priceFloat = parseFloat(newPrice) || 0
-    const qtyFloat = parseFloat(newQuantity) || 0
-
-    const updatedItems = localItems.map(it => {
-      if (it._id === editingItem._id) {
-        const oldValue = { unitPrice: it.unitPrice, quantity: it.quantity }
-        const newValue = { unitPrice: priceFloat, quantity: qtyFloat }
-        // update local snapshot
-        const updated = {
-          ...it,
-          unitPrice: priceFloat,
-          quantity: qtyFloat,
-          totalPrice: priceFloat * qtyFloat
-        }
-
-        // register pending change
-        setChangesPending(prev => [
-          ...prev,
-          {
-            itemId: it._id,
-            action: 'updated',
-            oldValue,
-            newValue,
-            note,
-            timestamp: new Date().toISOString()
-          }
-        ])
-        return updated
+    updateOrderItem({
+      variables: {
+        orderId,
+        itemId: editingItem._id
       }
-      return it
     })
+    // const priceFloat = parseFloat(newPrice) || 0
+    // const qtyFloat = parseFloat(newQuantity) || 0
 
-    setLocalItems(updatedItems)
-    setEditModalVisible(false)
-    setEditingItem(null)
+    // const updatedItems = localItems.map(it => {
+    //   if (it._id === editingItem._id) {
+    //     const oldValue = { unitPrice: it.unitPrice, quantity: it.quantity }
+    //     const newValue = { unitPrice: priceFloat, quantity: qtyFloat }
+    //     // update local snapshot
+    //     const updated = {
+    //       ...it,
+    //       unitPrice: priceFloat,
+    //       quantity: qtyFloat,
+    //       totalPrice: priceFloat * qtyFloat
+    //     }
+
+    //     // register pending change
+    //     setChangesPending(prev => [
+    //       ...prev,
+    //       {
+    //         itemId: it._id,
+    //         action: 'updated',
+    //         oldValue,
+    //         newValue,
+    //         note,
+    //         timestamp: new Date().toISOString()
+    //       }
+    //     ])
+    //     return updated
+    //   }
+    //   return it
+    // })
+
+    // setLocalItems(updatedItems)
+    // setEditModalVisible(false)
+    // setEditingItem(null)
   }
 
   const markRemoveItem = item => {

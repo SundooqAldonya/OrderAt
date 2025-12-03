@@ -1576,43 +1576,49 @@ module.exports = {
         const availableAddons = await Addon.find({ restaurant })
         const availableOptions = await Option.find({ restaurant })
 
-        const items = args.orderInput.map(async item => {
-          const food = foods.find(f => f._id.toString() === item.food)
-
-          if (food.stock === 'Out of Stock') {
-            throw new GraphQLError('Out of stock', {
-              extensions: { code: 'out_of_stock', foodTitle: food.title }
-            })
-          }
-
-          const variation = food.variations.find(
-            v => v._id.toString() === item.variation
+        const items = args.orderInput.map(item => {
+          const food = foods.find(
+            element => element._id.toString() === item.food
           )
-
-          if (variation.stock === 'Out of Stock') {
+          if (food.stock && food.stock === 'Out of Stock') {
+            // throw new Error(`${food.title} out_of_stock`)
             throw new GraphQLError('Out of stock', {
               extensions: {
                 code: 'out_of_stock',
-                variationTitle: variation.title
+                foodTitle: food.title
               }
             })
           }
-
-          const addonList = item.addons.map(ad => {
-            const addonDef = availableAddons.find(
-              a => a._id.toString() === ad._id
+          const variation = food.variations.find(
+            v => v._id.toString() === item.variation
+          )
+          if (variation.stock && variation.stock === 'Out of Stock') {
+            // throw new Error(`${variation.title} out_of_stock`)
+            throw new GraphQLError('Out of stock', {
+              extensions: {
+                code: 'out_of_stock',
+                variationTitle: variation?.title
+              }
+            })
+          }
+          const addonList = []
+          item.addons.forEach((data, index) => {
+            const selectedOptions = []
+            data.options.forEach((option, inx) => {
+              selectedOptions.push(
+                availableOptions.find(op => op._id.toString() === option)
+              )
+            })
+            const adds = availableAddons.find(
+              addon => addon._id.toString() === data._id.toString()
             )
-            const selectedOptions = ad.options.map(op =>
-              availableOptions.find(o => o._id.toString() === op)
-            )
 
-            return {
-              ...addonDef._doc,
+            addonList.push({
+              ...adds._doc,
               options: selectedOptions
-            }
+            })
           })
-
-          return await Item.create({
+          return new Item({
             food: item.food,
             title: food.title,
             description: food.description,
@@ -2618,8 +2624,9 @@ module.exports = {
 
     async updateOrderItem(_, args) {
       try {
-        const order = await Order.findById(args.id)
+        const order = await Order.findById(args.orderId)
         console.log({ orderItems: order?.items })
+        console.log({ orderVariation: order?.items?.variation })
         return order
       } catch (err) {
         throw err

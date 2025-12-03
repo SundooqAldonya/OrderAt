@@ -2391,7 +2391,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    updateOrderItem(orderId: String!, itemId: String!): Order
+    updateOrderItem(
+      orderId: String!
+      itemId: String!
+      newUnitPrice: Float
+      newQuantity: Float
+      note: String
+    ): Order
     updateGlobalDeliveryPricing(input: GlobalDeliveryPricingInput!): Message
     upsertCountryPricing(id: ID, input: CountryPricingInput!): Message
     deleteCountryPricing(id: ID!): Boolean!
