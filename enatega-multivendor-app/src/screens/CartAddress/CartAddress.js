@@ -209,7 +209,7 @@ function CartAddresses(props) {
                     >
                       {t(address.label)}
                     </TextDefault>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       activeOpacity={0.7}
                       style={styles().width10}
                       onPress={() => {
@@ -228,7 +228,7 @@ function CartAddresses(props) {
                         color={currentTheme.darkBgFont}
                         style={styles().width100}
                       />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                   <View style={{ ...alignment.MTxSmall }}></View>
                   <View style={styles().addressDetail}>
