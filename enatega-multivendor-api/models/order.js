@@ -218,6 +218,36 @@ const orderSchema = new Schema(
     area: {
       type: Schema.Types.ObjectId,
       ref: 'Area'
+    },
+    businessEdits: {
+      isEdited: { type: Boolean, default: false },
+
+      editedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant',
+        default: null
+      },
+
+      customerApproved: { type: Boolean, default: false },
+      customerApprovalTime: { type: Date, default: null },
+
+      changes: [
+        {
+          orderItemId: String,
+          item: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Item'
+          },
+          action: {
+            type: String,
+            enum: ['updated', 'removed']
+          },
+          oldValue: { type: mongoose.Schema.Types.Mixed },
+          newValue: { type: mongoose.Schema.Types.Mixed },
+          note: { type: String, default: null },
+          timestamp: { type: Date, default: Date.now }
+        }
+      ]
     }
   },
   { timestamps: true }
@@ -256,4 +286,5 @@ orderSchema.pre('save', async function (next) {
     })
   }
 })
+
 module.exports = mongoose.model('Order', orderSchema)

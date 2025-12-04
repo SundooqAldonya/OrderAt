@@ -71,14 +71,19 @@ function OrderEditScreen({ route }) {
   const applyLocalEdit = () => {
     console.log({ editingItem })
     if (!editingItem) return
+
+    const priceFloat = parseFloat(newPrice) || 0
+    const qtyFloat = parseFloat(newQuantity) || 0
+
     updateOrderItem({
       variables: {
         orderId,
-        itemId: editingItem._id
+        itemId: editingItem._id,
+        newUnitPrice: priceFloat,
+        newQuantity: qtyFloat,
+        note
       }
     })
-    // const priceFloat = parseFloat(newPrice) || 0
-    // const qtyFloat = parseFloat(newQuantity) || 0
 
     // const updatedItems = localItems.map(it => {
     //   if (it._id === editingItem._id) {

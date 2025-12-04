@@ -63,6 +63,10 @@ const PrepaidDeliveryPackage = require('../../models/prepaidDeliveryPackage')
 const { acceptOrderHandler } = require('../../helpers/acceptOrderHandler')
 const DeliveryPriceV2 = require('../../models/deliveryPriceV2')
 const { calculateUnifiedDeliveryFee } = require('../../helpers/pricing')
+const {
+  sendCustomerNotifications,
+  sendCustomerItemEditNotification
+} = require('../../helpers/customerNotifications')
 
 var DELIVERY_CHARGES = 0.0
 module.exports = {
@@ -2622,14 +2626,113 @@ module.exports = {
       }
     },
 
-    async updateOrderItem(_, args) {
+    async updateOrderItem(_, args, { req }) {
+      if (!req.restaurantId) {
+        throw new Error('unauthenticated!')
+      }
       try {
-        const order = await Order.findById(args.orderId)
-        console.log({ orderItems: order?.items })
-        console.log({ orderVariation: order?.items?.variation })
+        const { orderId, itemId, newUnitPrice, newQuantity, note } = args
+        // 1. Fetch order
+        const order = await Order.findById(orderId)
+          .populate('restaurant')
+          .populate('user')
+        if (!order) throw new Error('Order not found')
+
+        // 2. Get the specific order item inside the embedded items array
+        const item = order.items.id(itemId)
+        if (!item) throw new Error('Order item not found')
+
+        // 3. Save old snapshot
+        const oldValue = {
+          unitPrice: item.variation.price,
+          quantity: item.quantity,
+          totalPrice: item.variation.price * item.quantity
+        }
+
+        // 4. Apply the new values
+        if (typeof newUnitPrice === 'number') {
+          item.unitPrice = newUnitPrice
+        }
+
+        if (typeof newQuantity === 'number') {
+          item.quantity = newQuantity
+        }
+
+        // 5. Recalculate item total
+        item.totalPrice = Number(item.variation.price) * Number(item.quantity)
+
+        // 6. Register business edit
+        order.businessEdits.isEdited = true
+        order.businessEdits.customerApproved = false
+        order.businessEdits.editedBy = req?.restaurantId ?? null
+
+        order.businessEdits.changes.push({
+          orderItemId: itemId, // IMPORTANT for locating this snapshot later
+          item: item.food, // or item.foodId if you store item ref
+          action: 'updated',
+          oldValue,
+          newValue: {
+            unitPrice: newUnitPrice,
+            quantity: newQuantity,
+            totalPrice: newUnitPrice * newQuantity
+          },
+          note: note || null,
+          timestamp: new Date()
+        })
+        console.log({ item, oldValue, businessEdits: order.businessEdits })
+
+        // ----------------------------------------
+        // 7. Recalculate order pricing (NEW VALUES)
+        // ----------------------------------------
+
+        // 👍 Only modify the new updated subtotal, do NOT touch originalSubtotal
+        let updatedSubtotal = 0
+        order.items.forEach(it => {
+          if (!it._removed) {
+            updatedSubtotal += it.variation.price * it.quantity
+          }
+        })
+
+        // Note: You do NOT overwrite originalSubtotal
+        order.updatedSubtotal = updatedSubtotal
+
+        // 8. Recalculate delivery (using your existing logic)
+        // order.deliveryCharges = await calculateDeliveryPrice(order)
+
+        // 9. Recalculate coupon after edits
+        // const { discount } = await applyCouponLogic(order) // your existing logic
+        // order.couponDiscount = discount || 0
+
+        // 10. Final order total after edits
+        order.orderAmount =
+          updatedSubtotal +
+          order.deliveryCharges -
+          // order.couponDiscount +
+          (order.taxationAmount || 0)
+
+        // ----------------------------------------
+        // 11. Save the order
+        // ----------------------------------------
+        await order.save()
+
+        // 12. Optionally: notify customer
+        // sendPushNotification(order.user, "The restaurant updated your order.")
+        const user = await User.findById(order.user)
+        const transformedOrder = await transformOrder(order)
+
+        if (
+          user &&
+          user.isOnline &&
+          user.isOrderNotification &&
+          user.notificationToken
+        ) {
+          await sendCustomerItemEditNotification(user, transformedOrder)
+        }
+
         return order
       } catch (err) {
-        throw err
+        console.error('updateOrderItem Error:', err)
+        throw new Error(err.message || 'Failed to update order item')
       }
     }
   }

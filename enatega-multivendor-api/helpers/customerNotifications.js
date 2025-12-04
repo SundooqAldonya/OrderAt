@@ -138,6 +138,7 @@ const notifications = {
       )
     }
   },
+
   async sendCustomerNotifications(customer, order) {
     console.log('📣 Sending notification to customer app', { customer })
 
@@ -242,7 +243,111 @@ const notifications = {
         }
       )
     }
+  },
+
+  async sendCustomerItemEditNotification(customer, order) {
+    console.log('📣 Sending item-edit notification to customer', { customer })
+
+    if (!customer?.notificationToken) {
+      console.log('🚫 Customer has no notification token.')
+      return
+    }
+
+    // -----------------------------
+    // 💬 Notification message content
+    // -----------------------------
+    const restaurantName = order?.restaurant?.name || 'المتجر'
+
+    const title = `تم تعديل طلبك من ${restaurantName}`
+
+    const body = `قام المتجر بتعديل بعض أصناف الطلب. يرجى مراجعة التغييرات.`
+
+    // Same sound/channel used in your existing code
+    const newChannelId = 'default_sound4'
+
+    const message = {
+      token: customer.notificationToken,
+      notification: {
+        title,
+        body
+      },
+      data: {
+        channelId: newChannelId,
+        playSound: 'true',
+        sound: 'beep1.wav',
+        type: 'ITEM_CHANGED',
+        orderId: order._id.toString()
+      },
+      android: {
+        notification: {
+          sound: 'beep1',
+          channelId: newChannelId
+        }
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'beep1.wav'
+          }
+        }
+      }
+    }
+
+    // -----------------------------
+    // 📝 Save to Notification DB
+    // -----------------------------
+    const notification = await Notification.create({
+      title,
+      body,
+      data: {
+        orderId: order.orderId,
+        type: 'User',
+        event: 'ITEM_CHANGED'
+      },
+      recipients: [
+        {
+          kind: 'User',
+          item: customer._id,
+          token: customer.notificationToken,
+          phone: customer.phone,
+          status: 'pending',
+          lastAttempt: new Date()
+        }
+      ],
+      createdAt: new Date()
+    })
+
+    // -----------------------------
+    // 📤 Send FCM Push
+    // -----------------------------
+    try {
+      const response = await admin.messaging().send(message)
+      console.log('✅ Item-change push sent:', response)
+
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'sent',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
+    } catch (error) {
+      console.error('🔥 Error sending item-change push:', error)
+
+      await Notification.updateOne(
+        { _id: notification._id, 'recipients.item': customer._id },
+        {
+          $set: {
+            'recipients.$.status': 'failed',
+            'recipients.$.lastAttempt': new Date()
+          }
+        }
+      )
+    }
   }
+
   // async sendCustomerNotifications(customer, order) {
   //   console.log('Sending notification to customer app')
   //   const accessToken = await getAccessToken()
