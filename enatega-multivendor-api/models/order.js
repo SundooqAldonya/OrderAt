@@ -234,10 +234,7 @@ const orderSchema = new Schema(
       changes: [
         {
           orderItemId: String,
-          item: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Item'
-          },
+          item: itemSchema,
           action: {
             type: String,
             enum: ['updated', 'removed']

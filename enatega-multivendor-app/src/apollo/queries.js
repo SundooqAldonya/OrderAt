@@ -1993,3 +1993,37 @@ export const getDeliveryCalculationV3 = gql`
     }
   }
 `
+export const getOrderBusinessEdits = gql`
+  query GetOrderBusinessEdits($id: String!) {
+    getOrderBusinessEdits(id: $id) {
+      isEdited
+      customerApproved
+      customerApprovalTime
+      changes {
+        orderItemId {
+          _id
+          title
+          image
+        }
+        action
+        note
+        timestamp
+        item {
+          _id
+          title
+          image
+        }
+        oldValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+        newValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+      }
+    }
+  }
+`

@@ -1,3 +1,5 @@
+import gql from 'graphql-tag'
+
 export const subscriptionOrder = `subscription SubscriptionOrder($id:String!){
     subscriptionOrder(id:$id){
         _id
@@ -108,3 +110,29 @@ export const subscriptionNewMessage = `subscription SubscriptionNewMessage($orde
     createdAt
   }
 }`
+
+export const BUSINESS_EDITS_UPDATED_SUB = gql`
+  subscription BusinessEditsUpdated($orderId: String!) {
+    businessEditsUpdated(orderId: $orderId) {
+      isEdited
+      customerApproved
+      customerApprovalTime
+      changes {
+        orderItemId
+        action
+        note
+        timestamp
+        oldValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+        newValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+      }
+    }
+  }
+`

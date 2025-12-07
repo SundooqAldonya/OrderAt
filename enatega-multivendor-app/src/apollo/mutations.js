@@ -665,3 +665,18 @@ export const createRiderReview = gql`
     }
   }
 `
+export const approveBusinessEdits = gql`
+  mutation ApproveBusinessEdits($orderId: String!) {
+    approveBusinessEdits(orderId: $orderId) {
+      message
+    }
+  }
+`
+
+export const rejectBusinessEdits = gql`
+  mutation RejectBusinessEdits($orderId: String!, $reason: String) {
+    rejectBusinessEdits(orderId: $orderId, reason: $reason) {
+      message
+    }
+  }
+`

@@ -22,6 +22,7 @@ import {
 } from '../../apollo'
 import { useNavigation } from '@react-navigation/native'
 import { AntDesign } from '@expo/vector-icons'
+import Spinner from '../../components/Spinner/Spinner'
 
 function OrderEditScreen({ route }) {
   const { orderId } = route.params
@@ -192,6 +193,10 @@ function OrderEditScreen({ route }) {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (loading) {
+    return <Spinner />
   }
 
   const renderItem = ({ item }) => {

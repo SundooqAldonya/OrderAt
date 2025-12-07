@@ -99,61 +99,83 @@ const notifications = {
         }
       )
     }
-    //   const accessToken = await getAccessToken()
-    //   const newChannelId = 'default_sound4'
-    //   console.log({ accessToken })
-    //   const messageBody = {
-    //     message: {
-    //       token: restaurant.notificationToken,
-    //       notification: {
-    //         title: `طلب جديد`,
-    //         body: `طلب جديد`
-    //       },
-    //       data: {
-    //         channelId: newChannelId,
-    //         message: 'Testing',
-    //         playSound: 'true',
-    //         sound: 'beep1.wav',
-    //         details: JSON.stringify(order)
-    //       },
-    //       android: {
-    //         notification: {
-    //           sound: 'beep1',
-    //           channelId: newChannelId
-    //         }
-    //       }
-    //     }
-    //   }
+  },
 
-    //   const projectId = 'food-delivery-api-ab4e4'
+  async notifyRestaurantOnApproval(order) {
+    try {
+      // Populate once if needed
+      await order.populate([
+        { path: 'restaurant', select: 'name notificationToken' },
+        { path: 'user', select: 'name phone' }
+      ])
 
-    //   try {
-    //     if (
-    //       restaurant.isAvailable &&
-    //       restaurant.isActive &&
-    //       restaurant.notificationToken &&
-    //       restaurant.enableNotification
-    //     ) {
-    //       const response = await fetch(
-    //         `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-    //         {
-    //           method: 'POST',
-    //           headers: {
-    //             Accept: 'application/json',
-    //             'Accept-encoding': 'gzip, deflate',
-    //             'Content-Type': 'application/json',
-    //             Authorization: `Bearer ${accessToken}` // 🔴 Replace with your actual Firebase server key
-    //           },
-    //           body: JSON.stringify(messageBody)
-    //         }
-    //       )
+      const restaurant = order.restaurant
+      if (!restaurant) {
+        console.warn('⚠️ No restaurant found for order', order._id)
+        return
+      }
 
-    //       const data = await response.json()
-    //       console.log('FCM push notification sent:', data)
-    //     }
-    //   } catch (error) {
-    //     console.error('Error sending Expo push notification:', error)
-    //   }
+      const payload = {
+        type: 'ORDER_EDIT_APPROVED',
+        orderId: order._id.toString(),
+        orderNumber: order.orderId,
+        approvedAt: new Date().toISOString(),
+        finalAmount: order.orderAmount,
+        customer: {
+          name: order.user?.name,
+          phone: order.user?.phone
+        }
+      }
+
+      /**
+       * ✅ 1) Save notification record (for dashboard / audit)
+       */
+      await Notification.create({
+        title: 'تمت الموافقة على تعديل الطلب',
+        body: `وافق العميل على التعديلات الخاصة بالطلب ${order.orderId}`,
+        data: payload,
+        recipients: [
+          {
+            kind: 'Restaurant',
+            item: restaurant._id,
+            token: restaurant.notificationToken || null,
+            status: 'pending',
+            lastAttempt: new Date()
+          }
+        ],
+        createdAt: new Date()
+      })
+
+      /**
+       * ✅ 2) Push notification (if token exists)
+       */
+      if (restaurant.notificationToken) {
+        const message = {
+          token: restaurant.notificationToken,
+          notification: {
+            title: 'تمت الموافقة على الطلب',
+            body: `وافق العميل على التعديلات في الطلب ${order.orderId}`
+          },
+          data: {
+            type: payload.type,
+            orderId: payload.orderId
+          }
+        }
+
+        await admin.messaging().send(message)
+      }
+
+      /**
+       * ✅ 3) Future hooks (NO-OP for now)
+       */
+      // emitSocketEvent(restaurant._id, payload)
+      // sendDashboardBadge(restaurant._id)
+
+      console.log(`✅ Restaurant notified: order ${order.orderId} approved`)
+    } catch (error) {
+      // Important: never break order approval if notification fails
+      console.error('🔥 Failed to notify restaurant on approval', error)
+    }
   }
 }
 

@@ -98,6 +98,7 @@ import MainV2 from '../screens/Main/MainV2'
 import MandoobImg from '../assets/tabs_request_delivery.png'
 import TextDefault from '../components/Text/TextDefault/TextDefault'
 import CategorySearchRestaurants from '../screens/CategorySearchRestaurants'
+import CustomerOrderUpdatedScreen from '../screens/CustomerOrderUpdatedScreen'
 import MenuV2 from '../screens/Menu/MenuV2'
 import gql from 'graphql-tag'
 
@@ -139,6 +140,11 @@ function NoDrawer() {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log({ remoteMessage })
       try {
+        if (remoteMessage?.data?.type === 'ITEM_CHANGED') {
+          navigation.navigate('CustomerOrderUpdatedScreen', {
+            orderId: remoteMessage.data.orderId
+          })
+        }
         // Alert.alert(JSON.stringify(remoteMessage))
         const sound = remoteMessage?.notification?.android?.sound
           ? remoteMessage?.notification?.android?.sound
@@ -242,6 +248,17 @@ function NoDrawer() {
       <NavigationStack.Screen name='FullMap' component={FullMap} />
       <NavigationStack.Screen name='CartAddress' component={CartAddress} />
       <NavigationStack.Screen name='Payment' component={Payment} />
+      {/* <NavigationStack.Screen
+        name='OrderDetail'
+        component={CustomerOrderUpdatedScreen}
+        options={{
+          headerBackImage: () =>
+            DarkBackButton({
+              iconColor: currentTheme.backIcon,
+              iconBackground: currentTheme.backIconBackground
+            })
+        }}
+      /> */}
       <NavigationStack.Screen
         name='OrderDetail'
         component={OrderDetail}
@@ -457,6 +474,11 @@ function NoDrawer() {
         name='CategorySearchRestaurants'
         options={{ headerShown: false }}
         component={CategorySearchRestaurants}
+      />
+      <NavigationStack.Screen
+        name='CustomerOrderUpdatedScreen'
+        options={{ headerShown: false }}
+        component={CustomerOrderUpdatedScreen}
       />
     </NavigationStack.Navigator>
   )

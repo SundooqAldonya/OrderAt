@@ -46,7 +46,10 @@ import LottieView from 'lottie-react-native'
 import { singleOrder } from '../../apollo/queries'
 // import JSONTree from 'react-native-json-tree'
 import gql from 'graphql-tag'
-import { orderStatusChanged } from '../../apollo/subscriptions'
+import {
+  BUSINESS_EDITS_UPDATED_SUB,
+  orderStatusChanged
+} from '../../apollo/subscriptions'
 import UserContext from '../../context/User'
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
@@ -97,7 +100,7 @@ function OrderDetail(props) {
     subscribeToMore: subscribeToMoreOrders
   } = useQuery(ORDER, {
     variables: { id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     onError: (err) => {
       console.log({ err })
     },
@@ -139,6 +142,26 @@ function OrderDetail(props) {
 
     return () => unsubscribe()
   }, [userId, subscribeToMoreOrders])
+
+  useEffect(() => {
+    const unsubscribe = subscribeToMoreOrders({
+      document: BUSINESS_EDITS_UPDATED_SUB,
+      variables: { orderId: id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData?.data) return prev
+
+        return {
+          ...prev,
+          order: {
+            ...prev.order,
+            businessEdits: subscriptionData.data.businessEditsUpdated
+          }
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [id])
 
   function onError(error) {
     FlashMessage({

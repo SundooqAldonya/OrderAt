@@ -1767,7 +1767,31 @@ const typeDefs = gql`
     baseFare: Float
   }
 
+  type BusinessEdits {
+    isEdited: Boolean
+    customerApproved: Boolean
+    customerApprovalTime: String
+    changes: [BusinessEditChange!]
+  }
+
+  type BusinessEditChange {
+    orderItemId: Item
+    item: Item
+    action: String
+    oldValue: OrderItemValue
+    newValue: OrderItemValue
+    note: String
+    timestamp: String
+  }
+
+  type OrderItemValue {
+    unitPrice: Float
+    quantity: Float
+    totalPrice: Float
+  }
+
   type Query {
+    getOrderBusinessEdits(id: String!): BusinessEdits
     getGlobalDeliveryPricing: GlobalDeliveryPricing
     getAllCountryPricing(country: String): [CountryPricing!]!
     getCountryPricingById(id: String!): CountryPricing
@@ -2391,6 +2415,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    approveBusinessEdits(orderId: String!): Message
+    rejectBusinessEdits(orderId: String!, reason: String): Message
     updateOrderItem(
       orderId: String!
       itemId: String!
@@ -2766,7 +2792,7 @@ const typeDefs = gql`
     subscriptionNewMessage(order: ID!): ChatMessageOutput!
     riderAvailabilityUpdated(riderId: String!): Rider
     riderActivityUpdated(riderId: String!): Rider
-
+    businessEditsUpdated(orderId: String!): BusinessEdits
     # newOrderCreated: Order
   }
 `

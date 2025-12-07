@@ -25,7 +25,6 @@ import {
   setupNotificationChannel
 } from '../utilities/playSound'
 import { Alert } from 'react-native'
-// import ToastManager, { Toast } from 'toastify-react-native'
 import Toast from 'react-native-toast-message'
 import { testingNotifications } from '../utilities/setupNotificationChannel'
 import NewOrderScreenNotification from '../screens/NewOrderScreenNotification'
@@ -39,6 +38,7 @@ import { useMutation } from '@apollo/client/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { navigate } from '../utilities/rootNavigation'
 import OrderEditScreen from '../screens/OrderEditScreen'
+import { useTranslation } from 'react-i18next'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -119,6 +119,8 @@ function DrawerNavigator() {
 function StackNavigator() {
   const navigation = useNavigation()
   const { isLoggedIn } = useContext(AuthContext)
+  const { i18n, t } = useTranslation()
+  const isArabic = i18n.language === 'ar'
 
   const pendingConnection = useSelector(
     state => state.printers.pendingConnection
@@ -155,16 +157,32 @@ function StackNavigator() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log({ remoteMessage })
       try {
         const sound = remoteMessage?.notification?.android?.sound
           ? remoteMessage?.notification?.android?.sound
           : null
+
         if (sound !== 'false') {
           await playCustomSound()
         }
+
         const notificationId = remoteMessage?.data?.notificationId || null
         if (notificationId) {
           mutateAcknowledgeNotification({ variables: { notificationId } })
+        }
+
+        if (remoteMessage.data.type === 'ORDER_EDIT_APPROVED') {
+          Toast.show({
+            text1: remoteMessage.notification.title,
+            text2: remoteMessage.notification.body,
+            text1Style: {
+              textAlign: isArabic ? 'right' : 'left'
+            },
+            text2Style: {
+              textAlign: isArabic ? 'right' : 'left'
+            }
+          })
         }
         // navigate('NewOrderScreenNotification', { activeBar: 1 })
       } catch (error) {

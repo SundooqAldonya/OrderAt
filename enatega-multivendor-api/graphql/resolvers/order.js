@@ -37,7 +37,8 @@ const {
   ASSIGN_RIDER,
   SUBSCRIPTION_ORDER,
   ORDER_STATUS_CHANGED_RESTAURANT,
-  publishNewOrderDispatch
+  publishNewOrderDispatch,
+  BUSINESS_EDITS_UPDATED
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -47,7 +48,8 @@ const Food = require('../../models/food')
 const Addon = require('../../models/addon')
 const Option = require('../../models/option')
 const {
-  sendRestaurantNotifications
+  sendRestaurantNotifications,
+  notifyRestaurantOnApproval
 } = require('../../helpers/restaurantNotifications')
 const Area = require('../../models/area')
 const DeliveryPrice = require('../../models/DeliveryPrice')
@@ -140,6 +142,18 @@ module.exports = {
         () => pubsub.asyncIterator(ORDER_STATUS_CHANGED_RESTAURANT),
         (payload, variables) =>
           payload.orderStatusChangedRestaurant.orderId === variables.orderId
+      )
+    },
+    businessEditsUpdated: {
+      subscribe: withFilter(
+        (_, __, { pubsub }) => pubsub.asyncIterator(BUSINESS_EDITS_UPDATED),
+        (payload, variables, context) => {
+          // ✅ Only forward updates for THIS order
+          return (
+            payload.businessEditsUpdated.orderId.toString() ===
+            variables.orderId.toString()
+          )
+        }
       )
     }
   },
@@ -775,6 +789,26 @@ module.exports = {
         }
       } catch (err) {
         console.error(err)
+        throw err
+      }
+    },
+
+    async getOrderBusinessEdits(_, args) {
+      try {
+        const order = await Order.findById(args.id)
+          .select('businessEdits')
+          .populate('businessEdits.changes.orderItemId')
+        if (!order) throw new Error('order_not_found')
+        if (!order.businessEdits || !order.businessEdits.isEdited) {
+          return {
+            isEdited: false,
+            customerApproved: false,
+            customerApprovalTime: null,
+            changes: []
+          }
+        }
+        return order.businessEdits
+      } catch (err) {
         throw err
       }
     }
@@ -2668,7 +2702,7 @@ module.exports = {
 
         order.businessEdits.changes.push({
           orderItemId: itemId, // IMPORTANT for locating this snapshot later
-          item: item.food, // or item.foodId if you store item ref
+          item: item, // or item.foodId if you store item ref
           action: 'updated',
           oldValue,
           newValue: {
@@ -2734,6 +2768,114 @@ module.exports = {
         console.error('updateOrderItem Error:', err)
         throw new Error(err.message || 'Failed to update order item')
       }
+    },
+
+    async approveBusinessEdits(_, { orderId }) {
+      const order = await Order.findOne({
+        _id: orderId
+      }).populate('items.food restaurant')
+
+      if (!order) throw new Error('Order not found')
+
+      // if (order.businessEdits?.customerApproved) {
+      //   throw new Error('Edits already approved')
+      // }
+
+      const finalChanges = buildFinalItemState(order)
+
+      let newSubtotal = 0
+
+      // Apply FINAL item state
+
+      for (const change of finalChanges) {
+        // Match using the canonical order item ID
+        console.log({ change })
+        const index = order.items.findIndex(
+          item => item._id.toString() === change.orderItemId.toString()
+        )
+
+        // Safety – item might already be gone
+        if (index === -1) continue
+
+        // Item removed by business (last change wins)
+        if (change.action === 'removed') {
+          order.items.splice(index, 1)
+          continue
+        }
+
+        // UPDATED — apply ONLY final approved values
+        const quantity = Number(change.newValue?.quantity || 0)
+        const unitPrice = Number(change.newValue?.unitPrice || 0)
+        const totalPrice = Number(
+          change.newValue?.totalPrice || quantity * unitPrice
+        )
+
+        order.items[index].quantity = quantity
+        order.items[index].variation.price = unitPrice
+        order.items[index].totalPrice = totalPrice
+
+        // Build new subtotal from FINAL values only
+        newSubtotal += totalPrice
+      }
+
+      console.log('✅ New subtotal after approval:', newSubtotal)
+
+      // ✅ Preserve originals (if not already saved)
+      order.originalSubtotal ??= order.orderAmount
+      order.originalPrice ??= order.orderAmount
+
+      // ✅ Apply new totals (delivery NOT recalculated)
+      order.orderAmount =
+        newSubtotal + (order.deliveryCharges || 0) + (order.taxationAmount || 0)
+
+      // ✅ Mark approval
+      order.businessEdits.customerApproved = true
+      order.businessEdits.customerApprovalTime = new Date()
+
+      await order.save()
+
+      // ✅ Notify restaurant (hook only)
+      notifyRestaurantOnApproval(order)
+
+      // ✅ Realtime update for customer UI
+      pubsub.publish(BUSINESS_EDITS_UPDATED, {
+        businessEditsUpdated: {
+          orderId: order._id,
+          ...order.businessEdits
+        }
+      })
+
+      return {
+        // success: true,
+        message: 'Business edits approved'
+      }
     }
   }
+}
+
+// for customer approval order's edit provided by restaurant
+function buildFinalItemState(order) {
+  const changes = order.businessEdits?.changes || []
+
+  const grouped = {}
+
+  for (const change of changes) {
+    if (!grouped[change.orderItemId]) {
+      grouped[change.orderItemId] = []
+    }
+    grouped[change.orderItemId].push(change)
+  }
+
+  return Object.values(grouped).map(itemChanges => {
+    const first = itemChanges[0]
+    const last = itemChanges[itemChanges.length - 1]
+
+    return {
+      orderItemId: first.orderItemId,
+      item: first.item,
+      action: last.action, // updated | removed
+      oldValue: first.oldValue,
+      newValue: last.newValue
+    }
+  })
 }
