@@ -22,6 +22,7 @@ import { useTranslation, withTranslation } from "react-i18next";
 import { isAuthenticated } from "../helpers/user";
 import { Fragment } from "react";
 import { gql } from "@apollo/client";
+import { useEffect } from "react";
 
 const UPDATE_DELIVERY_BOUNDS_AND_LOCATION = gql`
   ${updateDeliveryBoundsAndLocation}
@@ -66,15 +67,43 @@ function DeliveryBoundsAndLocation() {
   ]);
   const polygonRef = useRef();
   const listenersRef = useRef([]);
-  const { error: errorQuery, loading: loadingQuery } = useQuery(
-    GET_RESTAURANT_PROFILE,
-    {
-      variables: { id: restaurantId },
-      fetchPolicy: "network-only",
-      onCompleted,
-      onError,
+  const {
+    data,
+    error: errorQuery,
+    loading: loadingQuery,
+  } = useQuery(GET_RESTAURANT_PROFILE, {
+    variables: { id: restaurantId },
+    fetchPolicy: "network-only",
+    onCompleted,
+    onError,
+  });
+
+  console.log({ data });
+
+  const restaurant = data?.restaurant || null;
+
+  useEffect(() => {
+    if (
+      restaurant &&
+      restaurant.location.coordinates[0] !== "0" &&
+      restaurant.location.coordinates[1] !== "0"
+    ) {
+      setCenter({
+        lat: +restaurant.location.coordinates[1],
+        lng: +restaurant.location.coordinates[0],
+      });
+      setMarker({
+        lat: +restaurant.location.coordinates[1],
+        lng: +restaurant.location.coordinates[0],
+      });
+      setPath(
+        restaurant.deliveryBounds
+          ? transformPolygon(restaurant.deliveryBounds.coordinates[0])
+          : path
+      );
     }
-  );
+  }, [data]);
+
   const [mutate, { loading }] = useMutation(
     UPDATE_DELIVERY_BOUNDS_AND_LOCATION,
     {
