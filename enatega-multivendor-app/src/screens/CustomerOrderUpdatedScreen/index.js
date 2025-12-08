@@ -38,7 +38,7 @@ const CustomerOrderUpdatedScreen = () => {
     fetchPolicy: 'network-only'
   })
 
-  const edits = data?.getOrderBusinessEdits
+  const edits = data?.getOrderBusinessEdits || null
   const changes = edits?.changes || []
   const hasEdits = edits?.isEdited && !edits?.customerApproved
 
@@ -115,6 +115,8 @@ const CustomerOrderUpdatedScreen = () => {
         console.log({ res })
         // UX feedback (simple for now)
         alert('تم رفض التعديلات')
+        // Navigate out (order no longer valid)
+        navigation.navigate('Main')
       },
       onError: (err) => {
         console.log({ err })
@@ -130,9 +132,6 @@ const CustomerOrderUpdatedScreen = () => {
           orderId: orderId || _id
         }
       })
-
-      // Optionally navigate back to order screen
-      // navigation.replace('OrderDetails', { orderId })
     } catch (err) {
       console.log({ err })
     }
@@ -146,9 +145,6 @@ const CustomerOrderUpdatedScreen = () => {
           reason: 'Customer rejected business edits'
         }
       })
-
-      // Navigate out (order no longer valid)
-      // navigation.replace('Home')
     } catch (err) {
       console.log({ err })
     }

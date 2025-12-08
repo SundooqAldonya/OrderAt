@@ -1770,6 +1770,7 @@ const typeDefs = gql`
   type BusinessEdits {
     isEdited: Boolean
     customerApproved: Boolean
+    customerRejected: Boolean
     customerApprovalTime: String
     changes: [BusinessEditChange!]
   }
@@ -2415,8 +2416,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    approveBusinessEdits(orderId: String!): Message
     rejectBusinessEdits(orderId: String!, reason: String): Message
+    approveBusinessEdits(orderId: String!): Message
     updateOrderItem(
       orderId: String!
       itemId: String!
@@ -2780,6 +2781,18 @@ const typeDefs = gql`
       configurationInput: DemoConfigurationInput!
     ): Configuration!
   }
+
+  type BusinessEditsDecisionPayload {
+    orderId: String!
+    customerApprovalTime: String
+  }
+
+  type BusinessEditsDecisionPayload1 {
+    orderId: String!
+    customerApprovalTime: String
+    customerRejected: Boolean
+  }
+
   type Subscription {
     subscribePlaceOrder(restaurant: String!): SubscriptionOrders!
     orderStatusChanged(orderId: String!): SubscriptionOrders!
@@ -2793,6 +2806,8 @@ const typeDefs = gql`
     riderAvailabilityUpdated(riderId: String!): Rider
     riderActivityUpdated(riderId: String!): Rider
     businessEditsUpdated(orderId: String!): BusinessEdits
+    businessEditsApproved(orderId: String!): BusinessEditsDecisionPayload
+    businessEditsDisapproved(orderId: String!): BusinessEditsDecisionPayload1
     # newOrderCreated: Order
   }
 `

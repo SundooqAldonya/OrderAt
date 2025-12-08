@@ -38,7 +38,9 @@ const {
   SUBSCRIPTION_ORDER,
   ORDER_STATUS_CHANGED_RESTAURANT,
   publishNewOrderDispatch,
-  BUSINESS_EDITS_UPDATED
+  BUSINESS_EDITS_UPDATED,
+  BUSINESS_EDITS_APPROVED,
+  BUSINESS_EDITS_DISAPPROVED
 } = require('../../helpers/pubsub')
 const { sendNotificationToUser } = require('../../helpers/notifications')
 const {
@@ -49,7 +51,8 @@ const Addon = require('../../models/addon')
 const Option = require('../../models/option')
 const {
   sendRestaurantNotifications,
-  notifyRestaurantOnApproval
+  notifyRestaurantOnApproval,
+  notifyRestaurantOnRejection
 } = require('../../helpers/restaurantNotifications')
 const Area = require('../../models/area')
 const DeliveryPrice = require('../../models/DeliveryPrice')
@@ -71,6 +74,7 @@ const {
 } = require('../../helpers/customerNotifications')
 
 var DELIVERY_CHARGES = 0.0
+
 module.exports = {
   Date: dateScalar,
   CancelledBy: {
@@ -154,6 +158,23 @@ module.exports = {
             variables.orderId.toString()
           )
         }
+      )
+    },
+    businessEditsApproved: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(BUSINESS_EDITS_APPROVED),
+        (payload, variables) =>
+          String(payload.businessEditsApproved.orderId) ===
+          String(variables.orderId)
+      )
+    },
+
+    businessEditsDisapproved: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(BUSINESS_EDITS_DISAPPROVED),
+        (payload, variables) =>
+          String(payload.businessEditsDisapproved.orderId) ===
+          String(variables.orderId)
       )
     }
   },
@@ -803,10 +824,12 @@ module.exports = {
           return {
             isEdited: false,
             customerApproved: false,
+            customerRejected: false,
             customerApprovalTime: null,
             changes: []
           }
         }
+        console.log({ businessEdits: order?.businessEdits })
         return order.businessEdits
       } catch (err) {
         throw err
@@ -2777,9 +2800,9 @@ module.exports = {
 
       if (!order) throw new Error('Order not found')
 
-      // if (order.businessEdits?.customerApproved) {
-      //   throw new Error('Edits already approved')
-      // }
+      if (order.businessEdits?.customerApproved) {
+        throw new Error('Edits already approved')
+      }
 
       const finalChanges = buildFinalItemState(order)
 
@@ -2838,16 +2861,87 @@ module.exports = {
       notifyRestaurantOnApproval(order)
 
       // ✅ Realtime update for customer UI
-      pubsub.publish(BUSINESS_EDITS_UPDATED, {
-        businessEditsUpdated: {
-          orderId: order._id,
-          ...order.businessEdits
+      pubsub.publish(BUSINESS_EDITS_APPROVED, {
+        businessEditsApproved: {
+          orderId: order._id.toString(),
+          customerApprovalTime: order.businessEdits.customerApprovalTime
         }
       })
 
       return {
         // success: true,
         message: 'Business edits approved'
+      }
+    },
+
+    async rejectBusinessEdits(_, { orderId, reason }, { req }) {
+      try {
+        // 1️⃣ Load order and validate ownership
+        const order = await Order.findOne({
+          _id: orderId
+        }).populate('restaurant')
+
+        if (!order) {
+          throw new Error('Order not found')
+        }
+
+        // 2️⃣ Safety checks
+        // if (!order.businessEdits?.isEdited) {
+        //   throw new Error('No business edits to reject')
+        // }
+
+        if (order.businessEdits.customerApproved) {
+          throw new Error('Edits already approved')
+        }
+
+        // 3️⃣ Cancel the order
+        // order.orderStatus = 'CANCELLED'
+        // order.cancelledAt = new Date()
+        // order.cancellation = {
+        //   kind: 'User',
+        //   cancelledBy: user._id,
+        //   reason: reason || 'Customer rejected business edits'
+        // }
+
+        // 4️⃣ Lock business edits
+        const updatedOrder = await Order.findOneAndUpdate(
+          { _id: orderId },
+          {
+            $set: {
+              'businessEdits.customerRejected': true,
+              'businessEdits.customerApproved': false,
+              'businessEdits.isEdited': false,
+              'businessEdits.customerApprovalTime': new Date()
+            }
+          },
+          { new: true }
+        ).populate('restaurant')
+        // order.businessEdits.customerApproved = false
+        // order.businessEdits.customerApprovalTime = new Date()
+        // order.businessEdits.isEdited = false
+        // order.businessEdits.customerRejected = true
+
+        // await order.save()
+
+        // 5️⃣ Notify restaurant (NO rider)
+        notifyRestaurantOnRejection(updatedOrder)
+
+        // 6️⃣ Real-time update to customer app
+        pubsub.publish(BUSINESS_EDITS_DISAPPROVED, {
+          businessEditsDisapproved: {
+            orderId: updatedOrder._id.toString(),
+            customerApprovalTime:
+              updatedOrder.businessEdits.customerApprovalTime,
+            customerRejected: updatedOrder.businessEdits.customerRejected
+          }
+        })
+
+        return {
+          // success: true,
+          message: 'rejected_business_changes'
+        }
+      } catch (err) {
+        throw err
       }
     }
   }

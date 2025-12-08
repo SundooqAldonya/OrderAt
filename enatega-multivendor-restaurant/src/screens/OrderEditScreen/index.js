@@ -11,10 +11,14 @@ import {
   Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useMutation, useQuery } from '@apollo/client/react'
+import { useMutation, useQuery, useSubscription } from '@apollo/client/react'
 import moment from 'moment'
 import { colors } from '../../utilities'
 import {
+  BUSINESS_EDITS_APPROVED_SUB,
+  BUSINESS_EDITS_DISAPPROVED_SUB,
+  BUSINESS_EDITS_UPDATED_SUB,
+  getOrderBusinessEdits,
   REMOVE_ORDER_ITEM,
   singleOrder,
   SUBMIT_BUSINESS_EDITS,
@@ -23,6 +27,7 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import { AntDesign } from '@expo/vector-icons'
 import Spinner from '../../components/Spinner/Spinner'
+import PendingEditsView from '../../components/PendingEditsView'
 
 function OrderEditScreen({ route }) {
   const { orderId } = route.params
@@ -35,24 +40,89 @@ function OrderEditScreen({ route }) {
   const [note, setNote] = useState('')
   const [changesPending, setChangesPending] = useState([])
   const [submitting, setSubmitting] = useState(false)
+  const [customerRejected, setCustomerRejected] = useState(false)
 
   console.log({ orderId })
 
-  const { data, loading, error } = useQuery(singleOrder, {
-    variables: {
-      id: orderId
+  const { data, loading, error, refetch: refetchSingleOrder } = useQuery(
+    singleOrder,
+    {
+      variables: {
+        id: orderId
+      },
+      nextFetchPolicy: 'no-cache'
     }
-  })
+  )
 
   const order = data?.singleOrder || null
 
-  console.log({ items: order?.items })
-  console.log({ addons: order?.items[0]?.addons })
-  console.log({ variation: order?.items[0]?.variation })
+  const {
+    data: dataOrderEdit,
+    loading: loadingOrderEdit,
+    error: errorOrderEdit,
+    refetch
+  } = useQuery(getOrderBusinessEdits, {
+    variables: { id: orderId },
+    fetchPolicy: 'network-only'
+  })
 
-  const [submitBusinessEdits] = useMutation(SUBMIT_BUSINESS_EDITS)
-  const [updateOrderItem] = useMutation(UPDATE_ORDER_ITEM)
-  const [removeOrderItem] = useMutation(REMOVE_ORDER_ITEM)
+  console.log({ dataOrderEdit })
+
+  const edits = dataOrderEdit?.getOrderBusinessEdits
+  const isPending =
+    edits?.isEdited === true && edits?.customerApproved === false
+  const isApproved = edits?.isEdited && edits?.customerApproved
+  const isRejected = edits?.customerRejected
+
+  useEffect(() => {
+    if (
+      dataOrderEdit &&
+      dataOrderEdit?.getOrderBusinessEdits?.customerRejected
+    ) {
+      setCustomerRejected(true)
+    }
+  }, [dataOrderEdit])
+
+  console.log({ customerRejected })
+
+  const [submitBusinessEdits] = useMutation(SUBMIT_BUSINESS_EDITS, {
+    refetchQueries: [
+      { query: getOrderBusinessEdits, variables: { id: orderId } }
+    ],
+    onCompleted: res => {
+      console.log({ res })
+      setEditModalVisible(false)
+    }
+  })
+
+  const [updateOrderItem] = useMutation(UPDATE_ORDER_ITEM, {
+    refetchQueries: [
+      { query: getOrderBusinessEdits, variables: { id: orderId } }
+    ],
+    onCompleted: res => {
+      console.log({ res })
+      setEditModalVisible(false)
+    }
+  })
+
+  const [removeOrderItem] = useMutation(REMOVE_ORDER_ITEM, {
+    refetchQueries: [
+      { query: getOrderBusinessEdits, variables: { id: orderId } }
+    ],
+    onCompleted: res => {
+      console.log({ res })
+      setEditModalVisible(false)
+    }
+  })
+
+  const { data: approvedData } = useSubscription(BUSINESS_EDITS_APPROVED_SUB, {
+    variables: { orderId }
+  })
+
+  const { data: rejectedData } = useSubscription(
+    BUSINESS_EDITS_DISAPPROVED_SUB,
+    { variables: { orderId } }
+  )
 
   useEffect(() => {
     // create a deep copy of order items to edit locally
@@ -60,6 +130,26 @@ function OrderEditScreen({ route }) {
     setLocalItems(itemsCopy)
     navigation.setOptions({ title: `#${order?.orderId || order?._id}` })
   }, [order])
+
+  useEffect(() => {
+    if (approvedData) {
+      Alert.alert('✅ Customer approved the changes')
+      // lock editing UI
+      refetchSingleOrder()
+      refetch()
+    }
+  }, [approvedData])
+
+  console.log({ rejectedData })
+
+  useEffect(() => {
+    if (rejectedData) {
+      Alert.alert('❌ Customer rejected the changes')
+      // lock editing UI
+      refetchSingleOrder()
+      refetch()
+    }
+  }, [rejectedData])
 
   const openEditPrice = item => {
     setEditingItem(item)
@@ -195,9 +285,14 @@ function OrderEditScreen({ route }) {
     }
   }
 
-  if (loading) {
+  if (loading && loadingOrderEdit) {
     return <Spinner />
   }
+
+  const canEditByBusiness =
+    (order?.orderStatus === 'PENDING' || order?.orderStatus === 'ACCEPTED') &&
+    !isApproved &&
+    !isRejected
 
   const renderItem = ({ item }) => {
     console.log({ item })
@@ -240,6 +335,7 @@ function OrderEditScreen({ route }) {
             )} EGP`}
           </Text>
 
+          {/* {canEditByBusiness ? ( */}
           <View style={{ flexDirection: 'row', marginTop: 8 }}>
             <TouchableOpacity
               style={styles.smallButton}
@@ -255,6 +351,7 @@ function OrderEditScreen({ route }) {
               </Text>
             </TouchableOpacity>
           </View>
+          {/* ) : null} */}
         </View>
       </View>
     )
@@ -271,6 +368,26 @@ function OrderEditScreen({ route }) {
         }`}</Text>
         <View style={{ width: 40 }} />
       </View>
+
+      {isApproved && (
+        <View style={[styles.banner, styles.approvedBanner]}>
+          <Text style={styles.bannerText}>✅ العميل وافق على التعديلات</Text>
+        </View>
+      )}
+
+      {isRejected && (
+        <View style={[styles.banner, styles.rejectedBanner]}>
+          <Text style={styles.bannerText}>❌ العميل رفض التعديلات</Text>
+        </View>
+      )}
+
+      {!isApproved && !isRejected && (
+        <View style={[styles.banner, styles.pendingBanner]}>
+          <Text style={styles.bannerText}>
+            ⏳ في انتظار رد العميل على التعديلات
+          </Text>
+        </View>
+      )}
 
       <View style={styles.orderSummaryCard}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -487,6 +604,29 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginTop: 6
+  },
+  banner: {
+    margin: 12,
+    padding: 14,
+    borderRadius: 10
+  },
+
+  pendingBanner: {
+    backgroundColor: '#FFF2CC'
+  },
+
+  approvedBanner: {
+    backgroundColor: '#E7F6EC'
+  },
+
+  rejectedBanner: {
+    backgroundColor: '#FDECEC'
+  },
+
+  bannerText: {
+    fontWeight: '700',
+    textAlign: 'center',
+    color: '#333'
   }
 })
 

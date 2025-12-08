@@ -172,7 +172,10 @@ function StackNavigator() {
           mutateAcknowledgeNotification({ variables: { notificationId } })
         }
 
-        if (remoteMessage.data.type === 'ORDER_EDIT_APPROVED') {
+        if (
+          remoteMessage.data.type === 'ORDER_EDIT_APPROVED' ||
+          remoteMessage.data.type === 'ORDER_EDIT_REJECTED'
+        ) {
           Toast.show({
             text1: remoteMessage.notification.title,
             text2: remoteMessage.notification.body,

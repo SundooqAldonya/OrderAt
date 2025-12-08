@@ -337,3 +337,31 @@ export const ORDER_STATUS_CHANGED_RESTAURANT = gql`
     }
   }
 `
+
+export const BUSINESS_EDITS_UPDATED_SUB = gql`
+  subscription BusinessEditsUpdated($orderId: String!) {
+    businessEditsUpdated(orderId: $orderId) {
+      isEdited
+      customerApproved
+      rejected
+      customerApprovalTime
+    }
+  }
+`
+export const BUSINESS_EDITS_APPROVED_SUB = gql`
+  subscription BusinessEditsApproved($orderId: String!) {
+    businessEditsApproved(orderId: $orderId) {
+      orderId
+      customerApprovalTime
+    }
+  }
+`
+export const BUSINESS_EDITS_DISAPPROVED_SUB = gql`
+  subscription BusinessEditsDisapproved($orderId: String!) {
+    businessEditsDisapproved(orderId: $orderId) {
+      orderId
+      customerApprovalTime
+      customerRejected
+    }
+  }
+`

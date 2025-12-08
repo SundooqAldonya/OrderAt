@@ -411,3 +411,39 @@ export const singleOrder = gql`
     }
   }
 `
+
+export const getOrderBusinessEdits = gql`
+  query GetOrderBusinessEdits($id: String!) {
+    getOrderBusinessEdits(id: $id) {
+      isEdited
+      customerApproved
+      customerRejected
+      customerApprovalTime
+      changes {
+        orderItemId {
+          _id
+          title
+          image
+        }
+        action
+        note
+        timestamp
+        item {
+          _id
+          title
+          image
+        }
+        oldValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+        newValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+      }
+    }
+  }
+`

@@ -176,6 +176,75 @@ const notifications = {
       // Important: never break order approval if notification fails
       console.error('🔥 Failed to notify restaurant on approval', error)
     }
+  },
+
+  async notifyRestaurantOnRejection(order) {
+    try {
+      // Ensure we have restaurant info
+      await order.populate([
+        { path: 'restaurant', select: 'name notificationToken' },
+        { path: 'user', select: 'name phone' }
+      ])
+
+      const restaurant = order.restaurant
+      if (!restaurant) return
+
+      const payload = {
+        type: 'ORDER_EDIT_REJECTED',
+        orderId: order._id.toString(),
+        orderNumber: order.orderId,
+        rejectedAt: new Date().toISOString(),
+        reason: order.businessEdits?.rejectReason || null,
+        customer: {
+          name: order.user?.name,
+          phone: order.user?.phone
+        }
+      }
+
+      // ✅ Save notification (dashboard / audit)
+      await Notification.create({
+        title: 'تم رفض تعديل الطلب',
+        body: `قام العميل برفض التعديلات على الطلب ${order.orderId}`,
+        data: payload,
+        recipients: [
+          {
+            kind: 'Restaurant',
+            item: restaurant._id,
+            token: restaurant.notificationToken || null,
+            status: 'pending',
+            lastAttempt: new Date()
+          }
+        ],
+        createdAt: new Date()
+      })
+
+      // ✅ Push notification (if token exists)
+      if (restaurant.notificationToken) {
+        const message = {
+          token: restaurant.notificationToken,
+          notification: {
+            title: 'تم رفض التعديلات',
+            body: `العميل لم يوافق على تعديلات الطلب ${order.orderId}`
+          },
+          data: {
+            type: payload.type,
+            orderId: payload.orderId
+          }
+        }
+
+        await admin.messaging().send(message)
+      }
+
+      // ✅ Future hooks (NO-OP for now)
+      // emitRestaurantSocketEvent(restaurant._id, payload)
+
+      console.log(
+        `✅ Restaurant notified: edits rejected for order ${order.orderId}`
+      )
+    } catch (err) {
+      // ❗ Never break main flow
+      console.error('🔥 Failed to notify restaurant on rejection', err)
+    }
   }
 }
 

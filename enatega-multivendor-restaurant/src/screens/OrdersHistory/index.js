@@ -21,6 +21,7 @@ import { eachDayOfInterval, format } from 'date-fns'
 import { useQuery } from '@apollo/client/react'
 import { restaurantOrdersHistory, subscribePlaceOrder } from '../../apollo'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { gql } from '@apollo/client'
 
 export default function OrderHistory() {
   const { t } = useTranslation()

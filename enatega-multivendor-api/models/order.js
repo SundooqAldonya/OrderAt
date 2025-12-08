@@ -229,6 +229,7 @@ const orderSchema = new Schema(
       },
 
       customerApproved: { type: Boolean, default: false },
+      customerRejected: { type: Boolean, default: false },
       customerApprovalTime: { type: Date, default: null },
 
       changes: [
