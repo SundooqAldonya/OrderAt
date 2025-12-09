@@ -373,7 +373,7 @@ const AddNewOrder = ({
           <Typography>Calculating delivery amount...</Typography>
         </Grid>
       )}
-      {loaded ? (
+      {deliveryAmount ? (
         <Grid item xs={12}>
           <Typography>
             Delivery Amount: {deliveryAmount ? deliveryAmount : "Free"}{" "}
