@@ -238,7 +238,7 @@ const orderSchema = new Schema(
           item: itemSchema,
           action: {
             type: String,
-            enum: ['updated', 'removed']
+            enum: ['updated', 'removed', 'to_be_removed']
           },
           oldValue: { type: mongoose.Schema.Types.Mixed },
           newValue: { type: mongoose.Schema.Types.Mixed },

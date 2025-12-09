@@ -50,26 +50,27 @@ const CustomerOrderUpdatedScreen = () => {
    */
   const mergedChanges = useMemo(() => {
     const grouped = {}
-
-    for (const change of changes) {
-      if (!grouped[change.orderItemId]) {
-        grouped[change.orderItemId] = []
+    if (changes) {
+      for (const change of changes) {
+        if (!grouped[change.orderItemId]) {
+          grouped[change.orderItemId] = []
+        }
+        grouped[change.orderItemId].push(change)
       }
-      grouped[change.orderItemId].push(change)
+
+      return Object.values(grouped).map((itemChanges) => {
+        const first = itemChanges[0]
+        const last = itemChanges[itemChanges.length - 1]
+
+        return {
+          item: first.item,
+          action: last.action, // UPDATED | REMOVED
+          oldValue: first.oldValue,
+          newValue: last.newValue,
+          note: last.note
+        }
+      })
     }
-
-    return Object.values(grouped).map((itemChanges) => {
-      const first = itemChanges[0]
-      const last = itemChanges[itemChanges.length - 1]
-
-      return {
-        item: first.item,
-        action: last.action, // UPDATED | REMOVED
-        oldValue: first.oldValue,
-        newValue: last.newValue,
-        note: last.note
-      }
-    })
   }, [changes])
 
   // ✅ FINAL TOTAL DIFFERENCE (no summing of intermediate edits)
@@ -196,7 +197,7 @@ const CustomerOrderUpdatedScreen = () => {
 
         {/* ✅ FINAL ITEMS */}
         {mergedChanges.map((c, index) => {
-          if (c.action === 'REMOVED') {
+          if (c.action === 'to_be_removed') {
             return (
               <View key={index} style={[styles.itemCard, styles.removedCard]}>
                 <Text style={styles.itemName}>{c.item?.title}</Text>
@@ -334,7 +335,7 @@ const CustomerOrderUpdatedScreen = () => {
                     {c.item?.title}
                   </Text>
 
-                  {c.action === 'REMOVED' ? (
+                  {c.action === 'to_be_removed' ? (
                     <Text style={styles.removedText}>تمت إزالة الصنف</Text>
                   ) : (
                     <>

@@ -32,19 +32,17 @@ export default function OrderHistory() {
   const [date2UI, setDate2UI] = useState(null)
   const unsubscribeRef = useRef(null)
 
-  const { data, loading, error, subscribeToMore } = useQuery(
+  const { data, loading, error, subscribeToMore, refetch } = useQuery(
     restaurantOrdersHistory,
     {
       variables: {
         startDate: date1UI,
         endDate: date2UI
       },
-      // pollInterval: 10000,
-      nextFetchPolicy: 'no-cache'
+      pollInterval: 10000,
+      nextFetchPolicy: 'cache-and-network'
     }
   )
-
-  console.log({ data: data?.restaurantOrdersHistory[0] })
 
   useEffect(() => {
     console.log('runnnnnnnnnnnnnnnnn')
@@ -73,30 +71,31 @@ export default function OrderHistory() {
       `,
       variables: { restaurant },
       updateQuery: (prev, { subscriptionData }) => {
+        refetch()
         if (!subscriptionData.data) return prev
-        const { restaurantOrders } = prev
-        const { origin, order } = subscriptionData.data.subscribePlaceOrder
-        const updatedOrders = [order, ...restaurantOrders]
+        // const { restaurantOrders } = prev
+        // const { origin, order } = subscriptionData.data.subscribePlaceOrder
+        // const updatedOrders = [order, ...restaurantOrders]
         console.log('navigating to NewOrderScreenNotification')
-        navigation.navigate('NewOrderScreenNotification', {
-          activeBar: 0,
-          orderData: order,
-          itemId: order._id,
-          rider: order.rider,
-          remainingTime: moment(order.createdAt)
-            .add(MAX_TIME, 'seconds')
-            .diff(moment(), 'seconds'),
-          createdAt: order.createdAt,
-          MAX_TIME,
-          acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
-          preparationTime: new Date(order.preparationTime).toISOString()
-        })
-        if (origin === 'new') {
-          return {
-            restaurantOrders: [...updatedOrders]
-          }
-        }
-        return prev
+        // navigation.navigate('NewOrderScreenNotification', {
+        //   activeBar: 0,
+        //   orderData: order,
+        //   itemId: order._id,
+        //   rider: order.rider,
+        //   remainingTime: moment(order.createdAt)
+        //     .add(MAX_TIME, 'seconds')
+        //     .diff(moment(), 'seconds'),
+        //   createdAt: order.createdAt,
+        //   MAX_TIME,
+        //   acceptanceTime: moment(order.orderDate).diff(moment(), 'seconds'),
+        //   preparationTime: new Date(order.preparationTime).toISOString()
+        // })
+        // if (origin === 'new') {
+        //   return {
+        //     restaurantOrders: [...updatedOrders]
+        //   }
+        // }
+        // return prev
       },
       onError: error => {
         console.log('onError', error)

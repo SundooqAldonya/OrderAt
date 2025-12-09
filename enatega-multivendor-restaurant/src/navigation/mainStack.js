@@ -186,6 +186,9 @@ function StackNavigator() {
               textAlign: isArabic ? 'right' : 'left'
             }
           })
+          navigation.navigate('OrderEditScreen', {
+            orderId: remoteMessage?.data?.orderId
+          })
         }
         // navigate('NewOrderScreenNotification', { activeBar: 1 })
       } catch (error) {
@@ -211,7 +214,6 @@ function StackNavigator() {
     <Stack.Navigator initialRouteName="Orders" screenOptions={screenOptions()}>
       <Stack.Screen name="Orders" component={OrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
-      <Stack.Screen name="OrderEditScreen" component={OrderEditScreen} />
       <Stack.Screen name="RegisterUser" component={RegisterUser} />
       <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
       <Stack.Screen name="Checkout" component={Checkout} />
@@ -226,6 +228,7 @@ function StackNavigator() {
       <Stack.Screen name="FoodListing" component={FoodListing} />
       <Stack.Screen name="OrdersHistory" component={OrdersHistory} />
       <Stack.Screen name="DeactivateAccount" component={DeactivateAccount} />
+      <Stack.Screen name="OrderEditScreen" component={OrderEditScreen} />
     </Stack.Navigator>
   )
 }

@@ -20,6 +20,7 @@ import {
   BUSINESS_EDITS_UPDATED_SUB,
   getOrderBusinessEdits,
   REMOVE_ORDER_ITEM,
+  removeOrderItemByBusiness,
   singleOrder,
   SUBMIT_BUSINESS_EDITS,
   UPDATE_ORDER_ITEM
@@ -40,7 +41,6 @@ function OrderEditScreen({ route }) {
   const [note, setNote] = useState('')
   const [changesPending, setChangesPending] = useState([])
   const [submitting, setSubmitting] = useState(false)
-  const [customerRejected, setCustomerRejected] = useState(false)
 
   console.log({ orderId })
 
@@ -56,44 +56,37 @@ function OrderEditScreen({ route }) {
 
   const order = data?.singleOrder || null
 
-  const {
-    data: dataOrderEdit,
-    loading: loadingOrderEdit,
-    error: errorOrderEdit,
-    refetch
-  } = useQuery(getOrderBusinessEdits, {
-    variables: { id: orderId },
-    fetchPolicy: 'network-only'
-  })
+  console.log({ singleOrderBusinessEdits: order?.businessEdits })
 
-  console.log({ dataOrderEdit })
+  // const {
+  //   data: dataOrderEdit,
+  //   loading: loadingOrderEdit,
+  //   error: errorOrderEdit,
+  //   refetch
+  // } = useQuery(getOrderBusinessEdits, {
+  //   variables: { id: orderId },
+  //   fetchPolicy: 'no-cache'
+  // })
 
-  const edits = dataOrderEdit?.getOrderBusinessEdits
+  // console.log({ dataOrderEdit })
+
+  const edits = order?.businessEdits || null
   const isPending =
     edits?.isEdited === true && edits?.customerApproved === false
   const isApproved = edits?.isEdited && edits?.customerApproved
   const isRejected = edits?.customerRejected
 
-  useEffect(() => {
-    if (
-      dataOrderEdit &&
-      dataOrderEdit?.getOrderBusinessEdits?.customerRejected
-    ) {
-      setCustomerRejected(true)
-    }
-  }, [dataOrderEdit])
+  console.log({ isRejected })
 
-  console.log({ customerRejected })
-
-  const [submitBusinessEdits] = useMutation(SUBMIT_BUSINESS_EDITS, {
-    refetchQueries: [
-      { query: getOrderBusinessEdits, variables: { id: orderId } }
-    ],
-    onCompleted: res => {
-      console.log({ res })
-      setEditModalVisible(false)
-    }
-  })
+  // const [submitBusinessEdits] = useMutation(SUBMIT_BUSINESS_EDITS, {
+  //   refetchQueries: [
+  //     { query: getOrderBusinessEdits, variables: { id: orderId } }
+  //   ],
+  //   onCompleted: res => {
+  //     console.log({ res })
+  //     setEditModalVisible(false)
+  //   }
+  // })
 
   const [updateOrderItem] = useMutation(UPDATE_ORDER_ITEM, {
     refetchQueries: [
@@ -105,7 +98,7 @@ function OrderEditScreen({ route }) {
     }
   })
 
-  const [removeOrderItem] = useMutation(REMOVE_ORDER_ITEM, {
+  const [removeOrderItems] = useMutation(removeOrderItemByBusiness, {
     refetchQueries: [
       { query: getOrderBusinessEdits, variables: { id: orderId } }
     ],
@@ -131,12 +124,14 @@ function OrderEditScreen({ route }) {
     navigation.setOptions({ title: `#${order?.orderId || order?._id}` })
   }, [order])
 
+  // console.log({ localItems: localItems ? localItems[0]?.variation : null })
+
   useEffect(() => {
     if (approvedData) {
       Alert.alert('✅ Customer approved the changes')
       // lock editing UI
       refetchSingleOrder()
-      refetch()
+      // refetch()
     }
   }, [approvedData])
 
@@ -147,7 +142,7 @@ function OrderEditScreen({ route }) {
       Alert.alert('❌ Customer rejected the changes')
       // lock editing UI
       refetchSingleOrder()
-      refetch()
+      // refetch()
     }
   }, [rejectedData])
 
@@ -239,15 +234,17 @@ function OrderEditScreen({ route }) {
   const calculateTotals = useMemo(() => {
     const subtotal = localItems?.reduce((sum, it) => {
       if (it._removed) return sum
-      const unit = it.variation?.price - it.variation?.discounted
+      const unit = it.variation?.price
       const qty = it.quantity ?? 1
+      console.log({ sum })
       return sum + unit * qty
     }, 0)
+    console.log({ subtotal })
     // you may want to include delivery fees, tax, coupons recalculation
     return { subtotal }
   }, [localItems])
 
-  const submitChanges = async () => {
+  const removeItems = async () => {
     if (changesPending.length === 0) {
       Alert.alert('No changes', 'There are no edits to submit.')
       return
@@ -255,10 +252,17 @@ function OrderEditScreen({ route }) {
 
     setSubmitting(true)
     try {
-      // Option A: Submit batch changes to server in businessEdits format
-      await submitBusinessEdits({
-        variables: { orderId: order?._id, changes: changesPending }
+      removeOrderItems({
+        variables: {
+          orderId,
+          itemIds: changesPending?.map(item => item.itemId),
+          note
+        }
       })
+      // Option A: Submit batch changes to server in businessEdits format
+      // await submitBusinessEdits({
+      //   variables: { orderId: order?._id, changes: changesPending }
+      // })
 
       // Optionally call individual mutations for realtime update (remove/update) if your backend expects them
       // Example (uncomment if you want to send per-item requests):
@@ -276,16 +280,16 @@ function OrderEditScreen({ route }) {
       )
       // clear pending changes; UI will enter waiting for approval state
       setChangesPending([])
-      navigation.goBack()
+      // navigation.goBack()
     } catch (err) {
-      console.error('submitChanges error', err)
+      console.error('removeItems error', err)
       Alert.alert('Error', 'Failed to submit changes. Try again.')
     } finally {
       setSubmitting(false)
     }
   }
 
-  if (loading && loadingOrderEdit) {
+  if (loading) {
     return <Spinner />
   }
 
@@ -330,9 +334,7 @@ function OrderEditScreen({ route }) {
 
         <View style={{ alignItems: 'flex-end' }}>
           <Text style={styles.itemPrice}>
-            {`${(item.variation?.price - item.variation?.discounted).toFixed(
-              2
-            )} EGP`}
+            {`${(item.variation?.price).toFixed(2)} EGP`}
           </Text>
 
           {/* {canEditByBusiness ? ( */}
@@ -437,7 +439,7 @@ function OrderEditScreen({ route }) {
             }}>{`${changesPending.length} change(s) pending`}</Text>
           <TouchableOpacity
             style={styles.submitButton}
-            onPress={submitChanges}
+            onPress={removeItems}
             disabled={submitting}>
             <Text style={{ color: '#fff', fontWeight: '700' }}>
               {submitting ? 'Submitting...' : 'Submit changes'}

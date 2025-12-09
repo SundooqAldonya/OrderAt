@@ -408,6 +408,37 @@ export const singleOrder = gql`
       originalDeliveryCharges
       originalSubtotal
       originalPrice
+      businessEdits {
+        isEdited
+        customerApproved
+        customerRejected
+        customerApprovalTime
+        changes {
+          orderItemId {
+            _id
+            title
+            image
+          }
+          action
+          note
+          timestamp
+          item {
+            _id
+            title
+            image
+          }
+          oldValue {
+            unitPrice
+            quantity
+            totalPrice
+          }
+          newValue {
+            unitPrice
+            quantity
+            totalPrice
+          }
+        }
+      }
     }
   }
 `

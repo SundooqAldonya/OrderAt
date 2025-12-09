@@ -829,7 +829,7 @@ module.exports = {
             changes: []
           }
         }
-        console.log({ businessEdits: order?.businessEdits })
+
         return order.businessEdits
       } catch (err) {
         throw err
@@ -2793,84 +2793,194 @@ module.exports = {
       }
     },
 
+    async removeOrderItemByBusiness(_, { orderId, itemIds, note }, { req }) {
+      try {
+        const order = await Order.findById(orderId).populate('restaurant')
+
+        if (!order) {
+          throw new Error('Order not found')
+        }
+
+        // ✅ Only allow while PENDING
+        if (order.orderStatus !== 'PENDING') {
+          throw new Error('Order can no longer be edited')
+        }
+
+        if (!Array.isArray(itemIds) || itemIds.length === 0) {
+          throw new Error('No items provided for removal')
+        }
+
+        // ✅ Initialize businessEdits if missing
+        if (!order.businessEdits) {
+          order.businessEdits = {
+            isEdited: false,
+            customerApproved: false,
+            customerRejected: false,
+            customerApprovalTime: null,
+            changes: []
+          }
+        }
+
+        for (const itemId of itemIds) {
+          const item = order.items.id(itemId)
+          console.log({ item })
+          if (!item) continue
+
+          // ✅ Prevent duplicate "to_be_removed"
+          const alreadyMarked = order.businessEdits.changes.find(
+            c => c.item?.toString() === itemId && c.action === 'to_be_removed'
+          )
+
+          if (alreadyMarked) continue
+
+          order.businessEdits.changes.push({
+            orderItemId: itemId, // IMPORTANT for locating this snapshot later
+            item: item, // or item.foodId if you store item ref
+            action: 'to_be_removed',
+            oldValue: {
+              title: item.title,
+              quantity: item.quantity,
+              unitPrice: item.variation?.price
+            },
+            newValue: null,
+            note: note || null,
+            timestamp: new Date()
+            // item: item._id,
+            // action: 'to_be_removed',
+            // oldValue: {
+            //   title: item.title,
+            //   quantity: item.quantity,
+            //   unitPrice: item.variation?.price
+            // },
+            // newValue: null,
+            // note
+          })
+        }
+
+        // ✅ Mark edit state
+        order.businessEdits.isEdited = true
+        order.businessEdits.editedBy = req?.restaurantId
+        order.businessEdits.customerApproved = false
+        order.businessEdits.customerRejected = false
+        order.businessEdits.customerApprovalTime = null
+
+        await order.save()
+
+        // ✅ Notify customer
+        const user = await User.findById(order.user)
+        const transformedOrder = await transformOrder(order)
+
+        if (
+          user &&
+          user.isOnline &&
+          user.isOrderNotification &&
+          user.notificationToken
+        ) {
+          await sendCustomerItemEditNotification(user, transformedOrder)
+        }
+
+        // ✅ Realtime update (customer app)
+        pubsub.publish(BUSINESS_EDITS_UPDATED, {
+          businessEditsUpdated: order.businessEdits.toObject()
+        })
+
+        return { message: 'requested_item_removal' }
+      } catch (err) {
+        throw err
+      }
+    },
     async approveBusinessEdits(_, { orderId }) {
-      const order = await Order.findOne({
-        _id: orderId
-      }).populate('items.food restaurant')
+      try {
+        const order = await Order.findOne({
+          _id: orderId
+        }).populate('items.food restaurant')
 
-      if (!order) throw new Error('Order not found')
+        if (!order) throw new Error('Order not found')
 
-      if (order.businessEdits?.customerApproved) {
-        throw new Error('Edits already approved')
-      }
-
-      const finalChanges = buildFinalItemState(order)
-
-      let newSubtotal = 0
-
-      // Apply FINAL item state
-
-      for (const change of finalChanges) {
-        // Match using the canonical order item ID
-        console.log({ change })
-        const index = order.items.findIndex(
-          item => item._id.toString() === change.orderItemId.toString()
-        )
-
-        // Safety – item might already be gone
-        if (index === -1) continue
-
-        // Item removed by business (last change wins)
-        if (change.action === 'removed') {
-          order.items.splice(index, 1)
-          continue
+        if (order.businessEdits?.customerApproved) {
+          throw new Error('Edits already approved')
         }
 
-        // UPDATED — apply ONLY final approved values
-        const quantity = Number(change.newValue?.quantity || 0)
-        const unitPrice = Number(change.newValue?.unitPrice || 0)
-        const totalPrice = Number(
-          change.newValue?.totalPrice || quantity * unitPrice
-        )
+        // const finalChanges = buildFinalItemState(order)
+        const finalChangeMap = new Map()
 
-        order.items[index].quantity = quantity
-        order.items[index].variation.price = unitPrice
-        order.items[index].totalPrice = totalPrice
-
-        // Build new subtotal from FINAL values only
-        newSubtotal += totalPrice
-      }
-
-      console.log('✅ New subtotal after approval:', newSubtotal)
-
-      // ✅ Preserve originals (if not already saved)
-      order.originalSubtotal ??= order.orderAmount
-      order.originalPrice ??= order.orderAmount
-
-      // ✅ Apply new totals (delivery NOT recalculated)
-      order.orderAmount =
-        newSubtotal + (order.deliveryCharges || 0) + (order.taxationAmount || 0)
-
-      // ✅ Mark approval
-      order.businessEdits.customerApproved = true
-      order.businessEdits.customerApprovalTime = new Date()
-
-      await order.save()
-
-      // ✅ Notify restaurant (hook only)
-      notifyRestaurantOnApproval(order)
-
-      // ✅ Realtime update for customer UI
-      pubsub.publish(BUSINESS_EDITS_APPROVED, {
-        businessEditsApproved: {
-          orderId: order._id.toString(),
-          customerApprovalTime: order.businessEdits.customerApprovalTime
+        for (const change of order.businessEdits.changes) {
+          finalChangeMap.set(change.orderItemId.toString(), change)
         }
-      })
 
-      return {
-        // success: true,
-        message: 'Business edits approved'
+        const updatedItems = []
+
+        let newSubtotal = 0
+
+        // Apply FINAL item state
+        // prepare the items
+        for (const item of order.items) {
+          const change = finalChangeMap.get(item._id.toString())
+          console.log({ change })
+
+          // ✅ Item removed
+          if (change?.action === 'to_be_removed') {
+            continue
+          }
+
+          // ✅ Item updated
+          if (change?.action === 'updated') {
+            item.quantity = Number(change.newValue.quantity)
+            item.variation.price = Number(change.newValue.unitPrice)
+          }
+
+          // ✅ Keep item
+          updatedItems.push(item)
+        }
+
+        order.items = updatedItems
+
+        // calculate the items
+        for (const item of order.items) {
+          const unit = item.variation?.price || 0
+
+          const qty = item.quantity || 1
+          const total = unit * qty
+
+          // item.totalPrice = total
+          newSubtotal += total
+        }
+
+        console.log('✅ New subtotal after approval:', newSubtotal)
+
+        // ✅ Preserve originals (if not already saved)
+        order.originalSubtotal ??= order.orderAmount
+        order.originalPrice ??= order.orderAmount
+
+        // ✅ Apply new totals (delivery NOT recalculated)
+        order.orderAmount =
+          newSubtotal +
+          (order.deliveryCharges || 0) +
+          (order.taxationAmount || 0)
+
+        // ✅ Mark approval
+        order.businessEdits.customerApproved = true
+        order.businessEdits.customerApprovalTime = new Date()
+
+        await order.save()
+
+        // ✅ Notify restaurant (hook only)
+        notifyRestaurantOnApproval(order)
+
+        // ✅ Realtime update for customer UI
+        pubsub.publish(BUSINESS_EDITS_APPROVED, {
+          businessEditsApproved: {
+            orderId: order._id.toString(),
+            customerApprovalTime: order.businessEdits.customerApprovalTime
+          }
+        })
+
+        return {
+          // success: true,
+          message: 'Business edits approved'
+        }
+      } catch (err) {
+        throw err
       }
     },
 

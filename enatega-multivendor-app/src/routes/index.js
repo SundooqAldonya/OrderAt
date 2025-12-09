@@ -248,7 +248,7 @@ function NoDrawer() {
       <NavigationStack.Screen name='FullMap' component={FullMap} />
       <NavigationStack.Screen name='CartAddress' component={CartAddress} />
       <NavigationStack.Screen name='Payment' component={Payment} />
-      {/* <NavigationStack.Screen
+      <NavigationStack.Screen
         name='OrderDetail'
         component={CustomerOrderUpdatedScreen}
         options={{
@@ -258,8 +258,8 @@ function NoDrawer() {
               iconBackground: currentTheme.backIconBackground
             })
         }}
-      /> */}
-      <NavigationStack.Screen
+      />
+      {/* <NavigationStack.Screen
         name='OrderDetail'
         component={OrderDetail}
         options={{
@@ -269,7 +269,7 @@ function NoDrawer() {
               iconBackground: currentTheme.backIconBackground
             })
         }}
-      />
+      /> */}
       <NavigationStack.Screen name='Settings' component={Settings} />
       <NavigationStack.Screen name='MyOrders' component={MyOrders} />
       <NavigationStack.Screen name='Reorder' component={Reorder} />

@@ -512,6 +512,7 @@ const typeDefs = gql`
     pickupAddressFreeText: String
     coupon: Coupon
     area: String
+    businessEdits: BusinessEdits
   }
 
   scalar Date
@@ -2418,6 +2419,13 @@ const typeDefs = gql`
   type Mutation {
     rejectBusinessEdits(orderId: String!, reason: String): Message
     approveBusinessEdits(orderId: String!): Message
+    removeOrderItemByBusiness(
+      orderId: String!
+      itemIds: [String!]!
+      newUnitPrice: Float
+      newQuantity: Float
+      note: String
+    ): Message
     updateOrderItem(
       orderId: String!
       itemId: String!

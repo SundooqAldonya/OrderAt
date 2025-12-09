@@ -287,3 +287,18 @@ export const REMOVE_ORDER_ITEM = gql`
     }
   }
 `
+export const removeOrderItemByBusiness = gql`
+  mutation RemoveOrderItemsByBusiness(
+    $orderId: String!
+    $itemIds: [String!]!
+    $note: String
+  ) {
+    removeOrderItemByBusiness(
+      orderId: $orderId
+      itemIds: $itemIds
+      note: $note
+    ) {
+      message
+    }
+  }
+`
