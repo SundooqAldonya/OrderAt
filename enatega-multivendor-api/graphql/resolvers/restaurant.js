@@ -55,6 +55,13 @@ const { defaultOpeningTimes } = require('../../helpers/defaultValues')
 const dateScalar = require('../../helpers/dateScalar')
 const { calculateDeliveryFee } = require('../../helpers/calculateDeliveryFee')
 const dispatchQueue = require('../../queues/dispatchRiderQueue')
+const {
+  getRestaurantsWithOffers,
+  getHighestRatedRestaurants,
+  getFeaturedRestaurants,
+  getMostOrderedRestaurants,
+  nearByRestaurantsPreview
+} = require('../../helpers/restaurantsResolvers')
 
 module.exports = {
   Upload: GraphqlUpload,
@@ -1425,6 +1432,72 @@ module.exports = {
           .populate('businessCategories')
           .limit(10)
         return restaurants
+      } catch (err) {
+        throw err
+      }
+    },
+
+    async customerMainScreen(_, args, { user, loaders }) {
+      try {
+        const { latitude, longitude, shopType, ip } = args
+
+        const [
+          restaurants,
+          restaurantsWithOffers,
+          highestRated,
+          featured,
+          // topRated,
+          // recentOrders,
+          mostOrdered
+        ] = await Promise.allSettled([
+          nearByRestaurantsPreview({ latitude, longitude, shopType, ip }),
+          getRestaurantsWithOffers({ latitude, longitude }),
+          getHighestRatedRestaurants({ latitude, longitude }),
+          getFeaturedRestaurants({ latitude, longitude }),
+          // getTopRatedVendors({ latitude, longitude }),
+          // getRecentOrderRestaurants(user?._id),
+          getMostOrderedRestaurants({ longitude, latitude })
+        ])
+
+        // console.log({
+        //   restaurantsCustomerMainScreen: await Promise.all(
+        //     restaurants.value.restaurants
+        //   ),
+        //   // restaurantsWithOffers,
+        //   // highestRated,
+        //   // featured,
+        //   mostOrderedCustomerMainScreen:
+        //     mostOrdered.status === 'fulfilled'
+        //       ? await Promise.all(mostOrdered.value)
+        //       : []
+        // })
+
+        return {
+          restaurants:
+            restaurants.status === 'fulfilled'
+              ? await Promise.all(restaurants.value.restaurants)
+              : [],
+
+          restaurantsWithOffers:
+            restaurantsWithOffers.status === 'fulfilled'
+              ? await Promise.all(restaurantsWithOffers.value)
+              : [],
+
+          highestRated:
+            highestRated.status === 'fulfilled'
+              ? await Promise.all(highestRated.value.map(transformRestaurant))
+              : [],
+
+          featured:
+            featured.status === 'fulfilled'
+              ? await Promise.all(featured.value.map(transformRestaurant))
+              : [],
+
+          mostOrdered:
+            mostOrdered.status === 'fulfilled'
+              ? await Promise.all(mostOrdered.value)
+              : []
+        }
       } catch (err) {
         throw err
       }

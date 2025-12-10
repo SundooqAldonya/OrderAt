@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native'
 import MainLoadingUI from '../../components/Main/LoadingUI/MainLoadingUI'
 import {
   checkDeliveryZone,
+  customerMainScreen,
   featuredRestaurants,
   getBusinessCategoriesCustomer,
   getCustomerAppBanner,
@@ -131,23 +132,52 @@ export default function FoodTab() {
 
   console.log({ errorZone })
 
-  const { data, refetch, networkStatus, loading, error } = useQuery(
-    RESTAURANTS,
-    {
-      variables: {
-        longitude: Number(location.longitude) || null,
-        latitude: Number(location.latitude) || null,
-        shopType: null,
-        ip: null
-      },
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all'
-    }
-  )
+  const {
+    data: dataMainScreen,
+    loading,
+    error,
+    refetch
+  } = useQuery(customerMainScreen, {
+    variables: {
+      longitude: Number(location.longitude) || null,
+      latitude: Number(location.latitude) || null,
+      shopType: null,
+      ip: null
+    },
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all'
+  })
 
-  // console.log({
-  //   data: data?.nearByRestaurantsPreview.restaurants[0].deliveryFee
-  // })
+  console.log({ error })
+
+  console.log({
+    dataRestaurants: dataMainScreen?.customerMainScreen?.restaurants
+  })
+  console.log({ dataFeatured: dataMainScreen?.customerMainScreen?.featured })
+  console.log({
+    dataHighestRated: dataMainScreen?.customerMainScreen?.highestRated
+  })
+  console.log({
+    dataMostOrdered: dataMainScreen?.customerMainScreen?.mostOrdered
+  })
+  console.log({
+    dataRestaurantsWithOffers:
+      dataMainScreen?.customerMainScreen?.restaurantsWithOffers
+  })
+
+  // const { data, refetch, networkStatus, loading, error } = useQuery(
+  //   RESTAURANTS,
+  //   {
+  //     variables: {
+  //       longitude: Number(location.longitude) || null,
+  //       latitude: Number(location.latitude) || null,
+  //       shopType: null,
+  //       ip: null
+  //     },
+  //     fetchPolicy: 'network-only',
+  //     errorPolicy: 'all'
+  //   }
+  // )
 
   const {
     orderLoading,
@@ -156,52 +186,30 @@ export default function FoodTab() {
     refetchRecentOrderRestaurants,
     refetchMostOrderedRestaurants
   } = useHomeRestaurants()
-  const {
-    data: dataWithOffers,
-    loading: loadingWithOffers,
-    error: errorWithOffers,
-    refetch: refetchOffers
-  } = useQuery(restaurantsWithOffers, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
 
-  const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
-
-  const {
-    data: dataHighRating,
-    loading: loadingHighRating,
-    error: errorHighRating,
-    refetch: refetchHighRating
-  } = useQuery(highestRatingRestaurant, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
-
-  const {
-    data: dataFeatured,
-    loading: loadingFeatured,
-    error: errorFeatured,
-    refetch: refetchFeatured
-  } = useQuery(featuredRestaurants, {
-    variables: {
-      longitude: location.longitude,
-      latitude: location.latitude
-    },
-    fetchPolicy: 'no-cache'
-  })
   // const {
-  //   data: dataNearestRestaurants,
-  //   loading: loadingNearestRestaurants,
-  //   error: errorNearestRestaurants,
-  //   refetch: refetchNearestRestaurants
-  // } = useQuery(nearestRestaurants, {
+  //   data: dataWithOffers,
+  //   loading: loadingWithOffers,
+  //   error: errorWithOffers,
+  //   refetch: refetchOffers
+  // } = useQuery(restaurantsWithOffers, {
+  //   variables: {
+  //     longitude: location.longitude,
+  //     latitude: location.latitude
+  //   },
+  //   fetchPolicy: 'no-cache'
+  // })
+
+  // const restaurantsWithOffersData = dataWithOffers?.restaurantsWithOffers || []
+  const restaurantsWithOffersData =
+    dataMainScreen?.customerMainScreen?.restaurantsWithOffers || []
+
+  // const {
+  //   data: dataHighRating,
+  //   loading: loadingHighRating,
+  //   error: errorHighRating,
+  //   refetch: refetchHighRating
+  // } = useQuery(highestRatingRestaurant, {
   //   variables: {
   //     longitude: location.longitude,
   //     latitude: location.latitude
@@ -210,51 +218,43 @@ export default function FoodTab() {
   // })
 
   // const {
-  //   data: dataBusinessCategories,
-  //   loading: loadingBusinessCategories,
-  //   error: errorBusinessCategories
-  // } = useQuery(getBusinessCategoriesCustomer, {
+  //   data: dataFeatured,
+  //   loading: loadingFeatured,
+  //   error: errorFeatured,
+  //   refetch: refetchFeatured
+  // } = useQuery(featuredRestaurants, {
+  //   variables: {
+  //     longitude: location.longitude,
+  //     latitude: location.latitude
+  //   },
   //   fetchPolicy: 'no-cache'
   // })
 
-  const {
-    data: dataTopRated,
-    loading: loadingTopRated,
-    error: errorTopRated,
-    refetch: refetchTopRated
-  } = useQuery(topRatedVendorsInfo, {
-    variables: {
-      latitude: location?.latitude,
-      longitude: location?.longitude
-    },
-    fetchPolicy: 'network-only'
-  })
-
   // const {
-  //   data: dataSearch,
-  //   loading: loadingSearch,
-  //   error: errorSearch
-  // } = useQuery(searchRestaurantsCustomer, {
+  //   data: dataTopRated,
+  //   loading: loadingTopRated,
+  //   error: errorTopRated,
+  //   refetch: refetchTopRated
+  // } = useQuery(topRatedVendorsInfo, {
   //   variables: {
-  //     search,
-  //     longitude: location.longitude,
-  //     latitude: location.latitude
+  //     latitude: location?.latitude,
+  //     longitude: location?.longitude
   //   },
   //   fetchPolicy: 'network-only'
   // })
 
-  // const businessCategories =
-  //   dataBusinessCategories?.getBusinessCategoriesCustomer || null
+  // const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
+  const mostOrderedRestaurantsVar =
+    dataMainScreen?.customerMainScreen?.mostOrdered || null
 
-  const mostOrderedRestaurantsVar = orderData?.mostOrderedRestaurants || null
-  const highestRatingRestaurantData =
-    dataHighRating?.highestRatingRestaurant || null
-  // const nearestRestaurantsData =
-  //   dataNearestRestaurants?.nearestRestaurants || null
-  // const topRatedRestaurants = dataTopRated?.topRatedVendorsPreview || null
-  const allRestaurants = data?.nearByRestaurantsPreview?.restaurants || null
-  const featuredRestaurantsVar = dataFeatured?.featuredRestaurants || null
-  // const filteredRestaurants = dataSearch?.searchRestaurantsCustomer || null
+  // const highestRatingRestaurantData =
+  //   dataHighRating?.highestRatingRestaurant || null
+
+  // const allRestaurants = data?.nearByRestaurantsPreview?.restaurants || null
+  const allRestaurants = dataMainScreen?.customerMainScreen?.restaurants || null
+  // const featuredRestaurantsVar = dataFeatured?.featuredRestaurants || null
+  const featuredRestaurantsVar =
+    dataMainScreen?.customerMainScreen?.featured || null
 
   const [mutateAddress, { loading: mutationLoading }] = useMutation(
     SELECT_ADDRESS,
@@ -363,8 +363,8 @@ export default function FoodTab() {
         })
       }
       refetch()
-      refetchHighRating()
-      refetchOffers()
+      // refetchHighRating()
+      // refetchOffers()
       // refetchNearestRestaurants()
       setIsVisible(false)
     })
@@ -570,23 +570,23 @@ export default function FoodTab() {
 
   const onRefresh = () => {
     setRefreshing(true)
-    refetchOffers()
-    refetchHighRating()
-    refetchFeatured()
+    // refetchOffers()
+    // refetchHighRating()
+    // refetchFeatured()
     refetch()
-    refetchRecentOrderRestaurants()
-    refetchMostOrderedRestaurants()
+    // refetchRecentOrderRestaurants()
+    // refetchMostOrderedRestaurants()
     setTimeout(() => setRefreshing(false), 2000) // simulate fetching
   }
 
   const allErrorsZone =
     errorZone ||
     (!restaurantsWithOffersData?.length &&
-      !loadingWithOffers &&
+      // !loadingWithOffers &&
       !allRestaurants?.length &&
       !loading &&
       !featuredRestaurantsVar?.length &&
-      !loadingFeatured &&
+      // !loadingFeatured &&
       !mostOrderedRestaurantsVar?.length &&
       !orderLoading)
 
@@ -656,7 +656,7 @@ export default function FoodTab() {
           ) : null}
 
           {/* Categories */}
-          {!allErrorsZone && !error && <BusinessCategories />}
+          {!allErrorsZone && <BusinessCategories />}
 
           {allErrorsZone ? (
             <ErrorView

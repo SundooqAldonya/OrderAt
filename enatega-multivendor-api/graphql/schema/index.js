@@ -1792,7 +1792,23 @@ const typeDefs = gql`
     totalPrice: Float
   }
 
+  type HomeRestaurantsResponse {
+    restaurants: [RestaurantCustomer]
+    restaurantsWithOffers: [RestaurantCustomer]
+    highestRated: [RestaurantCustomer]
+    featured: [RestaurantCustomer]
+    # topRated: [RestaurantCustomer]
+    # recentOrders: [RestaurantCustomer]
+    mostOrdered: [RestaurantCustomer]
+  }
+
   type Query {
+    customerMainScreen(
+      latitude: Float
+      longitude: Float
+      shopType: String
+      ip: String
+    ): HomeRestaurantsResponse
     getOrderBusinessEdits(id: String!): BusinessEdits
     getGlobalDeliveryPricing: GlobalDeliveryPricing
     getAllCountryPricing(country: String): [CountryPricing!]!

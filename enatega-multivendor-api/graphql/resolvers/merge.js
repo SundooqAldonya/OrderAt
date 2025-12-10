@@ -286,14 +286,23 @@ const transformAddon = async addon => {
 }
 
 const populateCategories = async categories => {
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return []
+  }
   return categories.map(transformCategory)
 }
 
 const populateOptions = async options => {
+  if (!Array.isArray(options) || options.length === 0) {
+    return []
+  }
   return await options.map(transformOption)
 }
 
 const populateAddons = async addons => {
+  if (!Array.isArray(addons) || addons.length === 0) {
+    return []
+  }
   return await addons.map(transformAddon)
 }
 
