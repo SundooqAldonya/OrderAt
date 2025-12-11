@@ -51,6 +51,7 @@ import {
   orderStatusChanged
 } from '../../apollo/subscriptions'
 import UserContext from '../../context/User'
+import { colors } from '../../utils/colors'
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('screen')
 
@@ -184,7 +185,8 @@ function OrderDetail(props) {
         marginInlineEnd: scale(50)
       },
       headerTitleAlign: 'center',
-      headerStyle: { backgroundColor: currentTheme.newheaderBG }
+      // headerStyle: { backgroundColor: currentTheme.newheaderBG }
+      headerStyle: { backgroundColor: colors.primary }
     })
   }, [currentTheme.main])
 
