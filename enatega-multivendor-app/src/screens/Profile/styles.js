@@ -67,7 +67,8 @@ const styles = (props = null) =>
       ...alignment.PLmedium
     },
     saveContainer: {
-      backgroundColor: props !== null ? props.main : '#90E36D',
+      // backgroundColor: props !== null ? props.main : '#90E36D',
+      backgroundColor: colors.primary,
       padding: moderateScale(8),
       borderRadius: moderateScale(16),
       justifyContent: 'center',

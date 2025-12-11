@@ -30,7 +30,11 @@ import {
   getBusinessCategoriesCustomer
 } from '../../apollo/queries'
 import styles from './styles'
-import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native'
+import {
+  useNavigation,
+  useFocusEffect,
+  useIsFocused
+} from '@react-navigation/native'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
@@ -42,8 +46,13 @@ import { FILTER_TYPE } from '../../utils/enums'
 import ErrorView from '../../components/ErrorView/ErrorView'
 import { debounce } from 'lodash'
 import { moderateScale } from '../../utils/scaling'
+import { colors } from '../../utils/colors'
 
-export const HighlightValues = ['businesses_with_offers', 'mostOrderedNow', 'featured'];
+export const HighlightValues = [
+  'businesses_with_offers',
+  'mostOrderedNow',
+  'featured'
+]
 
 export const FILTER_VALUES = Object.freeze({
   // Sort: {
@@ -71,7 +80,7 @@ export const FILTER_VALUES = Object.freeze({
     type: FILTER_TYPE.CHECKBOX,
     values: []
   }
-});
+})
 
 function MenuV2({ route, props }) {
   // const Analytics = analytics()
@@ -85,21 +94,22 @@ function MenuV2({ route, props }) {
   // const { loadingOrders, isLoggedIn, profile } = useContext(UserContext)
   const { location, setLocation } = useContext(LocationContext)
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState(() => JSON.parse(JSON.stringify(FILTER_VALUES)));
+  const [filters, setFilters] = useState(() =>
+    JSON.parse(JSON.stringify(FILTER_VALUES))
+  )
   const [highlightMain, setHighlightMain] = useState(false)
   // const [titleUI, setTitleUI] = useState('')
 
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
-  const isFocused = useIsFocused();
+  const isFocused = useIsFocused()
   const [
     fetchFilterRestaurants,
     { data, refetch, networkStatus, loading, error }
   ] = useLazyQuery(filterRestaurants, {
     fetchPolicy: 'no-cache'
   })
-
 
   const {
     data: dataBusinessCategories,
@@ -112,39 +122,36 @@ function MenuV2({ route, props }) {
   const businessCategories =
     dataBusinessCategories?.getBusinessCategoriesCustomer || null
 
-
   useEffect(() => {
     if (highlight || title) {
       setHighlightMain(true)
     }
-  }, [highlight, title]);
-
- useEffect(() => {
-  if (isFocused) {
-    generateBusinessCategories();
-  }
-}, [isFocused, businessCategories, filteredItem?._id]);
-
-
+  }, [highlight, title])
 
   useEffect(() => {
-  console.log('Applying filter with', title);
-  if (title) {
-   setFilters(prev => ({
-      ...prev,
-      Highlights: {
-        ...prev.Highlights,
-        selected: [title],
-      },
-    }));
-  }
-}, [title]);
+    if (isFocused) {
+      generateBusinessCategories()
+    }
+  }, [isFocused, businessCategories, filteredItem?._id])
 
-useEffect(() => {
-  applyFilters(filters);
-}, [filters]);
+  useEffect(() => {
+    console.log('Applying filter with', title)
+    if (title) {
+      setFilters((prev) => ({
+        ...prev,
+        Highlights: {
+          ...prev.Highlights,
+          selected: [title]
+        }
+      }))
+    }
+  }, [title])
 
-// to generate business categories filter values
+  useEffect(() => {
+    applyFilters(filters)
+  }, [filters])
+
+  // to generate business categories filter values
   const generateBusinessCategories = useCallback(() => {
     if (businessCategories?.length > 0 || filteredItem?._id) {
       setFilters((prev) => ({
@@ -156,32 +163,35 @@ useEffect(() => {
         }
       }))
     }
-  }, [businessCategories, filteredItem?._id]);
-  const applyFilters = useCallback(async (filtersToApply = null) => {
-    const activeFilters = filtersToApply || filters;
-    const highlights = activeFilters.Highlights.selected
-    const ratings = activeFilters.Rating.selected
-    const categories = activeFilters.categories?.selected || []
+  }, [businessCategories, filteredItem?._id])
+  const applyFilters = useCallback(
+    async (filtersToApply = null) => {
+      const activeFilters = filtersToApply || filters
+      const highlights = activeFilters.Highlights.selected
+      const ratings = activeFilters.Rating.selected
+      const categories = activeFilters.categories?.selected || []
 
-    let minRating = null
-    if (ratings.includes('3+ Rating')) minRating = 3
-    if (ratings.includes('4+ Rating')) minRating = 4
-    if (ratings.includes('5 star Rating')) minRating = 5
-    await fetchFilterRestaurants({
-      variables: {
-        categories,
-        highlights,
-        minRating,
-        maxRating: null, // optional
-        search: search || null,
-        city: location?.cityId || null,
-        isOpen: false, // toggle if you want open-now filter
-        mode: title === 'all_businesses' ? null : title, // optional
-        longitude: location.longitude || null,
-        latitude: location.latitude || null
-      }
-    })
-  }, [filters]);
+      let minRating = null
+      if (ratings.includes('3+ Rating')) minRating = 3
+      if (ratings.includes('4+ Rating')) minRating = 4
+      if (ratings.includes('5 star Rating')) minRating = 5
+      await fetchFilterRestaurants({
+        variables: {
+          categories,
+          highlights,
+          minRating,
+          maxRating: null, // optional
+          search: search || null,
+          city: location?.cityId || null,
+          isOpen: false, // toggle if you want open-now filter
+          mode: title === 'all_businesses' ? null : title, // optional
+          longitude: location.longitude || null,
+          latitude: location.latitude || null
+        }
+      })
+    },
+    [filters]
+  )
 
   const searchRestaurants = async (searchText) => {
     await fetchFilterRestaurants({
@@ -207,22 +217,22 @@ useEffect(() => {
   )
 
   const clearFilters = async () => {
-  setSearch('');
+    setSearch('')
 
-  setFilters((prevFilters) => {
-    const reset = {
-      ...JSON.parse(JSON.stringify(FILTER_VALUES)),
-      categories: prevFilters.categories
-        ? {
-            ...prevFilters.categories,
-            selected: [], // clear only selected categories
-          }
-        : undefined,
-    };
+    setFilters((prevFilters) => {
+      const reset = {
+        ...JSON.parse(JSON.stringify(FILTER_VALUES)),
+        categories: prevFilters.categories
+          ? {
+              ...prevFilters.categories,
+              selected: [] // clear only selected categories
+            }
+          : undefined
+      }
 
-    return reset;
-  });
-  };
+      return reset
+    })
+  }
 
   const newheaderColor = currentTheme.newheaderColor
 
@@ -252,7 +262,6 @@ useEffect(() => {
       headerShown: false
     })
   })
-
 
   // const emptyView = () => {
   //   if (loading || loadingOrders) {
@@ -342,7 +351,7 @@ useEffect(() => {
               onPress={clearFilters}
               style={{
                 borderWidth: 1,
-                borderColor: currentTheme.main,
+                borderColor: colors.secondary,
                 paddingVertical: 4,
                 paddingHorizontal: 10,
                 borderRadius: 12,
@@ -350,7 +359,7 @@ useEffect(() => {
                 marginVertical: 5
               }}
             >
-              <TextDefault textColor={currentTheme.main} bold>
+              <TextDefault textColor={colors.secondary} bold>
                 {t('clear_filters')}
               </TextDefault>
             </TouchableOpacity>

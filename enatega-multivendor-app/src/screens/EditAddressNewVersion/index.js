@@ -12,24 +12,24 @@ import {
 import { Ionicons, Feather, Entypo, AntDesign } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import * as Location from 'expo-location'
-import useGeocoding from '../../ui/hooks/useGeocoding'
-import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
-import MainModalize from '../../components/Main/Modalize/MainModalize'
-import { useRef } from 'react'
-import { theme } from '../../utils/themeColors'
-import ThemeContext from '../../ui/ThemeContext/ThemeContext'
+// import * as Location from 'expo-location'
+// import useGeocoding from '../../ui/hooks/useGeocoding'
+// import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
+// import MainModalize from '../../components/Main/Modalize/MainModalize'
+// import { useRef } from 'react'
+// import { theme } from '../../utils/themeColors'
+// import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import UserContext from '../../context/User'
 import { useContext } from 'react'
-import { LocationContext } from '../../context/Location'
+// import { LocationContext } from '../../context/Location'
 import CustomHomeIcon from '../../assets/SVG/imageComponents/CustomHomeIcon'
 import CustomWorkIcon from '../../assets/SVG/imageComponents/CustomWorkIcon'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
 import CustomOtherIcon from '../../assets/SVG/imageComponents/CustomOtherIcon'
 import {
-  createAddress,
-  editAddress,
-  selectAddress
+  // createAddress,
+  editAddress
+  // selectAddress
 } from '../../apollo/mutations'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
 import { moderateScale } from '../../utils/scaling'
@@ -41,8 +41,8 @@ import {
   resetAddNewAddress,
   setAddress,
   setChooseFromAddressBook,
-  setChooseFromMap,
-  setSelectedArea,
+  // setChooseFromMap,
+  // setSelectedArea,
   setSelectedCity
 } from '../../store/addNewAddressSlice'
 import { getCities, getCityAreas } from '../../apollo/queries'
@@ -83,7 +83,7 @@ const EditAddressNewVersion = () => {
   const city = useSelector((state) => state.city.city)
   // const [currentPosSelected, setCurrentPosSelected] = useState(false)
 
-  console.log({ chooseFromAddressBook })
+  // console.log({ chooseFromAddressBook })
   // const [formattedAddress, setFormattedAddress] = useState('')
   // const { getAddress } = useGeocoding()
   const { refetchProfile } = useContext(UserContext)
@@ -132,7 +132,7 @@ const EditAddressNewVersion = () => {
       },
       headerTitleAlign: 'center',
       headerStyle: {
-        backgroundColor: '#fff'
+        backgroundColor: colors.primary
       },
       headerLeft: () => (
         <TouchableOpacity
@@ -484,13 +484,14 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 30,
-    backgroundColor: '#2ecc71',
+    // backgroundColor: '#2ecc71',
+    backgroundColor: colors.primary,
     padding: moderateScale(14),
     borderRadius: moderateScale(25),
     alignItems: 'center'
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.secondary,
     fontSize: moderateScale(16),
     fontWeight: 'bold'
   },

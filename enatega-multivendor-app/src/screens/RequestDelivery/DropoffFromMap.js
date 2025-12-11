@@ -332,7 +332,11 @@ const DropoffFromMap = () => {
 
       <View style={styles.bottomButtonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Ionicons name='checkmark-circle' size={24} color='#fff' />
+          <Ionicons
+            name='checkmark-circle'
+            size={24}
+            color={colors.secondary}
+          />
           <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
       </View>
@@ -395,7 +399,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    color: '#fff',
+    color: colors.secondary,
     fontSize: 16,
     marginLeft: 8
   }

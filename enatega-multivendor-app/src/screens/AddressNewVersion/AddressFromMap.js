@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Text,
   Linking,
-  SafeAreaView
+  SafeAreaView,
+  StatusBar
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -62,10 +63,10 @@ const AddressFromMap = () => {
       headerTitle: t('choose_from_map'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: '#000'
+        color: colors.secondary
       },
       headerStyle: {
-        backgroundColor: '#fff'
+        backgroundColor: colors.primary
       },
       headerRight: () => {
         return (
@@ -76,7 +77,7 @@ const AddressFromMap = () => {
             <FontAwesome6
               name='location-crosshairs'
               size={moderateScale(18)}
-              color='#000'
+              color={colors.secondary}
             />
           </TouchableOpacity>
         )
@@ -241,6 +242,7 @@ const AddressFromMap = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Map View */}
+      <StatusBar backgroundColor={colors.primary} barStyle={'dark-content'} />
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
@@ -343,7 +345,7 @@ const AddressFromMap = () => {
           <Ionicons
             name='checkmark-circle'
             size={moderateScale(24)}
-            color='#fff'
+            color={colors.secondary}
           />
           <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
@@ -407,7 +409,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    color: '#fff',
+    color: colors.secondary,
     fontSize: moderateScale(16),
     marginLeft: 8
   }

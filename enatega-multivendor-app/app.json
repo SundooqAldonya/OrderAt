@@ -11,9 +11,9 @@
     },
     "platforms": ["ios", "android"],
     "orientation": "portrait",
-    "icon": "./assets/logo.jpg",
+    "icon": "./assets/new_logo.png",
     "splash": {
-      "image": "./assets/logo.jpg",
+      "image": "./assets/new_logo.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },

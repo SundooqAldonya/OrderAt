@@ -145,7 +145,7 @@ function Cart(props) {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
   useLayoutEffect(() => {
@@ -575,7 +575,8 @@ function Cart(props) {
                 right: 0,
                 bottom: 0,
                 height: FOOTER_HEIGHT + moderateScale(50),
-                backgroundColor: currentTheme.newheaderColor, // or your prop
+                // backgroundColor: currentTheme.newheaderColor, // or your prop
+                backgroundColor: colors.primary, // or your prop
                 paddingHorizontal: moderateScale(16),
                 justifyContent: 'center',
                 zIndex: 20
@@ -585,7 +586,7 @@ function Cart(props) {
                 <View style={styles().cartAmount}>
                   {isArabic ? (
                     <TextDefault
-                      textColor={currentTheme.black}
+                      textColor={colors.secondary}
                       style={styles().totalBill}
                       bolder
                       H2
@@ -594,8 +595,8 @@ function Cart(props) {
                     </TextDefault>
                   ) : (
                     <TextDefault
-                      textColor={currentTheme.black}
-                      style={styles().totalBill}
+                      textColor={colors.secondary}
+                      // style={styles().totalBill}
                       bolder
                       H2
                     >

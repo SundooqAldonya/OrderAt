@@ -47,17 +47,19 @@ function MyOrders(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const inset = useSafeAreaInsets()
+
   useEffect(() => {
     async function Track() {
       await analytics.track(analytics.events.NAVIGATE_TO_MYORDERS)
     }
     Track()
   }, [])
+
   useFocusEffect(() => {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
   useLayoutEffect(() => {
@@ -66,10 +68,10 @@ function MyOrders(props) {
     )
   }, [props.navigation])
 
-  const getItems = items => {
+  const getItems = (items) => {
     return items
       .map(
-        item =>
+        (item) =>
           `${item.quantity}x ${item.title}${
             item.variation.title ? `(${item.variation.title})` : ''
           }`
@@ -82,11 +84,12 @@ function MyOrders(props) {
     if (errorOrders) return <TextError text={errorOrders.message} />
     else {
       const hasActiveOrders =
-        orders.filter(o => orderStatusActive.includes(o.orderStatus)).length > 0
+        orders.filter((o) => orderStatusActive.includes(o.orderStatus)).length >
+        0
 
       const hasPastOrders =
-        orders.filter(o => orderStatusInactive.includes(o.orderStatus)).length >
-        0
+        orders.filter((o) => orderStatusInactive.includes(o.orderStatus))
+          .length > 0
       if (hasActiveOrders || hasPastOrders) return null
       return (
         <View style={styles().subContainerImage}>
@@ -99,7 +102,8 @@ function MyOrders(props) {
               textColor={currentTheme.fontMainColor}
               bolder
               center
-              H2>
+              H2
+            >
               {t('unReadOrders')}
             </TextDefault>
             <TextDefault
@@ -107,7 +111,8 @@ function MyOrders(props) {
               bold
               center
               H5
-              style={{ ...alignment.MBxLarge }}>
+              style={{ ...alignment.MBxLarge }}
+            >
               {t('dontHaveAnyOrderYet')}
             </TextDefault>
           </View>
@@ -119,14 +124,16 @@ function MyOrders(props) {
                 name: 'Main',
                 merge: true
               })
-            }>
+            }
+          >
             <TextDefault
               style={{ ...alignment.Psmall }}
               textColor={currentTheme.fontMainColor}
               bolder
               B700
               center
-              uppercase>
+              uppercase
+            >
               {t('BrowseRESTAURANTS')}
             </TextDefault>
           </TouchableOpacity>
@@ -141,7 +148,7 @@ function MyOrders(props) {
         data={
           loadingOrders || errorOrders
             ? []
-            : orders.filter(o => orderStatusInactive.includes(o.orderStatus))
+            : orders.filter((o) => orderStatusInactive.includes(o.orderStatus))
         }
         showsVerticalScrollIndicator={false}
         style={styles(currentTheme).container}
@@ -150,22 +157,22 @@ function MyOrders(props) {
         ListHeaderComponent={
           <ActiveOrders
             showActiveHeader={
-              orders.filter(o => orderStatusActive.includes(o.orderStatus))
+              orders.filter((o) => orderStatusActive.includes(o.orderStatus))
                 .length > 0
             }
             showPastHeader={
-              orders.filter(o => orderStatusInactive.includes(o.orderStatus))
+              orders.filter((o) => orderStatusInactive.includes(o.orderStatus))
                 .length > 0
             }
             navigation={props.navigation}
-            activeOrders={orders.filter(o =>
+            activeOrders={orders.filter((o) =>
               orderStatusActive.includes(o.orderStatus)
             )}
             loading={loadingOrders}
             error={errorOrders}
           />
         }
-        keyExtractor={item => item._id}
+        keyExtractor={(item) => item._id}
         refreshing={networkStatusOrders === 4}
         onRefresh={() => networkStatusOrders === 7 && reFetchOrders()}
         renderItem={({ item }) => (
@@ -178,11 +185,12 @@ function MyOrders(props) {
                 restaurant: item.restaurant,
                 user: item.user
               })
-            }>
+            }
+          >
             <View style={styles(currentTheme).subContainer}>
               <Image
                 style={styles(currentTheme).restaurantImage}
-                resizeMode="cover"
+                resizeMode='cover'
                 source={{ uri: item.restaurant.image }}
               />
               <View style={styles(currentTheme).textContainer}>
@@ -191,7 +199,8 @@ function MyOrders(props) {
                     textColor={currentTheme.fontMainColor}
                     uppercase
                     bolder
-                    style={alignment.MBxSmall}>
+                    style={alignment.MBxSmall}
+                  >
                     {' '}
                     {item.restaurant.name}
                   </TextDefault>
@@ -199,7 +208,8 @@ function MyOrders(props) {
                     numberOfLines={1}
                     style={{ ...alignment.MTxSmall }}
                     textColor={currentTheme.fontSecondColor}
-                    small>
+                    small
+                  >
                     {' '}
                     {new Date(item.createdAt).toDateString()}
                   </TextDefault>
@@ -208,7 +218,8 @@ function MyOrders(props) {
                     style={{ ...alignment.MTxSmall }}
                     textColor={currentTheme.fontMainColor}
                     bolder
-                    small>
+                    small
+                  >
                     {' '}
                     {getItems(item.items)}
                   </TextDefault>
@@ -224,14 +235,16 @@ function MyOrders(props) {
                             restaurant: item.restaurant,
                             user: item.user
                           })
-                        }>
+                        }
+                      >
                         <TextDefault
                           textColor={currentTheme.Black}
                           smaller
                           bolder
                           B700
                           center
-                          uppercase>
+                          uppercase
+                        >
                           {' '}
                           {t('RateOrder')}
                         </TextDefault>
@@ -242,14 +255,16 @@ function MyOrders(props) {
                       style={styles(currentTheme).subContainerButton}
                       onPress={() =>
                         props.navigation.navigate('Reorder', { item })
-                      }>
+                      }
+                    >
                       <TextDefault
                         textColor={currentTheme.black}
                         smaller
                         bolder
                         B700
                         center
-                        uppercase>
+                        uppercase
+                      >
                         {' '}
                         {t('reOrder')}
                       </TextDefault>
@@ -263,7 +278,8 @@ function MyOrders(props) {
                   textColor={currentTheme.fontMainColor}
                   small
                   right
-                  bolder>
+                  bolder
+                >
                   {' '}
                   {configuration.currencySymbol}
                   {parseFloat(item.orderAmount).toFixed(2)}

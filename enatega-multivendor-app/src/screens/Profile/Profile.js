@@ -74,6 +74,7 @@ function Profile(props) {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
 
   const { profile, logout } = useContext(UserContext)
+
   const [name, setName] = useState(profile?.name ? profile.name : '')
   const [email, setEmail] = useState(profile?.email ? profile.email : '')
   const themeContext = useContext(ThemeContext)
@@ -139,21 +140,21 @@ function Profile(props) {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_PROFILE)
-    }
-    Track()
-  }, [])
+  // useEffect(() => {
+  //   async function Track() {
+  //     await Analytics.track(Analytics.events.NAVIGATE_TO_PROFILE)
+  //   }
+  //   Track()
+  // }, [])
   useLayoutEffect(() => {
     props.navigation.setOptions({
       title: t('titleProfile'),
       headerRight: null,
       headerTitleAlign: 'center',
       headerTitleStyle: {
-        color: colors.white,
+        color: colors.secondary,
         fontWeight: 'bold',
         fontSize: moderateScale(14)
       },
@@ -537,7 +538,9 @@ function Profile(props) {
                           }}
                           onPress={handleNamePressUpdate}
                         >
-                          <TextDefault bold>{t('update')}</TextDefault>
+                          <TextDefault bold style={{ color: colors.secondary }}>
+                            {t('update')}
+                          </TextDefault>
                         </TouchableOpacity>
                         <TouchableOpacity
                           disabled={loadingMutation}
@@ -546,7 +549,9 @@ function Profile(props) {
                           }}
                           onPress={() => setToggleNameView(!toggleNameView)}
                         >
-                          <TextDefault bold>{t('cancel')}</TextDefault>
+                          <TextDefault bold style={{ color: colors.secondary }}>
+                            {t('cancel')}
+                          </TextDefault>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -635,7 +640,7 @@ function Profile(props) {
                           }
                         ]}
                       >
-                        <TextDefault textColor={'#fff'} bold>
+                        <TextDefault textColor={colors.secondary} bold>
                           {profile?.emailIsVerified
                             ? t('verified')
                             : t('unverified')}
@@ -686,7 +691,9 @@ function Profile(props) {
                         }}
                         onPress={updateEmailMutation}
                       >
-                        <TextDefault bold>{t('update')}</TextDefault>
+                        <TextDefault bold style={{ color: colors.secondary }}>
+                          {t('update')}
+                        </TextDefault>
                       </TouchableOpacity>
                       <TouchableOpacity
                         disabled={loadingMutation}
@@ -695,7 +702,9 @@ function Profile(props) {
                         }}
                         onPress={() => setToggleEmailView(true)}
                       >
-                        <TextDefault bold>{t('cancel')}</TextDefault>
+                        <TextDefault bold style={{ color: colors.secondary }}>
+                          {t('cancel')}
+                        </TextDefault>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1000,7 +1009,13 @@ function Profile(props) {
                     paddingHorizontal: moderateScale(10)
                   }}
                 >
-                  <TextDefault bolder H3 textColor={currentTheme.newFontcolor}>
+                  <TextDefault
+                    bold
+                    style={{ color: colors.secondary }}
+                    er
+                    H3
+                    // textColor={currentTheme.newFontcolor}
+                  >
                     {t('DeleteConfirmation')}
                   </TextDefault>
                   <Feather
@@ -1025,7 +1040,13 @@ function Profile(props) {
                   {deactivateLoading ? (
                     <Spinner backColor='transparent' size='small' />
                   ) : (
-                    <TextDefault bolder H4 textColor={currentTheme.white}>
+                    <TextDefault
+                      bold
+                      style={{ color: colors.secondary }}
+                      er
+                      H4
+                      // textColor={currentTheme.white}
+                    >
                       {t('yesSure')}
                     </TextDefault>
                   )}
@@ -1035,7 +1056,13 @@ function Profile(props) {
                   onPress={() => setDeleteModalVisible(false)}
                   disabled={deactivateLoading}
                 >
-                  <TextDefault bolder H4 textColor={currentTheme.black}>
+                  <TextDefault
+                    bold
+                    style={{ color: colors.secondary }}
+                    er
+                    H4
+                    textColor={currentTheme.black}
+                  >
                     {t('noDelete')}
                   </TextDefault>
                 </TouchableOpacity>

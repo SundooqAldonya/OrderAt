@@ -416,7 +416,7 @@ function Checkout(props) {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
   useEffect(() => {
@@ -2070,13 +2070,13 @@ function Checkout(props) {
                     styles(currentTheme).button,
                     {
                       opacity: loadingOrder ? 0.5 : 1,
-                      backgroundColor: loadingOrder ? 'grey' : currentTheme.main
+                      backgroundColor: loadingOrder ? 'grey' : colors.primary
                     }
                   ]}
                 >
                   {!loadingOrder && (
                     <TextDefault
-                      textColor={currentTheme.color4}
+                      textColor={colors.secondary}
                       style={styles().checkoutBtn}
                       bold
                       H4
@@ -2401,13 +2401,14 @@ const styleNameModal = StyleSheet.create({
     borderRadius: 8
   },
   submitButton: {
-    backgroundColor: '#28a745',
+    // backgroundColor: '#28a745',
+    backgroundColor: colors.secondary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8
   },
   submitText: {
-    color: '#fff',
+    color: colors.primary,
     fontWeight: 'bold'
   }
 })

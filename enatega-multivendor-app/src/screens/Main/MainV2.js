@@ -391,7 +391,7 @@ export default function FoodTab() {
                 <SimpleLineIcons
                   name='target'
                   size={moderateScale(18)}
-                  color={'#fff'}
+                  color={colors.secondary}
                 />
                 <View style={styles.mL5p} />
                 {/* <TextDefault bold H4>
@@ -432,10 +432,10 @@ export default function FoodTab() {
             <AntDesign
               name='pluscircleo'
               size={moderateScale(20)}
-              color={'#fff'}
+              color={colors.secondary}
             />
             <View style={styles.mL5p} />
-            <TextDefault bold H4>
+            <TextDefault style={{ color: colors.secondary }} bold H4>
               {t('addAddress')}
             </TextDefault>
           </View>
@@ -604,7 +604,7 @@ export default function FoodTab() {
         }
       >
         {/* Header */}
-        <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={colors.primary} />
         <MainV2Header
           styles={styles}
           setIsVisible={setIsVisible}
@@ -616,26 +616,32 @@ export default function FoodTab() {
           {/* Search */}
           <View
             style={{
-              ...styles.searchBar,
-              flexDirection: isArabic ? 'row-reverse' : 'row'
+              backgroundColor: colors.primary
+              // width: '100%'
             }}
           >
-            <Ionicons name='search-outline' size={18} color='gray' />
-            <TouchableOpacity
-              style={styles.inputLike}
-              onPress={() => navigation.navigate('Menu')}
+            <View
+              style={{
+                ...styles.searchBar,
+                flexDirection: isArabic ? 'row-reverse' : 'row'
+              }}
             >
-              <Text
-                style={{
-                  color: '#bbb',
-                  textAlign: isArabic ? 'right' : 'left'
-                }}
+              <Ionicons name='search-outline' size={18} color='gray' />
+              <TouchableOpacity
+                style={styles.inputLike}
+                onPress={() => navigation.navigate('Menu')}
               >
-                {t('search_for_restaurants')}{' '}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: '#bbb',
+                    textAlign: isArabic ? 'right' : 'left'
+                  }}
+                >
+                  {t('search_for_restaurants')}{' '}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
           {/* Banners */}
           {banner ? (
             <TouchableOpacity
@@ -749,19 +755,19 @@ export default function FoodTab() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: colors.primary
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#fff'
+    backgroundColor: colors.primary
   },
   headerSubtitle: {
     fontSize: moderateScale(14),
     // color: 'tomato',
-    color: colors.primary,
+    color: colors.secondary,
     fontWeight: '600'
   },
   headerTitle: {
@@ -779,13 +785,13 @@ const styles = StyleSheet.create({
     right: -8,
     top: -5,
     // backgroundColor: 'tomato',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2
   },
   badgeText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 12,
     fontWeight: '700'
   },

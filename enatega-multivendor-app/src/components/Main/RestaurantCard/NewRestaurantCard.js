@@ -191,7 +191,8 @@ function NewRestaurantCard(props) {
             >
               <TextDefault
                 style={{
-                  color: '#fff',
+                  color: colors.secondary,
+                  fontWeight: 'bold',
                   textAlign: isArabic ? 'right' : 'left'
                 }}
               >

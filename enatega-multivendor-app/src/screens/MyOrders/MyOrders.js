@@ -56,7 +56,7 @@ function MyOrders(props) {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
 
   useEffect(() => {
@@ -90,7 +90,7 @@ function MyOrders(props) {
         paddingLeft: moderateScale(25),
         paddingRight: moderateScale(25),
         height: '75%',
-        marginLeft: 0,
+        marginLeft: 0
       },
       headerStyle: {
         backgroundColor: currentTheme.newheaderBG,

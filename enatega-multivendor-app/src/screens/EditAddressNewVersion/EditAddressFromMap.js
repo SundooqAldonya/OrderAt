@@ -95,7 +95,7 @@ const EditAddressFromMap = () => {
         )
       },
       headerStyle: {
-        backgroundColor: '#fff'
+        backgroundColor: colors.primary
       }
     })
   }, [navigation, t, colors.primary])
@@ -336,7 +336,7 @@ const EditAddressFromMap = () => {
           <Ionicons
             name='checkmark-circle'
             size={moderateScale(24)}
-            color='#fff'
+            color={colors.secondary}
           />
           <Text style={styles.buttonText}>{t('confirm_address')}</Text>
         </TouchableOpacity>
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    color: '#fff',
+    color: colors.secondary,
     fontSize: moderateScale(16),
     marginLeft: 8
   }

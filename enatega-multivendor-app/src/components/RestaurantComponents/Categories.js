@@ -34,38 +34,37 @@ const Categories = ({ categories, activeCategory, onCategoryPress }) => {
   }, [isArabic, categories])
 
   // Auto-scroll to keep active tab visible/centered
- useEffect(() => {
-  if (!scrollRef.current || !activeCategory) return
-  const ref = itemRefs.current[activeCategory]
-  if (!ref) return
+  useEffect(() => {
+    if (!scrollRef.current || !activeCategory) return
+    const ref = itemRefs.current[activeCategory]
+    if (!ref) return
 
-  // Defer until next frame so layout is settled
-  requestAnimationFrame(() => {
-    ref.measureLayout(
-      scrollRef.current,
-      (x, y, width, height) => {
-        if (width === 0) return // guard
+    // Defer until next frame so layout is settled
+    requestAnimationFrame(() => {
+      ref.measureLayout(
+        scrollRef.current,
+        (x, y, width, height) => {
+          if (width === 0) return // guard
 
-        const itemCenter = x + width / 2
-        let scrollToX = Math.max(0, itemCenter - CENTER_OFFSET)
+          const itemCenter = x + width / 2
+          let scrollToX = Math.max(0, itemCenter - CENTER_OFFSET)
 
-        scrollRef.current.scrollTo({
-          x: scrollToX,
-          animated: true,
-        })
-      },
-      (err) => {
-        // fallback
-        if (isArabic) {
-          scrollRef.current.scrollToEnd({ animated: true })
-        } else {
-          scrollRef.current.scrollTo({ x: 0, animated: true })
+          scrollRef.current.scrollTo({
+            x: scrollToX,
+            animated: true
+          })
+        },
+        (err) => {
+          // fallback
+          if (isArabic) {
+            scrollRef.current.scrollToEnd({ animated: true })
+          } else {
+            scrollRef.current.scrollTo({ x: 0, animated: true })
+          }
         }
-      }
-    )
-  })
-}, [activeCategory, categories])
-
+      )
+    })
+  }, [activeCategory, categories])
 
   return (
     <ScrollView
@@ -99,9 +98,9 @@ const Categories = ({ categories, activeCategory, onCategoryPress }) => {
               activeCategory === cat._id
                 ? styles.activeText
                 : styles.inactiveText,
-                {
-                  fontSize: moderateScale(12)
-                }
+              {
+                fontSize: moderateScale(12)
+              }
             ]}
           >
             {cat.title}
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary
   },
   activeText: {
-    color: '#fff'
+    color: colors.secondary
   },
   inactiveText: {
     color: '#333'

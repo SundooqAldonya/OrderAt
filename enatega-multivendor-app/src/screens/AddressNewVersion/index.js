@@ -8,7 +8,8 @@ import {
   Linking,
   Modal,
   ScrollView,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native'
 import { Ionicons, Feather, Entypo, AntDesign } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -120,11 +121,11 @@ const AddressNewVersion = () => {
       headerTitle: t('add_new_address'),
       headerTitleStyle: {
         fontSize: moderateScale(14),
-        color: '#000'
+        color: colors.secondary
       },
       headerTitleAlign: 'center',
       headerStyle: {
-        backgroundColor: '#fff'
+        backgroundColor: colors.primary
       },
       headerLeft: () => (
         <TouchableOpacity
@@ -134,7 +135,11 @@ const AddressNewVersion = () => {
           }}
           style={{ paddingHorizontal: 15 }}
         >
-          <Ionicons name='arrow-back' size={moderateScale(22)} color='#000' />
+          <Ionicons
+            name='arrow-back'
+            size={moderateScale(22)}
+            color={colors.secondary}
+          />
         </TouchableOpacity>
       ),
       headerRight: () => null
@@ -223,6 +228,7 @@ const AddressNewVersion = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={colors.primary} barStyle={'dark-content'} />
       <TouchableOpacity
         style={{
           ...styles.option,
@@ -452,13 +458,15 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 30,
-    backgroundColor: '#2ecc71',
+    // backgroundColor: '#2ecc71',
+    backgroundColor: colors.primary,
     padding: moderateScale(14),
     borderRadius: moderateScale(25),
     alignItems: 'center'
   },
   saveButtonText: {
-    color: '#fff',
+    // color: '#fff',
+    color: colors.secondary,
     fontSize: moderateScale(16),
     fontWeight: 'bold'
   },

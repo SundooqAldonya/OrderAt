@@ -19,6 +19,7 @@ import { colors } from '../../utils/colors'
 import { formatNumber } from '../../utils/formatNumber'
 import { scale } from '../../utils/scaling'
 import ItemModal from './ItemModal'
+import { Divider } from 'react-native-paper'
 
 const PickCards = ({ item, restaurantCustomer, cat = null }) => {
   const navigation = useNavigation()
@@ -190,7 +191,7 @@ const PickCards = ({ item, restaurantCustomer, cat = null }) => {
           <FontAwesome5
             name='cart-plus'
             size={moderateScale(18)}
-            color={colors.primary}
+            color={colors.secondary}
           />
         </View>
         <Image
@@ -280,6 +281,7 @@ const PickCards = ({ item, restaurantCustomer, cat = null }) => {
           </View>
         </View>
       </TouchableOpacity>
+      <Divider style={{ marginVertical: 5 }} />
       <ItemModal
         visible={showItem}
         onClose={onCloseModal}
@@ -353,7 +355,7 @@ const styles = StyleSheet.create({
   foodName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.primary
+    color: colors.secondary
   },
   foodDescription: {
     fontSize: 14,

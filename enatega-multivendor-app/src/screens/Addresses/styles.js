@@ -45,7 +45,7 @@ const styles = (props = null) =>
       display: 'flex'
     },
     addButton: {
-      backgroundColor: colors.secondaryOrange,
+      backgroundColor: colors.primary,
       width: '100%',
       height: moderateScale(40),
       borderRadius: 50,
@@ -72,7 +72,7 @@ const styles = (props = null) =>
     },
     titleAddress: {
       flexGrow: 1,
-       paddingLeft: moderateScale(20),
+      paddingLeft: moderateScale(20),
       justifyContent: 'center',
       marginTop: -4
     },
@@ -120,7 +120,7 @@ const styles = (props = null) =>
     rowContainer: {
       marginTop: moderateScale(5),
       flexDirection: 'row',
-      alignItems: 'center', // Adjust this as needed
+      alignItems: 'center' // Adjust this as needed
       // justifyContent: 'space-between'
     },
     footer: {

@@ -332,6 +332,9 @@ function NoDrawer() {
       <NavigationStack.Screen
         name='RequestDelivery'
         options={{
+          headerStyle: {
+            backgroundColor: colors.primary
+          },
           headerTitle: () => (
             <TextDefault
               bolder
@@ -594,6 +597,7 @@ const BottomTabs = () => {
         },
         tabBarStyle: {
           backgroundColor: colors.white,
+          // backgroundColor: colors.primary,
           height: Platform.OS === 'ios' ? 90 : 70,
           //   paddingBottom: 10,
           //  position: 'absolute',
@@ -611,7 +615,7 @@ const BottomTabs = () => {
           alignSelf: 'center'
         },
         tabBarInactiveTintColor: 'grey',
-        tabBarActiveTintColor: colors.primary
+        tabBarActiveTintColor: colors.secondary
         // tabBarActiveTintColor: '#000'
       })}
     >

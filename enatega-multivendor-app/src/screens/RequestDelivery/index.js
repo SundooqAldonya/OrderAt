@@ -2,6 +2,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Switch,
   Text,
@@ -525,6 +526,7 @@ const RequestDelivery = () => {
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 120}
       > */}
+      <StatusBar backgroundColor={colors.primary} barStyle={'dark-content'} />
       <KeyboardAwareScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         enableOnAndroid={true}
@@ -627,7 +629,7 @@ const RequestDelivery = () => {
                 <TextDefault
                   style={{
                     ...styles.addressText(isArabic),
-                    color: !addressInfo.labelFrom ? 'red' : colors.primary
+                    color: !addressInfo.labelFrom ? 'red' : colors.secondary
                   }}
                 >
                   {addressInfo.labelFrom
@@ -657,7 +659,7 @@ const RequestDelivery = () => {
                 <TextDefault
                   style={{
                     ...styles.addressText(isArabic),
-                    color: !addressInfo.labelTo ? 'red' : colors.primary
+                    color: !addressInfo.labelTo ? 'red' : colors.secondary
                   }}
                 >
                   {addressInfo.labelTo
@@ -880,11 +882,13 @@ const RequestDelivery = () => {
               disabled={disabled}
               style={{
                 ...styles.submitButton,
-                backgroundColor: disabled ? 'grey' : '#000'
+                backgroundColor: disabled ? 'grey' : colors.primary
               }}
               onPress={handleSubmit}
             >
-              <TextDefault style={{ color: '#fff' }}>{t('submit')}</TextDefault>
+              <TextDefault style={{ color: colors.secondary }}>
+                {t('submit')}
+              </TextDefault>
             </TouchableOpacity>
           </View>
 
@@ -1093,7 +1097,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
-    height: moderateScale(40)
+    height: moderateScale(50),
+    borderRadius: 5
   },
   editContainer: {
     position: 'absolute',

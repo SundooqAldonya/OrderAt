@@ -8,7 +8,8 @@ import {
   Image
 } from 'react-native'
 import { colors } from '../../utils/colors'
-import Logo from '../../../assets/logo.jpg'
+// import Logo from '../../../assets/logo.jpg'
+import Logo from '../../assets/new_logo.jpg'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -51,7 +52,7 @@ const SelectLanguageScreen = ({ firstTime }) => {
         </TouchableOpacity>
       )}
       <View
-        style={{ width: 200, height: 100, marginTop: -150, marginBottom: 50 }}
+        style={{ width: 200, height: 200, marginTop: -150, marginBottom: 50 }}
       >
         <Image source={Logo} style={{ width: 'auto', height: '100%' }} />
       </View>
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: colors.primary,
+    color: colors.secondary,
     marginBottom: 40,
     fontWeight: 'bold'
   },

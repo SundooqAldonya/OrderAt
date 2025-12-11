@@ -99,14 +99,16 @@ function Addresses() {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(colors.primary)
     }
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('dark-content')
   })
-  useEffect(() => {
-    async function Track() {
-      await Analytics.track(Analytics.events.NAVIGATE_TO_ADDRESS)
-    }
-    Track()
-  }, [])
+
+  // useEffect(() => {
+  //   async function Track() {
+  //     await Analytics.track(Analytics.events.NAVIGATE_TO_ADDRESS)
+  //   }
+  //   Track()
+  // }, [])
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: t('myAddresses'),
@@ -124,7 +126,7 @@ function Addresses() {
         marginLeft: 0
       },
       headerStyle: {
-        backgroundColor: currentTheme.newheaderBG,
+        backgroundColor: colors.primary,
         elevation: 0
       },
       headerLeft: () => (
@@ -302,7 +304,7 @@ function Addresses() {
               })
             }
           >
-            <TextDefault H5 bold>
+            <TextDefault H5 bold style={{ color: colors.secondary }}>
               {t('addAddress')}
             </TextDefault>
           </TouchableOpacity>

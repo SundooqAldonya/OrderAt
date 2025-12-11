@@ -512,7 +512,7 @@ const NewDropoffMandoob = () => {
               >
                 <Text
                   style={{
-                    color: colors.primary, // or '#007bff' if you're not using a theme
+                    color: colors.secondary, // or '#007bff' if you're not using a theme
                     textDecorationLine: 'underline',
                     fontSize: 14
                   }}
@@ -596,13 +596,14 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 30,
-    backgroundColor: '#2ecc71',
+    // backgroundColor: '#2ecc71',
+    backgroundColor: colors.primary,
     padding: 14,
     borderRadius: 25,
     alignItems: 'center'
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.secondary,
     fontSize: 16,
     fontWeight: 'bold'
   },

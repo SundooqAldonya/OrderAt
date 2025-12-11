@@ -1,6 +1,7 @@
 import { Animated, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { HEADER_COLLAPSED_HEIGHT } from '../../screens/Restaurant/helpers'
+import { colors } from '../../utils/colors'
 
 const RestaurantHeader = ({ stickyHeaderAnim, title }) => {
   return (
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     height: HEADER_COLLAPSED_HEIGHT,
-    backgroundColor: '#fff',
+    backgroundColor: colors.primary,
     zIndex: 10,
     justifyContent: 'center',
     alignItems: 'flex-start',

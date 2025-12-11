@@ -57,7 +57,11 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
     >
       <View
         activeOpacity={0.7}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: moderateScale(10) }}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: moderateScale(10)
+        }}
       >
         <View>
           <Animated.View
@@ -73,10 +77,8 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
             <Animated.Text
               style={[
                 {
-                  color: '#fff',
+                  color: colors.secondary,
                   fontSize: moderateScale(16),
-
-                  // backgroundColor: 'red',
                   textAlign: 'center'
                 }
               ]}
@@ -85,11 +87,22 @@ const ViewCart = ({ cartCount, calculatePrice, minimumOrder }) => {
             </Animated.Text>
           </Animated.View>
         </View>
-        <TextDefault textColor={'#fff'} uppercase center bolder small H5>
+        <TextDefault
+          textColor={colors.secondary}
+          uppercase
+          center
+          bolder
+          small
+          H5
+        >
           {t('viewCart')}
         </TextDefault>
         <View>
-          <Feather name='shopping-cart' size={moderateScale(24)} color='#fff' />
+          <Feather
+            name='shopping-cart'
+            size={moderateScale(24)}
+            color={colors.secondary}
+          />
         </View>
       </View>
     </TouchableOpacity>

@@ -324,7 +324,7 @@ const RestaurantDetailsV2 = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar
         translucent
-        backgroundColor='transparent'
+        backgroundColor={colors.primary}
         barStyle='dark-content'
       />
 
@@ -471,13 +471,15 @@ const RestaurantDetailsV2 = () => {
             </View>
             {restaurant?.reviewCount ? (
               <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
-                <Text style={{ color: colors.primary }}>
+                <Text style={{ color: colors.secondary }}>
                   {t('see_all_reviews')}
                 </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={() => setShowReviewsModal(true)}>
-                <Text style={{ color: colors.primary }}>{t('no_reviews')}</Text>
+                <Text style={{ color: colors.secondary }}>
+                  {t('no_reviews')}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
