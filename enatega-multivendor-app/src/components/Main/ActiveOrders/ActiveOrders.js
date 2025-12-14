@@ -41,10 +41,20 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
     orderStatusActive.includes(o.orderStatus)
   )
   const onPressDetails = (order) => {
-    navigation.navigate('OrderDetail', {
-      _id: order._id,
-      currencySymbol: configuration.currencySymbol
-    })
+    if (
+      order?.businessEdits?.isEdited &&
+      (!order?.businessEdits?.customerApproved ||
+        !order?.businessEdits?.rejected)
+    ) {
+      navigation.navigate('CustomerOrderUpdatedScreen', {
+        _id: order._id
+      })
+    } else {
+      navigation.navigate('OrderDetail', {
+        _id: order._id,
+        currencySymbol: configuration.currencySymbol
+      })
+    }
   }
 
   const [showAll, setShowAll] = useState(false)
@@ -57,13 +67,20 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
   }, [displayOrders, onActiveOrdersChange])
 
   if (loadingOrders) return null
+
   if (errorOrders && !orders) return <TextError text={errorOrders.message} />
+
   if (!displayOrders.length) return null
+
   const order = displayOrders[0]
+  const isEdited =
+    order?.businessEdits?.isEdited &&
+    (!order?.businessEdits?.customerApproved || !order?.businessEdits?.rejected)
   const remainingTime = calulateRemainingTime(order)
   const modalStyle = {
     borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: currentTheme.themeBackground
+    backgroundColor: isEdited ? 'orange' : null,
+    borderColor: isEdited ? 'orange' : null
   }
 
   const closeCompletely = () => {
@@ -75,6 +92,8 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
       modalRef.current?.close()
     }, 50) // small delay to allow re-render
   }
+
+  console.log({ order: order?.businessEdits })
 
   return (
     <Modalize
@@ -146,15 +165,27 @@ const ActiveOrders = ({ onActiveOrdersChange }) => {
               marginTop: moderateScale(10)
             }}
           >
-            <TextDefault
-              numberOfLines={2}
-              style={{
-                ...styles(currentTheme).statusText,
-                textAlign: isArabic ? 'right' : 'left'
-              }}
-            >
-              {t(order.orderStatus)}
-            </TextDefault>
+            {isEdited ? (
+              <TextDefault
+                numberOfLines={2}
+                style={{
+                  ...styles(currentTheme).statusText,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t('order_changes_made')}
+              </TextDefault>
+            ) : (
+              <TextDefault
+                numberOfLines={2}
+                style={{
+                  ...styles(currentTheme).statusText,
+                  textAlign: isArabic ? 'right' : 'left'
+                }}
+              >
+                {t(order.orderStatus)}
+              </TextDefault>
+            )}
           </View>
         </View>
       </TouchableOpacity>

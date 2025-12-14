@@ -482,6 +482,36 @@ export const myOrders = `query Orders($offset:Int){
     cancelledAt
     assignedAt
     instructions
+    businessEdits {
+      isEdited
+      customerApproved
+      customerApprovalTime
+      changes {
+        orderItemId {
+          _id
+          title
+          image
+        }
+        action
+        note
+        timestamp
+        item {
+          _id
+          title
+          image
+        }
+        oldValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+        newValue {
+          unitPrice
+          quantity
+          totalPrice
+        }
+      }
+    }
   }
 }
 `
