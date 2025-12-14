@@ -144,7 +144,7 @@ function PhoneOtp(props) {
 
   return (
     <SafeAreaView style={styles(currentTheme).safeAreaViewStyles}>
-      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
+      {/* <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} /> */}
 
       <View style={styles(currentTheme).mainContainer}>
         <View style={styles().subContainer}>

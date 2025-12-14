@@ -418,8 +418,8 @@ export default function App() {
                 value={{ ThemeValue: theme, dispatch: themeSetter }}
               >
                 <StatusBar
-                  // backgroundColor={colors.primary}
-                  backgroundColor={'#fff'}
+                  backgroundColor={colors.primary}
+                  // backgroundColor={'#fff'}
                   barStyle={'dark-content'}
                 />
                 <LocationProvider>

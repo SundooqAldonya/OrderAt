@@ -10,6 +10,7 @@ import {
   FlatList
 } from 'react-native'
 import UserContext from '../../context/User'
+import { colors } from '../../utils/colors'
 
 const ItemModal = ({
   visible,
@@ -131,9 +132,9 @@ const ItemModal = ({
                   item.restaurant !== restaurantCart
                 )
               }
-              style={styles.closeButton}
+              style={styles.acceptButton}
             >
-              <Text style={styles.closeText}>{t('addToCart')}</Text>
+              <Text style={styles.acceptText}>{t('addToCart')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Text style={styles.closeText}>{t('close')}</Text>
@@ -181,11 +182,22 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2b8a3e',
+    color: colors.secondary,
     marginBottom: 20
   },
+  acceptButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10
+  },
+  acceptText: {
+    color: colors.secondary,
+    fontWeight: '500',
+    textAlign: 'center'
+  },
   closeButton: {
-    backgroundColor: '#2b8a3e',
+    backgroundColor: 'gray',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10
@@ -232,7 +244,7 @@ const styles = StyleSheet.create({
   },
   variationPrice: {
     fontSize: 14,
-    color: '#27ae60'
+    color: colors.secondary
   },
   variationStock: {
     fontSize: 12,
@@ -249,6 +261,6 @@ const styles = StyleSheet.create({
   newPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#27ae60'
+    color: colors.secondary
   }
 })

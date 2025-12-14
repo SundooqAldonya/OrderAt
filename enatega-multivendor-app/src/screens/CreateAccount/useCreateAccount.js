@@ -272,12 +272,14 @@ export const useCreateAccount = () => {
       setLoading(false)
     }
   }
-  useFocusEffect(() => {
-    if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(colors.primary)
-    }
-    StatusBar.setBarStyle('light-content')
-  })
+
+  // useFocusEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     StatusBar.setBackgroundColor(colors.primary)
+  //   }
+  //   StatusBar.setBarStyle('dark-content')
+  // })
+
   const openTerms = () => {
     Linking.openURL(TERMS_AND_CONDITIONS)
   }

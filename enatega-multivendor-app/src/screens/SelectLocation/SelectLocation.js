@@ -222,11 +222,6 @@ export default function SelectLocation(props) {
   }, [city])
 
   useEffect(() => {
-    StatusBar.setBackgroundColor(colors.primary)
-    StatusBar.setBarStyle('light-content')
-  }, [])
-
-  useEffect(() => {
     if (!coordinates.latitude) {
       getCurrentPosition()
     }
@@ -575,7 +570,7 @@ export default function SelectLocation(props) {
                 <View
                   style={[
                     styles().markerBubble,
-                    { backgroundColor: '#06C167' }
+                    { backgroundColor: colors.primary }
                   ]}
                 >
                   <Text style={styles().markerText}>
@@ -584,7 +579,10 @@ export default function SelectLocation(props) {
                 </View>
                 <View style={styles().markerPin}>
                   <View
-                    style={[styles().pinInner, { backgroundColor: '#06C167' }]}
+                    style={[
+                      styles().pinInner,
+                      { backgroundColor: colors.primary }
+                    ]}
                   />
                 </View>
               </View>
@@ -622,10 +620,14 @@ export default function SelectLocation(props) {
                 onPress={onItemPress}
               >
                 <View style={[styles(currentTheme).icon]}>
-                  <Feather name='list' size={moderateScale(18)} color='#fff' />
+                  <Feather
+                    name='list'
+                    size={moderateScale(18)}
+                    color={colors.secondary}
+                  />
                 </View>
 
-                <TextDefault textColor={'#fff'} H5 bold>
+                <TextDefault textColor={colors.secondary} H5 bold>
                   {t('browse_available_areas')}
                 </TextDefault>
               </TouchableOpacity>
@@ -643,10 +645,10 @@ export default function SelectLocation(props) {
                   <EvilIcons
                     name='location'
                     size={moderateScale(20)}
-                    color='#fff'
+                    color={colors.secondary}
                   />
                 </View>
-                <TextDefault textColor={'#fff'} H5 bold>
+                <TextDefault textColor={colors.secondary} H5 bold>
                   {t('confirm_address')}
                 </TextDefault>
               </TouchableOpacity>

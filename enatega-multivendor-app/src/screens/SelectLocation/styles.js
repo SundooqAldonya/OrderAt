@@ -1,5 +1,6 @@
 import { moderateScale, scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
+import { colors } from '../../utils/colors'
 const { StyleSheet, I18nManager } = require('react-native')
 const styles = (props = null) =>
   StyleSheet.create({
@@ -184,7 +185,7 @@ const styles = (props = null) =>
     markerBubble: {
       flexDirection: 'row',
       alignSelf: 'flex-start',
-      backgroundColor: '#06C167', // لون أخضر مشابه لأوبر
+      backgroundColor: colors.primary, // لون أخضر مشابه لأوبر
       padding: 8,
       borderRadius: 8,
       borderColor: '#fff',
@@ -199,7 +200,7 @@ const styles = (props = null) =>
       backgroundColor: 'transparent',
       borderWidth: 8,
       borderColor: 'transparent',
-      borderTopColor: '#06C167',
+      borderTopColor: colors.primary,
       alignSelf: 'center',
       marginTop: -1
     },
@@ -222,7 +223,7 @@ const styles = (props = null) =>
       transform: [{ translateX: '-45%' }]
     },
     markerText: {
-      color: '#fff',
+      color: colors.secondary,
       fontSize: moderateScale(10),
       fontWeight: 'bold',
       textAlign: 'center'
@@ -249,7 +250,7 @@ const styles = (props = null) =>
       borderRadius: 6
     },
     solidButton: {
-      backgroundColor: '#06C167',
+      backgroundColor: colors.primary,
       borderRadius: 10,
       paddingVertical: 14,
       paddingHorizontal: 20,

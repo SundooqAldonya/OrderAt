@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import { View, Image, TouchableOpacity, Dimensions } from 'react-native'
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  StatusBar
+} from 'react-native'
 import styles from './styles'
 import FdGoogleBtn from '../../ui/FdSocialBtn/FdGoogleBtn/FdGoogleBtn'
 import FdEmailBtn from '../../ui/FdSocialBtn/FdEmailBtn/FdEmailBtn'

@@ -625,10 +625,12 @@ const styles = StyleSheet.create({
   },
   restaurantTitle: {
     fontSize: moderateScale(22),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: colors.secondary
   },
   restaurantSubtitle: {
-    color: '#666',
+    // color: '#666',
+    color: colors.secondary,
     marginTop: moderateScale(4)
   },
   deliveryInfo: {

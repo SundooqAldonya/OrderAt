@@ -507,7 +507,11 @@ function LocationStack() {
       <Location.Screen name='CityListScreen' component={CityListScreen} />
       <Location.Screen name='SelectLocation' component={SelectLocation} />
       <Location.Screen name='AddNewAddress' component={AddNewAddress} />
-      <Location.Screen name='Main' component={MainV2} />
+      <Location.Screen
+        name='Main'
+        component={MainV2}
+        option={{ headerShown: false }}
+      />
       <Location.Screen
         name='SelectLanguageScreen'
         options={{
@@ -622,7 +626,7 @@ const BottomTabs = () => {
     >
       <Tab.Screen
         name='Main'
-        options={{ tabBarLabel: t('home') }}
+        options={{ tabBarLabel: t('home'), headerShown: false }}
         component={MainV2}
       />
       {/* {isLoggedIn && ( */}

@@ -250,13 +250,6 @@ function MenuV2({ route, props }) {
   const emptyViewDesc =
     selectedType === 'restaurant' ? t('noRestaurant') : t('noGrocery')
 
-  useFocusEffect(() => {
-    if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor('#fff')
-    }
-    StatusBar.setBarStyle('dark-content')
-  })
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false
