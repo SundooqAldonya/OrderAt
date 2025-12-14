@@ -6,6 +6,7 @@ import { subscriptionOrder } from '../../../apollo/subscriptions'
 import gql from 'graphql-tag'
 import { ORDER_STATUS_ENUM } from '../../../utils/enums'
 import { useTranslation } from 'react-i18next'
+import { colors } from '../../../utils/colors'
 
 export const orderStatuses = [
   {
@@ -95,7 +96,8 @@ export const ProgressBar = ({ currentTheme, item, customWidth }) => {
               key={index}
               style={{
                 height: moderateScale(4),
-                backgroundColor: currentTheme.primary,
+                // backgroundColor: currentTheme.primary,
+                backgroundColor: colors.secondary,
                 width: width,
                 marginRight: moderateScale(10)
               }}
