@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { TouchableOpacity, View, Image, Text, Alert } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
@@ -52,26 +52,27 @@ function NewRestaurantCard(props) {
     clearCart,
     cart
   } = useContext(UserContext)
-  // const { setCartRestaurant, cart, addQuantity, addCartItem } =
-  //   useContext(UserContext)
+
+  const [highestOffer, setHighestOffer] = useState(0)
+
+  console.log({ highestOffer: getCategoriesWithHighestDiscount() })
+  console.log({ categories: props.categories[0].foods[0].variations })
+
+  useEffect(() => {
+    setHighestOffer(getCategoriesWithHighestDiscount())
+  }, [props.categories])
+
   const heart = profile ? profile.favourite.includes(props._id) : false
   const businessCategoriesNames =
     (props?.businessCategories || [])
       .map((cat) => cat.name)
       .filter(Boolean)
       .join(', ') || null
+
   const [mutate, { loading: loadingMutation }] = useMutation(ADD_FAVOURITE, {
     onCompleted,
     refetchQueries: [{ query: PROFILE }]
   })
-
-  // const { data, loading, error } = useQuery(isRestaurantOpenNow, {
-  //   variables: {
-  //     id: props._id
-  //   }
-  // })
-
-  // // console.log({ data })
 
   const isOpenNow = typeof props?.isOpen === 'boolean' ? props.isOpen : true
 
@@ -105,7 +106,7 @@ function NewRestaurantCard(props) {
     return highest
   }
 
-  const highestOffer = getCategoriesWithHighestDiscount() || null
+  // const highestOffer = getCategoriesWithHighestDiscount() || null
 
   // console.log({ highestOffer: getCategoriesWithHighestDiscount() })
 

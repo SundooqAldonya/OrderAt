@@ -55,6 +55,12 @@ const rootResolver = {
   RestaurantCustomer: {
     ...restaurantResolver.RestaurantCustomer
   },
+  CategoryCustomer: {
+    ...restaurantResolver.CategoryCustomer
+  },
+  FoodCustomer: {
+    ...restaurantResolver.FoodCustomer
+  },
   Query: {
     ...dashboardResolver.Query,
     ...categoryResolver.Query,

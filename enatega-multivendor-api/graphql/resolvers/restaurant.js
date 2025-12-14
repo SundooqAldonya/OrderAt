@@ -67,6 +67,14 @@ module.exports = {
   Upload: GraphqlUpload,
   Date: dateScalar,
   RestaurantCustomer: {
+    categories: async parent => {
+      const categories = await Category.find({
+        restaurant: parent._id,
+        isActive: true
+      })
+
+      return categories || []
+    },
     deliveryFee: async (restaurant, args, { req }) => {
       console.log('deliveryFee')
       // if (!req?.user) return null
@@ -115,6 +123,26 @@ module.exports = {
       } catch (err) {
         throw err
       }
+    }
+  },
+
+  CategoryCustomer: {
+    foods: async parent => {
+      const foods = await Food.find({
+        category: parent._id,
+        isActive: true
+      })
+
+      return foods || []
+    }
+  },
+  FoodCustomer: {
+    variations: async parent => {
+      const variations = await Variation.find({
+        food: parent._id
+      })
+
+      return variations || []
     }
   },
 
@@ -1459,18 +1487,18 @@ module.exports = {
           getMostOrderedRestaurants({ longitude, latitude })
         ])
 
-        // console.log({
-        //   restaurantsCustomerMainScreen: await Promise.all(
-        //     restaurants.value.restaurants
-        //   ),
-        //   // restaurantsWithOffers,
-        //   // highestRated,
-        //   // featured,
-        //   mostOrderedCustomerMainScreen:
-        //     mostOrdered.status === 'fulfilled'
-        //       ? await Promise.all(mostOrdered.value)
-        //       : []
-        // })
+        console.log({
+          restaurantsCustomerMainScreen: await Promise.all(
+            restaurantsWithOffers.value[0].categories
+          )
+          // restaurantsWithOffers,
+          // highestRated,
+          // featured,
+          // mostOrderedCustomerMainScreen:
+          //   mostOrdered.status === 'fulfilled'
+          //     ? await Promise.all(mostOrdered.value)
+          //     : []
+        })
 
         return {
           restaurants:

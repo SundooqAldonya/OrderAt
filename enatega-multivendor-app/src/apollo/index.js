@@ -53,6 +53,82 @@ const setupApollo = () => {
           }
         }
       },
+      CategoryCustomer: {
+        keyFields: ['_id'],
+        fields: {
+          foods: {
+            merge(_existing, incoming) {
+              return incoming ?? []
+            }
+          }
+        }
+      },
+      FoodCustomer: {
+        keyFields: ['_id'],
+        fields: {
+          variations: {
+            merge(_existing, incoming) {
+              return incoming ?? []
+            }
+          }
+        }
+      },
+      RestaurantCustomer: {
+        keyFields: ['_id'],
+        fields: {
+          /**
+           * 🔴 ROOT CAUSE FIX
+           * Prevent null poisoning of categories
+           */
+          categories: {
+            merge(_existing, incoming) {
+              return incoming ?? []
+            }
+          },
+
+          /**
+           * Distance is computed, not cached
+           */
+          deliveryFee: {
+            keyArgs: ['latitude', 'longitude'],
+            merge(_existing, incoming) {
+              return incoming
+            }
+          },
+
+          distanceWithCurrentLocation: {
+            read(_existing, { variables, readField }) {
+              if (!variables?.latitude || !variables?.longitude) return null
+
+              const location = readField < any > 'location'
+              if (!location?.coordinates) return null
+
+              return calculateDistance(
+                location.coordinates[0],
+                location.coordinates[1],
+                variables.latitude,
+                variables.longitude
+              )
+            }
+          },
+
+          /**
+           * Never randomize cache reads in production
+           * (Keeping deterministic behavior)
+           */
+          freeDelivery: {
+            read(existing) {
+              return existing ?? false
+            }
+          },
+
+          acceptVouchers: {
+            read(existing) {
+              return existing ?? false
+            }
+          }
+        }
+      },
       Restaurant: {
         fields: {
           distanceWithCurrentLocation: {
