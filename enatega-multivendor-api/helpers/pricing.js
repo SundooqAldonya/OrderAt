@@ -1,4 +1,4 @@
-// services/pricing.js
+// helpers/pricing.js
 const RequestorOverride = require('../models/RequestorOverride')
 const PrepaidDeliveryPackage = require('../models/prepaidDeliveryPackage')
 const DeliveryPrice = require('../models/DeliveryPrice') // old fixed cost area->area
@@ -42,12 +42,12 @@ function applyModel(model, params = {}, distanceKm) {
     case 'FIXED':
       return fixed
     case 'PER_KM': {
-      const raw = per_km * Math.round(distanceKm)
+      const raw = per_km * Math.ceil(distanceKm)
       return Math.max(min_fee || 0, raw)
     }
     case 'HYBRID': {
       // baseFare + per_km * max(0, distance - included_km)
-      const extraKm = Math.max(0, Math.round(distanceKm) - included_km)
+      const extraKm = Math.max(0, Math.ceil(distanceKm) - included_km)
       const raw = baseFare + per_km * extraKm
       return Math.max(min_fee || 0, raw)
     }
@@ -144,7 +144,7 @@ async function calculateUnifiedDeliveryFee({
   // -------------------------
   console.log({ requestorId })
   const no = false
-  if (requestorId && no) {
+  if (requestorId) {
     try {
       console.log('Checking business delivery config')
       const override = await RequestorOverride.findOne({
@@ -179,8 +179,7 @@ async function calculateUnifiedDeliveryFee({
   if (
     (amount === null || amount === undefined) &&
     requestorId &&
-    String(serviceType).toUpperCase() === 'FOOD' &&
-    no
+    String(serviceType).toUpperCase() === 'FOOD'
   ) {
     try {
       console.log('Checking prepaid package')

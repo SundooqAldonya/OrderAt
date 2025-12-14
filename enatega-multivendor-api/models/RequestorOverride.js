@@ -5,7 +5,12 @@ const RequestorOverrideSchema = new mongoose.Schema(
     // country: { type: String }, // e.g. "EG"
     // city: { type: String, default: null }, // e.g. "KafrElSheikh"
 
-    requestor_type: { type: String, enum: ['Business'], required: true },
+    requestor_type: {
+      type: String,
+      enum: ['Business'],
+      required: true,
+      default: 'Business'
+    },
     requestor_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Restaurant',
