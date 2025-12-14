@@ -755,5 +755,6 @@ export const en = {
   phone_must_start_with_01: 'Phone number must start with 01',
   warning: 'Warning',
   warning_mashweer:
-    'The order was created outside of working hours, we may not be able to guarantee delivery. Do you want to proceed?'
+    'The order was created outside of working hours, we may not be able to guarantee delivery. Do you want to proceed?',
+  order_changes_made: 'Order is waiting for approval'
 }
