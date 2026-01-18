@@ -154,6 +154,12 @@ dispatchQueue.process(async job => {
   })
 
   console.log({ recipients })
+  
+  // Update order with eligible riders who can see this order
+  await Order.findByIdAndUpdate(orderId, {
+    $addToSet: { eligibleRiders: { $each: riderIds } }
+  })
+  
   // Log
   await DispatchLog.updateOne(
     { order: orderId },

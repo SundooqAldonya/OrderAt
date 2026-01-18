@@ -20,6 +20,12 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Zone'
     },
+    eligibleRiders: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Rider'
+      }
+    ],
     restaurant: {
       type: Schema.Types.ObjectId,
       ref: 'Restaurant'
@@ -252,6 +258,14 @@ const orderSchema = new Schema(
 )
 
 orderSchema.plugin(mongoosePagination)
+
+// Index for efficient rider order visibility queries
+orderSchema.index({
+  zone: 1,
+  orderStatus: 1,
+  rider: 1,
+  eligibleRiders: 1
+})
 
 orderSchema.pre('save', async function (next) {
   const isOrderStatusUpdated = this.modifiedPaths().includes('orderStatus')

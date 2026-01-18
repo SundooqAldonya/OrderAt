@@ -57,10 +57,28 @@ module.exports = {
     subscriptionZoneOrders: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(ZONE_ORDER),
-        (payload, args) => {
+        async (payload, args, context) => {
           const zoneId = payload.subscriptionZoneOrders.zoneId
-          console.log({ zoneId, args })
-          return zoneId === args.zoneId
+          const riderId = context.req?.userId
+          
+          console.log({ zoneId, args, riderId })
+          
+          // Check zone match first
+          if (zoneId !== args.zoneId || !riderId) {
+            return false
+          }
+          
+          // Check if rider is eligible to see this order
+          const orderId = payload.subscriptionZoneOrders.order._id
+          const order = await Order.findById(orderId, { eligibleRiders: 1 })
+          
+          if (!order?.eligibleRiders) {
+            return false
+          }
+          
+          return order.eligibleRiders.some(
+            id => id.toString() === riderId.toString()
+          )
         }
       )
     },
@@ -244,11 +262,15 @@ module.exports = {
         // }).sort({ _id: -1 })
 
         console.log({ riderZone: rider.zone })
+        
+        // Only show orders this rider was notified about
         const orders = await Order.find({
           zone: rider.zone,
           orderStatus: 'ACCEPTED',
-          rider: null
+          rider: null,
+          eligibleRiders: rider._id
         }).sort({ preparationTime: -1 })
+        
         console.log({ ordersRider: orders ? orders[0] : null })
         console.log({
           assignedOrders: assignedOrders ? assignedOrders[0] : null
