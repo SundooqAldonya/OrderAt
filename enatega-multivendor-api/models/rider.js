@@ -91,6 +91,35 @@ const riderSchema = new Schema(
     lastActiveAt: {
       type: Date,
       default: null // updated whenever rider is assigned an order
+    },
+    // Enhanced dispatch scoring fields
+    ordersCompletedToday: {
+      type: Number,
+      default: 0 // reset daily at midnight
+    },
+    ordersAcceptedToday: {
+      type: Number,
+      default: 0 // reset daily at midnight
+    },
+    ordersNotifiedToday: {
+      type: Number,
+      default: 0 // reset daily at midnight
+    },
+    acceptanceRate30d: {
+      type: Number,
+      default: 0.5 // rolling 30-day acceptance rate (0-1)
+    },
+    completionRate30d: {
+      type: Number,
+      default: 0.95 // rolling 30-day completion rate (0-1)
+    },
+    avgResponseTimeSeconds30d: {
+      type: Number,
+      default: 60 // average time to open order after seeing it (seconds)
+    },
+    lastStatsUpdate: {
+      type: Date,
+      default: null // when rolling stats were last calculated
     }
   },
   { timestamps: true }
