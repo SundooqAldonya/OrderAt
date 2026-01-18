@@ -11,7 +11,7 @@ const dispatchQueue = new Queue('dispatch', 'redis://127.0.0.1:6379')
 
 dispatchQueue.process(async job => {
   console.log('started rider assignment process')
-  const { orderId, attempt } = job.data
+  const { orderId, attempt, rankedRiderIds } = job.data // Add rankedRiderIds
   const order = await Order.findById(orderId).populate('restaurant')
   console.log({ orderZoneId: order.zone })
 
@@ -71,15 +71,36 @@ dispatchQueue.process(async job => {
     isActive: true,
     notificationToken: { $ne: null }
   })
-  // console.log({ riders })
 
-  // Rank and pick batch
-  const ranked = await rankRiders({
-    log,
-    riders,
-    alreadyNotifiedRiderIds: alreadyNotified,
-    attempt
-  })
+  let ranked
+
+  // OPTIMIZATION: Calculate scores only on first attempt
+  if (attempt === 0 && !rankedRiderIds) {
+    console.log('🎯 First attempt: Calculating rider scores...')
+    ranked = await rankRiders({
+      log,
+      riders,
+      alreadyNotifiedRiderIds: [],
+      attempt,
+      order
+    })
+    
+    // Store ranked rider IDs for subsequent attempts
+    var savedRankedIds = ranked.map(r => r._id.toString())
+    console.log({ rankedCount: savedRankedIds.length })
+  } else {
+    // REUSE: Use pre-calculated ranking from first attempt
+    console.log('♻️ Subsequent attempt: Reusing cached ranking...')
+    
+    // Reconstruct ranked list from saved IDs, excluding already notified
+    const riderMap = new Map(riders.map(r => [r._id.toString(), r]))
+    ranked = (rankedRiderIds || savedRankedIds || [])
+      .filter(id => !alreadyNotified.includes(id) && riderMap.has(id))
+      .map(id => riderMap.get(id))
+    
+    console.log({ cachedRankedCount: ranked.length })
+  }
+
   console.log({ rankedLength: ranked?.length })
 
   const firstAttempt = dispatchOptions ? dispatchOptions.firstAttemptRiders : 1
@@ -176,7 +197,11 @@ dispatchQueue.process(async job => {
   const freshOrder = await Order.findById(orderId)
   if (!freshOrder.rider && attempt + 1 < log.maxCycles) {
     await dispatchQueue.add(
-      { orderId, attempt: attempt + 1 },
+      { 
+        orderId, 
+        attempt: attempt + 1,
+        rankedRiderIds: savedRankedIds || rankedRiderIds // Pass ranking to next cycle
+      },
       { delay: delayDispatch * 1000 }
     )
   }
